@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "admin-lte": "^2.3.3",
+    "laravel-elixir": "^5.0.0"
+  }
+}
