@@ -8,7 +8,7 @@ use DB;
 class UsuarioRepository extends Repository
 {
     /**
-     * Specify Model class name.
+     * Specify Models class name.
      *
      * @return string
      */

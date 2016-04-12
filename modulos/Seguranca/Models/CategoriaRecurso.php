@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Models\Security;
+namespace Modulos\Seguranca\Models;
 
 use App\Models\BaseModel;
-
 
 class CategoriaRecurso extends BaseModel {
     protected $table = 'seg_categorias_recursos';

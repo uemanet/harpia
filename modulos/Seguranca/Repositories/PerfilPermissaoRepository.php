@@ -8,7 +8,7 @@ use DB;
 class PerfilPermissaoRepository extends Repository
 {
     /**
-     * Specify Model class name.
+     * Specify Models class name.
      *
      * @return string
      */

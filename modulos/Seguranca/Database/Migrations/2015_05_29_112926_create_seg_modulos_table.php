@@ -18,6 +18,7 @@ class CreateSegModulosTable extends Migration {
             $table->string('mod_nome', 150);
             $table->string('mod_descricao', 300);
             $table->string('mod_icone', 45);
+            $table->string('mod_style', 150);
             $table->boolean('mod_ativo')->default(1);
             $table->timestamps();
         });

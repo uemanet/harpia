@@ -1,67 +1,35 @@
-<header class="topnavbar-wrapper">
-   <nav role="navigation" class="navbar topnavbar">
-      <div class="navbar-header">
-         <a href="/index" class="navbar-brand">
-            <div class="brand-logo">
-               <img style="height:42px" src="{{ url('/') }}/{{config('system.logo')}}" alt="{{config('system.title')}}" class="img-responsive">
-            </div>
-            <div class="brand-logo-collapsed">
-               <img style="height:42px" src="{{ url('/') }}/{{config('system.logo')}}" alt="{{config('system.title')}}" class="img-responsive">
-            </div>
-         </a>
-      </div>
-      <div class="nav-wrapper">
-         <ul class="nav navbar-nav">
-            <li>
-               <a href="#" data-toggle-state="aside-toggled" data-no-persist="true" class="visible-xs sidebar-toggle">
-                  <em class="fa fa-navicon"></em>
-               </a>
-            </li>
-         </ul>
-         <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown dropdown-list">
-               <a href="#" data-toggle="dropdown">
-                  <em class="fa fa-user"></em>
-               </a>
-               <ul class="dropdown-menu animated flipInX">
-                  <li>
-                     <div class="list-group">
-                        <a href="{{ url('/') }}/security/usuarios/edit/{{Auth::user()->usr_id}}" class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <em class="fa fa-edit fa-2x text-info"></em>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <p class="m0">Editar perfil</p>
-                                 <p class="m0 text-muted">
-                                    <small>Alterar informações pessoais</small>
-                                 </p>
-                              </div>
-                           </div>
-                        </a>
-                          <a href="{{ url('/') }}/security/usuarios/editpasswor/d{{Auth::user()->usr_id}}" class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <em class="fa fa-key fa-2x text-info"></em>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <p class="m0">Alterar senha</p>
-                                 <p class="m0 text-muted">
-                                    <small>Alterar senha de acesso</small>
-                                 </p>
-                              </div>
-                           </div>
-                        </a>
-                     </div>
-                  </li>
-               </ul>
-            </li>
-            <li>
-               <a href="{{url('/')}}/auth/logout" data-toggle-state="offsidebar-open" data-no-persist="true">
-                  <em class="fa fa-power-off"></em>
-               </a>
-            </li>
-         </ul>
-      </div>
+<header class="main-header">
+   <!-- Logo -->
+   <a href="{{url('/')}}" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>A</b>DM</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Admin</b></span>
+   </a>
+   <!-- Header Navbar: style can be found in header.less -->
+   <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+         <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <div class="container-fluid">
+         <!-- Collect the nav links, forms, and other content for toggling -->
+         <div class="collapse navbar-collapse" id="navbar-collapse">
+
+            <ul class="nav navbar-nav navbar-right">
+               <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                     <li><a href="#">Action</a></li>
+                     <li><a href="#">Another action</a></li>
+                     <li><a href="#">Something else here</a></li>
+                     <li class="divider"></li>
+                     <li><a href="#">Separated link</a></li>
+                  </ul>
+               </li>
+            </ul>
+         </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
    </nav>
 </header>

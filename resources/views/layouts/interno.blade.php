@@ -2,68 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title>{{config('system.title')}}</title>
+    <title>Módulo ADMIN @yield('title')</title>
 
-    <!-- <link rel="stylesheet" href="{{ asset('/assets/vendor/fontawesome/css/font-awesome.min.css') }}"/> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ asset('/assets/vendor/simple-line-icons/css/simple-line-icons.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.css') }}" id="bscss"/>
-    <link rel="stylesheet" href="{{ asset('/assets/css/app.css') }}" id="maincss"/>
-    <link rel="stylesheet" href="{{ asset('/assets/css/style.css') }}" id="maincss"/>
+    <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 
-    <link id="autoloaded-stylesheet" rel="stylesheet" href="{{ asset('/assets/css/theme-d.css')}}">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
     @section('stylesheets')
     @show
 </head>
-<body class="layout">
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <!-- Header bar. contains the logo and menubar -->
     @include('layouts.includes.header')
-    <div class="wrapper">
-        @include('layouts.includes.left')
-        <section>
-            <div class="content-wrapper">
-                <h3>@yield('title')</h3>
-                <div class="row">
-                    @if (Session::has('flash_notification.message'))
-                        <div class="alert alert-{{ Session::get('flash_notification.level') }}">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            {{ Session::get('flash_notification.message') }}
-                        </div>
-                    @endif
 
-                    @yield('content')
-                </div>
-            </div>
+    <!-- Left side column. contains the main navigation menu-->
+    @include('layouts.includes.left')
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>@yield('title')</h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
         </section>
-    </div>
 
-    <!-- MODERNIZR-->
-    <script src="{{ asset('/assets/vendor/modernizr/modernizr.js')}}"></script>
-    <!-- JQUERY-->
-    <script src="{{ asset('/assets/vendor/jquery/dist/jquery.js')}}"></script>
-    <!-- BOOTSTRAP-->
-    <script src="{{ asset('/assets/vendor/bootstrap/dist/js/bootstrap.js')}}"></script>
-    <!-- STORAGE API-->
-    <script src="{{ asset('/assets/vendor/jQuery-Storage-API/jquery.storageapi.js')}}"></script>
-    <!-- PARSLEY-->
-    <script src="{{ asset('/assets/vendor/parsleyjs/dist/parsley.min.js') }}"></script>
-    <!-- COOKIES-->
-    <script src="{{ asset('/assets/js/plugins/js-cookie/js.cookie.js') }}"></script>
+        <!-- Main content -->
+        <section class="content">
+            @yield('content')
+        </section>
+    </div><!-- /.content-wrapper -->
 
-    <!-- =============== APP SCRIPTS ===============-->
-    <script src="{{ asset('/assets/js/app.js') }}"></script>
+    <!-- Footer bar. -->
+    @include('layouts.includes.footer')
 
-<!--     <script type="text/javascript">
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-    </script> -->
+</div><!-- ./wrapper -->
 
-    @section('scripts')
-    
-    @show
+<!-- JQUERY-->
+<script src="{{ asset('/javascript/jQuery-2.2.0.min.js')}}"></script>
+<script src="{{ asset('/javascript/bootstrap.min.js')}}"></script>
+<script src="{{ asset('/javascript/app.min.js')}}"></script>
+
+@section('scripts')
+
+@show
 </body>
 </html>

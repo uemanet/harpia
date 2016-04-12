@@ -156,7 +156,18 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Provider de configuracao dos modulos
+         */
         Modulos\ModulosServiceProvider::class,
+
+        /*
+         * Extra providers
+         */
+        Laracasts\Flash\FlashServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+        Modulos\Seguranca\Providers\Security\SecurityServiceProvider::class,
+        Modulos\Seguranca\Providers\Menu\MenuServiceProvider::class
 
     ],
 
@@ -203,6 +214,14 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /*
+         * Extra aliases
+         */
+        'Flash' => Laracasts\Flash\Flash::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
+        'Menu' => Modulos\Seguranca\Providers\Menu\Facades\Menu::class,
 
     ],
 

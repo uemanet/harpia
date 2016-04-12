@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "admin-lte": "^2.3.3",
+    "bootstrap": "^3.3.6",
     "laravel-elixir": "^5.0.0"
   }
 }

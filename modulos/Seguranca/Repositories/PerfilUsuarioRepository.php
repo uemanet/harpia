@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class PerfilUsuarioRepository extends Repository
 {
     /**
-     * Specify Model class name.
+     * Specify Models class name.
      *
      * @return string
      */
