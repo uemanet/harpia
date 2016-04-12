@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modulos\Seguranca\Controllers;
+namespace Modulos\Seguranca\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
@@ -14,6 +14,6 @@ class IndexController extends Controller
      */
     public function getIndex()
     {
-        return view('security.index.index');
+        return view('Seguranca::index.index');
     }
 }
