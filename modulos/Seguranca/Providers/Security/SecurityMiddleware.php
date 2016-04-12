@@ -2,19 +2,20 @@
 
 namespace Modulos\Seguranca\Providers\Security;
 
+use Illuminate\Http\Request;
 use DB;
 use Config;
 use Closure;
 use Flash;
-use Illuminate\Http\Request;
 
 class SecurityMiddleware extends AbstractSecurityMiddleware
 {
+
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param callable                 $next
+     * @param Request $request
+     * @param Closure $next
      *
-     * @return mixed
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function handle(Request $request, Closure $next)
     {

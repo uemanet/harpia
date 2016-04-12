@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'users',
+        'passwords' => 'seg_usuarios',
     ],
 
     /*
@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => Modulos\Seguranca\Models\Usuario::class,
         ],
 
         // 'users' => [
@@ -97,7 +97,7 @@ return [
 
     'passwords' => [
         'users' => [
-            'provider' => 'users',
+            'provider' => 'seg_usuarios',
             'email' => 'auth.emails.password',
             'table' => 'password_resets',
             'expire' => 60,

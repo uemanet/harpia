@@ -1,10 +1,10 @@
 <?php
 
-namespace Modulos\Seguranca\Requests;
+namespace Modulos\Seguranca\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class StorePermissaoRequest extends Request
+class LoginRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class StorePermissaoRequest extends Request
     public function rules()
     {
         $rules = [
-            'prm_rcs_id' => 'required',
-            'prm_nome' => 'required|max:45',
-            'prm_descricao' => 'max:300',
+            'usr_usuario' => 'required|min:4',
+            'usr_senha' => 'required|min:6'
         ];
 
         return $rules;

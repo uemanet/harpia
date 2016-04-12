@@ -3,7 +3,7 @@
 namespace Modulos\Seguranca\Providers\Security;
 
 use Illuminate\Contracts\Foundation\Application;
-use Security\Exceptions\ForbiddenException;
+use Modulos\Seguranca\Providers\Security\Exceptions\ForbiddenException;
 use Illuminate\Contracts\Auth\Guard;
 
 abstract class AbstractSecurityMiddleware

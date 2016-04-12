@@ -3,11 +3,11 @@
 namespace Modulos\Seguranca\Providers\Security;
 
 use Illuminate\Contracts\Foundation\Application;
-use Security\Contracts\Security as SecurityContract;
-use Security\Exceptions\ForbiddenException;
+use Modulos\Seguranca\Providers\Security\Contracts\Security as SecurityContract;
+use Modulos\Seguranca\Providers\Security\Exceptions\ForbiddenException;
 use DB;
 
-class Security implements SecurityContract{
+class Security implements SecurityContract {
     /**
      * The Laravel Application.
      *

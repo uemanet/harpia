@@ -20,9 +20,6 @@ elixir(function(mix) {
         'skin.less'
     ]);
 
-    // CSS
-    //mix.copy('node_modules/admin-lte/bootstrap/css/bootstrap.min.css', 'public/css');
-
     // JAVASCRIPT
     mix.copy('node_modules/admin-lte/plugins/jQuery/jQuery-2.2.0.min.js', 'public/javascript');
     mix.copy('node_modules/bootstrap/dist/js/bootstrap.min.js', 'public/javascript');
@@ -30,4 +27,10 @@ elixir(function(mix) {
 
     // FONTS
     mix.copy('node_modules/bootstrap/fonts', 'public/fonts');
+
+    // Copy iCheck Components
+    mix.copy('node_modules/admin-lte/plugins/iCheck/square/blue.css', 'public/css/plugins/icheck/icheck.css');
+    mix.copy('node_modules/admin-lte/plugins/iCheck/square/blue.png', 'public/css/plugins/icheck');
+    mix.copy('node_modules/admin-lte/plugins/iCheck/square/blue@2x.png', 'public/css/plugins/icheck');
+    mix.copy('node_modules/admin-lte/plugins/iCheck/icheck.min.js', 'public/javascript/plugins/icheck/');
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modulos\Seguranca\Requests;
+namespace Modulos\Seguranca\Requests;
 
 use App\Http\Requests\Request;
 

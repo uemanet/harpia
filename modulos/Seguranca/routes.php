@@ -1,5 +1,8 @@
 <?php
 
+Route::get('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogin');
+Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@postLogin');
+
 Route::group(['prefix' => 'seguranca'], function () {
     Route::controllers([
         'index'   => '\Modulos\Seguranca\Http\Controllers\IndexController',
