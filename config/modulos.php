@@ -2,6 +2,8 @@
 
 return [
     'modulos' => [
-        'Seguranca'
+        'Geral',
+        'Seguranca',
+        'Academico'
     ]
 ];

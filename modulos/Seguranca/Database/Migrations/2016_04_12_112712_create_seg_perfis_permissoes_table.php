@@ -17,6 +17,8 @@ class CreateSegPerfisPermissoesTable extends Migration {
             $table->integer('prp_prf_id')->unsigned();
             $table->integer('prp_prm_id')->unsigned();
 
+            $table->primary(['prp_prf_id', 'prp_prm_id']);
+
             $table->foreign('prp_prf_id')->references('prf_id')->on('seg_perfis');
             $table->foreign('prp_prm_id')->references('prm_id')->on('seg_permissoes');
         });

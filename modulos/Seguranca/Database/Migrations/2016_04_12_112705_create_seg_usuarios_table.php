@@ -14,15 +14,14 @@ class CreateSegUsuariosTable extends Migration {
     {
         Schema::create('seg_usuarios', function(Blueprint $table)
         {
-            $table->increments('usr_id');
-            $table->string('usr_nome', 150);
-            $table->string('usr_email', 150);
-            $table->string('usr_telefone', 15)->nullable();
-            $table->string('usr_usuario', 45)->unique();
+            $table->integer('usr_pes_id')->unsigned();
             $table->string('usr_senha', 100);
             $table->boolean('usr_ativo')->default(1);
             $table->rememberToken();
             $table->timestamps();
+
+            $table->primary('usr_pes_id');
+            $table->foreign('usr_pes_id')->references('pes_id')->on('gra_pessoa');
         });
     }
 
