@@ -15,5 +15,8 @@ class SegurancaSeeder extends Seeder
     {
         $this->call(ModuloTableSeeder::class);
         $this->command->info('Modulos table seeded!');
+
+        $this->call(UsuarioTableSeeder::class);
+        $this->command->info('Pessoa / Usuário table seeded!');
     }
 }

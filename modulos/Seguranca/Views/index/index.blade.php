@@ -4,6 +4,18 @@
     Módulo de Segurança
 @stop
 
+@section('subtitle')
+    Módulo de Segurança
+@stop
+
+@section('actionButton')
+	{!!ActionButton::render($actionButton)!!}
+@stop
+
 @section('content')
-    Index do index
+    <div class="box box-primary">
+        <div class="box-header">
+  			bruno         
+        </div>
+    </div>
 @stop

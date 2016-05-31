@@ -33,13 +33,21 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>@yield('title')</h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Dashboard</li>
-            </ol>
-        </section>
+        <div class="box" style="margin-bottom:0px">
+            <div class="box-header" style="padding-bottom:0px">
+                <div class="col-md-6">
+                    <section class="content-header" style="padding-top:10px">
+                      <h1>
+                        @yield('title')
+                      </h1>
+                        <small>@yield('subtitle')</small>
+                    </section>
+                </div>
+                <div class="col-md-6 text-right">
+                    @yield('actionButton')
+                </div>
+            </div>
+        </div>
 
         <!-- Main content -->
         <section class="content">
@@ -53,9 +61,9 @@
 </div><!-- ./wrapper -->
 
 <!-- JQUERY-->
-<script src="{{ asset('/javascript/jQuery-2.2.0.min.js')}}"></script>
-<script src="{{ asset('/javascript/bootstrap.min.js')}}"></script>
-<script src="{{ asset('/javascript/app.min.js')}}"></script>
+<script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
+<script src="{{ asset('/js/bootstrap.min.js')}}"></script>
+<script src="{{ asset('/js/app.min.js')}}"></script>
 
 @section('scripts')
 

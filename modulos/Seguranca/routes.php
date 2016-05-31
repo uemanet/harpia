@@ -6,7 +6,7 @@ Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@po
 Route::group(['prefix' => 'seguranca'], function () {
     Route::controllers([
         'index'   => '\Modulos\Seguranca\Http\Controllers\IndexController',
-        // 'modulos' => 'Security\ModulosController',
+        // 'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',
         // 'categoriasrecursos' => 'Security\CategoriasRecursosController',
         // 'recursos' => 'Security\RecursosController',
         // 'permissoes' => 'Security\PermissoesController',

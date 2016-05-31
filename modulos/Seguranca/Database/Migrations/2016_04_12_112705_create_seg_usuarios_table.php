@@ -15,6 +15,7 @@ class CreateSegUsuariosTable extends Migration {
         Schema::create('seg_usuarios', function(Blueprint $table)
         {
             $table->integer('usr_pes_id')->unsigned();
+            $table->string('usr_usuario', 60)->unique();
             $table->string('usr_senha', 100);
             $table->boolean('usr_ativo')->default(1);
             $table->rememberToken();

@@ -90,5 +90,4 @@ class CategoriasRecursosController extends Controller
 
         return redirect()->back();
     }
-
 }

@@ -29,14 +29,14 @@ class Usuario extends BaseModel implements
      *
      * @var string
      */
-    protected $primaryKey = 'usr_id';
+    protected $primaryKey = 'usr_pes_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['usr_nome', 'usr_email', 'usr_telefone', 'usr_usuario', 'usr_senha', 'usr_ativo'];
+    protected $fillable = ['usr_usuario','usr_ativo'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -51,21 +51,10 @@ class Usuario extends BaseModel implements
     }
 
     public static $rules = [
-        'usr_nome' => 'required|min:3',
-        'usr_email' => 'required|email',
-        'usr_usuario' => 'required|min:3',
+        'usr_senha' => 'required|min:6',
+        'usr_usuario' => 'required',
         'usr_ativo' => 'required'
     ];
-
-    /**
-     * Get the e-mail address where password reset links are sent.
-     *
-     * @return string
-     */
-    public function getEmailForPasswordReset()
-    {
-        return $this->usr_email;
-    }
 
     /**
      * Get the unique identifier for the user.

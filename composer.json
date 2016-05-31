@@ -24,7 +24,8 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Modulos\\": "modulos/"
+            "Modulos\\": "modulos/",
+            "Harpia\\" : "Harpia/"
         }
     },
     "autoload-dev": {

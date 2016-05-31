@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modulos\Seguranca\Controllers;
+namespace Modulos\Seguranca\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Security\StoreModuloRequest;

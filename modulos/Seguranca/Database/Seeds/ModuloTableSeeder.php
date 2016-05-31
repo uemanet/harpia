@@ -10,12 +10,12 @@ class ModuloTableSeeder extends Seeder {
 
     public function run()
     {
-        $usuario = new Modulo;
-        $usuario->mod_nome = 'Seguranca';
-        $usuario->mod_descricao = 'Módulo de segurança';
-        $usuario->mod_icone = 'fa-lock';
-        $usuario->mod_style = '';
-        $usuario->mod_ativo = 1;
-        $usuario->save();
+        $modulo = new Modulo;
+        $modulo->mod_nome = 'Seguranca';
+        $modulo->mod_descricao = 'Módulo de segurança';
+        $modulo->mod_icone = 'fa-lock';
+        $modulo->mod_style = '';
+        $modulo->mod_ativo = 1;
+        $modulo->save();
     }
 }
