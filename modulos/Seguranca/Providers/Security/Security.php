@@ -32,6 +32,76 @@ class Security implements SecurityContract {
         return $this->app['auth']->user();
     }
 
+    public function makeCacheMenu()
+    {
+        $usrId = $this->app['auth']->user()->usr_pes_id;
+
+        $sql = "SELECT mod_id, mod_nome, cr.*
+                FROM 
+                    seg_perfis_usuarios
+                    INNER JOIN seg_perfis ON pru_prf_id = prf_id
+                    INNER JOIN seg_modulos ON prf_mod_id = mod_id
+                    INNER JOIN seg_categorias_recursos AS cr ON ctr_mod_id = mod_id
+                WHERE
+                    pru_usr_id = :usrId AND mod_ativo = 1 AND ctr_visivel = 1
+                ORDER BY
+                    mod_nome,ctr_referencia,ctr_id,ctr_ordem";
+
+        $categoriasModulos =  DB::select($sql, ['usrId' => $usrId]);
+
+        $arrayMenu = [];
+        $pai = 0;
+
+        for($i=0; $i < count($categoriasModulos); $i++){
+            if(!array_key_exists($categoriasModulos[$i]->mod_id,$arrayMenu)){
+                $arrayMenu[$categoriasModulos[$i]->mod_id] = array(
+                    'mod_id' => $categoriasModulos[$i]->mod_id,
+                    'mod_nome' => $categoriasModulos[$i]->mod_nome,
+                    'CATEGORIAS' => array()
+                );
+            }
+
+            if(is_null($categoriasModulos[$i]->ctr_referencia)){
+                $arrayMenu[$categoriasModulos[$i]->mod_id]['CATEGORIAS'][$categoriasModulos[$i]->ctr_id] = array(
+                    'ctr_id' => $categoriasModulos[$i]->ctr_id,
+                    'ctr_nome' => $categoriasModulos[$i]->ctr_nome,
+                    'ctr_icone' => $categoriasModulos[$i]->ctr_icone,
+                );
+            }
+
+            if(!is_null($categoriasModulos[$i]->ctr_referencia)){
+                $arrayMenu[$categoriasModulos[$i]->mod_id]['CATEGORIAS'][$categoriasModulos[$i]->ctr_referencia]['SUBCATEGORIA'][$categoriasModulos[$i]->ctr_id] = array(
+                    'ctr_id' => $categoriasModulos[$i]->ctr_id,
+                    'ctr_nome' => $categoriasModulos[$i]->ctr_nome,
+                    'ctr_icone' => $categoriasModulos[$i]->ctr_icone,                    
+                );
+            }
+        }
+
+        $sqlRecursos = 'SELECT ctr_mod_id as mod_id, ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_descricao,rcs_icone,prm_nome
+                         FROM
+                            seg_perfis_usuarios
+                            INNER JOIN seg_perfis_permissoes ON prp_prf_id = pru_prf_id
+                            INNER JOIN seg_permissoes ON prp_prm_id = prm_id AND prm_nome = "index"
+                            INNER JOIN seg_recursos ON prm_rcs_id = rcs_id
+                            INNER JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id
+                         WHERE
+                            rcs_ativo = 1 AND ctr_ativo = 1 AND pru_usr_id = :usrId
+                         ORDER BY
+                            mod_id,ctr_id,rcs_ordem';
+
+        $recursos =  DB::select($sqlRecursos, ['usrId' => $usrId]);
+
+        foreach ($recursos as $key => $recurso){
+
+            dd($arrayMenu[$recurso->mod_id]['CATEGORIAS']);
+
+            dd($recurso);
+        }
+
+        // dd($permission);
+    }
+
     /**
      * Verifica se o usuário tem acesso ao recurso
      *

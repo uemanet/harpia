@@ -15,7 +15,6 @@ class CreateSegRecursosTable extends Migration {
         Schema::create('seg_recursos', function(Blueprint $table)
         {
             $table->increments('rcs_id');
-            $table->integer('rcs_mod_id')->unsigned();
             $table->integer('rcs_ctr_id')->unsigned();
             $table->string('rcs_nome', 150);
             $table->string('rcs_descricao', 300);
@@ -24,7 +23,6 @@ class CreateSegRecursosTable extends Migration {
             $table->integer('rcs_ordem');
             $table->timestamps();
 
-            $table->foreign('rcs_mod_id')->references('mod_id')->on('seg_modulos');
             $table->foreign('rcs_ctr_id')->references('ctr_id')->on('seg_categorias_recursos');
         });
     }

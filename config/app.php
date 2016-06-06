@@ -167,13 +167,14 @@ return [
         Laracasts\Flash\FlashServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Modulos\Seguranca\Providers\Security\SecurityServiceProvider::class,
-        Modulos\Seguranca\Providers\Menu\MenuServiceProvider::class,
+        // Modulos\Seguranca\Providers\Menu\MenuServiceProvider::class,
 
         /*
          * Core
          */
 
         Harpia\Providers\ActionButton\ActionButtonProvider::class,
+        Harpia\Providers\MasterMenu\MasterMenuProvider::class,
     ],
 
     /*
@@ -226,11 +227,12 @@ return [
         'Flash' => Laracasts\Flash\Flash::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-        'Menu' => Modulos\Seguranca\Providers\Menu\Facades\Menu::class,
+        // 'Menu' => Modulos\Seguranca\Providers\Menu\Facades\Menu::class,
 
         /*
          * Extra aliases
          */
         'ActionButton' => Harpia\Providers\ActionButton\Facades\ActionButton::class,
+        'MasterMenu' => Harpia\Providers\MasterMenu\Facades\MasterMenu::class,
     ],
 ];

@@ -3,7 +3,7 @@
 namespace Modulos\Seguranca\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Harpiad\Providers\ActionButton\TButton;
+use Harpia\Providers\ActionButton\TButton;
 
 /**
  * Class IndexController.
@@ -24,6 +24,7 @@ class IndexController extends Controller
         $imprimir->setName('Imprimir')->setAction('seguranca/index/print')->setIcon('fa fa-file-pdf-o')->setStyle('btn btn-app bg-blue');
 
         array_push($this->actionButton,$imprimir,$novo);
+        
         return view('Seguranca::index.index',array('actionButton' => $this->actionButton));
     }
 }

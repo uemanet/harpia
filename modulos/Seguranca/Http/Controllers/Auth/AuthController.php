@@ -57,8 +57,8 @@ class AuthController extends Controller
     {
         $credentials = $this->getCredentials($request);
 
-        if ($this->auth->attempt($credentials, $request->has('remember'))) {
-            return redirect()->intended('/admin');
+        if ($this->auth->attempt($credentials, $request->has('remember'))){
+            return redirect()->intended('/escolhermodulos');
         }
 
         return redirect('/login')
@@ -66,6 +66,12 @@ class AuthController extends Controller
             ->withErrors([
                 'Usuário e/ou senha inválidos.',
             ]);
+    }
+
+    public function getLogout()
+    {
+        $this->auth->logout();
+        return redirect('/');
     }
 
     /** Get the needed authorization credentials from the request.
