@@ -2,8 +2,8 @@
    <!-- sidebar: style can be found in sidebar.less -->
    <section class="sidebar">
       <!-- sidebar menu: : style can be found in sidebar.less -->
-
-      <ul class="sidebar-menu">
+      {!!MasterMenu::render()!!}
+     <!--  <ul class="sidebar-menu">
          <li class="header">MAIN NAVIGATION</li>
          <li class="active treeview">
             <a href="#">
@@ -16,7 +16,7 @@
          </li>
          <li class="header">DOCUMENTAÇÃO</li>
          <li><a href="#"><i class="fa fa-file-pdf-o text-green"></i> <span>Usuário</span></a></li>
-      </ul>
+      </ul> -->
    </section>
    <!-- /.sidebar -->
 </aside>

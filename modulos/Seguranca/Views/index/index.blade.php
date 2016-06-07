@@ -15,7 +15,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header">
-  			{{MasterMenu::render()}}
+  			{!!MasterMenu::render()!!}
         </div>
     </div>
 @stop

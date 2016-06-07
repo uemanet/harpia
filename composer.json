@@ -9,7 +9,9 @@
         "laravel/framework": "5.2.*",
         "filp/whoops": "^2.1",
         "laracasts/flash": "^2.0",
-        "laravelcollective/html": "5.2.*"
+        "laravelcollective/html": "5.2.*",
+        "stevebauman/eloquenttable": "1.1.*",
+        "bosnadev/repositories": "0.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

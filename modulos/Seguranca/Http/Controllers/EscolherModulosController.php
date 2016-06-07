@@ -32,9 +32,6 @@ class EscolherModulosController extends Controller
      */
     public function getIndex()
     {
-        echo '<pre>';
-        var_dump('Selecione Modulo');
-
         $security = new Security($this->app);
         $security->makeCacheMenu();
 

@@ -8,7 +8,7 @@ Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@ge
 Route::group(['prefix' => 'seguranca'], function () {
     Route::controllers([
         'index'   => '\Modulos\Seguranca\Http\Controllers\IndexController',
-        // 'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',
+        'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',
         // 'categoriasrecursos' => 'Security\CategoriasRecursosController',
         // 'recursos' => 'Security\RecursosController',
         // 'permissoes' => 'Security\PermissoesController',

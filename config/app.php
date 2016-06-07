@@ -166,6 +166,7 @@ return [
          */
         Laracasts\Flash\FlashServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
         Modulos\Seguranca\Providers\Security\SecurityServiceProvider::class,
         // Modulos\Seguranca\Providers\Menu\MenuServiceProvider::class,
 
