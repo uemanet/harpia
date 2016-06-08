@@ -4,7 +4,9 @@ namespace Modulos\Seguranca\Models;
 
 use App\Models\BaseModel;
 
-class Modulo extends BaseModel {
+class Modulo extends BaseModel
+{
+    use \Stevebauman\EloquentTable\TableTrait;
 
     protected $table = 'seg_modulos';
 

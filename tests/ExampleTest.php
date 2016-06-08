@@ -13,7 +13,8 @@ class ExampleTest extends TestCase
      */
     public function testBasicExample()
     {
-        $this->visit('/')
-             ->see('Laravel 5');
+        $this->call('GET', '/');
+
+        $this->assertRedirectedTo('/login');
     }
 }
