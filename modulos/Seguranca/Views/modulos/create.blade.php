@@ -18,7 +18,7 @@
 
                 <div class="ibox-content">
                     {!! Form::open(["url" => "/security/modulos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                        @include('security.modulos.includes.form')
+                        @include('Seguranca::modulos.includes.form')
                     {!! Form::close() !!}
                 </div>
             </div>

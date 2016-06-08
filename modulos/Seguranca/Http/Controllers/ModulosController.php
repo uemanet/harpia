@@ -19,9 +19,9 @@ class ModulosController extends Controller
 
     public function getIndex(Request $request)
     {
-        $modulos = $this->moduloRepository->paginateRequest($request->all());
+        $tableData = $this->moduloRepository->paginateRequest($request->all());
 
-        return view('Seguranca::modulos.index', ['modulos' => $modulos, 'actionButton' => $this->getActionButtons()]);
+        return view('Seguranca::modulos.index', ['tableData' => $tableData, 'actionButton' => $this->getActionButtons()]);
     }
 
     private function getActionButtons()
@@ -29,7 +29,7 @@ class ModulosController extends Controller
         $actionButtons = [];
 
         $novo = new TButton();
-        $novo->setName('Novo')->setAction('modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $novo->setName('Novo')->setAction('create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
 
         array_push($actionButtons, $novo);
 
@@ -37,10 +37,10 @@ class ModulosController extends Controller
     }
 
 
-//     public function getCreate()
-//     {
-//         return view('Seguranca::modulos.create');
-//     }
+     public function getCreate()
+     {
+         return view('Seguranca::modulos.create');
+     }
 
     // public function postCreate(StoreModuloRequest $request)
     // {

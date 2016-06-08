@@ -38,11 +38,11 @@
         </div>
         <!-- /.box-body -->
     </div>
-    @if($modulos->count())
+    @if($tableData->count())
         <div class="box box-primary">
             <div class="box-header">
                 {!!
-                    $modulos->columns(array(
+                    $tableData->columns(array(
                         'mod_id' => '#',
                         'mod_nome' => 'Módulo',
                         'mod_descricao' => 'Descrição',
@@ -80,6 +80,6 @@
             </div>
         </div>
 
-        <div class="text-center">{!! $modulos->appends(Input::except('page'))->links() !!}</div>
+        <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
     @endif
 @stop
