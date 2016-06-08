@@ -15,7 +15,87 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header">
-  			{!!MasterMenu::render()!!}
+  			{!!ActionButton::grid(
+  				[
+  					'type' => 'SELECT',
+  					'config' => [
+  						'classButton' => 'btn-default',
+  						'label' => 'Selecione'
+  					],
+  					'buttons' => [
+  						[
+	  						'classButton' => 'btn-default',
+	  						'icon' => 'fa fa-plus',
+	  						'action' => 'seguranca/index',
+	  						'label' => 'Seguranca',
+	  						'target' => ''
+  						],
+  						[
+	  						'classButton' => '',
+	  						'icon' => 'fa fa-circle-o',
+	  						'action' => 'securanca/show',
+	  						'label' => 'Visualizar',
+	  						'target' => ''
+  						],
+  					]
+  				]
+  			)!!}
+	
+  			<br><br>
+
+  			{!!ActionButton::grid(
+  				[
+  					'type' => 'BUTTONS',
+  					'config' => [
+  						'showLabel' => false
+  					],
+  					'buttons' => [
+  						[
+	  						'classButton' => 'btn-danger',
+	  						'icon' => 'fa fa-plus',
+	  						'action' => 'seguranca/index',
+	  						'label' => 'Excluir',
+	  						'target' => ''
+  						],
+  						[
+	  						'classButton' => 'btn-info',
+	  						'icon' => 'fa fa-circle-o',
+	  						'action' => 'securanca/show',
+	  						'label' => 'Show',
+	  						'target' => ''
+  						],
+  					]
+  				]
+  			)!!}
+
+  			<br><br>
+
+  			{!!ActionButton::grid(
+  				[
+  					'type' => 'BUTTONS',
+  					'config' => [
+  						'showLabel' => true
+  					],
+  					'buttons' => [
+  						[
+	  						'classButton' => 'btn-danger',
+	  						'icon' => 'fa fa-plus',
+	  						'action' => 'seguranca/index',
+	  						'label' => 'Excluir',
+	  						'target' => ''
+  						],
+  						[
+	  						'classButton' => 'btn-info',
+	  						'icon' => 'fa fa-circle-o',
+	  						'action' => 'securanca/show',
+	  						'label' => 'Show',
+	  						'target' => ''
+  						],
+  					]
+  				]
+  			)!!}
         </div>
     </div>
+
+  
 @stop
