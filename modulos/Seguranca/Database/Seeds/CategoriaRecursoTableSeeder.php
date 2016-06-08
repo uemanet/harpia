@@ -13,8 +13,9 @@ class CategoriaRecursoTableSeeder extends Seeder {
         $categoria->ctr_mod_id = 1; // Modulo Seguranca
         $categoria->ctr_nome = 'Segurança';
         $categoria->ctr_descricao = 'Categoria segurança do módulo segurança';
-        $categoria->ctr_icone = 'fa-lock';
+        $categoria->ctr_icone = 'fa fa-lock';
         $categoria->ctr_ordem = 1;
+        $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
         $categoria->save();
     }

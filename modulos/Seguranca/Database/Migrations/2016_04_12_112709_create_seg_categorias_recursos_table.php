@@ -20,6 +20,7 @@ class CreateSegCategoriasRecursosTable extends Migration {
             $table->string('ctr_descricao');
             $table->string('ctr_icone', 45);
             $table->integer('ctr_ordem');
+            $table->boolean('ctr_ativo')->default(1);
             $table->boolean('ctr_visivel')->default(1);
             $table->integer('ctr_referencia')->unsigned()->nullable();
             $table->timestamps();
