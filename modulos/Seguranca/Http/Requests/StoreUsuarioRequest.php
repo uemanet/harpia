@@ -2,9 +2,9 @@
 
 namespace Modulos\Seguranca\Requests;
 
-use App\Http\Requests\Request;
+use Modulos\Core\Request\BaseRequest;
 
-class StoreUsuarioRequest extends Request
+class StoreUsuarioRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
