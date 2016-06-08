@@ -48,6 +48,9 @@
                         'mod_descricao' => 'Descrição',
                         'mod_action' => 'Ações'
                     ))
+                    ->modifyCell('mod_action', function() {
+                        return array('style' => 'width: 140px;');
+                    })
                     ->means('mod_action', 'mod_id')
                     ->modify('mod_action', function($id) {
                         return ActionButton::grid([
