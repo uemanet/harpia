@@ -65,9 +65,7 @@ class ActionButton{
                   $render.= '<li>
                                 <form action="'.$button['action'].'" method="'.$button['method'].'">
                                   <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
-                                  <span class="'.$button['classButton'].'">
-                                    <i class="'.$button['icon'].'"></i> '.$button['label'].'
-                                  </span>
+                                  <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
                                 </form>
                           </li>';
                }
