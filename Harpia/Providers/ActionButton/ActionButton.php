@@ -48,18 +48,35 @@ class ActionButton{
                         <span class="sr-only"></span>
                      </button>';
 
-      if(count($buttons)){
-         $render.= '<ul class="dropdown-menu" role="menu">';         
-      }
+      if(!empty($buttons)){
+         $render.= '<ul class="dropdown-menu" role="menu">';
 
-      foreach ($buttons as $key => $button){
-         if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
-            // $render .= '<a   > ';
-            $render.= '<li><a href="'.$button['action'].'" class="'.$button['classButton'].'" target="'.$button['target'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</a></li>';
+         foreach ($buttons as $key => $button){
+            if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
+               // $render .= '<a   > ';
+
+               if($button['method'] == 'get') {
+                  $render.= '<li>
+                            <a href="'.$button['action'].'" class="'.$button['classButton'].'">
+                              <i class="'.$button['icon'].'"></i> '.$button['label'].'
+                            </a>
+                          </li>';
+               } else {
+                  $render.= '<li>
+                                <form action="'.$button['action'].'" method="'.$button['method'].'">
+                                  <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
+                                  <span class="'.$button['classButton'].'">
+                                    <i class="'.$button['icon'].'"></i> '.$button['label'].'
+                                  </span>
+                                </form>
+                          </li>';
+               }
+
+            }
          }
-      }
 
-      $render.= '</ul></div>';
+         $render.= '</ul></div>';
+      }
 
       return $render;
    }

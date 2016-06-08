@@ -62,14 +62,14 @@
                                         'icon' => 'fa fa-pencil',
                                         'action' => 'modulos/edit/' . $id,
                                         'label' => 'Editar',
-                                        'target' => ''
+                                        'method' => 'get'
                                     ],
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
                                         'action' => 'modulos/delete/' . $id,
                                         'label' => 'Excluir',
-                                        'target' => ''
+                                        'method' => 'delete'
                                     ]
                                 ]
                             ]);

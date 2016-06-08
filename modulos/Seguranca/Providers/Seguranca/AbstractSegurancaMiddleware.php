@@ -28,7 +28,7 @@ abstract class AbstractSegurancaMiddleware
     public function __construct(Guard $auth, Application $app)
     {
         $this->user = $auth->user();
-        $this->seguranca = $app->make('seguranca');
+        $this->seguranca = $app->make(Seguranca::class);
     }
 
     /**

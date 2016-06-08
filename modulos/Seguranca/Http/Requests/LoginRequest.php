@@ -2,7 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Requests;
 
-use Modulos\Core\Request\BaseRequest;
+use Modulos\Core\Http\Request\BaseRequest;
 
 class LoginRequest extends BaseRequest
 {

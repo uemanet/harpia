@@ -8,13 +8,20 @@ use Illuminate\View\Compilers\BladeCompiler;
 class SegurancaServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap the application services.
+     * Indicates if loading of the provider is deferred.
      *
-     * @return void
+     * @var bool
      */
-    public function boot()
+    protected $defer = true;
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
     {
-        //
+        return [Seguranca::class];
     }
 
     /**
@@ -24,7 +31,7 @@ class SegurancaServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('seguranca', function ($app) {
+        $this->app->singleton(Seguranca::class, function ($app) {
             return new Seguranca($app);
         });
 
