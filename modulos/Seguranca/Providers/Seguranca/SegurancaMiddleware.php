@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Security;
+namespace Modulos\Seguranca\Providers\Seguranca;
 
 use Illuminate\Http\Request;
 use DB;
@@ -8,7 +8,7 @@ use Config;
 use Closure;
 use Flash;
 
-class SecurityMiddleware extends AbstractSecurityMiddleware
+class SegurancaMiddleware extends AbstractSegurancaMiddleware
 {
 
     /**
@@ -25,7 +25,7 @@ class SecurityMiddleware extends AbstractSecurityMiddleware
 
         $path = $this->getPathInfoArray($request->path());
 
-        if($this->security->haspermission($path)) {
+        if($this->seguranca->haspermission($path)) {
             return $next($request);
         }
 

@@ -65,7 +65,6 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
 
         if ($this->auth->attempt($credentials, $request->has('remember'))){
-            
             //Gera estrutura do menu em cache
             $security = new Security($this->app);
             $security->makeCacheMenu();

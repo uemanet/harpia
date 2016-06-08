@@ -11,7 +11,7 @@ use Modulos\Seguranca\Providers\Security\Security;
 /**
  * Class IndexController.
  */
-class EscolherModulosController extends Controller
+class SelecionaModulosController extends Controller
 {
 	protected $auth;
     protected $app;
@@ -32,16 +32,12 @@ class EscolherModulosController extends Controller
      */
     public function getIndex()
     {
-        $security = new Security($this->app);
-        $security->makeCacheMenu();
+        $modulos = $this->modulo->getModulosUsuario($this->auth->getUser()->usr_id); 
 
+        if(sizeof($modulos) == 1 && env('REDIRECT_MODULE')){
+            return redirect($modulos[0]->mod_nome.'/index');
+        }
 
-        // $modulos = $this->modulo->getModulosUsuario($this->auth->getUser()->usr_id); 
-
-        // if(sizeof($modulos) == 1 && env('REDIRECT_MODULE')){
-        //     return redirect($modulos[0]->mod_nome.'/index');
-        // }
-
-        // return view('application.index')->with('modulos',$modulos);
+        return view('application.index')->with('modulos',$modulos);
     }
 }

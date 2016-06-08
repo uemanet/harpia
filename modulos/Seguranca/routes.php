@@ -19,8 +19,8 @@ Route::group(['prefix' => 'seguranca','middleware' => 'auth'], function () {
     ]);
 });
 
-Route::group(['prefix' => '/'], function () {
+Route::group(['prefix' => '/','middleware' => 'auth'], function () {
     Route::controllers([
-        'index' => '\Modulos\Seguranca\Http\Controllers\EscolherModulosController',
+        'index' => '\Modulos\Seguranca\Http\Controllers\SelecionaModulosController',
     ]);
 });

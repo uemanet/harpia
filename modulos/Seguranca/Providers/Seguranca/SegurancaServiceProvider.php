@@ -1,11 +1,11 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Security;
+namespace Modulos\Seguranca\Providers\Seguranca;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
 
-class SecurityServiceProvider extends ServiceProvider
+class SegurancaServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -24,8 +24,8 @@ class SecurityServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('security', function ($app) {
-            return new Security($app);
+        $this->app->singleton('seguranca', function ($app) {
+            return new Seguranca($app);
         });
 
         $this->registerBladeExtensions();
@@ -41,7 +41,7 @@ class SecurityServiceProvider extends ServiceProvider
              * add @haspermission and @haspermission to blade compiler
              */
             $bladeCompiler->directive('haspermission', function ($expression) {
-                return "<?php if(app('security')->haspermission($expression)): ?>";
+                return "<?php if(app('seguranca')->haspermission($expression)): ?>";
             });
 
             $bladeCompiler->directive('endhaspermission', function ($expression) {

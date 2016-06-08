@@ -2,7 +2,7 @@
 
 namespace Harpia\Providers\ActionButton;
 
-use Modulos\Seguranca\Providers\Security\Security;
+use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
 class ActionButton{
 
@@ -17,10 +17,10 @@ class ActionButton{
    {
       $render = '';
 
-      $security = new Security($this->app);
+      $seguranca = new Seguranca($this->app);
 
       foreach ($buttons as $key => $button){
-         if(!env('IS_SECURITY_ENNABLED') || $security->haspermission($button->getAction())){
+         if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getAction())){
             $render .= '<a href="'.$button->getAction().'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
          }
       }
@@ -53,7 +53,7 @@ class ActionButton{
       }
 
       foreach ($buttons as $key => $button){
-         if(!env('IS_SECURITY_ENNABLED') || $security->haspermission($button['action'])){
+         if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
             // $render .= '<a   > ';
             $render.= '<li><a href="'.$button['action'].'" class="'.$button['classButton'].'" target="'.$button['target'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</a></li>';
          }
@@ -68,7 +68,7 @@ class ActionButton{
       $render = '';
 
       foreach ($buttons as $key => $button){
-         if(!env('IS_SECURITY_ENNABLED') || $security->haspermission($button['action'])){
+         if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
             if($config['showLabel']){
                $render .= '<a style="margin-right:5px"  href="'.$button['action'].'" target="'.$button['target'].'" class="btn '.$button['classButton'].'"> <i class="'.$button['icon'].'"></i> '.$button['label'].'</a>';
             }else{
