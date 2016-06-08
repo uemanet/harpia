@@ -1,8 +1,8 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Security\Exceptions;
+namespace Modulos\Seguranca\Providers\Seguranca\Exceptions;
 
-class ForbiddenException extends SecurityException
+class ForbiddenException extends SegurancaException
 {
     public function __construct($message = 'Você não tem permissão para acessar esse recurso.')
     {

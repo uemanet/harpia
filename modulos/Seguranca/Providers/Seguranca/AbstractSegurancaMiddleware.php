@@ -1,12 +1,12 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Security;
+namespace Modulos\Seguranca\Providers\Seguranca;
 
 use Illuminate\Contracts\Foundation\Application;
-use Modulos\Seguranca\Providers\Security\Exceptions\ForbiddenException;
+use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 use Illuminate\Contracts\Auth\Guard;
 
-abstract class AbstractSecurityMiddleware
+abstract class AbstractSegurancaMiddleware
 {
     /**
      * Usuário logado do sistema
@@ -20,7 +20,7 @@ abstract class AbstractSecurityMiddleware
      *
      * @var
      */
-    protected $security;
+    protected $seguranca;
 
     /**
      * @param Guard $user
@@ -28,7 +28,7 @@ abstract class AbstractSecurityMiddleware
     public function __construct(Guard $auth, Application $app)
     {
         $this->user = $auth->user();
-        $this->security = $app->make('security');
+        $this->seguranca = $app->make('seguranca');
     }
 
     /**

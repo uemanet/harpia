@@ -1,11 +1,11 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Security\Contracts;
+namespace Modulos\Seguranca\Providers\Seguranca\Contracts;
 
 /**
- * Interface Security
+ * Interface Seguranca
  */
-interface Security
+interface Seguranca
 {
     /**
      * Get the current authenticated user.

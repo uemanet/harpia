@@ -1,16 +1,15 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Security;
+namespace Modulos\Seguranca\Providers\Seguranca;
 
 use Illuminate\Contracts\Foundation\Application;
-use Modulos\Seguranca\Providers\Security\Contracts\Security as SecurityContract;
-use Modulos\Seguranca\Providers\Security\Exceptions\ForbiddenException;
+use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
+use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 
 use Cache;
-
 use DB;
 
-class Security implements SecurityContract {
+class Seguranca implements SegurancaContract {
     /**
      * The Laravel Application.
      *
@@ -171,7 +170,7 @@ class Security implements SecurityContract {
     {
         $fullRoute = $modulo . '/' . $recurso . '/' . $permissao;
 
-        $openActions = $this->app['config']->get('security.prelogin_openactions', []);
+        $openActions = $this->app['config']->get('seguranca.prelogin_openactions', []);
 
         return in_array($fullRoute, $openActions);
     }
@@ -188,7 +187,7 @@ class Security implements SecurityContract {
     {
         $fullRoute = $modulo . '/' . $recurso . '/' . $permissao;
 
-        $openActions = $this->app['config']->get('security.postlogin_openactions', []);
+        $openActions = $this->app['config']->get('seguranca.postlogin_openactions', []);
 
         return in_array($fullRoute, $openActions);
     }

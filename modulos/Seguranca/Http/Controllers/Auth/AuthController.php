@@ -10,6 +10,10 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Contracts\Foundation\Application;
+
+use Modulos\Seguranca\Providers\Security\Security;
+use Cache;
 
 class AuthController extends Controller
 {
@@ -37,13 +41,16 @@ class AuthController extends Controller
 
     protected $loginView = 'Seguranca::auth.login';
 
+    protected $app;
+
     /**
      * Create a new authentication controller instance.
      */
-    public function __construct(Guard $auth)
+    public function __construct(Guard $auth, Application $app)
     {
         $this->auth = $auth;
-        $this->middleware($this->guestMiddleware(), ['except' => ['logout']]);
+        // $this->middleware($this->guestMiddleware(), ['except' => ['logout']]);
+        $this->app = $app;
     }
 
     /**
@@ -58,7 +65,11 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
 
         if ($this->auth->attempt($credentials, $request->has('remember'))){
-            return redirect()->intended('/escolhermodulos');
+            //Gera estrutura do menu em cache
+            $security = new Security($this->app);
+            $security->makeCacheMenu();
+
+            return redirect()->intended('/index');
         }
 
         return redirect('/login')
@@ -70,7 +81,11 @@ class AuthController extends Controller
 
     public function getLogout()
     {
+        $usrId = $this->app['auth']->user()->usr_pes_id;
+
+        Cache::forget($usrId);
         $this->auth->logout();
+
         return redirect('/');
     }
 
