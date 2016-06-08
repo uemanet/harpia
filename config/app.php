@@ -223,6 +223,11 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         /*
+         * Laravel removed facades
+         */
+        'Input' => Illuminate\Support\Facades\Input::class,
+        
+        /*
          * Extra aliases
          */
         'Flash' => Laracasts\Flash\Flash::class,

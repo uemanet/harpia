@@ -56,7 +56,7 @@ class ModuloRepositoryTest extends TestCase
             [
                 'field' => 'mod_nome',
                 'type' => 'like',
-                'term' => 'academico'
+                'term' => 'seguranca'
             ]
         ];
 
@@ -83,6 +83,21 @@ class ModuloRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginate($sort, $search);
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+
+        $this->assertGreaterThan(0, $response->total());
+    }
+
+    public function testPaginateRequest()
+    {
+        $requestParameters = [
+            'page' => '1',
+            'field' => 'mod_id',
+            'sort' => 'asc'
+        ];
+
+        $response = $this->repo->paginateRequest($requestParameters);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 

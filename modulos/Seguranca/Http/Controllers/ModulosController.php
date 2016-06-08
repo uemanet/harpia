@@ -4,12 +4,9 @@ namespace Modulos\Seguranca\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
-// use App\Http\Requests\Security\StoreModuloRequest;
-
+use Harpia\Providers\ActionButton\TButton;
 use Modulos\Seguranca\Repositories\ModuloRepository;
 use Illuminate\Http\Request;
-use Validator;
-use Flash;
 
 class ModulosController extends Controller
 {
@@ -20,19 +17,30 @@ class ModulosController extends Controller
         $this->moduloRepository = $modulo;
     }
 
-    public function getIndex()
+    public function getIndex(Request $request)
     {
-        $modulos = $this->moduloRepository->all();
+        $modulos = $this->moduloRepository->paginateRequest($request->all());
 
-        dd($modulos);
-
-        return view('security.modulos.index', compact('modulos'));
+        return view('Seguranca::modulos.index', ['modulos' => $modulos, 'actionButton' => $this->getActionButtons()]);
     }
 
-    // public function getCreate()
-    // {
-    //     return view('security.modulos.create');
-    // }
+    private function getActionButtons()
+    {
+        $actionButtons = [];
+
+        $novo = new TButton();
+        $novo->setName('Novo')->setAction('modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+
+        array_push($actionButtons, $novo);
+
+        return $actionButtons;
+    }
+
+
+//     public function getCreate()
+//     {
+//         return view('Seguranca::modulos.create');
+//     }
 
     // public function postCreate(StoreModuloRequest $request)
     // {

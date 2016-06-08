@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
-class ModulosMigration extends Command
+class ModulosMigrate extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'modulos:migration';
+    protected $signature = 'modulos:migrate';
 
     /**
      * The console command description.

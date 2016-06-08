@@ -22,16 +22,40 @@ class ModuloRepository
     {
         $result = $this->model;
 
-        if(!is_null($search)) {
+        if(!empty($search)) {
             foreach ($search as $key => $value) {
                 $result = $result->where($value['field'], $value['type'], $value['term']);
             }
         }
 
-        if(!is_null($sort)) {
+        if(!empty($sort)) {
             $result = $result->orderBy($sort['field'], $sort['sort']);
         }
 
         return $result->paginate(15);
+    }
+
+    public function paginateRequest(array $requestParameters = null)
+    {
+        $sort = [];
+        if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
+            $sort = [
+                'field' => $requestParameters['field'],
+                'sort' => $requestParameters['sort']
+            ];
+        }
+
+        $search = [];
+        if (!empty($requestParameters['mod_nome'])) {
+            $search = [
+                [
+                    'field' => 'mod_nome',
+                    'type' => 'like',
+                    'term' => $requestParameters['mod_nome']
+                ]
+            ];
+        }
+
+        return $this->paginate($sort, $search);
     }
 }

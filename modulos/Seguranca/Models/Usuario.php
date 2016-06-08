@@ -45,16 +45,16 @@ class Usuario extends BaseModel implements
      */
     protected $hidden = ['usr_senha', 'remember_token'];
 
-    public function perfil()
-    {
-        return $this->belongsToMany('App\Models\Security\Perfil', 'seg_perfis_usuarios', 'pru_usr_id', 'pru_prf_id');
-    }
-
     public static $rules = [
         'usr_senha' => 'required|min:6',
         'usr_usuario' => 'required',
         'usr_ativo' => 'required'
     ];
+
+    public function perfis()
+    {
+        return $this->belongsToMany('Modulos\Seguranca\Models\Perfil', 'seg_perfis_usuarios', 'pru_usr_id', 'pru_prf_id');
+    }
 
     /**
      * Get the unique identifier for the user.
