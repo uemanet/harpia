@@ -1,27 +1,25 @@
 @extends('layouts.interno')
 
 @section('title')
-    <div class="row">
-        <div class="col-md-8">
-            <h2 style="margin:0px;font-size:30px" class="lead" >Novo Módulo</h2>
-        </div>
-    </div>
+    Módulos
+@stop
+
+@section('subtitle')
+    Cadastro de módulo
 @stop
 
 @section('content')
-    <div class="panel panel-default ">
-        <div class="panel-body">
-            <div class="ibox float-e-margins wrapper wrapper-content">
-                <div class="ibox-title">
-                    <h5>Formulário de Cadastro de Módulos</h5>
-                </div>
-
-                <div class="ibox-content">
-                    {!! Form::open(["url" => "/security/modulos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                        @include('Seguranca::modulos.includes.form')
-                    {!! Form::close() !!}
-                </div>
-            </div>
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Formulário de Cadastro de Módulos</h3>
         </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            {!! Form::open(["url" => url('/') . "/seguranca/modulos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+                @include('Seguranca::modulos.includes.form')
+            {!! Form::close() !!}
+        </div>
+        <!-- /.box-body -->
     </div>
+
 @stop

@@ -14,22 +14,15 @@
         </div>
     </div>
 </div>
-<div class="form-group @if ($errors->has('mod_descricao')) has-error @endif">
-    {!! Form::label('mod_descricao', 'Descrição do Módulo', ['class' => 'control-label']) !!}
-    <div class="controls">
-        {!! Form::text('mod_descricao', old('mod_descricao'), ['class' => 'form-control']) !!}
-        @if ($errors->has('mod_descricao')) <p class="help-block">{{ $errors->first('mod_descricao') }}</p> @endif
-    </div>
-</div>
 <div class="row">
-    <div class="form-group col-md-6 @if ($errors->has('mod_style')) has-error @endif">
-        {!! Form::label('mod_style', 'Style', ['class' => 'control-label']) !!}
+    <div class="form-group col-md-9 @if ($errors->has('mod_icone')) has-error @endif">
+        {!! Form::label('mod_descricao', 'Descrição do Módulo', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::text('mod_style', old('mod_style'), ['class' => 'form-control']) !!}
-            @if ($errors->has('mod_style')) <p class="help-block">{{ $errors->first('mod_style') }}</p> @endif
+            {!! Form::text('mod_descricao', old('mod_descricao'), ['class' => 'form-control']) !!}
+            @if ($errors->has('mod_descricao')) <p class="help-block">{{ $errors->first('mod_descricao') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-6 @if ($errors->has('mod_ativo')) has-error @endif">
+    <div class="form-group col-md-3 @if ($errors->has('mod_ativo')) has-error @endif">
         {!! Form::label('mod_ativo', 'Status', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('mod_ativo', [1 => 'Ativo', 0 => 'Inativo'], null, ['class' => 'form-control']) !!}

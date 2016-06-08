@@ -12,7 +12,7 @@ class ModuloTableSeeder extends Seeder {
         $modulo = new Modulo;
         $modulo->mod_nome = 'Seguranca';
         $modulo->mod_descricao = 'Módulo de segurança';
-        $modulo->mod_icone = 'fa-lock';
+        $modulo->mod_icone = 'fa fa-lock';
         $modulo->mod_style = '';
         $modulo->mod_ativo = 1;
         $modulo->save();

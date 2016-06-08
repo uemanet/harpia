@@ -39,19 +39,19 @@ class MasterMenu{
         $render .= '<a href="#"><i class="'.$categorias['ctr_icone'].'"></i> <span>'.ucfirst($categorias['ctr_nome']).'</span> <i class="fa fa-angle-left pull-right"></i></a>';
         $render .= '<ul class="treeview-menu" style="display: block;">';
         
-        if(count($categorias['ITENS'])){
+        if(!empty($categorias['ITENS'])){
           foreach ($categorias['ITENS'] as $key => $item){
             $render .= '<li><a href="'.url("/").'/'.$modulo.'/'.mb_strtolower($item['rcs_nome']).'/'.$item['prm_nome'].'"><i class="'.$item['rcs_icone'].'"></i>'.ucfirst($item['rcs_nome']).'</a></li>';
           }
         }
 
-        if(count($categorias['SUBCATEGORIA'])){
+        if(!empty($categorias['SUBCATEGORIA'])){
           $render .= '<li class="treeview">';
           
           foreach ($categorias['SUBCATEGORIA'] as $key => $subcategoria){
             $render .= '<a href="#"><i class="'.$subcategoria['ctr_icone'].'"></i><span>'.$subcategoria['ctr_nome'].'</span><i class="fa fa-angle-left pull-right"></i></a>';
 
-            if(count($subcategoria['ITENS'])){
+            if(!empty($subcategoria['ITENS'])){
               $render .= '<ul class="treeview-menu" style="display: block;">';
 
               foreach ($subcategoria['ITENS'] as $key => $subItem){
