@@ -60,14 +60,14 @@
                                     [
                                         'classButton' => '',
                                         'icon' => 'fa fa-pencil',
-                                        'action' => 'securanca/modulos/edit/' . $id,
+                                        'action' => 'modulos/edit/' . $id,
                                         'label' => 'Editar',
                                         'target' => ''
                                     ],
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => 'securanca/modulos/delete/' . $id,
+                                        'action' => 'modulos/delete/' . $id,
                                         'label' => 'Excluir',
                                         'target' => ''
                                     ]

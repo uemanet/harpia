@@ -1,8 +1,8 @@
 <?php
 
-namespace Modulos\Seguranca\Requests;
+namespace Modulos\Seguranca\Http\Requests;
 
-use Modulos\Core\Request\BaseRequest;
+use Modulos\Core\Http\Request\BaseRequest;
 
 class StoreModuloRequest extends BaseRequest
 {

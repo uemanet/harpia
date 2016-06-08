@@ -13,13 +13,10 @@
         <div class="box-header with-border">
             <h3 class="box-title">Formulário de Cadastro de Módulos</h3>
         </div>
-        <!-- /.box-header -->
         <div class="box-body">
             {!! Form::open(["url" => url('/') . "/seguranca/modulos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
                 @include('Seguranca::modulos.includes.form')
             {!! Form::close() !!}
         </div>
-        <!-- /.box-body -->
     </div>
-
 @stop

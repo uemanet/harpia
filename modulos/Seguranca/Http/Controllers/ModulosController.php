@@ -2,13 +2,13 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-
 use Harpia\Providers\ActionButton\TButton;
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Repositories\ModuloRepository;
+use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
 use Illuminate\Http\Request;
 
-class ModulosController extends Controller
+class ModulosController extends BaseController
 {
     protected $moduloRepository;
 
@@ -29,77 +29,109 @@ class ModulosController extends Controller
         $actionButtons = [];
 
         $novo = new TButton();
-        $novo->setName('Novo')->setAction('create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $novo->setName('Novo')->setAction('modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
 
         array_push($actionButtons, $novo);
 
         return $actionButtons;
     }
 
+    public function getCreate()
+    {
+        return view('Seguranca::modulos.create');
+    }
 
-     public function getCreate()
+    public function postCreate(StoreModuloRequest $request)
+    {
+        try {
+            $modulo = $this->moduloRepository->create($request->all());
+
+            if (!$modulo) {
+                 flash()->error('Erro ao tentar salvar.');
+
+                 return redirect()->back()->withInput($request->all());
+             }
+
+             flash()->success('Módulo criado com sucesso.');
+
+             return redirect('seguranca/modulos');
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
+        }
+    }
+
+    public function getEdit($idModulo)
+    {
+        $modulo = $this->moduloRepository->find($idModulo);
+
+        if (!$modulo) {
+            flash()->error('Módulo não existe.');
+
+            return redirect()->back();
+        }
+
+        return view('Seguranca::modulos.edit', compact('modulo'));
+    }
+
+    public function putEdit($id, StoreModuloRequest $request)
+    {
+        try {
+            $modulo = $this->moduloRepository->find($id);
+
+            if (!$modulo) {
+                flash()->error('Módulo não existe.');
+
+                return redirect('/seguranca/modulos/index');
+            }
+
+            $requestData = $request->only('mod_nome','mod_descricao','mod_icone','mod_ativo');
+
+            if (!$this->moduloRepository->update($requestData, $modulo->mod_id, 'mod_id')) {
+                 flash()->error('Erro ao tentar salvar.');
+
+                return redirect()->back()->withInput($request->all());
+             }
+
+             flash()->success('Módulo atualizado com sucesso.');
+
+             return redirect('seguranca/modulos');
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
+        }
+    }
+
+     public function postDelete(Request $request)
      {
-         return view('Seguranca::modulos.create');
+         try {
+             $moduloId = $request->input('mod_id');
+
+             if($this->moduloRepository->delete($moduloId)) {
+                 flash()->success('Módulo excluído com sucesso.');
+             } else {
+                 flash()->error('Erro ao tentar excluir o modulo');
+             }
+
+             return redirect()->back();
+         } catch (\Exception $e) {
+             if (config('app.debug')) {
+                 throw $e;
+             } else {
+                 flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                 return redirect()->back();
+             }
+         }
      }
-
-    // public function postCreate(StoreModuloRequest $request)
-    // {
-    //     $modulo = $this->moduloRepository->create($request->all());
-
-    //     if (!$modulo) {
-    //         Flash::error('Erro ao tentar salvar.');
-
-    //         return redirect()->back()->withInput($request->all());
-    //     }
-
-    //     Flash::success('Módulo criado com sucesso.');
-
-    //     return redirect('security/modulos');
-    // }
-
-    // public function getEdit($id){
-    //     $modulo = $this->moduloRepository->find($id);
-
-    //     if (!$modulo){
-    //         Flash::error('Módulo não existe.');
-    //         return redirect('/security/modulos/index');
-    //     }
-
-    //     return view('security.modulos.edit',compact(['modulo']));
-    // }
-
-    // public function putEdit($id, StoreModuloRequest $request){
-
-    //     $modulo = $this->moduloRepository->find($id);
-
-    //     if (!$modulo) {
-    //         Flash::error('Módulo não existe.');
-    //         return redirect('/security/modulos/index');
-    //     }
-
-    //     $data = $request->only('mod_nome','mod_descricao','mod_icone','mod_ativo');
-    //     $modulo = $this->moduloRepository->update($data,$request->input('mod_id'), 'mod_id');
-
-    //     if (!$modulo) {
-    //         Flash::error('Erro ao tentar salvar.');
-    //         return redirect()->back()->withInput($request->all());
-    //     }
-
-    //     Flash::success('Módulo atualizado com sucesso.');
-
-    //     return redirect('security/modulos');
-    // }
-
-    // public function postDelete(Request $request)
-    // {
-    //     $id = $request->input('mod_id');
-
-    //     if($this->moduloRepository->delete($id)) {
-    //         Flash::success('Módulo excluído com sucesso.');
-    //     } else {
-    //         Flash::error('Erro ao tentar excluir o modulo');
-    //     }
-
-    //     return redirect()->back();
-    // }
 }

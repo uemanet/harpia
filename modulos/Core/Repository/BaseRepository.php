@@ -6,8 +6,29 @@ abstract class BaseRepository implements BaseRepositoryInterface
 {
     protected $model;
 
-    public function __construct(\Modulos\Core\Model\BaseModel $model) {
+    public function __construct(\Modulos\Core\Model\BaseModel $model)
+    {
         $this->model = $model;
+    }
+
+    public function find($id)
+    {
+        return $this->model->find($id);
+    }
+
+    public function create(array $data)
+    {
+        return $this->model->create($data);
+    }
+
+    public function update(array $data, $id, $attribute = "id")
+    {
+        return $this->model->where($attribute, '=', $id)->update($data);
+    }
+
+    public function delete($id)
+    {
+        return $this->model->destroy($id);
     }
 
     public function all()

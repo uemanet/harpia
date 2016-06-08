@@ -12,12 +12,20 @@ class ModuloRepositoryTest extends TestCase
         WithoutMiddleware;
 
     protected $repo;
+    protected $validArray;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->repo = $this->app->make(ModuloRepository::class);
+
+        $this->validArray = [
+            'mod_nome' => 'Modulo test',
+            'mod_descricao' => 'Descricao do modulo',
+            'mod_icone' => 'fa fa-cog',
+            'mod_ativo' => 1
+        ];
     }
 
     public function testAll()
@@ -102,5 +110,54 @@ class ModuloRepositoryTest extends TestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
         $this->assertGreaterThan(0, $response->total());
+    }
+
+    public function testCreate()
+    {
+        $response = $this->saveData($this->validArray);
+
+        $response = $response->toArray();
+
+        $this->assertArrayHasKey('mod_id', $response);
+    }
+
+    public function testFind()
+    {
+        $response = $this->saveData($this->validArray);
+        $moduloId = $response->mod_id;
+
+        $response = $this->repo->find($moduloId);
+
+        $this->assertInstanceOf(\Modulos\Seguranca\Models\Modulo::class, $response);
+    }
+
+    public function testUpdate()
+    {
+        $response = $this->saveData($this->validArray);
+
+        $updateArray = $response->toArray();
+        $updateArray['mod_nome'] = 'abcde_edcba';
+
+        $moduloId = $updateArray['mod_id'];
+        unset($updateArray['mod_id']);
+
+        $response = $this->repo->update($updateArray, $moduloId, 'mod_id');
+
+        $this->assertEquals(1, $response);
+    }
+
+    public function testDelete()
+    {
+        $response = $this->saveData($this->validArray);
+        $moduloId = $response->mod_id;
+
+        $response = $this->repo->delete($moduloId);
+
+        $this->assertEquals(1, $response);
+    }
+
+    private function saveData($data)
+    {
+        return $this->repo->create($data);
     }
 }
