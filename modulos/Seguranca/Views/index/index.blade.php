@@ -15,6 +15,44 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header">
+
+          {!!
+            $modulos->columns(array(
+                'mod_id' => 'ID',
+                'mod_nome' => 'Modulo',
+                'action' => '#'
+            ))
+            ->modify('action', function(){
+                return ActionButton::grid(
+                        [
+                          'type' => 'BUTTONS',
+                          'config' => [
+                            'showLabel' => true
+                          ],
+                          'buttons' => [
+                            [
+                              'classButton' => 'btn-default',
+                              'icon' => 'fa fa-plus',
+                              'action' => 'seguranca/index',
+                              'label' => 'Seguranca',
+                              'target' => ''
+                            ],
+                            [
+                              'classButton' => '',
+                              'icon' => 'fa fa-circle-o',
+                              'action' => 'securanca/show',
+                              'label' => 'Visualizar',
+                              'target' => ''
+                            ],
+                          ]
+                        ]
+                      );
+            })
+            ->render() 
+        !!}
+
+
+        <br><br><br><br>
   			{!!ActionButton::grid(
   				[
   					'type' => 'SELECT',
