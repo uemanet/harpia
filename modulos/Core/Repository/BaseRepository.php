@@ -66,7 +66,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $searchable = $this->model->searchable();
         $search = [];
         foreach ($requestParameters as $key => $value) {
-            if (array_key_exists($key, $searchable)) {
+            if (array_key_exists($key, $searchable) and !empty($value)) {
                 $search[] = [
                     'field' => $key,
                     'type' => $searchable[$key],
