@@ -5,7 +5,7 @@ Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@po
 Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogout');
 
 
-Route::group(['prefix' => 'seguranca'], function () {
+Route::group(['prefix' => 'seguranca','middleware' => 'auth'], function () {
     Route::controllers([
         'index'   => '\Modulos\Seguranca\Http\Controllers\IndexController',
         'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',

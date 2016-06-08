@@ -7,7 +7,6 @@ use Modulos\Seguranca\Providers\Security\Contracts\Security as SecurityContract;
 use Modulos\Seguranca\Providers\Security\Exceptions\ForbiddenException;
 
 use Cache;
-
 use DB;
 
 class Security implements SecurityContract {

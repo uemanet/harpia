@@ -9,5 +9,6 @@ return [
 	'postlogin_openactions' => array(
 		'Index',
 		'seguranca/index/create',
+		'/logout'
 	)
 ];
