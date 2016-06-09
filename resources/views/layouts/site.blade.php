@@ -27,9 +27,9 @@
 </div>
 
 <!-- JQUERY-->
-<script src="{{ asset('/javascript/jQuery-2.2.0.min.js')}}"></script>
-<script src="{{ asset('/javascript/bootstrap.min.js')}}"></script>
-<script src="{{ asset('/javascript/plugins/icheck/icheck.min.js')}}"></script>
+<script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
+<script src="{{ asset('/js/bootstrap.min.js')}}"></script>
+<script src="{{ asset('/js/plugins/icheck/icheck.min.js')}}"></script>
 
 @section('scripts')
     <script>
