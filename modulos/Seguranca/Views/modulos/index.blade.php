@@ -63,14 +63,14 @@
                                     [
                                         'classButton' => '',
                                         'icon' => 'fa fa-pencil',
-                                        'action' => 'modulos/edit/' . $id,
+                                        'action' => '/seguranca/modulos/edit/' . $id,
                                         'label' => 'Editar',
                                         'method' => 'get'
                                     ],
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => 'modulos/delete/' . $id,
+                                        'action' => '/seguranca/modulos/delete/' . $id,
                                         'label' => 'Excluir',
                                         'method' => 'delete'
                                     ]

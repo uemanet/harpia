@@ -10,7 +10,7 @@ class Modulo extends BaseModel
 
     protected $primaryKey = 'mod_id';
 
-    protected $fillable = ['mod_rota','mod_nome','mod_descricao','mod_icone','mod_class','mod_ativo'];
+    protected $fillable = ['mod_nome', 'mod_rota', 'mod_descricao', 'mod_icone', 'mod_class', 'mod_style', 'mod_ativo'];
 
     protected $searchable = [
         'mod_nome' => 'like'

@@ -29,7 +29,7 @@ class ModulosController extends BaseController
         $actionButtons = [];
 
         $novo = new TButton();
-        $novo->setName('Novo')->setAction('modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $novo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
 
         array_push($actionButtons, $novo);
 
@@ -54,7 +54,7 @@ class ModulosController extends BaseController
 
              flash()->success('Módulo criado com sucesso.');
 
-             return redirect('seguranca/modulos');
+             return redirect('/seguranca/modulos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -87,10 +87,10 @@ class ModulosController extends BaseController
             if (!$modulo) {
                 flash()->error('Módulo não existe.');
 
-                return redirect('/seguranca/modulos/index');
+                return redirect('/seguranca/modulos');
             }
 
-            $requestData = $request->only('mod_nome','mod_descricao','mod_icone','mod_ativo');
+            $requestData = $request->only('mod_nome', 'mod_rota', 'mod_descricao','mod_icone', 'mod_class', 'mod_style', 'mod_ativo');
 
             if (!$this->moduloRepository->update($requestData, $modulo->mod_id, 'mod_id')) {
                  flash()->error('Erro ao tentar salvar.');
@@ -100,7 +100,7 @@ class ModulosController extends BaseController
 
              flash()->success('Módulo atualizado com sucesso.');
 
-             return redirect('seguranca/modulos');
+             return redirect('/seguranca/modulos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

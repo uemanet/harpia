@@ -27,6 +27,8 @@ class SelecionaModulosController extends Controller
     	$this->auth = $auth;
         $this->app = $app;
         // $this->modulo = $modulo;
+
+        $this->middleware(['auth']);
     }
 
     /**

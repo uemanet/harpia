@@ -85,9 +85,9 @@ class ActionButton{
       foreach ($buttons as $key => $button){
          if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
             if($config['showLabel']){
-               $render .= '<a style="margin-right:5px"  href="'.$button['action'].'" target="'.$button['target'].'" class="btn '.$button['classButton'].'"> <i class="'.$button['icon'].'"></i> '.$button['label'].'</a>';
+               $render .= '<a style="margin-right:5px"  href="'.$button['action'].'" class="btn '.$button['classButton'].'"> <i class="'.$button['icon'].'"></i> '.$button['label'].'</a>';
             }else{
-               $render .= '<a style="margin-right:5px" title="'.$button['label'].'" href="'.$button['action'].'" target="'.$button['target'].'" class="btn '.$button['classButton'].'"> <i class="'.$button['icon'].'"></i></a>';
+               $render .= '<a style="margin-right:5px" title="'.$button['label'].'" href="'.$button['action'].'" class="btn '.$button['classButton'].'"> <i class="'.$button['icon'].'"></i></a>';
             }
          }
       }
