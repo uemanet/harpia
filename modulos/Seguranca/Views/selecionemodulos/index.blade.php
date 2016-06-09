@@ -16,7 +16,7 @@
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <a href="{{url('/')}}/logout">
                 <span class="hidden-xs">Sair</span>
               </a>
             </li>

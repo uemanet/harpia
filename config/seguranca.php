@@ -2,13 +2,12 @@
 
 return [
 	'prelogin_openactions' => array(
-		'auth/login',
-		'teste/atendimento',
+		'login/index/index',
+        'teste/atendimento',
 	),
 
 	'postlogin_openactions' => array(
+        'logout/index/index',
 		'Index',
-		'seguranca/index/create',
-		'/logout'
 	)
 ];

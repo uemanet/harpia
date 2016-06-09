@@ -154,30 +154,30 @@ class Seguranca implements SegurancaContract {
      */
     public function haspermission($path)
     {
-        list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
+      list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
 
-        // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
-        if (is_null($this->getUser())) {
-            if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        // Verifica se a rota eh liberada pas usuarios logados.
-        if ($this->isPostLoginOpenActions($modulo, $recurso, $permissao)) {
-            return true;
-        }
-
-        // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
-        $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $modulo, $recurso, $permissao);
-
-        if ($hasPermission){
+      // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
+      if (is_null($this->getUser())) {
+        if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)) {
             return true;
         }
 
         return false;
+      }
+
+      // Verifica se a rota eh liberada pas usuarios logados.
+      if ($this->isPostLoginOpenActions($modulo, $recurso, $permissao)) {
+        return true;
+      }
+
+      // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
+      $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $modulo, $recurso, $permissao);
+
+      if ($hasPermission){
+        return true;
+      }
+
+      return false;
     }
 
     /**
@@ -247,27 +247,17 @@ class Seguranca implements SegurancaContract {
      */
     private function verifyPermission($usr_id, $mod_rota, $rcs_nome = 'index', $prm_nome = 'index')
     {
-        $sql = 'SELECT prm_id, prm_nome FROM seg_permissoes p
-                INNER JOIN seg_perfis_permissoes pp ON prp_prm_id = prm_id
-                INNER JOIN seg_recursos r ON rcs_id = prm_rcs_id
-                INNER JOIN seg_modulos m ON mod_id = rcs_mod_id
-                WHERE mod_rota = :mod_rota
-                  AND rcs_nome = :rcs_nome
-                  AND prm_nome = :prm_nome
-                  AND rcs_ativo = 1
-                  AND prp_prf_id = (
-                    SELECT prf_id FROM seg_perfis
-                    INNER JOIN seg_modulos ON mod_id = prf_mod_id
-                    INNER JOIN seg_perfis_usuarios ON pru_prf_id = prf_id
-                    WHERE pru_usr_id = :usr_id AND mod_rota = :modl_nome)';
+      $permissoes = Cache::get('PERMISSAO_'.$usr_id);
 
-        return DB::select(DB::raw($sql), [
-            'mod_rota' => $mod_rota,
-            'rcs_nome' => $rcs_nome,
-            'prm_nome' => $prm_nome,
-            'usr_id' => $usr_id,
-            'modl_nome' => $mod_rota,
-        ]);
+      foreach ($permissoes as $key => $permissao){
+        if($permissao->mod_rota == $mod_rota && $permissao->rcs_nome == $rcs_nome && $prm_nome == $prm_nome){
+          return true;
+        }
+      }
+
+      return true;
+
+      // return false;
     }
 
     /**
