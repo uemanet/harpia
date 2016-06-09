@@ -34,7 +34,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="box" style="margin-bottom:0px">
-            <div class="box-header" style="padding-bottom:0px">
+            <div class="box-header" style="padding-bottom:10px">
                 <div class="col-md-6">
                     <section class="content-header" style="padding-top:10px">
                       <h1>
