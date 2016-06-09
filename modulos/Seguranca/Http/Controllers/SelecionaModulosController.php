@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Foundation\Application;
 
-use Modulos\Seguranca\Providers\Security\Security;
+use Modulos\Seguranca\Providers\Seguranca\Seguranca;
+
+use Cache;
 
 /**
  * Class IndexController.
@@ -32,12 +34,19 @@ class SelecionaModulosController extends Controller
      */
     public function getIndex()
     {
-        $modulos = $this->modulo->getModulosUsuario($this->auth->getUser()->usr_id); 
+        $modulos = $this->app[Seguranca::class]->getModuleUser();
+
+        $infoUser = array(
+            'pes_nome' => $this->app['auth']->user()->pessoa->pes_nome,
+            'pes_telefone' => $this->app['auth']->user()->pessoa->pes_telefone,
+            'pes_email' => $this->app['auth']->user()->pessoa->pes_email,
+            'usr_usuario' => $this->app['auth']->user()->usr_usuario
+        );
 
         if(sizeof($modulos) == 1 && env('REDIRECT_MODULE')){
-            return redirect($modulos[0]->mod_nome.'/index');
+            return redirect(current($modulos)->mod_nome.'/index');
         }
 
-        return view('application.index')->with('modulos',$modulos);
+        return view('Seguranca::selecionemodulos.index')->with(array('modulos'=>$modulos,'infoUser'=>$infoUser));
     }
 }

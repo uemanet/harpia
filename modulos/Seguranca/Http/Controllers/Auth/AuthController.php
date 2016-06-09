@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Foundation\Application;
 
-use Modulos\Seguranca\Providers\Security\Security;
+use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 use Cache;
 
 class AuthController extends Controller
@@ -49,7 +49,6 @@ class AuthController extends Controller
     public function __construct(Guard $auth, Application $app)
     {
         $this->auth = $auth;
-        // $this->middleware($this->guestMiddleware(), ['except' => ['logout']]);
         $this->app = $app;
     }
 
@@ -65,9 +64,12 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
 
         if ($this->auth->attempt($credentials, $request->has('remember'))){
+
             //Gera estrutura do menu em cache
-            $security = new Security($this->app);
-            $security->makeCacheMenu();
+            $seguranca = $this->app[Seguranca::class];
+
+            $seguranca->makeCachePermission();
+            $seguranca->makeCacheMenu();
 
             return redirect()->intended('/index');
         }
@@ -83,7 +85,9 @@ class AuthController extends Controller
     {
         $usrId = $this->app['auth']->user()->usr_pes_id;
 
-        Cache::forget($usrId);
+        Cache::forget('MENU_'.$usrId);
+        Cache::forget('PERMISSAO_'.$usrId);
+
         $this->auth->logout();
 
         return redirect('/');

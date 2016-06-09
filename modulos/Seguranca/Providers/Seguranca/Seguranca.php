@@ -25,7 +25,7 @@ class Seguranca implements SegurancaContract {
     {
         $this->app = $app;
     }
-
+ 
     /**
      * Retorna o usuário logado na aplicação
      */
@@ -38,7 +38,7 @@ class Seguranca implements SegurancaContract {
     {
         $usrId = $this->app['auth']->user()->usr_pes_id;
 
-        $sql = "SELECT mod_id, mod_nome, cr.*
+        $sql = "SELECT mod_id, mod_rota, cr.*
                 FROM 
                     seg_perfis_usuarios
                     INNER JOIN seg_perfis ON pru_prf_id = prf_id
@@ -47,7 +47,7 @@ class Seguranca implements SegurancaContract {
                 WHERE
                     pru_usr_id = :usrId AND mod_ativo = 1 AND ctr_visivel = 1
                 ORDER BY
-                    mod_nome,ctr_referencia,ctr_id,ctr_ordem";
+                    mod_rota,ctr_referencia,ctr_id,ctr_ordem";
 
         $categoriasModulos =  DB::select($sql, ['usrId' => $usrId]);
 
@@ -55,16 +55,16 @@ class Seguranca implements SegurancaContract {
         $pai = 0;
 
         for($i=0; $i < count($categoriasModulos); $i++){
-            if(!array_key_exists($categoriasModulos[$i]->mod_nome,$arrayMenu)){
-                $arrayMenu[$categoriasModulos[$i]->mod_nome] = array(
-                    'mod_id' => $categoriasModulos[$i]->mod_nome,
-                    'mod_nome' => $categoriasModulos[$i]->mod_nome,
+            if(!array_key_exists($categoriasModulos[$i]->mod_rota,$arrayMenu)){
+                $arrayMenu[$categoriasModulos[$i]->mod_rota] = array(
+                    'mod_id' => $categoriasModulos[$i]->mod_rota,
+                    'mod_rota' => $categoriasModulos[$i]->mod_rota,
                     'CATEGORIAS' => array()
                 );
             }
 
             if(is_null($categoriasModulos[$i]->ctr_referencia)){
-                $arrayMenu[$categoriasModulos[$i]->mod_nome]['CATEGORIAS'][$categoriasModulos[$i]->ctr_id] = array(
+                $arrayMenu[$categoriasModulos[$i]->mod_rota]['CATEGORIAS'][$categoriasModulos[$i]->ctr_id] = array(
                     'ctr_id' => $categoriasModulos[$i]->ctr_id,
                     'ctr_nome' => $categoriasModulos[$i]->ctr_nome,
                     'ctr_icone' => $categoriasModulos[$i]->ctr_icone,
@@ -73,7 +73,7 @@ class Seguranca implements SegurancaContract {
             }
 
             if(!is_null($categoriasModulos[$i]->ctr_referencia)){
-                $arrayMenu[$categoriasModulos[$i]->mod_nome]['CATEGORIAS'][$categoriasModulos[$i]->ctr_referencia]['SUBCATEGORIA'][$categoriasModulos[$i]->ctr_id] = array(
+                $arrayMenu[$categoriasModulos[$i]->mod_rota]['CATEGORIAS'][$categoriasModulos[$i]->ctr_referencia]['SUBCATEGORIA'][$categoriasModulos[$i]->ctr_id] = array(
                     'ctr_id' => $categoriasModulos[$i]->ctr_id,
                     'ctr_nome' => $categoriasModulos[$i]->ctr_nome,
                     'ctr_icone' => $categoriasModulos[$i]->ctr_icone,                    
@@ -82,7 +82,7 @@ class Seguranca implements SegurancaContract {
             }
         }
 
-        $sqlRecursos = 'SELECT mod_id,mod_nome,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_descricao,rcs_icone,prm_nome
+        $sqlRecursos = 'SELECT mod_id,mod_rota,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_descricao,rcs_icone,prm_nome
                          FROM
                             seg_perfis_usuarios
                             INNER JOIN seg_perfis_permissoes ON prp_prf_id = pru_prf_id
@@ -98,9 +98,9 @@ class Seguranca implements SegurancaContract {
         $recursos =  DB::select($sqlRecursos, ['usrId' => $usrId]);
 
         foreach ($recursos as $key => $recurso){
-            if(!array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_nome]['CATEGORIAS'])){
-                if(array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_nome]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'])){
-                    $arrayMenu[$recurso->mod_nome]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
+            if(!array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_rota]['CATEGORIAS'])){
+                if(array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'])){
+                    $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
                         'rcs_id' => $recurso->rcs_id,
                         'rcs_nome' => $recurso->rcs_nome,
                         'rcs_icone' => $recurso->rcs_icone,
@@ -109,8 +109,8 @@ class Seguranca implements SegurancaContract {
                 }
             }
 
-            if(array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_nome]['CATEGORIAS'])){
-                $arrayMenu[$recurso->mod_nome]['CATEGORIAS'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
+            if(array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_rota]['CATEGORIAS'])){
+                $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
                     'rcs_id' => $recurso->rcs_id,
                     'rcs_nome' => $recurso->rcs_nome,
                     'rcs_icone' => $recurso->rcs_icone,
@@ -120,7 +120,29 @@ class Seguranca implements SegurancaContract {
         }
 
         //Estrutura do menu em cache
-        Cache::forever($usrId,$arrayMenu);
+        Cache::forever('MENU_'.$usrId,$arrayMenu);
+    }
+
+    public function makeCachePermission(){
+        $usrId = $this->app['auth']->user()->usr_pes_id;
+
+        $sql = 'SELECT 
+                    mod_id,mod_rota,mod_nome,mod_descricao,mod_icone,mod_class,rcs_nome,prm_nome
+                FROM
+                    seg_perfis_usuarios
+                    INNER JOIN seg_perfis ON pru_prf_id = pru_prf_id
+                    INNER JOIN seg_perfis_permissoes ON prp_prf_id = prf_id
+                    INNER JOIN seg_permissoes ON prp_prm_id = prm_id
+                    INNER JOIN seg_modulos ON prf_mod_id = mod_id
+                    INNER JOIN seg_recursos ON prm_rcs_id = rcs_id
+                WHERE
+                    pru_usr_id = :usrId
+                    AND rcs_ativo = 1 AND mod_ativo = 1';
+        
+        $permissoes =  DB::select($sql, ['usrId' => $usrId]);
+
+        //Estrutura de permissão em cache
+        Cache::forever('PERMISSAO_'.$usrId,$permissoes);
     }
 
     /**
@@ -192,23 +214,44 @@ class Seguranca implements SegurancaContract {
         return in_array($fullRoute, $openActions);
     }
 
+    public function getModuleUser(){
+        $usrId = $this->getUser()->getAuthIdentifier();
+
+        $permissoes = Cache::get('PERMISSAO_'.$usrId);
+
+        $modulos = [];
+
+        foreach ($permissoes as $key => $permissao){
+            $modulos[$permissao->mod_id] = array(
+                'mod_id' => $permissao->mod_id,
+                'mod_rota' => $permissao->mod_rota,
+                'mod_nome' => $permissao->mod_nome,
+                'mod_descricao' => $permissao->mod_descricao,
+                'mod_icone' => $permissao->mod_icone,
+                'mod_class' => $permissao->mod_class,
+            );
+        }
+
+        return $modulos;
+    }
+
     /**
      * Verifica se o usuario tem acesso ao recurso.
      *
      * @param int    $usr_id
-     * @param stirng $mod_nome
+     * @param stirng $mod_rota
      * @param string $rcs_nome
      * @param string $prm_nome
      *
      * @return mixed
      */
-    private function verifyPermission($usr_id, $mod_nome, $rcs_nome = 'index', $prm_nome = 'index')
+    private function verifyPermission($usr_id, $mod_rota, $rcs_nome = 'index', $prm_nome = 'index')
     {
         $sql = 'SELECT prm_id, prm_nome FROM seg_permissoes p
                 INNER JOIN seg_perfis_permissoes pp ON prp_prm_id = prm_id
                 INNER JOIN seg_recursos r ON rcs_id = prm_rcs_id
                 INNER JOIN seg_modulos m ON mod_id = rcs_mod_id
-                WHERE mod_nome = :mod_nome
+                WHERE mod_rota = :mod_rota
                   AND rcs_nome = :rcs_nome
                   AND prm_nome = :prm_nome
                   AND rcs_ativo = 1
@@ -216,14 +259,14 @@ class Seguranca implements SegurancaContract {
                     SELECT prf_id FROM seg_perfis
                     INNER JOIN seg_modulos ON mod_id = prf_mod_id
                     INNER JOIN seg_perfis_usuarios ON pru_prf_id = prf_id
-                    WHERE pru_usr_id = :usr_id AND mod_nome = :modl_nome)';
+                    WHERE pru_usr_id = :usr_id AND mod_rota = :modl_nome)';
 
         return DB::select(DB::raw($sql), [
-            'mod_nome' => $mod_nome,
+            'mod_rota' => $mod_rota,
             'rcs_nome' => $rcs_nome,
             'prm_nome' => $prm_nome,
             'usr_id' => $usr_id,
-            'modl_nome' => $mod_nome,
+            'modl_nome' => $mod_rota,
         ]);
     }
 

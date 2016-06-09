@@ -17,7 +17,7 @@ class ActionButton{
    {
       $render = '';
 
-      $seguranca = new Seguranca($this->app);
+      $seguranca = $this->app[Seguranca::class];
 
       foreach ($buttons as $key => $button){
          if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getAction())){

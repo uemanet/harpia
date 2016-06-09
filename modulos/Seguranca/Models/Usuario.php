@@ -56,6 +56,11 @@ class Usuario extends BaseModel implements
         return $this->belongsToMany('Modulos\Seguranca\Models\Perfil', 'seg_perfis_usuarios', 'pru_usr_id', 'pru_prf_id');
     }
 
+    public function pessoa()
+    {
+        return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'usr_pes_id', 'pes_id');
+    }
+
     /**
      * Get the unique identifier for the user.
      *

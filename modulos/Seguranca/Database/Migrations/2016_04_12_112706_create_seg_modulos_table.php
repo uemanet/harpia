@@ -15,9 +15,11 @@ class CreateSegModulosTable extends Migration {
         Schema::create('seg_modulos', function(Blueprint $table)
         {
             $table->increments('mod_id');
+            $table->string('mod_rota', 45);
             $table->string('mod_nome', 150);
             $table->string('mod_descricao', 300);
             $table->string('mod_icone', 45);
+            $table->string('mod_class', 45);
             $table->string('mod_style', 150);
             $table->boolean('mod_ativo')->default(1);
             $table->timestamps();

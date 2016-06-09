@@ -29,7 +29,7 @@ class MasterMenu{
       $modulo = current($path);
       $controller = next($path);
 
-      $menu = Cache::get($usrId);
+      $menu = Cache::get('MENU_'.$usrId);
       $menu = $menu[$modulo];
 
       $render = '<ul class="sidebar-menu">';
