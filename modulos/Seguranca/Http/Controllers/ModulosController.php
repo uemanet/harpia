@@ -112,7 +112,7 @@ class ModulosController extends BaseController
         }
     }
 
-     public function postDelete(Request $request)
+     public function deleteDelete(Request $request)
      {
          try {
              $moduloId = $request->input('mod_id');
