@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="login-box" style="padding-top:10vh">
-        <div class="box box-widget widget-user">
+        <div class="box box-widget widget-user" style="margin-bottom:5px">
             <div class="widget-user-header bg-aqua-active text-center">
                 <img src="{{url('/')}}/img/logo.png"/>
                 <h4 class="text-center">Sistema de Gestão <b>Educacional</b></h4>
@@ -47,5 +47,9 @@
                 </div>
             </div>
         </div>
+        <footer class="main-footer" style="margin-left:0px;padding:5px;text-align:center;">
+            <strong style="font-size:12px">Copyright © 2016-2016 <a href="http://www.uemanet.uema.br">UemaNet</a>.</strong> All rights
+            reserved.
+        </footer>
     </div>
 @stop
