@@ -6,14 +6,14 @@
     <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
 
     <title>{{config('system.title')}}</title>
-    
+
     <!-- <link rel="stylesheet" href="{{ asset('/assets/vendor/fontawesome/css/font-awesome.min.css') }}"/> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('/assets/vendor/simple-line-icons/css/simple-line-icons.css') }}"/>
     <link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.css') }}" id="bscss"/>
     <link rel="stylesheet" href="{{ asset('/assets/css/app.css') }}" id="maincss"/>
     <link rel="stylesheet" href="{{ asset('/assets/css/style.css') }}" id="maincss"/>
-    
+
     <link id="autoloaded-stylesheet" rel="stylesheet" href="{{ asset('/assets/css/theme-d.css')}}">
 
     @section('stylesheets')

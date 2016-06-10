@@ -24,7 +24,8 @@ class StoreModuloRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'mod_nome' => 'required|max:150',
+            'mod_nome' => 'required|min:3|max:150',
+            'mod_rota' => 'required|min:3',
             'mod_descricao' => 'max:300',
             'mod_icone' => 'max:45',
             'mod_ativo' => 'required'
