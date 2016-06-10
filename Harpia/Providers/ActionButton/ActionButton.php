@@ -40,44 +40,46 @@ class ActionButton{
       }
    }
 
-   private function renderButtonGridSelect($config,$buttons){
-      $render = '<div class="btn-group">
-                     <button type="button" class="btn '.$config['classButton'].'">'.$config['label'].'</button>
-                     <button type="button" class="btn '.$config['classButton'].' dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only"></span>
-                     </button>';
+  private function renderButtonGridSelect($config,$buttons){
+    $seguranca = $this->app[Seguranca::class];
 
-      if(!empty($buttons)){
-         $render.= '<ul class="dropdown-menu" role="menu">';
+    $render = '<div class="btn-group">
+                   <button type="button" class="btn '.$config['classButton'].'">'.$config['label'].'</button>
+                   <button type="button" class="btn '.$config['classButton'].' dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                      <span class="caret"></span>
+                      <span class="sr-only"></span>
+                   </button>';
 
-         foreach ($buttons as $key => $button){
-            if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
-               // $render .= '<a   > ';
+    if(!empty($buttons)){
+       $render.= '<ul class="dropdown-menu" role="menu">';
 
-               if($button['method'] == 'get') {
-                  $render.= '<li>
-                            <a href="'.$button['action'].'" class="'.$button['classButton'].'">
-                              <i class="'.$button['icon'].'"></i> '.$button['label'].'
-                            </a>
-                          </li>';
-               } else {
-                  $render.= '<li>
-                                <form action="'.$button['action'].'" method="'.$button['method'].'">
-                                  <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
-                                  <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
-                                </form>
-                          </li>';
-               }
+       foreach ($buttons as $key => $button){
+          if(!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button['action'])){
+             // $render .= '<a   > ';
 
-            }
-         }
+             if($button['method'] == 'get') {
+                $render.= '<li>
+                          <a href="'.$button['action'].'" class="'.$button['classButton'].'">
+                            <i class="'.$button['icon'].'"></i> '.$button['label'].'
+                          </a>
+                        </li>';
+             } else {
+                $render.= '<li>
+                              <form action="'.$button['action'].'" method="'.$button['method'].'">
+                                <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
+                                <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
+                              </form>
+                        </li>';
+             }
 
-         $render.= '</ul></div>';
-      }
+          }
+       }
 
-      return $render;
-   }
+       $render.= '</ul></div>';
+    }
+
+    return $render;
+  }
 
    private function renderButtonGrid($config,$buttons){
       $render = '';
