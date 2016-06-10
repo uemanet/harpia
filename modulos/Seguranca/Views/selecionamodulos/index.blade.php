@@ -48,16 +48,17 @@
                                                 <span class="description-text">USUÁRIO</span>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4 border-right">
-                                            <div class="description-block">
-                                                <h5 class="description-header">{{$infoUser['pes_telefone']}}</h5>
-                                                <span class="description-text">TELEFONE</span>
-                                            </div>
-                                        </div>
                                         <div class="col-sm-4">
                                             <div class="description-block">
                                                 <h5 class="description-header">{{count($modulos)}}</h5>
-                                                <span class="description-text">MÓDULOS</span>
+                                                <span class="description-text">MÓDULO(S)</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 border-right">
+                                            <div class="description-block">
+                                                <a class="text-light-blue" href="{{url('/')}}/seguranca/profile" >
+                                                    <i class="fa fa-unlock-alt"></i> Alterar perfil
+                                                </a>
                                             </div>
                                         </div>
                                     </div>

@@ -10,6 +10,7 @@ Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@ge
 Route::group(['prefix' => 'seguranca','middleware' => ['auth']], function () {
     Route::controllers([
         'index'   => '\Modulos\Seguranca\Http\Controllers\IndexController',
+        'profile'   => '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController',
         'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',
     ]);
 });

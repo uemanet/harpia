@@ -2,12 +2,12 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Foundation\Application;
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
-class SelecionaModulosController extends Controller
+class SelecionaModulosController extends BaseController
 {
     protected $auth;
     protected $app;
@@ -25,10 +25,10 @@ class SelecionaModulosController extends Controller
         $modulos = $this->app[Seguranca::class]->getUserModules();
 
         $infoUser = array(
-            'pes_nome' => $this->app['auth']->user()->pessoa->pes_nome,
-            'pes_telefone' => $this->app['auth']->user()->pessoa->pes_telefone,
-            'pes_email' => $this->app['auth']->user()->pessoa->pes_email,
-            'usr_usuario' => $this->app['auth']->user()->usr_usuario
+            'pes_nome' => $this->auth->user()->pessoa->pes_nome,
+            'pes_telefone' => $this->auth->user()->pessoa->pes_telefone,
+            'pes_email' => $this->auth->user()->pessoa->pes_email,
+            'usr_usuario' => $this->auth->user()->usr_usuario
         );
 
         if(sizeof($modulos) == 1 && env('REDIRECT_MODULE')){

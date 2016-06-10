@@ -1,70 +1,121 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Modulos\Seguranca\Http\Controllers\Auth;
 
-use App\Models\Geral\Usuario;
-use Auth;
-use Request;
-use Validator;
-use Flash;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Geral\Repositories\PessoaRepository;
+use Modulos\Seguranca\Http\Requests\ProfileRequest;
+use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Class UsuarioController.
- */
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
-    public function __construct()
+    protected $auth;
+    protected $pessoaRepository;
+
+    public function __construct(Guard $auth, PessoaRepository $pessoaRepository)
     {
-        $this->middleware('auth');
+        $this->auth = $auth;
+        $this->pessoaRepository = $pessoaRepository;
     }
 
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function getIndex()
+    public function getIndex(ProfileRequest $request)
     {
-        $usuario = Usuario::find(Auth::user()->int_usuario_id);
+        $pessoa = $this->auth->user()->pessoa;;
 
-        return view('prof.profile.index', compact('usuario'));
+        return view('Seguranca::auth.profile.index', compact('pessoa'));
     }
 
-    public function postIndex()
+    public function putEdit($idUsuario, ProfileRequest $request)
     {
-        $requestData = Request::all();
+        try {
+            $pes_id = $this->auth->user()->pessoa->pes_id;
 
-        $validator = Validator::make($requestData, Usuario::$rules);
+            if ($idUsuario != $pes_id) {
+                flash()->error('Acesso ilegal.');
 
-        if ($validator->fails()) {
-            return redirect('/profile')->withErrors($validator->errors()->all())->withInput();
+                return redirect('/');
+            }
+
+            $data = $request->only([
+                "pes_nome",
+                "pes_email",
+                "pes_telefone",
+                "pes_sexo",
+                "pes_nascimento",
+                "pes_estado_civil",
+                "pes_mae",
+                "pes_pai",
+                "pes_naturalidade",
+                "pes_nacionalidade",
+                "pes_raca",
+                "pes_necessidade_especial"
+            ]);
+
+            if (!$this->pessoaRepository->update($data, $pes_id, 'pes_id')) {
+                flash()->error('Erro ao tentar salvar.');
+
+                return redirect()->back()->withInput($request->all());
+            }
+
+            flash()->success('Perfil atualizado com sucesso.');
+
+            return redirect('/seguranca/profile');
+
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
         }
-
-        $usuario = Usuario::find(Auth::user()->int_usuario_id);
-        $usuario->fill($requestData);
-        $usuario->save();
-
-        Flash::success('Usuário alterado com sucesso.');
-
-        return redirect('/profile');
     }
 
-    public function postUpdatepassword()
+    public function postUpdatepassword(Request $request)
     {
-        $requestData = Request::all();
+        try {
+            $validation = $this->validate($request, [
+                'usr_senha' => 'required|min:6',
+                'usr_senha_nova' => 'required|min:6|confirmed'
+            ]);
 
-        $validator = Validator::make($requestData, [
-            'password' => 'required|min:6|confirmed',
-        ]);
+            $usuario = $this->auth->user();
 
-        if ($validator->fails()) {
-            return redirect('/profile')->withErrors($validator)->withInput();
+            if (!Hash::check($request->get('usr_senha'), $usuario->usr_senha))
+            {
+                flash()->error('Senha atual não confere.');
+
+                return redirect('/seguranca/profile');
+            }
+
+            $usuario->forceFill([
+                'usr_senha' => bcrypt($request->get('usr_senha_nova')),
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            Auth::guard()->login($usuario);
+
+            flash()->success('Senha atualizada com sucesso.');
+
+            return redirect('/seguranca/profile');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            flash()->error('Não foi possível alterar a senha. Por favor, tente novamente.');
+
+            return redirect('/seguranca/profile')->withErrors($e->validator);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
         }
-
-        $usuario = Usuario::find(Auth::user()->int_usuario_id);
-        $usuario->str_senha = bcrypt($requestData['password']);
-        $usuario->save();
-
-        Flash::success('Senha alterada com sucesso.');
-
-        return redirect('/profile');
     }
 }
