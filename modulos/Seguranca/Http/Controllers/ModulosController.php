@@ -19,21 +19,14 @@ class ModulosController extends BaseController
 
     public function getIndex(Request $request)
     {
+        $btnNovo = new TButton();
+        $btnNovo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+
+        $actionButtons[] = $btnNovo;
+
         $tableData = $this->moduloRepository->paginateRequest($request->all());
 
-        return view('Seguranca::modulos.index', ['tableData' => $tableData, 'actionButton' => $this->getActionButtons()]);
-    }
-
-    private function getActionButtons()
-    {
-        $actionButtons = [];
-
-        $novo = new TButton();
-        $novo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
-
-        array_push($actionButtons, $novo);
-
-        return $actionButtons;
+        return view('Seguranca::modulos.index', ['tableData' => $tableData, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()

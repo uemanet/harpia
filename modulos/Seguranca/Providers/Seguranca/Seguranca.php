@@ -214,7 +214,7 @@ class Seguranca implements SegurancaContract {
         return in_array($fullRoute, $openActions);
     }
 
-    public function getModuleUser(){
+    public function getUserModules(){
         $usrId = $this->getUser()->getAuthIdentifier();
 
         $permissoes = Cache::get('PERMISSAO_'.$usrId);

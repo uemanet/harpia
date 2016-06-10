@@ -1,4 +1,4 @@
-@extends('layouts.clear')
+@extends('layouts.clean')
 
 @section('content')
     <div class="wrapper">
