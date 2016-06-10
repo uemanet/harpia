@@ -28,6 +28,7 @@ elixir(function(mix) {
     mix.copy('node_modules/admin-lte/plugins/jQuery/jQuery-2.2.0.min.js', 'public/js');
     mix.copy('node_modules/bootstrap/dist/js/bootstrap.min.js', 'public/js');
     mix.copy('node_modules/admin-lte/dist/js/app.min.js', 'public/js');
+    mix.copy('resources/assets/js/harpia.js', 'public/js');
 
     mix.copy('node_modules/sweetalert/dist/sweetalert.min.js', 'public/js/plugins');
 

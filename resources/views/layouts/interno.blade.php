@@ -71,6 +71,7 @@
 <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
 <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
 <script src="{{ asset('/js/app.min.js')}}"></script>
+<script src="{{ asset('/js/harpia.js')}}"></script>
 
 @section('scripts')
 
