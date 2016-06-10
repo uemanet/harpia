@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Seguranca\Repositories\ModuloRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Artisan;
 
 class ModuloRepositoryTest extends TestCase
 {
@@ -12,31 +12,48 @@ class ModuloRepositoryTest extends TestCase
         WithoutMiddleware;
 
     protected $repo;
-    protected $validArray;
+    protected $data;
+
+    public function createApplication()
+    {
+        putenv('DB_CONNECTION=sqlite_testing');
+
+        $app = require __DIR__ . '/../../../../bootstrap/app.php';
+
+        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
+        return $app;
+    }
 
     public function setUp()
     {
         parent::setUp();
 
+        Artisan::call('modulos:migrate');
+
         $this->repo = $this->app->make(ModuloRepository::class);
 
-        $this->validArray = [
+        $this->data = [
             'mod_nome' => 'Modulo test',
+            'mod_rota' => 'test',
             'mod_descricao' => 'Descricao do modulo',
             'mod_icone' => 'fa fa-cog',
             'mod_ativo' => 1
         ];
     }
 
-    public function testAll()
+    public function testAllWithEmptyDatabase()
     {
         $response = $this->repo->all();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertEquals(0, $response->total());
     }
 
     public function testPaginateWithoutParameters()
     {
+        $this->insertDataInDatabase(2);
+
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
@@ -46,6 +63,8 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
+        $this->insertDataInDatabase(2);
+
         $sort = [
             'field' => 'mod_id',
             'sort' => 'desc'
@@ -60,6 +79,12 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateWithSearch()
     {
+        $this->insertDataInDatabase(2);
+
+        $data = $this->data;
+        $data['mod_nome'] = 'seguranca';
+        $this->insertDataInDatabase(1, $data);
+
         $search = [
             [
                 'field' => 'mod_nome',
@@ -77,6 +102,8 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
+        $this->insertDataInDatabase(2);
+
         $sort = [
             'field' => 'mod_id',
             'sort' => 'desc'
@@ -86,7 +113,7 @@ class ModuloRepositoryTest extends TestCase
             [
                 'field' => 'mod_id',
                 'type' => '>',
-                'term' => '0'
+                'term' => '1'
             ]
         ];
 
@@ -99,6 +126,8 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
+        $this->insertDataInDatabase(2);
+
         $requestParameters = [
             'page' => '1',
             'field' => 'mod_id',
@@ -114,28 +143,27 @@ class ModuloRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = $this->saveData($this->validArray);
+        $response = $this->insertDataInDatabase(1, $this->data);
 
-        $response = $response->toArray();
+        $data = $response->toArray();
 
-        $this->assertArrayHasKey('mod_id', $response);
+        $this->assertInstanceOf(\Modulos\Seguranca\Models\Modulo::class, $response);
+
+        $this->assertArrayHasKey('mod_id', $data);
     }
 
     public function testFind()
     {
-        $response = $this->saveData($this->validArray);
-        $moduloId = $response->mod_id;
+        $data = $this->insertDataInDatabase(1, $this->data);
 
-        $response = $this->repo->find($moduloId);
-
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\Modulo::class, $response);
+        $this->seeInDatabase('seg_modulos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $response = $this->saveData($this->validArray);
+        $data = $this->insertDataInDatabase(1, $this->data);
 
-        $updateArray = $response->toArray();
+        $updateArray = $data->toArray();
         $updateArray['mod_nome'] = 'abcde_edcba';
 
         $moduloId = $updateArray['mod_id'];
@@ -148,16 +176,30 @@ class ModuloRepositoryTest extends TestCase
 
     public function testDelete()
     {
-        $response = $this->saveData($this->validArray);
-        $moduloId = $response->mod_id;
+        $data = $this->insertDataInDatabase(1, $this->data);
+        $moduloId = $data->mod_id;
 
         $response = $this->repo->delete($moduloId);
 
         $this->assertEquals(1, $response);
     }
 
-    private function saveData($data)
+    private function insertDataInDatabase($numberOfRows = 1, $data = null)
     {
-        return $this->repo->create($data);
+        if (!$data) {
+            $data = $this->data;
+        }
+
+        for ($i = 0; $i < $numberOfRows; $i++) {
+            $lastInsertedData = $this->repo->create($data);
+        }
+
+        return $lastInsertedData;
+    }
+
+    public function tearDown()
+    {
+        Artisan::call('migrate:reset');
+        parent::tearDown();
     }
 }
