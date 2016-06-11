@@ -4,7 +4,7 @@ namespace Modulos\Seguranca\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
 
-class StoreModuloRequest extends BaseRequest
+class PerfilRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,9 @@ class StoreModuloRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'mod_nome' => 'required|min:3|max:150',
-            'mod_rota' => 'required|min:3',
-            'mod_descricao' => 'max:300',
-            'mod_icone' => 'max:45',
-            'mod_ativo' => 'required'
+            'prf_mod_id' => 'required',
+            'prf_nome' => 'required|min:3|max:150',
+            'prf_descricao' => 'max:300',
         ];
 
         return $rules;

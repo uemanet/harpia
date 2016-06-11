@@ -1,11 +1,11 @@
 @extends('layouts.interno')
 
 @section('title')
-    Módulos
+    Perfis
 @stop
 
 @section('subtitle')
-    Gerenciamento de módulos
+    Módulo de Segurança
 @stop
 
 @section('actionButton')
@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/seguranca/modulos/index') }}">
+                <form method="GET" action="{{ url('/seguranca/perfis/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="mod_nome" id="mod_nome" value="{{Input::get('mod_nome')}}" placeholder="Nome do módulo">
+                        <input type="text" class="form-control" name="prf_nome" id="prf_nome" value="{{Input::get('prf_nome')}}" placeholder="Nome do perfil">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
@@ -43,16 +43,16 @@
             <div class="box-header">
                 {!!
                     $tableData->columns(array(
-                        'mod_id' => '#',
-                        'mod_nome' => 'Módulo',
-                        'mod_descricao' => 'Descrição',
-                        'mod_action' => 'Ações'
+                        'prf_id' => '#',
+                        'prf_nome' => 'Módulo',
+                        'prf_descricao' => 'Descrição',
+                        'prf_action' => 'Ações'
                     ))
-                    ->modifyCell('mod_action', function() {
+                    ->modifyCell('prf_action', function() {
                         return array('style' => 'width: 140px;');
                     })
-                    ->means('mod_action', 'mod_id')
-                    ->modify('mod_action', function($id) {
+                    ->means('prf_action', 'prf_id')
+                    ->modify('prf_action', function($id) {
                         return ActionButton::grid([
                                 'type' => 'SELECT',
                                 'config' => [
@@ -63,21 +63,21 @@
                                     [
                                         'classButton' => '',
                                         'icon' => 'fa fa-pencil',
-                                        'action' => '/seguranca/modulos/edit/' . $id,
+                                        'action' => '/seguranca/perfis/edit/' . $id,
                                         'label' => 'Editar',
                                         'method' => 'get'
                                     ],
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/modulos/delete/' . $id,
+                                        'action' => '/seguranca/perfis/delete/' . $id,
                                         'label' => 'Excluir',
                                         'method' => 'delete'
                                     ]
                                 ]
                             ]);
                     })
-                    ->sortable(array('mod_id', 'mod_nome'))
+                    ->sortable(array('prf_id', 'prf_nome'))
                     ->render()
                 !!}
             </div>

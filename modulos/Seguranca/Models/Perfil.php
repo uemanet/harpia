@@ -2,7 +2,7 @@
 
 namespace Modulos\Seguranca\Models;
 
-use App\Models\BaseModel;
+use Modulos\Core\Model\BaseModel;
 
 class Perfil extends BaseModel
 {
@@ -10,7 +10,11 @@ class Perfil extends BaseModel
 
     protected $primaryKey = 'prf_id';
 
-    protected $fillable = ['prf_nome', 'prf_descricao', 'prf_mod_id'];
+    protected $fillable = ['prf_mod_id', 'prf_nome', 'prf_descricao'];
+
+    protected $searchable = [
+        'prf_nome' => 'like'
+    ];
     
     public function permissoes()
     {

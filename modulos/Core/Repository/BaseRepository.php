@@ -33,7 +33,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function all()
     {
-        return $this->model->paginate(15);
+        return $this->model->all();
+    }
+
+    public function lists($identifier, $field)
+    {
+        return $this->model->lists($field, $identifier);
     }
 
     public function paginate($sort = null, $search = null)
@@ -76,5 +81,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         return $this->paginate($sort, $search);
+    }
+
+    public function getFillableModelFields()
+    {
+        return $this->model->getFillable();
     }
 }

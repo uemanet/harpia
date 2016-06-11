@@ -9,28 +9,62 @@ class PermissaoTableSeeder extends Seeder {
 
     public function run()
     {
+        $this->createPermissoesModulo();
+
+        $this->createPermissoesPerfil();
+    }
+
+    private function createPermissoesModulo()
+    {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 1; // Recurso modulos
+        $permissao->prm_rcs_id = 1;
         $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index do recurso módulo da dategoria segurança do módulo segurança';
+        $permissao->prm_descricao = 'Permissão index do recurso módulo da categoria segurança do módulo segurança';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 1; // Recurso modulos
+        $permissao->prm_rcs_id = 1;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão create do recurso módulo da dategoria segurança do módulo segurança';
+        $permissao->prm_descricao = 'Permissão create do recurso módulo da categoria segurança do módulo segurança';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 1; // Recurso modulos
+        $permissao->prm_rcs_id = 1;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit do recurso módulo da dategoria segurança do módulo segurança';
+        $permissao->prm_descricao = 'Permissão edit do recurso módulo da categoria segurança do módulo segurança';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 1; // Recurso modulos
+        $permissao->prm_rcs_id = 1;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete do recurso módulo da dategoria segurança do módulo segurança';
+        $permissao->prm_descricao = 'Permissão delete do recurso módulo da categoria segurança do módulo segurança';
+        $permissao->save();
+    }
+
+    private function createPermissoesPerfil()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 2;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso perfil da categoria segurança do módulo segurança';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 2;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso perfil da categoria segurança do módulo segurança';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 2;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso perfil da categoria segurança do módulo segurança';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 2;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso perfil da categoria segurança do módulo segurança';
         $permissao->save();
     }
 }

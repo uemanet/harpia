@@ -2,11 +2,11 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Seguranca\Repositories\ModuloRepository;
+use Modulos\Seguranca\Repositories\PerfilRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
 
-class ModuloRepositoryTest extends TestCase
+class PerfilRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -30,7 +30,7 @@ class ModuloRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(ModuloRepository::class);
+        $this->repo = $this->app->make(PerfilRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -43,7 +43,7 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -54,10 +54,10 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
 
         $sort = [
-            'field' => 'mod_id',
+            'field' => 'prf_id',
             'sort' => 'desc'
         ];
 
@@ -65,20 +65,20 @@ class ModuloRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->mod_id);
+        $this->assertGreaterThan(1, $response[0]->prf_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
 
-        factory(Modulos\Seguranca\Models\Modulo::class)->create([
-            'mod_nome' => 'seguranca',
+        factory(Modulos\Seguranca\Models\Perfil::class)->create([
+            'prf_nome' => 'seguranca',
         ]);
 
         $search = [
             [
-                'field' => 'mod_nome',
+                'field' => 'prf_nome',
                 'type' => 'like',
                 'term' => 'seguranca'
             ]
@@ -93,16 +93,16 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
 
         $sort = [
-            'field' => 'mod_id',
+            'field' => 'prf_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'mod_id',
+                'field' => 'prf_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -117,11 +117,11 @@ class ModuloRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'mod_id',
+            'field' => 'prf_id',
             'sort' => 'asc'
         ];
 
@@ -134,41 +134,41 @@ class ModuloRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        $response = factory(Modulos\Seguranca\Models\Perfil::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\Modulo::class, $response);
+        $this->assertInstanceOf(\Modulos\Seguranca\Models\Perfil::class, $response);
 
-        $this->assertArrayHasKey('mod_id', $data);
+        $this->assertArrayHasKey('prf_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
 
-        $this->seeInDatabase('seg_modulos', $data->toArray());
+        $this->seeInDatabase('seg_perfis', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['mod_nome'] = 'abcde_edcba';
+        $updateArray['prf_nome'] = 'abcde_edcba';
 
-        $moduloId = $updateArray['mod_id'];
-        unset($updateArray['mod_id']);
+        $moduloId = $updateArray['prf_id'];
+        unset($updateArray['prf_id']);
 
-        $response = $this->repo->update($updateArray, $moduloId, 'mod_id');
+        $response = $this->repo->update($updateArray, $moduloId, 'prf_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
-        $moduloId = $data->mod_id;
+        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $moduloId = $data->prf_id;
 
         $response = $this->repo->delete($moduloId);
 

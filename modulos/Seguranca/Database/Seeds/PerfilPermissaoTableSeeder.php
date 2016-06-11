@@ -10,6 +10,8 @@ class PerfilPermissaoTableSeeder extends Seeder {
     public function run()
     {
         $perfil = Perfil::find(1); // Perfil administrador do modulo seguranca
-        $perfil->permissoes()->attach([1, 2, 3, 4]);
+        $perfil->permissoes()->attach([1, 2, 3, 4]); // Permissoes do recurso modulo
+
+        $perfil->permissoes()->attach([5, 6, 7, 8]); // Permissoes do recurso perfil
     }
 }

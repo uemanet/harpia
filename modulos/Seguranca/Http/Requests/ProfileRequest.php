@@ -23,10 +23,6 @@ class ProfileRequest extends BaseRequest
      */
     public function rules()
     {
-        if ($this->getMethod() == 'GET') {
-            return [];
-        }
-
         $rules = [
             'pes_nome' => 'required|min:6',
             'pes_email' => 'required|email',

@@ -22,7 +22,7 @@ class ProfileController extends BaseController
         $this->pessoaRepository = $pessoaRepository;
     }
 
-    public function getIndex(ProfileRequest $request)
+    public function getIndex()
     {
         $pessoa = $this->auth->user()->pessoa;;
 
@@ -40,20 +40,7 @@ class ProfileController extends BaseController
                 return redirect('/');
             }
 
-            $data = $request->only([
-                "pes_nome",
-                "pes_email",
-                "pes_telefone",
-                "pes_sexo",
-                "pes_nascimento",
-                "pes_estado_civil",
-                "pes_mae",
-                "pes_pai",
-                "pes_naturalidade",
-                "pes_nacionalidade",
-                "pes_raca",
-                "pes_necessidade_especial"
-            ]);
+            $data = $request->only($this->pessoaRepository->getFillableModelFields());
 
             if (!$this->pessoaRepository->update($data, $pes_id, 'pes_id')) {
                 flash()->error('Erro ao tentar salvar.');

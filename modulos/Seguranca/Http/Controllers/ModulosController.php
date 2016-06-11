@@ -5,7 +5,7 @@ namespace Modulos\Seguranca\Http\Controllers;
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Repositories\ModuloRepository;
-use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
+use Modulos\Seguranca\Http\Requests\ModuloRequest;
 use Illuminate\Http\Request;
 
 class ModulosController extends BaseController
@@ -34,7 +34,7 @@ class ModulosController extends BaseController
         return view('Seguranca::modulos.create');
     }
 
-    public function postCreate(StoreModuloRequest $request)
+    public function postCreate(ModuloRequest $request)
     {
         try {
             $modulo = $this->moduloRepository->create($request->all());
@@ -72,7 +72,7 @@ class ModulosController extends BaseController
         return view('Seguranca::modulos.edit', compact('modulo'));
     }
 
-    public function putEdit($id, StoreModuloRequest $request)
+    public function putEdit($id, ModuloRequest $request)
     {
         try {
             $modulo = $this->moduloRepository->find($id);
@@ -83,7 +83,7 @@ class ModulosController extends BaseController
                 return redirect('/seguranca/modulos');
             }
 
-            $requestData = $request->only('mod_nome', 'mod_rota', 'mod_descricao','mod_icone', 'mod_class', 'mod_style', 'mod_ativo');
+            $requestData = $request->only($this->moduloRepository->getFillableModelFields());
 
             if (!$this->moduloRepository->update($requestData, $modulo->mod_id, 'mod_id')) {
                  flash()->error('Erro ao tentar salvar.');
@@ -113,7 +113,7 @@ class ModulosController extends BaseController
              if($this->moduloRepository->delete($moduloId)) {
                  flash()->success('Módulo excluído com sucesso.');
              } else {
-                 flash()->error('Erro ao tentar excluir o modulo');
+                 flash()->error('Erro ao tentar excluir o módulo');
              }
 
              return redirect()->back();
