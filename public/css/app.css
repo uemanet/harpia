@@ -14416,4 +14416,17 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #3b8ab8;
 }
 
+.form-singlebutton .btn-delete {
+  border: none;
+  background-color: transparent;
+  padding: 3px 20px;
+  clear: both;
+  width: 100%;
+  text-align: left;
+}
+.form-singlebutton .btn-delete:hover {
+  background-color: #e1e3e9;
+  color: #d73925 !important;
+}
+
 /*# sourceMappingURL=app.css.map */

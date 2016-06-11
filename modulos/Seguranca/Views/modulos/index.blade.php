@@ -70,9 +70,10 @@
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/modulos/delete/' . $id,
+                                        'action' => '/seguranca/modulos/delete',
+                                        'id' => $id,
                                         'label' => 'Excluir',
-                                        'method' => 'delete'
+                                        'method' => 'post'
                                     ]
                                 ]
                             ]);

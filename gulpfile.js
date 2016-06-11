@@ -18,7 +18,8 @@ elixir(function(mix) {
         'font-awesome.less',
         'bootstrap.less',
         'adminLTE.less',
-        'skin.less'
+        'skin.less',
+        'harpia.less'
     ]);
 
     // CSS

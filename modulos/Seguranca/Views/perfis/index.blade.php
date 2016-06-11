@@ -44,7 +44,7 @@
                 {!!
                     $tableData->columns(array(
                         'prf_id' => '#',
-                        'prf_nome' => 'Módulo',
+                        'prf_nome' => 'Perfil',
                         'prf_descricao' => 'Descrição',
                         'prf_action' => 'Ações'
                     ))
@@ -70,9 +70,10 @@
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/perfis/delete/' . $id,
+                                        'action' => '/seguranca/perfis/delete',
+                                        'id' => $id,
                                         'label' => 'Excluir',
-                                        'method' => 'delete'
+                                        'method' => 'post'
                                     ]
                                 ]
                             ]);

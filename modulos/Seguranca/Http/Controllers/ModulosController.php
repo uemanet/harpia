@@ -105,10 +105,10 @@ class ModulosController extends BaseController
         }
     }
 
-     public function deleteDelete(Request $request)
+     public function postDelete(Request $request)
      {
          try {
-             $moduloId = $request->input('mod_id');
+             $moduloId = $request->get('id');
 
              if($this->moduloRepository->delete($moduloId)) {
                  flash()->success('Módulo excluído com sucesso.');

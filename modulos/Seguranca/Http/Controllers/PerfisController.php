@@ -113,10 +113,10 @@ class PerfisController extends BaseController
         }
     }
 
-    public function deleteDelete(Request $request)
+    public function postDelete(Request $request)
     {
         try {
-            $perfilId = $request->input('prf_id');
+            $perfilId = $request->get('id');
 
             if($this->perfilRepository->delete($perfilId)) {
                 flash()->success('Perfil excluído com sucesso.');

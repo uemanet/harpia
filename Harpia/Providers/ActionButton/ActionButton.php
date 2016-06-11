@@ -65,7 +65,9 @@ class ActionButton{
                         </li>';
              } else {
                 $render.= '<li>
-                              <form action="'.$button['action'].'" method="'.$button['method'].'">
+                              <form action="'.$button['action'].'" method="'.strtoupper($button['method']).'" class="form-singlebutton">
+                                <input type="hidden" name="id" value="'.$button['id'].'">
+                                <input type="hidden" name="_token" value="'.csrf_token().'">
                                 <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
                                 <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
                               </form>
