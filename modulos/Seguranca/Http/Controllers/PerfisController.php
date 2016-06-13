@@ -15,9 +15,9 @@ class PerfisController extends BaseController
     protected $perfilRepository;
     protected $moduloRepository;
 
-    public function __construct(PerfilRepository $perfil, ModuloRepository $moduloRepository)
+    public function __construct(PerfilRepository $perfilRepository, ModuloRepository $moduloRepository)
     {
-        $this->perfilRepository = $perfil;
+        $this->perfilRepository = $perfilRepository;
         $this->moduloRepository = $moduloRepository;
     }
 
@@ -65,9 +65,9 @@ class PerfisController extends BaseController
         }
     }
 
-    public function getEdit($idPerfil)
+    public function getEdit($perfilId)
     {
-        $perfil = $this->perfilRepository->find($idPerfil);
+        $perfil = $this->perfilRepository->find($perfilId);
 
         if (!$perfil) {
             flash()->error('Perfil não existe.');

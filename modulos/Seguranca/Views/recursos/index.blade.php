@@ -1,7 +1,7 @@
 @extends('layouts.interno')
 
 @section('title')
-    Categorias de Recursos
+    Recursos
 @stop
 
 @section('subtitle')
@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/seguranca/categoriasrecursos/index') }}">
+                <form method="GET" action="{{ url('/seguranca/recursos/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="ctr_nome" id="ctr_nome" value="{{Input::get('ctr_nome')}}" placeholder="Nome do recurso">
+                        <input type="text" class="form-control" name="rcs_nome" id="rcs_nome" value="{{Input::get('rcs_nome')}}" placeholder="Nome do recurso">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
@@ -43,16 +43,16 @@
             <div class="box-header">
                 {!!
                     $tableData->columns(array(
-                        'ctr_id' => '#',
-                        'ctr_nome' => 'Categoria',
-                        'ctr_descricao' => 'Descrição',
-                        'ctr_action' => 'Ações'
+                        'rcs_id' => '#',
+                        'rcs_nome' => 'Recurso',
+                        'rcs_descricao' => 'Descrição',
+                        'rcs_action' => 'Ações'
                     ))
-                    ->modifyCell('ctr_action', function() {
+                    ->modifyCell('rcs_action', function() {
                         return array('style' => 'width: 140px;');
                     })
-                    ->means('ctr_action', 'ctr_id')
-                    ->modify('ctr_action', function($id) {
+                    ->means('rcs_action', 'rcs_id')
+                    ->modify('rcs_action', function($id) {
                         return ActionButton::grid([
                                 'type' => 'SELECT',
                                 'config' => [
@@ -63,14 +63,14 @@
                                     [
                                         'classButton' => '',
                                         'icon' => 'fa fa-pencil',
-                                        'action' => '/seguranca/categoriasrecursos/edit/' . $id,
+                                        'action' => '/seguranca/recursos/edit/' . $id,
                                         'label' => 'Editar',
                                         'method' => 'get'
                                     ],
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/categoriasrecursos/delete',
+                                        'action' => '/seguranca/recursos/delete',
                                         'id' => $id,
                                         'label' => 'Excluir',
                                         'method' => 'post'
@@ -78,7 +78,7 @@
                                 ]
                             ]);
                     })
-                    ->sortable(array('ctr_id', 'ctr_nome'))
+                    ->sortable(array('rcs_id', 'rcs_nome'))
                     ->render()
                 !!}
             </div>

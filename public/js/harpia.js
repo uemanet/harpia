@@ -24,3 +24,17 @@
     });
 
 }(jQuery);
+
+$.harpia = {};
+
++function ($) {
+    'use strict';
+
+    $.harpia.showloading = function() {
+        $(".loading").show();
+    };
+
+    $.harpia.hideloading = function() {
+        $(".loading").hide();
+    }
+}(jQuery);

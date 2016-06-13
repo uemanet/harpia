@@ -18,6 +18,6 @@ class CategoriaRecurso extends BaseModel
 
     public function modulo()
     {
-        return $this->belongsTo('Modulos\Seguranca\Models\Modulo', 'prf_mod_id', 'mod_id');
+        return $this->belongsTo('Modulos\Seguranca\Models\Modulo', 'ctr_mod_id', 'mod_id');
     }
 }

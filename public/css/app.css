@@ -14431,5 +14431,58 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #e1e3e9;
   color: #d73925 !important;
 }
+#loading-overlay {
+  position: fixed;
+  z-index: 2010;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #777777;
+  opacity: 0.2;
+}
+#loading-message {
+  position: fixed;
+  z-index: 2011;
+  line-height: 100px;
+  background-color: #fff;
+  text-align: center;
+  font-size: 1.2em;
+  left: 50%;
+  top: 40%;
+  margin-left: -115px;
+  margin-top: -50px;
+  border-radius: 10px;
+  width: 230px;
+  box-shadow: 5px 5px 10px #b7b7b7;
+}
+.loading {
+  display: none;
+}
+.loading > p {
+  margin: 0 0 -50px 0px;
+}
+@keyframes three-quarters {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* :not(:required) hides this rule from IE9 and below */
+.three-quarters:not(:required) {
+  animation: three-quarters 1250ms infinite linear;
+  border: 8px solid #3388ee;
+  border-right-color: transparent;
+  border-radius: 16px;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-indent: -9999px;
+  width: 32px;
+  height: 32px;
+}
 
 /*# sourceMappingURL=app.css.map */

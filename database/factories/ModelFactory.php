@@ -49,3 +49,14 @@ $factory->define(Modulos\Seguranca\Models\CategoriaRecurso::class, function (Fak
         'ctr_visivel' => 1
     ];
 });
+
+$factory->define(Modulos\Seguranca\Models\Recurso::class, function (Faker\Generator $faker) {
+    return [
+        'rcs_ctr_id' => 1,
+        'rcs_nome' => $faker->name,
+        'rcs_descricao' => $faker->sentence(3),
+        'rcs_icone' => 'fa fa-cog',
+        'rcs_ativo' => 1,
+        'rcs_ordem' => 1
+    ];
+});

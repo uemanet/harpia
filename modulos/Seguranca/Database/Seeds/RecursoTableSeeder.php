@@ -36,5 +36,14 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 3;
         $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 1; // Categoria Seguranca
+        $recurso->rcs_nome = 'Recursos';
+        $recurso->rcs_descricao = 'Recurso recursos da dategoria segurança do módulo segurança';
+        $recurso->rcs_icone = 'fa fa-cogs';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 4;
+        $recurso->save();
     }
 }

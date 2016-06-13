@@ -47,7 +47,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
-                $result = $result->where($value['field'], $value['type'], $value['term']);
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                    break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
             }
         }
 

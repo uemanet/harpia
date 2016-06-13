@@ -197,6 +197,34 @@ class CategoriaRecursoRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testFindAllByModulo()
+    {
+        factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
+
+        $moduloId = 1;
+
+        $response = $this->repo->findAllByModulo($moduloId);
+
+        $dataObject = $response[0];
+
+        $this->assertNotEmpty($dataObject->ctr_id);
+        $this->assertNotEmpty($dataObject->ctr_nome);
+    }
+
+    public function testListsAllByModulo()
+    {
+        factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
+
+        $moduloId = 1;
+
+        $response = $this->repo->listsAllByModulo($moduloId);
+
+        $dataObject = current($response);
+
+        $this->assertNotEmpty($dataObject);
+        $this->assertContainsOnly('string', $dataObject);
+    }
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');
