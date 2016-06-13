@@ -60,3 +60,11 @@ $factory->define(Modulos\Seguranca\Models\Recurso::class, function (Faker\Genera
         'rcs_ordem' => 1
     ];
 });
+
+$factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Generator $faker) {
+    return [
+        'prm_rcs_id' => 1,
+        'prm_nome' => $faker->name,
+        'prm_descricao' => $faker->sentence(3)
+    ];
+});

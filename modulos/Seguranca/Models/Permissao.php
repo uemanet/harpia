@@ -2,7 +2,7 @@
 
 namespace Modulos\Seguranca\Models;
 
-use App\Models\BaseModel;
+use Modulos\Core\Model\BaseModel;
 
 class Permissao extends BaseModel
 {
@@ -10,7 +10,11 @@ class Permissao extends BaseModel
 
     protected $primaryKey = 'prm_id';
 
-    protected $fillable = ['prm_rcs_id',    'prm_nome', 'prm_descricao'];
+    protected $fillable = ['prm_rcs_id', 'prm_nome', 'prm_descricao'];
+
+    protected $searchable = [
+        'prm_nome' => 'like'
+    ];
 
     public function recurso()
     {
