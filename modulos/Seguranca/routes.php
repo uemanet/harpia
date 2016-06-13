@@ -13,5 +13,6 @@ Route::group(['prefix' => 'seguranca','middleware' => ['auth']], function () {
         'profile'   => '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController',
         'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',
         'perfis' => '\Modulos\Seguranca\Http\Controllers\PerfisController',
+        'categoriasrecursos' => '\Modulos\Seguranca\Http\Controllers\CategoriasRecursosController',
     ]);
 });

@@ -59,9 +59,9 @@ class ModulosController extends BaseController
         }
     }
 
-    public function getEdit($idModulo)
+    public function getEdit($moduloId)
     {
-        $modulo = $this->moduloRepository->find($idModulo);
+        $modulo = $this->moduloRepository->find($moduloId);
 
         if (!$modulo) {
             flash()->error('Módulo não existe.');

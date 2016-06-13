@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Seguranca\Repositories\CategoriaRecursoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
 class CategoriaRecursoRepositoryTest extends TestCase
@@ -37,8 +38,8 @@ class CategoriaRecursoRepositoryTest extends TestCase
     {
         $response = $this->repo->all();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertEquals(0, $response->total());
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertEquals(0, $response->count());
     }
 
     public function testPaginateWithoutParameters()
@@ -136,11 +137,16 @@ class CategoriaRecursoRepositoryTest extends TestCase
     {
         $response = factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
 
-        $data = $response->toArray();
+        $this->seeInDatabase('seg_categorias_recursos', $response->toArray());
+    }
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\CategoriaRecurso::class, $response);
+    public function testCreateWithEmptyCateregoriaReferencia()
+    {
+        $response = factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create([
+            'ctr_referencia' => '',
+        ]);
 
-        $this->assertArrayHasKey('ctr_id', $data);
+        $this->seeInDatabase('seg_categorias_recursos', $response->toArray());
     }
 
     public function testFind()
@@ -157,10 +163,26 @@ class CategoriaRecursoRepositoryTest extends TestCase
         $updateArray = $data->toArray();
         $updateArray['ctr_nome'] = 'abcde_edcba';
 
-        $moduloId = $updateArray['ctr_id'];
+        $categoriaId = $updateArray['ctr_id'];
         unset($updateArray['ctr_id']);
 
-        $response = $this->repo->update($updateArray, $moduloId, 'ctr_id');
+        $response = $this->repo->update($updateArray, $categoriaId, 'ctr_id');
+
+        $this->assertEquals(1, $response);
+    }
+
+    public function testUpdateWithEmptyCateregoriaReferencia()
+    {
+        $data = factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
+
+        $updateArray = $data->toArray();
+        $updateArray['ctr_nome'] = 'abcde_edcba';
+        $updateArray['ctr_referencia'] = '';
+
+        $categoriaId = $updateArray['ctr_id'];
+        unset($updateArray['ctr_id']);
+
+        $response = $this->repo->update($updateArray, $categoriaId, 'ctr_id');
 
         $this->assertEquals(1, $response);
     }
@@ -168,9 +190,9 @@ class CategoriaRecursoRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
-        $moduloId = $data->ctr_id;
+        $categoriaId = $data->ctr_id;
 
-        $response = $this->repo->delete($moduloId);
+        $response = $this->repo->delete($categoriaId);
 
         $this->assertEquals(1, $response);
     }

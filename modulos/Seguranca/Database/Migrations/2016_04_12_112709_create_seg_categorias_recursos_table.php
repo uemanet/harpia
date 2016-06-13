@@ -17,8 +17,8 @@ class CreateSegCategoriasRecursosTable extends Migration {
             $table->increments('ctr_id');
             $table->integer('ctr_mod_id')->unsigned();
             $table->string('ctr_nome', 45);
-            $table->string('ctr_descricao');
-            $table->string('ctr_icone', 45);
+            $table->string('ctr_descricao')->nullable();
+            $table->string('ctr_icone', 45)->default('fa fa-cog');
             $table->integer('ctr_ordem');
             $table->boolean('ctr_ativo')->default(1);
             $table->boolean('ctr_visivel')->default(1);

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Seguranca\Repositories\ModuloRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
 class ModuloRepositoryTest extends TestCase
@@ -37,8 +38,8 @@ class ModuloRepositoryTest extends TestCase
     {
         $response = $this->repo->all();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertEquals(0, $response->total());
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertEquals(0, $response->count());
     }
 
     public function testPaginateWithoutParameters()

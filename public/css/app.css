@@ -14424,6 +14424,9 @@ fieldset[disabled] .btn-yahoo.active {
   width: 100%;
   text-align: left;
 }
+.form-singlebutton .btn-delete i.fa {
+  margin-right: 10px;
+}
 .form-singlebutton .btn-delete:hover {
   background-color: #e1e3e9;
   color: #d73925 !important;

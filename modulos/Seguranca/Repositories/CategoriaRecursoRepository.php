@@ -11,4 +11,22 @@ class CategoriaRecursoRepository extends BaseRepository
     {
         $this->model = $categoriaRecurso;
     }
+
+    public function create(array $data)
+    {
+        if(empty($data['ctr_referencia'])) {
+            unset($data['ctr_referencia']);
+        }
+
+        return $this->model->create($data);
+    }
+
+    public function update(array $data, $id, $attribute = "id")
+    {
+        if(empty($data['ctr_referencia'])) {
+            unset($data['ctr_referencia']);
+        }
+
+        return $this->model->where($attribute, '=', $id)->update($data);
+    }
 }
