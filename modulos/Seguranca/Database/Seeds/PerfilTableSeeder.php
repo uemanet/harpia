@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\Perfil;
 
-class PerfilTableSeeder extends Seeder {
+class PerfilTableSeeder extends Seeder
+{
 
     public function run()
     {

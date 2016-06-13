@@ -40,11 +40,11 @@ class ModulosSeed extends Command
     {
         $modulos = config('modulos.modulos');
 
-        while (list(,$modulo) = each($modulos)) {
+        while (list(, $modulo) = each($modulos)) {
 
             // Load the migrations
             $class = '\Modulos\\'. $modulo .'\Database\Seeds\\'. $modulo .'Seeder';
-            if (class_exists($class )) {
+            if (class_exists($class)) {
                 Artisan::call('db:seed', ['--class' => $class]);
 
                 $this->info($modulo . ' Seed complete!');

@@ -30,6 +30,6 @@ class CreateSegAuditoresTable extends Migration
      */
     public function down()
     {
-       Schema::drop('seg_auditores');
+        Schema::drop('seg_auditores');
     }
 }

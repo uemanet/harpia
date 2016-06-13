@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSegCategoriasRecursosTable extends Migration {
+class CreateSegCategoriasRecursosTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateSegCategoriasRecursosTable extends Migration {
      */
     public function up()
     {
-        Schema::create('seg_categorias_recursos', function(Blueprint $table)
-        {
+        Schema::create('seg_categorias_recursos', function (Blueprint $table) {
             $table->increments('ctr_id');
             $table->integer('ctr_mod_id')->unsigned();
             $table->string('ctr_nome', 45);
@@ -39,5 +39,4 @@ class CreateSegCategoriasRecursosTable extends Migration {
     {
         Schema::drop('seg_categorias_recursos');
     }
-
 }

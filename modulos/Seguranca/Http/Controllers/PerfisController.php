@@ -118,7 +118,7 @@ class PerfisController extends BaseController
         try {
             $perfilId = $request->get('id');
 
-            if($this->perfilRepository->delete($perfilId)) {
+            if ($this->perfilRepository->delete($perfilId)) {
                 flash()->success('Perfil excluído com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir o perfil');

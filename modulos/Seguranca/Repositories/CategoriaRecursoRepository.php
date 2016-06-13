@@ -14,7 +14,7 @@ class CategoriaRecursoRepository extends BaseRepository
 
     public function create(array $data)
     {
-        if(empty($data['ctr_referencia'])) {
+        if (empty($data['ctr_referencia'])) {
             unset($data['ctr_referencia']);
         }
 
@@ -23,7 +23,7 @@ class CategoriaRecursoRepository extends BaseRepository
 
     public function update(array $data, $id, $attribute = "id")
     {
-        if(empty($data['ctr_referencia'])) {
+        if (empty($data['ctr_referencia'])) {
             unset($data['ctr_referencia']);
         }
 

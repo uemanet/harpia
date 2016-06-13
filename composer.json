@@ -19,10 +19,11 @@
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*",
         "phpunit/phpunit": "~4.0",
-        "phpunit/php-code-coverage": "^3.1",
-        "squizlabs/php_codesniffer": "^2.5",
-        "fabpot/php-cs-fixer": "^1.11",
-        "codacy/coverage": "dev-master"
+        "phpunit/php-code-coverage": "~2.2",
+        "squizlabs/php_codesniffer": "~2.6",
+        "friendsofphp/php-cs-fixer": "^1.11",
+        "symfony/console": "~2.5",
+        "codacy/coverage": "^1.0"
     },
     "autoload": {
         "classmap": [
@@ -48,7 +49,8 @@
         ],
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+            "php artisan optimize",
+            "chmod +x fixcode"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",

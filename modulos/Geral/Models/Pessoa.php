@@ -4,7 +4,8 @@ namespace Modulos\Geral\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pessoa extends Model {
+class Pessoa extends Model
+{
 
     protected $table = 'gra_pessoa';
 

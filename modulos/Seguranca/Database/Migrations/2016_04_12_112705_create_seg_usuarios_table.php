@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSegUsuariosTable extends Migration {
+class CreateSegUsuariosTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateSegUsuariosTable extends Migration {
      */
     public function up()
     {
-        Schema::create('seg_usuarios', function(Blueprint $table)
-        {
+        Schema::create('seg_usuarios', function (Blueprint $table) {
             $table->integer('usr_pes_id')->unsigned();
             $table->string('usr_usuario', 60)->unique();
             $table->string('usr_senha', 100);
@@ -35,5 +35,4 @@ class CreateSegUsuariosTable extends Migration {
     {
         Schema::drop('seg_usuarios');
     }
-
 }

@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\CategoriaRecurso;
 
-class CategoriaRecursoTableSeeder extends Seeder {
+class CategoriaRecursoTableSeeder extends Seeder
+{
 
     public function run()
     {

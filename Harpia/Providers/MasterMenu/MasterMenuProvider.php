@@ -23,7 +23,7 @@ class MasterMenuProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['MasterMenu'] = $this->app->share(function($app){
+        $this->app['MasterMenu'] = $this->app->share(function ($app) {
             return new MasterMenu($app);
         });
     }

@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\Modulo;
 
-class ModuloTableSeeder extends Seeder {
+class ModuloTableSeeder extends Seeder
+{
 
     public function run()
     {

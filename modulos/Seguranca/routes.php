@@ -7,10 +7,10 @@ Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@po
 Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogout');
 
 
-Route::group(['prefix' => 'seguranca','middleware' => ['auth']], function () {
+Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
     Route::controllers([
-        'index'   => '\Modulos\Seguranca\Http\Controllers\IndexController',
-        'profile'   => '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController',
+        'index' => '\Modulos\Seguranca\Http\Controllers\IndexController',
+        'profile' => '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController',
         'modulos' => '\Modulos\Seguranca\Http\Controllers\ModulosController',
         'perfis' => '\Modulos\Seguranca\Http\Controllers\PerfisController',
         'categoriasrecursos' => '\Modulos\Seguranca\Http\Controllers\CategoriasRecursosController',

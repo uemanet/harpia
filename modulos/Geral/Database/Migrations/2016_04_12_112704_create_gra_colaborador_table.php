@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraColaboradorTable extends Migration {
+class CreateGraColaboradorTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateGraColaboradorTable extends Migration {
      */
     public function up()
     {
-        Schema::create('gra_colaborador', function(Blueprint $table)
-        {
+        Schema::create('gra_colaborador', function (Blueprint $table) {
             $table->integer('col_pes_id')->unsigned();
             $table->integer('col_fun_id')->unsigned();
             $table->integer('col_set_id')->unsigned();
@@ -37,5 +37,4 @@ class CreateGraColaboradorTable extends Migration {
     {
         Schema::drop('gra_colaborador');
     }
-
 }

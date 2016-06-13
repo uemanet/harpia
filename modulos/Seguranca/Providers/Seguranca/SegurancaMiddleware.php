@@ -25,7 +25,7 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
 
         $path = $this->getPathInfoArray($request->path());
 
-        if($this->seguranca->haspermission($path)) {
+        if ($this->seguranca->haspermission($path)) {
             return $next($request);
         }
 

@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSegPermissoesTable extends Migration {
+class CreateSegPermissoesTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateSegPermissoesTable extends Migration {
      */
     public function up()
     {
-        Schema::create('seg_permissoes', function(Blueprint $table)
-        {
+        Schema::create('seg_permissoes', function (Blueprint $table) {
             $table->increments('prm_id');
             $table->integer('prm_rcs_id')->unsigned();
             $table->string('prm_nome', 45);
@@ -33,5 +33,4 @@ class CreateSegPermissoesTable extends Migration {
     {
         Schema::drop('seg_permissoes');
     }
-
 }

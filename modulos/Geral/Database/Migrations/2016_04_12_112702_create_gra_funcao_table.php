@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraFuncaoTable extends Migration {
+class CreateGraFuncaoTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateGraFuncaoTable extends Migration {
      */
     public function up()
     {
-        Schema::create('gra_funcao', function(Blueprint $table)
-        {
+        Schema::create('gra_funcao', function (Blueprint $table) {
             $table->increments('fun_id');
             $table->string('fun_nome', 45);
             $table->timestamps();
@@ -29,5 +29,4 @@ class CreateGraFuncaoTable extends Migration {
     {
         Schema::drop('gra_funcao');
     }
-
 }

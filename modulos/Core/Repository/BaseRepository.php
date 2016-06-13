@@ -45,13 +45,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         $result = $this->model;
 
-        if(!empty($search)) {
+        if (!empty($search)) {
             foreach ($search as $key => $value) {
                 $result = $result->where($value['field'], $value['type'], $value['term']);
             }
         }
 
-        if(!empty($sort)) {
+        if (!empty($sort)) {
             $result = $result->orderBy($sort['field'], $sort['sort']);
         }
 

@@ -23,7 +23,7 @@ class MenuServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['Menu'] = $this->app->share(function($app){
+        $this->app['Menu'] = $this->app->share(function ($app) {
             return new Menu($app['request'], $app['auth']);
         });
     }

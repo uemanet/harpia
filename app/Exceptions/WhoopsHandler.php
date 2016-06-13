@@ -9,7 +9,8 @@ use Illuminate\Http\Response;
 use App\Exceptions\Handler as BaseExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class WhoopsHandler extends BaseExceptionHandler {
+class WhoopsHandler extends BaseExceptionHandler
+{
 
 
     /**
@@ -20,19 +21,16 @@ class WhoopsHandler extends BaseExceptionHandler {
      */
     public function render($request, Exception $e)
     {
-        if ($this->isHttpException($e))
-        {
+        if ($this->isHttpException($e)) {
             return $this->renderHttpException($e);
         }
 
-        if ($this->shouldntReport($e))
-        {
+        if ($this->shouldntReport($e)) {
             throw $e;
         }
 
 
-        if (config('app.debug'))
-        {
+        if (config('app.debug')) {
             return $this->renderExceptionWithWhoops($e);
         }
 

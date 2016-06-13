@@ -23,7 +23,7 @@ class ActionButtonProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['ActionButton'] = $this->app->share(function($app){
+        $this->app['ActionButton'] = $this->app->share(function ($app) {
             return new ActionButton($app);
         });
     }

@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "Fixing files code style with psr2"
+echo "================================="
+
+echo "Fixing Harpia folder"
+bin/php-cs-fixer fix Harpia --level=psr2
+
+echo "Fixing app folder"
+bin/php-cs-fixer fix app --level=psr2
+
+echo "Fixing modulos folder"
+bin/php-cs-fixer fix modulos --level=psr2

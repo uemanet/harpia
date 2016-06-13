@@ -12,7 +12,7 @@ class Permissao extends BaseModel
 
     protected $fillable = ['prm_rcs_id',    'prm_nome', 'prm_descricao'];
 
-	public function recurso()
+    public function recurso()
     {
         return $this->belongsTo('Modulos\Seguranca\Models\Recurso', 'prm_rcs_id', 'rcs_id');
     }

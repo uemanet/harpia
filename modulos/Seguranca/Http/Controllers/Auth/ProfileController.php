@@ -24,7 +24,8 @@ class ProfileController extends BaseController
 
     public function getIndex()
     {
-        $pessoa = $this->auth->user()->pessoa;;
+        $pessoa = $this->auth->user()->pessoa;
+        ;
 
         return view('Seguranca::auth.profile.index', compact('pessoa'));
     }
@@ -51,7 +52,6 @@ class ProfileController extends BaseController
             flash()->success('Perfil atualizado com sucesso.');
 
             return redirect('/seguranca/profile');
-
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -73,8 +73,7 @@ class ProfileController extends BaseController
 
             $usuario = $this->auth->user();
 
-            if (!Hash::check($request->get('usr_senha'), $usuario->usr_senha))
-            {
+            if (!Hash::check($request->get('usr_senha'), $usuario->usr_senha)) {
                 flash()->error('Senha atual não confere.');
 
                 return redirect('/seguranca/profile');
@@ -90,7 +89,6 @@ class ProfileController extends BaseController
             flash()->success('Senha atualizada com sucesso.');
 
             return redirect('/seguranca/profile');
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             flash()->error('Não foi possível alterar a senha. Por favor, tente novamente.');
 

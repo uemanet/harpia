@@ -121,7 +121,7 @@ class CategoriasRecursosController extends BaseController
         try {
             $categoriaId = $request->get('id');
 
-            if($this->categoriaRecursoRepository->delete($categoriaId)) {
+            if ($this->categoriaRecursoRepository->delete($categoriaId)) {
                 flash()->success('Categoria excluída com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir a categoria');

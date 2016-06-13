@@ -3,11 +3,11 @@
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-
 use Modulos\Geral\Models\Pessoa;
 use Modulos\Seguranca\Models\Usuario;
 
-class UsuarioTableSeeder extends Seeder {
+class UsuarioTableSeeder extends Seeder
+{
 
     public function run()
     {

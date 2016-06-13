@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\Recurso;
 
-class RecursoTableSeeder extends Seeder {
+class RecursoTableSeeder extends Seeder
+{
 
     public function run()
     {

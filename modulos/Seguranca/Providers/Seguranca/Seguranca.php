@@ -5,11 +5,11 @@ namespace Modulos\Seguranca\Providers\Seguranca;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
 use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
-
 use Cache;
 use DB;
 
-class Seguranca implements SegurancaContract {
+class Seguranca implements SegurancaContract
+{
     /**
      * The Laravel Application.
      *
@@ -54,8 +54,8 @@ class Seguranca implements SegurancaContract {
         $arrayMenu = [];
         $pai = 0;
 
-        for($i=0; $i < count($categoriasModulos); $i++){
-            if(!array_key_exists($categoriasModulos[$i]->mod_rota,$arrayMenu)){
+        for ($i=0; $i < count($categoriasModulos); $i++) {
+            if (!array_key_exists($categoriasModulos[$i]->mod_rota, $arrayMenu)) {
                 $arrayMenu[$categoriasModulos[$i]->mod_rota] = array(
                     'mod_id' => $categoriasModulos[$i]->mod_rota,
                     'mod_rota' => $categoriasModulos[$i]->mod_rota,
@@ -63,7 +63,7 @@ class Seguranca implements SegurancaContract {
                 );
             }
 
-            if(is_null($categoriasModulos[$i]->ctr_referencia)){
+            if (is_null($categoriasModulos[$i]->ctr_referencia)) {
                 $arrayMenu[$categoriasModulos[$i]->mod_rota]['CATEGORIAS'][$categoriasModulos[$i]->ctr_id] = array(
                     'ctr_id' => $categoriasModulos[$i]->ctr_id,
                     'ctr_nome' => $categoriasModulos[$i]->ctr_nome,
@@ -72,11 +72,11 @@ class Seguranca implements SegurancaContract {
                 );
             }
 
-            if(!is_null($categoriasModulos[$i]->ctr_referencia)){
+            if (!is_null($categoriasModulos[$i]->ctr_referencia)) {
                 $arrayMenu[$categoriasModulos[$i]->mod_rota]['CATEGORIAS'][$categoriasModulos[$i]->ctr_referencia]['SUBCATEGORIA'][$categoriasModulos[$i]->ctr_id] = array(
                     'ctr_id' => $categoriasModulos[$i]->ctr_id,
                     'ctr_nome' => $categoriasModulos[$i]->ctr_nome,
-                    'ctr_icone' => $categoriasModulos[$i]->ctr_icone,                    
+                    'ctr_icone' => $categoriasModulos[$i]->ctr_icone,
                     'ITENS' => array()
                 );
             }
@@ -97,9 +97,9 @@ class Seguranca implements SegurancaContract {
 
         $recursos =  DB::select($sqlRecursos, ['usrId' => $usrId]);
 
-        foreach ($recursos as $key => $recurso){
-            if(!array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_rota]['CATEGORIAS'])){
-                if(array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'])){
+        foreach ($recursos as $key => $recurso) {
+            if (!array_key_exists($recurso->ctr_id, $arrayMenu[$recurso->mod_rota]['CATEGORIAS'])) {
+                if (array_key_exists($recurso->ctr_id, $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'])) {
                     $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
                         'rcs_id' => $recurso->rcs_id,
                         'rcs_nome' => $recurso->rcs_nome,
@@ -109,7 +109,7 @@ class Seguranca implements SegurancaContract {
                 }
             }
 
-            if(array_key_exists($recurso->ctr_id,$arrayMenu[$recurso->mod_rota]['CATEGORIAS'])){
+            if (array_key_exists($recurso->ctr_id, $arrayMenu[$recurso->mod_rota]['CATEGORIAS'])) {
                 $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
                     'rcs_id' => $recurso->rcs_id,
                     'rcs_nome' => $recurso->rcs_nome,
@@ -120,10 +120,11 @@ class Seguranca implements SegurancaContract {
         }
 
         //Estrutura do menu em cache
-        Cache::forever('MENU_'.$usrId,$arrayMenu);
+        Cache::forever('MENU_'.$usrId, $arrayMenu);
     }
 
-    public function makeCachePermission(){
+    public function makeCachePermission()
+    {
         $usrId = $this->app['auth']->user()->usr_pes_id;
 
         $sql = 'SELECT 
@@ -142,7 +143,7 @@ class Seguranca implements SegurancaContract {
         $permissoes =  DB::select($sql, ['usrId' => $usrId]);
 
         //Estrutura de permissão em cache
-        Cache::forever('PERMISSAO_'.$usrId,$permissoes);
+        Cache::forever('PERMISSAO_'.$usrId, $permissoes);
     }
 
     /**
@@ -154,30 +155,30 @@ class Seguranca implements SegurancaContract {
      */
     public function haspermission($path)
     {
-      list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
+        list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
 
       // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
       if (is_null($this->getUser())) {
-        if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)) {
-            return true;
-        }
+          if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)) {
+              return true;
+          }
 
-        return false;
+          return false;
       }
 
       // Verifica se a rota eh liberada pas usuarios logados.
       if ($this->isPostLoginOpenActions($modulo, $recurso, $permissao)) {
-        return true;
+          return true;
       }
 
       // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
       $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $modulo, $recurso, $permissao);
 
-      if ($hasPermission){
-        return true;
-      }
+        if ($hasPermission) {
+            return true;
+        }
 
-      return false;
+        return false;
     }
 
     /**
@@ -214,14 +215,15 @@ class Seguranca implements SegurancaContract {
         return in_array($fullRoute, $openActions);
     }
 
-    public function getUserModules(){
+    public function getUserModules()
+    {
         $usrId = $this->getUser()->getAuthIdentifier();
 
         $permissoes = Cache::get('PERMISSAO_'.$usrId);
 
         $modulos = [];
 
-        foreach ($permissoes as $key => $permissao){
+        foreach ($permissoes as $key => $permissao) {
             $modulos[$permissao->mod_id] = array(
                 'mod_id' => $permissao->mod_id,
                 'mod_rota' => $permissao->mod_rota,
@@ -247,15 +249,15 @@ class Seguranca implements SegurancaContract {
      */
     private function verifyPermission($usr_id, $mod_rota, $rcs_nome = 'index', $prm_nome = 'index')
     {
-      $permissoes = Cache::get('PERMISSAO_'.$usr_id);
+        $permissoes = Cache::get('PERMISSAO_'.$usr_id);
 
-      foreach ($permissoes as $key => $permissao){
-        if($permissao->mod_rota == $mod_rota && $permissao->rcs_nome == $rcs_nome && $prm_nome == $prm_nome){
-          return true;
+        foreach ($permissoes as $key => $permissao) {
+            if ($permissao->mod_rota == $mod_rota && $permissao->rcs_nome == $rcs_nome && $prm_nome == $prm_nome) {
+                return true;
+            }
         }
-      }
 
-      return true;
+        return true;
 
       // return false;
     }
@@ -268,7 +270,7 @@ class Seguranca implements SegurancaContract {
      */
     private function extractPathResources($fullPath)
     {
-        if(is_string($fullPath)) {
+        if (is_string($fullPath)) {
             $fullPath = explode("/", $fullPath);
         }
 

@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\Permissao;
 
-class PermissaoTableSeeder extends Seeder {
+class PermissaoTableSeeder extends Seeder
+{
 
     public function run()
     {

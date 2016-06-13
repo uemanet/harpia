@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Providers\Menu;
 use Illuminate\Auth\Guard;
 use DB;
 
-class Menu {
+class Menu
+{
 
     protected $request;
     protected $auth;
@@ -26,12 +27,12 @@ class Menu {
         $userId = $this->auth->user()->getAuthIdentifier();
 
 
-        if(!isset($_COOKIE['Permissoes'])) {
+        if (!isset($_COOKIE['Permissoes'])) {
             echo "Cookie named Permissoes is not set!";
             $permissoes = $this->getPermissoes($modulo, $userId);
             $cookie_value = $permissoes;
             setcookie('Permissoes', serialize($cookie_value), time() + (86400 * 30), "/"); // 86400 = 1 day
-        } 
+        }
 
         $permissoes_cookie = unserialize($_COOKIE['Permissoes']);
 
@@ -41,7 +42,7 @@ class Menu {
 
         foreach ($navigation as $nav) {
             $active = '';
-            if(array_key_exists('activeMenu', $nav)) {
+            if (array_key_exists('activeMenu', $nav)) {
                 $active = "class='{$nav['activeMenu']}'";
             }
 
@@ -72,10 +73,10 @@ class Menu {
                </a>";
 
             $html .= "<ul id='{$nav['id']}' class='nav sidebar-subnav collapse in'>";
-                    foreach ($nav['pages'] as $page) {
-                        $isActive = $page['active'] == true ? "class='active'" : "";
-                        $html .= "<li {$isActive}><a title='{$page['label']}' href='".url()."{$page['uri']}'>{$page['label']}</a></li>";
-                    }
+            foreach ($nav['pages'] as $page) {
+                $isActive = $page['active'] == true ? "class='active'" : "";
+                $html .= "<li {$isActive}><a title='{$page['label']}' href='".url()."{$page['uri']}'>{$page['label']}</a></li>";
+            }
             $html .= "</ul>";
         }
 
@@ -114,7 +115,7 @@ class Menu {
                 $navigation[$permissao->ctr_nome]['uri']   = '#';
                 $navigation[$permissao->ctr_nome]['icon']  = $permissao->ctr_icone;
 
-                if($activeController == strtolower($permissao->rcs_nome)){
+                if ($activeController == strtolower($permissao->rcs_nome)) {
                     $navigation[$permissao->ctr_nome]['activeMenu'] = 'active';
                 }
 

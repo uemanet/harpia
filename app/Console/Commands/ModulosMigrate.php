@@ -40,12 +40,12 @@ class ModulosMigrate extends Command
     {
         $modulos = config('modulos.modulos');
 
-        while (list(,$modulo) = each($modulos)) {
+        while (list(, $modulo) = each($modulos)) {
 
             // Load the migrations
             $moduloPath = '/modulos/' . $modulo.'/Database/Migrations';
             $dirPath = base_path() . $moduloPath;
-            if (is_dir($dirPath )) {
+            if (is_dir($dirPath)) {
                 Artisan::call('migrate', ['--path' => $moduloPath]);
 
                 $this->info($modulo . ' migration complete!');

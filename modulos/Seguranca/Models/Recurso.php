@@ -4,7 +4,8 @@ namespace Modulos\Seguranca\Models;
 
 use App\Models\BaseModel;
 
-class Recurso extends BaseModel {
+class Recurso extends BaseModel
+{
 
     protected $table = 'seg_recursos';
 
@@ -12,7 +13,7 @@ class Recurso extends BaseModel {
 
     protected $fillable = ['rcs_ctr_id', 'rcs_nome', 'rcs_descricao', 'rcs_icone', 'rcs_ativo', 'rcs_ordem'];
 
-	public function categoria()
+    public function categoria()
     {
         return $this->belongsTo('Modulos\Seguranca\Models\CategoriaRecurso', 'rcs_ctr_id', 'ctr_id');
     }

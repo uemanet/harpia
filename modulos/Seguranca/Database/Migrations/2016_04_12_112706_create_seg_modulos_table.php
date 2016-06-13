@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSegModulosTable extends Migration {
+class CreateSegModulosTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateSegModulosTable extends Migration {
      */
     public function up()
     {
-        Schema::create('seg_modulos', function(Blueprint $table)
-        {
+        Schema::create('seg_modulos', function (Blueprint $table) {
             $table->increments('mod_id');
             $table->string('mod_nome', 150);
             $table->string('mod_rota', 45);
@@ -35,5 +35,4 @@ class CreateSegModulosTable extends Migration {
     {
         Schema::drop('seg_modulos');
     }
-
 }

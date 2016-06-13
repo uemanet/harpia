@@ -4,7 +4,8 @@ namespace Modulos\Seguranca\Models;
 
 use Modulos\Core\Model\BaseModel;
 
-class CategoriaRecurso extends BaseModel {
+class CategoriaRecurso extends BaseModel
+{
     protected $table = 'seg_categorias_recursos';
 
     protected $primaryKey = 'ctr_id';

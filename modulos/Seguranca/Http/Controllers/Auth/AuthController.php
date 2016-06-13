@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Foundation\Application;
-
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 use Cache;
 
@@ -63,7 +62,7 @@ class AuthController extends Controller
     {
         $credentials = $this->getCredentials($request);
 
-        if ($this->auth->attempt($credentials, $request->has('remember'))){
+        if ($this->auth->attempt($credentials, $request->has('remember'))) {
 
             //Gera estrutura do menu em cache
             $seguranca = $this->app[Seguranca::class];

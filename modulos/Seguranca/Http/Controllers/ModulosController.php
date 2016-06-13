@@ -40,14 +40,14 @@ class ModulosController extends BaseController
             $modulo = $this->moduloRepository->create($request->all());
 
             if (!$modulo) {
-                 flash()->error('Erro ao tentar salvar.');
+                flash()->error('Erro ao tentar salvar.');
 
-                 return redirect()->back()->withInput($request->all());
-             }
+                return redirect()->back()->withInput($request->all());
+            }
 
-             flash()->success('Módulo criado com sucesso.');
+            flash()->success('Módulo criado com sucesso.');
 
-             return redirect('/seguranca/modulos');
+            return redirect('/seguranca/modulos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -86,14 +86,14 @@ class ModulosController extends BaseController
             $requestData = $request->only($this->moduloRepository->getFillableModelFields());
 
             if (!$this->moduloRepository->update($requestData, $modulo->mod_id, 'mod_id')) {
-                 flash()->error('Erro ao tentar salvar.');
+                flash()->error('Erro ao tentar salvar.');
 
                 return redirect()->back()->withInput($request->all());
-             }
+            }
 
-             flash()->success('Módulo atualizado com sucesso.');
+            flash()->success('Módulo atualizado com sucesso.');
 
-             return redirect('/seguranca/modulos');
+            return redirect('/seguranca/modulos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -105,26 +105,26 @@ class ModulosController extends BaseController
         }
     }
 
-     public function postDelete(Request $request)
-     {
-         try {
-             $moduloId = $request->get('id');
+    public function postDelete(Request $request)
+    {
+        try {
+            $moduloId = $request->get('id');
 
-             if($this->moduloRepository->delete($moduloId)) {
-                 flash()->success('Módulo excluído com sucesso.');
-             } else {
-                 flash()->error('Erro ao tentar excluir o módulo');
-             }
+            if ($this->moduloRepository->delete($moduloId)) {
+                flash()->success('Módulo excluído com sucesso.');
+            } else {
+                flash()->error('Erro ao tentar excluir o módulo');
+            }
 
-             return redirect()->back();
-         } catch (\Exception $e) {
-             if (config('app.debug')) {
-                 throw $e;
-             } else {
-                 flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
-                 return redirect()->back();
-             }
-         }
-     }
+                return redirect()->back();
+            }
+        }
+    }
 }

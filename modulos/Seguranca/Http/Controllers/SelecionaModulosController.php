@@ -31,10 +31,10 @@ class SelecionaModulosController extends BaseController
             'usr_usuario' => $this->auth->user()->usr_usuario
         );
 
-        if(sizeof($modulos) == 1 && env('REDIRECT_MODULE')){
+        if (sizeof($modulos) == 1 && env('REDIRECT_MODULE')) {
             return redirect(current($modulos)->mod_nome.'/index');
         }
 
-        return view('Seguranca::selecionamodulos.index')->with(array('modulos'=>$modulos,'infoUser'=>$infoUser));
+        return view('Seguranca::selecionamodulos.index')->with(array('modulos'=>$modulos, 'infoUser'=>$infoUser));
     }
 }

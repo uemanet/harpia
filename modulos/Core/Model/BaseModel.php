@@ -11,7 +11,8 @@ class BaseModel extends Model
 
     protected $searchable = [];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
     }
 

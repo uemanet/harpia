@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSegPerfisTable extends Migration {
+class CreateSegPerfisTable extends Migration
+{
 
     /**
      * Run the migrations.
@@ -12,8 +13,7 @@ class CreateSegPerfisTable extends Migration {
      */
     public function up()
     {
-        Schema::create('seg_perfis', function(Blueprint $table)
-        {
+        Schema::create('seg_perfis', function (Blueprint $table) {
             $table->increments('prf_id');
             $table->integer('prf_mod_id')->unsigned();
             $table->string('prf_nome', 150);
@@ -33,5 +33,4 @@ class CreateSegPerfisTable extends Migration {
     {
         Schema::drop('seg_perfis');
     }
-
 }
