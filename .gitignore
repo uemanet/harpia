@@ -7,3 +7,4 @@ Homestead.json
 .idea
 .DS_STORE
 /bin
+*_reports
