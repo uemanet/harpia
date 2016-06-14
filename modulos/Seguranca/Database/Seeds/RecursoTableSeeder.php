@@ -54,5 +54,14 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 5;
         $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 1; // Categoria Seguranca
+        $recurso->rcs_nome = 'Perfis Permissoes';
+        $recurso->rcs_descricao = 'Recurso para definição de permissões para o perfil';
+        $recurso->rcs_icone = 'fa fa-cogs';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 6;
+        $recurso->save();
     }
 }
