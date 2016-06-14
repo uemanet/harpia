@@ -17,6 +17,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createCategoriasRecursos();
 
         $this->createRecursos();
+
+        $this->createPermissoes();
     }
 
     private function createPermissoesModulo()
@@ -124,6 +126,33 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 4;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso recursos da categoria segurança do módulo segurança';
+        $permissao->save();
+    }
+
+    private function createPermissoes()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 5;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso permissoes da categoria segurança do módulo segurança';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 5;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso permissoes da categoria segurança do módulo segurança';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 5;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso permissoes da categoria segurança do módulo segurança';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 5;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso permissoes da categoria segurança do módulo segurança';
         $permissao->save();
     }
 }

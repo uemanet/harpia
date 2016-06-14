@@ -128,9 +128,9 @@ class RecursosController extends BaseController
             $recursoId = $request->get('id');
 
             if ($this->recursoRepository->delete($recursoId)) {
-                flash()->success('Recursos excluído com sucesso.');
+                flash()->success('Recurso excluído com sucesso.');
             } else {
-                flash()->error('Erro ao tentar excluir o perfil');
+                flash()->error('Erro ao tentar excluir o recurso');
             }
 
             return redirect()->back();

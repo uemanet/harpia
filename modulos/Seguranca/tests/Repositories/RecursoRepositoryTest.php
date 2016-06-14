@@ -176,6 +176,38 @@ class RecursoRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testFindAllByModulo()
+    {
+        factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
+        factory(Modulos\Seguranca\Models\Recurso::class)->create();
+
+        $moduloId = 1;
+
+        $response = $this->repo->findAllByModulo($moduloId);
+
+        $dataObject = $response[0];
+
+        $this->assertNotEmpty($dataObject->rcs_id);
+        $this->assertNotEmpty($dataObject->rcs_nome);
+    }
+
+    public function testListsAllByModulo()
+    {
+        factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
+        factory(Modulos\Seguranca\Models\Recurso::class)->create();
+
+        $moduloId = 1;
+
+        $response = $this->repo->listsAllByModulo($moduloId);
+
+        $dataObject = current($response);
+
+        $this->assertNotEmpty($dataObject);
+        $this->assertContainsOnly('string', $response);
+    }
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');

@@ -42,7 +42,8 @@
 </div>
 
 @section('scripts')
-    <script>
+    <script type="application/javascript">
+
         $('#mod_id').change(function() {
             var moduloId = $("#mod_id").val();
 
@@ -54,8 +55,6 @@
 
             $.get('{{url('/')}}/seguranca/ajax/categorias/findallbymodulo/' + moduloId, function (categorias) {
                 $("#rcs_ctr_id").empty().append("<option value='' selected>Selecione uma categoria</option>");
-
-                console.log(categorias);
 
                 if($.isEmptyObject(categorias)) {
                     $('#rcs_ctr_id').append('<option value=#>Sem categorias disponíveis</option>');

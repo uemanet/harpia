@@ -2,15 +2,15 @@
     <div class="form-group col-md-6 @if ($errors->has('mod_id')) has-error @endif">
         {!! Form::label('mod_id', 'Módulo*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('mod_id', $modulos, null, ['class' => 'form-control', 'placeholder' => 'Selecione um módulo', 'id' => 'mod_id']) !!}
+            {!! Form::select('mod_id', $modulos, null, ['class' => 'form-control', 'placeholder' => 'Selecione um módulo']) !!}
             @if ($errors->has('mod_id')) <p class="help-block">{{ $errors->first('mod_id') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-6 @if ($errors->has('rcs_ctr_id')) has-error @endif">
-        {!! Form::label('rcs_ctr_id', 'Categoria*', ['class' => 'control-label']) !!}
+    <div class="form-group col-md-6 @if ($errors->has('prm_rcs_id')) has-error @endif">
+        {!! Form::label('prm_rcs_id', 'Recurso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('rcs_ctr_id', [], null, ['class' => 'form-control', 'id' => 'rcs_ctr_id']) !!}
-            @if ($errors->has('rcs_ctr_id')) <p class="help-block">{{ $errors->first('rcs_ctr_id') }}</p> @endif
+            {!! Form::select('prm_rcs_id', [], null, ['class' => 'form-control', 'id' => 'prm_rcs_id']) !!}
+            @if ($errors->has('prm_rcs_id')) <p class="help-block">{{ $errors->first('prm_rcs_id') }}</p> @endif
         </div>
     </div>
 </div>
@@ -25,4 +25,5 @@
     </script>
 @stop
 
-@include('Seguranca::recursos.includes.formulario_base')
+@include('Seguranca::permissoes.includes.formulario_base')
+

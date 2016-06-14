@@ -176,6 +176,21 @@ class PermissaoRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testFindModulo()
+    {
+        factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
+        factory(Modulos\Seguranca\Models\Recurso::class)->create();
+        factory(Modulos\Seguranca\Models\Permissao::class)->create();
+
+        $permissaoId = 1;
+
+        $response = $this->repo->findModulo($permissaoId);
+
+        $this->assertObjectHasAttribute('mod_id', $response);
+        $this->assertObjectHasAttribute('mod_nome', $response);
+    }
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');

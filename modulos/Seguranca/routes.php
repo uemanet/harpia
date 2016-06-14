@@ -21,6 +21,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'ajax', 'middleware' => ['auth']], function () {
         Route::controllers([
             'categorias' => '\Modulos\Seguranca\Http\Controllers\Ajax\CategoriasRecursos',
+            'recursos' => '\Modulos\Seguranca\Http\Controllers\Ajax\Recursos',
         ]);
     });
 
