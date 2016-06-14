@@ -16,6 +16,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         'categoriasrecursos' => '\Modulos\Seguranca\Http\Controllers\CategoriasRecursosController',
         'recursos' => '\Modulos\Seguranca\Http\Controllers\RecursosController',
         'permissoes' => '\Modulos\Seguranca\Http\Controllers\PermissoesController',
+        'perfispermissoes' => '\Modulos\Seguranca\Http\Controllers\PerfisPermissoesController',
     ]);
 
     Route::group(['prefix' => 'ajax', 'middleware' => ['auth']], function () {

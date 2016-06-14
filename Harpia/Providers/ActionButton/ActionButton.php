@@ -86,6 +86,8 @@ class ActionButton
 
     private function renderButtonGrid($config, $buttons)
     {
+        $seguranca = $this->app[Seguranca::class];
+
         $render = '';
 
         foreach ($buttons as $key => $button) {
