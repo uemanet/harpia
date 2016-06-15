@@ -82,7 +82,7 @@ class Seguranca implements SegurancaContract
             }
         }
 
-        $sqlRecursos = 'SELECT mod_id,mod_rota,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_descricao,rcs_icone,prm_nome
+        $sqlRecursos = 'SELECT mod_id,mod_rota,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_rota,rcs_descricao,rcs_icone,prm_nome
                          FROM
                             seg_perfis_usuarios
                             INNER JOIN seg_perfis_permissoes ON prp_prf_id = pru_prf_id
@@ -103,6 +103,7 @@ class Seguranca implements SegurancaContract
                     $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_referencia]['SUBCATEGORIA'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
                         'rcs_id' => $recurso->rcs_id,
                         'rcs_nome' => $recurso->rcs_nome,
+                        'rcs_rota' => $recurso->rcs_rota,
                         'rcs_icone' => $recurso->rcs_icone,
                         'prm_nome' => $recurso->prm_nome
                     );
@@ -113,6 +114,7 @@ class Seguranca implements SegurancaContract
                 $arrayMenu[$recurso->mod_rota]['CATEGORIAS'][$recurso->ctr_id]['ITENS'][$recurso->rcs_id] = array(
                     'rcs_id' => $recurso->rcs_id,
                     'rcs_nome' => $recurso->rcs_nome,
+                    'rcs_rota' => $recurso->rcs_rota,
                     'rcs_icone' => $recurso->rcs_icone,
                     'prm_nome' => $recurso->prm_nome
                 );
@@ -128,7 +130,7 @@ class Seguranca implements SegurancaContract
         $usrId = $this->app['auth']->user()->usr_pes_id;
 
         $sql = 'SELECT 
-                    mod_id,mod_rota,mod_nome,mod_descricao,mod_icone,mod_class,rcs_nome,prm_nome
+                    mod_id,mod_rota,mod_nome,mod_descricao,mod_icone,mod_class,rcs_nome,rcs_rota,prm_nome
                 FROM
                     seg_perfis_usuarios
                     INNER JOIN seg_perfis ON pru_prf_id = pru_prf_id
@@ -155,6 +157,7 @@ class Seguranca implements SegurancaContract
      */
     public function haspermission($path)
     {
+
         list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
 
         // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
@@ -247,13 +250,13 @@ class Seguranca implements SegurancaContract
      *
      * @return mixed
      */
-    private function verifyPermission($usr_id, $mod_rota, $rcs_nome = 'index', $prm_nome = 'index')
+    private function verifyPermission($usr_id, $mod_rota, $rcs_rota = 'index', $prm_nome = 'index')
     {
         $permissoes = Cache::get('PERMISSAO_'.$usr_id);
 
         foreach ($permissoes as $key => $permissao) {
             if (mb_strtolower($permissao->mod_rota) == mb_strtolower($mod_rota) && 
-                mb_strtolower($permissao->rcs_nome) == mb_strtolower($rcs_nome) && 
+                mb_strtolower($permissao->rcs_rota) == mb_strtolower($rcs_rota) && 
                 mb_strtolower($prm_nome) == mb_strtolower($prm_nome)
             ){
                 return true;
