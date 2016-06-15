@@ -70,7 +70,7 @@ class AuthController extends Controller
             $seguranca->makeCachePermission();
             $seguranca->makeCacheMenu();
 
-            return redirect()->intended('/index');
+            return redirect()->intended('/');
         }
 
         return redirect('/login')

@@ -7,6 +7,7 @@ return [
     ),
 
     'postlogin_openactions' => array(
+        'index/index/index',
         'logout/index/index',
         'Index',
     )

@@ -2,9 +2,9 @@
 
 namespace Modulos\Geral\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Modulos\Core\Model\BaseModel;
 
-class Pessoa extends Model
+class Pessoa extends BaseModel
 {
 
     protected $table = 'gra_pessoa';
@@ -26,4 +26,14 @@ class Pessoa extends Model
         'pes_necessidade_especial',
         'pes_estrangeiro'
     ];
+
+    protected $searchable = [
+        'pes_nome' => 'like',
+        'pes_email' => '='
+    ];
+
+    public function colaborador()
+    {
+        return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'pes_id', 'col_pes_id');
+    }
 }

@@ -50,7 +50,7 @@ class PerfilRepository extends BaseRepository
             foreach ($permissoes as $key => $perm) {
                 if (isset($retorno[$perm->rcs_id])) {
                     $retorno[$perm->rcs_id]['permissoes'][$perm->prm_id] = array('prm_id' => $perm->prm_id, 'prm_nome' => $perm->prm_nome, 'habilitado' => $perm->habilitado);
-                } else {
+                }else{
                     $retorno[$perm->rcs_id]['rcs_id'] = $perm->rcs_id;
                     $retorno[$perm->rcs_id]['rcs_nome'] = $perm->rcs_nome;
                     $retorno[$perm->rcs_id]['permissoes'][$perm->prm_id] = array('prm_id' => $perm->prm_id, 'prm_nome' => $perm->prm_nome, 'habilitado' => $perm->habilitado);

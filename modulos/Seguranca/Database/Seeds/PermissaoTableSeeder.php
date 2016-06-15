@@ -21,6 +21,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoes();
 
         $this->createPerfisPermissoes();
+
+        $this->createIndex();
     }
 
     private function createPermissoesModulo()
@@ -170,6 +172,15 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 6;
         $permissao->prm_nome = 'atribuirpermissoes';
         $permissao->prm_descricao = 'Permissão de atribuir permissoes ao perfis da categoria segurança do módulo segurança';
+        $permissao->save();
+    }
+
+    private function createIndex()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 7;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Dashboard';
         $permissao->save();
     }
 }

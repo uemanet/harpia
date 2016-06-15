@@ -157,24 +157,24 @@ class Seguranca implements SegurancaContract
     {
         list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
 
-      // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
-      if (is_null($this->getUser())) {
-          if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)) {
-              return true;
-          }
+        // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
+        if(is_null($this->getUser())){
+            if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)){
+                return true;
+            }
 
-          return false;
-      }
+            return false;
+        }
 
-      // Verifica se a rota eh liberada pas usuarios logados.
-      if ($this->isPostLoginOpenActions($modulo, $recurso, $permissao)) {
-          return true;
-      }
+        // Verifica se a rota eh liberada pas usuarios logados.
+        if($this->isPostLoginOpenActions($modulo, $recurso, $permissao)){
+            return true;
+        }
 
-      // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
-      $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $modulo, $recurso, $permissao);
+        // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
+        $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $modulo, $recurso, $permissao);
 
-        if ($hasPermission) {
+        if($hasPermission){
             return true;
         }
 
@@ -252,14 +252,15 @@ class Seguranca implements SegurancaContract
         $permissoes = Cache::get('PERMISSAO_'.$usr_id);
 
         foreach ($permissoes as $key => $permissao) {
-            if ($permissao->mod_rota == $mod_rota && $permissao->rcs_nome == $rcs_nome && $prm_nome == $prm_nome) {
+            if (mb_strtolower($permissao->mod_rota) == mb_strtolower($mod_rota) && 
+                mb_strtolower($permissao->rcs_nome) == mb_strtolower($rcs_nome) && 
+                mb_strtolower($prm_nome) == mb_strtolower($prm_nome)
+            ){
                 return true;
             }
         }
 
-        return true;
-
-      // return false;
+        return false;
     }
 
     /**

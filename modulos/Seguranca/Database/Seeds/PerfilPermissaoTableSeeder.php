@@ -22,5 +22,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([17, 18, 19, 20]); // Permissoes do recurso recursos
 
         $perfil->permissoes()->attach([21,22]); // Perfis Permissoes
+
+        $perfil->permissoes()->attach([23]); //Index
     }
 }

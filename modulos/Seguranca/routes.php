@@ -25,5 +25,4 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
             'recursos' => '\Modulos\Seguranca\Http\Controllers\Ajax\Recursos',
         ]);
     });
-
 });
