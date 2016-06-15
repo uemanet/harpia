@@ -17,6 +17,7 @@ class CreateSegRecursosTable extends Migration
             $table->increments('rcs_id');
             $table->integer('rcs_ctr_id')->unsigned();
             $table->string('rcs_nome', 150);
+            $table->string('rcs_rota', 45);
             $table->string('rcs_descricao', 300);
             $table->string('rcs_icone', 45)->nullable();
             $table->boolean('rcs_ativo')->default(1);

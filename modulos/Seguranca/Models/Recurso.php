@@ -11,7 +11,7 @@ class Recurso extends BaseModel
 
     protected $primaryKey = 'rcs_id';
 
-    protected $fillable = ['rcs_ctr_id', 'rcs_nome', 'rcs_descricao', 'rcs_icone', 'rcs_ativo', 'rcs_ordem'];
+    protected $fillable = ['rcs_ctr_id', 'rcs_nome', 'rcs_rota', 'rcs_descricao', 'rcs_icone', 'rcs_ativo', 'rcs_ordem'];
 
     protected $searchable = [
         'rcs_nome' => 'like'
