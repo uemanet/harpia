@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="form-group col-md-9 @if ($errors->has('prm_descricao')) has-error @endif">
-        {!! Form::label('prm_descricao', 'Descrição da permissão*', ['class' => 'control-label']) !!}
+        {!! Form::label('prm_descricao', 'Descrição da permissão', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('prm_descricao', old('prm_descricao'), ['class' => 'form-control']) !!}
             @if ($errors->has('prm_descricao')) <p class="help-block">{{ $errors->first('prm_descricao') }}</p> @endif

@@ -24,6 +24,7 @@ class PermissaoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
+            'mod_id' => 'required',
             'prm_rcs_id' => 'required',
             'prm_nome' => 'required|min:3|max:150',
             'prm_descricao' => 'max:300',

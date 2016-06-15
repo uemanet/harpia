@@ -24,8 +24,10 @@ class RecursoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
+            'mod_id' => 'required',
             'rcs_ctr_id' => 'required',
             'rcs_nome' => 'required|min:3|max:150',
+            'rcs_rota' => 'required|min:3',
             'rcs_descricao' => 'max:300',
             'rcs_icone' => 'required|min:3',
             'rcs_ativo' => 'required',

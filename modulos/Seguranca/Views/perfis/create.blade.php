@@ -1,7 +1,7 @@
 @extends('layouts.interno')
 
 @section('title')
-    Perfils
+    Perfis
 @stop
 
 @section('subtitle')

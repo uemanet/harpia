@@ -46,7 +46,7 @@
 </div>
 <div class="row">
     <div class="form-group col-md-9 @if ($errors->has('ctr_descricao')) has-error @endif">
-        {!! Form::label('ctr_descricao', 'Descrição da categoria*', ['class' => 'control-label']) !!}
+        {!! Form::label('ctr_descricao', 'Descrição da categoria', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('ctr_descricao', old('ctr_descricao'), ['class' => 'form-control']) !!}
             @if ($errors->has('ctr_descricao')) <p class="help-block">{{ $errors->first('ctr_descricao') }}</p> @endif
