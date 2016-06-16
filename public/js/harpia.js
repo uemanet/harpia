@@ -37,4 +37,33 @@ $.harpia = {};
     $.harpia.hideloading = function() {
         $(".loading").hide();
     }
+
+    $.harpia.httpget = function(url) {
+
+        $.harpia.showloading();
+
+        var result = false;
+
+        return $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(resp) {
+
+                $.harpia.hideloading();
+
+                result = resp;
+            },
+            error: function(e) {
+                $.harpia.hideloading();
+
+                sweetAlert("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
+
+                result = false;
+            }
+        }).then(function() {
+            return $.Deferred(function(def) {
+                def.resolveWith({},[result]);
+            }).promise();
+        });
+    }
 }(jQuery);

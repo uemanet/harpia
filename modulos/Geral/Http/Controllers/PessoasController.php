@@ -4,9 +4,7 @@ namespace Modulos\Geral\Http\Controllers;
 
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
-
 use Modulos\Geral\Repositories\PessoaRepository;
-
 use Illuminate\Http\Request;
 
 class PessoasController extends BaseController

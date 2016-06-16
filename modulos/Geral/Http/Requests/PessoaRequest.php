@@ -42,4 +42,3 @@ class PessoaRequest extends BaseRequest
         return $rules;
     }
 }
-

@@ -157,12 +157,11 @@ class Seguranca implements SegurancaContract
      */
     public function haspermission($path)
     {
-
         list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
 
         // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
-        if(is_null($this->getUser())){
-            if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)){
+        if (is_null($this->getUser())) {
+            if ($this->isPreLoginOpenActions($modulo, $recurso, $permissao)) {
                 return true;
             }
 
@@ -170,14 +169,14 @@ class Seguranca implements SegurancaContract
         }
 
         // Verifica se a rota eh liberada pas usuarios logados.
-        if($this->isPostLoginOpenActions($modulo, $recurso, $permissao)){
+        if ($this->isPostLoginOpenActions($modulo, $recurso, $permissao)) {
             return true;
         }
 
         // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
         $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $modulo, $recurso, $permissao);
 
-        if($hasPermission){
+        if ($hasPermission) {
             return true;
         }
 
@@ -255,10 +254,10 @@ class Seguranca implements SegurancaContract
         $permissoes = Cache::get('PERMISSAO_'.$usr_id);
 
         foreach ($permissoes as $key => $permissao) {
-            if (mb_strtolower($permissao->mod_rota) == mb_strtolower($mod_rota) && 
-                mb_strtolower($permissao->rcs_rota) == mb_strtolower($rcs_rota) && 
+            if (mb_strtolower($permissao->mod_rota) == mb_strtolower($mod_rota) &&
+                mb_strtolower($permissao->rcs_rota) == mb_strtolower($rcs_rota) &&
                 mb_strtolower($prm_nome) == mb_strtolower($prm_nome)
-            ){
+            ) {
                 return true;
             }
         }

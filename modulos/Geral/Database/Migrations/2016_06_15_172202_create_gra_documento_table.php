@@ -12,13 +12,13 @@ class CreateGraDocumentoTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_documento', function (Blueprint $table){
+        Schema::create('gra_documento', function (Blueprint $table) {
             $table->integer('doc_pes_id')->unsigned();
             $table->integer('doc_tpd_id')->unsigned();
-            $table->string('doc_conteudo',150);
+            $table->string('doc_conteudo', 150);
             $table->date('doc_dataexpedicao')->nullable();
             $table->string('doc_orgao')->nullable();
-            $table->string('doc_observacao')->nullable();           
+            $table->string('doc_observacao')->nullable();
 
             $table->timestamps();
 

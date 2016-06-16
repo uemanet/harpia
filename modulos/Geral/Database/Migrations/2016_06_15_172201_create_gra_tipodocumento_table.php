@@ -12,7 +12,7 @@ class CreateGraTipoDocumentoTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_tipodocumento', function (Blueprint $table){
+        Schema::create('gra_tipodocumento', function (Blueprint $table) {
             $table->increments('tpd_id');
             $table->string('tpd_nome', 45);
             $table->timestamps();

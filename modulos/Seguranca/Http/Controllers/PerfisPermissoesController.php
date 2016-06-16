@@ -4,7 +4,6 @@ namespace Modulos\Seguranca\Http\Controllers;
 
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
-
 use Modulos\Seguranca\Repositories\PerfilRepository;
 use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
 use Illuminate\Http\Request;
@@ -29,7 +28,7 @@ class PerfisPermissoesController extends BaseController
     {
         $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
 
-        if(!sizeof($perfil)){
+        if (!sizeof($perfil)) {
             return redirect('/seguranca/perfispermissoes/index');
         }
         
@@ -43,7 +42,7 @@ class PerfisPermissoesController extends BaseController
         try {
             $perfilId = $request->prf_id;
 
-            if($request->input('permissoes') == ""){
+            if ($request->input('permissoes') == "") {
                 flash()->success('Não existem permissões cadastradas para o módulo no qual esse perfil faz parte.');
 
                 return redirect('seguranca/perfispermissoes/atribuirpermissoes/'.$perfilId);

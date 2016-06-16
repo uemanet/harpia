@@ -22,7 +22,6 @@
 
 @section('scripts')
     <script type="application/javascript">
-
         $('#mod_id').change(function() {
             var moduloId = $("#mod_id").val();
 
@@ -30,26 +29,20 @@
                 return;
             }
 
-            $.harpia.showloading();
+            $.harpia.httpget('{{url('/')}}/seguranca/ajax/recursos/findallbymodulo/' + moduloId).done(function(result){
 
-            $.get('{{url('/')}}/seguranca/ajax/recursos/findallbymodulo/' + moduloId, function (recursos) {
-                $("#prm_rcs_id").empty().append("<option value='' selected>Selecione uma recurso</option>");
+                $("#prm_rcs_id").empty();
 
-                if($.isEmptyObject(recursos)) {
+                if ($.isEmptyObject(result)) {
                     $('#prm_rcs_id').append('<option value=#>Sem recursos disponíveis</option>');
                 } else {
-                    $.each(recursos, function(key, value) {
+                    $("#prm_rcs_id").append("<option value='' selected>Selecione uma recurso</option>");
+                    $.each(result, function(key, value) {
                         $('#prm_rcs_id').append('<option value=' + value.rcs_id + ' >' + value.rcs_nome + '</option>');
                     });
                 }
 
                 $('#prm_rcs_id').focus();
-
-                $.harpia.hideloading();
-            }).error(function(e){
-                sweetAlert("Oops...", "Um erro aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
-
-                $.harpia.hideloading();
             });
         });
 
