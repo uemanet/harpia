@@ -61,6 +61,13 @@
                                 ],
                                 'buttons' => [
                                     [
+                                        'classButton' => 'text-blue',
+                                        'icon' => 'fa fa-check-square-o',
+                                        'action' => '/seguranca/perfis/atribuirpermissoes/' . $id,
+                                        'label' => 'Permissões',
+                                        'method' => 'get'
+                                    ],
+                                    [
                                         'classButton' => '',
                                         'icon' => 'fa fa-pencil',
                                         'action' => '/seguranca/perfis/edit/' . $id,
