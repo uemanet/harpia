@@ -6,7 +6,7 @@ use Modulos\Core\Model\BaseModel;
 
 class Funcao extends BaseModel
 {
-    protected $table = 'gra_funcao';
+    protected $table = 'gra_funcoes';
 
     protected $primaryKey = 'fun_id';
 

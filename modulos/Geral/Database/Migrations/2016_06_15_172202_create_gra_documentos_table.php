@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraDocumentoTable extends Migration
+class CreateGraDocumentosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateGraDocumentoTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_documento', function (Blueprint $table) {
+        Schema::create('gra_documentos', function (Blueprint $table) {
             $table->integer('doc_pes_id')->unsigned();
             $table->integer('doc_tpd_id')->unsigned();
             $table->string('doc_conteudo', 150);
@@ -22,8 +22,8 @@ class CreateGraDocumentoTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('doc_pes_id')->references('pes_id')->on('gra_pessoa');
-            $table->foreign('doc_tpd_id')->references('tpd_id')->on('gra_tipodocumento');
+            $table->foreign('doc_pes_id')->references('pes_id')->on('gra_pessoas');
+            $table->foreign('doc_tpd_id')->references('tpd_id')->on('gra_tiposdocumentos');
         });
     }
 
@@ -34,6 +34,6 @@ class CreateGraDocumentoTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_documento');
+        Schema::drop('gra_documentos');
     }
 }
