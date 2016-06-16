@@ -21,6 +21,7 @@ class PerfisPermissoesController extends BaseController
     public function getIndex(Request $request)
     {
         $tableData = $this->perfilRepository->paginateRequest($request->all());
+
         return view('Seguranca::perfispermissoes.index', ['tableData' => $tableData]);
     }
 
@@ -39,18 +40,30 @@ class PerfisPermissoesController extends BaseController
 
     public function postAtribuirpermissoes(Request $request)
     {
-        $perfilId = $request->prf_id;
+        try {
+            $perfilId = $request->prf_id;
 
-        if($request->input('permissoes') == ""){
-            flash()->success('Não existem permissões cadastradas para o módulo no qual esse perfil faz parte.');
+            if($request->input('permissoes') == ""){
+                flash()->success('Não existem permissões cadastradas para o módulo no qual esse perfil faz parte.');
+
+                return redirect('seguranca/perfispermissoes/atribuirpermissoes/'.$perfilId);
+            }
+
+            $permissoes = explode(',', $request->input('permissoes'));
+
+            $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
+
+            flash()->success('Permissões atribuídas com sucesso.');
+
             return redirect('seguranca/perfispermissoes/atribuirpermissoes/'.$perfilId);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
         }
-
-        $permissoes = explode(',', $request->input('permissoes'));
-
-        $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-
-        flash()->success('Permissões atribuidas com sucesso.');
-        return redirect('seguranca/perfispermissoes/atribuirpermissoes/'.$perfilId);
     }
 }

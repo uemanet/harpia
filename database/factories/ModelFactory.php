@@ -21,9 +21,11 @@
 //});
 
 $factory->define(Modulos\Seguranca\Models\Modulo::class, function (Faker\Generator $faker) {
+    $rota = $faker->name;
+
     return [
-        'mod_nome' => $faker->name,
-        'mod_rota' => strtolower($faker->name),
+        'mod_nome' => $rota,
+        'mod_rota' => strtolower($rota),
         'mod_descricao' => $faker->sentence(3),
         'mod_icone' => 'fa fa-cog',
         'mod_ativo' => 1
@@ -51,9 +53,12 @@ $factory->define(Modulos\Seguranca\Models\CategoriaRecurso::class, function (Fak
 });
 
 $factory->define(Modulos\Seguranca\Models\Recurso::class, function (Faker\Generator $faker) {
+    $rota = $faker->name;
+
     return [
         'rcs_ctr_id' => 1,
-        'rcs_nome' => $faker->name,
+        'rcs_nome' => $rota,
+        'rcs_rota' => strtolower($rota),
         'rcs_descricao' => $faker->sentence(3),
         'rcs_icone' => 'fa fa-cog',
         'rcs_ativo' => 1,

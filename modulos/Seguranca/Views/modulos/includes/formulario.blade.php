@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('mod_descricao')) has-error @endif">
-        {!! Form::label('mod_descricao', 'Descrição do Módulo*', ['class' => 'control-label']) !!}
+        {!! Form::label('mod_descricao', 'Descrição do Módulo', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('mod_descricao', old('mod_descricao'), ['class' => 'form-control']) !!}
             @if ($errors->has('mod_descricao')) <p class="help-block">{{ $errors->first('mod_descricao') }}</p> @endif

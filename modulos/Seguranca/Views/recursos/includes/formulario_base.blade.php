@@ -6,21 +6,28 @@
             @if ($errors->has('rcs_nome')) <p class="help-block">{{ $errors->first('rcs_nome') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('rcs_icone')) has-error @endif">
+    <div class="form-group col-md-3 @if ($errors->has('rcs_rota')) has-error @endif">
+        {!! Form::label('rcs_rota', 'Rota*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('rcs_rota', old('rcs_rota'), ['class' => 'form-control']) !!}
+            @if ($errors->has('rcs_rota')) <p class="help-block">{{ $errors->first('rcs_rota') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-2 @if ($errors->has('rcs_icone')) has-error @endif">
         {!! Form::label('rcs_icone', 'Ícone*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('rcs_icone', old('rcs_icone'), ['class' => 'form-control', 'placeholder' => 'fa fa-cog']) !!}
             @if ($errors->has('rcs_icone')) <p class="help-block">{{ $errors->first('rcs_icone') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('rcs_ordem')) has-error @endif">
+    <div class="form-group col-md-2 @if ($errors->has('rcs_ordem')) has-error @endif">
         {!! Form::label('rcs_ordem', 'Ordem*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::number('rcs_ordem', old('rcs_ordem'), ['class' => 'form-control']) !!}
             @if ($errors->has('rcs_ordem')) <p class="help-block">{{ $errors->first('rcs_ordem') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('rcs_ativo')) has-error @endif">
+    <div class="form-group col-md-2 @if ($errors->has('rcs_ativo')) has-error @endif">
         {!! Form::label('rcs_ativo', 'Ativo*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('rcs_ativo', [1 => "Sim", 0 => "Não"], old('rcs_ctr_id'), ['class' => 'form-control']) !!}
@@ -29,7 +36,7 @@
     </div>
 </div>
 <div class="form-group @if ($errors->has('rcs_descricao')) has-error @endif">
-    {!! Form::label('rcs_descricao', 'Descrição do perfil*', ['class' => 'control-label']) !!}
+    {!! Form::label('rcs_descricao', 'Descrição do recurso', ['class' => 'control-label']) !!}
     <div class="controls">
         {!! Form::text('rcs_descricao', old('rcs_descricao'), ['class' => 'form-control']) !!}
         @if ($errors->has('rcs_descricao')) <p class="help-block">{{ $errors->first('rcs_descricao') }}</p> @endif
