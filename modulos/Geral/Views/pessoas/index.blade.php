@@ -1,4 +1,4 @@
-@extends('layouts.interno')
+@extends('layouts.modulos.geral')
 
 @section('title')
     Pessoas

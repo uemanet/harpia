@@ -148,7 +148,7 @@ class PessoaRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
 
-        $this->seeInDatabase('gra_pessoa', $data->toArray());
+        $this->seeInDatabase('gra_pessoas', $data->toArray());
     }
 
     public function testUpdate()
