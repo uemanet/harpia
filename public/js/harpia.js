@@ -1,7 +1,7 @@
 +function ($) {
     'use strict';
 
-    $(".btn-delete").on('click', function(event) {
+    $(".btn-delete").on("click", function(event) {
         event.preventDefault();
 
         var button = $(this);
@@ -17,7 +17,7 @@
             closeOnConfirm: true
         }, function(isConfirm){
             if (isConfirm) {
-                button.closest('form').submit();
+                button.closest("form").submit();
             }
         });
 
@@ -46,7 +46,7 @@ $.harpia = {};
 
         return $.ajax({
             url: url,
-            type: 'GET',
+            type: "GET",
             success: function(resp) {
 
                 $.harpia.hideloading();
