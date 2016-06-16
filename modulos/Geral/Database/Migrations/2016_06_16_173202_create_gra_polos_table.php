@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraTipoDocumentoTable extends Migration
+class CreateGraPolosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,10 @@ class CreateGraTipoDocumentoTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_tipodocumento', function (Blueprint $table) {
-            $table->increments('tpd_id');
-            $table->string('tpd_nome', 45);
+        Schema::create('gra_polos', function (Blueprint $table) {
+            $table->integer('pol_id')->unsigned();
+            $table->string('pol_nome', 45);
+
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ class CreateGraTipoDocumentoTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_tipodocumento');
+        Schema::drop('gra_polos');
     }
 }

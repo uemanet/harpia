@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraPessoaTable extends Migration
+class CreateGraPessoasTable extends Migration
 {
 
     /**
@@ -13,7 +13,7 @@ class CreateGraPessoaTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_pessoa', function (Blueprint $table) {
+        Schema::create('gra_pessoas', function (Blueprint $table) {
             $table->increments('pes_id');
             $table->string('pes_nome', 150);
             $table->enum('pes_sexo', ['M', 'F']);

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraSetorTable extends Migration
+class CreateGraFuncoesTable extends Migration
 {
 
     /**
@@ -13,9 +13,9 @@ class CreateGraSetorTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_setor', function (Blueprint $table) {
-            $table->increments('set_id');
-            $table->string('set_nome', 45);
+        Schema::create('gra_funcoes', function (Blueprint $table) {
+            $table->increments('fun_id');
+            $table->string('fun_nome', 45);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateGraSetorTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_setor');
+        Schema::drop('gra_funcoes');
     }
 }

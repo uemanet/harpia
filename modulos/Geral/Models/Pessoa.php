@@ -7,7 +7,7 @@ use Modulos\Core\Model\BaseModel;
 class Pessoa extends BaseModel
 {
 
-    protected $table = 'gra_pessoa';
+    protected $table = 'gra_pessoas';
 
     protected $primaryKey = 'pes_id';
 
