@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Http\Controllers\Ajax;
+namespace Modulos\Seguranca\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
 use Modulos\Core\Http\Controller\BaseController;

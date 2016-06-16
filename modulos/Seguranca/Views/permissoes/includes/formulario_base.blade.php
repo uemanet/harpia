@@ -29,7 +29,7 @@
                 return;
             }
 
-            $.harpia.httpget('{{url('/')}}/seguranca/ajax/recursos/findallbymodulo/' + moduloId).done(function(result){
+            $.harpia.httpget('{{url('/')}}/seguranca/async/recursos/findallbymodulo/' + moduloId).done(function(result){
 
                 $("#prm_rcs_id").empty();
 

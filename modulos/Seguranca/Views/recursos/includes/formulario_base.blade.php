@@ -58,7 +58,7 @@
                 return;
             }
 
-            $.harpia.httpget('{{url('/')}}/seguranca/ajax/categorias/findallbymodulo/' + moduloId).done(function(result){
+            $.harpia.httpget('{{url('/')}}/seguranca/async/categorias/findallbymodulo/' + moduloId).done(function(result){
 
                 $("#rcs_ctr_id").empty();
 
@@ -69,7 +69,7 @@
                     $.each(result, function(key, value) {
                         $('#rcs_ctr_id').append('<option value=' + value.ctr_id + ' >' + value.ctr_nome + '</option>');
                     });
-                }   
+                }
 
                 $('#rcs_ctr_id').focus();
             });

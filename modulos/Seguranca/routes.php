@@ -19,10 +19,10 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         'perfispermissoes' => '\Modulos\Seguranca\Http\Controllers\PerfisPermissoesController',
     ]);
 
-    Route::group(['prefix' => 'ajax', 'middleware' => ['auth']], function () {
+    Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
         Route::controllers([
-            'categorias' => '\Modulos\Seguranca\Http\Controllers\Ajax\CategoriasRecursos',
-            'recursos' => '\Modulos\Seguranca\Http\Controllers\Ajax\Recursos',
+            'categorias' => '\Modulos\Seguranca\Http\Controllers\Async\CategoriasRecursos',
+            'recursos' => '\Modulos\Seguranca\Http\Controllers\Async\Recursos',
         ]);
     });
 });
