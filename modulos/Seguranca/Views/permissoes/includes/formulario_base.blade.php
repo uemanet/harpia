@@ -36,7 +36,7 @@
                 if ($.isEmptyObject(result)) {
                     $('#prm_rcs_id').append('<option value=#>Sem recursos disponíveis</option>');
                 } else {
-                    $("#prm_rcs_id").append("<option value='' selected>Selecione uma recurso</option>");
+                    $("#prm_rcs_id").append("<option value='' selected>Selecione um recurso</option>");
                     $.each(result, function(key, value) {
                         $('#prm_rcs_id').append('<option value=' + value.rcs_id + ' >' + value.rcs_nome + '</option>');
                     });
