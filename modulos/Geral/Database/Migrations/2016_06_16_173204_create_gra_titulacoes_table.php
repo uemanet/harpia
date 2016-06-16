@@ -3,9 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraFuncoesTable extends Migration
+class CreateGraTitulacoesTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,9 +12,12 @@ class CreateGraFuncoesTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_funcoes', function (Blueprint $table) {
-            $table->increments('fun_id');
-            $table->string('fun_nome', 45);
+        Schema::create('gra_titulacoes', function (Blueprint $table) {
+            $table->increments('tit_id');
+            $table->string('tit_nome', 60);
+            $table->string('tit_descricao', 150)->nullable();
+            $table->integer('tit_peso');
+
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateGraFuncoesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_funcoes');
+        Schema::drop('gra_polos');
     }
 }

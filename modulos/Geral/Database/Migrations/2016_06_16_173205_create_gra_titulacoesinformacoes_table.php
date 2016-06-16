@@ -13,7 +13,7 @@ class CreateGraTitulacoesinformacoesTable extends Migration
     public function up()
     {
         Schema::create('gra_titulacoesinformacoes', function (Blueprint $table) {
-            $table->integer('tin_id')->unsigned();
+            $table->increments('tin_id');
             $table->integer('tin_tit_id')->unsigned();
             $table->integer('tit_codigo_externo');
             $table->string('tit_titulo',150);

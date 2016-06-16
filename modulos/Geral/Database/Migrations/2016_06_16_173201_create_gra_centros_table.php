@@ -3,9 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGraSetoresTable extends Migration
+class CreateGraCentrosTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,9 +12,11 @@ class CreateGraSetoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('gra_setores', function (Blueprint $table) {
-            $table->increments('set_id');
-            $table->string('set_nome', 45);
+        Schema::create('gra_centros', function (Blueprint $table) {
+            $table->increments('cen_id');
+            $table->string('cen_nome', 45);
+            $table->string('cen_sigla', 10)->nullable();
+
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateGraSetoresTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_setores');
+        Schema::drop('gra_centros');
     }
 }

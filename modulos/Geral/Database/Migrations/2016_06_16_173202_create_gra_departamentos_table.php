@@ -13,7 +13,7 @@ class CreateGraDepartamentosTable extends Migration
     public function up()
     {
         Schema::create('gra_departamentos', function (Blueprint $table) {
-            $table->integer('dep_id')->unsigned();
+            $table->increments('dep_id');
             $table->integer('dep_cen_id')->unsigned();
             $table->string('dep_nome', 45);
             $table->timestamps();

@@ -22,7 +22,7 @@ class CreateSegUsuariosTable extends Migration
             $table->timestamps();
 
             $table->primary('usr_pes_id');
-            $table->foreign('usr_pes_id')->references('pes_id')->on('gra_pessoa');
+            $table->foreign('usr_pes_id')->references('pes_id')->on('gra_pessoas');
         });
     }
 

@@ -13,7 +13,7 @@ class CreateGraPolosTable extends Migration
     public function up()
     {
         Schema::create('gra_polos', function (Blueprint $table) {
-            $table->integer('pol_id')->unsigned();
+            $table->increments('pol_id');
             $table->string('pol_nome', 45);
 
             $table->timestamps();
