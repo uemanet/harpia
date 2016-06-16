@@ -14456,11 +14456,9 @@ fieldset[disabled] .btn-yahoo.active {
   width: 230px;
   box-shadow: 5px 5px 10px #b7b7b7;
 }
-.loading {
-  display: none;
-}
-.loading > p {
+.loading-lockscreen > p {
   margin: 0 0 -50px 0px;
+  font-size: 1.2em;
 }
 @keyframes three-quarters {
   0% {

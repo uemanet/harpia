@@ -23,12 +23,6 @@
 
 <body class="hold-transition skin-blue sidebar-mini">
 
-<div id="loading-overlay" class="loading"></div>
-<div id="loading-message" class="loading">
-    <p>Carregando...</p>
-    <div class="three-quarters"></div>
-</div>
-
 <div class="wrapper">
 
     <!-- Header bar. contains the logo and menubar -->

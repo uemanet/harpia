@@ -31,11 +31,17 @@ $.harpia = {};
     'use strict';
 
     $.harpia.showloading = function() {
-        $(".loading").show();
+        var html = "<div id='loading-overlay' class='loading-lockscreen'></div>"+
+                   "<div id='loading-message' class='loading-lockscreen'>"+
+                     "<p>Carregando...</p>"+
+                     "<div class='three-quarters'></div>"+
+                   "</div>";
+
+        $("html").append(html);
     };
 
     $.harpia.hideloading = function() {
-        $(".loading").hide();
+        $(".loading-lockscreen").remove();
     }
 
     $.harpia.httpget = function(url) {
