@@ -25,13 +25,21 @@
 
 <div class="wrapper">
 
-    <!-- Header bar. contains the logo and menubar -->
-@include('layouts.includes.header')
+    <header class="main-header">
+        <a href="{{url('/')}}" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>A</b>DM</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Admin</b></span>
+        </a>
 
-<!-- Left side column. contains the main navigation menu-->
-@include('layouts.includes.left')
+        @include('layouts.includes.header_rightmenu')
+    </header>
 
-<!-- Content Wrapper. Contains page content -->
+    <!-- Left side column. contains the main navigation menu-->
+    @include('layouts.includes.left')
+
+    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="box" style="margin-bottom:0px">

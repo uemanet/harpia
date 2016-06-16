@@ -20,18 +20,45 @@
     @show
 </head>
 
-<body class="skin-blue layout-top-nav">
-    @yield('content')
-</div>
+<body class="hold-transition skin-blue layout-top-nav">
 
+    <div class="wrapper">
 
-<!-- JQUERY-->
-<script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
-<script src="{{ asset('/js/bootstrap.min.js')}}"></script>
-<script src="{{ asset('/js/app.min.js')}}"></script>
+        <header class="main-header">
+            <nav class="navbar navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="{{url('/')}}" style="padding-top:2px" class="navbar-brand">
+                            <img src="{{url('/')}}/img/logo.png" style="height:47px" />
+                        </a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown user user-menu">
+                                <a href="{{url('/')}}/logout">
+                                    <span class="hidden-xs">Sair</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-@section('scripts')
+        <div class="content-wrapper">
+            @yield('content')
+        </div>
+    </div>
 
-@show
+    <!-- JQUERY-->
+    <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
+    <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
+    <script src="{{ asset('/js/app.min.js')}}"></script>
+
+    @section('scripts')
+    @show
 </body>
 </html>

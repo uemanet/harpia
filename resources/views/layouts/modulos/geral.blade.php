@@ -25,8 +25,16 @@
 
 <div class="wrapper">
 
-    <!-- Header bar. contains the logo and menubar -->
-    @include('layouts.includes.header')
+    <header class="main-header">
+        <a href="{{url('/')}}" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>G</b>ER</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Geral</b></span>
+        </a>
+
+        @include('layouts.includes.header_rightmenu')
+    </header>
 
     <!-- Left side column. contains the main navigation menu-->
     @include('layouts.includes.left')
@@ -38,9 +46,9 @@
             <div class="box-header" style="padding-bottom:10px">
                 <div class="col-md-6">
                     <section class="content-header" style="padding-top:10px">
-                      <h1>
-                        @yield('title')
-                      </h1>
+                        <h1>
+                            @yield('title')
+                        </h1>
                         <small>@yield('subtitle')</small>
                     </section>
                 </div>
