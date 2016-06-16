@@ -9,6 +9,7 @@
 @stop
 
 @section('content')
+<div class="container" style="padding-top: 20px;">
     <div class="row">
         <div class="col-md-3">
 
@@ -197,4 +198,6 @@
         <!-- /.col -->
     </div>
     <!-- /.row -->
+</div>
+<!-- /.container -->
 @stop
