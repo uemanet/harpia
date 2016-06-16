@@ -1,4 +1,4 @@
-@extends('layouts.interno')
+@extends('layouts.modulos.seguranca')
 
 @section('stylesheets')
     <link href="{{ asset('/css/plugins/jstree/style.min.css') }}" rel="stylesheet"/>

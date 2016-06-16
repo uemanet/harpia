@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Seguranca\Repositories\PerfilRepository;
+use Modulos\Geral\Repositories\PessoaRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class PerfilRepositoryTest extends TestCase
+class PessoaRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -31,7 +31,7 @@ class PerfilRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(PerfilRepository::class);
+        $this->repo = $this->app->make(PessoaRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +44,7 @@ class PerfilRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,10 +55,10 @@ class PerfilRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'pes_id',
             'sort' => 'desc'
         ];
 
@@ -66,20 +66,20 @@ class PerfilRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->prf_id);
+        $this->assertGreaterThan(1, $response[0]->pes_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
 
-        factory(Modulos\Seguranca\Models\Perfil::class)->create([
-            'prf_nome' => 'seguranca',
+        factory(Modulos\Geral\Models\Pessoa::class)->create([
+            'pes_nome' => 'seguranca',
         ]);
 
         $search = [
             [
-                'field' => 'prf_nome',
+                'field' => 'pes_nome',
                 'type' => 'like',
                 'term' => 'seguranca'
             ]
@@ -94,16 +94,16 @@ class PerfilRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'pes_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'pes_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -118,11 +118,11 @@ class PerfilRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'prf_id',
+            'field' => 'pes_id',
             'sort' => 'asc'
         ];
 
@@ -135,43 +135,43 @@ class PerfilRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $response = factory(Modulos\Geral\Models\Pessoa::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\Perfil::class, $response);
+        $this->assertInstanceOf(\Modulos\Geral\Models\Pessoa::class, $response);
 
-        $this->assertArrayHasKey('prf_id', $data);
+        $this->assertArrayHasKey('pes_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
 
-        $this->seeInDatabase('seg_perfis', $data->toArray());
+        $this->seeInDatabase('gra_pessoa', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['prf_nome'] = 'abcde_edcba';
+        $updateArray['pes_nome'] = 'abcde_edcba';
 
-        $perfilId = $updateArray['prf_id'];
-        unset($updateArray['prf_id']);
+        $pessoaId = $updateArray['pes_id'];
+        unset($updateArray['pes_id']);
 
-        $response = $this->repo->update($updateArray, $perfilId, 'prf_id');
+        $response = $this->repo->update($updateArray, $pessoaId, 'pes_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
-        $perfilId = $data->prf_id;
+        $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
+        $pessoaId = $data->pes_id;
 
-        $response = $this->repo->delete($perfilId);
+        $response = $this->repo->delete($pessoaId);
 
         $this->assertEquals(1, $response);
     }

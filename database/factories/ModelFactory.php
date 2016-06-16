@@ -73,3 +73,22 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
         'prm_descricao' => $faker->sentence(3)
     ];
 });
+
+// Modulo GERAL
+$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
+    return [
+        'pes_nome' => $faker->name,
+        'pes_sexo' => $faker->randomElement(['M', 'F']),
+        'pes_email' => $faker->email,
+        'pes_telefone' => $faker->phoneNumber,
+        'pes_nascimento' => $faker->date(),
+        'pes_mae' => $faker->name,
+        'pes_pai' => $faker->name,
+        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
+        'pes_naturalidade' => $faker->city,
+        'pes_nacionalidade' => $faker->country,
+        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
+        'pes_necessidade_especial' => $faker->randomElement(['sim', 'nao']),
+        'pes_estrangeiro' => $faker->boolean
+    ];
+});

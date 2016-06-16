@@ -29,7 +29,8 @@ class Pessoa extends BaseModel
 
     protected $searchable = [
         'pes_nome' => 'like',
-        'pes_email' => '='
+        'pes_email' => '=',
+        'pes_cpf' => '='
     ];
 
     public function colaborador()
