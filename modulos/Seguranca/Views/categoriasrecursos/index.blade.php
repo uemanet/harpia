@@ -1,4 +1,4 @@
-@extends('layouts.interno')
+@extends('layouts.modulos.seguranca')
 
 @section('title')
     Categorias de Recursos

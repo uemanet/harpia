@@ -1,4 +1,4 @@
-@extends('layouts.interno')
+@extends('layouts.clean')
 
 @section('title')
     Módulo de Segurança
