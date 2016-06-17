@@ -16,6 +16,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         'categoriasrecursos' => '\Modulos\Seguranca\Http\Controllers\CategoriasRecursosController',
         'recursos' => '\Modulos\Seguranca\Http\Controllers\RecursosController',
         'permissoes' => '\Modulos\Seguranca\Http\Controllers\PermissoesController',
+        'usuarios' => '\Modulos\Seguranca\Http\Controllers\UsuariosController',
     ]);
 
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {

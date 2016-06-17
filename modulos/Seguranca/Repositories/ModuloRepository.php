@@ -11,4 +11,18 @@ class ModuloRepository extends BaseRepository
     {
         $this->model = $modulo;
     }
+
+    public function create(array $data)
+    {
+        $data['mod_rota'] = mb_strtolower(preg_replace('/\s+/', '', $data['mod_rota']));
+
+        return $this->model->create($data);
+    }
+
+    public function update(array $data, $id, $attribute = "id")
+    {
+        $data['mod_rota'] = mb_strtolower(preg_replace('/\s+/', '', $data['mod_rota']));
+
+        return $this->model->where($attribute, '=', $id)->update($data);
+    }
 }

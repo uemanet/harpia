@@ -27,4 +27,9 @@ class PessoasController extends BaseController
 
         return view('Geral::pessoas.index', ['tableData' => $tableData, 'actionButton' => $actionButtons]);
     }
+
+    public function getCreate()
+    {
+        return view('Geral::pessoas.create');
+    }
 }

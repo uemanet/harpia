@@ -1,11 +1,11 @@
-@extends('layouts.modulos.geral')
+@extends('layouts.modulos.seguranca')
 
 @section('title')
-    Pessoas
+    Usuários
 @stop
 
 @section('subtitle')
-    Gerenciamento de pessoas
+    Gerenciamento de usuários
 @stop
 
 @section('actionButton')
@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/geral/pessoas/index') }}">
+                <form method="GET" action="{{ url('/seguranca/usuarios/index') }}">
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Input::get('pes_cpf')}}" placeholder="CPF">
                     </div>
@@ -70,14 +70,14 @@
                                     [
                                         'classButton' => '',
                                         'icon' => 'fa fa-pencil',
-                                        'action' => '/geral/pessoas/edit/' . $id,
+                                        'action' => '/seguranca/usuarios/edit/' . $id,
                                         'label' => 'Editar',
                                         'method' => 'get'
                                     ],
                                     [
                                         'classButton' => 'btn-delete text-red',
                                         'icon' => 'fa fa-trash',
-                                        'action' => '/geral/pessoas/delete',
+                                        'action' => '/seguranca/usuarios/delete',
                                         'id' => $id,
                                         'label' => 'Excluir',
                                         'method' => 'post'

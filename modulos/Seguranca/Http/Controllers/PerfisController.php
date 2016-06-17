@@ -141,12 +141,12 @@ class PerfisController extends BaseController
         $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
 
         if (!sizeof($perfil)) {
-            return redirect('/seguranca/perfispermissoes/index');
+            return redirect('/seguranca/perfis/index');
         }
 
         $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
 
-        return view('Seguranca::perfispermissoes.atribuirpermissoes', compact('perfil', 'permissoes'));
+        return view('Seguranca::perfis.atribuirpermissoes', compact('perfil', 'permissoes'));
     }
 
     public function postAtribuirpermissoes(Request $request)
@@ -157,7 +157,7 @@ class PerfisController extends BaseController
             if ($request->input('permissoes') == "") {
                 flash()->success('Não existem permissões cadastradas para o módulo no qual esse perfil faz parte.');
 
-                return redirect('seguranca/perfispermissoes/atribuirpermissoes/'.$perfilId);
+                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
             }
 
             $permissoes = explode(',', $request->input('permissoes'));
@@ -166,7 +166,7 @@ class PerfisController extends BaseController
 
             flash()->success('Permissões atribuídas com sucesso.');
 
-            return redirect('seguranca/perfispermissoes/atribuirpermissoes/'.$perfilId);
+            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

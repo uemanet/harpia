@@ -5,7 +5,7 @@
 @stop
 
 @section('title')
-    Atribuir Permissões
+    Atribuir permissões
 @stop
 
 @section('subtitle')
@@ -41,7 +41,7 @@
                 </ul>
             </div>
 
-            {!! Form::open(["url" => "/seguranca/perfispermissoes/atribuirpermissoes", "method" => "POST", "role" => "form"]) !!}
+            {!! Form::open(["url" => "/seguranca/perfis/atribuirpermissoes", "method" => "POST", "role" => "form"]) !!}
                 {!! Form::hidden('permissoes','' , ['id'=>'permissoes']) !!}
                 {!! Form::hidden('prf_id', $perfil->prf_id) !!}
                 <div class="row">
