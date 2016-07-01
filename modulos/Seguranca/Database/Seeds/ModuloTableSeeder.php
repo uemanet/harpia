@@ -18,5 +18,15 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_class = 'bg-red';
         $modulo->mod_ativo = 1;
         $modulo->save();
+
+        //Modulo Geral
+        $modulo = new Modulo;
+        $modulo->mod_rota = 'geral';
+        $modulo->mod_nome = 'Geral';
+        $modulo->mod_descricao = 'Módulo de cadastro Geral';
+        $modulo->mod_icone = 'fa fa-cubes';
+        $modulo->mod_class = 'bg-blue';
+        $modulo->mod_ativo = 1;
+        $modulo->save();
     }
 }

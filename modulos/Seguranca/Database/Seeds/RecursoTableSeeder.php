@@ -79,5 +79,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 7;
         $recurso->save();
+
+        //MODULO GERAL
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 2; // Categoria Seguranca
+        $recurso->rcs_nome = 'Polos';
+        $recurso->rcs_rota = 'polos';
+        $recurso->rcs_descricao = 'Polos de ensino';
+        $recurso->rcs_icone = 'fa fa-ellipsis-h';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
     }
 }

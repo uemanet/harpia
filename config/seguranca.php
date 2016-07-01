@@ -2,8 +2,7 @@
 
 return [
     'prelogin_openactions' => array(
-        'login/index/index',
-        'teste/atendimento',
+        'login/index/index'
     ),
 
     'postlogin_openactions' => array(
