@@ -10,7 +10,6 @@ class PermissaoTableSeeder extends Seeder
 
     public function run()
     {
-
         $this->createPermissoesIndex();
 
         $this->createPermissoesModulo();
@@ -205,7 +204,8 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-    private function createPermissoesGeralPolo(){
+    private function createPermissoesGeralPolo()
+    {
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 8;
         $permissao->prm_nome = 'index';
@@ -229,7 +229,5 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete';
         $permissao->save();
-
     }
-
 }
