@@ -14431,6 +14431,10 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #e1e3e9;
   color: #d73925 !important;
 }
+.alert.alert-primary {
+  background-color: #3c8dbc;
+  color: #FFFFFF;
+}
 #loading-overlay {
   position: fixed;
   z-index: 2010;

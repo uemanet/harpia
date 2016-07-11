@@ -92,3 +92,9 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_estrangeiro' => $faker->boolean
     ];
 });
+
+$factory->define(Modulos\Geral\Models\Polo::class, function (Faker\Generator $faker) {
+    return [
+        'pol_nome' => $faker->city
+    ];
+});

@@ -15,13 +15,13 @@ class CreateGraTitulacoesinformacoesTable extends Migration
         Schema::create('gra_titulacoesinformacoes', function (Blueprint $table) {
             $table->increments('tin_id');
             $table->integer('tin_tit_id')->unsigned();
-            $table->integer('tit_codigo_externo');
-            $table->string('tit_titulo',150);
-            $table->string('tit_instituicao',150);
-            $table->string('tit_instituicao_sigla',10);
-            $table->string('tit_instituicao_sede',45);
-            $table->integer('tit_anoinicio')->nullable();
-            $table->integer('tit_anofim');
+            $table->integer('tin_codigo_externo');
+            $table->string('tin_titulo',150);
+            $table->string('tin_instituicao',150);
+            $table->string('tin_instituicao_sigla',10);
+            $table->string('tin_instituicao_sede',45);
+            $table->integer('tin_anoinicio')->nullable();
+            $table->integer('tin_anofim');
 
             $table->timestamps();
 
