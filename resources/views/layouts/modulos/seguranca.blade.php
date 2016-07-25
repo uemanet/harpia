@@ -21,7 +21,7 @@
     @show
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue-light sidebar-mini">
 
 <div class="wrapper">
 
@@ -30,7 +30,7 @@
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>A</b>DM</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>Admin</b></span>
+            <span class="logo-lg"><img src="{{url('/')}}/img/logo.png" style="height:47px" /></span>
         </a>
 
         @include('layouts.includes.header_rightmenu')
@@ -81,9 +81,23 @@
 <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
 <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
 <script src="{{ asset('/js/app.min.js')}}"></script>
-<script src="{{ asset('/js/app.min.js')}}"></script>
 <script src="{{ asset('/js/plugins/sweetalert.min.js')}}"></script>
 <script src="{{ asset('/js/harpia.js')}}"></script>
+
+<script type="text/javascript">
+    // SeleÃ§Ã£o de item do menu de acordo com a roda
+    url = '{{url()->getRequest()->getPathInfo()}}';
+    control = url.split('/')[2];
+
+    $('#'+control).parent('ul').parent('li').addClass('treeview active');
+    $('#'+control).addClass('treeview active').siblings().removeClass('treeview active');
+
+    $('.sidebar-menu li').each(function(){
+        if($(this).children('.treeview-menu').children('li').hasClass('treeview active')){
+            $(this).addClass('active');
+        }
+    })
+</script>
 
 @section('scripts')
 

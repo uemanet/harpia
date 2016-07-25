@@ -249,15 +249,15 @@ class Seguranca implements SegurancaContract
      *
      * @return mixed
      */
-    private function verifyPermission($usr_id, $mod_rota, $rcs_rota = 'index', $prm_nome = 'index')
+    private function verifyPermission($usr_id, $mod_rota, $rcs_rota, $prm_nome)
     {
         $permissoes = Cache::get('PERMISSAO_'.$usr_id);
 
         foreach ($permissoes as $key => $permissao) {
             if (mb_strtolower($permissao->mod_rota) == mb_strtolower($mod_rota) &&
                 mb_strtolower($permissao->rcs_rota) == mb_strtolower($rcs_rota) &&
-                mb_strtolower($prm_nome) == mb_strtolower($prm_nome)
-            ) {
+                mb_strtolower($permissao->prm_nome) == mb_strtolower($prm_nome)
+            ){
                 return true;
             }
         }
@@ -273,6 +273,7 @@ class Seguranca implements SegurancaContract
      */
     private function extractPathResources($fullPath)
     {
+
         if (is_string($fullPath)) {
             $fullPath = explode("/", $fullPath);
         }

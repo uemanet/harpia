@@ -43,7 +43,7 @@ class MasterMenu
             if (!empty($categorias['ITENS'])) {
                 foreach ($categorias['ITENS'] as $key => $item){
                     $recurso = mb_strtolower(preg_replace('/\s+/', '', $item['rcs_rota']));
-                    $render .= '<li><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$item['prm_nome'].'"><i class="'.$item['rcs_icone'].'"></i>'.ucfirst($item['rcs_nome']).'</a></li>';
+                    $render .= '<li id="'.$recurso.'"><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$item['prm_nome'].'"><i class="'.$item['rcs_icone'].'"></i>'.ucfirst($item['rcs_nome']).'</a></li>';
                 }
             }
 
@@ -57,8 +57,8 @@ class MasterMenu
                         $render .= '<ul class="treeview-menu" style="display: block;">';
 
                         foreach ($subcategoria['ITENS'] as $key => $subItem) {
-                            $recurso = mb_strtolower(preg_replace('/\s+/', '', $item['rcs_rota']));
-                            $render .= '<li><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$subItem['prm_nome'].'"><i class="'.$subItem['rcs_icone'].'"></i>'.ucfirst($subItem['rcs_nome']).'</a></li>';
+                            $recurso = mb_strtolower(preg_replace('/\s+/', '', $subItem['rcs_rota']));
+                            $render .= '<li class="'.$recurso.'"><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$subItem['prm_nome'].'"><i class="'.$subItem['rcs_icone'].'"></i>'.ucfirst($subItem['rcs_nome']).'</a></li>';
                         }
 
                         $render .= '</ul>';

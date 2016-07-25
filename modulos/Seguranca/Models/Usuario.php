@@ -51,6 +51,12 @@ class Usuario extends BaseModel implements
         'usr_ativo' => 'required'
     ];
 
+    protected $searchable = [
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
+        'pes_cpf' => '='
+    ];
+
     public function perfis()
     {
         return $this->belongsToMany('Modulos\Seguranca\Models\Perfil', 'seg_perfis_usuarios', 'pru_usr_id', 'pru_prf_id');

@@ -8817,7 +8817,7 @@ button.close {
 }
 
 /*!
- *   AdminLTE v2.3.3
+ *   AdminLTE v2.3.5
  *   Author: Almsaeed Studio
  *	 Website: Almsaeed Studio <http://almsaeedstudio.com>
  *   License: Open source - MIT
@@ -8946,7 +8946,7 @@ body.hold-transition .right-side,
 body.hold-transition .main-footer,
 body.hold-transition .main-sidebar,
 body.hold-transition .left-side,
-body.hold-transition .main-header > .navbar,
+body.hold-transition .main-header .navbar,
 body.hold-transition .main-header .logo {
   /* Fix for IE */
   transition: none;
@@ -9005,7 +9005,7 @@ a:focus {
   max-height: 100px;
   z-index: 1030;
 }
-.main-header > .navbar {
+.main-header .navbar {
   transition: margin-left 0.3s ease-in-out;
   margin-bottom: 0;
   margin-left: 230px;
@@ -9013,7 +9013,7 @@ a:focus {
   min-height: 50px;
   border-radius: 0;
 }
-.layout-top-nav .main-header > .navbar {
+.layout-top-nav .main-header .navbar {
   margin-left: 0;
 }
 .main-header #navbar-search-input.form-control {
@@ -9321,21 +9321,22 @@ a:focus {
 }
 .sidebar-menu > li .label,
 .sidebar-menu > li .badge {
-  margin-top: 3px;
   margin-right: 5px;
+}
+.sidebar-menu > li .badge {
+  margin-top: 3px;
 }
 .sidebar-menu li.header {
   padding: 10px 25px 10px 15px;
   font-size: 12px;
 }
-.sidebar-menu li > a > .fa-angle-left {
+.sidebar-menu li > a > .pull-right-container > .fa-angle-left {
   width: auto;
   height: auto;
   padding: 0;
   margin-right: 10px;
-  margin-top: 3px;
 }
-.sidebar-menu li.active > a > .fa-angle-left {
+.sidebar-menu li.active > a > .pull-right-container > .fa-angle-left {
   transform: rotate(-90deg);
 }
 .sidebar-menu li.active > .treeview-menu {
@@ -9364,7 +9365,7 @@ a:focus {
 .sidebar-menu .treeview-menu > li > a > .ion {
   width: 20px;
 }
-.sidebar-menu .treeview-menu > li > a > .fa-angle-left,
+.sidebar-menu .treeview-menu > li > a > .pull-right-container > .fa-angle-left,
 .sidebar-menu .treeview-menu > li > a > .fa-angle-down {
   width: auto;
 }
@@ -9413,6 +9414,15 @@ a:focus {
     padding: 12px 5px 12px 20px;
     background-color: inherit;
   }
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container {
+    float: right;
+    width: auto!important;
+    left: 200px!important;
+    top: 10px!important;
+  }
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container > .label:not(:first-of-type) {
+    display: none;
+  }
   .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
     top: 44px;
     margin-left: 0;
@@ -9459,7 +9469,7 @@ a:focus {
 .sidebar-menu li > a {
   position: relative;
 }
-.sidebar-menu li > a > .pull-right {
+.sidebar-menu li > a > .pull-right-container {
   position: absolute;
   right: 10px;
   top: 50%;
@@ -14383,7 +14393,6 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #374850;
   border: 1px solid transparent;
   height: 35px;
-  transition: all 0.3s ease-in-out;
 }
 .skin-blue .sidebar-form input[type="text"] {
   color: #666;
@@ -14415,6 +14424,168 @@ fieldset[disabled] .btn-yahoo.active {
 .skin-blue.layout-top-nav .main-header > .logo:hover {
   background-color: #3b8ab8;
 }
+/*
+ * Skin: Blue
+ * ----------
+ */
+.skin-blue-light .main-header .navbar {
+  background-color: #3c8dbc;
+}
+.skin-blue-light .main-header .navbar .nav > li > a {
+  color: #fff;
+}
+.skin-blue-light .main-header .navbar .nav > li > a:hover,
+.skin-blue-light .main-header .navbar .nav > li > a:active,
+.skin-blue-light .main-header .navbar .nav > li > a:focus,
+.skin-blue-light .main-header .navbar .nav .open > a,
+.skin-blue-light .main-header .navbar .nav .open > a:hover,
+.skin-blue-light .main-header .navbar .nav .open > a:focus,
+.skin-blue-light .main-header .navbar .nav > .active > a {
+  background: rgba(0, 0, 0, 0.1);
+  color: #f6f6f6;
+}
+.skin-blue-light .main-header .navbar .sidebar-toggle {
+  color: #fff;
+}
+.skin-blue-light .main-header .navbar .sidebar-toggle:hover {
+  color: #f6f6f6;
+  background: rgba(0, 0, 0, 0.1);
+}
+.skin-blue-light .main-header .navbar .sidebar-toggle {
+  color: #fff;
+}
+.skin-blue-light .main-header .navbar .sidebar-toggle:hover {
+  background-color: #367fa9;
+}
+@media (max-width: 767px) {
+  .skin-blue-light .main-header .navbar .dropdown-menu li.divider {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .skin-blue-light .main-header .navbar .dropdown-menu li a {
+    color: #fff;
+  }
+  .skin-blue-light .main-header .navbar .dropdown-menu li a:hover {
+    background: #367fa9;
+  }
+}
+.skin-blue-light .main-header .logo {
+  background-color: #3c8dbc;
+  color: #fff;
+  border-bottom: 0 solid transparent;
+}
+.skin-blue-light .main-header .logo:hover {
+  background-color: #3b8ab8;
+}
+.skin-blue-light .main-header li.user-header {
+  background-color: #3c8dbc;
+}
+.skin-blue-light .content-header {
+  background: transparent;
+}
+.skin-blue-light .wrapper,
+.skin-blue-light .main-sidebar,
+.skin-blue-light .left-side {
+  background-color: #f9fafc;
+}
+.skin-blue-light .content-wrapper,
+.skin-blue-light .main-footer {
+  border-left: 1px solid #d2d6de;
+}
+.skin-blue-light .user-panel > .info,
+.skin-blue-light .user-panel > .info > a {
+  color: #444;
+}
+.skin-blue-light .sidebar-menu > li {
+  transition: border-left-color 0.3s ease;
+}
+.skin-blue-light .sidebar-menu > li.header {
+  color: #848484;
+  background: #f9fafc;
+}
+.skin-blue-light .sidebar-menu > li > a {
+  border-left: 3px solid transparent;
+  font-weight: 600;
+}
+.skin-blue-light .sidebar-menu > li:hover > a,
+.skin-blue-light .sidebar-menu > li.active > a {
+  color: #000;
+  background: #f4f4f5;
+}
+.skin-blue-light .sidebar-menu > li.active {
+  border-left-color: #3c8dbc;
+}
+.skin-blue-light .sidebar-menu > li.active > a {
+  font-weight: 600;
+}
+.skin-blue-light .sidebar-menu > li > .treeview-menu {
+  background: #f4f4f5;
+}
+.skin-blue-light .sidebar a {
+  color: #444;
+}
+.skin-blue-light .sidebar a:hover {
+  text-decoration: none;
+}
+.skin-blue-light .treeview-menu > li > a {
+  color: #777;
+}
+.skin-blue-light .treeview-menu > li.active > a,
+.skin-blue-light .treeview-menu > li > a:hover {
+  color: #000;
+}
+.skin-blue-light .treeview-menu > li.active > a {
+  font-weight: 600;
+}
+.skin-blue-light .sidebar-form {
+  border-radius: 3px;
+  border: 1px solid #d2d6de;
+  margin: 10px 10px;
+}
+.skin-blue-light .sidebar-form input[type="text"],
+.skin-blue-light .sidebar-form .btn {
+  box-shadow: none;
+  background-color: #fff;
+  border: 1px solid transparent;
+  height: 35px;
+}
+.skin-blue-light .sidebar-form input[type="text"] {
+  color: #666;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 2px;
+}
+.skin-blue-light .sidebar-form input[type="text"]:focus,
+.skin-blue-light .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  background-color: #fff;
+  color: #666;
+}
+.skin-blue-light .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  border-left-color: #fff;
+}
+.skin-blue-light .sidebar-form .btn {
+  color: #999;
+  border-top-left-radius: 0;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 0;
+}
+@media (min-width: 768px) {
+  .skin-blue-light.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    border-left: 1px solid #d2d6de;
+  }
+}
+.skin-blue-light .main-footer {
+  border-top-color: #d2d6de;
+}
+.skin-blue.layout-top-nav .main-header > .logo {
+  background-color: #3c8dbc;
+  color: #fff;
+  border-bottom: 0 solid transparent;
+}
+.skin-blue.layout-top-nav .main-header > .logo:hover {
+  background-color: #3b8ab8;
+}
 
 .form-singlebutton .btn-delete {
   border: none;
@@ -14430,6 +14601,23 @@ fieldset[disabled] .btn-yahoo.active {
 .form-singlebutton .btn-delete:hover {
   background-color: #e1e3e9;
   color: #d73925 !important;
+}
+.logo-lg {
+  background-color: #E9F1F5;
+}
+.sidebar-menu .treeview-menu {
+  padding-left: 0px;
+}
+.sidebar-menu .treeview-menu li {
+  padding-left: 8px;
+}
+.sidebar-menu .treeview-menu .active {
+  padding-left: 0px;
+  border-left: 5px solid #3C8DBC;
+  background-color: rgba(60, 141, 188, 0.2);
+}
+.sidebar-menu .treeview-menu li {
+  padding-left: 5px;
 }
 #loading-overlay {
   position: fixed;

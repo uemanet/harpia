@@ -42,7 +42,7 @@
             </div>
 
             {!! Form::open(["url" => "/seguranca/perfis/atribuirpermissoes", "method" => "POST", "role" => "form"]) !!}
-                {!! Form::hidden('permissoes','' , ['id'=>'permissoes']) !!}
+                {!! Form::hidden('permissao','' , ['id'=>'permissao']) !!}
                 {!! Form::hidden('prf_id', $perfil->prf_id) !!}
                 <div class="row">
                     <div class="form-group col-md-12">
@@ -87,7 +87,9 @@
                 }
             });
 
-            $("#permissoes").val(checked_ids.toString());
+            var ids = checked_ids.toString();
+
+            $("#permissao").val(ids);
             $this.closest('form').submit();
         });
     </script>

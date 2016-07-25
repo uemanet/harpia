@@ -154,13 +154,13 @@ class PerfisController extends BaseController
         try {
             $perfilId = $request->prf_id;
 
-            if ($request->input('permissoes') == "") {
+            if ($request->input('permissao') == "") {
                 flash()->success('Não existem permissões cadastradas para o módulo no qual esse perfil faz parte.');
 
                 return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
             }
 
-            $permissoes = explode(',', $request->input('permissoes'));
+            $permissoes = explode(',', $request->input('permissao'));
 
             $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
 

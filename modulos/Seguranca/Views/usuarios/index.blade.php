@@ -42,11 +42,10 @@
                 </form>
             </div>
         </div>
-        <!-- /.box-body -->
     </div>
-    @if($tableData->count())
-        <div class="box box-primary">
-            <div class="box-header">
+    <div class="box box-primary">
+        <div class="box-header">
+            @if($tableData->count())
                 {!!
                     $tableData->columns(array(
                         'pes_id' => '#',
@@ -88,9 +87,10 @@
                     ->sortable(array('pes_id', 'pes_nome'))
                     ->render()
                 !!}
-            </div>
+            @else
+                Nenhum registro encontrado
+            @endif
         </div>
-
-        <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
-    @endif
+    </div>
+    <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
 @stop

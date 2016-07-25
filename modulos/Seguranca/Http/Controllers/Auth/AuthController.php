@@ -89,7 +89,7 @@ class AuthController extends Controller
 
         $this->auth->logout();
 
-        return redirect('/');
+        return redirect('/login');
     }
 
     /** Get the needed authorization credentials from the request.
