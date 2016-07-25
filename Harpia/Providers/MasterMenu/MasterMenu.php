@@ -41,7 +41,7 @@ class MasterMenu
             $render .= '<ul class="treeview-menu" style="display: block;">';
         
             if (!empty($categorias['ITENS'])) {
-                foreach ($categorias['ITENS'] as $key => $item){
+                foreach ($categorias['ITENS'] as $key => $item) {
                     $recurso = mb_strtolower(preg_replace('/\s+/', '', $item['rcs_rota']));
                     $render .= '<li id="'.$recurso.'"><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$item['prm_nome'].'"><i class="'.$item['rcs_icone'].'"></i>'.ucfirst($item['rcs_nome']).'</a></li>';
                 }

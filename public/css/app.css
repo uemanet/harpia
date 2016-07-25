@@ -14602,6 +14602,7 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #e1e3e9;
   color: #d73925 !important;
 }
+<<<<<<< HEAD
 .logo-lg {
   background-color: #E9F1F5;
 }
@@ -14618,6 +14619,11 @@ fieldset[disabled] .btn-yahoo.active {
 }
 .sidebar-menu .treeview-menu li {
   padding-left: 5px;
+=======
+.alert.alert-primary {
+  background-color: #3c8dbc;
+  color: #FFFFFF;
+>>>>>>> 59a864c49a3052ffbda2946f9b66a34fe5128cac
 }
 #loading-overlay {
   position: fixed;

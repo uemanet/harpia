@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Alterar módulo :: {{$modulo->mod_id}}
+    Alterar módulo :: {{$modulo->mod_nome}}
 @stop
 
 @section('content')

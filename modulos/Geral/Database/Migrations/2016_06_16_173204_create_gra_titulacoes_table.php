@@ -29,6 +29,6 @@ class CreateGraTitulacoesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_polos');
+        Schema::drop('gra_titulacoes');
     }
 }

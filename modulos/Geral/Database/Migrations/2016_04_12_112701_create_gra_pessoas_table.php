@@ -39,6 +39,6 @@ class CreateGraPessoasTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gra_pessoa');
+        Schema::drop('gra_pessoas');
     }
 }

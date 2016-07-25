@@ -10,8 +10,7 @@
         "filp/whoops": "^2.1",
         "laracasts/flash": "^2.0",
         "laravelcollective/html": "5.2.*",
-        "stevebauman/eloquenttable": "1.1.*",
-        "bosnadev/repositories": "0.*"
+        "stevebauman/eloquenttable": "1.1.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
