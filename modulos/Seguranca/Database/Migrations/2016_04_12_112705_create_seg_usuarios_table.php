@@ -14,6 +14,7 @@ class CreateSegUsuariosTable extends Migration
     public function up()
     {
         Schema::create('seg_usuarios', function (Blueprint $table) {
+            $table->primary('usr_id');
             $table->integer('usr_pes_id')->unsigned();
             $table->string('usr_usuario', 60)->unique();
             $table->string('usr_senha', 100);
@@ -21,7 +22,6 @@ class CreateSegUsuariosTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->primary('usr_pes_id');
             $table->foreign('usr_pes_id')->references('pes_id')->on('gra_pessoas');
         });
     }

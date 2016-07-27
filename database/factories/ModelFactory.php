@@ -1,25 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Models Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Models factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
-
-//$factory->define(App\User::class, function (Faker\Generator $faker) {
-//    return [
-//        'name' => $faker->name,
-//        'email' => $faker->safeEmail,
-//        'password' => bcrypt(str_random(10)),
-//        'remember_token' => str_random(10),
-//    ];
-//});
-
 $factory->define(Modulos\Seguranca\Models\Modulo::class, function (Faker\Generator $faker) {
     $rota = $faker->name;
 
@@ -75,26 +55,20 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
 });
 
 // Modulo GERAL
-$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
-    return [
-        'pes_nome' => $faker->name,
-        'pes_sexo' => $faker->randomElement(['M', 'F']),
-        'pes_email' => $faker->email,
-        'pes_telefone' => $faker->phoneNumber,
-        'pes_nascimento' => $faker->date(),
-        'pes_mae' => $faker->name,
-        'pes_pai' => $faker->name,
-        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
-        'pes_naturalidade' => $faker->city,
-        'pes_nacionalidade' => $faker->country,
-        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
-        'pes_necessidade_especial' => $faker->randomElement(['sim', 'nao']),
-        'pes_estrangeiro' => $faker->boolean
-    ];
-});
-
-$factory->define(Modulos\Geral\Models\Polo::class, function (Faker\Generator $faker) {
-    return [
-        'pol_nome' => $faker->city
-    ];
-});
+//$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
+//    return [
+//        'pes_nome' => $faker->name,
+//        'pes_sexo' => $faker->randomElement(['M', 'F']),
+//        'pes_email' => $faker->email,
+//        'pes_telefone' => $faker->phoneNumber,
+//        'pes_nascimento' => $faker->date(),
+//        'pes_mae' => $faker->name,
+//        'pes_pai' => $faker->name,
+//        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
+//        'pes_naturalidade' => $faker->city,
+//        'pes_nacionalidade' => $faker->country,
+//        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
+//        'pes_necessidade_especial' => $faker->randomElement(['sim', 'nao']),
+//        'pes_estrangeiro' => $faker->boolean
+//    ];
+//});

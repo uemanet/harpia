@@ -29,7 +29,7 @@ class Usuario extends BaseModel implements
      *
      * @var string
      */
-    protected $primaryKey = 'usr_pes_id';
+    protected $primaryKey = 'usr_id';
 
     /**
      * The attributes that are mass assignable.

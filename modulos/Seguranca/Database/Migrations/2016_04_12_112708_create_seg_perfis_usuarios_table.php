@@ -19,7 +19,7 @@ class CreateSegPerfisUsuariosTable extends Migration
 
             $table->primary(['pru_prf_id', 'pru_usr_id']);
 
-            $table->foreign('pru_usr_id')->references('usr_pes_id')->on('seg_usuarios');
+            $table->foreign('pru_usr_id')->references('usr_id')->on('seg_usuarios');
             $table->foreign('pru_prf_id')->references('prf_id')->on('seg_perfis');
         });
     }
