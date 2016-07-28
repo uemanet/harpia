@@ -14,7 +14,7 @@ class CreateSegUsuariosTable extends Migration
     public function up()
     {
         Schema::create('seg_usuarios', function (Blueprint $table) {
-            $table->primary('usr_id');
+            $table->increments('usr_id');
             $table->integer('usr_pes_id')->unsigned();
             $table->string('usr_usuario', 60)->unique();
             $table->string('usr_senha', 100);
