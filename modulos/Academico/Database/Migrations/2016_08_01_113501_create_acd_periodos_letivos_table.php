@@ -17,6 +17,9 @@ class CreateAcdPeriodosLetivosTable extends Migration
             $table->increments('per_id');
             $table->date('per_inicio');
             $table->date('per_fim');
+
+            $table->timestamps();
+
         });
     }
 

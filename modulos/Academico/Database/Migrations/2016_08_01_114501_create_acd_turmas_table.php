@@ -20,6 +20,8 @@ class CreateAcdTurmasTable extends Migration
             $table->string('trm_nome', 45);
             $table->smallInteger('trm_qtd_vagas')->unsigned();
 
+            $table->timestamps();
+
             $table->foreign('trm_ofc_id')->references('ofc_id')->on('acd_ofertas_cursos');
             $table->foreign('trm_per_id')->references('per_id')->on('acd_periodos_letivos');
         });

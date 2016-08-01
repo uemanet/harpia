@@ -16,7 +16,7 @@ class CreateGraTitulacoesTable extends Migration
             $table->increments('tit_id');
             $table->string('tit_nome', 60);
             $table->string('tit_descricao', 150)->nullable();
-            $table->integer('tit_peso');
+            $table->smallInteger('tit_peso');
 
             $table->timestamps();
         });

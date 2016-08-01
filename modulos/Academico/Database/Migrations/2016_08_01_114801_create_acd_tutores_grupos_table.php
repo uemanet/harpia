@@ -19,6 +19,8 @@ class CreateAcdTutoresGruposTable extends Migration
             $table->integer('ttg_grp_id')->unsigned();
             $table->enum('ttg_tipo_tutoria', ['presencial', 'distancia']);
 
+            $table->timestamps();
+
             $table->foreign('ttg_tut_id')->references('tut_id')->on('acd_tutores');
             $table->foreign('ttg_grp_id')->references('grp_id')->on('acd_grupos');
         });

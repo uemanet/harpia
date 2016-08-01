@@ -23,6 +23,8 @@ class CreateAcdMatrizesCurricularesTable extends Migration
             $table->smallInteger('mtc_horas')->unsigned()->nullable();
             $table->smallInteger('mtc_horas_praticas')->unsigned()->nullable();
 
+            $table->timestamps();
+
             $table->foreign('mtc_crs_id')->references('crs_id')->on('acd_cursos');
             $table->foreign('mtc_anx_projeto_pedagogico')->references('anx_id')->on('gra_anexos');
         });

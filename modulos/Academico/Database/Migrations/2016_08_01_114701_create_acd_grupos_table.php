@@ -18,7 +18,9 @@ class CreateAcdGruposTable extends Migration
             $table->integer('grp_trm_id')->unsigned();
             $table->integer('grp_pol_id')->unsigned();
             $table->string('grp_nome', 45);
-            
+
+            $table->timestamps();
+
             $table->foreign('grp_trm_id')->references('trm_id')->on('acd_turmas');
             $table->foreign('grp_pol_id')->references('pol_id')->on('acd_polos');
         });

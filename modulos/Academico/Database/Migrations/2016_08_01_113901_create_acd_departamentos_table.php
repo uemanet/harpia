@@ -19,6 +19,8 @@ class CreateAcdDepartamentosTable extends Migration
             $table->integer('dep_prf_diretor')->unsigned();
             $table->string('dep_nome', 45);
 
+            $table->timestamps();
+
             $table->foreign('dep_cen_id')->references('cen_id')->on('acd_centros');
             $table->foreign('dep_prf_diretor')->references('prf_id')->on('acd_professores');
         });

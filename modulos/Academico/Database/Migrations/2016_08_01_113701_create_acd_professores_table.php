@@ -18,6 +18,8 @@ class CreateAcdProfessoresTable extends Migration
             $table->integer('prf_pes_id')->unsigned();
             $table->string('prf_matricula', 45)->nullable();
 
+            $table->timestamps();
+
             $table->foreign('prf_pes_id')->references('pes_id')->on('gra_pessoas');
         });
     }

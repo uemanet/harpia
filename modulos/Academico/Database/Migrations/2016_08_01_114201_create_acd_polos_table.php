@@ -16,6 +16,8 @@ class CreateAcdPolosTable extends Migration
         Schema::create('acd_polos', function (Blueprint $table) {
             $table->increments('pol_id');
             $table->string('pol_nome', 45);
+
+            $table->timestamps();
         });
     }
 

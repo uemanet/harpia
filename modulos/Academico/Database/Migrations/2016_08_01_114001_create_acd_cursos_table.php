@@ -27,6 +27,7 @@ class CreateAcdCursosTable extends Migration
             $table->string('crs_eixo', 150)->nullable();
             $table->string('crs_habilitacao', 150)->nullable();
 
+            $table->timestamps();
 
             $table->foreign('crs_dep_id')->references('dep_id')->on('acd_departamentos');
             $table->foreign('crs_nvc_id')->references('nvc_id')->on('acd_niveis_cursos');

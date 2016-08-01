@@ -19,6 +19,8 @@ class CreateAcdCentrosTable extends Migration
             $table->string('cen_nome', 45);
             $table->string('cen_sigla', 10)->nullable();
 
+            $table->timestamps();
+
             $table->foreign('cen_prf_diretor')->references('prf_id')->on('acd_professores');
         });
     }

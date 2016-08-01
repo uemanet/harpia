@@ -16,6 +16,8 @@ class CreateAcdModalidadesTable extends Migration
         Schema::create('acd_modalidades', function (Blueprint $table) {
             $table->increments('mdl_id');
             $table->string('mdl_nome', 45);
+            
+            $table->timestamps();
         });
     }
 

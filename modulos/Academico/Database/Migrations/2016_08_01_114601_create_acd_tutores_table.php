@@ -17,6 +17,8 @@ class CreateAcdTutoresTable extends Migration
             $table->increments('tut_id');
             $table->integer('tut_pes_id')->unsigned();
 
+            $table->timestamps();
+
             $table->foreign('tut_pes_id')->references('pes_id')->on('gra_pessoas');
         });
     }

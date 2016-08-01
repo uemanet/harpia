@@ -20,6 +20,8 @@ class CreateAcdOfertasCursosTable extends Migration
             $table->integer('ofc_mdl_id')->unsigned();
             $table->smallInteger('ofc_ano')->unsigned()->nullable();
 
+            $table->timestamps();
+
             $table->foreign('ofc_crs_id')->references('crs_id')->on('acd_cursos');
             $table->foreign('ofc_mtc_id')->references('mtc_id')->on('acd_matrizes_curriculares');
             $table->foreign('ofc_mdl_id')->references('mdl_id')->on('acd_modalidades');

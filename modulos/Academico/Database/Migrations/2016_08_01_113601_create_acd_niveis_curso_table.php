@@ -16,6 +16,8 @@ class CreateAcdNiveisCursoTable extends Migration
         Schema::create('acd_niveis_cursos', function (Blueprint $table) {
             $table->increments('nvc_id');
             $table->string('nvc_nome', 45);
+
+            $table->timestamps();
         });
     }
 
