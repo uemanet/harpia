@@ -41,22 +41,15 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="box" style="margin-bottom:0px">
-            <div class="box-header" style="padding-bottom:10px">
-                <div class="col-md-6">
-                    <section class="content-header" style="padding-top:10px">
-                        <h1>
-                            @yield('title')
-                        </h1>
-                        <small>@yield('subtitle')</small>
-                    </section>
-                </div>
-                <div class="col-md-6 text-right">
-                    @yield('actionButton')
-                </div>
+        <section class="content-header">
+            <h1>
+                @yield('title')
+                <small>@yield('subtitle')</small>
+            </h1>
+            <div class="actionbutton">
+                @yield('actionButton')
             </div>
-        </div>
+        </section>
 
         <!-- Main content -->
         <section class="content">

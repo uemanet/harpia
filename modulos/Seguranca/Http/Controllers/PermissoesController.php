@@ -2,6 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Harpia\Providers\ActionButton\Facades\ActionButton;
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Http\Requests\PermissaoRequest;
@@ -27,13 +28,53 @@ class PermissoesController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/permissoes/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $btnNovo->setName('Novo')->setAction('/seguranca/permissoes/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->permissaoRepository->paginateRequest($request->all());
 
-        return view('Seguranca::permissoes.index', ['tableData' => $tableData, 'actionButton' => $actionButtons]);
+        $tabela = $tableData->columns(array(
+            'prm_id' => '#',
+            'prm_nome' => 'Permissão',
+            'prm_descricao' => 'Descrição',
+            'prm_action' => 'Ações'
+        ))
+            ->modifyCell('prm_action', function() {
+                return array('style' => 'width: 140px;');
+            })
+            ->means('prm_action', 'prm_id')
+            ->modify('prm_action', function($id) {
+                return ActionButton::grid([
+                    'type' => 'SELECT',
+                    'config' => [
+                        'classButton' => 'btn-default',
+                        'label' => 'Selecione'
+                    ],
+                    'buttons' => [
+                        [
+                            'classButton' => '',
+                            'icon' => 'fa fa-pencil',
+                            'action' => '/seguranca/permissoes/edit/' . $id,
+                            'label' => 'Editar',
+                            'method' => 'get'
+                        ],
+                        [
+                            'classButton' => 'btn-delete text-red',
+                            'icon' => 'fa fa-trash',
+                            'action' => '/seguranca/permissoes/delete',
+                            'id' => $id,
+                            'label' => 'Excluir',
+                            'method' => 'post'
+                        ]
+                    ]
+                ]);
+            })
+            ->sortable(array('prm_id', 'prm_nome'));
+
+        $paginacao = $tableData->appends($request->except('page'));
+
+        return view('Seguranca::permissoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
