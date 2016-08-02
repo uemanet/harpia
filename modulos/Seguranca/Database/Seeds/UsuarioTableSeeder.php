@@ -19,7 +19,7 @@ class UsuarioTableSeeder extends Seeder
         $pessoa->pes_nascimento = '2016-05-01';
         $pessoa->pes_mae = 'Mãe Administrador';
         $pessoa->pes_pai = 'Pai Administrador';
-        $pessoa->pes_estado_civil = 'Solteiro';
+        $pessoa->pes_estado_civil = 'solteiro';
         $pessoa->pes_naturalidade = 'São Luís';
         $pessoa->pes_nacionalidade = 'Brasil';
         $pessoa->pes_raca = 'Branco';

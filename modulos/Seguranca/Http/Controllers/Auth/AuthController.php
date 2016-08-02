@@ -68,6 +68,7 @@ class AuthController extends Controller
             $seguranca = $this->app[Seguranca::class];
 
             $seguranca->makeCachePermission();
+
             $seguranca->makeCacheMenu();
 
             return redirect()->intended('/');

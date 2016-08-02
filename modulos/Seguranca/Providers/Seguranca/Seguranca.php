@@ -36,7 +36,7 @@ class Seguranca implements SegurancaContract
 
     public function makeCacheMenu()
     {
-        $usrId = $this->app['auth']->user()->usr_pes_id;
+        $usrId = $this->getUser()->getAuthIdentifier();
 
         $sql = "SELECT mod_id, mod_rota, cr.*
                 FROM 
@@ -45,7 +45,7 @@ class Seguranca implements SegurancaContract
                     INNER JOIN seg_modulos ON prf_mod_id = mod_id
                     INNER JOIN seg_categorias_recursos AS cr ON ctr_mod_id = mod_id
                 WHERE
-                    pru_usr_id = :usrId AND mod_ativo = 1 AND ctr_visivel = 1
+                    pru_usr_id = :usrId AND mod_ativo = true AND ctr_visivel = true
                 ORDER BY
                     mod_rota,ctr_referencia,ctr_id,ctr_ordem";
 
@@ -82,18 +82,18 @@ class Seguranca implements SegurancaContract
             }
         }
 
-        $sqlRecursos = 'SELECT mod_id,mod_rota,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_rota,rcs_descricao,rcs_icone,prm_nome
+        $sqlRecursos = "SELECT mod_id,mod_rota,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_rota,rcs_descricao,rcs_icone,prm_nome
                          FROM
                             seg_perfis_usuarios
                             INNER JOIN seg_perfis_permissoes ON prp_prf_id = pru_prf_id
-                            INNER JOIN seg_permissoes ON prp_prm_id = prm_id AND prm_nome = "index"
+                            INNER JOIN seg_permissoes ON prp_prm_id = prm_id AND prm_nome = 'index'
                             INNER JOIN seg_recursos ON prm_rcs_id = rcs_id
                             INNER JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id
                             INNER JOIN seg_modulos ON ctr_mod_id = mod_id
                          WHERE
-                            rcs_ativo = 1 AND ctr_ativo = 1 AND pru_usr_id = :usrId
+                            rcs_ativo = true AND ctr_ativo = true AND pru_usr_id = :usrId
                          ORDER BY
-                            mod_id,ctr_id,rcs_ordem';
+                            mod_id,ctr_id,rcs_ordem";
 
         $recursos =  DB::select($sqlRecursos, ['usrId' => $usrId]);
 
@@ -127,7 +127,7 @@ class Seguranca implements SegurancaContract
 
     public function makeCachePermission()
     {
-        $usrId = $this->app['auth']->user()->usr_pes_id;
+        $usrId = $this->getUser()->getAuthIdentifier();
 
         $sql = 'SELECT 
                     mod_id,mod_rota,mod_nome,mod_descricao,mod_icone,mod_class,rcs_nome,rcs_rota,prm_nome
@@ -140,7 +140,7 @@ class Seguranca implements SegurancaContract
                     INNER JOIN seg_recursos ON prm_rcs_id = rcs_id
                 WHERE
                     pru_usr_id = :usrId
-                    AND rcs_ativo = 1 AND mod_ativo = 1';
+                    AND rcs_ativo = true AND mod_ativo = true';
         
         $permissoes =  DB::select($sql, ['usrId' => $usrId]);
 
@@ -224,6 +224,10 @@ class Seguranca implements SegurancaContract
         $permissoes = Cache::get('PERMISSAO_'.$usrId);
 
         $modulos = [];
+
+        if (empty($permissoes)) {
+            return $modulos;
+        }
 
         foreach ($permissoes as $key => $permissao) {
             $modulos[$permissao->mod_id] = array(
