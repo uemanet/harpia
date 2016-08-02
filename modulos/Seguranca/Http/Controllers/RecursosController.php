@@ -2,6 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Harpia\Providers\ActionButton\Facades\ActionButton;
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Http\Requests\RecursoRequest;
@@ -27,13 +28,53 @@ class RecursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/recursos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $btnNovo->setName('Novo')->setAction('/seguranca/recursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->recursoRepository->paginateRequest($request->all());
 
-        return view('Seguranca::recursos.index', ['tableData' => $tableData, 'actionButton' => $actionButtons]);
+        $tabela = $tableData->columns(array(
+            'rcs_id' => '#',
+            'rcs_nome' => 'Recurso',
+            'rcs_descricao' => 'Descrição',
+            'rcs_action' => 'Ações'
+        ))
+            ->modifyCell('rcs_action', function() {
+                return array('style' => 'width: 140px;');
+            })
+            ->means('rcs_action', 'rcs_id')
+            ->modify('rcs_action', function($id) {
+                return ActionButton::grid([
+                    'type' => 'SELECT',
+                    'config' => [
+                        'classButton' => 'btn-default',
+                        'label' => 'Selecione'
+                    ],
+                    'buttons' => [
+                        [
+                            'classButton' => '',
+                            'icon' => 'fa fa-pencil',
+                            'action' => '/seguranca/recursos/edit/' . $id,
+                            'label' => 'Editar',
+                            'method' => 'get'
+                        ],
+                        [
+                            'classButton' => 'btn-delete text-red',
+                            'icon' => 'fa fa-trash',
+                            'action' => '/seguranca/recursos/delete',
+                            'id' => $id,
+                            'label' => 'Excluir',
+                            'method' => 'post'
+                        ]
+                    ]
+                ]);
+            })
+            ->sortable(array('rcs_id', 'rcs_nome'));
+
+        $paginacao = $tableData->appends($request->except('page'));
+
+        return view('Seguranca::recursos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
