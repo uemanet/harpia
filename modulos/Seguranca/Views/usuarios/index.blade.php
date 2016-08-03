@@ -45,52 +45,12 @@
     </div>
     <div class="box box-primary">
         <div class="box-header">
-            @if($tableData->count())
-                {!!
-                    $tableData->columns(array(
-                        'pes_id' => '#',
-                        'pes_nome' => 'Nome',
-                        'pes_email' => 'Email',
-                        'doc_conteudo' => 'CPF',
-                        'pes_action' => 'Ações'
-                    ))
-                    ->modifyCell('pes_action', function() {
-                        return array('style' => 'width: 140px;');
-                    })
-                    ->means('pes_action', 'pes_id')
-                    ->modify('pes_action', function($id) {
-                        return ActionButton::grid([
-                                'type' => 'SELECT',
-                                'config' => [
-                                    'classButton' => 'btn-default',
-                                    'label' => 'Selecione'
-                                ],
-                                'buttons' => [
-                                    [
-                                        'classButton' => '',
-                                        'icon' => 'fa fa-pencil',
-                                        'action' => '/seguranca/usuarios/edit/' . $id,
-                                        'label' => 'Editar',
-                                        'method' => 'get'
-                                    ],
-                                    [
-                                        'classButton' => 'btn-delete text-red',
-                                        'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/usuarios/delete',
-                                        'id' => $id,
-                                        'label' => 'Excluir',
-                                        'method' => 'post'
-                                    ]
-                                ]
-                            ]);
-                    })
-                    ->sortable(array('pes_id', 'pes_nome'))
-                    ->render()
-                !!}
+            @if($tabela->count())
+                {!! $tabela->render() !!}
             @else
                 Nenhum registro encontrado
             @endif
         </div>
     </div>
-    <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
+    <div class="text-center">{!! $paginacao->links() !!}</div>
 @stop
