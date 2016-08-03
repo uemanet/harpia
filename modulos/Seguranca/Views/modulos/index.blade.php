@@ -38,52 +38,13 @@
         </div>
         <!-- /.box-body -->
     </div>
-    @if($tableData->count())
+    @if($tabela->count())
         <div class="box box-primary">
             <div class="box-header">
-                {!!
-                    $tableData->columns(array(
-                        'mod_id' => '#',
-                        'mod_nome' => 'Módulo',
-                        'mod_descricao' => 'Descrição',
-                        'mod_action' => 'Ações'
-                    ))
-                    ->modifyCell('mod_action', function() {
-                        return array('style' => 'width: 140px;');
-                    })
-                    ->means('mod_action', 'mod_id')
-                    ->modify('mod_action', function($id) {
-                        return ActionButton::grid([
-                                'type' => 'SELECT',
-                                'config' => [
-                                    'classButton' => 'btn-default',
-                                    'label' => 'Selecione'
-                                ],
-                                'buttons' => [
-                                    [
-                                        'classButton' => '',
-                                        'icon' => 'fa fa-pencil',
-                                        'action' => '/seguranca/modulos/edit/' . $id,
-                                        'label' => 'Editar',
-                                        'method' => 'get'
-                                    ],
-                                    [
-                                        'classButton' => 'btn-delete text-red',
-                                        'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/modulos/delete',
-                                        'id' => $id,
-                                        'label' => 'Excluir',
-                                        'method' => 'post'
-                                    ]
-                                ]
-                            ]);
-                    })
-                    ->sortable(array('mod_id', 'mod_nome'))
-                    ->render()
-                !!}
+                {!! $tabela->render() !!}
             </div>
         </div>
 
-        <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
+        <div class="text-center">{!! $paginacao->links() !!}</div>
     @endif
 @stop

@@ -2,6 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Harpia\Providers\ActionButton\Facades\ActionButton;
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Repositories\ModuloRepository;
@@ -20,13 +21,53 @@ class ModulosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $btnNovo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->moduloRepository->paginateRequest($request->all());
+        
+        $tabela = $tableData->columns(array(
+                'mod_id' => '#',
+                'mod_nome' => 'Módulo',
+                'mod_descricao' => 'Descrição',
+                'mod_action' => 'Ações'
+            ))
+                ->modifyCell('mod_action', function() {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('mod_action', 'mod_id')
+                ->modify('mod_action', function($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
+                        ],
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/seguranca/modulos/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/seguranca/modulos/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
+                        ]
+                    ]);
+                })
+                ->sortable(array('mod_id', 'mod_nome'));
 
-        return view('Seguranca::modulos.index', ['tableData' => $tableData, 'actionButton' => $actionButtons]);
+        $paginacao = $tableData->appends($request->except('page'));
+
+        return view('Seguranca::modulos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
