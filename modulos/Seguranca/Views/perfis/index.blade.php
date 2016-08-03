@@ -38,59 +38,13 @@
         </div>
         <!-- /.box-body -->
     </div>
-    @if($tableData->count())
+    @if($tabela->count())
         <div class="box box-primary">
             <div class="box-header">
-                {!!
-                    $tableData->columns(array(
-                        'prf_id' => '#',
-                        'prf_nome' => 'Perfil',
-                        'prf_descricao' => 'Descrição',
-                        'prf_action' => 'Ações'
-                    ))
-                    ->modifyCell('prf_action', function() {
-                        return array('style' => 'width: 140px;');
-                    })
-                    ->means('prf_action', 'prf_id')
-                    ->modify('prf_action', function($id) {
-                        return ActionButton::grid([
-                                'type' => 'SELECT',
-                                'config' => [
-                                    'classButton' => 'btn-default',
-                                    'label' => 'Selecione'
-                                ],
-                                'buttons' => [
-                                    [
-                                        'classButton' => 'text-blue',
-                                        'icon' => 'fa fa-check-square-o',
-                                        'action' => '/seguranca/perfis/atribuirpermissoes/' . $id,
-                                        'label' => 'Permissões',
-                                        'method' => 'get'
-                                    ],
-                                    [
-                                        'classButton' => '',
-                                        'icon' => 'fa fa-pencil',
-                                        'action' => '/seguranca/perfis/edit/' . $id,
-                                        'label' => 'Editar',
-                                        'method' => 'get'
-                                    ],
-                                    [
-                                        'classButton' => 'btn-delete text-red',
-                                        'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/perfis/delete',
-                                        'id' => $id,
-                                        'label' => 'Excluir',
-                                        'method' => 'post'
-                                    ]
-                                ]
-                            ]);
-                    })
-                    ->sortable(array('prf_id', 'prf_nome'))
-                    ->render()
-                !!}
+                {!! $tabela->render() !!}
             </div>
         </div>
 
-        <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
+        <div class="text-center">{!! $paginacao->links() !!}</div>
     @endif
 @stop

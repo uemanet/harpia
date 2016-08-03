@@ -2,6 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Harpia\Providers\ActionButton\Facades\ActionButton;
 use Harpia\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Http\Requests\PerfilRequest;
@@ -24,13 +25,60 @@ class PerfisController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/perfis/create')->setIcon('fa fa-plus')->setStyle('btn btn-app bg-olive');
+        $btnNovo->setName('Novo')->setAction('/seguranca/perfis/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->perfilRepository->paginateRequest($request->all());
+        
+        $tabela = $tableData->columns(array(
+            'prf_id' => '#',
+            'prf_nome' => 'Perfil',
+            'prf_descricao' => 'Descrição',
+            'prf_action' => 'Ações'
+        ))
+            ->modifyCell('prf_action', function() {
+                return array('style' => 'width: 140px;');
+            })
+            ->means('prf_action', 'prf_id')
+            ->modify('prf_action', function($id) {
+                return ActionButton::grid([
+                    'type' => 'SELECT',
+                    'config' => [
+                        'classButton' => 'btn-default',
+                        'label' => 'Selecione'
+                    ],
+                    'buttons' => [
+                        [
+                            'classButton' => 'text-blue',
+                            'icon' => 'fa fa-check-square-o',
+                            'action' => '/seguranca/perfis/atribuirpermissoes/' . $id,
+                            'label' => 'Permissões',
+                            'method' => 'get'
+                        ],
+                        [
+                            'classButton' => '',
+                            'icon' => 'fa fa-pencil',
+                            'action' => '/seguranca/perfis/edit/' . $id,
+                            'label' => 'Editar',
+                            'method' => 'get'
+                        ],
+                        [
+                            'classButton' => 'btn-delete text-red',
+                            'icon' => 'fa fa-trash',
+                            'action' => '/seguranca/perfis/delete',
+                            'id' => $id,
+                            'label' => 'Excluir',
+                            'method' => 'post'
+                        ]
+                    ]
+                ]);
+            })
+            ->sortable(array('prf_id', 'prf_nome'));
 
-        return view('Seguranca::perfis.index', ['tableData' => $tableData, 'actionButton' => $actionButtons]);
+        $paginacao = $tableData->appends($request->except('page'));
+        
+        return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao,'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
