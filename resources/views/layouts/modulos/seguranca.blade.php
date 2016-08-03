@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('/css/plugins/sweetalert.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/css/plugins/toastr.min.css') }}" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -53,14 +54,6 @@
 
         <!-- Main content -->
         <section class="content">
-            @if (Session::has('flash_notification.message'))
-                <div class="alert alert-{{ Session::get('flash_notification.level') }}">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-
-                    {{ Session::get('flash_notification.message') }}
-                </div>
-            @endif
-
             @yield('content')
         </section>
     </div><!-- /.content-wrapper -->
@@ -75,10 +68,10 @@
 <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
 <script src="{{ asset('/js/app.min.js')}}"></script>
 <script src="{{ asset('/js/plugins/sweetalert.min.js')}}"></script>
+<script src="{{ asset('/js/plugins/toastr.min.js')}}"></script>
 <script src="{{ asset('/js/harpia.js')}}"></script>
 
 <script type="text/javascript">
-    // SeleÃ§Ã£o de item do menu de acordo com a roda
     url = '{{url()->getRequest()->getPathInfo()}}';
     control = url.split('/')[2];
 
@@ -91,6 +84,8 @@
         }
     })
 </script>
+
+{!! Flash::render() !!}
 
 @section('scripts')
 

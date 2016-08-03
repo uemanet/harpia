@@ -124,7 +124,7 @@ class PerfisController extends BaseController
         }
 
         $modulos = $this->moduloRepository->lists('mod_id', 'mod_nome');
-
+        
         return view('Seguranca::perfis.edit', compact('perfil', 'modulos'));
     }
 

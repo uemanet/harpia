@@ -60,14 +60,6 @@
 
         <!-- Main content -->
         <section class="content">
-            @if (Session::has('flash_notification.message'))
-                <div class="alert alert-{{ Session::get('flash_notification.level') }}">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-
-                    {{ Session::get('flash_notification.message') }}
-                </div>
-            @endif
-
             @yield('content')
         </section>
     </div><!-- /.content-wrapper -->
@@ -83,6 +75,8 @@
 <script src="{{ asset('/js/app.min.js')}}"></script>
 <script src="{{ asset('/js/plugins/sweetalert.min.js')}}"></script>
 <script src="{{ asset('/js/harpia.js')}}"></script>
+
+{!! Flash::render() !!}
 
 @section('scripts')
 
