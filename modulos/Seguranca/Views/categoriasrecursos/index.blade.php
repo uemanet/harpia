@@ -38,52 +38,13 @@
         </div>
         <!-- /.box-body -->
     </div>
-    @if($tableData->count())
+    @if($tabela->count())
         <div class="box box-primary">
             <div class="box-header">
-                {!!
-                    $tableData->columns(array(
-                        'ctr_id' => '#',
-                        'ctr_nome' => 'Categoria',
-                        'ctr_descricao' => 'Descrição',
-                        'ctr_action' => 'Ações'
-                    ))
-                    ->modifyCell('ctr_action', function() {
-                        return array('style' => 'width: 140px;');
-                    })
-                    ->means('ctr_action', 'ctr_id')
-                    ->modify('ctr_action', function($id) {
-                        return ActionButton::grid([
-                                'type' => 'SELECT',
-                                'config' => [
-                                    'classButton' => 'btn-default',
-                                    'label' => 'Selecione'
-                                ],
-                                'buttons' => [
-                                    [
-                                        'classButton' => '',
-                                        'icon' => 'fa fa-pencil',
-                                        'action' => '/seguranca/categoriasrecursos/edit/' . $id,
-                                        'label' => 'Editar',
-                                        'method' => 'get'
-                                    ],
-                                    [
-                                        'classButton' => 'btn-delete text-red',
-                                        'icon' => 'fa fa-trash',
-                                        'action' => '/seguranca/categoriasrecursos/delete',
-                                        'id' => $id,
-                                        'label' => 'Excluir',
-                                        'method' => 'post'
-                                    ]
-                                ]
-                            ]);
-                    })
-                    ->sortable(array('ctr_id', 'ctr_nome'))
-                    ->render()
-                !!}
+                {!! $tabela->render() !!}
             </div>
         </div>
 
-        <div class="text-center">{!! $tableData->appends(Input::except('page'))->links() !!}</div>
+        <div class="text-center">{!! $paginacao->links() !!}</div>
     @endif
 @stop
