@@ -30,7 +30,7 @@ class PerfisController extends BaseController
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->perfilRepository->paginateRequest($request->all());
-        
+
         $tabela = $tableData->columns(array(
             'prf_id' => '#',
             'prf_nome' => 'Perfil',
@@ -77,7 +77,7 @@ class PerfisController extends BaseController
             ->sortable(array('prf_id', 'prf_nome'));
 
         $paginacao = $tableData->appends($request->except('page'));
-        
+
         return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao,'actionButton' => $actionButtons]);
     }
 
@@ -201,9 +201,12 @@ class PerfisController extends BaseController
     {
         try {
             $perfilId = $request->prf_id;
-
+            //dd($request);
             if ($request->input('permissao') == "") {
-                flash()->success('Não existem permissões cadastradas para o módulo no qual esse perfil faz parte.');
+
+                flash()->success('Permissões atribuídas com sucesso.');
+                $permissoes = [];
+                $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
 
                 return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
             }
