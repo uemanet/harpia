@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/seguranca/permissoes/index') }}">
+                <form method="GET" action="{{ url('/seguranca/recursos/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="prm_nome" id="prm_nome" value="{{Input::get('prm_nome')}}" placeholder="Nome da permissão">
+                        <input type="text" class="form-control" name="rcs_nome" id="rcs_nome" value="{{Input::get('rcs_nome')}}" placeholder="Nome do recurso">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
