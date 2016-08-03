@@ -4,24 +4,27 @@
     </a>
     <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
-            <li class="dropdown notifications-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                    <i class="fa fa-user"></i> {{ Auth::user()->pessoa->pes_nome }}
+            <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="{{url('/')}}/img/avatar.png" class="user-image" alt="User Image">
+                    <span class="hidden-xs">{{ Auth::user()->pessoa->pes_nome }}</span>
                 </a>
-                <ul class="dropdown-menu" style="width:100px;height:autopx">
-                    <li>
-                        <ul class="menu">
-                            <li>
-                                <a href="{{url('/')}}/seguranca/profile">
-                                    <i class="fa fa-edit text-aqua"></i> Perfil
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{url('/')}}/logout">
-                                    <i class="fa fa-close text-red"></i> Sair
-                                </a>
-                            </li>
-                        </ul>
+                <ul class="dropdown-menu">
+                    <li class="user-header">
+                        <img src="{{url('/')}}/img/avatar.png" alt="User Image" class="img-circle">
+                        <p>{{ Auth::user()->pessoa->pes_nome }}</p>
+                    </li>
+                    <li class="user-footer">
+                        <div class="pull-left">
+                            <a href="{{url('/')}}/seguranca/profile" class="btn btn-default btn-flat">
+                                <i class="fa fa-edit"></i> Profile
+                            </a>
+                        </div>
+                        <div class="pull-right">
+                            <a href="{{url('/')}}/logout" class="btn btn-default btn-flat">
+                                <i class="fa fa-sign-out"></i> Logout
+                            </a>
+                        </div>
                     </li>
                 </ul>
             </li>

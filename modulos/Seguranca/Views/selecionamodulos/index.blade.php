@@ -13,7 +13,7 @@
                                 <h5 class="widget-user-desc">{{$infoUser['pes_email']}}</h5>
                             </div>
                             <div class="widget-user-image">
-                              <img class="img-circle" src="{{url('/')}}/img/user.jpg" alt="User Avatar">
+                              <img class="img-circle" src="{{url('/')}}/img/avatar.png" alt="User Avatar">
                             </div>
                             <div class="box-footer">
                                 <div class="row">
