@@ -164,7 +164,6 @@ return [
         /*
          * Extra providers
          */
-        Laracasts\Flash\FlashServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
@@ -176,6 +175,7 @@ return [
 
         Harpia\Providers\ActionButton\ActionButtonProvider::class,
         Harpia\Providers\MasterMenu\MasterMenuProvider::class,
+        Harpia\FlashToastrAlert\FlashToastrAlertProvider::class
     ],
 
     /*
@@ -230,7 +230,6 @@ return [
         /*
          * Extra aliases
          */
-        'Flash' => Laracasts\Flash\Flash::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         // 'Menu' => Modulos\Seguranca\Providers\Menu\Facades\Menu::class,
@@ -240,5 +239,6 @@ return [
          */
         'ActionButton' => Harpia\Providers\ActionButton\Facades\ActionButton::class,
         'MasterMenu' => Harpia\Providers\MasterMenu\Facades\MasterMenu::class,
+        'Flash' => Harpia\FlashToastrAlert\Flash::class,
     ],
 ];
