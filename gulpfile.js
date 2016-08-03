@@ -24,13 +24,14 @@ elixir(function(mix) {
 
     // CSS
     mix.copy("node_modules/sweetalert/dist/sweetalert.css", "public/css/plugins");
+    mix.copy("node_modules/toastr/build/toastr.min.css", "public/css/plugins");
 
     // JAVASCRIPT
     mix.copy("node_modules/admin-lte/plugins/jQuery/jQuery-2.2.0.min.js", "public/js");
     mix.copy("node_modules/bootstrap/dist/js/bootstrap.min.js", "public/js");
     mix.copy("node_modules/admin-lte/dist/js/app.min.js", "public/js");
     mix.copy("resources/assets/js/harpia.js", "public/js");
-
+    mix.copy("node_modules/toastr/build/toastr.min.js", "public/js/plugins");
     mix.copy("node_modules/sweetalert/dist/sweetalert.min.js", "public/js/plugins");
 
     // FONTS

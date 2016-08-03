@@ -8,7 +8,6 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "filp/whoops": "^2.1",
-        "laracasts/flash": "^2.0",
         "laravelcollective/html": "5.2.*",
         "stevebauman/eloquenttable": "1.1.*"
     },
@@ -32,7 +31,10 @@
             "App\\": "app/",
             "Modulos\\": "modulos/",
             "Harpia\\" : "Harpia/"
-        }
+        },
+        "files": [
+            "Harpia/FlashToastrAlert/functions.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [

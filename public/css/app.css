@@ -14625,6 +14625,9 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #3c8dbc;
   color: #FFFFFF;
 }
+.navbar-custom-menu {
+  margin-right: 10px;
+}
 #loading-overlay {
   position: fixed;
   z-index: 2010;
