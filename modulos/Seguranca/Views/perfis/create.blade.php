@@ -15,7 +15,7 @@
         </div>
         <div class="box-body">
             {!! Form::open(["url" => url('/') . "/seguranca/perfis/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                @include('Seguranca::perfis.includes.formulario')
+                @include('Seguranca::perfis.includes.formulario_create')
             {!! Form::close() !!}
         </div>
     </div>

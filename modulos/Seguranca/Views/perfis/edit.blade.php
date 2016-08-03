@@ -5,17 +5,17 @@
 @stop
 
 @section('subtitle')
-    Alterar perfil :: {{$perfil->mod_id}}
+    Alterar perfil :: {{$perfil->prf_nome}}
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de módulo</h3>
+            <h3 class="box-title">Formulário de edição de perfil</h3>
         </div>
         <div class="box-body">
             {!! Form::model($perfil,["url" => url('/') . "/seguranca/perfis/edit/$perfil->prf_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                @include('Seguranca::perfis.includes.formulario')
+                @include('Seguranca::perfis.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>
