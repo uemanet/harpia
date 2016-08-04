@@ -15,8 +15,7 @@ class FlashToastrAlertProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton('flash', function ($app)
-        {
+        $this->app->singleton('flash', function ($app) {
             return new FlashToastrAlert($app['session'], $app['config']);
         });
     }

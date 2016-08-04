@@ -40,11 +40,11 @@ class PermissoesController extends BaseController
             'prm_descricao' => 'Descrição',
             'prm_action' => 'Ações'
         ))
-            ->modifyCell('prm_action', function() {
+            ->modifyCell('prm_action', function () {
                 return array('style' => 'width: 140px;');
             })
             ->means('prm_action', 'prm_id')
-            ->modify('prm_action', function($id) {
+            ->modify('prm_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
                     'config' => [

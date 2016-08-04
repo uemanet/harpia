@@ -40,11 +40,11 @@ class RecursosController extends BaseController
             'rcs_descricao' => 'Descrição',
             'rcs_action' => 'Ações'
         ))
-            ->modifyCell('rcs_action', function() {
+            ->modifyCell('rcs_action', function () {
                 return array('style' => 'width: 140px;');
             })
             ->means('rcs_action', 'rcs_id')
-            ->modify('rcs_action', function($id) {
+            ->modify('rcs_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
                     'config' => [
