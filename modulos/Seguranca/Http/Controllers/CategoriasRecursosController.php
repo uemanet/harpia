@@ -37,11 +37,11 @@ class CategoriasRecursosController extends BaseController
             'ctr_descricao' => 'Descrição',
             'ctr_action' => 'Ações'
         ))
-            ->modifyCell('ctr_action', function() {
+            ->modifyCell('ctr_action', function () {
                 return array('style' => 'width: 140px;');
             })
             ->means('ctr_action', 'ctr_id')
-            ->modify('ctr_action', function($id) {
+            ->modify('ctr_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
                     'config' => [
@@ -72,7 +72,7 @@ class CategoriasRecursosController extends BaseController
         $paginacao = $tableData->appends($request->except('page'));
 
         return view('Seguranca::categoriasrecursos.index',
-            ['tabela' => $tabela, 'paginacao' => $paginacao,'actionButton' => $actionButtons]);
+            ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()

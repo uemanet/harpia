@@ -5,7 +5,8 @@ namespace Harpia\FlashToastrAlert;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Session\SessionManager;
 
-class FlashToastrAlert {
+class FlashToastrAlert
+{
 
     protected $notifications = [];
 
@@ -13,13 +14,14 @@ class FlashToastrAlert {
 
     protected $config;
 
-    public function __construct(SessionManager $session, Repository $config) {
+    public function __construct(SessionManager $session, Repository $config)
+    {
         $this->session = $session;
         $this->config = $config;
     }
 
-    public function render() {
-
+    public function render()
+    {
         $notifications = $this->session->get('flashtoastralert_notifications');
 
         if (!$notifications) {
@@ -30,7 +32,7 @@ class FlashToastrAlert {
 
         $lastConfig = [];
 
-        foreach($notifications as $notification) {
+        foreach ($notifications as $notification) {
             $config = $this->config->get('flashtoastralert.options');
 
             if (count($notification['options']) > 0) {
@@ -54,8 +56,8 @@ class FlashToastrAlert {
         return $output;
     }
 
-    public function add($type, $message, $title = null, $options = []) {
-
+    public function add($type, $message, $title = null, $options = [])
+    {
         $allowedTypes = ['error', 'info', 'success', 'warning'];
 
         if (!in_array($type, $allowedTypes)) {
@@ -72,23 +74,28 @@ class FlashToastrAlert {
         $this->session->flash('flashtoastralert_notifications', $this->notifications);
     }
 
-    public function info($message, $title = null, $options = []) {
+    public function info($message, $title = null, $options = [])
+    {
         $this->add('info', $message, $title, $options);
     }
 
-    public function error($message, $title = null, $options = []) {
+    public function error($message, $title = null, $options = [])
+    {
         $this->add('error', $message, $title, $options);
     }
 
-    public function warning($message, $title = null, $options = []) {
+    public function warning($message, $title = null, $options = [])
+    {
         $this->add('warning', $message, $title, $options);
     }
 
-    public function success($message, $title = null, $options = []) {
+    public function success($message, $title = null, $options = [])
+    {
         $this->add('success', $message, $title, $options);
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->notifications = [];
     }
 }

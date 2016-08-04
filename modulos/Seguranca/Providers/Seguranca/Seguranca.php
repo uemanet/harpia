@@ -261,7 +261,7 @@ class Seguranca implements SegurancaContract
             if (mb_strtolower($permissao->mod_rota) == mb_strtolower($mod_rota) &&
                 mb_strtolower($permissao->rcs_rota) == mb_strtolower($rcs_rota) &&
                 mb_strtolower($permissao->prm_nome) == mb_strtolower($prm_nome)
-            ){
+            ) {
                 return true;
             }
         }
@@ -277,7 +277,6 @@ class Seguranca implements SegurancaContract
      */
     private function extractPathResources($fullPath)
     {
-
         if (is_string($fullPath)) {
             $fullPath = explode("/", $fullPath);
         }

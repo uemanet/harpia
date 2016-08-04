@@ -37,11 +37,11 @@ class PerfisController extends BaseController
             'prf_descricao' => 'Descrição',
             'prf_action' => 'Ações'
         ))
-            ->modifyCell('prf_action', function() {
+            ->modifyCell('prf_action', function () {
                 return array('style' => 'width: 140px;');
             })
             ->means('prf_action', 'prf_id')
-            ->modify('prf_action', function($id) {
+            ->modify('prf_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
                     'config' => [
@@ -78,7 +78,7 @@ class PerfisController extends BaseController
 
         $paginacao = $tableData->appends($request->except('page'));
 
-        return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao,'actionButton' => $actionButtons]);
+        return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
@@ -176,11 +176,15 @@ class PerfisController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            }
 
+            if ($e->getCode() == 23000) {
+                flash()->error('Este perfil ainda contém dependências no sistema e não pode ser excluído.');
                 return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -201,9 +205,8 @@ class PerfisController extends BaseController
     {
         try {
             $perfilId = $request->prf_id;
-            //dd($request);
-            if ($request->input('permissao') == "") {
 
+            if ($request->input('permissao') == "") {
                 flash()->success('Permissões atribuídas com sucesso.');
                 $permissoes = [];
                 $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);

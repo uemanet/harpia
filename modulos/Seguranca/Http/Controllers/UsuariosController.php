@@ -33,11 +33,11 @@ class UsuariosController extends BaseController
             'doc_conteudo' => 'CPF',
             'pes_action' => 'Ações'
         ))
-            ->modifyCell('pes_action', function() {
+            ->modifyCell('pes_action', function () {
                 return array('style' => 'width: 140px;');
             })
             ->means('pes_action', 'pes_id')
-            ->modify('pes_action', function($id) {
+            ->modify('pes_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
                     'config' => [

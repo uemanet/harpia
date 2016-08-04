@@ -209,25 +209,25 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 8;
         $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index';
+        $permissao->prm_descricao = 'Permissão index do recurso polos da categoria cadastro do módulo geral';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 8;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão create';
+        $permissao->prm_descricao = 'Permissão create do recurso polos da categoria cadastro do módulo geral';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 8;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso polos da categoria cadastro do módulo geral';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 8;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso polos da categoria cadastro do módulo geral';
         $permissao->save();
     }
 }
