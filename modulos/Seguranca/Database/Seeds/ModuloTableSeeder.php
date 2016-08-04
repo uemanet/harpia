@@ -10,6 +10,7 @@ class ModuloTableSeeder extends Seeder
 
     public function run()
     {
+        //Modulo Segurança
         $modulo = new Modulo;
         $modulo->mod_rota = 'seguranca';
         $modulo->mod_nome = 'Segurança';
