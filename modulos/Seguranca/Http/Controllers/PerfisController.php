@@ -175,11 +175,14 @@ class PerfisController extends BaseController
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
+                throw $e;
+            } else {
+
                 if($e->getCode() == 23000){
                     flash()->error('Este perfil ainda contém dependências no sistema e não pode ser excluído.');
                     return redirect()->back();
                 }
-            } else {
+
                 flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
                 return redirect()->back();
