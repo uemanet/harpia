@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Seguranca\Exceptions;
+namespace Modulos\Core\Providers\Seguranca\Exceptions;
 
 class ForbiddenException extends SegurancaException
 {

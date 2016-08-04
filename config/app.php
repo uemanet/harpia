@@ -166,8 +166,8 @@ return [
          */
         Collective\Html\HtmlServiceProvider::class,
         Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
-        Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
-        // Modulos\Seguranca\Providers\Menu\MenuServiceProvider::class,
+        Modulos\Core\Providers\Seguranca\SegurancaServiceProvider::class,
+        // Modulos\Core\Providers\Menu\MenuServiceProvider::class,
 
         /*
          * Core
@@ -232,7 +232,7 @@ return [
          */
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-        // 'Menu' => Modulos\Seguranca\Providers\Menu\Facades\Menu::class,
+        // 'Menu' => Modulos\Core\Providers\Menu\Facades\Menu::class,
 
         /*
          * Extra aliases
