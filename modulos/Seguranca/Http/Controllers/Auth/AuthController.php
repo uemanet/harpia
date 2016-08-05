@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Foundation\Application;
-use Modulos\Seguranca\Providers\Seguranca\Seguranca;
+use Modulos\Core\Providers\Seguranca\Seguranca;
 use Cache;
 
 class AuthController extends Controller

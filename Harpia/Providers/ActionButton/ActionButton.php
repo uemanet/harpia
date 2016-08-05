@@ -2,7 +2,7 @@
 
 namespace Harpia\Providers\ActionButton;
 
-use Modulos\Seguranca\Providers\Seguranca\Seguranca;
+use Modulos\Core\Providers\Seguranca\Seguranca;
 
 class ActionButton
 {

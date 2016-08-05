@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Menu\Facades;
+namespace Modulos\Core\Providers\Menu\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

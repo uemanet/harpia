@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Seguranca\Contracts;
+namespace Modulos\Core\Providers\Seguranca\Contracts;
 
 /**
  * Interface Seguranca

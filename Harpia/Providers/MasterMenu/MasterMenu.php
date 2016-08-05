@@ -2,7 +2,7 @@
 
 namespace Harpia\Providers\MasterMenu;
 
-// use Modulos\Seguranca\Providers\Security\Security;
+// use Modulos\Core\Providers\Security\Security;
 
 use DB;
 use Cache;

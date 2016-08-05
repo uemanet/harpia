@@ -1,10 +1,10 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Seguranca;
+namespace Modulos\Core\Providers\Seguranca;
 
 use Illuminate\Contracts\Foundation\Application;
-use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
-use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
+use Modulos\Core\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
+use Modulos\Core\Providers\Seguranca\Exceptions\ForbiddenException;
 use Cache;
 use DB;
 

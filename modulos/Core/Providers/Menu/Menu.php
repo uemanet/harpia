@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Menu;
+namespace Modulos\Core\Providers\Menu;
 
 use Illuminate\Auth\Guard;
 use DB;

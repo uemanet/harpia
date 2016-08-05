@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Seguranca;
+namespace Modulos\Core\Providers\Seguranca;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
