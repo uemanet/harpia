@@ -23,12 +23,25 @@ class PerfilRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
-            'prf_mod_id' => 'required',
-            'prf_nome' => 'required|min:3|max:150',
-            'prf_descricao' => 'max:300',
-        ];
+        switch ($this->method()){
+            case 'POST':
+            {
+                return [
+                    'prf_mod_id' => 'required',
+                    'prf_nome' => 'required|min:3|max:150',
+                    'prf_descricao' => 'max:300',
+                ];
 
-        return $rules;
+            }
+            case 'PATCH':
+            case 'PUT':
+            {
+                return [
+                    'prf_nome' => 'required|min:3|max:150',
+                    'prf_descricao' => 'max:300',
+                ];
+            }
+            default: return [];
+        }
     }
 }

@@ -139,7 +139,7 @@ class PerfisController extends BaseController
                 return redirect('/seguranca/perfis');
             }
 
-            $requestData = $request->only($this->perfilRepository->getFillableModelFields());
+            $requestData = $request->only('prf_nome', 'prf_descricao');
 
             if (!$this->perfilRepository->update($requestData, $perfil->prf_id, 'prf_id')) {
                 flash()->error('Erro ao tentar salvar.');
