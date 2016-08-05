@@ -23,7 +23,7 @@ class PerfilRequest extends BaseRequest
      */
     public function rules()
     {
-        switch ($this->method()){
+        switch ($this->method()) {
             case 'POST':
             {
                 return [
