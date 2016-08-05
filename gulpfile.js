@@ -22,6 +22,10 @@ elixir(function(mix) {
         "harpia.less"
     ]);
 
+    mix.less([
+      'custom.less'
+    ], 'public/css/custom.css');
+
     // CSS
     mix.copy("node_modules/sweetalert/dist/sweetalert.css", "public/css/plugins");
     mix.copy("node_modules/toastr/build/toastr.min.css", "public/css/plugins");
