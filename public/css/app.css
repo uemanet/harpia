@@ -2176,8 +2176,8 @@
 }
 
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -3268,7 +3268,6 @@ a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -4693,7 +4692,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -5175,7 +5173,6 @@ select[multiple].input-lg {
 .btn.focus,
 .btn:active.focus,
 .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -8817,7 +8814,7 @@ button.close {
 }
 
 /*!
- *   AdminLTE v2.3.3
+ *   AdminLTE v2.3.6
  *   Author: Almsaeed Studio
  *	 Website: Almsaeed Studio <http://almsaeedstudio.com>
  *   License: Open source - MIT
@@ -8946,7 +8943,7 @@ body.hold-transition .right-side,
 body.hold-transition .main-footer,
 body.hold-transition .main-sidebar,
 body.hold-transition .left-side,
-body.hold-transition .main-header > .navbar,
+body.hold-transition .main-header .navbar,
 body.hold-transition .main-header .logo {
   /* Fix for IE */
   transition: none;
@@ -9005,7 +9002,7 @@ a:focus {
   max-height: 100px;
   z-index: 1030;
 }
-.main-header > .navbar {
+.main-header .navbar {
   transition: margin-left 0.3s ease-in-out;
   margin-bottom: 0;
   margin-left: 230px;
@@ -9013,7 +9010,7 @@ a:focus {
   min-height: 50px;
   border-radius: 0;
 }
-.layout-top-nav .main-header > .navbar {
+.layout-top-nav .main-header .navbar {
   margin-left: 0;
 }
 .main-header #navbar-search-input.form-control {
@@ -9321,21 +9318,23 @@ a:focus {
 }
 .sidebar-menu > li .label,
 .sidebar-menu > li .badge {
-  margin-top: 3px;
   margin-right: 5px;
+}
+.sidebar-menu > li .badge {
+  margin-top: 3px;
 }
 .sidebar-menu li.header {
   padding: 10px 25px 10px 15px;
   font-size: 12px;
 }
-.sidebar-menu li > a > .fa-angle-left {
+.sidebar-menu li > a > .fa-angle-left,
+.sidebar-menu li > a > .pull-right-container > .fa-angle-left {
   width: auto;
   height: auto;
   padding: 0;
   margin-right: 10px;
-  margin-top: 3px;
 }
-.sidebar-menu li.active > a > .fa-angle-left {
+.sidebar-menu li.active > a > .fa-angle-left > a > .pull-right-container > .fa-angle-left {
   transform: rotate(-90deg);
 }
 .sidebar-menu li.active > .treeview-menu {
@@ -9364,6 +9363,8 @@ a:focus {
 .sidebar-menu .treeview-menu > li > a > .ion {
   width: 20px;
 }
+.sidebar-menu .treeview-menu > li > a > .pull-right-container > .fa-angle-left,
+.sidebar-menu .treeview-menu > li > a > .pull-right-container > .fa-angle-down,
 .sidebar-menu .treeview-menu > li > a > .fa-angle-left,
 .sidebar-menu .treeview-menu > li > a > .fa-angle-down {
   width: auto;
@@ -9413,6 +9414,15 @@ a:focus {
     padding: 12px 5px 12px 20px;
     background-color: inherit;
   }
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container {
+    float: right;
+    width: auto!important;
+    left: 200px!important;
+    top: 10px!important;
+  }
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container > .label:not(:first-of-type) {
+    display: none;
+  }
   .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
     top: 44px;
     margin-left: 0;
@@ -9459,7 +9469,7 @@ a:focus {
 .sidebar-menu li > a {
   position: relative;
 }
-.sidebar-menu li > a > .pull-right {
+.sidebar-menu li > a > .pull-right-container {
   position: absolute;
   right: 10px;
   top: 50%;
@@ -14383,7 +14393,6 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #374850;
   border: 1px solid transparent;
   height: 35px;
-  transition: all 0.3s ease-in-out;
 }
 .skin-blue .sidebar-form input[type="text"] {
   color: #666;
@@ -14538,7 +14547,6 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #fff;
   border: 1px solid transparent;
   height: 35px;
-  transition: all 0.3s ease-in-out;
 }
 .skin-blue-light .sidebar-form input[type="text"] {
   color: #666;
@@ -14678,6 +14686,9 @@ fieldset[disabled] .btn-yahoo.active {
   text-indent: -9999px;
   width: 32px;
   height: 32px;
+}
+.sidebar-left {
+  padding-bottom: 10px;
 }
 
 /*# sourceMappingURL=app.css.map */

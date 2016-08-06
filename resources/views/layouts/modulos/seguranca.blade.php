@@ -72,17 +72,15 @@
 <script src="{{ asset('/js/harpia.js')}}"></script>
 
 <script type="text/javascript">
+
     url = '{{url()->getRequest()->getPathInfo()}}';
     control = url.split('/')[2];
 
-    $('#'+control).parent('ul').parent('li').addClass('treeview active');
-    $('#'+control).addClass('treeview active').siblings().removeClass('treeview active');
+    var option = $('#'+control);
 
-    $('.sidebar-menu li').each(function(){
-        if($(this).children('.treeview-menu').children('li').hasClass('treeview active')){
-            $(this).addClass('active');
-        }
-    })
+    option.parent('ul').parent('li').addClass('active');
+    option.addClass('active');
+
 </script>
 
 {!! Flash::render() !!}
