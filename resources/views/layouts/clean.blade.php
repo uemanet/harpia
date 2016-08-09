@@ -35,15 +35,33 @@
                             <i class="fa fa-bars"></i>
                         </button>
                     </div>
-                    <div class="navbar-custom-menu">
+                    <nav class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             <li class="dropdown user user-menu">
-                                <a href="{{url('/')}}/logout">
-                                    <span class="hidden-xs">Sair</span>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="{{url('/')}}/img/avatar.png" class="user-image" alt="User Image">
+                                    <span class="hidden-xs">{{ Auth::user()->pessoa->pes_nome }}</span>
                                 </a>
-                            </li>
-                        </ul>
-                    </div>
+                                <ul class="dropdown-menu">
+                                    <li class="user-header">
+                                        <img src="{{url('/')}}/img/avatar.png" alt="User Image" class="img-circle">
+                                        <p>{{ Auth::user()->pessoa->pes_nome }}</p>
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="{{url('/')}}/seguranca/profile" class="btn btn-default btn-flat">
+                                                <i class="fa fa-edit"></i> Perfil
+                                            </a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{url('/')}}/logout" class="btn btn-default btn-flat">
+                                                <i class="fa fa-sign-out"></i> Sair
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </ul>
+                    </nav>
                 </div>
             </nav>
         </header>
