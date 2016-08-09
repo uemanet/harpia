@@ -7,38 +7,6 @@
             <div class="box box-default">
                 <div class="box-body" style="min-height:702px">
                     <div class="row-fluid">
-                        <div class="box box-widget widget-user">
-                            <div class="widget-user-header bg-aqua-active">
-                                <h3 class="widget-user-username">{{$infoUser['pes_nome']}}</h3>
-                                <h5 class="widget-user-desc">{{$infoUser['pes_email']}}</h5>
-                            </div>
-                            <div class="widget-user-image">
-                              <img class="img-circle" src="{{url('/')}}/img/avatar.png" alt="User Avatar">
-                            </div>
-                            <div class="box-footer">
-                                <div class="row">
-                                    <div class="col-sm-4 border-right">
-                                        <div class="description-block">
-                                            <h5 class="description-header">{{$infoUser['usr_usuario']}}</h5>
-                                            <span class="description-text">USUÁRIO</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="description-block">
-                                            <h5 class="description-header">{{count($modulos)}}</h5>
-                                            <span class="description-text">MÓDULO(S)</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4 border-right">
-                                        <div class="description-block">
-                                            <a class="text-light-blue" href="{{url('/')}}/seguranca/profile" >
-                                                <i class="fa fa-unlock-alt"></i> Alterar perfil
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
                           @if(count($modulos))
                             @foreach($modulos as $modulo)
