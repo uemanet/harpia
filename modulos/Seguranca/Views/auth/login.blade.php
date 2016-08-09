@@ -3,9 +3,9 @@
 @section('content')
     <div class="login-box" style="padding-top:10vh">
         <div class="box box-widget widget-user" style="margin-bottom:5px">
-            <div class="widget-user-header bg-aqua-active text-center">
-                <img src="{{url('/')}}/img/logo.png"/>
-                <h4 class="text-center">Sistema de Gestão <b>Educacional</b></h4>
+            <div class="widget-user-header text-center" style="background-color:#E9F1F5;border-bottom:2px solid #0083CE">
+                <img src="{{url('/')}}/img/logo.png" style="height:70px" />
+                <h4 class="text-center" style="margin-top:2px">Sistema de Gestão <b>Educacional</b></h4>
             </div>
             <div class="box-content">
                 <div class="login-box-body">

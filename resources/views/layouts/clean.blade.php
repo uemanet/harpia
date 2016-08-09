@@ -28,7 +28,7 @@
             <nav class="navbar navbar-static-top">
                 <div class="container">
                     <div class="navbar-header">
-                        <a href="{{url('/')}}" style="padding-top:2px" class="navbar-brand">
+                        <a href="{{url('/')}}" style="padding-top:2px;background-color:#E9F1F5" class="navbar-brand">
                             <img src="{{url('/')}}/img/logo.png" style="height:47px" />
                         </a>
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
@@ -53,7 +53,6 @@
         </div>
     </div>
 
-    <!-- JQUERY-->
     <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
     <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
     <script src="{{ asset('/js/app.min.js')}}"></script>
