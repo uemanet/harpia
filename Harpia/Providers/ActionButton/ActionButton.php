@@ -47,6 +47,8 @@ class ActionButton
     {
         $seguranca = $this->app[Seguranca::class];
 
+        $flag = 0;
+
         $render = '<div class="btn-group">
        <button type="button" class="btn '.$config['classButton'].'">'.$config['label'].'</button>
        <button type="button" class="btn '.$config['classButton'].' dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -61,26 +63,33 @@ class ActionButton
                 $rota = substr($button['action'], 1);
 
                 if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
+                    $flag += 1;
                     if ($button['method'] == 'get') {
                         $render.= '<li>
-                <a href="'.$button['action'].'" class="'.$button['classButton'].'">
-                  <i class="'.$button['icon'].'"></i> '.$button['label'].'
-                </a>
-              </li>';
+                                    <a href="'.$button['action'].'" class="'.$button['classButton'].'">
+                                      <i class="'.$button['icon'].'"></i> '.$button['label'].'
+                                    </a>
+                                  </li>';
                     } else {
                         $render.= '<li>
-                    <form action="'.$button['action'].'" method="'.strtoupper($button['method']).'" class="form-singlebutton">
-                      <input type="hidden" name="id" value="'.$button['id'].'">
-                      <input type="hidden" name="_token" value="'.csrf_token().'">
-                      <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
-                      <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
-                    </form>
-              </li>';
+                                        <form action="'.$button['action'].'" method="'.strtoupper($button['method']).'" class="form-singlebutton">
+                                          <input type="hidden" name="id" value="'.$button['id'].'">
+                                          <input type="hidden" name="_token" value="'.csrf_token().'">
+                                          <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
+                                          <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
+                                        </form>
+                                    </li>';
                     }
                 }
             }
-
             $render.= '</ul></div>';
+
+            if($flag == 0)
+            {
+                $render = '<div class="btn-group">
+                                <button type="button" class="btn '.$config['classButton'].'">Sem Ações</button>
+                            </div>';
+            }
         }
 
         return $render;

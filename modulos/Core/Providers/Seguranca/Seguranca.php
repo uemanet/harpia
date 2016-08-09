@@ -133,7 +133,7 @@ class Seguranca implements SegurancaContract
                     mod_id,mod_rota,mod_nome,mod_descricao,mod_icone,mod_class,rcs_nome,rcs_rota,prm_nome
                 FROM
                     seg_perfis_usuarios
-                    INNER JOIN seg_perfis ON pru_prf_id = pru_prf_id
+                    INNER JOIN seg_perfis ON pru_prf_id = prf_id
                     INNER JOIN seg_perfis_permissoes ON prp_prf_id = prf_id
                     INNER JOIN seg_permissoes ON prp_prm_id = prm_id
                     INNER JOIN seg_modulos ON prf_mod_id = mod_id
