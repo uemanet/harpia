@@ -30,8 +30,8 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
         }
 
         Flash::error('Você não term permissão para acessar esse recurso.');
-        // return redirect()->back();
-        return redirect('/login');
+        return redirect()->back();
+//        return redirect('/login');
     }
 
     /**
