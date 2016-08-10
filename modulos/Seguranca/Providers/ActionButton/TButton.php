@@ -1,6 +1,6 @@
 <?php
 
-namespace Harpia\Providers\ActionButton;
+namespace Modulos\Seguranca\Providers\ActionButton;
 
 class TButton
 {

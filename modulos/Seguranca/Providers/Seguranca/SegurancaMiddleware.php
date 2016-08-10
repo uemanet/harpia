@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Core\Providers\Seguranca;
+namespace Modulos\Seguranca\Providers\Seguranca;
 
 use Illuminate\Http\Request;
 use DB;
@@ -30,8 +30,8 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
         }
 
         Flash::error('Você não term permissão para acessar esse recurso.');
-        // return redirect()->back();
-        return redirect('/login');
+        return redirect()->back();
+//        return redirect('/login');
     }
 
     /**

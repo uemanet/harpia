@@ -1,10 +1,10 @@
 <?php
 
-namespace Modulos\Core\Providers\Menu\Facades;
+namespace Modulos\Seguranca\Providers\MasterMenu\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Menu extends Facade
+class MasterMenu extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -13,6 +13,6 @@ class Menu extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Menu';
+        return 'MasterMenu';
     }
 }

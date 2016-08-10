@@ -1,10 +1,10 @@
 <?php
 
-namespace Harpia\Providers\MasterMenu;
+namespace Modulos\Seguranca\Providers\ActionButton;
 
 use Illuminate\Support\ServiceProvider;
 
-class MasterMenuProvider extends ServiceProvider
+class ActionButtonProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -23,8 +23,8 @@ class MasterMenuProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['MasterMenu'] = $this->app->share(function ($app) {
-            return new MasterMenu($app);
+        $this->app['ActionButton'] = $this->app->share(function ($app) {
+            return new ActionButton($app);
         });
     }
 }

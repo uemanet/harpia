@@ -1,8 +1,8 @@
 <?php
 
-namespace Harpia\Providers\ActionButton;
+namespace Modulos\Seguranca\Providers\ActionButton;
 
-use Modulos\Core\Providers\Seguranca\Seguranca;
+use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
 class ActionButton
 {
@@ -86,9 +86,10 @@ class ActionButton
 
             if($flag == 0)
             {
-                $render = '<div class="btn-group">
-                                <button type="button" class="btn '.$config['classButton'].'">Sem Ações</button>
-                            </div>';
+//                $render = '<div class="btn-group">
+//                    <button type="button" class="btn '.$config['classButton'].'">Sem Ações</button>
+//                </div>';
+                $render = '';
             }
         }
 

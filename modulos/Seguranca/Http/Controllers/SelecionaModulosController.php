@@ -5,7 +5,7 @@ namespace Modulos\Seguranca\Http\Controllers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Core\Providers\Seguranca\Seguranca;
+use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
 class SelecionaModulosController extends BaseController
 {
