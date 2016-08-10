@@ -1,9 +1,9 @@
 <?php
 
-namespace Modulos\Core\Providers\Seguranca;
+namespace Modulos\Seguranca\Providers\Seguranca;
 
 use Illuminate\Contracts\Foundation\Application;
-use Modulos\Core\Providers\Seguranca\Exceptions\ForbiddenException;
+use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 use Illuminate\Contracts\Auth\Guard;
 
 abstract class AbstractSegurancaMiddleware

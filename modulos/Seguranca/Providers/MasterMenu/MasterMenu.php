@@ -1,8 +1,6 @@
 <?php
 
-namespace Harpia\Providers\MasterMenu;
-
-// use Modulos\Core\Providers\Security\Security;
+namespace Modulos\Seguranca\Providers\MasterMenu;
 
 use DB;
 use Cache;

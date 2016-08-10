@@ -1,10 +1,10 @@
 <?php
 
-namespace Harpia\Providers\MasterMenu\Facades;
+namespace Modulos\Seguranca\Providers\ActionButton\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class MasterMenu extends Facade
+class ActionButton extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -13,6 +13,6 @@ class MasterMenu extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'MasterMenu';
+        return 'ActionButton';
     }
 }

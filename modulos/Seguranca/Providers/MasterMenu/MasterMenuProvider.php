@@ -1,10 +1,10 @@
 <?php
 
-namespace Modulos\Core\Providers\Menu;
+namespace Modulos\Seguranca\Providers\MasterMenu;
 
 use Illuminate\Support\ServiceProvider;
 
-class MenuServiceProvider extends ServiceProvider
+class MasterMenuProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -23,8 +23,8 @@ class MenuServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['Menu'] = $this->app->share(function ($app) {
-            return new Menu($app['request'], $app['auth']);
+        $this->app['MasterMenu'] = $this->app->share(function ($app) {
+            return new MasterMenu($app);
         });
     }
 }

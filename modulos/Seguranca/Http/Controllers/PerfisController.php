@@ -2,8 +2,8 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
-use Harpia\Providers\ActionButton\Facades\ActionButton;
-use Harpia\Providers\ActionButton\TButton;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
+use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Http\Requests\PerfilRequest;
 use Modulos\Seguranca\Repositories\ModuloRepository;
