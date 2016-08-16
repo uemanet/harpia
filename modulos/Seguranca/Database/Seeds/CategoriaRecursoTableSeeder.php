@@ -24,7 +24,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 2; //Modulo Geral
         $categoria->ctr_nome = 'Cadastro';
-        $categoria->ctr_descricao = 'Categoria de cadastro';
+        $categoria->ctr_descricao = 'Categoria de cadastro do módulo geral';
         $categoria->ctr_icone = 'fa fa-plus';
         $categoria->ctr_ordem = 1;
         $categoria->ctr_ativo = 1;
@@ -35,7 +35,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Cadastro';
-        $categoria->ctr_descricao = 'Categoria de cadastro';
+        $categoria->ctr_descricao = 'Categoria de cadastro do módulo acadêmica';
         $categoria->ctr_icone = 'fa fa-plus';
         $categoria->ctr_ordem = 1;
         $categoria->ctr_ativo = 1;
