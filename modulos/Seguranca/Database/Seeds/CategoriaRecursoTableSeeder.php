@@ -31,7 +31,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        //Modulo Geral
+        //Modulo Academico
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Cadastro';

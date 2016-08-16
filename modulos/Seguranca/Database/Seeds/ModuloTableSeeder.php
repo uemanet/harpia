@@ -30,7 +30,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_ativo = 1;
         $modulo->save();
 
-        //Modulo Geral
+        //Modulo Acadêmico
         $modulo = new Modulo;
         $modulo->mod_rota = 'academico';
         $modulo->mod_nome = 'Acadêmico';
