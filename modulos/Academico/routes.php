@@ -2,6 +2,6 @@
 
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::controllers([
-        // none
+        'index' => '\Modulos\Academico\Http\Controllers\indexController',
     ]);
 });

@@ -25,6 +25,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesUsuarios();
 
         $this->createPermissoesGeralPolo();
+
+        $this->createPermissoesAcademicoIndex();
     }
 
     private function createPermissoesIndex()
@@ -229,5 +231,15 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso polos da categoria cadastro do módulo geral';
         $permissao->save();
+    }
+
+    private function createPermissoesAcademicoIndex()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 9;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Dashboard';
+        $permissao->save();
+
     }
 }
