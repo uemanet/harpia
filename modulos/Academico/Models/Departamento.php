@@ -4,7 +4,7 @@ namespace Modulos\Academico\Models;
 
 use Modulos\Core\Model\BaseModel;
 
-class Modulo extends BaseModel
+class Departamento extends BaseModel
 {
     protected $table = 'acd_departamentos';
 
@@ -25,5 +25,4 @@ class Modulo extends BaseModel
     {
         $this->belongsTo('Modulos\Academico\Models\Professor', 'dep_prf_diretor', 'prf_id');
     }
-
 }
