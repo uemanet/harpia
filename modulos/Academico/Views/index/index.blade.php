@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Módulo de configurações gerais
+    Módulo de gerenciamento acadêmico
 @stop
 
 @section('content')
