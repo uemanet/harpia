@@ -18,17 +18,17 @@ class OfertaCurso extends BaseModel
 
     public function curso()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Curso', 'grp_trm_id', 'trm_id');
-    }
-
-    public function modalidade()
-    {
-        return $this->belongsTo('Modulos\Academico\Models\Modalidade', 'grp_pol_diretor', 'pol_id');
+        return $this->belongsTo('Modulos\Academico\Models\Curso', 'ofc_crs_id', 'crs_id');
     }
 
     public function matriz()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Polo', 'grp_pol_diretor', 'pol_id');
+        return $this->belongsTo('Modulos\Academico\Models\MatrizCurricular', 'ofc_mtc_id', 'mtc_id');
+    }
+
+    public function modalidade()
+    {
+      return $this->belongsTo('Modulos\Academico\Models\Modalidade', 'ofc_mdl_id', 'mdl_id');
     }
 
     public function polos()
