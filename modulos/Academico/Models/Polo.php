@@ -17,4 +17,9 @@ class Polo extends BaseModel
     protected $searchable = [
         'pol_nome' => 'like'
     ];
+
+    public function ofertas_cursos()
+    {
+        return $this->belongsToMany('Modulos\Seguranca\Models\OfertaCurso', 'acd_polos_ofertas_cursos', 'poc_pol_id', 'poc_ofc_id');
+    }
 }
