@@ -18,4 +18,10 @@ class PeriodoLetivo extends BaseModel
     protected $searchable = [
         'per_inicio' => 'like',
     ];
+
+
+    public function turmas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_per_id', 'per_id');
+    }
 }
