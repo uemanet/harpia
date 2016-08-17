@@ -13,7 +13,7 @@ class OfertaCurso extends BaseModel
     protected $fillable = ['ofc_crs_id', 'ofc_mtc_id', 'ofc_mdl_id','ofc_ano'];
 
     protected $searchable = [
-        'ofc_nome' => 'like'
+        'ofc_ano' => 'like'
     ];
 
     public function curso()
