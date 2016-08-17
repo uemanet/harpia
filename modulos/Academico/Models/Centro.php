@@ -10,7 +10,11 @@ class Centro extends BaseModel
 
     protected $primaryKey = 'cen_id';
 
-    protected $fillable = ['cen_prf_diretor', 'cen_nome','cen_sigla'];
+    protected $fillable = [
+        'cen_prf_diretor',
+        'cen_nome',
+        'cen_sigla'
+    ];
 
     protected $searchable = [
         'cen_nome' => 'like',

@@ -10,7 +10,9 @@ class Polo extends BaseModel
 
     protected $primaryKey = 'pol_id';
 
-    protected $fillable = ['pol_nome'];
+    protected $fillable = [
+        'pol_nome'
+    ];
 
     protected $searchable = [
         'pol_nome' => 'like'

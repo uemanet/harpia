@@ -11,8 +11,13 @@ class MatrizCurricular extends BaseModel
     protected $primaryKey = 'mtc_id';
 
     protected $fillable = [
-        'mtc_crs_id', 'mtc_anx_projeto_pedagogico', 'mtc_descricao',
-        'mtc_data', 'mtc_creditos', 'mtc_horas', 'mtc_horas_praticas'
+        'mtc_crs_id',
+        'mtc_anx_projeto_pedagogico',
+        'mtc_descricao',
+        'mtc_data',
+        'mtc_creditos',
+        'mtc_horas',
+        'mtc_horas_praticas'
     ];
 
     protected $searchable = [
