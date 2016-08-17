@@ -14,7 +14,15 @@ class NivelCursoTableSeeder extends Seeder
         $nivel->save();
 
         $nivel = new NivelCurso();
+        $nivel->nvc_nome = 'Tecnólogo';
+        $nivel->save();
+
+        $nivel = new NivelCurso();
         $nivel->nvc_nome = 'Graduação';
+        $nivel->save();
+
+        $nivel = new NivelCurso();
+        $nivel->nvc_nome = 'Especialização';
         $nivel->save();
 
         $nivel = new NivelCurso();
