@@ -29,5 +29,4 @@ class Grupo extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Polo', 'grp_pol_diretor', 'pol_id');
     }
-
 }

@@ -10,7 +10,11 @@ class TutorGrupo extends BaseModel
 
     protected $primaryKey = 'ttg_id';
 
-    protected $fillable = ['ttg_tut_id', 'ttg_grp_id', 'ttg_tipo_tutoria'];
+    protected $fillable = [
+        'ttg_tut_id',
+        'ttg_grp_id',
+        'ttg_tipo_tutoria'
+    ];
 
     protected $searchable = [
         'ttg_tipo_tutoria' => 'like'
@@ -25,5 +29,4 @@ class TutorGrupo extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Grupo', 'ttg_grp_id', 'grp_id');
     }
-
 }

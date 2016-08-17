@@ -40,17 +40,16 @@ class Curso extends BaseModel
 
     public function nivelcurso()
     {
-      return $this->belongsTo('Modulos\Academico\Models\NivelCurso', 'crs_nvc_id', 'nvc_id');
+        return $this->belongsTo('Modulos\Academico\Models\NivelCurso', 'crs_nvc_id', 'nvc_id');
     }
 
     public function matrizes()
     {
-        return $this->hasMany('Modulos\Academico\Models\MatrizCurricular', 'mtc_crs_id','crs_id');
+        return $this->hasMany('Modulos\Academico\Models\MatrizCurricular', 'mtc_crs_id', 'crs_id');
     }
 
     public function ofertas()
     {
-        return $this->hasMany('Modulos\Academico\Models\OfertaCurso', 'ofc_crs_id','crs_id');
+        return $this->hasMany('Modulos\Academico\Models\OfertaCurso', 'ofc_crs_id', 'crs_id');
     }
-
 }

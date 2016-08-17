@@ -10,7 +10,12 @@ class OfertaCurso extends BaseModel
 
     protected $primaryKey = 'ofc_id';
 
-    protected $fillable = ['ofc_crs_id', 'ofc_mtc_id', 'ofc_mdl_id','ofc_ano'];
+    protected $fillable = [
+        'ofc_crs_id',
+        'ofc_mtc_id',
+        'ofc_mdl_id',
+        'ofc_ano'
+    ];
 
     protected $searchable = [
         'ofc_ano' => 'like'
@@ -28,7 +33,7 @@ class OfertaCurso extends BaseModel
 
     public function modalidade()
     {
-      return $this->belongsTo('Modulos\Academico\Models\Modalidade', 'ofc_mdl_id', 'mdl_id');
+        return $this->belongsTo('Modulos\Academico\Models\Modalidade', 'ofc_mdl_id', 'mdl_id');
     }
 
     public function polos()
@@ -38,8 +43,6 @@ class OfertaCurso extends BaseModel
 
     public function turmas()
     {
-        return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_ofc_id','ofc_id');
+        return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_ofc_id', 'ofc_id');
     }
-
-
 }
