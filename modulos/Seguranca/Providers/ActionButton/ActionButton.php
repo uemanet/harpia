@@ -84,9 +84,8 @@ class ActionButton
             }
             $render.= '</ul></div>';
 
-            if($flag == 0)
-            {
-//                $render = '<div class="btn-group">
+            if ($flag == 0) {
+                //                $render = '<div class="btn-group">
 //                    <button type="button" class="btn '.$config['classButton'].'">Sem Ações</button>
 //                </div>';
                 $render = '';
