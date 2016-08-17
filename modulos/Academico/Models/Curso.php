@@ -10,7 +10,19 @@ class Curso extends BaseModel
 
     protected $primaryKey = 'crs_id';
 
-    protected $fillable = ['crs_dep_id', 'crs_nvc_id', 'crs_prf_diretor','crs_nome','crs_sigla','crs_descricao','crs_resolucao','crs_autorizacao','crs_data_autorizacao','crs_eixo','crs_habilitacao'];
+    protected $fillable = [
+        'crs_dep_id',
+        'crs_nvc_id',
+        'crs_prf_diretor',
+        'crs_nome',
+        'crs_sigla',
+        'crs_descricao',
+        'crs_resolucao',
+        'crs_autorizacao',
+        'crs_data_autorizacao',
+        'crs_eixo',
+        'crs_habilitacao'
+    ];
 
     protected $searchable = [
         'crs_nome' => 'like'

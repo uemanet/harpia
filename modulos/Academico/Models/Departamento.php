@@ -10,7 +10,11 @@ class Departamento extends BaseModel
 
     protected $primaryKey = 'dep_id';
 
-    protected $fillable = ['dep_cen_id', 'dep_prf_diretor','dep_nome'];
+    protected $fillable = [
+        'dep_cen_id',
+        'dep_prf_diretor',
+        'dep_nome'
+    ];
 
     protected $searchable = [
         'dep_nome' => 'like'

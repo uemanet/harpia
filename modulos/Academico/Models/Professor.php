@@ -10,7 +10,10 @@ class Professor extends BaseModel
 
     protected $primaryKey = 'prf_id';
 
-    protected $fillable = ['prf_pes_id', 'prf_matricula'];
+    protected $fillable = [
+        'prf_pes_id',
+        'prf_matricula'
+    ];
 
     protected $searchable = [
         'prf_id' => '='

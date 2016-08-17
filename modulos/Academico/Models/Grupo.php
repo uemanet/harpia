@@ -10,7 +10,11 @@ class Grupo extends BaseModel
 
     protected $primaryKey = 'grp_id';
 
-    protected $fillable = ['grp_trm_id', 'grp_pol_id', 'grp_nome'];
+    protected $fillable = [
+        'grp_trm_id',
+        'grp_pol_id',
+        'grp_nome'
+    ];
 
     protected $searchable = [
         'grp_nome' => 'like'
