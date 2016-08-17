@@ -36,5 +36,10 @@ class OfertaCurso extends BaseModel
         return $this->belongsToMany('Modulos\Seguranca\Models\Polo', 'acd_polos_ofertas_cursos', 'poc_pol_id', 'poc_ofc_id');
     }
 
+    public function turmas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_ofc_id','ofc_id');
+    }
+
 
 }
