@@ -31,4 +31,14 @@ class Pessoa extends BaseModel
         'pes_email' => '=',
         'pes_cpf' => '='
     ];
+
+    public function documentos()
+    {
+        return $this->hasMany('Modulos\Geral\Models\Documento', 'doc_pes_id');
+    }
+
+    public function titulacoes_informacoes()
+    {
+        return $this->hasMany('Modulos\Geral\Models\TitulacaoInformacao', 'tin_pes_id');
+    }
 }
