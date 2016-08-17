@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 /**
  * Class IndexController.
  */
-class IndexController extends Controller
+class indexController extends Controller
 {
     /**
      * @return \Illuminate\View\View

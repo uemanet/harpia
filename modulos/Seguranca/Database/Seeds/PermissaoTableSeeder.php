@@ -240,6 +240,5 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard';
         $permissao->save();
-
     }
 }
