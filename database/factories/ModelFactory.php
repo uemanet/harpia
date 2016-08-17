@@ -72,3 +72,13 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
 //        'pes_estrangeiro' => $faker->boolean
 //    ];
 //});
+
+
+// Modulo ACADEMICO
+$factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Generator $faker){
+   return [
+       'dep_cen_id' => 1,
+       'dep_prf_diretor' => 1,
+       'dep_nome' => $faker->word
+   ];
+});

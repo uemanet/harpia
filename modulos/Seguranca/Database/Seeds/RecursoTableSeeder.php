@@ -96,8 +96,18 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ctr_id = 3; // Categoria Seguranca
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
-        $recurso->rcs_descricao = 'Recurso dashboard da categoria segurança do módulo segurança';
+        $recurso->rcs_descricao = 'Recurso dashboard do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-tachometer';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Seguranca
+        $recurso->rcs_nome = 'Departamentos';
+        $recurso->rcs_rota = 'departamentos';
+        $recurso->rcs_descricao = 'Recurso departamento do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-sitemap';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
         $recurso->save();

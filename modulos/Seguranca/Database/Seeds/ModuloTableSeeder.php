@@ -35,7 +35,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_rota = 'academico';
         $modulo->mod_nome = 'Acadêmico';
         $modulo->mod_descricao = 'Módulo de cadastro Acadêmico';
-        $modulo->mod_icone = 'fa fa-book';
+        $modulo->mod_icone = 'fa fa-graduation-cap';
         $modulo->mod_class = 'bg-green';
         $modulo->mod_ativo = 1;
         $modulo->save();

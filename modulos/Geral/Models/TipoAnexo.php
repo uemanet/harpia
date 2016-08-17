@@ -1,7 +1,6 @@
 <?php
 namespace Modulos\Geral\Models;
 
-
 use Modulos\Core\Model\BaseModel;
 
 class TipoAnexo extends BaseModel
@@ -11,5 +10,4 @@ class TipoAnexo extends BaseModel
     protected $primaryKey = 'tax_id';
 
     protected $fillable = ['tax_nome'];
-
 }

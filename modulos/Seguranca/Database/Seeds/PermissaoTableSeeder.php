@@ -27,6 +27,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesGeralPolo();
 
         $this->createPermissoesAcademicoIndex();
+
+        $this->createPermissoesAcademicoDepartamentos();
     }
 
     private function createPermissoesIndex()
@@ -239,6 +241,33 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 9;
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoDepartamentos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 10;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 10;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 10;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 10;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
         $permissao->save();
     }
 }

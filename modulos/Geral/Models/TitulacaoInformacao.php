@@ -1,7 +1,6 @@
 <?php
 namespace Modulos\Geral\Models;
 
-
 use Modulos\Core\Model\BaseModel;
 
 class TitulacaoInformacao extends BaseModel
@@ -30,5 +29,4 @@ class TitulacaoInformacao extends BaseModel
     {
         return $this->belongsTo('Modulos\Geral\Models\Titulacao', 'tin_tit_id');
     }
-
 }
