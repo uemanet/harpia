@@ -1,4 +1,4 @@
-@extends('layouts.modulos.geral')
+@extends('layouts.modulos.academico')
 
 @section('title')
     Polos
@@ -14,8 +14,8 @@
             <h3 class="box-title">Formulário de edição de polos</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($polo, ["url" => url('/') . "/geral/polos/edit/$polo->pol_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                @include('Geral::polos.includes.formulario')
+            {!! Form::model($polo, ["url" => url('/') . "/academico/polos/edit/$polo->pol_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+                @include('Academico::polos.includes.formulario')
             {!! Form::close() !!}
 
         </div>
