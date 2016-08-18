@@ -6,7 +6,6 @@ use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\PoloRequest;
-//use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\PoloRepository;
 
