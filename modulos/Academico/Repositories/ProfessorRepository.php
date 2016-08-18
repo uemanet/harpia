@@ -27,5 +27,4 @@ class ProfessorRepository extends BaseRepository
 
         return collect($entries);
     }
-
 }

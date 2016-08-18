@@ -177,6 +177,11 @@ class ProfessorRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testLists()
+    {
+    }
+
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');
