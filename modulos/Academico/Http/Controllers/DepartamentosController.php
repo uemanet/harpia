@@ -79,7 +79,7 @@ class DepartamentosController extends BaseController
     {
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
 
-        $professores = $this->professorRepository->lists('prf_id', 'prf_matricula');
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
 
         return view('Academico::departamentos.create', ['centros' => $centros, 'professores' => $professores]);
     }
