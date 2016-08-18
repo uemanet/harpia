@@ -82,3 +82,18 @@ $factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Ge
        'dep_nome' => $faker->word
    ];
 });
+
+$factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generator $faker){
+    return [
+        'cen_prf_diretor' => 1,
+        'cen_nome' => $faker->word,
+        'cen_sigla' => $faker->word,
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
+    return [
+        'dep_prf_diretor' => 1,
+        'prf_matricula' => $faker->bankAccountNumber,
+    ];
+});

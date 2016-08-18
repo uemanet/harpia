@@ -26,7 +26,7 @@ class ModulosController extends BaseController
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->moduloRepository->paginateRequest($request->all());
-        
+        dd($tableData);
         $tabela = $tableData->columns(array(
                 'mod_id' => '#',
                 'mod_nome' => 'Módulo',

@@ -17,8 +17,7 @@ class Centro extends BaseModel
     ];
 
     protected $searchable = [
-        'cen_nome' => 'like',
-        'cen_sigla' => 'like'
+        'cen_nome' => 'like'
     ];
 
     public function departamentos()
