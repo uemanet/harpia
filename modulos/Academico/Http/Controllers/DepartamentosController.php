@@ -77,7 +77,11 @@ class DepartamentosController extends BaseController
 
     public function getCreate()
     {
-        return view('Academico::departamentos.create');
+        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
+
+        $professores = $this->professorRepository->lists('prf_id', 'prf_matricula');
+
+        return view('Academico::departamentos.create', ['centros' => $centros, 'professores' => $professores]);
     }
 
     public function postCreate(DepartamentoRequest $request)
@@ -105,41 +109,46 @@ class DepartamentosController extends BaseController
         }
     }
 
-    public function getEdit($moduloId)
+    public function getEdit($departamentoId)
     {
-        $modulo = $this->departamentoRepository->find($moduloId);
+        $departamento = $this->departamentoRepository->find($departamentoId);
 
-        if (!$modulo) {
-            flash()->error('Módulo não existe.');
+        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
+
+        $professores = $this->professorRepository->lists('prf_id', 'prf_matricula');
+
+
+        if (!$departamento) {
+            flash()->error('Departamento não existe.');
 
             return redirect()->back();
         }
 
-        return view('Seguranca::modulos.edit', compact('modulo'));
+        return view('Academico::departamentos.edit', ['departamento' => $departamento, 'centros' => $centros, 'professores' => $professores]);
     }
 
-    public function putEdit($id, ModuloRequest $request)
+    public function putEdit($id, DepartamentoRequest $request)
     {
         try {
-            $modulo = $this->departamentoRepository->find($id);
+            $departamento = $this->departamentoRepository->find($id);
 
-            if (!$modulo) {
-                flash()->error('Módulo não existe.');
+            if (!$departamento) {
+                flash()->error('Departamento não existe.');
 
-                return redirect('/seguranca/modulos');
+                return redirect('/academico/departamentos');
             }
 
             $requestData = $request->only($this->departamentoRepository->getFillableModelFields());
 
-            if (!$this->departamentoRepository->update($requestData, $modulo->mod_id, 'mod_id')) {
+            if (!$this->departamentoRepository->update($requestData, $departamento->dep_id, 'dep_id')) {
                 flash()->error('Erro ao tentar salvar.');
 
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Módulo atualizado com sucesso.');
+            flash()->success('Departamento atualizado com sucesso.');
 
-            return redirect('/seguranca/modulos');
+            return redirect('/academico/departamentos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -154,10 +163,10 @@ class DepartamentosController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-            $moduloId = $request->get('id');
+            $departamentoId = $request->get('id');
 
-            if ($this->departamentoRepository->delete($moduloId)) {
-                flash()->success('Módulo excluído com sucesso.');
+            if ($this->departamentoRepository->delete($departamentoId)) {
+                flash()->success('Departamento excluído com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir o módulo');
             }

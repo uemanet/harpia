@@ -7,7 +7,7 @@ use Modulos\Academico\Models\Professor;
 
 class ProfessorRepository extends BaseRepository
 {
-    public function __construct(Professor $professor )
+    public function __construct(Professor $professor)
     {
         $this->model = $professor;
     }

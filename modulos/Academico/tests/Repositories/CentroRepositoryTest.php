@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Academico\Repositories\CentroRepository;
+use Modulos\Academico\Models\Centro;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -44,7 +45,7 @@ class CentroRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Academico\Models\Centro::class, 2)->create();
+        factory(Centro::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,7 +56,7 @@ class CentroRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Academico\Models\Centro::class, 2)->create();
+        factory(Centro::class, 2)->create();
 
         $sort = [
             'field' => 'cen_id',
@@ -71,9 +72,9 @@ class CentroRepositoryTest extends TestCase
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Academico\Models\Centro::class, 2)->create();
+        factory(Centro::class, 2)->create();
 
-        factory(Modulos\Academico\Models\Centro::class)->create([
+        factory(Centro::class)->create([
             'cen_nome' => 'agronomia',
         ]);
 
@@ -94,7 +95,7 @@ class CentroRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Academico\Models\Centro::class, 2)->create();
+        factory(Centro::class, 2)->create();
 
         $sort = [
             'field' => 'cen_id',
@@ -118,7 +119,7 @@ class CentroRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Academico\Models\Centro::class, 2)->create();
+        factory(Centro::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -135,25 +136,25 @@ class CentroRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Academico\Models\Centro::class)->create();
+        $response = factory(Centro::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(Modulos\Academico\Models\Centro::class, $response);
+        $this->assertInstanceOf(Centro::class, $response);
 
         $this->assertArrayHasKey('cen_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Academico\Models\Centro::class)->create();
+        $data = factory(Centro::class)->create();
 
         $this->seeInDatabase('acd_centros', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Academico\Models\Centro::class)->create();
+        $data = factory(Centro::class)->create();
 
         $updateArray = $data->toArray();
         $updateArray['cen_nome'] = 'abcde_edcba';
@@ -168,7 +169,7 @@ class CentroRepositoryTest extends TestCase
 
     public function testDelete()
     {
-        $data = factory(Modulos\Academico\Models\Centro::class)->create();
+        $data = factory(Centro::class)->create();
         $centroId = $data->cen_id;
 
         $response = $this->repo->delete($centroId);

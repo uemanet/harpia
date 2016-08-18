@@ -93,7 +93,7 @@ $factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generato
 
 $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
     return [
-        'dep_prf_diretor' => 1,
+        'prf_pes_id' => 1,
         'prf_matricula' => $faker->bankAccountNumber,
     ];
 });

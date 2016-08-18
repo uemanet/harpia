@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Academico\Repositories\DepartamentoRepository;
+use Modulos\Academico\Models\Departamento;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -44,7 +45,7 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Academico\Models\Departamento::class, 2)->create();
+        factory(Departamento::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,7 +56,7 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Academico\Models\Departamento::class, 2)->create();
+        factory(Departamento::class, 2)->create();
 
         $sort = [
             'field' => 'dep_id',
@@ -71,9 +72,9 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Academico\Models\Departamento::class, 2)->create();
+        factory(Departamento::class, 2)->create();
 
-        factory(Modulos\Academico\Models\Departamento::class)->create([
+        factory(Departamento::class)->create([
             'dep_nome' => 'agronomia',
         ]);
 
@@ -94,7 +95,7 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Academico\Models\Departamento::class, 2)->create();
+        factory(Departamento::class, 2)->create();
 
         $sort = [
             'field' => 'dep_id',
@@ -118,7 +119,7 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Academico\Models\Departamento::class, 2)->create();
+        factory(Departamento::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -135,25 +136,25 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Academico\Models\Departamento::class)->create();
+        $response = factory(Departamento::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(Modulos\Academico\Models\Departamento::class, $response);
+        $this->assertInstanceOf(Departamento::class, $response);
 
         $this->assertArrayHasKey('dep_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Academico\Models\Departamento::class)->create();
+        $data = factory(Departamento::class)->create();
 
         $this->seeInDatabase('acd_departamentos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Academico\Models\Departamento::class)->create();
+        $data = factory(Departamento::class)->create();
 
         $updateArray = $data->toArray();
         $updateArray['dep_nome'] = 'abcde_edcba';
@@ -168,7 +169,7 @@ class DepartamentoRepositoryTest extends TestCase
 
     public function testDelete()
     {
-        $data = factory(Modulos\Academico\Models\Departamento::class)->create();
+        $data = factory(Departamento::class)->create();
         $departamentoId = $data->dep_id;
 
         $response = $this->repo->delete($departamentoId);
