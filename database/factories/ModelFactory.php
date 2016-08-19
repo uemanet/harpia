@@ -78,3 +78,27 @@ $factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator
 //        'pes_estrangeiro' => $faker->boolean
 //    ];
 //});
+
+// Modulo ACADEMICO
+$factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Generator $faker){
+   return [
+       'dep_cen_id' => 1,
+       'dep_prf_diretor' => 1,
+       'dep_nome' => $faker->word
+   ];
+});
+
+$factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generator $faker){
+    return [
+        'cen_prf_diretor' => 1,
+        'cen_nome' => $faker->word,
+        'cen_sigla' => $faker->word,
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
+    return [
+        'prf_pes_id' => 1,
+        'prf_matricula' => $faker->bankAccountNumber,
+    ];
+});

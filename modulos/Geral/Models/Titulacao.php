@@ -1,7 +1,6 @@
 <?php
 namespace Modulos\Geral\Models;
 
-
 use Modulos\Core\Model\BaseModel;
 
 class Titulacao extends BaseModel

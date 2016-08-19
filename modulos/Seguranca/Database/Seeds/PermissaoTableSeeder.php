@@ -29,6 +29,9 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoIndex();
 
         $this->createPermissoesAcademicoPolo();
+
+        $this->createPermissoesAcademicoDepartamentos();
+
     }
 
     private function createPermissoesIndex()
@@ -268,6 +271,33 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 10;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso polos da categoria cadastro do módulo acadêmico';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoDepartamentos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 11;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 11;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 11;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 11;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
         $permissao->save();
     }
 }

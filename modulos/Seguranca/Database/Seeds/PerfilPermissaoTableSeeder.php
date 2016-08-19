@@ -32,5 +32,8 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([31]); //Index Dashboard
 
         $perfil->permissoes()->attach([32, 33, 34, 35]); //Permissões do recurso polo
+
+        $perfil->permissoes()->attach([36, 37, 38, 39]); // Permissoes do recurso departamentos
+
     }
 }

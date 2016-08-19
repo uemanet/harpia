@@ -96,7 +96,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
-        $recurso->rcs_descricao = 'Recurso dashboard da categoria cadastro do módulo acadêmico';
+        $recurso->rcs_descricao = 'Recurso dashboard do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-tachometer';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
@@ -109,7 +109,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_descricao = 'Recurso polos da categoria cadastro do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-ellipsis-h';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 1;
+        $recurso->rcs_ordem = 2;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Departamentos';
+        $recurso->rcs_rota = 'departamentos';
+        $recurso->rcs_descricao = 'Recurso departamento do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-sitemap';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
         $recurso->save();
     }
 }
