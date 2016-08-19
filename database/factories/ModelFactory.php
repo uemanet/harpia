@@ -54,6 +54,12 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
     ];
 });
 
+$factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator $faker) {
+    return [
+        'pol_nome' => $faker->city
+
+    ];
+});
 // Modulo GERAL
 //$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
 //    return [

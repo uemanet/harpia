@@ -2,10 +2,10 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Academico\Repositories\PoloRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Modulos\Geral\Repositories\PoloRepository;
+use Illuminate\Support\Facades\Artisan;
 
 class PoloRepositoryTest extends TestCase
 {
@@ -44,7 +44,7 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Geral\Models\Polo::class, 2)->create();
+        factory(Modulos\Academico\Models\Polo::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,7 +55,7 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Geral\Models\Polo::class, 2)->create();
+        factory(Modulos\Academico\Models\Polo::class, 2)->create();
 
         $sort = [
             'field' => 'pol_id',
@@ -71,9 +71,9 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Geral\Models\Polo::class, 2)->create();
+        factory(Modulos\Academico\Models\Polo::class, 2)->create();
 
-        factory(Modulos\Geral\Models\Polo::class)->create([
+        factory(Modulos\Academico\Models\Polo::class)->create([
             'pol_nome' => 'icatu',
         ]);
 
@@ -96,7 +96,7 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Geral\Models\Polo::class, 2)->create();
+        factory(Modulos\Academico\Models\Polo::class, 2)->create();
 
         $sort = [
             'field' => 'pol_id',
@@ -122,7 +122,7 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Geral\Models\Polo::class, 2)->create();
+        factory(Modulos\Academico\Models\Polo::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -139,23 +139,23 @@ class PoloRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Geral\Models\Polo::class)->create();
+        $response = factory(Modulos\Academico\Models\Polo::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Geral\Models\Polo::class, $response);
+        $this->assertInstanceOf(\Modulos\Academico\Models\Polo::class, $response);
 
         $this->assertArrayHasKey('pol_id', $response->toArray());
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Geral\Models\Polo::class)->create();
+        $data = factory(Modulos\Academico\Models\Polo::class)->create();
 
-        $this->seeInDatabase('gra_polos', $data->toArray());
+        $this->seeInDatabase('acd_polos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Geral\Models\Polo::class)->create();
+        $data = factory(Modulos\Academico\Models\Polo::class)->create();
 
         $updateArray = $data->toArray();
         $updateArray['pol_nome'] = 'abcde_edcba';
@@ -170,7 +170,7 @@ class PoloRepositoryTest extends TestCase
 
     public function testDelete()
     {
-        $data = factory(Modulos\Geral\Models\Polo::class)->create();
+        $data = factory(Modulos\Academico\Models\Polo::class)->create();
         $poloId = $data->pol_id;
 
         $response = $this->repo->delete($poloId);
@@ -183,4 +183,4 @@ class PoloRepositoryTest extends TestCase
         Artisan::call('migrate:reset');
         parent::tearDown();
     }
-}
+  }

@@ -1,4 +1,4 @@
-@extends('layouts.modulos.geral')
+@extends('layouts.modulos.academico')
 
 @section('title')
     Polos
@@ -14,8 +14,8 @@
             <h3 class="box-title">Formulário de cadastro de polos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/geral/polos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('Geral::polos.includes.formulario')
+            {!! Form::open(["url" => url('/') . "/academico/polos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            @include('Academico::polos.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>

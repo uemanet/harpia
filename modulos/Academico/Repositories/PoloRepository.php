@@ -1,9 +1,9 @@
 <?php
 
-namespace Modulos\Geral\Repositories;
+namespace Modulos\Academico\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
-use Modulos\Geral\Models\Polo;
+use Modulos\Academico\Models\Polo;
 
 class PoloRepository extends BaseRepository
 {

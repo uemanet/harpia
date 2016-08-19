@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Geral\Http\Requests;
+namespace Modulos\Academico\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
 
