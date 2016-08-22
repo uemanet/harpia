@@ -32,6 +32,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoDepartamentos();
 
+        $this->createPermissoesAcademicoPeriodosLetivos();
+
     }
 
     private function createPermissoesIndex()
@@ -298,6 +300,34 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 11;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->save();
+    }
+
+
+    private function createPermissoesAcademicoPeriodosLetivos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 12;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 12;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 12;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 12;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
         $permissao->save();
     }
 }

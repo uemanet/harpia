@@ -121,5 +121,15 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 3;
         $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Períodos Letivos';
+        $recurso->rcs_rota = 'periodosletivos';
+        $recurso->rcs_descricao = 'Recurso período letivo do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-calendar';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 4;
+        $recurso->save();
     }
 }
