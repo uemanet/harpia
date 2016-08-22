@@ -102,3 +102,10 @@ $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Gener
         'prf_matricula' => $faker->bankAccountNumber,
     ];
 });
+
+$factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\Generator $faker){
+    return [
+        'per_inicio' => $faker->date('d-m-Y', 'now'),
+        'per_fim' => $faker->date('d-m-Y', 'now'),
+    ];
+});

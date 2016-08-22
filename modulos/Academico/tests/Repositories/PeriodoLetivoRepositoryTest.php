@@ -2,12 +2,13 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\PoloRepository;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
+use Modulos\Academico\Models\PeriodoLetivo;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class PoloRepositoryTest extends TestCase
+class PeriodoLetivoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -31,7 +32,7 @@ class PoloRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(PoloRepository::class);
+        $this->repo = $this->app->make(PeriodoLetivoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +45,7 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Academico\Models\Polo::class, 2)->create();
+        factory(PeriodoLetivo::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,10 +56,10 @@ class PoloRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Academico\Models\Polo::class, 2)->create();
+        factory(PeriodoLetivo::class, 2)->create();
 
         $sort = [
-            'field' => 'pol_id',
+            'field' => 'per_id',
             'sort' => 'desc'
         ];
 
@@ -66,22 +67,22 @@ class PoloRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertEquals(2, $response[0]->pol_id);
+        $this->assertGreaterThan(1, $response[0]->per_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Academico\Models\Polo::class, 2)->create();
+        factory(PeriodoLetivo::class, 2)->create();
 
-        factory(Modulos\Academico\Models\Polo::class)->create([
-            'pol_nome' => 'icatu',
+        factory(PeriodoLetivo::class)->create([
+            'per_inicio' => '15-04-2008',
         ]);
 
         $search = [
             [
-                'field' => 'pol_nome',
+                'field' => 'per_inicio',
                 'type' => 'like',
-                'term' => 'icatu'
+                'term' => '15-04-2008'
             ]
         ];
 
@@ -89,23 +90,21 @@ class PoloRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals('icatu', $response[0]->pol_nome);
+        $this->assertCount(1, $response);
     }
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Academico\Models\Polo::class, 2)->create();
+        factory(PeriodoLetivo::class, 2)->create();
 
         $sort = [
-            'field' => 'pol_id',
+            'field' => 'per_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'pol_id',
+                'field' => 'per_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -116,17 +115,15 @@ class PoloRepositoryTest extends TestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
         $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals(2, $response[0]->pol_id);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Academico\Models\Polo::class, 2)->create();
+        factory(PeriodoLetivo::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'pol_id',
+            'field' => 'per_id',
             'sort' => 'asc'
         ];
 
@@ -139,41 +136,43 @@ class PoloRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Academico\Models\Polo::class)->create();
+        $response = factory(PeriodoLetivo::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Academico\Models\Polo::class, $response);
+        $data = $response->toArray();
 
-        $this->assertArrayHasKey('pol_id', $response->toArray());
+        $this->assertInstanceOf(PeriodoLetivo::class, $response);
+
+        $this->assertArrayHasKey('per_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Academico\Models\Polo::class)->create();
+        $data = factory(PeriodoLetivo::class)->create();
 
-        $this->seeInDatabase('acd_polos', $data->toArray());
+        $this->seeInDatabase('acd_periodos_letivos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Academico\Models\Polo::class)->create();
+        $data = factory(PeriodoLetivo::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['pol_nome'] = 'abcde_edcba';
+        $updateArray['per_fim'] = '10-02-2005';
 
-        $polodId = $updateArray['pol_id'];
-        unset($updateArray['pol_id']);
+        $periodoLetivoId = $updateArray['per_id'];
+        unset($updateArray['per_id']);
 
-        $response = $this->repo->update($updateArray, $polodId, 'pol_id');
+        $response = $this->repo->update($updateArray, $periodoLetivoId, 'per_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Modulos\Academico\Models\Polo::class)->create();
-        $poloId = $data->pol_id;
+        $data = factory(PeriodoLetivo::class)->create();
+        $periodoLetivoId = $data->per_id;
 
-        $response = $this->repo->delete($poloId);
+        $response = $this->repo->delete($periodoLetivoId);
 
         $this->assertEquals(1, $response);
     }
