@@ -1,5 +1,9 @@
 @extends('layouts.modulos.academico')
 
+@section('stylesheets')
+    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+@endsection
+
 @section('title')
     Períodos Letivos
 @stop
@@ -20,3 +24,15 @@
         </div>
     </div>
 @stop
+
+
+@section('scripts')
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy'
+        });
+    </script>
+@endsection

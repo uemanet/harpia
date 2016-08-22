@@ -26,7 +26,7 @@ class PeriodosLetivosController extends BaseController
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->periodoLetivoRepository->paginateRequest($request->all());
-
+        
         $tabela = $tableData->columns(array(
             'per_id' => '#',
             'per_inicio' => 'Início',

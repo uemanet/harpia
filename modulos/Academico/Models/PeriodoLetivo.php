@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Models;
 
 use Modulos\Core\Model\BaseModel;
+use Carbon\Carbon;
 
 class PeriodoLetivo extends BaseModel
 {
@@ -23,5 +24,21 @@ class PeriodoLetivo extends BaseModel
     public function turmas()
     {
         return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_per_id', 'per_id');
+    }
+
+
+    // Accessors
+    public function getPerInicioAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        return $date;
+    }
+
+    public function getPerFimAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        return $date;
     }
 }
