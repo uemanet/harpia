@@ -16,7 +16,6 @@ class PolosController extends BaseController
     public function __construct(PoloRepository $poloRepository)
     {
         $this->poloRepository = $poloRepository;
-
     }
 
     public function getIndex(Request $request)

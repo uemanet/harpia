@@ -85,9 +85,6 @@
 </script>
 
 {!! Flash::render() !!}
-
-@section('scripts')
-
-@show
+@yield('scripts')
 </body>
 </html>

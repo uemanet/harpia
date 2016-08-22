@@ -33,7 +33,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoDepartamentos();
 
         $this->createPermissoesAcademicoPeriodosLetivos();
-
     }
 
     private function createPermissoesIndex()

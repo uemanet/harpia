@@ -16,7 +16,6 @@ class PeriodosLetivosController extends BaseController
     public function __construct(PeriodoLetivoRepository $periodoLetivoRepository)
     {
         $this->periodoLetivoRepository = $periodoLetivoRepository;
-
     }
 
     public function getIndex(Request $request)

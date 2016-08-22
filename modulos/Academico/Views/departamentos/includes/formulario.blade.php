@@ -2,7 +2,7 @@
     <div class="form-group col-md-6 @if ($errors->has('dep_cen_id')) has-error @endif">
         {!! Form::label('dep_cen_id', 'Centro*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('dep_cen_id', $centros, old('dep_cen_id'), ['class' => 'form-control']) !!}
+            {!! Form::select('dep_cen_id', $centros, old('dep_cen_id'), ['class' => 'form-control select-control']) !!}
             @if ($errors->has('dep_cen_id')) <p class="help-block">{{ $errors->first('dep_cen_id') }}</p> @endif
         </div>
     </div>
@@ -18,7 +18,7 @@
     <div class="form-group col-md-12 @if ($errors->has('dep_nome')) has-error @endif">
         {!! Form::label('dep_nome', 'Nome do departamento*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::text('dep_nome', old('dep_nome'), ['class' => 'form-control']) !!}
+            {!! Form::text('dep_nome', old('dep_nome'), ['class' => 'form-control select-control']) !!}
             @if ($errors->has('dep_nome')) <p class="help-block">{{ $errors->first('dep_nome') }}</p> @endif
         </div>
     </div>
