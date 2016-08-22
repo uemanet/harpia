@@ -30,7 +30,7 @@ class PolosController extends BaseController
 
         $tabela = $tableData->columns(array(
             'pol_id' => '#',
-            'pol_nome' => 'Permissão',
+            'pol_nome' => 'Polo',
             'pol_action' => 'Ações'
         ))
             ->modifyCell('pol_action', function () {

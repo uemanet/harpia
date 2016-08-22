@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Models;
 
 use Modulos\Core\Model\BaseModel;
+use Carbon\Carbon;
 
 class Curso extends BaseModel
 {
@@ -51,5 +52,13 @@ class Curso extends BaseModel
     public function ofertas()
     {
         return $this->hasMany('Modulos\Academico\Models\OfertaCurso', 'ofc_crs_id', 'crs_id');
+    }
+
+    // Accessors
+    public function getCrsDataAutorizacaoAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        return $date;
     }
 }
