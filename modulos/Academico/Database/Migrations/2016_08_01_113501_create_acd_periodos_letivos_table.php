@@ -15,6 +15,7 @@ class CreateAcdPeriodosLetivosTable extends Migration
     {
         Schema::create('acd_periodos_letivos', function (Blueprint $table) {
             $table->increments('per_id');
+            $table->string('per_nome', 45);
             $table->date('per_inicio');
             $table->date('per_fim');
 

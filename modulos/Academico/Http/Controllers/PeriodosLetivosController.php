@@ -26,9 +26,10 @@ class PeriodosLetivosController extends BaseController
         $actionButtons[] = $btnNovo;
 
         $tableData = $this->periodoLetivoRepository->paginateRequest($request->all());
-        
+
         $tabela = $tableData->columns(array(
             'per_id' => '#',
+            'per_nome' => 'Nome',
             'per_inicio' => 'Início',
             'per_fim' => 'Fim',
             'per_action' => 'Ações'
@@ -63,7 +64,8 @@ class PeriodosLetivosController extends BaseController
                     ]
                 ]);
             })
-            ->sortable(array('per_id', 'per_inicio'));
+            ->sortable(array('per_id', 'per_nome', 'per_inicio'));
+
 
         $paginacao = $tableData->appends($request->except('page'));
 

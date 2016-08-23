@@ -54,12 +54,6 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
     ];
 });
 
-$factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator $faker) {
-    return [
-        'pol_nome' => $faker->city
-
-    ];
-});
 // Modulo GERAL
 //$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
 //    return [
@@ -105,7 +99,14 @@ $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Gener
 
 $factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\Generator $faker){
     return [
-        'per_inicio' => $faker->date('d-m-Y', 'now'),
-        'per_fim' => $faker->date('d-m-Y', 'now'),
+        'per_nome' => $faker->word,
+        'per_inicio' => $faker->date('d/m/Y'),
+        'per_fim' => $faker->date('d/m/Y'),
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator $faker) {
+    return [
+        'pol_nome' => $faker->city
     ];
 });

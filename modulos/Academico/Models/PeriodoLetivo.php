@@ -12,12 +12,13 @@ class PeriodoLetivo extends BaseModel
     protected $primaryKey = 'per_id';
 
     protected $fillable = [
+        'per_nome',
         'per_inicio',
         'per_fim'
     ];
 
     protected $searchable = [
-        'per_inicio' => 'like',
+        'per_nome' => 'like'
     ];
 
 
@@ -25,7 +26,6 @@ class PeriodoLetivo extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_per_id', 'per_id');
     }
-
 
     // Accessors
     public function getPerInicioAttribute($value)
@@ -40,5 +40,16 @@ class PeriodoLetivo extends BaseModel
         setlocale(LC_ALL, 'pt_BR');
         $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
         return $date;
+    }
+
+    // Mutators
+    public function setPerInicioAttribute($value)
+    {
+        $this->attributes['per_inicio'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+    }
+
+    public function setPerFimAttribute($value)
+    {
+        $this->attributes['per_fim'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }
