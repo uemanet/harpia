@@ -15,6 +15,7 @@ class PeriodoLetivoRepository extends BaseRepository
 
     /**
      * Formata datas pt_BR para default MySQL
+     * para update de registros
      * @param array $data
      * @param $id
      * @param string $attribute

@@ -7,6 +7,7 @@ use Modulos\Academico\Models\Curso;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Carbon\Carbon;
 
 class CursoRepositoryTest extends TestCase
 {
@@ -147,9 +148,14 @@ class CursoRepositoryTest extends TestCase
 
     public function testFind()
     {
-        $data = factory(Curso::class)->create();
+        $dados = factory(Curso::class)->create();
 
-        $this->seeInDatabase('acd_cursos', $data->toArray());
+        $data = $dados->toArray();
+
+        // Retorna para date format americano antes de comparar com o banco
+        $data['crs_data_autorizacao'] = Carbon::createFromFormat('d/m/Y', $data['crs_data_autorizacao'])->toDateString();
+
+        $this->seeInDatabase('acd_cursos', $data);
     }
 
     public function testUpdate()

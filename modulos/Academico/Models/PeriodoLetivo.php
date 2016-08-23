@@ -31,15 +31,13 @@ class PeriodoLetivo extends BaseModel
     public function getPerInicioAttribute($value)
     {
         setlocale(LC_ALL, 'pt_BR');
-        $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
-        return $date;
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
     public function getPerFimAttribute($value)
     {
         setlocale(LC_ALL, 'pt_BR');
-        $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
-        return $date;
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
     // Mutators
