@@ -97,6 +97,7 @@ $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Gener
     ];
 });
 
+
 $factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\Generator $faker){
     return [
         'per_nome' => $faker->word,
@@ -108,5 +109,21 @@ $factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\G
 $factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator $faker) {
     return [
         'pol_nome' => $faker->city
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generator $faker) {
+    return [
+        'crs_dep_id' => 1,
+        'crs_nvc_id' => 1,
+        'crs_prf_diretor' => 1,
+        'crs_nome' =>$faker->name,
+        'crs_sigla' =>$faker->name,
+        'crs_descricao'=>$faker->sentence(3),
+        'crs_resolucao'=>$faker->sentence(3),
+        'crs_autorizacao'=>$faker->sentence(3),
+        'crs_data_autorizacao'=>$faker->dateTimeThisCentury->format('Y-m-d'),
+        'crs_eixo'=>$faker->sentence(3),
+        'crs_habilitacao'=>$faker->sentence(3)
     ];
 });

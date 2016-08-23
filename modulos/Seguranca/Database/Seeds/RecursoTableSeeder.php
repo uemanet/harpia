@@ -131,5 +131,15 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 4;
         $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Cursos';
+        $recurso->rcs_rota = 'cursos';
+        $recurso->rcs_descricao = 'Recurso curso do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-graduation-cap';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 5;
+        $recurso->save();
     }
 }

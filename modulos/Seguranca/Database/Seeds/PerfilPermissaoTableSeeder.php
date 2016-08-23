@@ -36,5 +36,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([36, 37, 38, 39]); // Permissoes do recurso departamentos
 
         $perfil->permissoes()->attach([40, 41, 42, 43]); // Permissoes do recurso periodos letivos
+
+        $perfil->permissoes()->attach([44, 45, 46, 47]); // Permissoes do recurso cursos
     }
 }
