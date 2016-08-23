@@ -183,4 +183,4 @@ class PoloRepositoryTest extends TestCase
         Artisan::call('migrate:reset');
         parent::tearDown();
     }
-  }
+}

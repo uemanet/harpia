@@ -22,11 +22,11 @@ class Centro extends BaseModel
 
     public function departamentos()
     {
-        return $this->hasMany('Modulos\Academico\Models\Departamento', 'dep_cen_id', 'cen_id');
+        return $this->hasMany('Modulos\Academico\Models\Departamento', 'dep_cen_id');
     }
 
     public function diretor()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Professor', 'dep_prf_diretor', 'prf_id');
+        return $this->belongsTo('Modulos\Academico\Models\Professor', 'cen_prf_diretor');
     }
 }

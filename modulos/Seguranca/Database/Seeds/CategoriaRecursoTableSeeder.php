@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\CategoriaRecurso;
 
 class CategoriaRecursoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $categoria = new CategoriaRecurso();

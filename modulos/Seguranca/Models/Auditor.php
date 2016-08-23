@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Auditor extends Model
 {
-
     protected $table = 'seg_auditores';
 
     protected $primaryKey = 'log_id';
