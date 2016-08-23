@@ -126,3 +126,15 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
         'crs_habilitacao'=>$faker->sentence(3)
     ];
 });
+
+$factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
+    return [
+        'mtc_crs_id' => 1,
+        'mtc_anx_projeto_pegagogico' => 1,
+        'mtc_descricao' => $faker->words(5, true),
+        'mtc_data' => $faker->date('d/m/Y'),
+        'mtc_creditos' => $faker->randomBetween(220, 650),
+        'mtc_horas' => $faker->randomBetween(450, 4770),
+        'mtc_horas_praticas' => $faker->randomBetween(100, 400)
+    ];
+});

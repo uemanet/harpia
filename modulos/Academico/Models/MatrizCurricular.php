@@ -28,4 +28,18 @@ class MatrizCurricular extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Curso', 'mtc_crs_id');
     }
+
+    // Accessors
+    public function getMtcDataAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutator
+    public function setMtcDataAttribute($value)
+    {
+        $this->attributes['mtc_horas'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+    }
+
 }
