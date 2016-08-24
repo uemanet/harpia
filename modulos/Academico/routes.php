@@ -10,3 +10,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         'ofertascursos' => '\Modulos\Academico\Http\Controllers\OfertasCursosController'
     ]);
 });
+
+Route::group(['prefix' => 'academico/async', 'middleware' => ['auth']], function () {
+    Route::controllers([
+        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares'
+
+    ]);
+});

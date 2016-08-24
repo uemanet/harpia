@@ -4,7 +4,7 @@ namespace Modulos\Academico\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
 
-class CursoRequest extends BaseRequest
+class OfertaCursoRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,7 @@ class CursoRequest extends BaseRequest
             'ofc_crs_id' => 'required',
             'ofc_mtc_id' => 'required',
             'ofc_mdl_id' => 'required',
-            'ofc_ano' => 'integer|min:1|max:9999',
-
-
+            'ofc_ano' => 'integer|min:1|max:9999'
         ];
 
         return $rules;
