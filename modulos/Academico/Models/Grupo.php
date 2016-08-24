@@ -27,6 +27,6 @@ class Grupo extends BaseModel
 
     public function polo()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Polo', 'grp_pol_diretor', 'pol_id');
+        return $this->belongsTo('Modulos\Academico\Models\Polo', 'grp_pol_id', 'pol_id');
     }
 }

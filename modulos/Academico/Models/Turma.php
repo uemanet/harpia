@@ -30,4 +30,9 @@ class Turma extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\PeriodoLetivo', 'trm_per_id');
     }
+
+    public function grupos()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Grupo', 'grp_trm_id');
+    }
 }
