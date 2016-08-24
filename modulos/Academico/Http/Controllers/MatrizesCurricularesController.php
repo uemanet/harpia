@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -12,10 +13,12 @@ use Modulos\Academico\Http\Requests\MatrizCurricularRequest;
 class MatrizesCurricularesController extends BaseController
 {
     protected $matrizCurricularRepository;
+    protected $cursoRepository;
 
-    public function __construct(MatrizCurricularRepository $matrizCurricularRepository)
+    public function __construct(MatrizCurricularRepository $matrizCurricularRepository, CursoRepository $cursoRepository)
     {
         $this->matrizCurricularRepository = $matrizCurricularRepository;
+        $this->cursoRepository = $cursoRepository;
     }
 
     public function getIndex(Request $request)
@@ -74,23 +77,25 @@ class MatrizesCurricularesController extends BaseController
 
     public function getCreate()
     {
-        return view('Academico::polos.create');
+        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+
+        return view('Academico::matrizescurriculares.create', ['cursos' => $cursos]);
     }
 
-    public function postCreate(PoloRequest $request)
+    public function postCreate(MatrizCurricularRequest $request)
     {
         try {
-            $polo = $this->poloRepository->create($request->all());
-
-            if (!$polo) {
+            $matrizCurricular = $this->matrizCurricularRepository->create($request->all());
+            // TODO implementar tratamento de upload de arquivos
+            if (!$matrizCurricular) {
                 flash()->error('Erro ao tentar salvar.');
 
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Polo criada com sucesso.');
+            flash()->success('Matriz curricular criada com sucesso.');
 
-            return redirect('/academico/polos');
+            return redirect('/matrizescurriculares/polos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -102,17 +107,19 @@ class MatrizesCurricularesController extends BaseController
         }
     }
 
-    public function getEdit($poloId)
+    public function getEdit($matrizCurricularId)
     {
-        $polo = $this->poloRepository->find($poloId);
+        $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
 
-        if (!$polo) {
-            flash()->error('Polo não existe.');
+        if (!$matrizCurricular) {
+            flash()->error('Matriz curricular não existe.');
 
             return redirect()->back();
         }
 
-        return view('Academico::polos.edit', compact('polo'));
+        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+
+        return view('Academico::matrizescurriculares.edit', ['matrizCurricular' => $matrizCurricular, 'cursos' => $cursos]);
     }
 
     public function putEdit($poloId, PoloRequest $request)
@@ -126,6 +133,7 @@ class MatrizesCurricularesController extends BaseController
                 return redirect('/academico/polos');
             }
 
+            // TODO implementar tratamento de upload de arquivos
             $requestData = $request->only($this->poloRepository->getFillableModelFields());
 
             if (!$this->poloRepository->update($requestData, $polo->pol_id, 'pol_id')) {
@@ -151,12 +159,12 @@ class MatrizesCurricularesController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-            $poloId = $request->get('id');
+            $matrizCurricularId = $request->get('id');
 
-            if ($this->poloRepository->delete($poloId)) {
-                flash()->success('Polo excluído com sucesso.');
+            if ($this->matrizCurricularRepository->delete($matrizCurricularId)) {
+                flash()->success('Matriz curricular excluída com sucesso.');
             } else {
-                flash()->error('Erro ao tentar excluir o polo');
+                flash()->error('Erro ao tentar excluir a matriz curricular');
             }
 
             return redirect()->back();
