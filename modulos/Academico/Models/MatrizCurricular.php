@@ -32,15 +32,16 @@ class MatrizCurricular extends BaseModel
     }
 
     // Accessors
+    // Retorna a data em padrao pt-BR em vez do padrao internacional
     public function getMtcDataAttribute($value)
     {
         setlocale(LC_ALL, 'pt_BR');
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
+    // Retorna o nome do curso em vez do id do curso
     public function getMtcCrsIdAttribute($value)
     {
-        // Retorna o nome do curso
         return DB::table('acd_cursos')->where('crs_id', $value)->value('crs_nome');
     }
 

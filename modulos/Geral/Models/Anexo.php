@@ -16,6 +16,10 @@ class Anexo extends BaseModel
         'anx_localizacao'
     ];
 
+    protected $searchable = [
+        'anx_nome' => 'like'
+    ];
+
     public function tipo_anexo()
     {
         return $this->belongsTo('Modulos\Geral\Models\TipoAnexo', 'anx_tax_id');
