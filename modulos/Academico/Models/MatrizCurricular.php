@@ -2,7 +2,9 @@
 
 namespace Modulos\Academico\Models;
 
+use Illuminate\Support\Facades\DB;
 use Modulos\Core\Model\BaseModel;
+use Carbon\Carbon;
 
 class MatrizCurricular extends BaseModel
 {
@@ -21,7 +23,7 @@ class MatrizCurricular extends BaseModel
     ];
 
     protected $searchable = [
-        'per_inicio' => 'like',
+        'mtc_id' => '=',
     ];
 
     public function curso()
@@ -36,10 +38,16 @@ class MatrizCurricular extends BaseModel
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
-    // Mutator
+    public function getMtcCrsIdAttribute($value)
+    {
+        // Retorna o nome do curso
+        return DB::table('acd_cursos')->where('crs_id', $value)->value('crs_nome');
+    }
+
+    // Mutators
     public function setMtcDataAttribute($value)
     {
-        $this->attributes['mtc_horas'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 
 }

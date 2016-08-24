@@ -129,12 +129,12 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
 
 $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
     return [
-        'mtc_crs_id' => 1,
-        'mtc_anx_projeto_pegagogico' => 1,
+        'mtc_crs_id' => $faker->randomNumber(2),
+        'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
         'mtc_descricao' => $faker->words(5, true),
         'mtc_data' => $faker->date('d/m/Y'),
-        'mtc_creditos' => $faker->randomBetween(220, 650),
-        'mtc_horas' => $faker->randomBetween(450, 4770),
-        'mtc_horas_praticas' => $faker->randomBetween(100, 400)
+        'mtc_creditos' => $faker->randomNumber(3),
+        'mtc_horas' => $faker->randomNumber(4),
+        'mtc_horas_praticas' => $faker->randomNumber(4)
     ];
 });

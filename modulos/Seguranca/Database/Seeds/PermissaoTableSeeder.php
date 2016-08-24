@@ -35,6 +35,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoPeriodosLetivos();
 
         $this->createPermissoesAcademicoCursos();
+
+        $this->createPermissoesAcademicoMatrizesCurriculares();
     }
 
     private function createPermissoesIndex()
@@ -356,6 +358,34 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 13;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão index do recurso Curso';
+        $permissao->save();
+    }
+
+
+    private function createPermissoesAcademicoMatrizesCurriculares()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
         $permissao->save();
     }
 }
