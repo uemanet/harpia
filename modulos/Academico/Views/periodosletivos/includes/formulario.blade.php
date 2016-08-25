@@ -1,4 +1,13 @@
 <div class="row">
+    <div class="form-group col-md-12 @if ($errors->has('per_nome')) has-error @endif">
+        {!! Form::label('per_nome', 'Nome para o período letivo*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('per_nome', old('per_nome'), ['class' => 'form-control']) !!}
+            @if ($errors->has('per_nome')) <p class="help-block">{{ $errors->first('per_inicio') }}</p> @endif
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="form-group col-md-6 @if ($errors->has('per_inicio')) has-error @endif">
         {!! Form::label('per_inicio', 'Data de Início*', ['class' => 'control-label']) !!}
         <div class="controls">

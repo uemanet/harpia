@@ -7,6 +7,7 @@ use Modulos\Academico\Models\PeriodoLetivo;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Carbon\Carbon;
 
 class PeriodoLetivoRepositoryTest extends TestCase
 {
@@ -75,14 +76,14 @@ class PeriodoLetivoRepositoryTest extends TestCase
         factory(PeriodoLetivo::class, 2)->create();
 
         factory(PeriodoLetivo::class)->create([
-            'per_inicio' => '15-04-2008',
+            'per_nome' => '2015.1',
         ]);
 
         $search = [
             [
-                'field' => 'per_inicio',
+                'field' => 'per_nome',
                 'type' => 'like',
-                'term' => '15-04-2008'
+                'term' => '2015.1'
             ]
         ];
 
@@ -147,9 +148,14 @@ class PeriodoLetivoRepositoryTest extends TestCase
 
     public function testFind()
     {
-        $data = factory(PeriodoLetivo::class)->create();
+        $dados = factory(PeriodoLetivo::class)->create();
 
-        $this->seeInDatabase('acd_periodos_letivos', $data->toArray());
+        $data = $dados->toArray();
+        // Retorna para date format americano antes de comparar com o banco
+        $data['per_inicio'] = Carbon::createFromFormat('d/m/Y', $data['per_inicio'])->toDateString();
+        $data['per_fim'] = Carbon::createFromFormat('d/m/Y', $data['per_fim'])->toDateString();
+
+        $this->seeInDatabase('acd_periodos_letivos', $data);
     }
 
     public function testUpdate()
@@ -157,7 +163,7 @@ class PeriodoLetivoRepositoryTest extends TestCase
         $data = factory(PeriodoLetivo::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['per_fim'] = '10-02-2005';
+        $updateArray['per_fim'] = '02/05/2005';
 
         $periodoLetivoId = $updateArray['per_id'];
         unset($updateArray['per_id']);

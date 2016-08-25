@@ -24,6 +24,7 @@ class PeriodoLetivoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
+            'per_nome' => 'required',
             'per_inicio' => 'required|date_format:"d/m/Y"',
             'per_fim' => 'required|date_format:"d/m/Y"'
         ];

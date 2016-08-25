@@ -333,7 +333,6 @@ class PermissaoTableSeeder extends Seeder
 
     private function createPermissoesAcademicoCursos()
     {
-
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 13;
         $permissao->prm_nome = 'index';

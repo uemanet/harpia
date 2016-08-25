@@ -58,7 +58,12 @@ class Curso extends BaseModel
     public function getCrsDataAutorizacaoAttribute($value)
     {
         setlocale(LC_ALL, 'pt_BR');
-        $date = Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
-        return $date;
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutators
+    public function setCrsDataAutorizacaoAttribute($value)
+    {
+        $this->attributes['crs_data_autorizacao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }

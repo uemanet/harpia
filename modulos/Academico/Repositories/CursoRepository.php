@@ -13,13 +13,14 @@ class CursoRepository extends BaseRepository
         $this->model = $curso;
     }
 
-    public function create(array $data)
-    {
-        $data['crs_data_autorizacao']= Carbon::createFromFormat('d/m/Y', $data['crs_data_autorizacao'])->toDateString();
-
-        return $this->model->create($data);
-    }
-
+    /**
+     * Formata datas pt_BR para default MySQL
+     * para update de registros
+     * @param array $data
+     * @param $id
+     * @param string $attribute
+     * @return mixed
+     */
     public function update(array $data, $id, $attribute = "id")
     {
         $data['crs_data_autorizacao']= Carbon::createFromFormat('d/m/Y', $data['crs_data_autorizacao'])->toDateString();
