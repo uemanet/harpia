@@ -9,6 +9,8 @@ class OfertaCursoRepository extends BaseRepository
 {
     public function __construct(OfertaCurso $ofertacurso)
     {
+
         $this->model = $ofertacurso;
+        //dd($this);
     }
 }

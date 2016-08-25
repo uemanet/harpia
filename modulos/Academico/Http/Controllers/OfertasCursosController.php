@@ -39,6 +39,8 @@ class OfertasCursosController extends BaseController
         $tabela = $tableData->columns(array(
             'ofc_id' => '#',
             'ofc_ano' => 'Ano',
+            'ofc_crs_id' => 'Curso',
+            'ofc_mdl_id' => 'Modalidade',
             'ofc_action' => 'Ações'
         ))
             ->modifyCell('ofc_action', function () {
