@@ -145,6 +145,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
+
         // Recursos Centros
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
@@ -154,6 +155,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-building';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 6;
+        $recurso->save();
+
+        // Ofertas de cursos
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Ofertas de Cursos';
+        $recurso->rcs_rota = 'ofertascursos';
+        $recurso->rcs_descricao = 'Recurso ofertas de cursos do módulo acadêmico na categoria de processos';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 7;
         $recurso->save();
     }
 }

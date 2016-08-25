@@ -127,3 +127,12 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
         'crs_habilitacao' => $faker->sentence(3)
     ];
 });
+
+$factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
+    return [
+        'ofc_crs_id' => 1,
+        'ofc_mtc_id' => 1,
+        'ofc_mdl_id' => 1,
+        'ofc_ano' =>2005
+    ];
+});
