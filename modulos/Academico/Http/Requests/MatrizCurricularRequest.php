@@ -23,11 +23,33 @@ class MatrizCurricularRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
-            'per_inicio' => 'required|date_format:"d/m/Y"',
-            'per_fim' => 'required|date_format:"d/m/Y"'
-        ];
+        switch ($this->method()) {
+            case 'POST':
+            {
+                return [
+                    'mtc_crs_id' => 'required',
+                    'mtc_file' => 'required|mimes:pdf',
+                    'mtc_descricao' => 'required|max:255',
+                    'mtc_data' => 'required|date_format:"d/m/Y"',
+                    'mtc_creditos' => 'required',
+                    'mtc_horas' => 'required',
+                    'mtc_horas_praticas' => 'required'
+                ];
 
-        return $rules;
+            }
+            case 'PATCH':
+            case 'PUT':
+            {
+                return [
+                    'mtc_crs_id' => 'required',
+                    'mtc_descricao' => 'required|max:255',
+                    'mtc_data' => 'required|date_format:"d/m/Y"',
+                    'mtc_creditos' => 'required',
+                    'mtc_horas' => 'required',
+                    'mtc_horas_praticas' => 'required'
+                ];
+            }
+            default: return [];
+        }
     }
 }

@@ -2,23 +2,34 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
+use League\Flysystem\FileExistsException;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Geral\Http\Requests\AnexoRequest;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Http\Requests\MatrizCurricularRequest;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MatrizesCurricularesController extends BaseController
 {
     protected $matrizCurricularRepository;
     protected $cursoRepository;
+    protected $anexoRepository;
 
-    public function __construct(MatrizCurricularRepository $matrizCurricularRepository, CursoRepository $cursoRepository)
+    public function __construct(MatrizCurricularRepository $matrizCurricularRepository,
+                                CursoRepository $cursoRepository,
+                                AnexoRepository $anexoRepository)
     {
         $this->matrizCurricularRepository = $matrizCurricularRepository;
         $this->cursoRepository = $cursoRepository;
+        $this->anexoRepository = $anexoRepository;
     }
 
     public function getIndex(Request $request)
@@ -84,26 +95,87 @@ class MatrizesCurricularesController extends BaseController
 
     public function postCreate(MatrizCurricularRequest $request)
     {
-        try {
-            $matrizCurricular = $this->matrizCurricularRepository->create($request->all());
-            // TODO implementar tratamento de upload de arquivos
-            if (!$matrizCurricular) {
-                flash()->error('Erro ao tentar salvar.');
+        try{
+            DB::beginTransaction();
 
+            $anexo = $request->file('mtc_file');
+            $anexoCriado = $this->salvarAnexo($anexo);
+
+            $dados = $request->all();
+            unset($dados['mtc_file']);
+
+            $dados['mtc_anx_projeto_pedagogico'] = $anexoCriado->anx_id;
+
+            $matrizCurricular = $this->matrizCurricularRepository->create($dados);
+
+            if(!$matrizCurricular){
+                flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Matriz curricular criada com sucesso.');
+            DB::commit();
 
-            return redirect('/matrizescurriculares/polos');
-        } catch (\Exception $e) {
+            flash()->success('Matriz Curricular criada com sucesso.');
+            return redirect('/academico/matrizescurriculares');
+
+        } catch (\Exception $e){
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            DB::rollBack();
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * @param UploadedFile $uploadedFile
+     * @param int $tipoAnexo
+     * @return \Illuminate\Http\RedirectResponse|static
+     * @throws FileExistsException
+     * @throws \Exception
+     */
+    private function salvarAnexo(UploadedFile $uploadedFile, $tipoAnexo = 1)
+    {
+        $hash = sha1_file($uploadedFile);
+
+        $pDir = substr($hash, 0, 2); // first Directory
+        $sDir = substr($hash, 2, 2); // second Directory
+
+        $caminhoArquivo = storage_path(). '/uploads' . DIRECTORY_SEPARATOR. $pDir .DIRECTORY_SEPARATOR. $sDir;
+
+        if (file_exists($caminhoArquivo.$hash)){
+            if(config('app.debug')){
+                throw new FileExistsException();
+            }
+            flash()->error('Arquivo já existe !');
+            return redirect()->back();
+        }
+
+        try{
+            $anexo = [
+                'anx_tax_id' => $tipoAnexo,
+                'anx_nome' => $uploadedFile->getClientOriginalName(),
+                'anx_mime' => $uploadedFile->getClientMimeType(),
+                'anx_localizacao' => $caminhoArquivo
+            ];
+
+            $uploadedFile->move($caminhoArquivo, $hash);
+
+            return $this->anexoRepository->create($anexo);
+
+        } catch (\FileException $e){
+            if(config('app.debug')){
+                throw $e;
+            }
+            flash()->error('Ocorreu um problema ao salvar o arquivo!');
+        } catch (\Exception $e){
+            if(config('app.debug')){
+                throw $e;
+            }
+            flash()->error('Ocorreu um problema ao salvar o arquivo!');
         }
     }
 
@@ -122,37 +194,41 @@ class MatrizesCurricularesController extends BaseController
         return view('Academico::matrizescurriculares.edit', ['matrizCurricular' => $matrizCurricular, 'cursos' => $cursos]);
     }
 
-    public function putEdit($poloId, PoloRequest $request)
+    public function putEdit($matrizCurricularId, MatrizCurricularRequest $request)
     {
         try {
-            $polo = $this->poloRepository->find($poloId);
 
-            if (!$polo) {
-                flash()->error('Polo não existe.');
+            DB::beginTransaction();
 
-                return redirect('/academico/polos');
+            $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
+
+            if (!$matrizCurricular) {
+                flash()->error('Matriz curricular não existe.');
+                return redirect('/academico/matrizescurriculares');
             }
 
-            // TODO implementar tratamento de upload de arquivos
-            $requestData = $request->only($this->poloRepository->getFillableModelFields());
+            if($request->file('mtc_file')){
 
-            if (!$this->poloRepository->update($requestData, $polo->pol_id, 'pol_id')) {
+            }
+
+            $requestData = $request->only($this->matrizCurricularRepository->getFillableModelFields());
+
+            if (!$this->matrizCurricularRepository->update($requestData, $matrizCurricular->mtc_id, 'mtc_id')) {
+
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Polo atualizado com sucesso.');
+            flash()->success('Matriz Curricular atualizada com sucesso.');
 
-            return redirect('/academico/polos');
+            return redirect('/academico/matrizescurriculares');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
