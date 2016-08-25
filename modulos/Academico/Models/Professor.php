@@ -18,4 +18,14 @@ class Professor extends BaseModel
     protected $searchable = [
         'prf_id' => '='
     ];
+
+    public function centro()
+    {
+        return $this->hasOne('Modulos\Academico\Models\Centro', 'cen_prf_diretor');
+    }
+
+    public function pessoa()
+    {
+        return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'prf_pes_id');
+    }
 }

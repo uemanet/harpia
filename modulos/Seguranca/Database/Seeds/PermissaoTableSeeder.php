@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Permissao;
 
 class PermissaoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $this->createPermissoesIndex();
@@ -35,6 +34,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoPeriodosLetivos();
 
         $this->createPermissoesAcademicoCursos();
+
+        $this->createPermissoesAcademicoCentros();
     }
 
     private function createPermissoesIndex()
@@ -288,21 +289,22 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 11;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->prm_descricao = 'Permissão create do recurso Departamento';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 11;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->prm_descricao = 'Permissão edit do recurso Departamento';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 11;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão index do recurso Departamento';
+        $permissao->prm_descricao = 'Permissão delete do recurso Departamento';
         $permissao->save();
     }
+
 
     private function createPermissoesAcademicoPeriodosLetivos()
     {
@@ -315,19 +317,19 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 12;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
+        $permissao->prm_descricao = 'Permissão create do recurso Período Letivo';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 12;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
+        $permissao->prm_descricao = 'Permissão edit do recurso Período Letivo';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 12;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão index do recurso Período Letivo';
+        $permissao->prm_descricao = 'Permissão delete do recurso Período Letivo';
         $permissao->save();
     }
 
@@ -342,19 +344,46 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 13;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão index do recurso Curso';
+        $permissao->prm_descricao = 'Permissão create do recurso Curso';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 13;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão index do recurso Curso';
+        $permissao->prm_descricao = 'Permissão edit do recurso Curso';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 13;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão index do recurso Curso';
+        $permissao->prm_descricao = 'Permissão delete do recurso Curso';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoCentros()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Centro';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Centro';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Centro';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Centro';
         $permissao->save();
     }
 }

@@ -6,7 +6,6 @@ use Modulos\Core\Model\BaseModel;
 
 class Recurso extends BaseModel
 {
-
     protected $table = 'seg_recursos';
 
     protected $primaryKey = 'rcs_id';

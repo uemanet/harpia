@@ -6,7 +6,6 @@ use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
 class ActionButton
 {
-
     protected $app;
 
     public function __construct($app)

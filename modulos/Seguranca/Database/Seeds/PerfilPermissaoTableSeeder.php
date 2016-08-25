@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Perfil;
 
 class PerfilPermissaoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $perfil = Perfil::find(1); // Perfil administrador do modulo seguranca
@@ -38,5 +37,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([40, 41, 42, 43]); // Permissoes do recurso periodos letivos
 
         $perfil->permissoes()->attach([44, 45, 46, 47]); // Permissoes do recurso cursos
+
+        $perfil->permissoes()->attach([48, 49, 50, 51]); // Permissoes do recurso centros
     }
 }

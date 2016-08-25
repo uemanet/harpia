@@ -7,7 +7,6 @@ use Illuminate\Session\SessionManager;
 
 class FlashToastrAlert
 {
-
     protected $notifications = [];
 
     protected $session;
