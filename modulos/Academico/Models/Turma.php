@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Models;
 
+use Illuminate\Support\Facades\DB;
 use Modulos\Core\Model\BaseModel;
 
 class Turma extends BaseModel
@@ -29,5 +30,15 @@ class Turma extends BaseModel
     public function periodo()
     {
         return $this->belongsTo('Modulos\Academico\Models\PeriodoLetivo', 'trm_per_id');
+    }
+
+    public function getTrmOfcIdAttribute($value)
+    {
+        return DB::table('acd_ofertas_cursos')->where('ofc_id', $value)->value('ofc_ano');
+    }
+
+    public function getTrmPerIdAttribute($value)
+    {
+        return DB::table('acd_periodos_letivos')->where('per_id', $value)->value('per_nome');
     }
 }
