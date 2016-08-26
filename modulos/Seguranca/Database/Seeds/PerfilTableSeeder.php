@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Perfil;
 
 class PerfilTableSeeder extends Seeder
 {
-
     public function run()
     {
         // Modulo Seguranca

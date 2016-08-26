@@ -5,7 +5,6 @@ use Modulos\Core\Model\BaseModel;
 
 class Titulacao extends BaseModel
 {
-
     protected $table = 'gra_titulacoes';
 
     protected $primaryKey = 'tit_id';

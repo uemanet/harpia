@@ -28,7 +28,7 @@
             <div class="row">
                 <form method="GET" action="{{ url('/academico/periodosletivos/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="per_inicio" id="per_inicio" value="{{Input::get('per_inicio')}}" placeholder="Início do período">
+                        <input type="text" class="form-control" name="per_nome" id="per_nome" value="{{Input::get('per_nome')}}" placeholder="Nome do período">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

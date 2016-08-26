@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Models;
 
+use Illuminate\Support\Facades\DB;
 use Modulos\Core\Model\BaseModel;
 
 class OfertaCurso extends BaseModel
@@ -44,5 +45,15 @@ class OfertaCurso extends BaseModel
     public function turmas()
     {
         return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_ofc_id', 'ofc_id');
+    }
+
+    public function getOfcCrsIdAttribute($value)
+    {
+        return DB::table('acd_cursos')->where('crs_id', $value)->value('crs_nome');
+    }
+
+    public function getOfcMdlIdAttribute($value)
+    {
+        return DB::table('acd_modalidades')->where('mdl_id', $value)->value('mdl_nome');
     }
 }

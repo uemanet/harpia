@@ -19,7 +19,10 @@ class CursosController extends BaseController
     protected $nivelcursoRepository;
     protected $professorRepository;
 
-    public function __construct(CursoRepository $curso, DepartamentoRepository $departamento, NivelCursoRepository $nivelcurso, ProfessorRepository $professor)
+    public function __construct(CursoRepository $curso,
+                                DepartamentoRepository $departamento,
+                                NivelCursoRepository $nivelcurso,
+                                ProfessorRepository $professor)
     {
         $this->cursoRepository= $curso;
         $this->departamentoRepository = $departamento;
@@ -191,4 +194,4 @@ class CursosController extends BaseController
             }
         }
     }
- }
+}

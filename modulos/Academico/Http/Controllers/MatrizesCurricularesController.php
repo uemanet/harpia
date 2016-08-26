@@ -190,7 +190,6 @@ class MatrizesCurricularesController extends BaseController
         }
 
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-
         return view('Academico::matrizescurriculares.edit', ['matrizCurricular' => $matrizCurricular, 'cursos' => $cursos]);
     }
 
@@ -198,29 +197,9 @@ class MatrizesCurricularesController extends BaseController
     {
         try {
 
-            DB::beginTransaction();
-
-            $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
-
-            if (!$matrizCurricular) {
-                flash()->error('Matriz curricular não existe.');
-                return redirect('/academico/matrizescurriculares');
-            }
-
-            if($request->file('mtc_file')){
-
-            }
-
-            $requestData = $request->only($this->matrizCurricularRepository->getFillableModelFields());
-
-            if (!$this->matrizCurricularRepository->update($requestData, $matrizCurricular->mtc_id, 'mtc_id')) {
-
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-            }
+            dd($this->matrizCurricularRepository->find($matrizCurricularId));
 
             flash()->success('Matriz Curricular atualizada com sucesso.');
-
             return redirect('/academico/matrizescurriculares');
         } catch (\Exception $e) {
             if (config('app.debug')) {

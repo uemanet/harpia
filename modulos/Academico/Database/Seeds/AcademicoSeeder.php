@@ -18,5 +18,17 @@ class AcademicoSeeder extends Seeder
 
         $this->call(NivelCursoTableSeeder::class);
         $this->command->info('NiveisCursos table seeded!');
+
+        $this->call(ProfessorTableSeed::class);
+        $this->command->info('Professor Table seeded!');
+
+        $this->call(CentroTableSeeder::class);
+        $this->command->info('Centro Table seeded!');
+
+        $this->call(DepartamentoTableSeeder::class);
+        $this->command->info('Departamento Table seeded!');
+
+        $this->call(PoloTableSeeder::class);
+        $this->command->info('Polo Table seeded!');
     }
 }

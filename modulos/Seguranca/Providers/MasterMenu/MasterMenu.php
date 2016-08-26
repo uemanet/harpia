@@ -22,7 +22,8 @@ class MasterMenu
 
     public function render($orientation = 'v')
     {
-        $usrId = $this->auth->user()->usr_pes_id;
+        //        $usrId = $this->auth->user()->usr_pes_id;
+        $usrId = $this->auth->user()->usr_id;
 
         $path = preg_split('/\//', $this->request->path());
         $modulo = current($path);

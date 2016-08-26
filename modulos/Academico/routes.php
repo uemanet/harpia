@@ -7,6 +7,14 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         'departamentos' => '\Modulos\Academico\Http\Controllers\DepartamentosController',
         'periodosletivos' => '\Modulos\Academico\Http\Controllers\PeriodosLetivosController',
         'cursos' => '\Modulos\Academico\Http\Controllers\CursosController',
-        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\MatrizesCurricularesController'
+        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\MatrizesCurricularesController',
+        'centros' => '\Modulos\Academico\Http\Controllers\CentrosController',
+        'ofertascursos' => '\Modulos\Academico\Http\Controllers\OfertasCursosController'
+    ]);
+});
+
+Route::group(['prefix' => 'academico/async', 'middleware' => ['auth']], function () {
+    Route::controllers([
+        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares'
     ]);
 });

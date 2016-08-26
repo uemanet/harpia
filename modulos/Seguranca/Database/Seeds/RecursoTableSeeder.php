@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Recurso;
 
 class RecursoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $recurso = new Recurso();
@@ -92,6 +91,8 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         // MODULO ACADEMICO
+
+        // Recurso Dashboard
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
         $recurso->rcs_nome = 'Dashboard';
@@ -102,6 +103,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
+        // Recurso Polos
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
         $recurso->rcs_nome = 'Polos';
@@ -112,6 +114,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
 
+        // Recurso Departamentos
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
         $recurso->rcs_nome = 'Departamentos';
@@ -142,6 +145,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
+        // Recursos Centros
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Centros';
+        $recurso->rcs_rota = 'centros';
+        $recurso->rcs_descricao = 'Recurso centro do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-building';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 6;
+        $recurso->save();
+
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
         $recurso->rcs_nome = 'Matrizes Curriculares';
@@ -152,5 +166,15 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
+        // Ofertas de cursos
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Ofertas de Cursos';
+        $recurso->rcs_rota = 'ofertascursos';
+        $recurso->rcs_descricao = 'Recurso ofertas de cursos do módulo acadêmico na categoria de processos';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 7;
+        $recurso->save();
     }
 }

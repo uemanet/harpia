@@ -14,20 +14,13 @@ class PeriodoLetivoRepository extends BaseRepository
     }
 
     /**
-     * Formata datas do padrao pt-BR para o
-     * padrao default antes de salvar o registro
+     * Formata datas pt_BR para default MySQL
+     * para update de registros
      * @param array $data
-     * @return static
+     * @param $id
+     * @param string $attribute
+     * @return mixed
      */
-    public function create(array $data)
-    {
-        $data['per_inicio'] = Carbon::createFromFormat('d/m/Y', $data['per_inicio'])->toDateString();
-        $data['per_fim'] = Carbon::createFromFormat('d/m/Y', $data['per_fim'])->toDateString();
-
-        return $this->model->create($data);
-    }
-
-
     public function update(array $data, $id, $attribute = "id")
     {
         $data['per_inicio'] = Carbon::createFromFormat('d/m/Y', $data['per_inicio'])->toDateString();
