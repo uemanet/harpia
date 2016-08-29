@@ -30,61 +30,68 @@ class TurmasController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/turmas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/centros/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->turmaRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'trm_id' => '#',
-            'trm_nome' => 'Turma',
-            'trm_ofc_id' => 'Oferta',
-            'trm_per_id' => 'Período Letivo',
-            'trm_qtd_vagas' => 'Vagas',
-            'trm_action' => 'Ações'
-        ))
-            ->modifyCell('trm_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('trm_action', 'trm_id')
-            ->means('trm_ofc_id', 'ofertacurso')
-            ->modify('trm_ofc_id', function ($ofertacurso) {
-              return $ofertacurso->ofc_ano;
-            })
-            ->means('trm_per_id', 'periodo')
-            ->modify('trm_per_id', function ($periodo) {
-                return $periodo->per_nome;
-            })
-            ->modify('trm_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/academico/turmas/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'trm_id' => '#',
+                'trm_ofc_id' => 'Oferta',
+                'trm_per_id' => 'Periodo Letivo',
+                'trm_nome' => 'Turma',
+                'trm_qtd_vagas' => 'Quantidade de Vagas',
+                'trm_action' => 'Ações'
+            ))
+                ->modifyCell('trm_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('trm_action', 'trm_id')
+                ->means('trm_ofc_id', 'ofertacurso')
+                ->modify('trm_ofc_id', function ($ofertacurso) {
+                  return $ofertacurso->ofc_ano;
+                })
+                ->means('trm_per_id', 'periodo')
+                ->modify('trm_per_id', function ($periodo) {
+                  return $periodo->per_nome;
+                })
+                ->modify('trm_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/academico/turmas/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/academico/turmas/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/academico/turmas/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('trm_id', 'trm_nome'));
+                    ]);
+                })
+                ->sortable(array('trm_id', 'trm_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+        }
+
+
 
         return view('Academico::turmas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }

@@ -1,3 +1,6 @@
+@section('stylesheets')
+  <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+@endsection
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('crs_id')) has-error @endif">
         {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
@@ -29,6 +32,14 @@
         $(document).ready(function(){
             $('#crs_id').prop('selectedIndex',0);
         });
+    </script>
+
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("select").select2();
+            });
     </script>
 @stop
 
