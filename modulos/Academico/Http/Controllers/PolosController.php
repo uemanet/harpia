@@ -25,47 +25,51 @@ class PolosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->poloRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'pol_id' => '#',
-            'pol_nome' => 'Polo',
-            'pol_action' => 'Ações'
-        ))
-            ->modifyCell('pol_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('pol_action', 'pol_id')
-            ->modify('pol_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/academico/polos/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'pol_id' => '#',
+                'pol_nome' => 'Polo',
+                'pol_action' => 'Ações'
+            ))
+                ->modifyCell('pol_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('pol_action', 'pol_id')
+                ->modify('pol_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/academico/polos/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/academico/polos/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/academico/polos/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('pol_id', 'pol_nome'));
+                    ]);
+                })
+                ->sortable(array('pol_id', 'pol_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+        }
         return view('Academico::polos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 

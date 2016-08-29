@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Ofertas de Cursos
+    Turmas
 @stop
 
 @section('subtitle')
-    Gerenciamento de ofertas de cursos
+    Gerenciamento de turmas
 @stop
 
 @section('actionButton')
@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/ofertascursos/index') }}">
+                <form method="GET" action="{{ url('/academico/turmas/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="ofc_ano" id="ofc_ano" value="{{Input::get('ofc_ano')}}" placeholder="Ano da Oferta">
+                        <input type="text" class="form-control" name="trm_nome" id="trm_nome" value="{{Input::get('trm_nome')}}" placeholder="Nome da turma">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
