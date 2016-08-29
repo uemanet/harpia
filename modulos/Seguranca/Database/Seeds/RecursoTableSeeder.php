@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Recurso;
 
 class RecursoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $recurso = new Recurso();

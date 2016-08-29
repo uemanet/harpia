@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Usuario;
 
 class PerfilUsuarioTableSeeder extends Seeder
 {
-
     public function run()
     {
         $usuario = Usuario::find(1); // Usuario administrador

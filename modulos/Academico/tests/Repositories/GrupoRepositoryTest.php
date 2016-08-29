@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Artisan;
 
 class GrupoRepositoryTest extends TestCase
 {
-
     use DatabaseTransactions,
         WithoutMiddleware;
     

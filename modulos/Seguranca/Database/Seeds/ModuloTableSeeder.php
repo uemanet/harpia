@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Modulo;
 
 class ModuloTableSeeder extends Seeder
 {
-
     public function run()
     {
         //Modulo Segurança

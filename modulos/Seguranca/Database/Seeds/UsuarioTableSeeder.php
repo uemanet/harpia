@@ -8,7 +8,6 @@ use Modulos\Seguranca\Models\Usuario;
 
 class UsuarioTableSeeder extends Seeder
 {
-
     public function run()
     {
         $pessoa = new Pessoa;

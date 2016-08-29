@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Permissao;
 
 class PermissaoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $this->createPermissoesIndex();
@@ -335,7 +334,6 @@ class PermissaoTableSeeder extends Seeder
 
     private function createPermissoesAcademicoCursos()
     {
-
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 13;
         $permissao->prm_nome = 'index';
@@ -363,7 +361,6 @@ class PermissaoTableSeeder extends Seeder
 
     private function createPermissoesAcademicoGrupos()
     {
-
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 14;
         $permissao->prm_nome = 'index';
