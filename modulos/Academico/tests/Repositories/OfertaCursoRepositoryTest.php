@@ -146,30 +146,22 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testFind()
     {
-      $dados = factory(OfertaCurso::class)->create();
+        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
 
-      $data = $dados->toArray();
-
-      // Retorna para date format americano antes de comparar com o banco
-      $data['ofc_crs_id'] = 1;
-
-      $data['ofc_mdl_id'] = 1;
-
-      $this->seeInDatabase('acd_ofertas_cursos', $data);
+        $this->seeInDatabase('acd_ofertas_cursos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(OfertaCurso::class)->create();
+        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 2005;
-        $updateArray['ofc_crs_id'] = 1;
-        $updateArray['ofc_mdl_id'] = 1;
-        $ofertacursoId = $updateArray['ofc_id'];
+        $updateArray['ofc_ano'] = 1999;
+
+        $ofertacursodId = $updateArray['ofc_id'];
         unset($updateArray['ofc_id']);
 
-        $response = $this->repo->update($updateArray, $ofertacursoId, 'ofc_id');
+        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
 
         $this->assertEquals(1, $response);
     }

@@ -22,7 +22,7 @@ class Turma extends BaseModel
         'trm_nome' => 'like'
     ];
 
-    public function oferta()
+    public function ofertacurso()
     {
         return $this->belongsTo('Modulos\Academico\Models\OfertaCurso', 'trm_ofc_id');
     }
@@ -32,13 +32,4 @@ class Turma extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\PeriodoLetivo', 'trm_per_id');
     }
 
-    public function getTrmOfcIdAttribute($value)
-    {
-        return DB::table('acd_ofertas_cursos')->where('ofc_id', $value)->value('ofc_ano');
-    }
-
-    public function getTrmPerIdAttribute($value)
-    {
-        return DB::table('acd_periodos_letivos')->where('per_id', $value)->value('per_nome');
-    }
 }

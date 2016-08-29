@@ -47,6 +47,14 @@ class OfertasCursosController extends BaseController
                 return array('style' => 'width: 140px;');
             })
             ->means('ofc_action', 'ofc_id')
+            ->means('ofc_crs_id', 'curso')
+            ->modify('ofc_crs_id', function ($curso) {
+                return $curso->crs_nome;
+            })
+            ->means('ofc_mdl_id', 'modalidade')
+            ->modify('ofc_mdl_id', function ($modalidade) {
+                return $modalidade->mdl_nome;
+            })
             ->modify('ofc_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
@@ -100,7 +108,7 @@ class OfertasCursosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Recurso criado com sucesso.');
+            flash()->success('Oferta de curso criada com sucesso.');
 
             return redirect('/academico/ofertascursos');
         } catch (\Exception $e) {

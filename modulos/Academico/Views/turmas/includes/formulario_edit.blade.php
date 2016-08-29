@@ -1,15 +1,15 @@
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('crs_id')) has-error @endif">
-        {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Selecione um curso', 'id' => 'crs_id']) !!}
-            @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
-        </div>
-    </div>
+  <div class="form-group col-md-4 @if ($errors->has('crs_id')) has-error @endif">
+      {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
+      <div class="controls">
+          {!! Form::select('crs_id', $cursos, old('crs_id'), ['class' => 'form-control', 'placeholder' => 'Selecione um curso', 'id' => 'crs_id']) !!}
+          @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
+      </div>
+  </div>
     <div class="form-group col-md-4 @if ($errors->has('trm_ofc_id')) has-error @endif">
         {!! Form::label('trm_ofc_id', 'Oferta de Curso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('trm_ofc_id', [], null, ['class' => 'form-control', 'id' => 'trm_ofc_id']) !!}
+            {!! Form::select('trm_ofc_id', $ofertascursos, old('trm_ofc_id'), ['class' => 'form-control', 'id' => 'trm_ofc_id']) !!}
             @if ($errors->has('trm_ofc_id')) <p class="help-block">{{ $errors->first('trm_ofc_id') }}</p> @endif
         </div>
     </div>
@@ -21,15 +21,5 @@
       </div>
     </div>
 </div>
-
-@section('scripts')
-    @parent
-
-    <script type="application/javascript">
-        $(document).ready(function(){
-            $('#crs_id').prop('selectedIndex',0);
-        });
-    </script>
-@stop
 
 @include('Academico::turmas.includes.formulario_base')

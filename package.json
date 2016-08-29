@@ -5,6 +5,7 @@
     "dev": "gulp watch"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
     "laravel-elixir": "^5.0.0"
   },
   "dependencies": {
@@ -12,6 +13,7 @@
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.6.3",
     "gulp": "^3.9.1",
+    "gulp-install": "^0.6.0",
     "moment": "^2.13.0",
     "select2": "^4.0.3",
     "sweetalert": "^1.1.3",
