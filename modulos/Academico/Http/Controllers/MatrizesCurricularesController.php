@@ -39,54 +39,58 @@ class MatrizesCurricularesController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->matrizCurricularRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'mtc_id' => '#',
-            'mtc_crs_id' => 'Curso',
-            'mtc_creditos' => 'Créditos',
-            'mtc_horas' => 'Horas',
-            'mtc_horas_praticas' => 'Horas práticas',
-            'mtc_action' => 'Ações'
-        ))
-            ->modifyCell('mtc_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('mtc_action', 'mtc_id')
-            ->means('mtc_crs_id', 'curso')
-            ->modify('mtc_crs_id', function ($curso) {
-                return $curso->crs_nome;
-            })
-            ->modify('mtc_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/academico/matrizescurriculares/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'mtc_id' => '#',
+                'mtc_crs_id' => 'Curso',
+                'mtc_creditos' => 'Créditos',
+                'mtc_horas' => 'Horas',
+                'mtc_horas_praticas' => 'Horas práticas',
+                'mtc_action' => 'Ações'
+            ))
+                ->modifyCell('mtc_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('mtc_action', 'mtc_id')
+                ->means('mtc_crs_id', 'curso')
+                ->modify('mtc_crs_id', function ($curso) {
+                    return $curso->crs_nome;
+                })
+                ->modify('mtc_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/academico/matrizescurriculares/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/academico/matrizescurriculares/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/academico/matrizescurriculares/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('mtc_id', 'mtc_crs_id'));
+                    ]);
+                })
+                ->sortable(array('mtc_id', 'mtc_crs_id'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+        }
         return view('Academico::matrizescurriculares.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
