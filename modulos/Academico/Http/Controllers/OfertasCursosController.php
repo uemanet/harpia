@@ -11,6 +11,7 @@ use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\ModalidadeRepository;
+use Modulos\Academico\Repositories\PoloRepository;
 
 class OfertasCursosController extends BaseController
 {
@@ -18,13 +19,15 @@ class OfertasCursosController extends BaseController
     protected $cursoRepository;
     protected $matrizcurricularRepository;
     protected $modalidadeRepository;
+    protected $poloRepository;
 
-    public function __construct(OfertaCursoRepository $ofertacursoRepository, CursoRepository $cursoRepository, MatrizCurricularRepository $matrizcurricularRepository, ModalidadeRepository $modalidadeRepository)
+    public function __construct(OfertaCursoRepository $ofertacursoRepository, CursoRepository $cursoRepository, MatrizCurricularRepository $matrizcurricularRepository, ModalidadeRepository $modalidadeRepository, PoloRepository $poloRepository)
     {
         $this->ofertacursoRepository = $ofertacursoRepository;
         $this->cursoRepository = $cursoRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
         $this->modalidadeRepository = $modalidadeRepository;
+        $this->poloRepository = $poloRepository;
     }
 
     public function getIndex(Request $request)
@@ -98,7 +101,9 @@ class OfertasCursosController extends BaseController
 
         $modalidades = $this->modalidadeRepository->lists('mdl_id', 'mdl_nome');
 
-        return view('Academico::ofertascursos.create', compact('cursos', 'modalidades'));
+        $polos = $this->poloRepository->lists('pol_id', 'pol_nome');
+
+        return view('Academico::ofertascursos.create', compact('cursos', 'modalidades', 'polos'));
     }
 
     public function postCreate(OfertaCursoRequest $request)
@@ -106,6 +111,14 @@ class OfertasCursosController extends BaseController
         try {
             $ofertacurso = $this->ofertacursoRepository->create($request->all());
 
+            $oferta = $this->ofertacursoRepository->find($ofertacurso->ofc_id);
+
+            if(!is_null($request->polos)){
+                foreach ($request->polos as $key => $polo) {
+                  $oferta->polos()->attach($polo);
+                }
+            }
+            
             if (!$ofertacurso) {
                 flash()->error('Erro ao tentar salvar.');
 

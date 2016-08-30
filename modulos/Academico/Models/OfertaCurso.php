@@ -39,7 +39,7 @@ class OfertaCurso extends BaseModel
 
     public function polos()
     {
-        return $this->belongsToMany('Modulos\Seguranca\Models\Polo', 'acd_polos_ofertas_cursos', 'poc_pol_id', 'poc_ofc_id');
+        return $this->belongsToMany('Modulos\Academico\Models\Polo', 'acd_polos_ofertas_cursos', 'poc_ofc_id','poc_pol_id');
     }
 
     public function turmas()
