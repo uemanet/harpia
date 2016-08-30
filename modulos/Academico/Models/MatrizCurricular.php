@@ -39,16 +39,9 @@ class MatrizCurricular extends BaseModel
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
-    // Retorna o nome do curso em vez do id do curso
-    public function getMtcCrsIdAttribute($value)
-    {
-        return DB::table('acd_cursos')->where('crs_id', $value)->value('crs_nome');
-    }
-
     // Mutators
     public function setMtcDataAttribute($value)
     {
         $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
-
 }

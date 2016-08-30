@@ -149,7 +149,7 @@ $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Ge
 
 $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
     return [
-        'mtc_crs_id' => $faker->randomNumber(2),
+        'mtc_crs_id' => 1,
         'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
         'mtc_descricao' => $faker->words(5, true),
         'mtc_data' => $faker->date('d/m/Y'),

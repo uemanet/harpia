@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Carbon\Carbon;
 
+use Modulos\Academico\Models\Curso;
+
 class MatrizCurricularRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
@@ -149,11 +151,11 @@ class MatrizCurricularRepositoryTest extends TestCase
     public function testFind()
     {
         $dados = factory(MatrizCurricular::class)->create();
-
-        $data = $dados->toArray();
+        // Recupera id do curso a partir do Factory
+        // Um Accessor é usado no model para retornar o nome do curso em vez de seu id
+        $data = $dados->first()->toArray();
         // Retorna para date format americano antes de comparar com o banco
         $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
-
         $this->seeInDatabase('acd_matrizes_curriculares', $data);
     }
 

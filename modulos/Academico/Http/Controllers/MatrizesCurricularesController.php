@@ -53,6 +53,10 @@ class MatrizesCurricularesController extends BaseController
                 return array('style' => 'width: 140px;');
             })
             ->means('mtc_action', 'mtc_id')
+            ->means('mtc_crs_id', 'curso')
+            ->modify('mtc_crs_id', function ($curso){
+                return $curso->crs_nome;
+            })
             ->modify('mtc_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
@@ -98,8 +102,8 @@ class MatrizesCurricularesController extends BaseController
         try{
             DB::beginTransaction();
 
-            $anexo = $request->file('mtc_file');
-            $anexoCriado = $this->salvarAnexo($anexo);
+            $projetoPegagogico = $request->file('mtc_file');
+            $anexoCriado = $this->anexoRepository->salvarAnexo($projetoPegagogico);
 
             $dados = $request->all();
             unset($dados['mtc_file']);
@@ -119,63 +123,13 @@ class MatrizesCurricularesController extends BaseController
             return redirect('/academico/matrizescurriculares');
 
         } catch (\Exception $e){
+            DB::rollBack();
+
             if (config('app.debug')) {
                 throw $e;
             }
-
-            DB::rollBack();
-
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
-        }
-    }
-
-    /**
-     * @param UploadedFile $uploadedFile
-     * @param int $tipoAnexo
-     * @return \Illuminate\Http\RedirectResponse|static
-     * @throws FileExistsException
-     * @throws \Exception
-     */
-    private function salvarAnexo(UploadedFile $uploadedFile, $tipoAnexo = 1)
-    {
-        $hash = sha1_file($uploadedFile);
-
-        $pDir = substr($hash, 0, 2); // first Directory
-        $sDir = substr($hash, 2, 2); // second Directory
-
-        $caminhoArquivo = storage_path(). '/uploads' . DIRECTORY_SEPARATOR. $pDir .DIRECTORY_SEPARATOR. $sDir;
-
-        if (file_exists($caminhoArquivo.$hash)){
-            if(config('app.debug')){
-                throw new FileExistsException();
-            }
-            flash()->error('Arquivo já existe !');
-            return redirect()->back();
-        }
-
-        try{
-            $anexo = [
-                'anx_tax_id' => $tipoAnexo,
-                'anx_nome' => $uploadedFile->getClientOriginalName(),
-                'anx_mime' => $uploadedFile->getClientMimeType(),
-                'anx_localizacao' => $caminhoArquivo
-            ];
-
-            $uploadedFile->move($caminhoArquivo, $hash);
-
-            return $this->anexoRepository->create($anexo);
-
-        } catch (\FileException $e){
-            if(config('app.debug')){
-                throw $e;
-            }
-            flash()->error('Ocorreu um problema ao salvar o arquivo!');
-        } catch (\Exception $e){
-            if(config('app.debug')){
-                throw $e;
-            }
-            flash()->error('Ocorreu um problema ao salvar o arquivo!');
         }
     }
 
@@ -185,7 +139,6 @@ class MatrizesCurricularesController extends BaseController
 
         if (!$matrizCurricular) {
             flash()->error('Matriz curricular não existe.');
-
             return redirect()->back();
         }
 
@@ -196,27 +149,50 @@ class MatrizesCurricularesController extends BaseController
     public function putEdit($matrizCurricularId, MatrizCurricularRequest $request)
     {
         try {
+            DB::beginTransaction();
+            $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
+            $dados = $request->only($this->matrizCurricularRepository->getFillableModelFields());
 
-            dd($this->matrizCurricularRepository->find($matrizCurricularId));
+            if($request->file('mtc_file') != null){
+                // Novo Anexo
+                $projetoPedagogico = $request->file('mtc_file');
 
+                // Atualiza anexo
+                $this->anexoRepository->atualizarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico, $projetoPedagogico);
+            }
+
+            $dados['mtc_anx_projeto_pedagogico'] = $matrizCurricular->mtc_anx_projeto_pedagogico;
+            if(!$this->matrizCurricularRepository->update($dados, $matrizCurricular->mtc_id, 'mtc_id')){
+                DB::rollBack();
+                flash()->error('Erro ao tentar atualizar');
+                return redirect()->back()->withInput($request->all());
+            }
+
+            DB::commit();
             flash()->success('Matriz Curricular atualizada com sucesso.');
             return redirect('/academico/matrizescurriculares');
         } catch (\Exception $e) {
+            DB::rollBack();
             if (config('app.debug')) {
                 throw $e;
             }
-
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
+
 
     public function postDelete(Request $request)
     {
         try {
             $matrizCurricularId = $request->get('id');
 
+            $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
+
+
             if ($this->matrizCurricularRepository->delete($matrizCurricularId)) {
+                // Excluir Anexo correspondente
+                $this->anexoRepository->deletarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
                 flash()->success('Matriz curricular excluída com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir a matriz curricular');
