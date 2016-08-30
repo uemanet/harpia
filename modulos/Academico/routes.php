@@ -10,6 +10,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         'centros' => '\Modulos\Academico\Http\Controllers\CentrosController',
         'ofertascursos' => '\Modulos\Academico\Http\Controllers\OfertasCursosController',
         'grupos' => '\Modulos\Academico\Http\Controllers\GruposController',
+        'turmas' => '\Modulos\Academico\Http\Controllers\TurmasController',
     ]);
 });
 
@@ -18,5 +19,6 @@ Route::group(['prefix' => 'academico/async', 'middleware' => ['auth']], function
         'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares',
         'turmas' => '\Modulos\Academico\Http\Controllers\Async\Turmas',
         'polos' => '\Modulos\Academico\Http\Controllers\Async\Polos',
+        'ofertascursos' => '\Modulos\Academico\Http\Controllers\Async\OfertasCursos'
     ]);
 });

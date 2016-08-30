@@ -176,5 +176,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 8;
         $recurso->save();
+
+        // Ofertas de cursos
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Ofertas de Turmas';
+        $recurso->rcs_rota = 'turmas';
+        $recurso->rcs_descricao = 'Recurso ofertas de turmas do módulo acadêmico na categoria de processos';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 9;
+        $recurso->save();
     }
 }

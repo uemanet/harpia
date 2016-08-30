@@ -46,14 +46,4 @@ class OfertaCurso extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_ofc_id', 'ofc_id');
     }
-
-    public function getOfcCrsIdAttribute($value)
-    {
-        return DB::table('acd_cursos')->where('crs_id', $value)->value('crs_nome');
-    }
-
-    public function getOfcMdlIdAttribute($value)
-    {
-        return DB::table('acd_modalidades')->where('mdl_id', $value)->value('mdl_nome');
-    }
 }
