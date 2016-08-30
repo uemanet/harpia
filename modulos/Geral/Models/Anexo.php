@@ -30,5 +30,4 @@ class Anexo extends BaseModel
         //return Storage::allFiles($this->attributes(['anx_localizacao']).DIRECTORY_SEPARATOR);
         return $this->attributes['anx_localizacao'].DIRECTORY_SEPARATOR;
     }
-
 }

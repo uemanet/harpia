@@ -31,47 +31,50 @@ class DepartamentosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->departamentoRepository->paginateRequest($request->all());
-
-        $tabela = $tableData->columns(array(
-            'dep_id' => '#',
-            'dep_nome' => 'Departamento',
-            'dep_action' => 'Ações'
-        ))
-            ->modifyCell('dep_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('dep_action', 'dep_id')
-            ->modify('dep_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/academico/departamentos/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'dep_id' => '#',
+                'dep_nome' => 'Departamento',
+                'dep_action' => 'Ações'
+            ))
+                ->modifyCell('dep_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('dep_action', 'dep_id')
+                ->modify('dep_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/academico/departamentos/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/academico/departamentos/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/academico/departamentos/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('dep_id', 'dep_nome'));
+                    ]);
+                })
+                ->sortable(array('dep_id', 'dep_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+        }
         return view('Academico::departamentos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 

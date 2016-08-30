@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class AnexoRepository extends BaseRepository
 {
-    public function __construct(Anexo $anexo )
+    public function __construct(Anexo $anexo)
     {
         $this->model = $anexo;
     }
@@ -32,15 +32,15 @@ class AnexoRepository extends BaseRepository
 
         $caminhoArquivo = storage_path(). DIRECTORY_SEPARATOR .'uploads' . DIRECTORY_SEPARATOR. $pDir .DIRECTORY_SEPARATOR. $sDir;
 
-        if (file_exists($caminhoArquivo.$hash)){
-            if(config('app.debug')){
+        if (file_exists($caminhoArquivo.$hash)) {
+            if (config('app.debug')) {
                 throw new FileExistsException($caminhoArquivo.$hash);
             }
             flash()->error('Arquivo já existe !');
             return redirect()->back();
         }
 
-        try{
+        try {
             $anexo = [
                 'anx_tax_id' => $tipoAnexo,
                 'anx_nome' => $uploadedFile->getClientOriginalName(),
@@ -51,13 +51,13 @@ class AnexoRepository extends BaseRepository
             $uploadedFile->move($caminhoArquivo, $hash);
 
             return $this->create($anexo);
-        } catch (FileException $e){
-            if(config('app.debug')){
+        } catch (FileException $e) {
+            if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao salvar o arquivo!');
-        } catch (\Exception $e){
-            if(config('app.debug')){
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao salvar o arquivo!');
@@ -77,7 +77,7 @@ class AnexoRepository extends BaseRepository
     {
         $anexo = $this->find($anexoId);
 
-        if(!$anexo){
+        if (!$anexo) {
             return "Anexo não existe.";
         }
 
@@ -88,15 +88,15 @@ class AnexoRepository extends BaseRepository
 
         $caminhoArquivo = storage_path(). DIRECTORY_SEPARATOR .'uploads' . DIRECTORY_SEPARATOR. $pDir .DIRECTORY_SEPARATOR. $sDir;
 
-        if (file_exists($caminhoArquivo.$hash)){
-            if(config('app.debug')){
+        if (file_exists($caminhoArquivo.$hash)) {
+            if (config('app.debug')) {
                 throw new FileExistsException($caminhoArquivo.$hash);
             }
             flash()->error('Arquivo já existe !');
             return redirect()->back();
         }
 
-        try{
+        try {
 
             // Exclui antigo arquivo e pasta corresṕondente
             array_map('unlink', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR . '*'));
@@ -112,13 +112,13 @@ class AnexoRepository extends BaseRepository
 
             $uploadedFile->move($caminhoArquivo, $hash);
             return $this->update($data, $anexoId, 'anx_id');
-        } catch (FileException $e){
-            if(config('app.debug')){
+        } catch (FileException $e) {
+            if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao atualizar o arquivo!');
-        } catch (\Exception $e){
-            if(config('app.debug')){
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao atualizar o arquivo!');
@@ -135,23 +135,23 @@ class AnexoRepository extends BaseRepository
     {
         $anexo = $this->find($anexoId);
 
-        if(!$anexo){
+        if (!$anexo) {
             return "Anexo não existe.";
         }
 
-        try{
+        try {
             // Exclui arquivo e pasta corresṕondente
             array_map('unlink', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR . '*'));
             array_map('rmdir', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR));
 
             return $this->delete($anexoId);
-        } catch (FileException $e){
-            if(config('app.debug')){
+        } catch (FileException $e) {
+            if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao excluir o arquivo!');
-        } catch (\Exception $e){
-            if(config('app.debug')){
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao excluir o arquivo!');

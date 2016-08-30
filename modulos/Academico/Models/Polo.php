@@ -22,4 +22,9 @@ class Polo extends BaseModel
     {
         return $this->belongsToMany('Modulos\Seguranca\Models\OfertaCurso', 'acd_polos_ofertas_cursos', 'poc_pol_id', 'poc_ofc_id');
     }
+
+    public function grupos()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Grupo', 'grp_pol_id');
+    }
 }

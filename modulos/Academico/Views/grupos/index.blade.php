@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Ofertas de Cursos
+    Grupos
 @stop
 
 @section('subtitle')
-    Gerenciamento de ofertas de cursos
+    Gerenciamento de grupos
 @stop
 
 @section('actionButton')
@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/ofertascursos/index') }}">
+                <form method="GET" action="{{ url('/academico/grupos/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="ofc_ano" id="ofc_ano" value="{{Input::get('ofc_ano')}}" placeholder="Ano da Oferta">
+                        <input type="text" class="form-control" name="dep_nome" id="dep_nome" value="{{Input::get('grp_nome')}}" placeholder="Nome do grupo">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
@@ -46,7 +46,6 @@
         </div>
 
         <div class="text-center">{!! $paginacao->links() !!}</div>
-
     @else
         <div class="box box-primary">
             <div class="box-body">Sem registros para apresentar</div>

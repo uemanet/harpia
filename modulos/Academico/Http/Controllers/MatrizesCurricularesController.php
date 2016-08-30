@@ -54,7 +54,7 @@ class MatrizesCurricularesController extends BaseController
             })
             ->means('mtc_action', 'mtc_id')
             ->means('mtc_crs_id', 'curso')
-            ->modify('mtc_crs_id', function ($curso){
+            ->modify('mtc_crs_id', function ($curso) {
                 return $curso->crs_nome;
             })
             ->modify('mtc_action', function ($id) {
@@ -99,7 +99,7 @@ class MatrizesCurricularesController extends BaseController
 
     public function postCreate(MatrizCurricularRequest $request)
     {
-        try{
+        try {
             DB::beginTransaction();
 
             $projetoPegagogico = $request->file('mtc_file');
@@ -112,7 +112,7 @@ class MatrizesCurricularesController extends BaseController
 
             $matrizCurricular = $this->matrizCurricularRepository->create($dados);
 
-            if(!$matrizCurricular){
+            if (!$matrizCurricular) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
@@ -121,8 +121,7 @@ class MatrizesCurricularesController extends BaseController
 
             flash()->success('Matriz Curricular criada com sucesso.');
             return redirect('/academico/matrizescurriculares');
-
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
 
             if (config('app.debug')) {
@@ -153,7 +152,7 @@ class MatrizesCurricularesController extends BaseController
             $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
             $dados = $request->only($this->matrizCurricularRepository->getFillableModelFields());
 
-            if($request->file('mtc_file') != null){
+            if ($request->file('mtc_file') != null) {
                 // Novo Anexo
                 $projetoPedagogico = $request->file('mtc_file');
 
@@ -162,7 +161,7 @@ class MatrizesCurricularesController extends BaseController
             }
 
             $dados['mtc_anx_projeto_pedagogico'] = $matrizCurricular->mtc_anx_projeto_pedagogico;
-            if(!$this->matrizCurricularRepository->update($dados, $matrizCurricular->mtc_id, 'mtc_id')){
+            if (!$this->matrizCurricularRepository->update($dados, $matrizCurricular->mtc_id, 'mtc_id')) {
                 DB::rollBack();
                 flash()->error('Erro ao tentar atualizar');
                 return redirect()->back()->withInput($request->all());

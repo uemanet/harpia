@@ -37,50 +37,53 @@ class CursosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->cursoRepository->paginateRequest($request->all());
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'crs_id' => '#',
+                'crs_nome' => 'Curso',
+                'crs_sigla' => 'Sigla',
+                'crs_descricao' => 'Descrição',
+                'crs_action' => 'Ações',
 
-        $tabela = $tableData->columns(array(
-            'crs_id' => '#',
-            'crs_nome' => 'Curso',
-            'crs_sigla' => 'Sigla',
-            'crs_descricao' => 'Descrição',
-            'crs_action' => 'Ações',
-
-        ))
-            ->modifyCell('crs_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('crs_action', 'crs_id')
-            ->modify('crs_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/academico/cursos/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+            ))
+                ->modifyCell('crs_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('crs_action', 'crs_id')
+                ->modify('crs_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/academico/cursos/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/academico/cursos/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/academico/cursos/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('crs_id', 'crs_nome'));
+                    ]);
+                })
+                ->sortable(array('crs_id', 'crs_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+        }
         return view('Academico::cursos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 

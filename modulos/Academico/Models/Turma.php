@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Models;
 
+use Illuminate\Support\Facades\DB;
 use Modulos\Core\Model\BaseModel;
 
 class Turma extends BaseModel
@@ -21,7 +22,7 @@ class Turma extends BaseModel
         'trm_nome' => 'like'
     ];
 
-    public function oferta()
+    public function ofertacurso()
     {
         return $this->belongsTo('Modulos\Academico\Models\OfertaCurso', 'trm_ofc_id');
     }
@@ -29,5 +30,10 @@ class Turma extends BaseModel
     public function periodo()
     {
         return $this->belongsTo('Modulos\Academico\Models\PeriodoLetivo', 'trm_per_id');
+    }
+
+    public function grupos()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Grupo', 'grp_trm_id');
     }
 }

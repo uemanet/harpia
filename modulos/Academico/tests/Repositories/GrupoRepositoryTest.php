@@ -2,19 +2,18 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
-use Modulos\Academico\Models\OfertaCurso;
+use Modulos\Academico\Repositories\GrupoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class OfertaCursoRepositoryTest extends TestCase
+class GrupoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
-
+    
     protected $repo;
-
+    
     public function createApplication()
     {
         putenv('DB_CONNECTION=sqlite_testing');
@@ -32,7 +31,7 @@ class OfertaCursoRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(OfertaCursoRepository::class);
+        $this->repo = $this->app->make(GrupoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +44,7 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Grupo::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -56,10 +55,10 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Grupo::class, 2)->create();
 
         $sort = [
-            'field' => 'ofc_id',
+            'field' => 'grp_id',
             'sort' => 'desc'
         ];
 
@@ -67,20 +66,22 @@ class OfertaCursoRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->ofc_id);
+        $this->assertGreaterThan(1, $response[0]->grp_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(OfertaCurso::class)->create([
-            'ofc_ano' => '2005',
+        factory(\Modulos\Academico\Models\Grupo::class, 2)->create();
+
+        factory(\Modulos\Academico\Models\Grupo::class)->create([
+            'grp_nome' => 'São Luís 1',
         ]);
 
         $search = [
             [
-                'field' => 'ofc_ano',
+                'field' => 'grp_nome',
                 'type' => 'like',
-                'term' => '2005'
+                'term' => 'São Luís 1'
             ]
         ];
 
@@ -93,16 +94,16 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Grupo::class, 2)->create();
 
         $sort = [
-            'field' => 'ofc_id',
+            'field' => 'grp_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'ofc_id',
+                'field' => 'grp_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -117,11 +118,11 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Grupo::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'ofc_id',
+            'field' => 'grp_id',
             'sort' => 'asc'
         ];
 
@@ -134,43 +135,43 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(OfertaCurso::class)->create();
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(OfertaCurso::class, $response);
+        $this->assertInstanceOf(\Modulos\Academico\Models\Grupo::class, $response);
 
-        $this->assertArrayHasKey('ofc_id', $data);
+        $this->assertArrayHasKey('grp_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $data = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-        $this->seeInDatabase('acd_ofertas_cursos', $data->toArray());
+        $this->seeInDatabase('acd_grupos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $data = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 1999;
+        $updateArray['grp_nome'] = 'abcde_edcba';
 
-        $ofertacursodId = $updateArray['ofc_id'];
-        unset($updateArray['ofc_id']);
+        $grupoId = $updateArray['grp_id'];
+        unset($updateArray['grp_id']);
 
-        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
+        $response = $this->repo->update($updateArray, $grupoId, 'grp_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(OfertaCurso::class)->create();
-        $ofertacursoId = $data->ofc_id;
+        $data = factory(\Modulos\Academico\Models\Grupo::class)->create();
+        $grupoId = $data->grp_id;
 
-        $response = $this->repo->delete($ofertacursoId);
+        $response = $this->repo->delete($grupoId);
 
         $this->assertEquals(1, $response);
     }

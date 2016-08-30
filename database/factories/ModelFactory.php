@@ -158,3 +158,20 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
         'mtc_horas_praticas' => $faker->randomNumber(4)
     ];
 });
+
+$factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
+   return [
+       'grp_trm_id' => 1,
+       'grp_pol_id' => 1,
+       'grp_nome' => $faker->name
+   ];
+});
+
+$factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generator $faker) {
+    return [
+        'trm_ofc_id' => 1,
+        'trm_per_id' => 1,
+        'trm_nome' => $faker->sentence(3),
+        'trm_qtd_vagas' => 30
+    ];
+});
