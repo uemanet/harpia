@@ -8,12 +8,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         'periodosletivos' => '\Modulos\Academico\Http\Controllers\PeriodosLetivosController',
         'cursos' => '\Modulos\Academico\Http\Controllers\CursosController',
         'centros' => '\Modulos\Academico\Http\Controllers\CentrosController',
-        'ofertascursos' => '\Modulos\Academico\Http\Controllers\OfertasCursosController'
+        'ofertascursos' => '\Modulos\Academico\Http\Controllers\OfertasCursosController',
+        'grupos' => '\Modulos\Academico\Http\Controllers\GruposController',
     ]);
 });
 
 Route::group(['prefix' => 'academico/async', 'middleware' => ['auth']], function () {
     Route::controllers([
-        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares'
+        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares',
+        'turmas' => '\Modulos\Academico\Http\Controllers\Async\Turmas',
+        'polos' => '\Modulos\Academico\Http\Controllers\Async\Polos',
     ]);
 });

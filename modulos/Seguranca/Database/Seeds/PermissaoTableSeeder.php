@@ -38,6 +38,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoCentros();
 
         $this->createPermissoesAcademicoOfertasCursos();
+
+        $this->createPermissoesAcademicoGrupos();
     }
 
     private function createPermissoesIndex()
@@ -401,19 +403,46 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 15;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão index do recurso Ofertas de Cursos';
+        $permissao->prm_descricao = 'Permissão create do recurso Ofertas de Cursos';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 15;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão index do recurso Ofertas de Cursos';
+        $permissao->prm_descricao = 'Permissão edit do recurso Ofertas de Cursos';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 15;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão index do recurso Ofertas de Cursos';
+        $permissao->prm_descricao = 'Permissão delete do recurso Ofertas de Cursos';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoGrupos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 16;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Grupo';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 16;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Grupo';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 16;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Grupo';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 16;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Grupo';
         $permissao->save();
     }
 }

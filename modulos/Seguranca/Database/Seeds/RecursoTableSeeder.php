@@ -145,7 +145,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
-
         // Recursos Centros
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
@@ -166,6 +165,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-plus';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 7;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Grupos';
+        $recurso->rcs_rota = 'grupos';
+        $recurso->rcs_descricao = 'Recurso grupo do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-group';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 8;
         $recurso->save();
     }
 }

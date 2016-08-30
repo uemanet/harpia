@@ -136,3 +136,11 @@ $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Ge
         'ofc_ano' =>2005
     ];
 });
+
+$factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
+   return [
+       'grp_trm_id' => 1,
+       'grp_pol_id' => 1,
+       'grp_nome' => $faker->name
+   ];
+});
