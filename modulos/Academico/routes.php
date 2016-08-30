@@ -7,6 +7,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         'departamentos' => '\Modulos\Academico\Http\Controllers\DepartamentosController',
         'periodosletivos' => '\Modulos\Academico\Http\Controllers\PeriodosLetivosController',
         'cursos' => '\Modulos\Academico\Http\Controllers\CursosController',
+        'matrizescurriculares' => '\Modulos\Academico\Http\Controllers\MatrizesCurricularesController',
         'centros' => '\Modulos\Academico\Http\Controllers\CentrosController',
         'ofertascursos' => '\Modulos\Academico\Http\Controllers\OfertasCursosController',
         'grupos' => '\Modulos\Academico\Http\Controllers\GruposController',

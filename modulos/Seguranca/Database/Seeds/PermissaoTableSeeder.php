@@ -37,6 +37,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoCentros();
 
+        $this->createPermissoesAcademicoMatrizesCurriculares();
+
         $this->createPermissoesAcademicoOfertasCursos();
 
         $this->createPermissoesAcademicoGrupos();
@@ -395,7 +397,6 @@ class PermissaoTableSeeder extends Seeder
 
     private function createPermissoesAcademicoOfertasCursos()
     {
-
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 15;
         $permissao->prm_nome = 'index';
@@ -450,7 +451,6 @@ class PermissaoTableSeeder extends Seeder
 
     private function createPermissoesAcademicoTurmas()
     {
-
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 17;
         $permissao->prm_nome = 'index';
@@ -473,6 +473,34 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 17;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Turmas';
+        $permissao->save();
+    }
+
+
+    private function createPermissoesAcademicoMatrizesCurriculares()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 14;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão index do recurso Matriz Curricular';
         $permissao->save();
     }
 }

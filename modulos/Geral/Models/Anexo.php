@@ -1,6 +1,7 @@
 <?php
 namespace Modulos\Geral\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Modulos\Core\Model\BaseModel;
 
 class Anexo extends BaseModel
@@ -16,8 +17,7 @@ class Anexo extends BaseModel
         'anx_localizacao'
     ];
 
-    public function tipo_anexo()
-    {
-        return $this->belongsTo('Modulos\Geral\Models\TipoAnexo', 'anx_tax_id');
-    }
+    protected $searchable = [
+        'anx_nome' => 'like'
+    ];
 }

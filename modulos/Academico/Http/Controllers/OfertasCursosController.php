@@ -148,4 +148,4 @@ class OfertasCursosController extends BaseController
             }
         }
     }
-  }
+}

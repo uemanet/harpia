@@ -2,13 +2,16 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
-use Modulos\Academico\Models\OfertaCurso;
+use Modulos\Academico\Repositories\MatrizCurricularRepository;
+use Modulos\Academico\Models\MatrizCurricular;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Carbon\Carbon;
 
-class OfertaCursoRepositoryTest extends TestCase
+use Modulos\Academico\Models\Curso;
+
+class MatrizCurricularRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -32,7 +35,7 @@ class OfertaCursoRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(OfertaCursoRepository::class);
+        $this->repo = $this->app->make(MatrizCurricularRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +48,7 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(MatrizCurricular::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -56,10 +59,10 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(MatrizCurricular::class, 2)->create();
 
         $sort = [
-            'field' => 'ofc_id',
+            'field' => 'mtc_id',
             'sort' => 'desc'
         ];
 
@@ -67,20 +70,22 @@ class OfertaCursoRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->ofc_id);
+        $this->assertGreaterThan(1, $response[0]->mtc_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(OfertaCurso::class)->create([
-            'ofc_ano' => '2005',
+        factory(MatrizCurricular::class, 2)->create();
+
+        factory(MatrizCurricular::class)->create([
+            'mtc_id' => 3,
         ]);
 
         $search = [
             [
-                'field' => 'ofc_ano',
-                'type' => 'like',
-                'term' => '2005'
+                'field' => 'mtc_id',
+                'type' => '=',
+                'term' => 1
             ]
         ];
 
@@ -93,16 +98,16 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(MatrizCurricular::class, 2)->create();
 
         $sort = [
-            'field' => 'ofc_id',
+            'field' => 'mtc_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'ofc_id',
+                'field' => 'mtc_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -117,11 +122,11 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(OfertaCurso::class, 2)->create();
+        factory(MatrizCurricular::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'ofc_id',
+            'field' => 'mtc_id',
             'sort' => 'asc'
         ];
 
@@ -134,43 +139,47 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(OfertaCurso::class)->create();
+        $response = factory(MatrizCurricular::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(OfertaCurso::class, $response);
+        $this->assertInstanceOf(MatrizCurricular::class, $response);
 
-        $this->assertArrayHasKey('ofc_id', $data);
+        $this->assertArrayHasKey('mtc_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-
-        $this->seeInDatabase('acd_ofertas_cursos', $data->toArray());
+        $dados = factory(MatrizCurricular::class)->create();
+        // Recupera id do curso a partir do Factory
+        // Um Accessor é usado no model para retornar o nome do curso em vez de seu id
+        $data = $dados->first()->toArray();
+        // Retorna para date format americano antes de comparar com o banco
+        $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
+        $this->seeInDatabase('acd_matrizes_curriculares', $data);
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $data = factory(MatrizCurricular::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 1999;
+        $updateArray['mtc_descricao'] = 'abcde_edcba';
 
-        $ofertacursodId = $updateArray['ofc_id'];
-        unset($updateArray['ofc_id']);
+        $matrizCurricularId = $updateArray['mtc_id'];
+        unset($updateArray['mtc_id']);
 
-        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
+        $response = $this->repo->update($updateArray, $matrizCurricularId, 'mtc_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(OfertaCurso::class)->create();
-        $ofertacursoId = $data->ofc_id;
+        $data = factory(MatrizCurricular::class)->create();
+        $matrizCurricularId = $data->mtc_id;
 
-        $response = $this->repo->delete($ofertacursoId);
+        $response = $this->repo->delete($matrizCurricularId);
 
         $this->assertEquals(1, $response);
     }

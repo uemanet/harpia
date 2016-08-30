@@ -2,7 +2,9 @@
 
 namespace Modulos\Academico\Models;
 
+use Illuminate\Support\Facades\DB;
 use Modulos\Core\Model\BaseModel;
+use Carbon\Carbon;
 
 class MatrizCurricular extends BaseModel
 {
@@ -21,11 +23,25 @@ class MatrizCurricular extends BaseModel
     ];
 
     protected $searchable = [
-        'per_inicio' => 'like',
+        'mtc_id' => '=',
     ];
 
     public function curso()
     {
         return $this->belongsTo('Modulos\Academico\Models\Curso', 'mtc_crs_id');
+    }
+
+    // Accessors
+    // Retorna a data em padrao pt-BR em vez do padrao internacional
+    public function getMtcDataAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutators
+    public function setMtcDataAttribute($value)
+    {
+        $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }
