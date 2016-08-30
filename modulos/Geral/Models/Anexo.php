@@ -20,14 +20,4 @@ class Anexo extends BaseModel
     protected $searchable = [
         'anx_nome' => 'like'
     ];
-
-    /**
-     * Retorna o caminho do arquivo
-     * @return string
-     */
-    public function filePath()
-    {
-        //return Storage::allFiles($this->attributes(['anx_localizacao']).DIRECTORY_SEPARATOR);
-        return $this->attributes['anx_localizacao'].DIRECTORY_SEPARATOR;
-    }
 }
