@@ -27,11 +27,12 @@
 
 @section('scripts')
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    
+
         <script type="text/javascript">
             $(document).ready(function() {
                 $("select").select2();
             });
     </script>
+
 
 @endsection
