@@ -122,7 +122,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_descricao = 'Recurso departamento do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-sitemap';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 3;
+        $recurso->rcs_ordem = 4;
         $recurso->save();
 
         $recurso = new Recurso();
@@ -132,7 +132,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_descricao = 'Recurso período letivo do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-calendar';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 4;
+        $recurso->rcs_ordem = 6;
         $recurso->save();
 
         $recurso = new Recurso();
@@ -153,7 +153,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_descricao = 'Recurso centro do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-building';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 6;
+        $recurso->rcs_ordem = 3;
         $recurso->save();
 
         $recurso = new Recurso();
@@ -162,7 +162,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_rota = 'matrizescurriculares';
         $recurso->rcs_descricao = 'Recurso matriz curricular do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-table';
-        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ativo = 0;
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
@@ -187,15 +187,14 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Ofertas de cursos
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
-        $recurso->rcs_nome = 'Ofertas de Turmas';
+        $recurso->rcs_nome = 'Turmas';
         $recurso->rcs_rota = 'turmas';
-        $recurso->rcs_descricao = 'Recurso ofertas de turmas do módulo acadêmico na categoria de processos';
-        $recurso->rcs_icone = 'fa fa-plus';
-        $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 9;
+        $recurso->rcs_descricao = 'Recurso turmas do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-group';
+        $recurso->rcs_ativo = 0;
+        $recurso->rcs_ordem = 8;
         $recurso->save();
     }
 }
