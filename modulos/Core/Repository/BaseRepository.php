@@ -85,7 +85,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 ];
             }
         }
-
         return $this->paginate($sort, $search);
     }
 

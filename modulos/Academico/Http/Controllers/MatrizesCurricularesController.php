@@ -42,7 +42,9 @@ class MatrizesCurricularesController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->matrizCurricularRepository->paginateRequest($request->all());
+        $cursoId = $request->input('cursoId');
+
+        $tableData = $this->matrizCurricularRepository->paginateRequestByCurso($cursoId, $request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -124,7 +126,8 @@ class MatrizesCurricularesController extends BaseController
             DB::commit();
 
             flash()->success('Matriz Curricular criada com sucesso.');
-            return redirect('/academico/matrizescurriculares');
+            //Redireciona para o index de matrizes curriculares do curso
+            return redirect('/academico/matrizescurriculares/index?cursoId='.$matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
 
