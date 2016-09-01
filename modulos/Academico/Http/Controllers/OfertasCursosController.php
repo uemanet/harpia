@@ -69,13 +69,13 @@ class OfertasCursosController extends BaseController
                             'label' => 'Selecione'
                         ],
                         'buttons' => [
-                            // [
-                            //     'classButton' => '',
-                            //     'icon' => 'fa fa-pencil',
-                            //     'action' => '/academico/ofertascursos/edit/' . $id,
-                            //     'label' => 'Editar',
-                            //     'method' => 'get'
-                            // ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-plus',
+                                'action' => '/academico/turmas/index?ofertaId='.$id,
+                                'label' => 'Turmas',
+                                'method' => 'get'
+                            ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
@@ -118,7 +118,7 @@ class OfertasCursosController extends BaseController
                   $oferta->polos()->attach($polo);
                 }
             }
-            
+
             if (!$ofertacurso) {
                 flash()->error('Erro ao tentar salvar.');
 
@@ -161,4 +161,4 @@ class OfertasCursosController extends BaseController
             }
         }
     }
-}
+  }

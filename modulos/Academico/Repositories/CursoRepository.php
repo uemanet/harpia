@@ -27,4 +27,9 @@ class CursoRepository extends BaseRepository
 
         return $this->model->where($attribute, '=', $id)->update($data);
     }
+
+    public function listsCursoByOferta($cursoid)
+    {
+        return $this->model->where('crs_id', $cursoid)->lists('crs_nome', 'crs_id');
+    }
 }

@@ -28,7 +28,7 @@
             <div class="row">
                 <form method="GET" action="{{ url('/academico/grupos/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="dep_nome" id="dep_nome" value="{{Input::get('grp_nome')}}" placeholder="Nome do grupo">
+                        <input type="text" class="form-control" name="grp_nome" id="grp_nome" value="{{Input::get('grp_nome')}}" placeholder="Nome do grupo">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

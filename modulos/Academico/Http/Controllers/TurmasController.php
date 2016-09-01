@@ -29,15 +29,18 @@ class TurmasController extends BaseController
 
     public function getIndex(Request $request)
     {
+        $ofertaId = $request->input('ofertaId');
+        //dd($id);
+
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/centros/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/turmas/create?ofertaId='.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->turmaRepository->paginateRequest($request->all());
+        $tableData = $this->turmaRepository->paginateRequestByOferta($ofertaId, $request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -96,15 +99,20 @@ class TurmasController extends BaseController
         return view('Academico::turmas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate()
+    public function getCreate(Request $request)
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        //$ofertascursos = $this->ofertacursoRepository->lists('ofc_id', 'ofc_ano');
+        $ofertaId = $request->input('ofertaId');
+
+        $oferta = $this->ofertacursoRepository->find($ofertaId);
+
+        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+
+        $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
 
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::turmas.create', compact('cursos', 'periodosletivos'));
+        return view('Academico::turmas.create', compact('curso', 'periodosletivos', 'oferta'));
     }
 
     public function postCreate(TurmaRequest $request)
@@ -120,7 +128,7 @@ class TurmasController extends BaseController
 
             flash()->success('Turma criada com sucesso.');
 
-            return redirect('/academico/turmas');
+            return redirect('/academico/turmas/index?ofertaId='.$turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

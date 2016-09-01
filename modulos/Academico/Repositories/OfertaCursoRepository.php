@@ -36,4 +36,9 @@ class OfertaCursoRepository extends BaseRepository
     {
         return $this->model->where('ofc_crs_id', $cursoid)->lists('ofc_ano', 'ofc_id');
     }
+
+    public function listsAllById($ofertaid)
+    {
+        return $this->model->where('ofc_id', $ofertaid)->lists('ofc_ano', 'ofc_id');
+    }
 }
