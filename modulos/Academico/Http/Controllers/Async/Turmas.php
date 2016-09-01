@@ -15,9 +15,9 @@ class Turmas extends BaseController
         $this->turmaRepository = $turma;
     }
     
-    public function getTurmasbycurso($idCurso)
+    public function getFindallbyofertacurso($idOfertaCurso)
     {
-        $turmas = $this->turmaRepository->findAllByCurso($idCurso);
+        $turmas = $this->turmaRepository->findAllByOfertaCurso($idOfertaCurso);
 
         return new JsonResponse($turmas, 200);
     }

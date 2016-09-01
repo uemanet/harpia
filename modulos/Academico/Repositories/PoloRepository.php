@@ -13,14 +13,17 @@ class PoloRepository extends BaseRepository
         $this->model = $polo;
     }
 
-    public function findAllByCurso($idCurso)
+    /**
+     * Retorna todos os polos de acordo com a Oferta de Curso
+     * @param  int $idOfertaCurso
+     * @return array
+     */
+    public function findAllByOfertaCurso($idOfertaCurso)
     {
-        $entries = DB::table('acd_cursos')
-                        ->join('acd_ofertas_cursos', 'crs_id', '=', 'ofc_crs_id')
-                        ->join('acd_polos_ofertas_cursos', 'ofc_id', '=', 'poc_ofc_id')
+        $entries = DB::table('acd_polos_ofertas_cursos')
                         ->join('acd_polos', 'poc_pol_id', '=', 'pol_id')
                         ->select('pol_id', 'pol_nome')
-                        ->where('crs_id', '=', $idCurso)
+                        ->where('poc_ofc_id', '=', $idOfertaCurso)
                         ->get();
 
         return $entries;

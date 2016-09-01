@@ -113,9 +113,9 @@ class OfertasCursosController extends BaseController
 
             $oferta = $this->ofertacursoRepository->find($ofertacurso->ofc_id);
 
-            if(!is_null($request->polos)){
+            if (!is_null($request->polos)) {
                 foreach ($request->polos as $key => $polo) {
-                  $oferta->polos()->attach($polo);
+                    $oferta->polos()->attach($polo);
                 }
             }
             

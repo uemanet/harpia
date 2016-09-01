@@ -13,24 +13,13 @@ class TurmaRepository extends BaseRepository
         $this->model = $turma;
     }
 
-    public function findAllByCurso($cursoId)
+    public function findAllByOfertaCurso($ofertaCursoId)
     {
-        $entries = DB::table('acd_cursos')
-                        ->join('acd_ofertas_cursos', 'crs_id', '=', 'ofc_crs_id')
-                        ->join('acd_turmas', 'ofc_id', '=', 'trm_ofc_id')
+        $entries = DB::table('acd_turmas')
                         ->select('trm_id', 'trm_nome')
-                        ->where('crs_id', '=', $cursoId)
+                        ->where('trm_ofc_id', '=', $ofertaCursoId)
                         ->get();
 
         return $entries;
-    }
-
-    public function findCursoByTurma($turmaId)
-    {
-        $turma = $this->find($turmaId);
-
-        $curso = $turma->oferta->curso;
-
-        return $curso;
     }
 }

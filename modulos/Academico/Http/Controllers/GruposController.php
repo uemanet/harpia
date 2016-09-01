@@ -7,6 +7,7 @@ use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -17,13 +18,15 @@ class GruposController extends BaseController
     protected $cursoRepository;
     protected $turmaRepository;
     protected $poloRepository;
+    protected $ofertaCursoRepository;
 
-    public function __construct(GrupoRepository $grupo, CursoRepository $curso, TurmaRepository $turma, PoloRepository $polo)
+    public function __construct(GrupoRepository $grupo, CursoRepository $curso, TurmaRepository $turma, PoloRepository $polo, OfertaCursoRepository $oferta)
     {
         $this->grupoRepository = $grupo;
         $this->cursoRepository = $curso;
         $this->turmaRepository = $turma;
         $this->poloRepository = $polo;
+        $this->ofertaCursoRepository = $oferta;
     }
 
     public function getIndex(Request $request)
@@ -89,7 +92,6 @@ class GruposController extends BaseController
     public function getCreate()
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        //dd($cursos);
 
         return view('Academico::grupos.create', ['cursos' => $cursos]);
     }
@@ -125,12 +127,15 @@ class GruposController extends BaseController
 
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        $crs = $this->turmaRepository->findCursoByTurma($grupo->grp_trm_id);
+        $ofertaCurso = $this->turmaRepository->find($grupo->grp_trm_id)->ofertacurso;
 
-        $turmas = $this->turmaRepository->findAllByCurso($crs->crs_id);
+        $ofertas = $this->ofertaCursoRepository->findAllByCurso($ofertaCurso->ofc_crs_id)->toArray();
+        $ofertas = $this->lists($ofertas);
+
+        $turmas = $this->turmaRepository->findAllByOfertaCurso($ofertaCurso->ofc_id);
         $turmas  = $this->lists($turmas);
 
-        $polos = $this->poloRepository->findAllByCurso($crs->crs_id);
+        $polos = $this->poloRepository->findAllByOfertaCurso($ofertaCurso->ofc_id);
         $polos = $this->lists($polos);
 
         if (!$grupo) {
@@ -139,7 +144,7 @@ class GruposController extends BaseController
             return redirect()->back();
         }
 
-        return view('Academico::grupos.edit', ['grupo' => $grupo, 'turmas' => $turmas, 'polos' => $polos, 'cursos' => $cursos, 'idCurso' => $crs->crs_id]);
+        return view('Academico::grupos.edit', ['grupo' => $grupo, 'turmas' => $turmas, 'polos' => $polos, 'cursos' => $cursos, 'ofertas' => $ofertas, 'ofertaCurso' => $ofertaCurso]);
     }
 
     public function putEdit($id, GrupoRequest $request)

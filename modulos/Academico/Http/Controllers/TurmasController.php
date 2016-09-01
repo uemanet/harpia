@@ -54,11 +54,11 @@ class TurmasController extends BaseController
                 ->means('trm_action', 'trm_id')
                 ->means('trm_ofc_id', 'ofertacurso')
                 ->modify('trm_ofc_id', function ($ofertacurso) {
-                  return $ofertacurso->ofc_ano;
+                    return $ofertacurso->ofc_ano;
                 })
                 ->means('trm_per_id', 'periodo')
                 ->modify('trm_per_id', function ($periodo) {
-                  return $periodo->per_nome;
+                    return $periodo->per_nome;
                 })
                 ->modify('trm_action', function ($id) {
                     return ActionButton::grid([
