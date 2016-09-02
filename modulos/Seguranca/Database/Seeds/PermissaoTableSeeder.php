@@ -44,7 +44,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoGrupos();
 
         $this->createPermissoesAcademicoTurmas();
-
     }
 
     private function createPermissoesIndex()
@@ -504,6 +503,5 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Turmas';
         $permissao->save();
-
     }
 }
