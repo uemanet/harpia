@@ -23,8 +23,6 @@ class TurmaRepository extends BaseRepository
 
         return $entries;
     }
-<<<<<<< HEAD
-
 
     /**
      * PaginateRequest
@@ -55,6 +53,4 @@ class TurmaRepository extends BaseRepository
         return $curso;
     }
 
-=======
->>>>>>> 7257e809820b5c9a0cda190b05601d2a1e07f91e
 }

@@ -2,21 +2,21 @@
     <div class="form-group col-md-4 @if ($errors->has('crs_dep_id')) has-error @endif">
         {!! Form::label('crs_dep_id', 'Departamento*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('crs_dep_id', $departamentos, old('crs_dep_id'), ['class' => 'form-control']) !!}
+            {!! Form::select('crs_dep_id', $departamentos, old('crs_dep_id'), ['class' => 'form-control', 'placeholder' => 'Selecione um departamento']) !!}
             @if ($errors->has('crs_dep_id')) <p class="help-block">{{ $errors->first('crs_dep_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('crs_nvc_id')) has-error @endif">
         {!! Form::label('crs_nvc_id', 'Nível do Curso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('crs_nvc_id', $niveiscursos, old('crs_nvc_id'), ['class' => 'form-control']) !!}
+            {!! Form::select('crs_nvc_id', $niveiscursos, old('crs_nvc_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o nível de curso']) !!}
             @if ($errors->has('crs_nvc_id')) <p class="help-block">{{ $errors->first('crs_nvc_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('crs_prf_diretor')) has-error @endif">
         {!! Form::label('crs_prf_diretor', 'Diretor do curso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('crs_prf_diretor', $professores, old('crs_prf_diretor'), ['class' => 'form-control']) !!}
+            {!! Form::select('crs_prf_diretor', $professores, old('crs_prf_diretor'), ['class' => 'form-control', 'placeholder' => 'Selecione o diretor do curso']) !!}
             @if ($errors->has('crs_prf_diretor')) <p class="help-block">{{ $errors->first('crs_prf_diretor') }}</p> @endif
         </div>
     </div>

@@ -15,7 +15,7 @@
         </div>
         <div class="box-body">
             {!! Form::model($turma,["url" => url('/') . "/academico/turmas/edit/$turma->trm_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                 @include('Academico::turmas.includes.formulario')
+                 @include('Academico::turmas.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>
