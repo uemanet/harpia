@@ -34,7 +34,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $("select").select2();
+            $(".select-control").select2();
         });
 
         $('.datepicker').datepicker({

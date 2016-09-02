@@ -34,20 +34,22 @@ class MatrizesCurricularesController extends BaseController
 
     public function getIndex(Request $request)
     {
+        $cursoId = $request->input('curso');
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create?curso='.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->matrizCurricularRepository->paginateRequest($request->all());
+        $tableData = $this->matrizCurricularRepository->paginateRequestByCurso($cursoId, $request->all());
+        $curso = $this->cursoRepository->find($cursoId);
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'mtc_id' => '#',
-                'mtc_crs_id' => 'Curso',
+                'mtc_descricao' => 'Descrição',
                 'mtc_creditos' => 'Créditos',
                 'mtc_horas' => 'Horas',
                 'mtc_horas_praticas' => 'Horas práticas',
@@ -91,14 +93,21 @@ class MatrizesCurricularesController extends BaseController
 
             $paginacao = $tableData->appends($request->except('page'));
         }
-        return view('Academico::matrizescurriculares.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::matrizescurriculares.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'curso' => $curso]);
     }
 
-    public function getCreate()
+    public function getCreate(Request $request = null)
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        // Carrega no select o curso da matriz como a unica opcao
+        $curso = null;
+        $cursoId = null;
+        if (!is_null($request)) {
+            $cursoId = $request->input('curso');
+            $curso[$cursoId] = $cursos[$cursoId];
+        }
 
-        return view('Academico::matrizescurriculares.create', ['cursos' => $cursos]);
+        return view('Academico::matrizescurriculares.create', ['curso' => $curso, 'cursoId' => $cursoId]);
     }
 
     public function postCreate(MatrizCurricularRequest $request)
@@ -124,7 +133,8 @@ class MatrizesCurricularesController extends BaseController
             DB::commit();
 
             flash()->success('Matriz Curricular criada com sucesso.');
-            return redirect('/academico/matrizescurriculares');
+            //Redireciona para o index de matrizes curriculares do curso
+            return redirect('/academico/matrizescurriculares/index?cursoId='.$matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -144,9 +154,11 @@ class MatrizesCurricularesController extends BaseController
             flash()->error('Matriz curricular não existe.');
             return redirect()->back();
         }
-
+        // Carrega no select o curso da matriz como a unica opcao
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        return view('Academico::matrizescurriculares.edit', ['matrizCurricular' => $matrizCurricular, 'cursos' => $cursos]);
+        $curso = null;
+        $curso[$matrizCurricular->mtc_crs_id] = $cursos[$matrizCurricular->mtc_crs_id];
+        return view('Academico::matrizescurriculares.edit', ['matrizCurricular' => $matrizCurricular, 'curso' => $curso, 'cursoId' => $matrizCurricular->mtc_crs_id]);
     }
 
     public function putEdit($matrizCurricularId, MatrizCurricularRequest $request)
@@ -154,7 +166,8 @@ class MatrizesCurricularesController extends BaseController
         try {
             DB::beginTransaction();
             $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
-            $dados = $request->only($this->matrizCurricularRepository->getFillableModelFields());
+            $dados = $request->only('mtc_anx_projeto_pedagogico', 'mtc_descricao',
+                'mtc_data', 'mtc_creditos', 'mtc_horas', 'mtc_horas_praticas');
 
             if ($request->file('mtc_file') != null) {
                 // Novo Anexo
@@ -173,7 +186,7 @@ class MatrizesCurricularesController extends BaseController
 
             DB::commit();
             flash()->success('Matriz Curricular atualizada com sucesso.');
-            return redirect('/academico/matrizescurriculares');
+            return redirect('/academico/matrizescurriculares/index?curso='.$matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {

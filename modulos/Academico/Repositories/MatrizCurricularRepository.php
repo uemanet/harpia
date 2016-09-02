@@ -29,6 +29,26 @@ class MatrizCurricularRepository extends BaseRepository
     }
 
     /**
+     * Pagina apenas as matrizes pelo curso
+     * @param array|null $requestParameters
+     * @return mixed
+     */
+    public function paginateRequestByCurso($cursoid, array $requestParameters = null)
+    {
+        $sort = array();
+        if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
+            $sort = [
+                'field' => $requestParameters['field'],
+                'sort' => $requestParameters['sort']
+            ];
+            return $this->model->where('mtc_crs_id', '=', $cursoid)
+                               ->orderBy($sort['field'], $sort['sort'])
+                               ->paginate(15);
+        }
+        return $this->model->where('mtc_crs_id', '=', $cursoid)->paginate(15);
+    }
+
+    /**
      * Busca todas as matrizes de acordo com o curso informado
      *
      * @param $cursoid
