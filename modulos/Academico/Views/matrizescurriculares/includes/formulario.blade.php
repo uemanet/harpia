@@ -2,7 +2,7 @@
     <div class="form-group col-md-6 @if ($errors->has('mtc_crs_id')) has-error @endif">
         {!! Form::label('mtc_crs_id', 'Curso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('mtc_crs_id', $cursos, old('mtc_crs_id'), ['class' => 'form-control select-control']) !!}
+            {!! Form::select('mtc_crs_id', $curso, $cursoId, ['class' => 'form-control']) !!}
             @if ($errors->has('mtc_crs_id')) <p class="help-block">{{ $errors->first('mtc_crs_id') }}</p> @endif
         </div>
     </div>

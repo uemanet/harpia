@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Gerenciamento de matrizes curriculares
+    Gerenciamento de matrizes curriculares :: {{$curso->crs_nome}}
 @stop
 
 @section('actionButton')

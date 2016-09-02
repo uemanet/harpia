@@ -65,7 +65,7 @@ class CursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-table',
-                                'action' => '/academico/matrizescurriculares/index?cursoId='.$id,
+                                'action' => '/academico/matrizescurriculares/index?curso='.$id,
                                 'label' => 'Matrizes',
                                 'method' => 'get'
                             ],
