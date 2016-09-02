@@ -29,7 +29,7 @@ class MatrizCurricularRepository extends BaseRepository
     }
 
     /**
-     * PaginateRequest
+     * Pagina apenas as matrizes pelo curso
      * @param array|null $requestParameters
      * @return mixed
      */
