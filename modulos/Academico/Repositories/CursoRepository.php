@@ -28,8 +28,16 @@ class CursoRepository extends BaseRepository
         return $this->model->where($attribute, '=', $id)->update($data);
     }
 
-    public function listsCursoByOferta($cursoid)
+    /**
+     * Busca um curso específico de acordo com a sua oferta
+     *
+     * @param $ofertaid
+     *
+     * @return mixed
+     */
+
+    public function listsCursoByOferta($cursodaofertaid)
     {
-        return $this->model->where('crs_id', $cursoid)->lists('crs_nome', 'crs_id');
+        return $this->model->where('crs_id', $cursodaofertaid)->lists('crs_nome', 'crs_id');
     }
 }

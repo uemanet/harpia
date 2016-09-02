@@ -15,7 +15,7 @@
         </div>
         <div class="box-body">
             {!! Form::open(["url" => url('/') . "/academico/turmas/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                @include('Academico::turmas.includes.formulario_create')
+                @include('Academico::turmas.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>

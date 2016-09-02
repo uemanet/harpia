@@ -12,7 +12,7 @@
     <div class="form-group col-md-4 @if ($errors->has('trm_ofc_id')) has-error @endif">
         {!! Form::label('trm_ofc_id', 'Oferta de Curso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('trm_ofc_id', $oferta, null, ['disabled', 'class' => 'form-control', 'id' => 'trm_ofc_id']) !!}
+            {!! Form::select('trm_ofc_id', $oferta, $oferta, ['class' => 'form-control', 'id' => 'trm_ofc_id']) !!}
             @if ($errors->has('trm_ofc_id')) <p class="help-block">{{ $errors->first('trm_ofc_id') }}</p> @endif
         </div>
     </div>

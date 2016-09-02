@@ -22,18 +22,25 @@
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-md-6 @if ($errors->has('crs_nome')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('crs_nome')) has-error @endif">
         {!! Form::label('crs_nome', 'Nome do curso*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('crs_nome', old('crs_nome'), ['class' => 'form-control']) !!}
             @if ($errors->has('crs_nome')) <p class="help-block">{{ $errors->first('crs_nome') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-6 @if ($errors->has('crs_sigla')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('crs_sigla')) has-error @endif">
         {!! Form::label('crs_sigla', 'Sigla*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('crs_sigla', old('crs_sigla'), ['class' => 'form-control']) !!}
             @if ($errors->has('crs_sigla')) <p class="help-block">{{ $errors->first('crs_sigla') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-4 @if ($errors->has('crs_data_autorizacao')) has-error @endif">
+        {!! Form::label('crs_data_autorizacao', 'Data de autorização*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('crs_data_autorizacao', old('crs_data_autorizacao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            @if ($errors->has('crs_data_autorizacao')) <p class="help-block">{{ $errors->first('crs_data_autorizacao') }}</p> @endif
         </div>
     </div>
 </div>
@@ -61,15 +68,6 @@
         <div class="controls">
             {!! Form::textarea('crs_autorizacao', old('crs_autorizacao'), ['class' => 'form-control']) !!}
             @if ($errors->has('crs_autorizacao')) <p class="help-block">{{ $errors->first('crs_autorizacao') }}</p> @endif
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="form-group col-md-12 @if ($errors->has('crs_data_autorizacao')) has-error @endif">
-        {!! Form::label('crs_data_autorizacao', 'Data de autorização*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::text('crs_data_autorizacao', old('crs_data_autorizacao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
-            @if ($errors->has('crs_data_autorizacao')) <p class="help-block">{{ $errors->first('crs_data_autorizacao') }}</p> @endif
         </div>
     </div>
 </div>
