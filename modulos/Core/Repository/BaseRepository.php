@@ -85,8 +85,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 ];
             }
         }
-
-        return $this->paginate($sort, $search,1);
+        return $this->paginate($sort, $search);
     }
 
     public function getFillableModelFields()

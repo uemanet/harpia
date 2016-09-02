@@ -24,6 +24,7 @@ class MatrizCurricular extends BaseModel
 
     protected $searchable = [
         'mtc_id' => '=',
+        'mtc_crs_id' => '='
     ];
 
     public function curso()

@@ -64,6 +64,13 @@ class CursosController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-table',
+                                'action' => '/academico/matrizescurriculares/index?curso='.$id,
+                                'label' => 'Matrizes',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/cursos/edit/' . $id,
                                 'label' => 'Editar',
