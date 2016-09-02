@@ -32,7 +32,7 @@ class CursoRequest extends BaseRequest
             'crs_descricao' => 'max:255',
             'crs_resolucao' => 'max:255',
             'crs_autorizacao' => 'max:255',
-            'crs_data_autorizacao' => 'date_format:d/m/Y',
+            'crs_data_autorizacao' => 'required|date_format:d/m/Y',
             'crs_eixo' => 'max:150',
             'crs_habilitacao' => 'max:150'
 
