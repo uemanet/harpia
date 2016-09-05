@@ -6,7 +6,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
 use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 use Cache;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Seguranca implements SegurancaContract
 {
@@ -82,20 +82,23 @@ class Seguranca implements SegurancaContract
             }
         }
 
-        $sqlRecursos = "SELECT mod_id,mod_rota,ctr_id, ctr_nome, ctr_referencia, rcs_id,rcs_nome,rcs_rota,rcs_descricao,rcs_icone,prm_nome
-                         FROM
-                            seg_perfis_usuarios
-                            INNER JOIN seg_perfis_permissoes ON prp_prf_id = pru_prf_id
-                            INNER JOIN seg_permissoes ON prp_prm_id = prm_id AND prm_nome = 'index'
-                            INNER JOIN seg_recursos ON prm_rcs_id = rcs_id
-                            INNER JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id
-                            INNER JOIN seg_modulos ON ctr_mod_id = mod_id
-                         WHERE
-                            rcs_ativo = true AND ctr_ativo = true AND pru_usr_id = :usrId
-                         ORDER BY
-                            mod_id,ctr_id,rcs_ordem";
-
-        $recursos =  DB::select($sqlRecursos, ['usrId' => $usrId]);
+        $recursos = DB::table('seg_perfis_usuarios')
+            ->select('mod_id','mod_rota','ctr_id', 'ctr_nome', 'ctr_referencia', 'rcs_id','rcs_nome','rcs_rota','rcs_descricao','rcs_icone','prm_nome')
+            ->join('seg_perfis_permissoes', 'prp_prf_id', '=', 'pru_prf_id')
+            ->join('seg_permissoes', function ($join) {
+                $join->on('prp_prm_id', '=', 'prm_id')
+                    ->where('prm_nome', '=', 'index');
+            })
+            ->join('seg_recursos', 'prm_rcs_id', '=', 'rcs_id')
+            ->join('seg_categorias_recursos', 'rcs_ctr_id', '=', 'ctr_id')
+            ->join('seg_modulos', 'ctr_mod_id', '=', 'mod_id')
+            ->where('rcs_ativo', '=', true)
+            ->where('ctr_ativo', '=', true)
+            ->where('pru_usr_id', '=', $usrId)
+            ->orderBy('mod_id','asc')
+            ->orderBy('ctr_id','asc')
+            ->orderBy('rcs_ordem', 'asc')
+            ->get();
 
         foreach ($recursos as $key => $recurso) {
             if (!array_key_exists($recurso->ctr_id, $arrayMenu[$recurso->mod_rota]['CATEGORIAS'])) {
