@@ -38,18 +38,19 @@ class Seguranca implements SegurancaContract
     {
         $usrId = $this->getUser()->getAuthIdentifier();
 
-        $sql = "SELECT mod_id, mod_rota, cr.*
-                FROM 
-                    seg_perfis_usuarios
-                    INNER JOIN seg_perfis ON pru_prf_id = prf_id
-                    INNER JOIN seg_modulos ON prf_mod_id = mod_id
-                    INNER JOIN seg_categorias_recursos AS cr ON ctr_mod_id = mod_id
-                WHERE
-                    pru_usr_id = :usrId AND mod_ativo = true AND ctr_visivel = true
-                ORDER BY
-                    mod_rota,ctr_referencia,ctr_id,ctr_ordem";
-
-        $categoriasModulos =  DB::select($sql, ['usrId' => $usrId]);
+        $categoriasModulos =  DB::table('seg_perfis_usuarios')
+            ->join('seg_perfis', 'pru_prf_id', '=', 'prf_id')
+            ->join('seg_modulos', 'prf_mod_id', '=', 'mod_id')
+            ->join(DB::raw('seg_categorias_recursos AS cr'), 'ctr_mod_id', '=', 'mod_id')
+            ->select(DB::raw('mod_id, mod_rota, cr.*'))
+            ->where('pru_usr_id', '=', $usrId)
+            ->where('mod_ativo', '=', true)
+            ->where('ctr_visivel', '=', true)
+            ->orderBy('mod_rota', 'asc')
+            ->orderBy('ctr_referencia', 'asc')
+            ->orderBy('ctr_id', 'asc')
+            ->orderBy('ctr_ordem', 'asc')
+            ->get();
 
         $arrayMenu = [];
         $pai = 0;
