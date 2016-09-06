@@ -72,7 +72,7 @@ class OfertasCursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => '/academico/turmas/index?ofertaId='.$id,
+                                'action' => '/academico/turmas/index/'.$id,
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ],
