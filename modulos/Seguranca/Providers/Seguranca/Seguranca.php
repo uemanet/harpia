@@ -133,20 +133,17 @@ class Seguranca implements SegurancaContract
     {
         $usrId = $this->getUser()->getAuthIdentifier();
 
-        $sql = 'SELECT 
-                    mod_id,mod_rota,mod_nome,mod_descricao,mod_icone,mod_class,rcs_nome,rcs_rota,prm_nome
-                FROM
-                    seg_perfis_usuarios
-                    INNER JOIN seg_perfis ON pru_prf_id = prf_id
-                    INNER JOIN seg_perfis_permissoes ON prp_prf_id = prf_id
-                    INNER JOIN seg_permissoes ON prp_prm_id = prm_id
-                    INNER JOIN seg_modulos ON prf_mod_id = mod_id
-                    INNER JOIN seg_recursos ON prm_rcs_id = rcs_id
-                WHERE
-                    pru_usr_id = :usrId
-                    AND rcs_ativo = true AND mod_ativo = true';
-        
-        $permissoes =  DB::select($sql, ['usrId' => $usrId]);
+        $permissoes = DB::table('seg_perfis_usuarios')
+            ->join('seg_perfis', 'pru_prf_id', '=', 'prf_id')
+            ->join('seg_perfis_permissoes', 'prp_prf_id', '=', 'prf_id')
+            ->join('seg_permissoes', 'prp_prm_id', '=', 'prm_id')
+            ->join('seg_modulos', 'prf_mod_id', '=', 'mod_id')
+            ->join('seg_recursos', 'prm_rcs_id', '=', 'rcs_id')
+            ->select('mod_id', 'mod_rota', 'mod_nome', 'mod_descricao', 'mod_icone', 'mod_class', 'rcs_nome', 'rcs_rota', 'prm_nome')
+            ->where('pru_usr_id', '=', $usrId)
+            ->where('rcs_ativo', '=', true)
+            ->where('mod_ativo', '=', true)
+            ->get();
 
         //Estrutura de permissão em cache
         Cache::forever('PERMISSAO_'.$usrId, $permissoes);
