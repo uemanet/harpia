@@ -84,7 +84,7 @@ class Seguranca implements SegurancaContract
         }
 
         $recursos = DB::table('seg_perfis_usuarios')
-            ->select('mod_id','mod_rota','ctr_id', 'ctr_nome', 'ctr_referencia', 'rcs_id','rcs_nome','rcs_rota','rcs_descricao','rcs_icone','prm_nome')
+            ->select('mod_id', 'mod_rota', 'ctr_id', 'ctr_nome', 'ctr_referencia', 'rcs_id', 'rcs_nome', 'rcs_rota', 'rcs_descricao', 'rcs_icone', 'prm_nome')
             ->join('seg_perfis_permissoes', 'prp_prf_id', '=', 'pru_prf_id')
             ->join('seg_permissoes', function ($join) {
                 $join->on('prp_prm_id', '=', 'prm_id')
@@ -96,8 +96,8 @@ class Seguranca implements SegurancaContract
             ->where('rcs_ativo', '=', true)
             ->where('ctr_ativo', '=', true)
             ->where('pru_usr_id', '=', $usrId)
-            ->orderBy('mod_id','asc')
-            ->orderBy('ctr_id','asc')
+            ->orderBy('mod_id', 'asc')
+            ->orderBy('ctr_id', 'asc')
             ->orderBy('rcs_ordem', 'asc')
             ->get();
 
