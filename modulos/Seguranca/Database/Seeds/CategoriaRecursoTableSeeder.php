@@ -55,7 +55,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         //Modulo Academico
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
-        $categoria->ctr_nome = 'Processos';
+        $categoria->ctr_nome = 'Oculto';
         $categoria->ctr_descricao = 'Categoria oculta do módulo acadêmico';
         $categoria->ctr_icone = 'fa fa-cog';
         $categoria->ctr_ordem = 0;
