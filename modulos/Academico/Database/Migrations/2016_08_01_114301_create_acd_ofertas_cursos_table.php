@@ -18,7 +18,7 @@ class CreateAcdOfertasCursosTable extends Migration
             $table->integer('ofc_crs_id')->unsigned();
             $table->integer('ofc_mtc_id')->unsigned();
             $table->integer('ofc_mdl_id')->unsigned();
-            $table->smallInteger('ofc_ano')->unsigned()->nullable();
+            $table->smallInteger('ofc_ano')->unsigned();
 
             $table->timestamps();
 
