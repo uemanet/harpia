@@ -46,12 +46,16 @@ class CursosController extends BaseController
                 'crs_id' => '#',
                 'crs_nome' => 'Curso',
                 'crs_sigla' => 'Sigla',
+                'crs_prf_diretor' => 'Diretor',
                 'crs_descricao' => 'Descrição',
                 'crs_action' => 'Ações',
-
             ))
                 ->modifyCell('crs_action', function () {
                     return array('style' => 'width: 140px;');
+                })
+                ->means('crs_prf_diretor', 'diretor')
+                ->modify('crs_prf_diretor', function ($diretor) {
+                    return $diretor->pessoa->pes_nome;
                 })
                 ->means('crs_action', 'crs_id')
                 ->modify('crs_action', function ($id) {
