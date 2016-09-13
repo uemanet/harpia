@@ -137,7 +137,7 @@ class TurmasController extends BaseController
         }
     }
 
-    public function getEdit($turmaId , Request $request)
+    public function getEdit($turmaId, Request $request)
     {
         //$turmaId = $request->input('turmaId');
 

@@ -48,10 +48,11 @@ class MatrizesCurricularesController extends BaseController
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'mtc_id' => '#',
-                'mtc_descricao' => 'Descrição',
+                'mtc_titulo' => 'Título',
                 'mtc_creditos' => 'Créditos',
                 'mtc_horas' => 'Horas',
                 'mtc_horas_praticas' => 'Horas práticas',
+                'mtc_data' => 'Data',
                 'mtc_action' => 'Ações'
             ))
                 ->modifyCell('mtc_action', function () {
@@ -159,7 +160,7 @@ class MatrizesCurricularesController extends BaseController
         try {
             DB::beginTransaction();
             $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
-            $dados = $request->only('mtc_anx_projeto_pedagogico', 'mtc_descricao',
+            $dados = $request->only('mtc_anx_projeto_pedagogico', 'mtc_descricao', 'mtc_titulo',
                 'mtc_data', 'mtc_creditos', 'mtc_horas', 'mtc_horas_praticas');
 
             if ($request->file('mtc_file') != null) {
