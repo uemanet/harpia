@@ -43,7 +43,7 @@ class Seguranca implements SegurancaContract
 
         $arrayMenuCategorias = $this->makeMenuCategoriasModulos($usrId);
 
-        if(!empty($arrayMenuCategorias)) {
+        if (!empty($arrayMenuCategorias)) {
             $arrayMenu = $this->makeMenuRecursos($usrId, $arrayMenuCategorias);
         }
 
@@ -290,7 +290,6 @@ class Seguranca implements SegurancaContract
             ->get();
 
         foreach ($recursos as $key => $recurso) {
-
             $recursoModuloRota = $recurso->mod_rota;
             $recursoCategoriaId = $recurso->ctr_id;
 

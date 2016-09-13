@@ -16,10 +16,10 @@ class MasterMenu
         $this->auth = $app['auth'];
     }
 
-    public function make()
-    {
-    }
-
+    /**
+     * Renderiza o menu para o usuario
+     * @return string
+     */
     public function render()
     {
         $usrId = $this->auth->user()->usr_id;
@@ -44,8 +44,9 @@ class MasterMenu
 
             $render .= $this->renderizaItens($categorias['ITENS'], $modulo);
 
-            if (!empty($categorias['SUBCATEGORIA']))
+            if (!empty($categorias['SUBCATEGORIA'])) {
                 $render .= $this->renderizaSubcategorias($categorias['SUBCATEGORIA'], $modulo);
+            }
 
             $render .= '</ul>';
             $render .= '</li>';
@@ -63,9 +64,9 @@ class MasterMenu
      */
     public function renderizaItens(array $itens, $modulo, $class = false)
     {
-
-        if (empty($itens))
+        if (empty($itens)) {
             return '';
+        }
 
         $result = '';
 
@@ -98,8 +99,9 @@ class MasterMenu
      */
     public function renderizaSubcategorias(array $subcategorias, $modulo)
     {
-        if (empty($subcategorias))
+        if (empty($subcategorias)) {
             return '';
+        }
 
         $result = '<li class="treeview">';
 
