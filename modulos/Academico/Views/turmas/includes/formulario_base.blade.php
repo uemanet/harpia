@@ -21,31 +21,5 @@
 </div>
 
 @section('scripts')
-    <script type="application/javascript">
 
-        $('#crs_id').change(function() {
-            var cursoId = $("#crs_id").val();
-
-            if (!cursoId) {
-                return;
-            }
-
-            $.harpia.httpget('{{url('/')}}/academico/async/ofertascursos/findallbycurso/' + cursoId).done(function(result){
-
-                $("#trm_ofc_id").empty();
-
-                if ($.isEmptyObject(result)) {
-                    $('#trm_ofc_id').append('<option value=#>Sem ofertas de curso cadastradas</option>');
-                } else {
-                    $("#trm_ofc_id").append("<option value='' selected>Selecione uma oferta de curso</option>");
-                    $.each(result, function(key, value) {
-                        $('#trm_ofc_id').append('<option value=' + value.ofc_id + ' >' + value.ofc_ano + '</option>');
-                    });
-                }
-
-                $('#trm_ofc_id').focus();
-            });
-        });
-
-    </script>
 @stop

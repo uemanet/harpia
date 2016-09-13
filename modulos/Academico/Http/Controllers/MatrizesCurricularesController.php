@@ -32,11 +32,10 @@ class MatrizesCurricularesController extends BaseController
         $this->anexoRepository = $anexoRepository;
     }
 
-    public function getIndex(Request $request)
+    public function getIndex($cursoId, Request $request)
     {
-        $cursoId = $request->input('curso');
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create?curso='.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create/'.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -96,17 +95,11 @@ class MatrizesCurricularesController extends BaseController
         return view('Academico::matrizescurriculares.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'curso' => $curso]);
     }
 
-    public function getCreate(Request $request = null)
+    public function getCreate($cursoId, Request $request = null)
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
         // Carrega no select o curso da matriz como a unica opcao
-        $curso = null;
-        $cursoId = null;
-        if (!is_null($request)) {
-            $cursoId = $request->input('curso');
-            $curso[$cursoId] = $cursos[$cursoId];
-        }
-
+        $curso[$cursoId] = $cursos[$cursoId];
         return view('Academico::matrizescurriculares.create', ['curso' => $curso, 'cursoId' => $cursoId]);
     }
 
@@ -134,7 +127,7 @@ class MatrizesCurricularesController extends BaseController
 
             flash()->success('Matriz Curricular criada com sucesso.');
             //Redireciona para o index de matrizes curriculares do curso
-            return redirect('/academico/matrizescurriculares/index?cursoId='.$matrizCurricular->mtc_crs_id);
+            return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
 

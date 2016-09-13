@@ -157,12 +157,12 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico
         $recurso->rcs_nome = 'Matrizes Curriculares';
         $recurso->rcs_rota = 'matrizescurriculares';
         $recurso->rcs_descricao = 'Recurso matriz curricular do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-table';
-        $recurso->rcs_ativo = 0;
+        $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
@@ -188,12 +188,12 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> oculto
         $recurso->rcs_nome = 'Turmas';
         $recurso->rcs_rota = 'turmas';
         $recurso->rcs_descricao = 'Recurso turmas do módulo acadêmico';
-        $recurso->rcs_icone = 'fa fa-group';
-        $recurso->rcs_ativo = 0;
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 8;
         $recurso->save();
     }

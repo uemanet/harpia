@@ -51,5 +51,17 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
         $categoria->save();
+
+        //Modulo Academico
+        $categoria = new CategoriaRecurso();
+        $categoria->ctr_mod_id = 3; //Modulo Acadêmico
+        $categoria->ctr_nome = 'Oculto';
+        $categoria->ctr_descricao = 'Categoria oculta do módulo acadêmico';
+        $categoria->ctr_icone = 'fa fa-cog';
+        $categoria->ctr_ordem = 0;
+        $categoria->ctr_ativo = 0;
+        $categoria->ctr_visivel = 0;
+        $categoria->save();
     }
+
 }
