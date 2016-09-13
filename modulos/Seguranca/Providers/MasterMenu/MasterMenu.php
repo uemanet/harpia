@@ -16,55 +16,36 @@ class MasterMenu
         $this->auth = $app['auth'];
     }
 
-    public function make()
+    /**
+     * Renderiza o menu para o usuario
+     * @return string
+     */
+    public function render()
     {
-    }
-
-    public function render($orientation = 'v')
-    {
-        //        $usrId = $this->auth->user()->usr_pes_id;
         $usrId = $this->auth->user()->usr_id;
 
-        $path = preg_split('/\//', $this->request->path());
-        $modulo = current($path);
-        $controller = next($path);
+        // Obtem o modulo a partir da requisicao
+        $modulo = current(preg_split('/\//', $this->request->path()));
 
-        $menu = Cache::get('MENU_'.$usrId);
+        $menu = Cache::get('MENU_' . $usrId);
         $menu = $menu[$modulo];
 
         $render = '<ul class="sidebar-menu">';
 
         foreach ($menu['CATEGORIAS'] as $key => $categorias) {
             $render .= '<li class="treeview">';
-            $render .= '<a href="#"><i class="'.$categorias['ctr_icone'].'"></i> <span>'.ucfirst($categorias['ctr_nome']).'</span> <i class="fa fa-angle-left pull-right"></i></a>';
+
+            $render .= '<a href="#">' . '<i class="' . $categorias['ctr_icone'] . '">'.
+                '</i><span>' . ucfirst($categorias['ctr_nome']) . '</span>'.
+                '<i class="fa fa-angle-left pull-right"></i></a>';
+
+
             $render .= '<ul class="treeview-menu" style="display: block;">';
-        
-            if (!empty($categorias['ITENS'])) {
-                foreach ($categorias['ITENS'] as $key => $item) {
-                    $recurso = mb_strtolower(preg_replace('/\s+/', '', $item['rcs_rota']));
-                    $render .= '<li id="'.$recurso.'"><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$item['prm_nome'].'"><i class="'.$item['rcs_icone'].'"></i>'.ucfirst($item['rcs_nome']).'</a></li>';
-                }
-            }
+
+            $render .= $this->renderizaItens($categorias['ITENS'], $modulo);
 
             if (!empty($categorias['SUBCATEGORIA'])) {
-                $render .= '<li class="treeview">';
-          
-                foreach ($categorias['SUBCATEGORIA'] as $key => $subcategoria) {
-                    $render .= '<a href="#"><i class="'.$subcategoria['ctr_icone'].'"></i><span>'.$subcategoria['ctr_nome'].'</span><i class="fa fa-angle-left pull-right"></i></a>';
-
-                    if (!empty($subcategoria['ITENS'])) {
-                        $render .= '<ul class="treeview-menu" style="display: block;">';
-
-                        foreach ($subcategoria['ITENS'] as $key => $subItem) {
-                            $recurso = mb_strtolower(preg_replace('/\s+/', '', $subItem['rcs_rota']));
-                            $render .= '<li class="'.$recurso.'"><a href="'.url("/").'/'.$modulo.'/'.$recurso.'/'.$subItem['prm_nome'].'"><i class="'.$subItem['rcs_icone'].'"></i>'.ucfirst($subItem['rcs_nome']).'</a></li>';
-                        }
-
-                        $render .= '</ul>';
-                    }
-                }
-
-                $render .= '</li>';
+                $render .= $this->renderizaSubcategorias($categorias['SUBCATEGORIA'], $modulo);
             }
 
             $render .= '</ul>';
@@ -73,5 +54,70 @@ class MasterMenu
 
         $render .= '</ul>';
         return $render;
+    }
+
+    /**
+     * Renderiza Itens de uma categoria ou subcategoria
+     * @param array $itens
+     * @param $modulo
+     * @return string
+     */
+    public function renderizaItens(array $itens, $modulo, $class = false)
+    {
+        if (empty($itens)) {
+            return '';
+        }
+
+        $result = '';
+
+        foreach ($itens as $key => $item) {
+            $recurso = mb_strtolower(preg_replace('/\s+/', '', $item['rcs_rota']));
+            if ($class) {
+                $result .= '<li class="' . $recurso . '">' .
+                    '<a href="' . url("/") . '/' . $modulo . '/' . $recurso . '/' . $item['prm_nome'] . '">' .
+                    '<i class="' . $item['rcs_icone'] . '"></i>'
+                    . ucfirst($item['rcs_nome']) . '</a>'
+                    . '</li>';
+                continue;
+            }
+
+            $result .= '<li id="' . $recurso . '">' .
+                '<a href="' . url("/") . '/' . $modulo . '/' . $recurso . '/' . $item['prm_nome'] . '">' .
+                '<i class="' . $item['rcs_icone'] . '"></i>'
+                . ucfirst($item['rcs_nome']) . '</a>'
+                . '</li>';
+        }
+
+        return $result;
+    }
+
+    /**
+     * Renderiza Itens de uma subcategoria
+     * @param array $subcategorias
+     * @param $modulo
+     * @return string
+     */
+    public function renderizaSubcategorias(array $subcategorias, $modulo)
+    {
+        if (empty($subcategorias)) {
+            return '';
+        }
+
+        $result = '<li class="treeview">';
+
+        foreach ($subcategorias as $key => $subcategoria) {
+            $result .= '<a href="#"><i class="' . $subcategoria['ctr_icone'] . '">' .
+                '</i><span>' . $subcategoria['ctr_nome'] . '</span>' .
+                '<i class="fa fa-angle-left pull-right"></i></a>';
+
+            if (!empty($subcategorias['ITENS'])) {
+                $result .= '<ul class="treeview-menu" style="display: block;">';
+                $result .= $this->renderizaItens($subcategorias['ITENS'], $modulo, true);
+                $result .= '</ul>';
+            }
+        }
+        $result .= '</li>';
+
+        return $result;
     }
 }

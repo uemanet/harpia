@@ -179,7 +179,7 @@ class MatrizesCurricularesController extends BaseController
 
             DB::commit();
             flash()->success('Matriz Curricular atualizada com sucesso.');
-            return redirect('/academico/matrizescurriculares/index?curso='.$matrizCurricular->mtc_crs_id);
+            return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {
