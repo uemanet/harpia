@@ -27,22 +27,26 @@ class TurmasController extends BaseController
         $this->periodoletivoRepository = $periodoletivoRepository;
     }
 
-    public function getIndex(Request $request)
+    public function getIndex($ofertaId, Request $request)
     {
+        //$ofertaId = $request->input('ofertaId');
+        //dd($id);
+
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/centros/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/turmas/create/'.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+
+        $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->turmaRepository->paginateRequest($request->all());
+        $tableData = $this->turmaRepository->paginateRequestByOferta($ofertaId, $request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'trm_id' => '#',
-                'trm_ofc_id' => 'Oferta',
                 'trm_per_id' => 'Periodo Letivo',
                 'trm_nome' => 'Turma',
                 'trm_qtd_vagas' => 'Quantidade de Vagas',
@@ -52,10 +56,6 @@ class TurmasController extends BaseController
                     return array('style' => 'width: 140px;');
                 })
                 ->means('trm_action', 'trm_id')
-                ->means('trm_ofc_id', 'ofertacurso')
-                ->modify('trm_ofc_id', function ($ofertacurso) {
-                    return $ofertacurso->ofc_ano;
-                })
                 ->means('trm_per_id', 'periodo')
                 ->modify('trm_per_id', function ($periodo) {
                     return $periodo->per_nome;
@@ -71,7 +71,7 @@ class TurmasController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/turmas/edit/' . $id,
+                                'action' => '/academico/turmas/edit/'.$id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
@@ -93,18 +93,23 @@ class TurmasController extends BaseController
 
 
 
-        return view('Academico::turmas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::turmas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'ofertacurso' => $ofertacurso]);
     }
 
-    public function getCreate()
+    public function getCreate($ofertaId, Request $request)
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        //$ofertascursos = $this->ofertacursoRepository->lists('ofc_id', 'ofc_ano');
+        //$ofertaId = $request->input('ofertaId');
+
+        $oferta = $this->ofertacursoRepository->find($ofertaId);
+
+        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+
+        $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
 
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::turmas.create', compact('cursos', 'periodosletivos'));
+        return view('Academico::turmas.create', compact('curso', 'periodosletivos', 'oferta'));
     }
 
     public function postCreate(TurmaRequest $request)
@@ -120,7 +125,7 @@ class TurmasController extends BaseController
 
             flash()->success('Turma criada com sucesso.');
 
-            return redirect('/academico/turmas');
+            return redirect('/academico/turmas/index/'.$turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -132,8 +137,10 @@ class TurmasController extends BaseController
         }
     }
 
-    public function getEdit($turmaId)
+    public function getEdit($turmaId , Request $request)
     {
+        //$turmaId = $request->input('turmaId');
+
         $turma = $this->turmaRepository->find($turmaId);
 
         if (!$turma) {
@@ -142,17 +149,15 @@ class TurmasController extends BaseController
             return redirect()->back();
         }
 
-        $cursoId = $turma->ofertacurso->ofc_crs_id;
+        $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
 
-        $turma->mod_id = $cursoId;
+        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-
-        $ofertascursos = $this->ofertacursoRepository->listsAllByCurso($cursoId);
-
+        $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
+        //dd($oferta);
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::turmas.edit', compact('turma', 'cursos', 'ofertascursos', 'periodosletivos'));
+        return view('Academico::turmas.edit', compact('turma', 'curso', 'oferta', 'periodosletivos'));
     }
 
     public function putEdit($id, TurmaRequest $request)
@@ -176,7 +181,7 @@ class TurmasController extends BaseController
 
             flash()->success('Turma atualizada com sucesso.');
 
-            return redirect('/academico/turmas');
+            return redirect('/academico/turmas/index?ofertaId='.$turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
