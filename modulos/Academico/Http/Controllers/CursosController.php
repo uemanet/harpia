@@ -48,7 +48,6 @@ class CursosController extends BaseController
                 'crs_sigla' => 'Sigla',
                 'crs_descricao' => 'Descrição',
                 'crs_action' => 'Ações',
-
             ))
                 ->modifyCell('crs_action', function () {
                     return array('style' => 'width: 140px;');

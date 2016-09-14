@@ -17,7 +17,9 @@ class DepartamentosController extends BaseController
     protected $professorRepository;
     protected $centroRepository;
 
-    public function __construct(DepartamentoRepository $departamento, ProfessorRepository $professor, CentroRepository $centro)
+    public function __construct(DepartamentoRepository $departamento,
+                                ProfessorRepository $professor,
+                                CentroRepository $centro)
     {
         $this->departamentoRepository = $departamento;
         $this->professorRepository = $professor;
@@ -39,12 +41,17 @@ class DepartamentosController extends BaseController
             $tabela = $tableData->columns(array(
                 'dep_id' => '#',
                 'dep_nome' => 'Departamento',
+                'dep_prf_diretor' => 'Diretor',
                 'dep_action' => 'Ações'
             ))
                 ->modifyCell('dep_action', function () {
                     return array('style' => 'width: 140px;');
                 })
                 ->means('dep_action', 'dep_id')
+                ->means('dep_prf_diretor', 'diretor')
+                ->modify('dep_prf_diretor', function ($diretor){
+                    return $diretor->pessoa->pes_nome;
+                })
                 ->modify('dep_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
