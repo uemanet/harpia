@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Repositories;
 
-
 use Illuminate\Support\Facades\DB;
 use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
@@ -52,5 +51,4 @@ class TurmaRepository extends BaseRepository
 
         return $curso;
     }
-
 }
