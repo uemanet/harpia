@@ -70,6 +70,13 @@ class TurmasController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-group',
+                                'action' => '/academico/grupos/index/'.$id,
+                                'label' => 'Grupos',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/turmas/edit/'.$id,
                                 'label' => 'Editar',
@@ -96,10 +103,8 @@ class TurmasController extends BaseController
         return view('Academico::turmas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'ofertacurso' => $ofertacurso]);
     }
 
-    public function getCreate($ofertaId, Request $request)
+    public function getCreate($ofertaId)
     {
-
-        //$ofertaId = $request->input('ofertaId');
 
         $oferta = $this->ofertacursoRepository->find($ofertaId);
 

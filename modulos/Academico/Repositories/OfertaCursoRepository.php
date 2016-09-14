@@ -48,4 +48,16 @@ class OfertaCursoRepository extends BaseRepository
     {
         return $this->model->where('ofc_id', $ofertaid)->lists('ofc_ano', 'ofc_id');
     }
+
+    /**
+     * Busca um curso específico de acordo com a sua oferta
+     *
+     * @param $turmadaofertaid
+     *
+     * @return mixed
+     */
+    public function listsOfertaByTurma($turmadaofertaid)
+    {
+        return $this->model->where('ofc_id', $turmadaofertaid)->lists('ofc_ano', 'ofc_id');
+    }
 }

@@ -53,4 +53,16 @@ class TurmaRepository extends BaseRepository
         return $curso;
     }
 
+    /**
+     * Busca uma turma específica de acordo com o seu Id
+     *
+     * @param $turmaid
+     *
+     * @return mixed
+     */
+    public function listsAllById($turmaid)
+    {
+        return $this->model->where('trm_id', $turmaid)->lists('trm_nome', 'trm_id');
+    }
+
 }

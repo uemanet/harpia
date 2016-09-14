@@ -178,7 +178,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico ->Oculto
         $recurso->rcs_nome = 'Grupos';
         $recurso->rcs_rota = 'grupos';
         $recurso->rcs_descricao = 'Recurso grupo do módulo acadêmico';

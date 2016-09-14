@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Gerenciamento de grupos
+    Gerenciamento de grupos :: Oferta do ano {{$oferta->ofc_ano}} :: {{$turma->trm_nome}}
 @stop
 
 @section('actionButton')
@@ -13,31 +13,6 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
-
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <form method="GET" action="{{ url('/academico/grupos/index') }}">
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" name="grp_nome" id="grp_nome" value="{{Input::get('grp_nome')}}" placeholder="Nome do grupo">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
     @if(!is_null($tabela))
         <div class="box box-primary">
             <div class="box-header">

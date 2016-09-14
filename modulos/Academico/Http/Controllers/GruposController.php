@@ -29,23 +29,25 @@ class GruposController extends BaseController
         $this->ofertaCursoRepository = $oferta;
     }
 
-    public function getIndex(Request $request)
+    public function getIndex($turmaId, Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/grupos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/grupos/create/'.$turmaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+
+        $turma = $this->turmaRepository->find($turmaId);
+        $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
         $actionButtons[] = $btnNovo;
 
         $tabela = null;
         $paginacao = null;
 
-        $tableData = $this->grupoRepository->paginateRequest($request->all());
+        $tableData = $this->grupoRepository->paginateRequestByTurma($turmaId, $request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'grp_id' => '#',
                 'grp_nome' => 'Grupo',
-                'grp_trm_id' => 'Turma',
                 'grp_pol_id' => 'Polo',
                 'grp_action' => 'Ações'
             ))
@@ -53,7 +55,6 @@ class GruposController extends BaseController
                     return array('style' => 'width: 140px;');
                 })
                 ->means('grp_action', 'grp_id')
-                ->means('grp_trm_id', 'turma.trm_nome')
                 ->means('grp_pol_id', 'polo.pol_nome')
                 ->modify('grp_action', function ($id) {
                     return ActionButton::grid([
@@ -86,14 +87,27 @@ class GruposController extends BaseController
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Academico::grupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::grupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'turma' => $turma, 'oferta' => $oferta]);
     }
 
-    public function getCreate()
+    public function getCreate($turmaId)
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $turma = $this->turmaRepository->find($turmaId);
 
-        return view('Academico::grupos.create', ['cursos' => $cursos]);
+        $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
+
+        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+
+        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id);
+
+        $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
+
+        $turma = $this->turmaRepository->listsAllById($turmaId);
+
+
+
+        //dd($oferta,$curso,$turma,$polos);
+        return view('Academico::grupos.create', ['curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
     }
 
     public function postCreate(GrupoRequest $request)
@@ -109,7 +123,7 @@ class GruposController extends BaseController
 
             flash()->success('Grupo criado com sucesso.');
 
-            return redirect('/academico/grupos');
+            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -125,18 +139,22 @@ class GruposController extends BaseController
     {
         $grupo = $this->grupoRepository->find($grupoId);
 
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
-        $ofertaCurso = $this->turmaRepository->find($grupo->grp_trm_id)->ofertacurso;
+        $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
-        $ofertas = $this->ofertaCursoRepository->findAllByCurso($ofertaCurso->ofc_crs_id)->toArray();
-        $ofertas = $this->lists($ofertas);
+        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $turmas = $this->turmaRepository->findAllByOfertaCurso($ofertaCurso->ofc_id);
-        $turmas  = $this->lists($turmas);
+        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id);
 
-        $polos = $this->poloRepository->findAllByOfertaCurso($ofertaCurso->ofc_id);
-        $polos = $this->lists($polos);
+        $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
+
+        $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
+
+
+
+        //dd($oferta,$curso,$turma,$polos);
+
 
         if (!$grupo) {
             flash()->error('Grupo não existe.');
@@ -144,7 +162,7 @@ class GruposController extends BaseController
             return redirect()->back();
         }
 
-        return view('Academico::grupos.edit', ['grupo' => $grupo, 'turmas' => $turmas, 'polos' => $polos, 'cursos' => $cursos, 'ofertas' => $ofertas, 'ofertaCurso' => $ofertaCurso]);
+        return view('Academico::grupos.edit', ['grupo' => $grupo, 'curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
     }
 
     public function putEdit($id, GrupoRequest $request)
@@ -168,7 +186,7 @@ class GruposController extends BaseController
 
             flash()->success('Grupo atualizado com sucesso.');
 
-            return redirect('/academico/grupos');
+            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

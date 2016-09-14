@@ -23,8 +23,6 @@ class GrupoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'crs_id' => 'required',
-            'ofc_id' => 'required',
             'grp_trm_id' => 'required',
             'grp_pol_id' => 'required',
             'grp_nome' => 'required|min:3|max:45'
@@ -36,8 +34,6 @@ class GrupoRequest extends BaseRequest
     public function messages()
     {
         return [
-            'crs_id.required' => 'O campo Curso é obrigatório',
-            'ofc_id.required' => 'O campo Oferta de Curso é obrigatório',
             'grp_trm_id.required' => 'O campo Turma é obrigatório',
             'grp_pol_id.required' => 'O campo Polo é obrigatório',
             'grp_nome.required' => 'O campo Nome é obrigatório',
