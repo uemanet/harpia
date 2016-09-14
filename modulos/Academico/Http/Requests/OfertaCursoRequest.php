@@ -28,7 +28,7 @@ class OfertaCursoRequest extends BaseRequest
             'ofc_mtc_id' => 'required',
             'ofc_mdl_id' => 'required',
             'ofc_ano' => 'integer|min:1|max:9999',
-            'polos[]' => 'required'
+            'polos' => 'required'
         ];
 
         return $rules;
