@@ -63,5 +63,4 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 0;
         $categoria->save();
     }
-
 }

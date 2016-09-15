@@ -15,6 +15,7 @@ class MatrizCurricular extends BaseModel
     protected $fillable = [
         'mtc_crs_id',
         'mtc_anx_projeto_pedagogico',
+        'mtc_titulo',
         'mtc_descricao',
         'mtc_data',
         'mtc_creditos',
@@ -24,7 +25,8 @@ class MatrizCurricular extends BaseModel
 
     protected $searchable = [
         'mtc_id' => '=',
-        'mtc_crs_id' => '='
+        'mtc_crs_id' => '=',
+        'mtc_titulo' => 'like'
     ];
 
     public function curso()
