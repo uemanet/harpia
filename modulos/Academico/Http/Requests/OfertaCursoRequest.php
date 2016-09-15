@@ -33,4 +33,11 @@ class OfertaCursoRequest extends BaseRequest
 
         return $rules;
     }
+
+    public function messages()
+    {
+        return [
+            'polos.required' => 'Você deve escolher os polos da oferta'
+        ];
+    }
 }
