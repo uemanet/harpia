@@ -1,27 +1,62 @@
-# Laravel PHP Framework
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Harpia - UemaNet
+=======================
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Introdução
+------------
+Esse é o repositório do sistema de gestão modular Núcleo de Tecnologias para Educação - UemaNet.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+Tecnologias utilizadas:
+-----------------------
+Backend:
+--------
+ * PHP 5.6+
+ * Laravel Framework 5.3
+ * Docker
 
-## Official Documentation
+Frontend:
+---------
+ * Twitter Bootstrap 3.3
+ * jQuery 3.1
+ * Font Awesome 3.2 
+ * Bootbox
+ * AdminLTE
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+Instalação
+------------
 
-## Contributing
+Usando composer (recomendado)
+----------------------------
+Clone o repositório e manualmente execute o 'composer':
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+    cd /var/www/html
+    git clone http://200.166.97.120/dte/harpia.git
+    cd harpia
+    php composer self-update
+    php composer install
 
-## Security Vulnerabilities
+Criando um virtual host(opcional)
+------------
+    <VirtualHost *:80>
+        ServerName harpia.dev
+        DocumentRoot /var/www/html/harpia/public
+        SetEnv PROJECT_ROOT "/var/www/html/harpia" 
+        <Directory /var/www/html/harpia/public>
+                DirectoryIndex index.php
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+            </Directory>
+    </VirtualHost>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+Colaboradores (ordem alfabética)
+-------------
+* **Bruno Luan**
 
-## License
+* **Felipe Pimenta**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+* **Lucas Vieira**
+
+* **Pedro Fellipe**
+
+* **Willian Mano**

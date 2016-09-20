@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
@@ -27,18 +26,20 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesUsers, ThrottlesLogins;
+    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login / registration.
      *
      * @var string
      */
-    protected $redirectTo = '/';
+//    protected $redirectTo = '/';
+
+
+
+//    protected $loginView = 'Seguranca::auth.login';
 
     protected $auth;
-
-    protected $loginView = 'Seguranca::auth.login';
 
     protected $app;
 
@@ -49,6 +50,16 @@ class AuthController extends Controller
     {
         $this->auth = $auth;
         $this->app = $app;
+    }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm()
+    {
+        return view('Seguranca::auth.login');
     }
 
     /**

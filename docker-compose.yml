@@ -1,0 +1,61 @@
+# v2 sintax
+version: '2'
+
+# Named volumes
+volumes:
+  # MySQL Data
+  harpia-mysql-data:
+    driver: local
+  # Redis Data
+  #harpia-redis-data:
+  #  driver: local
+
+services:
+  # MySQL (5.7)
+  mysql:
+    image: ambientum/mysql:5.7
+    container_name: harpia-mysql
+    volumes:
+      - harpia-mysql-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=harpia
+      - MYSQL_DATABASE=harpia
+      - MYSQL_USER=harpia
+      - MYSQL_PASSWORD=harpia
+
+  # Redis
+  #cache:
+  #  image: ambientum/redis:3.2
+  #  container_name: harpia-redis
+  #  command: --appendonly yes
+  #  volumes:
+  #    - harpia-redis-data:/data
+  #  ports:
+  #    - "6379:6379"
+
+  # PHP (with Caddy)
+  web:
+    #image: ambientum/php:7.0-caddy
+    #image: ambientum/php:7.0-nginx
+    image: ambientum/php:7.0-apache
+    container_name: harpia-web
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "80:8080"
+    links:
+      - mysql
+    #  - cache
+
+  # Laravel Queues
+  #queue:
+  #  image: ambientum/php:7.0
+  #  container_name: harpia-queue
+  #  command: php artisan queue:listen
+  #  volumes:
+  #    - .:/var/www/app
+  #  links:
+  #    - mysql
+  #    - cache
