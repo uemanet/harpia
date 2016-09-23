@@ -2,15 +2,16 @@
 namespace Harpia\Routing;
 
 use Closure;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Routing\Router as BaseRouter;
 use Illuminate\Support\Arr;
 
 class Router extends BaseRouter
 {
-    public function __construct(Dispatcher $events)
+    public function __construct(Dispatcher $events, Container $container)
     {
-        parent::__construct($events);
+        parent::__construct($events, $container);
     }
 
     /**
