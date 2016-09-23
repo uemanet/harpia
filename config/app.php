@@ -170,7 +170,7 @@ return [
 
         Modulos\Seguranca\Providers\ActionButton\ActionButtonProvider::class,
         Modulos\Seguranca\Providers\MasterMenu\MasterMenuProvider::class,
-        Harpia\FlashToastrAlert\FlashToastrAlertProvider::class
+        Harpia\FlashToastrAlert\FlashToastrAlertProvider::class,
     ],
 
     /*

@@ -17,7 +17,7 @@ class Usuario extends BaseModel implements
 {
     use Authenticatable, Authorizable, CanResetPassword;
 
-/**
+    /**
      * The database table used by the model.
      *
      * @var string

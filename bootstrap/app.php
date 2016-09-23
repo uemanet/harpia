@@ -11,7 +11,11 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
+//$app = new Illuminate\Foundation\Application(
+//    realpath(__DIR__.'/../')
+//);
+
+$app = new Harpia\Routing\Application(
     realpath(__DIR__.'/../')
 );
 
