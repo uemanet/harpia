@@ -21,7 +21,11 @@ class OfertasCursosController extends BaseController
     protected $modalidadeRepository;
     protected $poloRepository;
 
-    public function __construct(OfertaCursoRepository $ofertacursoRepository, CursoRepository $cursoRepository, MatrizCurricularRepository $matrizcurricularRepository, ModalidadeRepository $modalidadeRepository, PoloRepository $poloRepository)
+    public function __construct(OfertaCursoRepository $ofertacursoRepository,
+                                CursoRepository $cursoRepository,
+                                MatrizCurricularRepository $matrizcurricularRepository,
+                                ModalidadeRepository $modalidadeRepository,
+                                PoloRepository $poloRepository)
     {
         $this->ofertacursoRepository = $ofertacursoRepository;
         $this->cursoRepository = $cursoRepository;
@@ -33,7 +37,7 @@ class OfertasCursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/ofertascursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction(route('academico.ofertascursos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -72,14 +76,14 @@ class OfertasCursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => '/academico/turmas/index/'.$id,
+                                'action' => route('academico.turmas.index', ['id' => $id]),
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/ofertascursos/delete',
+                                'action' => route('academico.ofertascursos.delete'),
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -127,7 +131,7 @@ class OfertasCursosController extends BaseController
 
             flash()->success('Oferta de curso criada com sucesso.');
 
-            return redirect('/academico/ofertascursos');
+            return redirect(route('academico.ofertascursos.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

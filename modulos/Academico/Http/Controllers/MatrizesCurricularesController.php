@@ -35,7 +35,7 @@ class MatrizesCurricularesController extends BaseController
     public function getIndex($cursoId, Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create/'.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction(route('academico.matrizescurriculares.getCreate', ['id' => $cursoId]))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -74,14 +74,14 @@ class MatrizesCurricularesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/matrizescurriculares/edit/' . $id,
+                                'action' => route('academico.matrizescurriculares.getEdit', ['id' => $id]),
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/matrizescurriculares/delete',
+                                'action' => route('academico.matrizescurriculares.delete'),
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -128,7 +128,7 @@ class MatrizesCurricularesController extends BaseController
 
             flash()->success('Matriz Curricular criada com sucesso.');
             //Redireciona para o index de matrizes curriculares do curso
-            return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
+            return redirect(route('academico.matrizescurriculares.index', ['id' => $matrizCurricular->mtc_crs_id]));
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -180,7 +180,7 @@ class MatrizesCurricularesController extends BaseController
 
             DB::commit();
             flash()->success('Matriz Curricular atualizada com sucesso.');
-            return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
+            return redirect(route('academico.matrizescurriculares.index', ['id' => $matrizCurricular->mtc_crs_id]));
         } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {
