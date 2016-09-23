@@ -29,7 +29,7 @@ class DepartamentosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/departamentos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction(route('academico.departamentos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -63,14 +63,14 @@ class DepartamentosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/departamentos/edit/' . $id,
+                                'action' => route('academico.departamentos.getEdit', ['id' => $id]),
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/departamentos/delete',
+                                'action' => route('academico.departamentos.delete'),
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'

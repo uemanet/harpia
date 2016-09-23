@@ -21,7 +21,11 @@ class OfertasCursosController extends BaseController
     protected $modalidadeRepository;
     protected $poloRepository;
 
-    public function __construct(OfertaCursoRepository $ofertacursoRepository, CursoRepository $cursoRepository, MatrizCurricularRepository $matrizcurricularRepository, ModalidadeRepository $modalidadeRepository, PoloRepository $poloRepository)
+    public function __construct(OfertaCursoRepository $ofertacursoRepository,
+                                CursoRepository $cursoRepository,
+                                MatrizCurricularRepository $matrizcurricularRepository,
+                                ModalidadeRepository $modalidadeRepository,
+                                PoloRepository $poloRepository)
     {
         $this->ofertacursoRepository = $ofertacursoRepository;
         $this->cursoRepository = $cursoRepository;
