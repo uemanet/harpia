@@ -57,7 +57,7 @@ class MatrizCurricularRepository extends BaseRepository
      */
     public function findAllByCurso($cursoid)
     {
-        return $this->model->where('mtc_crs_id', $cursoid)->get(['mtc_id', 'mtc_descricao']);
+        return $this->model->where('mtc_crs_id', $cursoid)->get(['mtc_id', 'mtc_titulo']);
     }
 
     /**
@@ -69,6 +69,6 @@ class MatrizCurricularRepository extends BaseRepository
      */
     public function listsAllByCurso($cursoid)
     {
-        return $this->model->where('mtc_crs_id', $cursoid)->lists('mtc_descricao', 'mtc_id');
+        return $this->model->where('mtc_crs_id', $cursoid)->lists('mtc_titulo', 'mtc_id');
     }
 }

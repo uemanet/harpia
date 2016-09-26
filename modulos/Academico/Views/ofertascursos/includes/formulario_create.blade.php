@@ -70,7 +70,7 @@
                 } else {
                     $("#ofc_mtc_id").append("<option value='' selected>Selecione uma matriz curricular</option>");
                     $.each(result, function(key, value) {
-                        $('#ofc_mtc_id').append('<option value=' + value.mtc_id + ' >' + value.mtc_descricao + '</option>');
+                        $('#ofc_mtc_id').append('<option value=' + value.mtc_id + ' >' + value.mtc_titulo + '</option>');
                     });
                 }
 
