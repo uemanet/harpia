@@ -33,7 +33,7 @@ class TurmasController extends BaseController
         //dd($id);
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/turmas/create/'.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction(route('academico.turmas.getCreate', ['id' => $ofertaId]))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
 
@@ -71,21 +71,21 @@ class TurmasController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-group',
-                                'action' => '/academico/grupos/index/'.$id,
+                                'action' => route('academico.turmas.index', ['id' => $id]),
                                 'label' => 'Grupos',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/turmas/edit/'.$id,
+                                'action' => route('academico.turmas.getEdit', ['id' => $id]),
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/turmas/delete',
+                                'action' => route('academico.turmas.delete'),
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -105,7 +105,6 @@ class TurmasController extends BaseController
 
     public function getCreate($ofertaId)
     {
-
         $oferta = $this->ofertacursoRepository->find($ofertaId);
 
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
@@ -124,33 +123,28 @@ class TurmasController extends BaseController
 
             if (!$turma) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Turma criada com sucesso.');
 
-            return redirect('/academico/turmas/index/'.$turma->trm_ofc_id);
+            return redirect(route('academico.turmas.index', ['id' => $turma->trm_ofc_id]));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
     public function getEdit($turmaId, Request $request)
     {
-        //$turmaId = $request->input('turmaId');
-
         $turma = $this->turmaRepository->find($turmaId);
 
         if (!$turma) {
             flash()->error('Recurso não existe.');
-
             return redirect()->back();
         }
 
@@ -159,7 +153,7 @@ class TurmasController extends BaseController
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
         $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
-        //dd($oferta);
+
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
         return view('Academico::turmas.edit', compact('turma', 'curso', 'oferta', 'periodosletivos'));
@@ -172,29 +166,26 @@ class TurmasController extends BaseController
 
             if (!$turma) {
                 flash()->error('Turma não existe.');
-
-                return redirect('/academico/turmas');
+                return redirect(route('academico.turmas.index', ['id' => $id]));
             }
 
             $requestData = $request->only($this->turmaRepository->getFillableModelFields());
 
             if (!$this->turmaRepository->update($requestData, $turma->trm_id, 'trm_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Turma atualizada com sucesso.');
 
-            return redirect('/academico/turmas/index?ofertaId='.$turma->trm_ofc_id);
+            return redirect(route('academico.turmas.index', ['id' => $turma->trm_ofc_id]));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -213,11 +204,10 @@ class TurmasController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

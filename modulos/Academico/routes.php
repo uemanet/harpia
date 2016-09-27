@@ -1,7 +1,6 @@
 <?php
 
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
-
     Route::group(['prefix' => 'index'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
         Route::get('/index', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.getIndex');
@@ -87,7 +86,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     });
 
     Route::group(['prefix' => 'async'], function () {
-
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
                 ->name('academico.async.matrizescurriculares.findallbycurso');
@@ -108,7 +106,4 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
                 ->name('academico.async.ofertascursos.findallbycurso');
         });
     });
-
 });
-
-
