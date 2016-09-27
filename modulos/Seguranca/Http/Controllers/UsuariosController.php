@@ -26,7 +26,7 @@ class UsuariosController extends BaseController
 
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
         
-        $tabela =  $tableData->columns(array(
+        $tabela = $tableData->columns(array(
             'pes_id' => '#',
             'pes_nome' => 'Nome',
             'pes_email' => 'Email',
