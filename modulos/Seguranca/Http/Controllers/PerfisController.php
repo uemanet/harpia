@@ -52,21 +52,21 @@ class PerfisController extends BaseController
                         [
                             'classButton' => 'text-blue',
                             'icon' => 'fa fa-check-square-o',
-                            'action' => '/seguranca/perfis/atribuirpermissoes/' . $id,
+                            'action' => route('seguranca.perfis.getAtribuirpermissoes', ['id' => $id]),
                             'label' => 'Permissões',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => '',
                             'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/perfis/edit/' . $id,
+                            'action' => route('seguranca.perfis.getEdit', ['id' => $id]),
                             'label' => 'Editar',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => 'btn-delete text-red',
                             'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/perfis/delete',
+                            'action' => route('seguranca.perfis.delete'),
                             'id' => $id,
                             'label' => 'Excluir',
                             'method' => 'post'
@@ -101,7 +101,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil criado com sucesso.');
 
-            return redirect('/seguranca/perfis');
+            return redirect('seguranca.perfis.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -124,7 +124,7 @@ class PerfisController extends BaseController
         }
 
         $modulos = $this->moduloRepository->lists('mod_id', 'mod_nome');
-        
+
         return view('Seguranca::perfis.edit', compact('perfil', 'modulos'));
     }
 
@@ -136,7 +136,7 @@ class PerfisController extends BaseController
             if (!$perfil) {
                 flash()->error('Perfil não existe.');
 
-                return redirect('/seguranca/perfis');
+                return redirect(route('seguranca.perfis.index'));
             }
 
             $requestData = $request->only('prf_nome', 'prf_descricao');
@@ -149,7 +149,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil atualizado com sucesso.');
 
-            return redirect('/seguranca/perfis');
+            return redirect(route('seguranca.perfis.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -193,7 +193,7 @@ class PerfisController extends BaseController
         $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
 
         if (!sizeof($perfil)) {
-            return redirect('/seguranca/perfis/index');
+            return redirect(route('seguranca.perfis.index'));
         }
 
         $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
@@ -211,7 +211,7 @@ class PerfisController extends BaseController
                 $permissoes = [];
                 $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
 
-                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+                return route('seguranca.perfis.postAtribuirpermissoes', ['id' => $id]);
             }
 
             $permissoes = explode(',', $request->input('permissao'));
@@ -220,15 +220,16 @@ class PerfisController extends BaseController
 
             flash()->success('Permissões atribuídas com sucesso.');
 
-            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+            return route('seguranca.perfis.postAtribuirpermissoes', ['id' => $id]);
+
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+
         }
     }
 }

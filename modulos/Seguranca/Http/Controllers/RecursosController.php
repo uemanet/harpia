@@ -55,14 +55,14 @@ class RecursosController extends BaseController
                         [
                             'classButton' => '',
                             'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/recursos/edit/' . $id,
+                            'action' => route('seguranca.recursos.getEdit', ['id' => $id]),
                             'label' => 'Editar',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => 'btn-delete text-red',
                             'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/recursos/delete',
+                            'action' => route('seguranca.recursos.delete'),
                             'id' => $id,
                             'label' => 'Excluir',
                             'method' => 'post'
@@ -97,7 +97,7 @@ class RecursosController extends BaseController
 
             flash()->success('Recurso criado com sucesso.');
 
-            return redirect('/seguranca/recursos');
+            return redirect(route('seguranca.recursos.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -138,7 +138,7 @@ class RecursosController extends BaseController
             if (!$recurso) {
                 flash()->error('Recurso não existe.');
 
-                return redirect('/seguranca/recursos');
+                return redirect(route('seguranca.recursos.index'));
             }
 
             $requestData = $request->only($this->recursoRepository->getFillableModelFields());
@@ -151,15 +151,15 @@ class RecursosController extends BaseController
 
             flash()->success('Recurso atualizado com sucesso.');
 
-            return redirect('/seguranca/recursos');
+            return redirect(route('seguranca.recursos.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+
         }
     }
 

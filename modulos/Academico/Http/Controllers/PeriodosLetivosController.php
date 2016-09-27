@@ -21,7 +21,7 @@ class PeriodosLetivosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.periodosletivos.index'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction(route('academico.periodosletivos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -98,11 +98,10 @@ class PeriodosLetivosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -144,11 +143,10 @@ class PeriodosLetivosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -167,11 +165,10 @@ class PeriodosLetivosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

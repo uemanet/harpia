@@ -135,11 +135,9 @@ class OfertasCursosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -158,11 +156,9 @@ class OfertasCursosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

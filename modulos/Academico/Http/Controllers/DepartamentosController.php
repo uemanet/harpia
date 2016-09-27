@@ -49,7 +49,7 @@ class DepartamentosController extends BaseController
                 })
                 ->means('dep_action', 'dep_id')
                 ->means('dep_prf_diretor', 'diretor')
-                ->modify('dep_prf_diretor', function ($diretor){
+                ->modify('dep_prf_diretor', function ($diretor) {
                     return $diretor->pessoa->pes_nome;
                 })
                 ->modify('dep_action', function ($id) {
@@ -185,11 +185,10 @@ class DepartamentosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

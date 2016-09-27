@@ -55,14 +55,14 @@ class PermissoesController extends BaseController
                         [
                             'classButton' => '',
                             'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/permissoes/edit/' . $id,
+                            'action' => route('seguranca.permissoes.getEdit', ['id' => $id]),
                             'label' => 'Editar',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => 'btn-delete text-red',
                             'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/permissoes/delete',
+                            'action' => route('seguranca.permissoes.delete'),
                             'id' => $id,
                             'label' => 'Excluir',
                             'method' => 'post'
@@ -97,15 +97,15 @@ class PermissoesController extends BaseController
 
             flash()->success('Permissão criada com sucesso.');
 
-            return redirect('/seguranca/permissoes');
+            return redirect(route('seguranca.permissoes.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+
         }
     }
 
@@ -137,7 +137,7 @@ class PermissoesController extends BaseController
             if (!$permissao) {
                 flash()->error('Permissão não existe.');
 
-                return redirect('/seguranca/permissoes');
+                return redirect(route('seguranca.permissoes.index'));
             }
 
             $requestData = $request->only($this->permissaoRepository->getFillableModelFields());
@@ -150,7 +150,7 @@ class PermissoesController extends BaseController
 
             flash()->success('Permissão atualizado com sucesso.');
 
-            return redirect('/seguranca/permissoes');
+            return redirect(route('seguranca.permissoes.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

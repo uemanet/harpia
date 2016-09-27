@@ -95,7 +95,7 @@ class Router extends BaseRouter
         }
 
         $this->groupStack[] = $attributes;
-    }    
+    }
 
     /**
      * Register an inspected controller route.
