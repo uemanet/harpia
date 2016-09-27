@@ -21,7 +21,7 @@ class ModulosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('seguranca.modulos.getcreate')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -48,14 +48,14 @@ class ModulosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/seguranca/modulos/edit/' . $id,
+                                'action' => route('seguranca.modulos.getEdit', ['id' => $id]),
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/seguranca/modulos/delete',
+                                'action' => route('seguranca.modulos.delete'),
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -88,7 +88,7 @@ class ModulosController extends BaseController
 
             flash()->success('Módulo criado com sucesso.');
 
-            return redirect('/seguranca/modulos');
+            return redirect(route('seguranca.modulos.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -121,7 +121,7 @@ class ModulosController extends BaseController
             if (!$modulo) {
                 flash()->error('Módulo não existe.');
 
-                return redirect('/seguranca/modulos');
+                return redirect(route('seguranca.modulos.index'));
             }
 
             $requestData = $request->only($this->moduloRepository->getFillableModelFields());
@@ -134,15 +134,15 @@ class ModulosController extends BaseController
 
             flash()->success('Módulo atualizado com sucesso.');
 
-            return redirect('/seguranca/modulos');
+            return redirect(route('seguranca.modulos.index'));
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+
         }
     }
 
@@ -161,11 +161,11 @@ class ModulosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+           flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+           return redirect()->back();
+
         }
     }
 }
