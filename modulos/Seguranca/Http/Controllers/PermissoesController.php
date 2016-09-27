@@ -32,48 +32,52 @@ class PermissoesController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->permissaoRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'prm_id' => '#',
-            'prm_nome' => 'Permissão',
-            'prm_descricao' => 'Descrição',
-            'prm_action' => 'Ações'
-        ))
-            ->modifyCell('prm_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('prm_action', 'prm_id')
-            ->modify('prm_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => route('seguranca.permissoes.getEdit', ['id' => $id]),
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'prm_id' => '#',
+                'prm_nome' => 'Permissão',
+                'prm_descricao' => 'Descrição',
+                'prm_action' => 'Ações'
+            ))
+                ->modifyCell('prm_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('prm_action', 'prm_id')
+                ->modify('prm_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => route('seguranca.permissoes.delete'),
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => route('seguranca.permissoes.getEdit', ['id' => $id]),
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => route('seguranca.permissoes.delete'),
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('prm_id', 'prm_nome'));
+                    ]);
+                })
+                ->sortable(array('prm_id', 'prm_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+       }
         return view('Seguranca::permissoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 

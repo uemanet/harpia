@@ -29,47 +29,52 @@ class CategoriasRecursosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->categoriaRecursoRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'ctr_id' => '#',
-            'ctr_nome' => 'Categoria',
-            'ctr_descricao' => 'Descrição',
-            'ctr_action' => 'Ações'
-        ))
-            ->modifyCell('ctr_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('ctr_action', 'ctr_id')
-            ->modify('ctr_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => route('seguranca.categoriasrecursos.getEdit', ['id' => $id]),
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'ctr_id' => '#',
+                'ctr_nome' => 'Categoria',
+                'ctr_descricao' => 'Descrição',
+                'ctr_action' => 'Ações'
+            ))
+                ->modifyCell('ctr_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('ctr_action', 'ctr_id')
+                ->modify('ctr_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => route('seguranca.categoriasrecursos.delete'),
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => route('seguranca.categoriasrecursos.getEdit', ['id' => $id]),
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => route('seguranca.categoriasrecursos.delete'),
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('ctr_id', 'ctr_nome'));
+                    ]);
+                })
+                ->sortable(array('ctr_id', 'ctr_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+       }
 
         return view('Seguranca::categoriasrecursos.index',
             ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);

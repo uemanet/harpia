@@ -25,47 +25,52 @@ class ModulosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->moduloRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-                'mod_id' => '#',
-                'mod_nome' => 'Módulo',
-                'mod_descricao' => 'Descrição',
-                'mod_action' => 'Ações'
-            ))
-                ->modifyCell('mod_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('mod_action', 'mod_id')
-                ->modify('mod_action', function ($id) {
-                    return ActionButton::grid([
-                        'type' => 'SELECT',
-                        'config' => [
-                            'classButton' => 'btn-default',
-                            'label' => 'Selecione'
-                        ],
-                        'buttons' => [
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-pencil',
-                                'action' => route('seguranca.modulos.getEdit', ['id' => $id]),
-                                'label' => 'Editar',
-                                'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                    'mod_id' => '#',
+                    'mod_nome' => 'Módulo',
+                    'mod_descricao' => 'Descrição',
+                    'mod_action' => 'Ações'
+                ))
+                    ->modifyCell('mod_action', function () {
+                        return array('style' => 'width: 140px;');
+                    })
+                    ->means('mod_action', 'mod_id')
+                    ->modify('mod_action', function ($id) {
+                        return ActionButton::grid([
+                            'type' => 'SELECT',
+                            'config' => [
+                                'classButton' => 'btn-default',
+                                'label' => 'Selecione'
                             ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'action' => route('seguranca.modulos.delete'),
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
+                            'buttons' => [
+                                [
+                                    'classButton' => '',
+                                    'icon' => 'fa fa-pencil',
+                                    'action' => route('seguranca.modulos.getEdit', ['id' => $id]),
+                                    'label' => 'Editar',
+                                    'method' => 'get'
+                                ],
+                                [
+                                    'classButton' => 'btn-delete text-red',
+                                    'icon' => 'fa fa-trash',
+                                    'action' => route('seguranca.modulos.delete'),
+                                    'id' => $id,
+                                    'label' => 'Excluir',
+                                    'method' => 'post'
+                                ]
                             ]
-                        ]
-                    ]);
-                })
-                ->sortable(array('mod_id', 'mod_nome'));
+                        ]);
+                    })
+                    ->sortable(array('mod_id', 'mod_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+       }
 
         return view('Seguranca::modulos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }

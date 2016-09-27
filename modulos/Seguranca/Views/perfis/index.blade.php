@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/seguranca/perfis/index') }}">
+                <form method="GET" action="{{ route('seguranca.perfis.index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="prf_nome" id="prf_nome" value="{{Input::get('prf_nome')}}" placeholder="Nome do perfil">
                     </div>
@@ -38,7 +38,7 @@
         </div>
         <!-- /.box-body -->
     </div>
-    @if($tabela->count())
+    @if(!is_null($tabela))
         <div class="box box-primary">
             <div class="box-header">
                 {!! $tabela->render() !!}
@@ -46,5 +46,10 @@
         </div>
 
         <div class="text-center">{!! $paginacao->links() !!}</div>
+
+    @else
+        <div class="box box-primary">
+            <div class="box-body">Sem registros para apresentar</div>
+        </div>
     @endif
 @stop
