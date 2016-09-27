@@ -14,7 +14,6 @@ class ModulosServiceProvider extends ServiceProvider
 
             // Load the routes for each of the modules
             if (file_exists(__DIR__.'/'.$modulo.'/routes.php')) {
-
                 include __DIR__.'/'.$modulo.'/routes.php';
             }
 

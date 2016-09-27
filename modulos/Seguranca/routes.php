@@ -7,7 +7,6 @@ Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@po
 Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogout')->name('auth.getLogout');
 
 Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
-
     Route::group(['prefix' => 'index'], function () {
         Route::get('/', '\Modulos\Seguranca\Http\Controllers\IndexController@getIndex')->name('seguranca.index.index');
         Route::get('/index', '\Modulos\Seguranca\Http\Controllers\IndexController@getIndex');
@@ -72,14 +71,12 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
     });
 
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
-
         Route::group(['prefix' => 'categorias'], function () {
-           Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\CategoriasRecursos@getFindallbymodulo')->name('seguranca.async.categorias.findallbymodulo');
+            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\CategoriasRecursos@getFindallbymodulo')->name('seguranca.async.categorias.findallbymodulo');
         });
 
         Route::group(['prefix' => 'recursos'], function () {
-           Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Recursos@getFindallbymodulo')->name('seguranca.async.recursos.findallbymodulo');
+            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Recursos@getFindallbymodulo')->name('seguranca.async.recursos.findallbymodulo');
         });
-
     });
 });

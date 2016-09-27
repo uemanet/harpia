@@ -82,8 +82,8 @@ class Seguranca implements SegurancaContract
     {
         list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
 
-        if($recurso === "async"){
-          return true;
+        if ($recurso === "async") {
+            return true;
         }
 
         // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.

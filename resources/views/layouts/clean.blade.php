@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title>Módulo ADMIN @yield('title')</title>
+    <title>@yield('title')</title>
 
     <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
 
