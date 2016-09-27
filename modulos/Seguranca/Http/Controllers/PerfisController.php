@@ -211,7 +211,7 @@ class PerfisController extends BaseController
                 $permissoes = [];
                 $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
 
-                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+                return route('seguranca.perfis.postAtribuirpermissoes', ['id' => $id]);
             }
 
             $permissoes = explode(',', $request->input('permissao'));
@@ -220,7 +220,8 @@ class PerfisController extends BaseController
 
             flash()->success('Permissões atribuídas com sucesso.');
 
-            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+            return route('seguranca.perfis.postAtribuirpermissoes', ['id' => $id]);
+
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
