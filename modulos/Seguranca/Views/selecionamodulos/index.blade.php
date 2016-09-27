@@ -1,5 +1,7 @@
 @extends('layouts.clean')
 
+@section('title','Harpia - Selecionar Módulo')
+
 @section('content')
 <div class="container">
     <div class="row">
