@@ -29,54 +29,59 @@ class PerfisController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->perfilRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'prf_id' => '#',
-            'prf_nome' => 'Perfil',
-            'prf_descricao' => 'Descrição',
-            'prf_action' => 'Ações'
-        ))
-            ->modifyCell('prf_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('prf_action', 'prf_id')
-            ->modify('prf_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => 'text-blue',
-                            'icon' => 'fa fa-check-square-o',
-                            'action' => route('seguranca.perfis.getAtribuirpermissoes', ['id' => $id]),
-                            'label' => 'Permissões',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'prf_id' => '#',
+                'prf_nome' => 'Perfil',
+                'prf_descricao' => 'Descrição',
+                'prf_action' => 'Ações'
+            ))
+                ->modifyCell('prf_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('prf_action', 'prf_id')
+                ->modify('prf_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => route('seguranca.perfis.getEdit', ['id' => $id]),
-                            'label' => 'Editar',
-                            'method' => 'get'
-                        ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => route('seguranca.perfis.delete'),
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => 'text-blue',
+                                'icon' => 'fa fa-check-square-o',
+                                'action' => route('seguranca.perfis.getAtribuirpermissoes', ['id' => $id]),
+                                'label' => 'Permissões',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => route('seguranca.perfis.getEdit', ['id' => $id]),
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => route('seguranca.perfis.delete'),
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('prf_id', 'prf_nome'));
+                    ]);
+                })
+                ->sortable(array('prf_id', 'prf_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+        }
 
         return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }

@@ -32,48 +32,52 @@ class RecursosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->recursoRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'rcs_id' => '#',
-            'rcs_nome' => 'Recurso',
-            'rcs_descricao' => 'Descrição',
-            'rcs_action' => 'Ações'
-        ))
-            ->modifyCell('rcs_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('rcs_action', 'rcs_id')
-            ->modify('rcs_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => route('seguranca.recursos.getEdit', ['id' => $id]),
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'rcs_id' => '#',
+                'rcs_nome' => 'Recurso',
+                'rcs_descricao' => 'Descrição',
+                'rcs_action' => 'Ações'
+            ))
+                ->modifyCell('rcs_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('rcs_action', 'rcs_id')
+                ->modify('rcs_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => route('seguranca.recursos.delete'),
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => route('seguranca.recursos.getEdit', ['id' => $id]),
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' => route('seguranca.recursos.delete'),
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('rcs_id', 'rcs_nome'));
+                    ]);
+                })
+                ->sortable(array('rcs_id', 'rcs_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+       }
         return view('Seguranca::recursos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
