@@ -56,7 +56,7 @@ class PerfisController extends BaseController
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-check-square-o',
-                                'action' => 'seguranca/perfis/atribuirpermissoes'. $id,
+                                'action' => '/seguranca/perfis/atribuirpermissoes/'. $id,
                                 'label' => 'Permissões',
                                 'method' => 'get'
                             ],
