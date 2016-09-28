@@ -21,7 +21,7 @@ class PeriodosLetivosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.periodosletivos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/periodosletivos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -53,14 +53,14 @@ class PeriodosLetivosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('academico.periodosletivos.getEdit', ['id' => $id]),
+                                'action' => '/academico/periodosletivos/edit/'.$id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.periodosletivos.delete'),
+                                'action' => '/academico/periodosletivos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -93,8 +93,7 @@ class PeriodosLetivosController extends BaseController
             }
 
             flash()->success('Período Letivo criado com sucesso.');
-
-            return redirect(route('academico.periodosletivos.index'));
+            return redirect('/academico/periodosletivos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -111,7 +110,6 @@ class PeriodosLetivosController extends BaseController
 
         if (!$periodoLetivo) {
             flash()->error('Período Letivo não existe.');
-
             return redirect()->back();
         }
 
@@ -125,7 +123,6 @@ class PeriodosLetivosController extends BaseController
 
             if (!$periodoLetivo) {
                 flash()->error('Período Letivo não existe.');
-
                 return redirect(route('academico.periodosletivos.index'));
             }
 
@@ -133,13 +130,11 @@ class PeriodosLetivosController extends BaseController
 
             if (!$this->periodoLetivoRepository->update($requestData, $periodoLetivo->per_id, 'per_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Período Letivo atualizado com sucesso.');
-
-            return redirect(route('academico.periodosletivos.index'));
+            return redirect('/academico/periodosletivos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

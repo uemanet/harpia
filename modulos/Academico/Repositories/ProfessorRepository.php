@@ -17,6 +17,8 @@ class ProfessorRepository extends BaseRepository
      * Retorna listas de pares com dados de tabelas
      * @param string $identifier
      * @param string $field
+     * @param bool $all
+     * @return \Illuminate\Support\Collection
      */
     public function lists($identifier, $field, $all = false)
     {

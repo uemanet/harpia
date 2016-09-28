@@ -32,7 +32,7 @@ class GruposController extends BaseController
     public function getIndex($turmaId, Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.grupos.create', ['id' => $turmaId]))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/grupos/create/'.$turmaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $turma = $this->turmaRepository->find($turmaId);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
@@ -67,14 +67,14 @@ class GruposController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('academico.grupos.getEdit', ['id' => $id]),
+                                'action' => '/academico/grupos/edit/'.$id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.turmas.delete'),
+                                'action' => '/academico/grupos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -114,17 +114,16 @@ class GruposController extends BaseController
 
             if (!$grupo) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Grupo criado com sucesso.');
-
-            return redirect(route('academico.grupos.index', ['id' => $grupo->grp_trm_id]));
+            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
@@ -149,7 +148,6 @@ class GruposController extends BaseController
 
         if (!$grupo) {
             flash()->error('Grupo não existe.');
-
             return redirect()->back();
         }
 
@@ -163,7 +161,6 @@ class GruposController extends BaseController
 
             if (!$grupo) {
                 flash()->error('Grupo não existe.');
-
                 return redirect()->back();
             }
 
@@ -171,17 +168,16 @@ class GruposController extends BaseController
 
             if (!$this->grupoRepository->update($requestData, $grupo->grp_id, 'grp_id')) {
                 flash()->error('Erro ao tentar editar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Grupo atualizado com sucesso.');
-
-            return redirect(route('academico.grupos.index', ['id' => $grupo->grp_trm_id]));
+            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
@@ -203,25 +199,9 @@ class GruposController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
-    }
-
-    private function lists($array)
-    {
-        $result = [];
-        if (count($array)) {
-            foreach ($array as $obj) {
-                $element = [];
-                foreach ($obj as $key => $value) {
-                    $element[] = $value;
-                }
-
-                $result[$element[0]] = $element[1];
-            }
-        }
-
-        return collect($result);
     }
 }
