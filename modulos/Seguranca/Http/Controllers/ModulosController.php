@@ -70,7 +70,7 @@ class ModulosController extends BaseController
                     ->sortable(array('mod_id', 'mod_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
-       }
+        }
 
         return view('Seguranca::modulos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
@@ -147,7 +147,6 @@ class ModulosController extends BaseController
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-
         }
     }
 
@@ -167,10 +166,9 @@ class ModulosController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
-           flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
-           return redirect()->back();
-
+            return redirect()->back();
         }
     }
 }

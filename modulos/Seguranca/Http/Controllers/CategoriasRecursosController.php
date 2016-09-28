@@ -74,7 +74,7 @@ class CategoriasRecursosController extends BaseController
                 ->sortable(array('ctr_id', 'ctr_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
-       }
+        }
 
         return view('Seguranca::categoriasrecursos.index',
             ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);

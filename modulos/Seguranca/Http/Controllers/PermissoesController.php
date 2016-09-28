@@ -77,7 +77,7 @@ class PermissoesController extends BaseController
                 ->sortable(array('prm_id', 'prm_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
-       }
+        }
         return view('Seguranca::permissoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
@@ -109,7 +109,6 @@ class PermissoesController extends BaseController
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-
         }
     }
 

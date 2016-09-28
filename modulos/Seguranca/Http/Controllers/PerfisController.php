@@ -226,7 +226,6 @@ class PerfisController extends BaseController
             flash()->success('Permissões atribuídas com sucesso.');
 
             return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -234,7 +233,6 @@ class PerfisController extends BaseController
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-
         }
     }
 }
