@@ -56,14 +56,14 @@ class CategoriasRecursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('seguranca.categoriasrecursos.getEdit', ['id' => $id]),
+                                'action' => '/seguranca/categoriasrecursos/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('seguranca.categoriasrecursos.delete'),
+                                'action' =>  '/seguranca/categoriasrecursos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -101,7 +101,7 @@ class CategoriasRecursosController extends BaseController
 
             flash()->success('Categoria criada com sucesso.');
 
-            return redirect(route('seguranca.categoriasrecursos.index'));
+            return redirect('/seguranca/categoriasrecursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -137,7 +137,7 @@ class CategoriasRecursosController extends BaseController
             if (!$categoria) {
                 flash()->error('Categoria não existe.');
 
-                return redirect(route('seguranca.categoriasrecursos.index'));
+                return redirect('/seguranca/categoriasrecursos/index');
             }
 
             $requestData = $request->only($this->categoriaRecursoRepository->getFillableModelFields());
@@ -150,7 +150,7 @@ class CategoriasRecursosController extends BaseController
 
             flash()->success('Categoria atualizada com sucesso.');
 
-            return redirect(route('seguranca.categoriasrecursos.index'));
+            return redirect('/seguranca/categoriasrecursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

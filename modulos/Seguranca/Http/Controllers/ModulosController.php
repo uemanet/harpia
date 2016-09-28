@@ -21,7 +21,7 @@ class ModulosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('seguranca.modulos.getcreate')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/seguranca/modulos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -52,14 +52,14 @@ class ModulosController extends BaseController
                                 [
                                     'classButton' => '',
                                     'icon' => 'fa fa-pencil',
-                                    'action' => route('seguranca.modulos.getEdit', ['id' => $id]),
+                                    'action' => '/seguranca/modulos/edit/' . $id,
                                     'label' => 'Editar',
                                     'method' => 'get'
                                 ],
                                 [
                                     'classButton' => 'btn-delete text-red',
                                     'icon' => 'fa fa-trash',
-                                    'action' => route('seguranca.modulos.delete'),
+                                    'action' =>  '/seguranca/modulos/delete',
                                     'id' => $id,
                                     'label' => 'Excluir',
                                     'method' => 'post'
@@ -93,7 +93,7 @@ class ModulosController extends BaseController
 
             flash()->success('Módulo criado com sucesso.');
 
-            return redirect(route('seguranca.modulos.index'));
+            return redirect('/seguranca/modulos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -126,7 +126,7 @@ class ModulosController extends BaseController
             if (!$modulo) {
                 flash()->error('Módulo não existe.');
 
-                return redirect(route('seguranca.modulos.index'));
+                return redirect('/seguranca/modulos/index');
             }
 
             $requestData = $request->only($this->moduloRepository->getFillableModelFields());
@@ -139,7 +139,7 @@ class ModulosController extends BaseController
 
             flash()->success('Módulo atualizado com sucesso.');
 
-            return redirect(route('seguranca.modulos.index'));
+            return redirect('/seguranca/modulos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

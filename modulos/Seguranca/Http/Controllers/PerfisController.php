@@ -56,21 +56,21 @@ class PerfisController extends BaseController
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-check-square-o',
-                                'action' => route('seguranca.perfis.getAtribuirpermissoes', ['id' => $id]),
+                                'action' => 'seguranca/perfis/atribuirpermissoes'. $id,
                                 'label' => 'Permissões',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('seguranca.perfis.getEdit', ['id' => $id]),
+                                'action' => '/seguranca/perfis/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('seguranca.perfis.delete'),
+                                'action' =>  '/seguranca/perfis/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -106,7 +106,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil criado com sucesso.');
 
-            return redirect('seguranca.perfis.index');
+            return redirect('/seguranca/perfis/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -141,7 +141,7 @@ class PerfisController extends BaseController
             if (!$perfil) {
                 flash()->error('Perfil não existe.');
 
-                return redirect(route('seguranca.perfis.index'));
+                return redirect('/seguranca/perfis/index');
             }
 
             $requestData = $request->only('prf_nome', 'prf_descricao');
@@ -154,7 +154,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil atualizado com sucesso.');
 
-            return redirect(route('seguranca.perfis.index'));
+            return redirect('/seguranca/perfis/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -198,7 +198,7 @@ class PerfisController extends BaseController
         $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
 
         if (!sizeof($perfil)) {
-            return redirect(route('seguranca.perfis.index'));
+            return redirect('/seguranca/perfis/index');
         }
 
         $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
@@ -216,7 +216,7 @@ class PerfisController extends BaseController
                 $permissoes = [];
                 $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
 
-                return route('seguranca.perfis.postAtribuirpermissoes', ['id' => $id]);
+                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
             }
 
             $permissoes = explode(',', $request->input('permissao'));
@@ -225,7 +225,7 @@ class PerfisController extends BaseController
 
             flash()->success('Permissões atribuídas com sucesso.');
 
-            return route('seguranca.perfis.postAtribuirpermissoes', ['id' => $id]);
+            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
 
         } catch (\Exception $e) {
             if (config('app.debug')) {

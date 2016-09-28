@@ -59,14 +59,14 @@ class PermissoesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('seguranca.permissoes.getEdit', ['id' => $id]),
+                                'action' => '/seguranca/permissoes/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('seguranca.permissoes.delete'),
+                                'action' =>  '/seguranca/permissoes/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -101,7 +101,7 @@ class PermissoesController extends BaseController
 
             flash()->success('Permissão criada com sucesso.');
 
-            return redirect(route('seguranca.permissoes.index'));
+            return redirect('/seguranca/permissoes/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -141,7 +141,7 @@ class PermissoesController extends BaseController
             if (!$permissao) {
                 flash()->error('Permissão não existe.');
 
-                return redirect(route('seguranca.permissoes.index'));
+                return redirect('/seguranca/permissoes/index');
             }
 
             $requestData = $request->only($this->permissaoRepository->getFillableModelFields());
@@ -154,7 +154,7 @@ class PermissoesController extends BaseController
 
             flash()->success('Permissão atualizado com sucesso.');
 
-            return redirect(route('seguranca.permissoes.index'));
+            return redirect('/seguranca/permissoes/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
