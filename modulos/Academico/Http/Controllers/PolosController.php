@@ -21,7 +21,7 @@ class PolosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.polos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/polos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -51,14 +51,14 @@ class PolosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('academico.polos.getEdit', ['id' => $id]),
+                                'action' => '/academico/polos/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.polos.delete'),
+                                'action' => '/academico/polos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -90,16 +90,14 @@ class PolosController extends BaseController
             }
 
             flash()->success('Polo criada com sucesso.');
-
-            return redirect(route('academico.polos.index'));
+            return redirect('/academico/polos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -109,7 +107,6 @@ class PolosController extends BaseController
 
         if (!$polo) {
             flash()->error('Polo não existe.');
-
             return redirect()->back();
         }
 
@@ -123,7 +120,6 @@ class PolosController extends BaseController
 
             if (!$polo) {
                 flash()->error('Polo não existe.');
-
                 return redirect(route('academico.polos.index'));
             }
 
@@ -131,21 +127,18 @@ class PolosController extends BaseController
 
             if (!$this->poloRepository->update($requestData, $polo->pol_id, 'pol_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Polo atualizado com sucesso.');
-
-            return redirect(route('academico.polos.index'));
+            return redirect('/academico/polos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -164,11 +157,10 @@ class PolosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

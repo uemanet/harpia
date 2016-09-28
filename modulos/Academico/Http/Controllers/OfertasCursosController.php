@@ -37,7 +37,7 @@ class OfertasCursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.ofertascursos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/ofertascursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -76,14 +76,14 @@ class OfertasCursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => route('academico.turmas.index', ['id' => $id]),
+                                'action' => '/academico/turmas/index/'.$id,
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.ofertascursos.delete'),
+                                'action' => '/academico/ofertascursos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -102,9 +102,7 @@ class OfertasCursosController extends BaseController
     public function getCreate()
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-
         $modalidades = $this->modalidadeRepository->lists('mdl_id', 'mdl_nome');
-
         $polos = $this->poloRepository->lists('pol_id', 'pol_nome');
 
         return view('Academico::ofertascursos.create', compact('cursos', 'modalidades', 'polos'));
@@ -130,12 +128,12 @@ class OfertasCursosController extends BaseController
             }
 
             flash()->success('Oferta de curso criada com sucesso.');
-
-            return redirect(route('academico.ofertascursos.index'));
+            return redirect('/academico/ofertascursos');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
@@ -157,6 +155,7 @@ class OfertasCursosController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
