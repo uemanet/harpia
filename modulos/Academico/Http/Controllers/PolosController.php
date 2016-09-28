@@ -89,7 +89,7 @@ class PolosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Polo criada com sucesso.');
+            flash()->success('Polo criado com sucesso.');
             return redirect('/academico/polos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
