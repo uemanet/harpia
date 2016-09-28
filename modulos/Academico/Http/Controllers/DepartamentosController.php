@@ -29,7 +29,7 @@ class DepartamentosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.departamentos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/departamentos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -63,14 +63,14 @@ class DepartamentosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('academico.departamentos.getEdit', ['id' => $id]),
+                                'action' => '/academico/departamentos/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.departamentos.delete'),
+                                'action' => '/academico/departamentos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -88,7 +88,6 @@ class DepartamentosController extends BaseController
     public function getCreate()
     {
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
 
         return view('Academico::departamentos.create', ['centros' => $centros, 'professores' => $professores]);
@@ -101,36 +100,29 @@ class DepartamentosController extends BaseController
 
             if (!$departamento) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Departamento criado com sucesso.');
-
-            return redirect(route('academico.departamentos.index'));
+            return redirect('/academico/departamentos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
     public function getEdit($departamentoId)
     {
         $departamento = $this->departamentoRepository->find($departamentoId);
-
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
-
 
         if (!$departamento) {
             flash()->error('Departamento não existe.');
-
             return redirect()->back();
         }
 
@@ -144,29 +136,25 @@ class DepartamentosController extends BaseController
 
             if (!$departamento) {
                 flash()->error('Departamento não existe.');
-
-                return redirect(route('academico.departamentos.index'));
+                return redirect('academico/departamentos/index');
             }
 
             $requestData = $request->only($this->departamentoRepository->getFillableModelFields());
 
             if (!$this->departamentoRepository->update($requestData, $departamento->dep_id, 'dep_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Departamento atualizado com sucesso.');
-
-            return redirect(route('academico.departamentos.index'));
+            return redirect('/academico/departamentos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 

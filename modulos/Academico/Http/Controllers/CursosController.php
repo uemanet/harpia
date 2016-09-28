@@ -24,7 +24,7 @@ class CursosController extends BaseController
                                 NivelCursoRepository $nivelcurso,
                                 ProfessorRepository $professor)
     {
-        $this->cursoRepository= $curso;
+        $this->cursoRepository = $curso;
         $this->departamentoRepository = $departamento;
         $this->nivelcursoRepository = $nivelcurso;
         $this->professorRepository = $professor;
@@ -33,7 +33,7 @@ class CursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.cursos.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/cursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -69,21 +69,21 @@ class CursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-table',
-                                'action' => route('academico.matrizescurriculares.index', ['id' => $id]),
+                                'action' => '/academico/matrizescurriculares/index/' . $id,
                                 'label' => 'Matrizes',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('academico.cursos.getEdit', ['id' => $id]),
+                                'action' => '/academico/cursos/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.cursos.delete'),
+                                'action' => '/academico/cursos/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -101,9 +101,7 @@ class CursosController extends BaseController
     public function getCreate()
     {
         $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
-
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
-
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
 
         return view('Academico::cursos.create', ['departamentos' => $departamentos, 'niveiscursos' => $niveiscursos, 'professores' => $professores]);
@@ -116,37 +114,30 @@ class CursosController extends BaseController
 
             if (!$curso) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Curso criado com sucesso.');
-
-            return redirect(route('academico.cursos.index'));
+            return redirect('/academico/cursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
     public function getEdit($cursoId)
     {
         $curso = $this->cursoRepository->find($cursoId);
-
         $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
-
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
-
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
 
         if (!$curso) {
             flash()->error('Curso não existe.');
-
             return redirect()->back();
         }
 
@@ -160,29 +151,25 @@ class CursosController extends BaseController
 
             if (!$curso) {
                 flash()->error('Curso não existe.');
-
-                return redirect(route('academico.cursos.index'));
+                return redirect('/academico/cursos/index');
             }
 
             $requestData = $request->only($this->cursoRepository->getFillableModelFields());
 
             if (!$this->cursoRepository->update($requestData, $curso->crs_id, 'crs_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Curso atualizado com sucesso.');
-
-            return redirect(route('academico.cursos.index'));
+            return redirect('/academico/cursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -201,11 +188,10 @@ class CursosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

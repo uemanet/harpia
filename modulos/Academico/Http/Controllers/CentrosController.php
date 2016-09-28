@@ -23,7 +23,7 @@ class CentrosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction(route('academico.centros.getCreate'))->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/centros/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -59,14 +59,14 @@ class CentrosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => route('academico.centros.getEdit', ['id' => $id]),
+                                'action' => '/academico/centros/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => route('academico.centros.delete'),
+                                'action' => '/academico/centros/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -80,14 +80,12 @@ class CentrosController extends BaseController
         }
 
 
-
         return view('Academico::centros.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
     {
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
-
         return view('Academico::centros.create', compact('professores'));
     }
 
@@ -98,21 +96,20 @@ class CentrosController extends BaseController
 
             if (!$centro) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Centro criado com sucesso.');
 
-            return redirect(route('academico.centros.index'));
+            return redirect('/academico/centros/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+
         }
     }
 
@@ -124,7 +121,6 @@ class CentrosController extends BaseController
 
         if (!$centro) {
             flash()->error('Centro não existe.');
-
             return redirect()->back();
         }
 
@@ -138,29 +134,26 @@ class CentrosController extends BaseController
 
             if (!$centro) {
                 flash()->error('Centro não existe.');
-
-                return redirect(route('academico.centros.index'));
+                return redirect('/academico/centros/index');
             }
 
             $requestData = $request->only($this->centroRepository->getFillableModelFields());
 
             if (!$this->centroRepository->update($requestData, $centro->cen_id, 'cen_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Centro atualizado com sucesso.');
-
-            return redirect(route('academico.centros.index'));
+            return redirect('/academico/centros/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+
         }
     }
 
@@ -181,11 +174,11 @@ class CentrosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar deletar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar deletar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+
         }
     }
 }
