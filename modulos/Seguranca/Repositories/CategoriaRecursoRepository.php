@@ -51,6 +51,6 @@ class CategoriaRecursoRepository extends BaseRepository
      */
     public function listsAllByModulo($moduloid)
     {
-        return $this->model->where('ctr_mod_id', $moduloid)->lists('ctr_nome', 'ctr_id');
+        return $this->model->where('ctr_mod_id', $moduloid)->pluck('ctr_nome', 'ctr_id');
     }
 }
