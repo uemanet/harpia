@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('seguranca.perfis.index') }}">
+                <form method="GET" action="{{ url('/seguranca/perfis/index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="prf_nome" id="prf_nome" value="{{Input::get('prf_nome')}}" placeholder="Nome do perfil">
                     </div>
