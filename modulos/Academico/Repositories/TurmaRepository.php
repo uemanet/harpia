@@ -61,6 +61,6 @@ class TurmaRepository extends BaseRepository
      */
     public function listsAllById($turmaid)
     {
-        return $this->model->where('trm_id', $turmaid)->lists('trm_nome', 'trm_id');
+        return $this->model->where('trm_id', $turmaid)->pluck('trm_nome', 'trm_id');
     }
 }

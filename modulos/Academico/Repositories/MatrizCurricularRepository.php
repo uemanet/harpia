@@ -69,6 +69,6 @@ class MatrizCurricularRepository extends BaseRepository
      */
     public function listsAllByCurso($cursoid)
     {
-        return $this->model->where('mtc_crs_id', $cursoid)->lists('mtc_titulo', 'mtc_id');
+        return $this->model->where('mtc_crs_id', $cursoid)->pluck('mtc_titulo', 'mtc_id');
     }
 }
