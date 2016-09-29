@@ -32,48 +32,52 @@ class RecursosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->recursoRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'rcs_id' => '#',
-            'rcs_nome' => 'Recurso',
-            'rcs_descricao' => 'Descrição',
-            'rcs_action' => 'Ações'
-        ))
-            ->modifyCell('rcs_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('rcs_action', 'rcs_id')
-            ->modify('rcs_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/recursos/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'rcs_id' => '#',
+                'rcs_nome' => 'Recurso',
+                'rcs_descricao' => 'Descrição',
+                'rcs_action' => 'Ações'
+            ))
+                ->modifyCell('rcs_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('rcs_action', 'rcs_id')
+                ->modify('rcs_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/recursos/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/seguranca/recursos/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' =>  '/seguranca/recursos/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('rcs_id', 'rcs_nome'));
+                    ]);
+                })
+                ->sortable(array('rcs_id', 'rcs_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
-
+            $paginacao = $tableData->appends($request->except('page'));
+        }
         return view('Seguranca::recursos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
@@ -97,7 +101,7 @@ class RecursosController extends BaseController
 
             flash()->success('Recurso criado com sucesso.');
 
-            return redirect('/seguranca/recursos');
+            return redirect('/seguranca/recursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -138,7 +142,7 @@ class RecursosController extends BaseController
             if (!$recurso) {
                 flash()->error('Recurso não existe.');
 
-                return redirect('/seguranca/recursos');
+                return redirect('/seguranca/recursos/index');
             }
 
             $requestData = $request->only($this->recursoRepository->getFillableModelFields());
@@ -151,15 +155,14 @@ class RecursosController extends BaseController
 
             flash()->success('Recurso atualizado com sucesso.');
 
-            return redirect('/seguranca/recursos');
+            return redirect('/seguranca/recursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
         }
     }
 

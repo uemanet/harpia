@@ -43,14 +43,18 @@
             </div>
         </div>
     </div>
-    <div class="box box-primary">
-        <div class="box-header">
-            @if($tabela->count())
+    @if(!is_null($tabela))
+        <div class="box box-primary">
+            <div class="box-header">
                 {!! $tabela->render() !!}
-            @else
-                Nenhum registro encontrado
-            @endif
+            </div>
         </div>
-    </div>
-    <div class="text-center">{!! $paginacao->links() !!}</div>
+
+        <div class="text-center">{!! $paginacao->links() !!}</div>
+
+    @else
+        <div class="box box-primary">
+            <div class="box-body">Sem registros para apresentar</div>
+        </div>
+    @endif
 @stop

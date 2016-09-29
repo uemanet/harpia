@@ -24,15 +24,19 @@ class UsuariosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
         
-        $tabela =  $tableData->columns(array(
-            'pes_id' => '#',
-            'pes_nome' => 'Nome',
-            'pes_email' => 'Email',
-            'doc_conteudo' => 'CPF',
-            'pes_action' => 'Ações'
-        ))
+        if($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'pes_id' => '#',
+                'pes_nome' => 'Nome',
+                'pes_email' => 'Email',
+                'doc_conteudo' => 'CPF',
+                'pes_action' => 'Ações'
+            ))
             ->modifyCell('pes_action', function () {
                 return array('style' => 'width: 140px;');
             })
@@ -65,7 +69,9 @@ class UsuariosController extends BaseController
             })
             ->sortable(array('pes_id', 'pes_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+        }
+        
 
         return view('Seguranca::usuarios.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }

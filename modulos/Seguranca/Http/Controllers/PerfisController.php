@@ -29,54 +29,59 @@ class PerfisController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->perfilRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'prf_id' => '#',
-            'prf_nome' => 'Perfil',
-            'prf_descricao' => 'Descrição',
-            'prf_action' => 'Ações'
-        ))
-            ->modifyCell('prf_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('prf_action', 'prf_id')
-            ->modify('prf_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => 'text-blue',
-                            'icon' => 'fa fa-check-square-o',
-                            'action' => '/seguranca/perfis/atribuirpermissoes/' . $id,
-                            'label' => 'Permissões',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'prf_id' => '#',
+                'prf_nome' => 'Perfil',
+                'prf_descricao' => 'Descrição',
+                'prf_action' => 'Ações'
+            ))
+                ->modifyCell('prf_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('prf_action', 'prf_id')
+                ->modify('prf_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/perfis/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
-                        ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/perfis/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => 'text-blue',
+                                'icon' => 'fa fa-check-square-o',
+                                'action' => '/seguranca/perfis/atribuirpermissoes/'. $id,
+                                'label' => 'Permissões',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/seguranca/perfis/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' =>  '/seguranca/perfis/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('prf_id', 'prf_nome'));
+                    ]);
+                })
+                ->sortable(array('prf_id', 'prf_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+        }
 
         return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
@@ -101,7 +106,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil criado com sucesso.');
 
-            return redirect('/seguranca/perfis');
+            return redirect('/seguranca/perfis/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -124,7 +129,7 @@ class PerfisController extends BaseController
         }
 
         $modulos = $this->moduloRepository->lists('mod_id', 'mod_nome');
-        
+
         return view('Seguranca::perfis.edit', compact('perfil', 'modulos'));
     }
 
@@ -136,7 +141,7 @@ class PerfisController extends BaseController
             if (!$perfil) {
                 flash()->error('Perfil não existe.');
 
-                return redirect('/seguranca/perfis');
+                return redirect('/seguranca/perfis/index');
             }
 
             $requestData = $request->only('prf_nome', 'prf_descricao');
@@ -149,7 +154,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil atualizado com sucesso.');
 
-            return redirect('/seguranca/perfis');
+            return redirect('/seguranca/perfis/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -224,11 +229,10 @@ class PerfisController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
         }
     }
 }

@@ -89,17 +89,15 @@ class PolosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Polo criada com sucesso.');
-
-            return redirect('/academico/polos');
+            flash()->success('Polo criado com sucesso.');
+            return redirect('/academico/polos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -109,7 +107,6 @@ class PolosController extends BaseController
 
         if (!$polo) {
             flash()->error('Polo não existe.');
-
             return redirect()->back();
         }
 
@@ -123,29 +120,25 @@ class PolosController extends BaseController
 
             if (!$polo) {
                 flash()->error('Polo não existe.');
-
-                return redirect('/academico/polos');
+                return redirect('academico/polos/index');
             }
 
             $requestData = $request->only($this->poloRepository->getFillableModelFields());
 
             if (!$this->poloRepository->update($requestData, $polo->pol_id, 'pol_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Polo atualizado com sucesso.');
-
-            return redirect('/academico/polos');
+            return redirect('/academico/polos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -164,11 +157,10 @@ class PolosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

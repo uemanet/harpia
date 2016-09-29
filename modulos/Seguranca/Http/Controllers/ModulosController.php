@@ -25,47 +25,52 @@ class ModulosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->moduloRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-                'mod_id' => '#',
-                'mod_nome' => 'Módulo',
-                'mod_descricao' => 'Descrição',
-                'mod_action' => 'Ações'
-            ))
-                ->modifyCell('mod_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('mod_action', 'mod_id')
-                ->modify('mod_action', function ($id) {
-                    return ActionButton::grid([
-                        'type' => 'SELECT',
-                        'config' => [
-                            'classButton' => 'btn-default',
-                            'label' => 'Selecione'
-                        ],
-                        'buttons' => [
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-pencil',
-                                'action' => '/seguranca/modulos/edit/' . $id,
-                                'label' => 'Editar',
-                                'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                    'mod_id' => '#',
+                    'mod_nome' => 'Módulo',
+                    'mod_descricao' => 'Descrição',
+                    'mod_action' => 'Ações'
+                ))
+                    ->modifyCell('mod_action', function () {
+                        return array('style' => 'width: 140px;');
+                    })
+                    ->means('mod_action', 'mod_id')
+                    ->modify('mod_action', function ($id) {
+                        return ActionButton::grid([
+                            'type' => 'SELECT',
+                            'config' => [
+                                'classButton' => 'btn-default',
+                                'label' => 'Selecione'
                             ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'action' => '/seguranca/modulos/delete',
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
+                            'buttons' => [
+                                [
+                                    'classButton' => '',
+                                    'icon' => 'fa fa-pencil',
+                                    'action' => '/seguranca/modulos/edit/' . $id,
+                                    'label' => 'Editar',
+                                    'method' => 'get'
+                                ],
+                                [
+                                    'classButton' => 'btn-delete text-red',
+                                    'icon' => 'fa fa-trash',
+                                    'action' =>  '/seguranca/modulos/delete',
+                                    'id' => $id,
+                                    'label' => 'Excluir',
+                                    'method' => 'post'
+                                ]
                             ]
-                        ]
-                    ]);
-                })
-                ->sortable(array('mod_id', 'mod_nome'));
+                        ]);
+                    })
+                    ->sortable(array('mod_id', 'mod_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+        }
 
         return view('Seguranca::modulos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
@@ -88,7 +93,7 @@ class ModulosController extends BaseController
 
             flash()->success('Módulo criado com sucesso.');
 
-            return redirect('/seguranca/modulos');
+            return redirect('/seguranca/modulos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -121,7 +126,7 @@ class ModulosController extends BaseController
             if (!$modulo) {
                 flash()->error('Módulo não existe.');
 
-                return redirect('/seguranca/modulos');
+                return redirect('/seguranca/modulos/index');
             }
 
             $requestData = $request->only($this->moduloRepository->getFillableModelFields());
@@ -134,15 +139,14 @@ class ModulosController extends BaseController
 
             flash()->success('Módulo atualizado com sucesso.');
 
-            return redirect('/seguranca/modulos');
+            return redirect('/seguranca/modulos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
         }
     }
 
@@ -161,11 +165,10 @@ class ModulosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
         }
     }
 }

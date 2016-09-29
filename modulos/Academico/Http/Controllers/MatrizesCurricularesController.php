@@ -74,7 +74,7 @@ class MatrizesCurricularesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/matrizescurriculares/edit/' . $id,
+                                'action' => '/academico/matrizescurriculares/edit/'.$id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
@@ -166,7 +166,6 @@ class MatrizesCurricularesController extends BaseController
             if ($request->file('mtc_file') != null) {
                 // Novo Anexo
                 $projetoPedagogico = $request->file('mtc_file');
-
                 // Atualiza anexo
                 $this->anexoRepository->atualizarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico, $projetoPedagogico);
             }
@@ -179,6 +178,7 @@ class MatrizesCurricularesController extends BaseController
             }
 
             DB::commit();
+
             flash()->success('Matriz Curricular atualizada com sucesso.');
             return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
@@ -186,6 +186,7 @@ class MatrizesCurricularesController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
@@ -196,7 +197,6 @@ class MatrizesCurricularesController extends BaseController
     {
         try {
             $matrizCurricularId = $request->get('id');
-
             $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
 
 
@@ -212,11 +212,9 @@ class MatrizesCurricularesController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

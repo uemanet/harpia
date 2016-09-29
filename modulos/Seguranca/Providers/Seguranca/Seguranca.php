@@ -25,7 +25,7 @@ class Seguranca implements SegurancaContract
     {
         $this->app = $app;
     }
- 
+
     /**
      * Retorna o usuário logado na aplicação
      */
@@ -81,6 +81,10 @@ class Seguranca implements SegurancaContract
     public function haspermission($path)
     {
         list($modulo, $recurso, $permissao) = $this->extractPathResources($path);
+
+        if ($recurso === "async") {
+            return true;
+        }
 
         // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
         if (is_null($this->getUser())) {

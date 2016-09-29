@@ -67,7 +67,7 @@ class GruposController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/grupos/edit/' . $id,
+                                'action' => '/academico/grupos/edit/'.$id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
@@ -104,9 +104,6 @@ class GruposController extends BaseController
 
         $turma = $this->turmaRepository->listsAllById($turmaId);
 
-
-
-        //dd($oferta,$curso,$turma,$polos);
         return view('Academico::grupos.create', ['curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
     }
 
@@ -117,48 +114,34 @@ class GruposController extends BaseController
 
             if (!$grupo) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Grupo criado com sucesso.');
-
             return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
     public function getEdit($grupoId)
     {
         $grupo = $this->grupoRepository->find($grupoId);
-
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
-
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
-
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-
         $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id);
-
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
-
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
-
-
-
-        //dd($oferta,$curso,$turma,$polos);
 
 
         if (!$grupo) {
             flash()->error('Grupo não existe.');
-
             return redirect()->back();
         }
 
@@ -172,29 +155,25 @@ class GruposController extends BaseController
 
             if (!$grupo) {
                 flash()->error('Grupo não existe.');
-
-                return redirect('/academico/grupos');
+                return redirect()->back();
             }
 
             $requestData = $request->only($this->grupoRepository->getFillableModelFields());
 
             if (!$this->grupoRepository->update($requestData, $grupo->grp_id, 'grp_id')) {
                 flash()->error('Erro ao tentar editar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Grupo atualizado com sucesso.');
-
             return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -213,28 +192,10 @@ class GruposController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
-    }
-
-    private function lists($array)
-    {
-        $result = [];
-        if (count($array)) {
-            foreach ($array as $obj) {
-                $element = [];
-                foreach ($obj as $key => $value) {
-                    $element[] = $value;
-                }
-
-                $result[$element[0]] = $element[1];
-            }
-        }
-
-        return collect($result);
     }
 }

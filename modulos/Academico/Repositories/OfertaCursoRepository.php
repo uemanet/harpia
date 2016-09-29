@@ -34,7 +34,7 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function listsAllByCurso($cursoid)
     {
-        return $this->model->where('ofc_crs_id', $cursoid)->lists('ofc_ano', 'ofc_id');
+        return $this->model->where('ofc_crs_id', $cursoid)->pluck('ofc_ano', 'ofc_id');
     }
 
     /**
@@ -46,7 +46,7 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function listsAllById($ofertaid)
     {
-        return $this->model->where('ofc_id', $ofertaid)->lists('ofc_ano', 'ofc_id');
+        return $this->model->where('ofc_id', $ofertaid)->pluck('ofc_ano', 'ofc_id');
     }
 
     /**
@@ -58,6 +58,6 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function listsOfertaByTurma($turmadaofertaid)
     {
-        return $this->model->where('ofc_id', $turmadaofertaid)->lists('ofc_ano', 'ofc_id');
+        return $this->model->where('ofc_id', $turmadaofertaid)->pluck('ofc_ano', 'ofc_id');
     }
 }

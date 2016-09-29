@@ -49,7 +49,7 @@ class DepartamentosController extends BaseController
                 })
                 ->means('dep_action', 'dep_id')
                 ->means('dep_prf_diretor', 'diretor')
-                ->modify('dep_prf_diretor', function ($diretor){
+                ->modify('dep_prf_diretor', function ($diretor) {
                     return $diretor->pessoa->pes_nome;
                 })
                 ->modify('dep_action', function ($id) {
@@ -88,7 +88,6 @@ class DepartamentosController extends BaseController
     public function getCreate()
     {
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
 
         return view('Academico::departamentos.create', ['centros' => $centros, 'professores' => $professores]);
@@ -101,36 +100,29 @@ class DepartamentosController extends BaseController
 
             if (!$departamento) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Departamento criado com sucesso.');
-
-            return redirect('/academico/departamentos');
+            return redirect('/academico/departamentos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
     public function getEdit($departamentoId)
     {
         $departamento = $this->departamentoRepository->find($departamentoId);
-
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
-
 
         if (!$departamento) {
             flash()->error('Departamento não existe.');
-
             return redirect()->back();
         }
 
@@ -144,29 +136,25 @@ class DepartamentosController extends BaseController
 
             if (!$departamento) {
                 flash()->error('Departamento não existe.');
-
-                return redirect('/academico/departamentos');
+                return redirect('academico/departamentos/index');
             }
 
             $requestData = $request->only($this->departamentoRepository->getFillableModelFields());
 
             if (!$this->departamentoRepository->update($requestData, $departamento->dep_id, 'dep_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Departamento atualizado com sucesso.');
-
-            return redirect('/academico/departamentos');
+            return redirect('/academico/departamentos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -185,11 +173,10 @@ class DepartamentosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

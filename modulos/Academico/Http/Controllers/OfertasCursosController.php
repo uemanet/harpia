@@ -21,7 +21,11 @@ class OfertasCursosController extends BaseController
     protected $modalidadeRepository;
     protected $poloRepository;
 
-    public function __construct(OfertaCursoRepository $ofertacursoRepository, CursoRepository $cursoRepository, MatrizCurricularRepository $matrizcurricularRepository, ModalidadeRepository $modalidadeRepository, PoloRepository $poloRepository)
+    public function __construct(OfertaCursoRepository $ofertacursoRepository,
+                                CursoRepository $cursoRepository,
+                                MatrizCurricularRepository $matrizcurricularRepository,
+                                ModalidadeRepository $modalidadeRepository,
+                                PoloRepository $poloRepository)
     {
         $this->ofertacursoRepository = $ofertacursoRepository;
         $this->cursoRepository = $cursoRepository;
@@ -98,9 +102,7 @@ class OfertasCursosController extends BaseController
     public function getCreate()
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-
         $modalidades = $this->modalidadeRepository->lists('mdl_id', 'mdl_nome');
-
         $polos = $this->poloRepository->lists('pol_id', 'pol_nome');
 
         return view('Academico::ofertascursos.create', compact('cursos', 'modalidades', 'polos'));
@@ -126,16 +128,14 @@ class OfertasCursosController extends BaseController
             }
 
             flash()->success('Oferta de curso criada com sucesso.');
-
-            return redirect('/academico/ofertascursos');
+            return redirect('/academico/ofertascursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -154,11 +154,10 @@ class OfertasCursosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

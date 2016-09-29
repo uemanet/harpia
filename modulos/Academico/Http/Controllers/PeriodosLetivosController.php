@@ -53,7 +53,7 @@ class PeriodosLetivosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/periodosletivos/edit/' . $id,
+                                'action' => '/academico/periodosletivos/edit/'.$id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
@@ -93,16 +93,14 @@ class PeriodosLetivosController extends BaseController
             }
 
             flash()->success('Período Letivo criado com sucesso.');
-
-            return redirect('/academico/periodosletivos');
+            return redirect('/academico/periodosletivos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -112,7 +110,6 @@ class PeriodosLetivosController extends BaseController
 
         if (!$periodoLetivo) {
             flash()->error('Período Letivo não existe.');
-
             return redirect()->back();
         }
 
@@ -126,29 +123,25 @@ class PeriodosLetivosController extends BaseController
 
             if (!$periodoLetivo) {
                 flash()->error('Período Letivo não existe.');
-
-                return redirect('/academico/periodosletivos');
+                return redirect('academico/periodosletivos/index');
             }
 
             $requestData = $request->only($this->periodoLetivoRepository->getFillableModelFields());
 
             if (!$this->periodoLetivoRepository->update($requestData, $periodoLetivo->per_id, 'per_id')) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
             }
 
             flash()->success('Período Letivo atualizado com sucesso.');
-
-            return redirect('/academico/periodosletivos');
+            return redirect('/academico/periodosletivos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -167,11 +160,10 @@ class PeriodosLetivosController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

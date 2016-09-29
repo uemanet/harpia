@@ -29,47 +29,52 @@ class CategoriasRecursosController extends BaseController
 
         $actionButtons[] = $btnNovo;
 
+        $paginacao = null;
+        $tabela = null;
+
         $tableData = $this->categoriaRecursoRepository->paginateRequest($request->all());
 
-        $tabela = $tableData->columns(array(
-            'ctr_id' => '#',
-            'ctr_nome' => 'Categoria',
-            'ctr_descricao' => 'Descrição',
-            'ctr_action' => 'Ações'
-        ))
-            ->modifyCell('ctr_action', function () {
-                return array('style' => 'width: 140px;');
-            })
-            ->means('ctr_action', 'ctr_id')
-            ->modify('ctr_action', function ($id) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/categoriasrecursos/edit/' . $id,
-                            'label' => 'Editar',
-                            'method' => 'get'
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'ctr_id' => '#',
+                'ctr_nome' => 'Categoria',
+                'ctr_descricao' => 'Descrição',
+                'ctr_action' => 'Ações'
+            ))
+                ->modifyCell('ctr_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->means('ctr_action', 'ctr_id')
+                ->modify('ctr_action', function ($id) {
+                    return ActionButton::grid([
+                        'type' => 'SELECT',
+                        'config' => [
+                            'classButton' => 'btn-default',
+                            'label' => 'Selecione'
                         ],
-                        [
-                            'classButton' => 'btn-delete text-red',
-                            'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/categoriasrecursos/delete',
-                            'id' => $id,
-                            'label' => 'Excluir',
-                            'method' => 'post'
+                        'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/seguranca/categoriasrecursos/edit/' . $id,
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'action' =>  '/seguranca/categoriasrecursos/delete',
+                                'id' => $id,
+                                'label' => 'Excluir',
+                                'method' => 'post'
+                            ]
                         ]
-                    ]
-                ]);
-            })
-            ->sortable(array('ctr_id', 'ctr_nome'));
+                    ]);
+                })
+                ->sortable(array('ctr_id', 'ctr_nome'));
 
-        $paginacao = $tableData->appends($request->except('page'));
+            $paginacao = $tableData->appends($request->except('page'));
+        }
 
         return view('Seguranca::categoriasrecursos.index',
             ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
@@ -96,7 +101,7 @@ class CategoriasRecursosController extends BaseController
 
             flash()->success('Categoria criada com sucesso.');
 
-            return redirect('/seguranca/categoriasrecursos');
+            return redirect('/seguranca/categoriasrecursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -132,7 +137,7 @@ class CategoriasRecursosController extends BaseController
             if (!$categoria) {
                 flash()->error('Categoria não existe.');
 
-                return redirect('/seguranca/categoriasrecursos');
+                return redirect('/seguranca/categoriasrecursos/index');
             }
 
             $requestData = $request->only($this->categoriaRecursoRepository->getFillableModelFields());
@@ -145,7 +150,7 @@ class CategoriasRecursosController extends BaseController
 
             flash()->success('Categoria atualizada com sucesso.');
 
-            return redirect('/seguranca/categoriasrecursos');
+            return redirect('/seguranca/categoriasrecursos/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

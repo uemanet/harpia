@@ -37,6 +37,6 @@ class CursoRepository extends BaseRepository
      */
     public function listsCursoByOferta($cursodaofertaid)
     {
-        return $this->model->where('crs_id', $cursodaofertaid)->lists('crs_nome', 'crs_id');
+        return $this->model->where('crs_id', $cursodaofertaid)->pluck('crs_nome', 'crs_id');
     }
 }
