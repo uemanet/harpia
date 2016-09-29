@@ -55,20 +55,123 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
 });
 
 // Modulo GERAL
-//$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
-//    return [
-//        'pes_nome' => $faker->name,
-//        'pes_sexo' => $faker->randomElement(['M', 'F']),
-//        'pes_email' => $faker->email,
-//        'pes_telefone' => $faker->phoneNumber,
-//        'pes_nascimento' => $faker->date(),
-//        'pes_mae' => $faker->name,
-//        'pes_pai' => $faker->name,
-//        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
-//        'pes_naturalidade' => $faker->city,
-//        'pes_nacionalidade' => $faker->country,
-//        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
-//        'pes_necessidade_especial' => $faker->randomElement(['sim', 'nao']),
-//        'pes_estrangeiro' => $faker->boolean
-//    ];
-//});
+$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
+    return [
+        'pes_nome' => $faker->name,
+        'pes_sexo' => $faker->randomElement(['M', 'F']),
+        'pes_email' => $faker->email,
+        'pes_telefone' => $faker->phoneNumber,
+        'pes_nascimento' => $faker->date(),
+        'pes_mae' => $faker->name,
+        'pes_pai' => $faker->name,
+        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
+        'pes_naturalidade' => $faker->city,
+        'pes_nacionalidade' => $faker->country,
+        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
+        'pes_necessidade_especial' => $faker->randomElement(['sim', 'nao']),
+        'pes_estrangeiro' => $faker->boolean
+    ];
+});
+
+$factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $faker) {
+    return [
+        'anx_tax_id' => $faker->randomNumber(1),
+        'anx_nome' => $faker->word,
+        'anx_mime' => $faker->mimeType,
+        'anx_localizacao' => base_path(),
+    ];
+});
+
+
+// Modulo ACADEMICO
+$factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Generator $faker){
+   return [
+       'dep_cen_id' => 1,
+       'dep_prf_diretor' => 1,
+       'dep_nome' => $faker->word
+   ];
+});
+
+$factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generator $faker){
+    return [
+        'cen_prf_diretor' => 1,
+        'cen_nome' => $faker->word,
+        'cen_sigla' => $faker->word,
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
+    return [
+        'prf_pes_id' => 1,
+        'prf_matricula' => $faker->bankAccountNumber,
+    ];
+});
+
+
+$factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\Generator $faker){
+    return [
+        'per_nome' => $faker->word,
+        'per_inicio' => $faker->date('d/m/Y'),
+        'per_fim' => $faker->date('d/m/Y'),
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator $faker) {
+    return [
+        'pol_nome' => $faker->city
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generator $faker) {
+    return [
+        'crs_dep_id' => 1,
+        'crs_nvc_id' => 1,
+        'crs_prf_diretor' => 1,
+        'crs_nome' => $faker->name,
+        'crs_sigla' => $faker->name,
+        'crs_descricao' => $faker->sentence(3),
+        'crs_resolucao' => $faker->sentence(3),
+        'crs_autorizacao' => $faker->sentence(3),
+        'crs_data_autorizacao' => $faker->date('d/m/Y'),
+        'crs_eixo' => $faker->sentence(3),
+        'crs_habilitacao' => $faker->sentence(3)
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
+    return [
+        'ofc_crs_id' => 1,
+        'ofc_mtc_id' => 1,
+        'ofc_mdl_id' => 1,
+        'ofc_ano' =>2005
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
+    return [
+        'mtc_crs_id' => 1,
+        'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
+        'mtc_descricao' => $faker->words(5, true),
+        'mtc_data' => $faker->date('d/m/Y'),
+        'mtc_creditos' => $faker->randomNumber(3),
+        'mtc_horas' => $faker->randomNumber(4),
+        'mtc_horas_praticas' => $faker->randomNumber(4)
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
+   return [
+       'grp_trm_id' => 1,
+       'grp_pol_id' => 1,
+       'grp_nome' => $faker->name
+   ];
+});
+
+$factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generator $faker) {
+    return [
+        'trm_ofc_id' => 1,
+        'trm_per_id' => 1,
+        'trm_nome' => $faker->sentence(3),
+        'trm_qtd_vagas' => 30
+    ];
+});

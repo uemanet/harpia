@@ -17,10 +17,11 @@ class CreateAcdMatrizesCurricularesTable extends Migration
             $table->increments('mtc_id');
             $table->integer('mtc_crs_id')->unsigned();
             $table->integer('mtc_anx_projeto_pedagogico')->unsigned();
+            $table->string('mtc_titulo');
             $table->string('mtc_descricao')->nullable();
-            $table->date('mtc_data')->nullable();
+            $table->date('mtc_data');
             $table->smallInteger('mtc_creditos')->unsigned()->nullable();
-            $table->smallInteger('mtc_horas')->unsigned()->nullable();
+            $table->smallInteger('mtc_horas')->unsigned();
             $table->smallInteger('mtc_horas_praticas')->unsigned()->nullable();
 
             $table->timestamps();

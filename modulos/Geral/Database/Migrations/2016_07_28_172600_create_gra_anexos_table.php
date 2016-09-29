@@ -22,7 +22,6 @@ class CreateGraAnexosTable extends Migration
             $table->timestamps();
 
             $table->foreign('anx_tax_id')->references('tax_id')->on('gra_tipos_anexos');
-
         });
     }
 

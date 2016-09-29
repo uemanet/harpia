@@ -8,11 +8,10 @@ use Modulos\Seguranca\Models\Usuario;
 
 class UsuarioTableSeeder extends Seeder
 {
-
     public function run()
     {
         $pessoa = new Pessoa;
-        $pessoa->pes_nome = 'Adminstrador';
+        $pessoa->pes_nome = 'Administrador';
         $pessoa->pes_sexo = 'M';
         $pessoa->pes_email = 'admin@admin.com';
         $pessoa->pes_telefone = '98988888888';

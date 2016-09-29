@@ -17,12 +17,12 @@
                     <li class="user-footer">
                         <div class="pull-left">
                             <a href="{{url('/')}}/seguranca/profile" class="btn btn-default btn-flat">
-                                <i class="fa fa-edit"></i> Profile
+                                <i class="fa fa-edit"></i> Perfil
                             </a>
                         </div>
                         <div class="pull-right">
                             <a href="{{url('/')}}/logout" class="btn btn-default btn-flat">
-                                <i class="fa fa-sign-out"></i> Logout
+                                <i class="fa fa-sign-out"></i> Sair
                             </a>
                         </div>
                     </li>

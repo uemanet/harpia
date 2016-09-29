@@ -7,7 +7,6 @@ use Modulos\Seguranca\Models\Recurso;
 
 class RecursoTableSeeder extends Seeder
 {
-
     public function run()
     {
         $recurso = new Recurso();
@@ -89,6 +88,113 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-ellipsis-h';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // MODULO ACADEMICO
+
+        // Recurso Dashboard
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Dashboard';
+        $recurso->rcs_rota = 'index';
+        $recurso->rcs_descricao = 'Recurso dashboard do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-tachometer';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // Recurso Polos
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Polos';
+        $recurso->rcs_rota = 'polos';
+        $recurso->rcs_descricao = 'Recurso polos da categoria cadastro do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-ellipsis-h';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 2;
+        $recurso->save();
+
+        // Recurso Departamentos
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Departamentos';
+        $recurso->rcs_rota = 'departamentos';
+        $recurso->rcs_descricao = 'Recurso departamento do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-sitemap';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 4;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Períodos Letivos';
+        $recurso->rcs_rota = 'periodosletivos';
+        $recurso->rcs_descricao = 'Recurso período letivo do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-calendar';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 6;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Cursos';
+        $recurso->rcs_rota = 'cursos';
+        $recurso->rcs_descricao = 'Recurso curso do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-graduation-cap';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 5;
+        $recurso->save();
+
+        // Recursos Centros
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Centros';
+        $recurso->rcs_rota = 'centros';
+        $recurso->rcs_descricao = 'Recurso centro do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-building';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Matrizes Curriculares';
+        $recurso->rcs_rota = 'matrizescurriculares';
+        $recurso->rcs_descricao = 'Recurso matriz curricular do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-table';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 5;
+        $recurso->save();
+
+        // Ofertas de cursos
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Ofertas de Cursos';
+        $recurso->rcs_rota = 'ofertascursos';
+        $recurso->rcs_descricao = 'Recurso ofertas de cursos do módulo acadêmico na categoria de processos';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 7;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico ->Oculto
+        $recurso->rcs_nome = 'Grupos';
+        $recurso->rcs_rota = 'grupos';
+        $recurso->rcs_descricao = 'Recurso grupo do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-group';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 8;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> oculto
+        $recurso->rcs_nome = 'Turmas';
+        $recurso->rcs_rota = 'turmas';
+        $recurso->rcs_descricao = 'Recurso turmas do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 8;
         $recurso->save();
     }
 }

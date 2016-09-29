@@ -1,8 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
-    Route::controllers([
-        'index' => '\Modulos\Geral\Http\Controllers\IndexController',
-        'polos' => '\Modulos\Geral\Http\Controllers\PolosController',
-    ]);
+    Route::group(['prefix' => 'index'], function () {
+        Route::get('/', '\Modulos\Geral\Http\Controllers\IndexController@getIndex');
+    });
 });

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title>Módulo ADMIN @yield('title')</title>
+    <title>Módulo Geral - @yield('title')</title>
 
     <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('/css/plugins/sweetalert.css') }}" />
@@ -70,7 +70,7 @@
 </div><!-- ./wrapper -->
 
 <!-- JQUERY-->
-<script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
+<script src="{{ asset('/js/jquery-2.2.3.min.js')}}"></script>
 <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
 <script src="{{ asset('/js/app.min.js')}}"></script>
 <script src="{{ asset('/js/plugins/sweetalert.min.js')}}"></script>

@@ -167,15 +167,10 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
-        // Modulos\Seguranca\Providers\Menu\MenuServiceProvider::class,
 
-        /*
-         * Core
-         */
-
-        Harpia\Providers\ActionButton\ActionButtonProvider::class,
-        Harpia\Providers\MasterMenu\MasterMenuProvider::class,
-        Harpia\FlashToastrAlert\FlashToastrAlertProvider::class
+        Modulos\Seguranca\Providers\ActionButton\ActionButtonProvider::class,
+        Modulos\Seguranca\Providers\MasterMenu\MasterMenuProvider::class,
+        Harpia\FlashToastrAlert\FlashToastrAlertProvider::class,
     ],
 
     /*
@@ -232,13 +227,12 @@ return [
          */
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-        // 'Menu' => Modulos\Seguranca\Providers\Menu\Facades\Menu::class,
 
         /*
          * Extra aliases
          */
-        'ActionButton' => Harpia\Providers\ActionButton\Facades\ActionButton::class,
-        'MasterMenu' => Harpia\Providers\MasterMenu\Facades\MasterMenu::class,
+        'ActionButton' => Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton::class,
+        'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,
     ],
 ];

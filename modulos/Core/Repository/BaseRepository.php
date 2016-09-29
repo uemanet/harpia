@@ -38,7 +38,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function lists($identifier, $field)
     {
-        return $this->model->lists($field, $identifier);
+        return $this->model->pluck($field, $identifier);
     }
 
     public function paginate($sort = null, $search = null)
@@ -85,7 +85,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 ];
             }
         }
-
         return $this->paginate($sort, $search);
     }
 

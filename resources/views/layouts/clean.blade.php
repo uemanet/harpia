@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title>Módulo ADMIN @yield('title')</title>
+    <title>@yield('title')</title>
 
     <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
 
@@ -28,22 +28,40 @@
             <nav class="navbar navbar-static-top">
                 <div class="container">
                     <div class="navbar-header">
-                        <a href="{{url('/')}}" style="padding-top:2px" class="navbar-brand">
+                        <a href="{{url('/')}}" style="padding-top:2px;background-color:#E9F1F5" class="navbar-brand">
                             <img src="{{url('/')}}/img/logo.png" style="height:47px" />
                         </a>
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
                             <i class="fa fa-bars"></i>
                         </button>
                     </div>
-                    <div class="navbar-custom-menu">
+                    <nav class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             <li class="dropdown user user-menu">
-                                <a href="{{url('/')}}/logout">
-                                    <span class="hidden-xs">Sair</span>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="{{url('/')}}/img/avatar.png" class="user-image" alt="User Image">
+                                    <span class="hidden-xs">{{ Auth::user()->pessoa->pes_nome }}</span>
                                 </a>
-                            </li>
-                        </ul>
-                    </div>
+                                <ul class="dropdown-menu">
+                                    <li class="user-header">
+                                        <img src="{{url('/')}}/img/avatar.png" alt="User Image" class="img-circle">
+                                        <p>{{ Auth::user()->pessoa->pes_nome }}</p>
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="{{url('/')}}/seguranca/profile" class="btn btn-default btn-flat">
+                                                <i class="fa fa-edit"></i> Perfil
+                                            </a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{url('/')}}/logout" class="btn btn-default btn-flat">
+                                                <i class="fa fa-sign-out"></i> Sair
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </ul>
+                    </nav>
                 </div>
             </nav>
         </header>
@@ -54,7 +72,7 @@
     </div>
 
     <!-- JQUERY-->
-    <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
+    <script src="{{ asset('/js/jquery-2.2.3.min.js')}}"></script>
     <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
     <script src="{{ asset('/js/app.min.js')}}"></script>
 

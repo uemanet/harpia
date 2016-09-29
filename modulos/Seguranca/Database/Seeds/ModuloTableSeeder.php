@@ -7,9 +7,9 @@ use Modulos\Seguranca\Models\Modulo;
 
 class ModuloTableSeeder extends Seeder
 {
-
     public function run()
     {
+        //Modulo Segurança
         $modulo = new Modulo;
         $modulo->mod_rota = 'seguranca';
         $modulo->mod_nome = 'Segurança';
@@ -26,6 +26,16 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_descricao = 'Módulo de cadastro Geral';
         $modulo->mod_icone = 'fa fa-cubes';
         $modulo->mod_class = 'bg-blue';
+        $modulo->mod_ativo = 1;
+        $modulo->save();
+
+        //Modulo Acadêmico
+        $modulo = new Modulo;
+        $modulo->mod_rota = 'academico';
+        $modulo->mod_nome = 'Acadêmico';
+        $modulo->mod_descricao = 'Módulo de cadastro Acadêmico';
+        $modulo->mod_icone = 'fa fa-university';
+        $modulo->mod_class = 'bg-green';
         $modulo->mod_ativo = 1;
         $modulo->save();
     }
