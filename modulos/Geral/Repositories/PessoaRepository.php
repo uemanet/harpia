@@ -45,4 +45,13 @@ class PessoaRepository extends BaseRepository
 
         return $result;
     }
+
+    public function findPessoaByCpf($cpf){
+
+        $result = $this->model->join('gra_documentos', function ($join) {
+            $join->on('pes_id', '=', 'doc_pes_id');
+        })->where('doc_conteudo','=',$cpf)->select('pes_id')->get();
+
+        return $result;
+    }
 }

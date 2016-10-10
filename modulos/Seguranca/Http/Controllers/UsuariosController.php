@@ -2,6 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -11,10 +12,12 @@ use Illuminate\Http\Request;
 class UsuariosController extends BaseController
 {
     protected $usuarioRepository;
+    protected $pessoaRepository;
 
-    public function __construct(UsuarioRepository $usuarioRepository)
+    public function __construct(UsuarioRepository $usuarioRepository, PessoaRepository $pessoaRepository)
     {
         $this->usuarioRepository = $usuarioRepository;
+        $this->pessoaRepository = $pessoaRepository;
     }
 
     public function getIndex(Request $request)
@@ -76,8 +79,18 @@ class UsuariosController extends BaseController
         return view('Seguranca::usuarios.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate()
+    public function getCreate($pesId = null)
     {
+//        if(is_null($pesId)){
+//            return view('Seguranca::usuarios.createfull');
+//        }
+//
+//        $pessoa = $this->pessoaRepository->find($pesId);
+//
+//        if($pessoa){
+//            return view('Seguranca::usuarios.create',['pessoa' => $pessoa]);
+//        }
+
         return view('Seguranca::usuarios.create');
     }
 }

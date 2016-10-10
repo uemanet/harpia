@@ -32,4 +32,19 @@ class PessoasController extends BaseController
     {
         return view('Geral::pessoas.create');
     }
+
+    public function getVerificapessoa(Request $request)
+    {
+        $cpf = $request->input('doc_conteudo');
+        $route = $request->input('rota');
+
+        $pessoa = $this->pessoaRepository->findPessoaByCpf($cpf);
+
+        if(!$pessoa->isEmpty())
+        {
+            return redirect()->route($route, ['id' => $pessoa->pes_id])->with('validado', 'true');
+        }
+
+        return redirect()->route($route)->with('validado', 'true');
+    }
 }

@@ -33,11 +33,15 @@ elixir(function(mix) {
     mix.copy("node_modules/bootstrap/dist/js/bootstrap.min.js", "public/js");
     mix.copy("node_modules/admin-lte/dist/js/app.min.js", "public/js");
     mix.copy("resources/assets/js/harpia.js", "public/js");
+    mix.copy("resources/assets/js/cpfcnpj.min.js", "public/js/plugins");
     mix.copy("node_modules/toastr/build/toastr.min.js", "public/js/plugins");
     mix.copy("node_modules/sweetalert/dist/sweetalert.min.js", "public/js/plugins");
     mix.copy("node_modules/select2/dist/js/select2.js", "public/js/plugins");
     mix.copy("node_modules/admin-lte/plugins/datepicker/bootstrap-datepicker.js", "public/js/plugins");
     mix.copy("node_modules/admin-lte/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js", "public/js/plugins");
+    mix.copy("node_modules/admin-lte/plugins/input-mask/jquery.inputmask.js", "public/js/plugins/input-mask/inputmask.js");
+    mix.copy("node_modules/admin-lte/plugins/input-mask/jquery.inputmask.date.extensions.js", "public/js/plugins/input-mask/date.extensions.js");
+    mix.copy("node_modules/admin-lte/plugins/input-mask/jquery.inputmask.extensions.js", "public/js/plugins/input-mask/inputmask.extensions.js");
 
     // FONTS
     mix.copy("node_modules/bootstrap/fonts", "public/fonts");
