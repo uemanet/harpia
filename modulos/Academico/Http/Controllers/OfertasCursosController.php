@@ -79,14 +79,6 @@ class OfertasCursosController extends BaseController
                                 'action' => '/academico/turmas/index/'.$id,
                                 'label' => 'Turmas',
                                 'method' => 'get'
-                            ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'action' => '/academico/ofertascursos/delete',
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
                             ]
                         ]
                     ]);
@@ -129,28 +121,6 @@ class OfertasCursosController extends BaseController
 
             flash()->success('Oferta de curso criada com sucesso.');
             return redirect('/academico/ofertascursos/index');
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-            return redirect()->back();
-        }
-    }
-
-    public function postDelete(Request $request)
-    {
-        try {
-            $ofertacursoId = $request->get('id');
-
-            if ($this->ofertacursoRepository->delete($ofertacursoId)) {
-                flash()->success('Oferta de curso excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a oferta de curso');
-            }
-
-            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
