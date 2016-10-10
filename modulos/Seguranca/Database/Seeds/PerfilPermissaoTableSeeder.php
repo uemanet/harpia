@@ -24,6 +24,9 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([23, 24, 25, 26]); //Index
 
+        $perfil->permissoes()->attach([66, 67, 68, 69]); // Permissoes do recurso vinculos
+
+
         $perfil = Perfil::find(2);
         $perfil->permissoes()->attach([27, 28, 29, 30]); //Geral Polo
 
