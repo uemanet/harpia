@@ -79,4 +79,8 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
             Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Recursos@getFindallbymodulo')->name('seguranca.async.recursos.findallbymodulo');
         });
     });
+
+    Route::group(['prefix' => 'usuarioscursos'], function () {
+        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\VinculosController@getIndex')->name('seguranca.vinculos.index');
+    });
 });

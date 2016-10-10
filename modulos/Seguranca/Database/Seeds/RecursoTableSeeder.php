@@ -157,7 +157,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> Oculto
         $recurso->rcs_nome = 'Matrizes Curriculares';
         $recurso->rcs_rota = 'matrizescurriculares';
         $recurso->rcs_descricao = 'Recurso matriz curricular do módulo acadêmico';
@@ -193,6 +193,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_rota = 'turmas';
         $recurso->rcs_descricao = 'Recurso turmas do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 8;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 6; // Categoria Segurança -> Processos
+        $recurso->rcs_nome = 'Vínculos';
+        $recurso->rcs_rota = 'usuarioscursos';
+        $recurso->rcs_descricao = 'Recurso vincular usuário ao curso do módulo Segurança';
+        $recurso->rcs_icone = 'fa fa-link';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 8;
         $recurso->save();

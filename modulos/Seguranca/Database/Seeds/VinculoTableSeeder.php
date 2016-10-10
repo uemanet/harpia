@@ -1,0 +1,17 @@
+<?php
+
+namespace Modulos\Seguranca\Database\Seeds;
+
+use Illuminate\Database\Seeder;
+use Modulos\Seguranca\Models\Vinculo;
+
+class VinculoTableSeeder extends Seeder
+{
+    public function run()
+    {
+        $vinculo = new Vinculo();
+        $vinculo->ucr_usr_id = 1;
+        $vinculo->ucr_crs_id = 1;
+        $vinculo->save();
+    }
+}

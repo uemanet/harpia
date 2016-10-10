@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+use Modulos\Seguranca\Database\Seeds\VinculoTableSeeder;
 
 class AcademicoSeeder extends Seeder
 {
@@ -30,5 +31,11 @@ class AcademicoSeeder extends Seeder
 
         $this->call(PoloTableSeeder::class);
         $this->command->info('Polo Table seeded!');
+
+        $this->call(CursoTableSeeder::class);
+        $this->command->info('Curso Table seeded!');
+
+        $this->call(VinculoTableSeeder::class);
+        $this->command->info('Vinculo Table seeded!');
     }
 }

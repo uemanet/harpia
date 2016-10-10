@@ -36,5 +36,6 @@ class SegurancaSeeder extends Seeder
 
         $this->call(PerfilUsuarioTableSeeder::class);
         $this->command->info('Perfil usuario table seeded!');
+
     }
 }

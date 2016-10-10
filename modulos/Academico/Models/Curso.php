@@ -54,6 +54,11 @@ class Curso extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\OfertaCurso', 'ofc_crs_id', 'crs_id');
     }
 
+    public function usuariosVinculados()
+    {
+        return $this->belongsToMany('Modulos\Seguranca\Models\Vinculos', 'pcr_crs_id', 'crs_id');
+    }
+
     // Accessors
     public function getCrsDataAutorizacaoAttribute($value)
     {

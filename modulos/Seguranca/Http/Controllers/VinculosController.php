@@ -6,46 +6,43 @@ use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Http\Requests\PerfilRequest;
-use Modulos\Seguranca\Repositories\ModuloRepository;
-use Modulos\Seguranca\Repositories\PerfilRepository;
 use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
 use Illuminate\Http\Request;
+use Modulos\Seguranca\Repositories\VinculoRepository;
 
-class PerfisController extends BaseController
+class VinculosController extends BaseController
 {
-    protected $perfilRepository;
-    protected $moduloRepository;
+    protected $vinculoRepository;
 
-    public function __construct(PerfilRepository $perfilRepository, ModuloRepository $moduloRepository)
+    public function __construct(VinculoRepository $vinculoRepository)
     {
-        $this->perfilRepository = $perfilRepository;
-        $this->moduloRepository = $moduloRepository;
+        $this->vinculoRepository = $vinculoRepository;
     }
 
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/perfis/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/seguranca/usuarioscursos/create')->setIcon('fa fa-link')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->perfilRepository->paginateRequest($request->all());
+        $tableData = $this->vinculoRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'prf_id' => '#',
-                'prf_nome' => 'Perfil',
-                'prf_descricao' => 'Descrição',
-                'prf_action' => 'Ações'
+                'ucr_id' => '#',
+                'ucr_usr_id' => 'Pessoa',
+                'ucr_crs_id' => 'Curso',
+                'ucr_action' => 'Ações'
             ))
-                ->modifyCell('prf_action', function () {
+                ->modifyCell('ucr_action', function () {
                     return array('style' => 'width: 140px;');
                 })
-                ->means('prf_action', 'prf_id')
-                ->modify('prf_action', function ($id) {
+                ->means('ucr_action', 'ucr_id')
+                ->modify('ucr_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -56,7 +53,7 @@ class PerfisController extends BaseController
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-check-square-o',
-                                'action' => '/seguranca/perfis/atribuirpermissoes/'. $id,
+                                'action' => '/seguranca/pessoascursos/atribuirpermissoes/'. $id,
                                 'label' => 'Permissões',
                                 'method' => 'get'
                             ],
@@ -82,7 +79,7 @@ class PerfisController extends BaseController
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Seguranca::perfis.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Seguranca::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
