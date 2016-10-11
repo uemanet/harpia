@@ -44,6 +44,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoGrupos();
 
         $this->createPermissoesAcademicoTurmas();
+
+        $this->createPermissoesAcademicoModulosMatrizes();
     }
 
     private function createPermissoesIndex()
@@ -502,6 +504,33 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 18;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Turmas';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoModulosMatrizes()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Módulos Matrizes';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Módulos Matrizes';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Módulos Matrizes';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Módulos Matrizes';
         $permissao->save();
     }
 }

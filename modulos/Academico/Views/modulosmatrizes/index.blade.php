@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Matrizes Curriculares
+    Módulos
 @stop
 
 @section('subtitle')
-    Gerenciamento de matrizes curriculares :: {{$curso->crs_nome}}
+    Gerenciamento de matrizes curriculares :: {{$curso->crs_nome}} :: {{$matrizcurricular->mtc_titulo}}
 @stop
 
 @section('actionButton')
