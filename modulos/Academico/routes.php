@@ -64,7 +64,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\OfertasCursosController@getIndex')->name('academico.ofertascursos.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\OfertasCursosController@getCreate')->name('academico.ofertascursos.getCreate');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\OfertasCursosController@postCreate')->name('academico.ofertascursos.postCreate');
-        Route::post('/delete', '\Modulos\Academico\Http\Controllers\OfertasCursosController@postDelete')->name('academico.ofertascursos.delete');
     });
 
     Route::group(['prefix' => 'grupos'], function () {

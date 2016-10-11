@@ -95,6 +95,16 @@ class ModulosMatrizesController extends BaseController
     public function postCreate(ModuloMatrizRequest $request)
     {
         try {
+
+            $moduloNome = $request->input('mdo_nome');
+            $idMatriz = $request->input('mdo_mtc_id');
+
+            if($this->modulomatrizRepository->verifyNameMatriz($moduloNome, $idMatriz))
+            {
+                $errors = array('mdo_nome' => 'Nome do Módulo já existe');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
             $modulomatriz = $this->modulomatrizRepository->create($request->all());
 
             if (!$modulomatriz) {
@@ -138,6 +148,15 @@ class ModulosMatrizesController extends BaseController
             if (!$modulo) {
                 flash()->error('Módulo não existe.');
                 return redirect('/academico/modulosmatrizes/index/' . $id);
+            }
+
+            $moduloNome = $request->input('mdo_nome');
+            $idMatriz = $request->input('mdo_mtc_id');
+
+            if($this->modulomatrizRepository->verifyNameMatriz($moduloNome, $idMatriz, $id))
+            {
+                $errors = array('mdo_nome' => 'Nome do Módulo já existe');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
             $requestData = $request->only($this->modulomatrizRepository->getFillableModelFields());
