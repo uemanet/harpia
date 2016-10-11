@@ -47,7 +47,5 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([56, 57]); // Permissoes do recurso oferta de cursos
 
         $perfil->permissoes()->attach([58, 59, 60, 61]); // Permissoes do recurso grupos
-
-        $perfil->permissoes()->attach([62, 63, 64, 65]); // Permissoes do recurso turma
     }
 }
