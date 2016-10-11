@@ -32,6 +32,11 @@ class ModulosMatrizesController extends BaseController
 
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
+        if (is_null($matrizcurricular)){
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
+        }
+
         $curso = $this->cursoRepository->find($matrizcurricular->mtc_crs_id);
 
         $actionButtons[] = $btnNovo;
@@ -89,6 +94,11 @@ class ModulosMatrizesController extends BaseController
         $curso = $this->cursoRepository->listsCursoByMatriz($matrizId);
         $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
 
+        if ($matriz->isEmpty()){
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
+        }
+
         return view('Academico::modulosmatrizes.create', compact('matriz', 'curso'));
     }
 
@@ -129,13 +139,14 @@ class ModulosMatrizesController extends BaseController
         $modulo = $this->modulomatrizRepository->find($moduloId);
 
         if (!$modulo) {
-            flash()->error('Recurso não existe.');
+            flash()->error('Módulo não existe.');
             return redirect()->back();
         }
 
         $curso = $this->cursoRepository->listsCursoByMatriz($modulo->mdo_mtc_id);
-//        dd($modulo);
+
         $matriz = $this->matrizcurricularRepository->listsAllById($modulo->mdo_mtc_id);
+
 
         return view('Academico::modulosmatrizes.edit', compact('matriz', 'curso', 'modulo'));
     }
