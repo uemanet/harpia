@@ -42,7 +42,7 @@ class ModuloMatrizRepository extends BaseRepository
                     return false;
                 }
             }
-            
+
             return true;
         }
 
