@@ -73,6 +73,13 @@ class MatrizesCurricularesController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-object-group',
+                                'action' => '/academico/modulosmatrizes/index/'.$id,
+                                'label' => 'Módulos',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/matrizescurriculares/edit/'.$id,
                                 'label' => 'Editar',
@@ -85,7 +92,7 @@ class MatrizesCurricularesController extends BaseController
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
-                            ]
+                            ],
                         ]
                     ]);
                 })
