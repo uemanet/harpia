@@ -38,10 +38,13 @@ class PessoasController extends BaseController
         $cpf = $request->input('doc_conteudo');
         $route = $request->input('rota');
 
+        $cpf = str_replace(['.', '-'], '', $cpf);
+
         $pessoa = $this->pessoaRepository->findPessoaByCpf($cpf);
 
         if(!$pessoa->isEmpty())
         {
+            $pessoa = $pessoa->first();
             return redirect()->route($route, ['id' => $pessoa->pes_id])->with('validado', 'true');
         }
 

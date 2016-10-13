@@ -36,7 +36,7 @@ class Usuario extends BaseModel implements
      *
      * @var array
      */
-    protected $fillable = ['usr_usuario', 'usr_ativo'];
+    protected $fillable = ['usr_usuario', 'usr_ativo', 'usr_pes_id'];
 
     /**
      * The attributes excluded from the model's JSON form.

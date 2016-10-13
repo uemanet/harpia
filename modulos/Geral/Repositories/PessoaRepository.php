@@ -2,10 +2,8 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Illuminate\Support\Facades\DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Pessoa;
-use Stevebauman\EloquentTable\TableCollection;
 
 class PessoaRepository extends BaseRepository
 {
@@ -49,9 +47,28 @@ class PessoaRepository extends BaseRepository
     public function findPessoaByCpf($cpf){
 
         $result = $this->model->join('gra_documentos', function ($join) {
-            $join->on('pes_id', '=', 'doc_pes_id');
-        })->where('doc_conteudo','=',$cpf)->select('pes_id')->get();
+                        $join->on('pes_id', '=', 'doc_pes_id');
+                    })->join('gra_tipos_documentos', function ($join) {
+                        $join->on('doc_tpd_id', '=', 'tpd_id');
+                    })->where('tpd_nome', '=', 'CPF')
+                        ->where('doc_conteudo','=',$cpf)->select('pes_id')->get();
 
+        return $result;
+    }
+
+    public function findByIdForForm($id)
+    {
+        $result = $this->model
+                        ->join('gra_documentos', function ($join) {
+                            $join->on('pes_id', '=', 'doc_pes_id');
+                        })
+                        ->join('gra_tipos_documentos', function ($join) {
+                            $join->on('doc_tpd_id', '=', 'tpd_id');
+                        })
+                        ->select('gra_pessoas.*', 'doc_conteudo as pes_cpf')
+                        ->where('pes_id', '=', $id)
+                        ->where('tpd_nome', '=', 'CPF')
+                        ->get();
         return $result;
     }
 }
