@@ -13,8 +13,12 @@ class DocumentoRepository extends BaseRepository
         $this->model = $documento;
     }
 
-    public function save($data, $pessoaId)
+    public function getCpfByPessoa($pessoaId)
     {
-        
+        return $this->model
+                    ->join('gra_tipos_documentos', 'doc_tpd_id', 'tpd_id')
+                    ->where('doc_pes_id', '=', $pessoaId)
+                    ->where('tpd_nome', 'CPF')
+                    ->get();
     }
 }

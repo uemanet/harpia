@@ -23,8 +23,8 @@ class UsuariosController extends BaseController
     protected $tipoDocumentoRepository;
 
     public function __construct(
-        UsuarioRepository $usuarioRepository, 
-        PessoaRepository $pessoaRepository, 
+        UsuarioRepository $usuarioRepository,
+        PessoaRepository $pessoaRepository,
         DocumentoRepository $documentoRepository,
         TipoDocumentoRepository $tipoDocumentoRepository
     )
@@ -46,7 +46,7 @@ class UsuariosController extends BaseController
         $tabela = null;
 
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
-        
+
         if($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'pes_id' => '#',
@@ -89,7 +89,7 @@ class UsuariosController extends BaseController
 
             $paginacao = $tableData->appends($request->except('page'));
         }
-        
+
 
         return view('Seguranca::usuarios.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
@@ -118,7 +118,6 @@ class UsuariosController extends BaseController
         DB::beginTransaction();
 
         try {
-
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -136,20 +135,32 @@ class UsuariosController extends BaseController
             );
 
             $validatorPessoa = Validator::make($dataPessoa, $pessoaRequest->rules());
+            
             if($validatorPessoa->fails())
             {
                 return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validatorPessoa);
             }
+
+            $cpf = $dataPessoa['pes_cpf'];
+            unset($dataPessoa['pes_cpf']);
 
             $dataForm = $request->all();
             $pes_id = isset($dataForm['pes_id']) ? $request->input('pes_id') : null;
 
             if($pes_id)
             {
+                $this->pessoaRepository->update($dataPessoa, $pes_id);
+
+                $tipoId = $this->tipoDocumentoRepository->search([['tpd_nome', '=', 'CPF']], ['tpd_id'])->first()->tpd_id;
+
+                $dataDocumento = array(
+                    'doc_tpd_id' => $tipoId,
+                    'doc_conteudo' => $cpf
+                );
+
+                $this->documentoRepository->update($dataDocumento, $pes_id, 'doc_pes_id');
 
             } else{
-                $cpf = $dataPessoa['pes_cpf'];
-                unset($dataPessoa['pes_cpf']);
 
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
                 $pes_id = $pessoa->pes_id;
@@ -164,7 +175,7 @@ class UsuariosController extends BaseController
 
                 $this->documentoRepository->create($dataDocumento);
             }
-            
+
             $dataUsuario = array(
                 'usr_usuario' => $request->input('usr_usuario'),
                 'usr_senha' => $request->input('usr_senha'),

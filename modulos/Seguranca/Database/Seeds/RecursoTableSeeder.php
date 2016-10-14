@@ -79,13 +79,26 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 7;
         $recurso->save();
 
-        //MODULO GERAL
+        /* MODULO GERAL */
+
+        // Recurso Index
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 2; // Categoria Seguranca
-        $recurso->rcs_nome = 'Polos';
-        $recurso->rcs_rota = 'polos';
-        $recurso->rcs_descricao = 'Polos de ensino';
-        $recurso->rcs_icone = 'fa fa-ellipsis-h';
+        $recurso->rcs_nome = 'Dashboard';
+        $recurso->rcs_rota = 'index';
+        $recurso->rcs_descricao = 'Recurso dashboard da categoria Cadastros do módulo Geral';
+        $recurso->rcs_icone = 'fa fa-tachometer';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // Recurso Pessoas
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 2; // Categoria Seguranca
+        $recurso->rcs_nome = 'Pessoas';
+        $recurso->rcs_rota = 'pessoas';
+        $recurso->rcs_descricao = 'Cadastros de Pessoas';
+        $recurso->rcs_icone = 'fa fa-user';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
         $recurso->save();

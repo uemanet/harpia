@@ -1,6 +1,6 @@
 <?php
 
-namespace Harpia\Validator\CpfCnpjValidator;
+namespace Harpia\Validator\CustomValidator;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +13,7 @@ class ValidationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->validator->resolver(function ($translator, $data, $rules, $messages = array(), $customAttributes = array()) {
-            return new CpfCnpjValidator($translator, $data, $rules, $messages, $customAttributes);
+            return new CustomValidator($translator, $data, $rules, $messages, $customAttributes);
         });
     }
 }

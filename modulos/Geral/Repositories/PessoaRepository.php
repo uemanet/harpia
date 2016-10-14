@@ -15,7 +15,7 @@ class PessoaRepository extends BaseRepository
     public function paginate($sort = null, $search = null)
     {
         $result = $this->model->leftJoin('gra_documentos', function ($join) {
-            $join->on('pes_id', '=', 'doc_pes_id')->on('doc_tpd_id', '=', 1, 'and', true);
+            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
         });
 
         if (!empty($search)) {
@@ -59,16 +59,14 @@ class PessoaRepository extends BaseRepository
     public function findByIdForForm($id)
     {
         $result = $this->model
-                        ->join('gra_documentos', function ($join) {
-                            $join->on('pes_id', '=', 'doc_pes_id');
-                        })
-                        ->join('gra_tipos_documentos', function ($join) {
-                            $join->on('doc_tpd_id', '=', 'tpd_id');
+                        ->leftJoin('gra_documentos', function ($join) {
+                            $join->on('pes_id', '=', 'doc_pes_id')
+                                ->where('doc_tpd_id', '=', 2);
                         })
                         ->select('gra_pessoas.*', 'doc_conteudo as pes_cpf')
                         ->where('pes_id', '=', $id)
-                        ->where('tpd_nome', '=', 'CPF')
-                        ->get();
+                        ->first();
+
         return $result;
     }
 }

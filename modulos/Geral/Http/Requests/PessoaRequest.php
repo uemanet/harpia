@@ -26,7 +26,7 @@ class PessoaRequest extends BaseRequest
         $rules = [
             'pes_nome' => 'required|min:3|max:150',
             'pes_sexo' => 'required',
-            'pes_email' => 'required|email|unique:gra_pessoas',
+            'pes_email' => 'required|email',
             'pes_telefone' => 'required|max:20',
             'pes_nascimento' => 'required|date',
             'pes_mae' => 'required|max:150',
@@ -37,7 +37,7 @@ class PessoaRequest extends BaseRequest
             'pes_raca' => 'max:45',
             'pes_necessidade_especial' => 'max:45',
             'pes_estrangeiro' => 'boolean',
-            'pes_cpf' => 'required'
+            'pes_cpf' => 'required|cpf'
         ];
 
         return $rules;

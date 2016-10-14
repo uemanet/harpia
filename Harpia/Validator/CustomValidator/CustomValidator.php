@@ -1,10 +1,10 @@
 <?php
 
-namespace Harpia\Validator\CpfCnpjValidator;
+namespace Harpia\Validator\CustomValidator;
 
 use Illuminate\Validation\Validator;
 
-class CpfCnpjValidator extends Validator
+class CustomValidator extends Validator
 {
     public function validateCpf($attribute, $value, $parameters)
     {

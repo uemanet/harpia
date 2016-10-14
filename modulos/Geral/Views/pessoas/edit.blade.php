@@ -5,16 +5,16 @@
 @stop
 
 @section('subtitle')
-    Cadastro de pessoas
+    Alterar pessoa :: {{$pessoa->pes_nome}}
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de pessoas</h3>
+            <h3 class="box-title">Formulário de edição de pessoa</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/geral/pessoas/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($pessoa,["url" => url('/') . "/geral/pessoas/edit/$pessoa->pes_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Geral::pessoas.includes.formulario')
 
                 <div class="row">
