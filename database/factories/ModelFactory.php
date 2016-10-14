@@ -175,3 +175,12 @@ $factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generato
         'trm_qtd_vagas' => 30
     ];
 });
+
+$factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\Generator $faker) {
+    return [
+        'mdo_mtc_id' => 1,
+        'mdo_nome' => $faker->name,
+        'mdo_descricao' => $faker->sentence(3),
+        'mdo_qualificacao' => $faker->sentence(3)
+    ];
+});

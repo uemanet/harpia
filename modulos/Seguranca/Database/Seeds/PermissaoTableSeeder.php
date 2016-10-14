@@ -46,6 +46,7 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoTurmas();
 
         $this->createPermissoesAcademicoDisciplinas();
+
     }
 
     private function createPermissoesIndex()
@@ -440,17 +441,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão create do recurso Ofertas de Cursos';
         $permissao->save();
 
-        $permissao = new Permissao();
-        $permissao->prm_rcs_id = 16;
-        $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit do recurso Ofertas de Cursos';
-        $permissao->save();
-
-        $permissao = new Permissao();
-        $permissao->prm_rcs_id = 16;
-        $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete do recurso Ofertas de Cursos';
-        $permissao->save();
     }
 
     private function createPermissoesAcademicoGrupos()
@@ -506,6 +496,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão delete do recurso Turmas';
         $permissao->save();
     }
+
 
     private function createPermissoesAcademicoDisciplinas()
     {
