@@ -94,8 +94,8 @@ class DisciplinasController extends BaseController
     {
         try {
             if (!$this->disciplinaRepository->validacao($request->all())) {
-                flash()->error('Disciplina já existe.');
-                return redirect()->back()->withInput($request->all());
+                $errors = array('dis_nome' => 'Nome da disciplina já existe');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
             $disciplina = $this->disciplinaRepository->create($request->all());
@@ -138,8 +138,8 @@ class DisciplinasController extends BaseController
             $disciplina = $this->disciplinaRepository->find($id);
 
             if (!$this->disciplinaRepository->validacao($request->all(), $id)) {
-                flash()->error('Disciplina já existe.');
-                return redirect()->back()->withInput($request->all());
+                $errors = array('dis_nome' => 'Nome da disciplina já existe');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
             if (!$disciplina) {
