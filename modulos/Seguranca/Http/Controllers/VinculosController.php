@@ -37,13 +37,12 @@ class VinculosController extends BaseController
                 'pes_id' => '#',
                 'pes_nome' => 'Pessoa',
                 'ucr_action' => 'Ações',
-            ))
-                ->modifyCell('ucr_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('ucr_action', 'usr_id')
-                ->modify('ucr_action', function ($id) {
-                    return ActionButton::grid([
+            ))->modifyCell('ucr_action', function () {
+                return array('style' => 'width: 140px;');
+            })
+            ->means('ucr_action', 'usr_id')
+            ->modify('ucr_action', function ($id) {
+                return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
                             'classButton' => 'btn-default',
@@ -58,49 +57,55 @@ class VinculosController extends BaseController
                                 'method' => 'get',
                             ],
                         ],
-                    ]);
-                })
-                ->sortable(array('pes_id', 'pes_nome'));
+                  ]);
+            })->sortable(array('pes_id', 'pes_nome'));
             $paginacao = $tableData->appends($request->except('page'));
         }
 
         return view('Seguranca::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao]);
     }
 
+    /**
+    * Lista os vinculos do usuario
+    * @param $usuarioId
+    * @param $request
+    */
     public function getVinculos($usuarioId, Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Adicionar vínculo')->setAction('/seguranca/usuarioscursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Adicionar vínculo')->setAction('/seguranca/usuarioscursos/create/'.$usuarioId)->setIcon('fa fa-link')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
-        $data = $this->vinculoRepository->getCursos($usuarioId);
+        $data = $this->vinculoRepository->getCursosVinculados($usuarioId);
         $usuario = $this->usuarioRepository->find($usuarioId);
 
         $tabela = $data->columns(array(
-            'crs_id' => '#',
-            'crs_nome' => 'Pessoa',
+            'crs_nome' => 'Curso',
             'crs_sigla' => 'Sigla',
-            'ucr_action' => 'Ações',
-        ))->modifyCell('ucr_action', function () {
+            'crs_action' => 'Ações',
+        ))
+        ->means('crs_action', 'ucr_id')
+        ->modify('crs_action', function ($id) {
             return ActionButton::grid([
-              'type' => 'SELECT',
-              'config' => [
-                  'classButton' => 'btn-default',
-                  'label' => 'Selecione',
-              ],
-              'buttons' => [
-                  [
-                      'classButton' => 'btn-delete text-red',
-                      'icon' => 'fa fa-trash',
-                      'action' => '/seguranca/modulos/delete',
-                      'id' => $id,
-                      'label' => 'Excluir',
-                      'method' => 'post',
+                  'type' => 'SELECT',
+                  'config' => [
+                      'classButton' => 'btn-default',
+                      'label' => 'Selecione',
                   ],
-              ],
-          ]);
-        })->sortable(array('crs_id', 'crs_nome'));
+                 'buttons' => [
+                    [
+                      'classButton' => 'btn-delete text-red',
+                      'icon' => 'fa fa-unlink',
+                      'action' => '/seguranca/usuarioscursos/delete/',
+                      'id' => $id,
+                      'label' => 'Excluir vínculo',
+                      'method' => 'post',
+                    ],
+                  ],
+            ]);
+        })
+        ->sortable(array('crs_id', 'crs_nome'));
 
         $paginacao = $data->appends($request->except('page'));
 
@@ -110,5 +115,10 @@ class VinculosController extends BaseController
             'actionButtons' => $actionButtons,
             'usuario' => $usuario,
         ]);
+    }
+
+    public function getCreate($usuarioId)
+    {
+      $this->vinculoRepository->getCursosDisponiveis($usuarioId);
     }
 }
