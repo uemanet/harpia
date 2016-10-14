@@ -76,7 +76,7 @@ class DisciplinasController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('dis_id', 'dis_nome'));
+                ->sortable(array('dis_id', 'dis_nome', 'dis_nvc_id'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -94,7 +94,7 @@ class DisciplinasController extends BaseController
     {
         try {
             if (!$this->disciplinaRepository->validacao($request->all())) {
-                $errors = array('dis_nome' => 'Nome da disciplina já existe');
+                $errors = array('dis_nome' => 'Disciplina já existe');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
@@ -138,7 +138,7 @@ class DisciplinasController extends BaseController
             $disciplina = $this->disciplinaRepository->find($id);
 
             if (!$this->disciplinaRepository->validacao($request->all(), $id)) {
-                $errors = array('dis_nome' => 'Nome da disciplina já existe');
+                $errors = array('dis_nome' => 'Disciplina já existe');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
