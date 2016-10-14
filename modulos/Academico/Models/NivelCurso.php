@@ -23,4 +23,9 @@ class NivelCurso extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\Curso', 'crs_nvc_id', 'nvc_id');
     }
+
+    public function disciplinas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Disciplina', 'dis_nvc_id', 'nvc_id');
+    }
 }

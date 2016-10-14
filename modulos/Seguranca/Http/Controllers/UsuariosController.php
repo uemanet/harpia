@@ -29,7 +29,7 @@ class UsuariosController extends BaseController
 
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
         
-        if($tableData->count()) {
+        if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'pes_id' => '#',
                 'pes_nome' => 'Nome',
