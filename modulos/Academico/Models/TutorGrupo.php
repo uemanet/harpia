@@ -13,7 +13,9 @@ class TutorGrupo extends BaseModel
     protected $fillable = [
         'ttg_tut_id',
         'ttg_grp_id',
-        'ttg_tipo_tutoria'
+        'ttg_tipo_tutoria',
+        'ttg_data_inicio',
+        'ttg_data_fim'
     ];
 
     protected $searchable = [

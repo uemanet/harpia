@@ -85,6 +85,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\TurmasController@postDelete')->name('academico.turmas.delete');
     });
 
+    Route::group(['prefix' => 'tutoresgrupos'], function () {
+        Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getIndex')->name('academico.tutoresgrupos.index');
+        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getCreate')->name('academico.tutoresgrupos.getCreate');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\TutoresGruposController@postCreate')->name('academico.tutoresgrupos.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getEdit')->name('academico.tutoresgrupos.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@putEdit')->name('academico.tutoresgrupos.putEdit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\TutoresGruposController@postDelete')->name('academico.tutoresgrupos.delete');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
