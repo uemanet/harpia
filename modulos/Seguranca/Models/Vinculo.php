@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Models;
+namespace modulos\Seguranca\Models;
 
 use Modulos\Core\Model\BaseModel;
 
@@ -14,7 +14,7 @@ class Vinculo extends BaseModel
 
     protected $searchable = [
         'ucr_usr_id' => '=',
-        'ucr_crs_id' => '='
+        'ucr_crs_id' => '=',
     ];
 
     public function pessoas()

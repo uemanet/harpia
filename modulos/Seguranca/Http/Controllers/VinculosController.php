@@ -2,233 +2,113 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Http\Requests\PerfilRequest;
-use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
 use Illuminate\Http\Request;
+use Modulos\Seguranca\Repositories\UsuarioRepository;
 use Modulos\Seguranca\Repositories\VinculoRepository;
 
 class VinculosController extends BaseController
 {
     protected $vinculoRepository;
+    protected $usuarioRepository;
 
-    public function __construct(VinculoRepository $vinculoRepository)
+    public function __construct(VinculoRepository $vinculoRepository, UsuarioRepository $usuarioRepository)
     {
         $this->vinculoRepository = $vinculoRepository;
+        $this->usuarioRepository = $usuarioRepository;
     }
 
     public function getIndex(Request $request)
     {
-        $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/usuarioscursos/create')->setIcon('fa fa-link')->setStyle('btn bg-olive');
-
-        $actionButtons[] = $btnNovo;
-
         $paginacao = null;
         $tabela = null;
+        $tableData = null;
 
-        $tableData = $this->vinculoRepository->paginateRequest($request->all());
+        if (!empty($request->all())) {
+            $tableData = $this->usuarioRepository->paginateRequest($request->all());
+        } else {
+            return view('Seguranca::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao]);
+        }
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'ucr_id' => '#',
-                'ucr_usr_id' => 'Pessoa',
-                'ucr_crs_id' => 'Curso',
-                'ucr_action' => 'Ações'
+                'pes_id' => '#',
+                'pes_nome' => 'Pessoa',
+                'ucr_action' => 'Ações',
             ))
                 ->modifyCell('ucr_action', function () {
                     return array('style' => 'width: 140px;');
                 })
-                ->means('ucr_action', 'ucr_id')
+                ->means('ucr_action', 'usr_id')
                 ->modify('ucr_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
                             'classButton' => 'btn-default',
-                            'label' => 'Selecione'
+                            'label' => 'Selecione',
                         ],
                         'buttons' => [
                             [
-                                'classButton' => 'text-blue',
-                                'icon' => 'fa fa-check-square-o',
-                                'action' => '/seguranca/pessoascursos/atribuirpermissoes/'. $id,
-                                'label' => 'Permissões',
-                                'method' => 'get'
-                            ],
-                            [
                                 'classButton' => '',
-                                'icon' => 'fa fa-pencil',
-                                'action' => '/seguranca/perfis/edit/' . $id,
-                                'label' => 'Editar',
-                                'method' => 'get'
+                                'icon' => 'fa fa-link',
+                                'action' => '/seguranca/usuarioscursos/vinculos/'.$id,
+                                'label' => 'Vínculos',
+                                'method' => 'get',
                             ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'action' =>  '/seguranca/perfis/delete',
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
-                            ]
-                        ]
+                        ],
                     ]);
                 })
-                ->sortable(array('prf_id', 'prf_nome'));
+                ->sortable(array('pes_id', 'pes_nome'));
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Seguranca::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Seguranca::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao]);
     }
 
-    public function getCreate()
+    public function getVinculos($usuarioId, Request $request)
     {
-        $modulos = $this->moduloRepository->lists('mod_id', 'mod_nome');
+        $btnNovo = new TButton();
+        $btnNovo->setName('Adicionar vínculo')->setAction('/seguranca/usuarioscursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
-        return view('Seguranca::perfis.create', compact('modulos'));
-    }
+        $actionButtons[] = $btnNovo;
 
-    public function postCreate(PerfilRequest $request)
-    {
-        try {
-            $perfil = $this->perfilRepository->create($request->all());
+        $data = $this->vinculoRepository->getCursos($usuarioId);
+        $usuario = $this->usuarioRepository->find($usuarioId);
 
-            if (!$perfil) {
-                flash()->error('Erro ao tentar salvar.');
+        $tabela = $data->columns(array(
+            'crs_id' => '#',
+            'crs_nome' => 'Pessoa',
+            'crs_sigla' => 'Sigla',
+            'ucr_action' => 'Ações',
+        ))->modifyCell('ucr_action', function () {
+            return ActionButton::grid([
+              'type' => 'SELECT',
+              'config' => [
+                  'classButton' => 'btn-default',
+                  'label' => 'Selecione',
+              ],
+              'buttons' => [
+                  [
+                      'classButton' => 'btn-delete text-red',
+                      'icon' => 'fa fa-trash',
+                      'action' => '/seguranca/modulos/delete',
+                      'id' => $id,
+                      'label' => 'Excluir',
+                      'method' => 'post',
+                  ],
+              ],
+          ]);
+        })->sortable(array('crs_id', 'crs_nome'));
 
-                return redirect()->back()->withInput($request->all());
-            }
+        $paginacao = $data->appends($request->except('page'));
 
-            flash()->success('Perfil criado com sucesso.');
-
-            return redirect('/seguranca/perfis/index');
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
-            }
-        }
-    }
-
-    public function getEdit($perfilId)
-    {
-        $perfil = $this->perfilRepository->find($perfilId);
-
-        if (!$perfil) {
-            flash()->error('Perfil não existe.');
-
-            return redirect()->back();
-        }
-
-        $modulos = $this->moduloRepository->lists('mod_id', 'mod_nome');
-
-        return view('Seguranca::perfis.edit', compact('perfil', 'modulos'));
-    }
-
-    public function putEdit($id, PerfilRequest $request)
-    {
-        try {
-            $perfil = $this->perfilRepository->find($id);
-
-            if (!$perfil) {
-                flash()->error('Perfil não existe.');
-
-                return redirect('/seguranca/perfis/index');
-            }
-
-            $requestData = $request->only('prf_nome', 'prf_descricao');
-
-            if (!$this->perfilRepository->update($requestData, $perfil->prf_id, 'prf_id')) {
-                flash()->error('Erro ao tentar salvar.');
-
-                return redirect()->back()->withInput($request->all());
-            }
-
-            flash()->success('Perfil atualizado com sucesso.');
-
-            return redirect('/seguranca/perfis/index');
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
-            }
-        }
-    }
-
-    public function postDelete(Request $request)
-    {
-        try {
-            $perfilId = $request->get('id');
-
-            if ($this->perfilRepository->delete($perfilId)) {
-                flash()->success('Perfil excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o perfil');
-            }
-
-            return redirect()->back();
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este perfil ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
-            }
-
-            flash()->success('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
-            return redirect()->back();
-        }
-    }
-
-    public function getAtribuirpermissoes($perfilId)
-    {
-        $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
-
-        if (!sizeof($perfil)) {
-            return redirect('/seguranca/perfis/index');
-        }
-
-        $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
-
-        return view('Seguranca::perfis.atribuirpermissoes', compact('perfil', 'permissoes'));
-    }
-
-    public function postAtribuirpermissoes(Request $request)
-    {
-        try {
-            $perfilId = $request->prf_id;
-
-            if ($request->input('permissao') == "") {
-                flash()->success('Permissões atribuídas com sucesso.');
-                $permissoes = [];
-                $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-
-                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-            }
-
-            $permissoes = explode(',', $request->input('permissao'));
-
-            $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-
-            flash()->success('Permissões atribuídas com sucesso.');
-
-            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-            return redirect()->back();
-        }
+        return view('Seguranca::vinculos.create', [
+            'tabela' => $tabela,
+            'paginacao' => $paginacao,
+            'actionButtons' => $actionButtons,
+            'usuario' => $usuario,
+        ]);
     }
 }

@@ -1,3 +1,6 @@
+
+
+
 <?php
 
 Route::get('/', '\Modulos\Seguranca\Http\Controllers\SelecionaModulosController@getIndex');
@@ -82,5 +85,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'usuarioscursos'], function () {
         Route::get('/index', '\Modulos\Seguranca\Http\Controllers\VinculosController@getIndex')->name('seguranca.vinculos.index');
+        Route::get('/vinculos/{id}', '\Modulos\Seguranca\Http\Controllers\VinculosController@getVinculos')->name('seguranca.vinculos.vinculos');
+        Route::get('/create/{id}', '\Modulos\Seguranca\Http\Controllers\VinculosController@getCreate')->name('seguranca.vinculos.create');
     });
 });
