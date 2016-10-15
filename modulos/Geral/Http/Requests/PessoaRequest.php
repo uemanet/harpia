@@ -37,7 +37,7 @@ class PessoaRequest extends BaseRequest
             'pes_raca' => 'max:45',
             'pes_necessidade_especial' => 'max:45',
             'pes_estrangeiro' => 'boolean',
-            'pes_cpf' => 'required|cpf'
+            'doc_conteudo' => 'required|cpf|unique:gra_documentos'
         ];
 
         return $rules;

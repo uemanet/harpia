@@ -35,3 +35,17 @@
         </div>
     </div>
 @stop
+
+@section('scripts')
+    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/inputmask.extensions.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/date.extensions.js') }}"></script>
+
+    <script>
+
+        $(function (){
+            Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#doc_conteudo');
+            Inputmask({"mask": "(99) 99999-9999"}).mask('#pes_telefone');
+        });
+    </script>
+@endsection

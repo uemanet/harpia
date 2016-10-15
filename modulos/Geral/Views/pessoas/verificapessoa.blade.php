@@ -34,7 +34,7 @@
     <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
 
     <script type="text/javascript">
-        $("#doc_conteudo").inputmask("999.999.999-99", {});
+        Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#doc_conteudo');
 
         $(function (){
             $('#doc_conteudo').cpfcnpj({

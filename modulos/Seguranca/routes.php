@@ -69,6 +69,9 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::get('/index', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getIndex')->name('seguranca.usuarios.index');
         Route::get('/create/{id?}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getCreate')->name('seguranca.usuarios.getCreate')->middleware('verificapessoa');
         Route::post('/create', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postCreate')->name('seguranca.usuarios.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getEdit')->name('seguranca.usuarios.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@putEdit')->name('seguranca.usuarios.putEdit');
+        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postDelete')->name('seguranca.usuarios.delete');
     });
 
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {

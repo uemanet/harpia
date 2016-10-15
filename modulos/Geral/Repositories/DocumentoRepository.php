@@ -21,4 +21,16 @@ class DocumentoRepository extends BaseRepository
                     ->where('tpd_nome', 'CPF')
                     ->get();
     }
+
+    public function updateDocumento(array $data, array $options)
+    {
+        $query = $this->model;
+
+        foreach($options as $key => $value)
+        {
+            $query = $query->where($key, '=', $value);
+        }
+
+        return $query->update($data);
+    }
 }

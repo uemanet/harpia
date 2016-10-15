@@ -36,7 +36,7 @@
     <script>
 
         $(function (){
-            Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#pes_cpf');
+            Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#doc_conteudo');
             Inputmask({"mask": "(99) 99999-9999"}).mask('#pes_telefone');
         });
     </script>

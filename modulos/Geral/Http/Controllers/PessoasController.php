@@ -131,7 +131,7 @@ class PessoasController extends BaseController
                 'doc_conteudo' => $request->input('pes_cpf')
             ];
 
-            $this->documentoRepository->update($dataDocumento, $id, 'doc_pes_id');
+            $this->documentoRepository->update($dataDocumento, ['doc_pes_id' => $id, 'doc_tpd_id' => 2]);
 
             DB::commit();
 
@@ -157,9 +157,8 @@ class PessoasController extends BaseController
 
         $pessoa = $this->pessoaRepository->findPessoaByCpf($cpf);
 
-        if(!$pessoa->isEmpty())
+        if($pessoa)
         {
-            $pessoa = $pessoa->first();
             return redirect()->route($route, ['id' => $pessoa->pes_id])->with('validado', 'true');
         }
 

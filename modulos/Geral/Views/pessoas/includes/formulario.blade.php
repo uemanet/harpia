@@ -16,11 +16,11 @@
             @if ($errors->has('pes_email')) <p class="help-block">{{ $errors->first('pes_email') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-4 @if ($errors->has('pes_cpf')) has-error @endif">
-        {!! Form::label('pes_cpf', 'CPF*', ['class' => 'control-label']) !!}
+    <div class="form-group col-md-4 @if ($errors->has('doc_conteudo')) has-error @endif">
+        {!! Form::label('doc_conteudo', 'CPF*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::text('pes_cpf', isset($pessoa->pes_cpf) ? $pessoa->pes_cpf : old('pes_cpf'), ['class' => 'form-control']) !!}
-            @if ($errors->has('pes_cpf')) <p class="help-block">{{ $errors->first('pes_cpf') }}</p> @endif
+            {!! Form::text('doc_conteudo', isset($pessoa->doc_conteudo) ? $pessoa->doc_conteudo : old('doc_conteudo'), ['class' => 'form-control']) !!}
+            @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
         </div>
     </div>
 </div>

@@ -3,9 +3,10 @@
 namespace Modulos\Seguranca\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Modulos\Geral\Repositories\DocumentoRepository;
 use Validator;
 use Modulos\Geral\Http\Requests\PessoaRequest;
-use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Geral\Repositories\TipoDocumentoRepository;
 use Modulos\Seguranca\Http\Requests\UsuarioRequest;
@@ -22,12 +23,7 @@ class UsuariosController extends BaseController
     protected $documentoRepository;
     protected $tipoDocumentoRepository;
 
-    public function __construct(
-        UsuarioRepository $usuarioRepository,
-        PessoaRepository $pessoaRepository,
-        DocumentoRepository $documentoRepository,
-        TipoDocumentoRepository $tipoDocumentoRepository
-    )
+    public function __construct(UsuarioRepository $usuarioRepository, PessoaRepository $pessoaRepository, DocumentoRepository $documentoRepository, TipoDocumentoRepository $tipoDocumentoRepository)
     {
         $this->usuarioRepository = $usuarioRepository;
         $this->pessoaRepository = $pessoaRepository;
@@ -46,19 +42,20 @@ class UsuariosController extends BaseController
         $tabela = null;
 
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
+        //dd($tableData);
 
         if($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'pes_id' => '#',
+                'usr_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
-                'doc_conteudo' => 'CPF',
+                'usr_usuario' => 'Usuário',
                 'pes_action' => 'Ações'
             ))
             ->modifyCell('pes_action', function () {
                 return array('style' => 'width: 140px;');
             })
-            ->means('pes_action', 'pes_id')
+            ->means('pes_action', 'usr_id')
             ->modify('pes_action', function ($id) {
                 return ActionButton::grid([
                     'type' => 'SELECT',
@@ -85,11 +82,10 @@ class UsuariosController extends BaseController
                     ]
                 ]);
             })
-            ->sortable(array('pes_id', 'pes_nome'));
+            ->sortable(array('usr_id', 'pes_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
-
 
         return view('Seguranca::usuarios.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
@@ -102,8 +98,7 @@ class UsuariosController extends BaseController
 
         $pessoa = $this->pessoaRepository->findByIdForForm($pesId);
 
-        if(!$pessoa->isEmpty()){
-            $pessoa = $pessoa->first();
+        if($pessoa){
             return view('Seguranca::usuarios.create',['pessoa' => $pessoa]);
         }
 
@@ -131,7 +126,7 @@ class UsuariosController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_cpf' => $request->input('pes_cpf')
+                'doc_conteudo' => $request->input('doc_conteudo')
             );
 
             $validatorPessoa = Validator::make($dataPessoa, $pessoaRequest->rules());
@@ -141,8 +136,8 @@ class UsuariosController extends BaseController
                 return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validatorPessoa);
             }
 
-            $cpf = $dataPessoa['pes_cpf'];
-            unset($dataPessoa['pes_cpf']);
+            $cpf = $dataPessoa['doc_conteudo'];
+            unset($dataPessoa['doc_conteudo']);
 
             $dataForm = $request->all();
             $pes_id = isset($dataForm['pes_id']) ? $request->input('pes_id') : null;
@@ -158,7 +153,7 @@ class UsuariosController extends BaseController
                     'doc_conteudo' => $cpf
                 );
 
-                $this->documentoRepository->update($dataDocumento, $pes_id, 'doc_pes_id');
+                $this->documentoRepository->updateDocumento($dataDocumento, ['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2]);
 
             } else{
 
@@ -211,4 +206,95 @@ class UsuariosController extends BaseController
             return redirect()->back()->with('validado', true);
         }
     }
+
+    public function getEdit($id)
+    {
+        $usuario = $this->usuarioRepository->find($id);
+
+        $pessoa = $this->pessoaRepository->findByIdForForm($usuario->usr_pes_id);
+        dd($pessoa);
+
+        return view('Seguranca::usuarios.edit', ['usuario' => $usuario, 'pessoa' => $pessoa]);
+    }
+
+    public function putEdit($id, Request $request)
+    {
+        $usuarioRequest = new UsuarioRequest();
+        $pessoaRequest = new PessoaRequest();
+
+        $validation = Validator::make($request->all(), array_merge($usuarioRequest->rules(), $pessoaRequest->rules()));
+
+        if($validation->fails())
+        {
+            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($validation->messages());
+        }
+
+        DB::beginTransaction();
+        try {
+            $dataUsuario = $request->only('usr_usuario', 'usr_senha', 'usr_ativo');
+
+            $this->usuarioRepository->update($dataUsuario, $id, 'usr_id');
+
+            $dataPessoa = array(
+                'pes_nome' => $request->input('pes_nome'),
+                'pes_sexo' => $request->input('pes_sexo'),
+                'pes_email' => $request->input('pes_email'),
+                'pes_telefone' => $request->input('pes_telefone'),
+                'pes_nascimento' => $request->input('pes_nascimento'),
+                'pes_mae' => $request->input('pes_mae'),
+                'pes_pai' => $request->input('pes_pai'),
+                'pes_estado_civil' => $request->input('pes_estado_civil'),
+                'pes_naturalidade' => $request->input('pes_naturalidade'),
+                'pes_nacionalidade' => $request->input('pes_nacionalidade'),
+                'pes_raca' => $request->input('pes_raca'),
+                'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
+            );
+            
+            $this->pessoaRepository->update($dataPessoa, $request->input('pes_id'), 'pes_id');
+            
+            $dataDocumento = $request->only('doc_conteudo');
+            
+            $this->documentoRepository->updateDocumento($dataDocumento, ['doc_pes_id' => $request->input('pes_id'), 'doc_tpd_id' => 2]);
+
+            DB::commit();
+
+            flash()->success('Usuario editado com sucesso!');
+            return redirect()->route('seguranca.usuarios.index');
+        } catch(\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+            DB::rollback();
+            flash()->danger('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        } catch(ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
+        }
+    }
+
+    public function postDelete(Request $request)
+    {
+        try {
+            $id = $request->get('id');
+
+            if ($this->usuarioRepository->delete($id)) {
+                flash()->success('Usuario excluído com sucesso.');
+            } else {
+                flash()->error('Erro ao tentar excluir o usuario');
+            }
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->success('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
+        }
+    }
+
 }
