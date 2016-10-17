@@ -44,6 +44,28 @@ class PessoaRepository extends BaseRepository
         return $result;
     }
 
+    public function verifyEmail($email, $idPessoa = null)
+    {
+        $result = $this->model->where('pes_email', $email)->get();
+
+        if(!$result->isEmpty())
+        {
+            if(!is_null($idPessoa))
+            {
+                $result = $result->where('pes_id', $idPessoa);
+
+                if(!$result->isEmpty())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public function findPessoaByCpf($cpf){
 
         $result = $this->model->join('gra_documentos', function ($join) {
@@ -54,7 +76,7 @@ class PessoaRepository extends BaseRepository
         return $result;
     }
 
-    public function findByIdForForm($id)
+    public function findById($id)
     {
         $result = $this->model
                         ->leftJoin('gra_documentos', function ($join) {

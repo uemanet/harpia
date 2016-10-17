@@ -80,16 +80,15 @@ class PessoasController extends BaseController
     public function postCreate(PessoaRequest $request)
     {
         DB::beginTransaction();
-        //dd($request->all());
 
         try {
-            $dataPessoa = $request->except('pes_cpf');
+            $dataPessoa = $request->except('doc_conteudo');
 
             $pessoa = $this->pessoaRepository->create($dataPessoa);
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoa->pes_id,
-                'doc_conteudo' => $request->input('pes_cpf'),
+                'doc_conteudo' => $request->input('doc_conteudo'),
                 'doc_tpd_id' => 2
             ];
 
@@ -113,7 +112,7 @@ class PessoasController extends BaseController
 
     public function getEdit($id)
     {
-        $pessoa = $this->pessoaRepository->findByIdForForm($id);
+        $pessoa = $this->pessoaRepository->findById($id);
 
         return view('Geral::pessoas.edit', compact('pessoa'));
     }
@@ -123,15 +122,30 @@ class PessoasController extends BaseController
         DB::beginTransaction();
 
         try {
-            $dataPessoa = $request->except('pes_cpf', '_method', '_token');
+            
+            if($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id))
+            {
+                $errors = ['pes_email' => 'Email já cadastrado'];
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
+            if($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $id))
+            {
+                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+            
+            $dataPessoa = $request->except('doc_conteudo', '_method', '_token');
 
             $this->pessoaRepository->update($dataPessoa, $id, 'pes_id');
 
             $dataDocumento = [
-                'doc_conteudo' => $request->input('pes_cpf')
+                'doc_pes_id' => $id,
+                'doc_conteudo' => $request->input('doc_conteudo'),
+                'doc_tpd_id' => 2
             ];
 
-            $this->documentoRepository->update($dataDocumento, ['doc_pes_id' => $id, 'doc_tpd_id' => 2]);
+            $this->documentoRepository->updateOrCreate(['doc_pes_id' => $id, 'doc_tpd_id' => 2], $dataDocumento);
 
             DB::commit();
 

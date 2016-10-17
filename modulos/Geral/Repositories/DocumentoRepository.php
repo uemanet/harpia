@@ -22,6 +22,28 @@ class DocumentoRepository extends BaseRepository
                     ->get();
     }
 
+    public function verifyCpf($cpf, $idPessoa = null)
+    {
+        $result = $this->model->where('doc_conteudo', $cpf)->where('doc_tpd_id', 2)->get();
+
+        if(!$result->isEmpty())
+        {
+            if(!is_null($idPessoa))
+            {
+                $result = $result->where('doc_pes_id', $idPessoa);
+
+                if(!$result->isEmpty())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public function updateDocumento(array $data, array $options)
     {
         $query = $this->model;
@@ -32,5 +54,10 @@ class DocumentoRepository extends BaseRepository
         }
 
         return $query->update($data);
+    }
+
+    public function updateOrCreate(array $attributes, array $data)
+    {
+        return $this->model->updateOrCreate($attributes, $data);
     }
 }

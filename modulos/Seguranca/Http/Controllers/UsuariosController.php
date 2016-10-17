@@ -96,7 +96,7 @@ class UsuariosController extends BaseController
             return view('Seguranca::usuarios.create', ['pessoa' => []]);
         }
 
-        $pessoa = $this->pessoaRepository->findByIdForForm($pesId);
+        $pessoa = $this->pessoaRepository->findById($pesId);
 
         if($pessoa){
             return view('Seguranca::usuarios.create',['pessoa' => $pessoa]);
@@ -113,6 +113,14 @@ class UsuariosController extends BaseController
         DB::beginTransaction();
 
         try {
+
+            $validator = Validator::make($request->all(), array_merge($usuarioRequest->rules(), $pessoaRequest->rules()));
+            
+            if($validator->fails())
+            {
+                return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validator);
+            }
+
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -125,46 +133,58 @@ class UsuariosController extends BaseController
                 'pes_naturalidade' => $request->input('pes_naturalidade'),
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'doc_conteudo' => $request->input('doc_conteudo')
+                'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
             );
 
-            $validatorPessoa = Validator::make($dataPessoa, $pessoaRequest->rules());
-            
-            if($validatorPessoa->fails())
-            {
-                return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validatorPessoa);
-            }
-
-            $cpf = $dataPessoa['doc_conteudo'];
-            unset($dataPessoa['doc_conteudo']);
+            $cpf = $request->input('doc_conteudo');
 
             $dataForm = $request->all();
             $pes_id = isset($dataForm['pes_id']) ? $request->input('pes_id') : null;
 
             if($pes_id)
             {
-                $this->pessoaRepository->update($dataPessoa, $pes_id);
+                if($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id))
+                {
+                    $errors = ['pes_email' => 'Email já cadastrado'];
+                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
+                }
 
-                $tipoId = $this->tipoDocumentoRepository->search([['tpd_nome', '=', 'CPF']], ['tpd_id'])->first()->tpd_id;
+                if($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id))
+                {
+                    $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
+                }
+
+                $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
 
                 $dataDocumento = array(
-                    'doc_tpd_id' => $tipoId,
-                    'doc_conteudo' => $cpf
+                    'doc_tpd_id' => 2,
+                    'doc_conteudo' => $cpf,
+                    'doc_pes_id' => $pes_id
                 );
 
-                $this->documentoRepository->updateDocumento($dataDocumento, ['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2]);
+                $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
 
             } else{
+
+                if($this->pessoaRepository->verifyEmail($request->input('pes_email')))
+                {
+                    $errors = ['pes_email' => 'Email já cadastrado'];
+                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
+                }
+
+                if($this->documentoRepository->verifyCpf($request->input('doc_conteudo')))
+                {
+                    $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
+                }
 
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
                 $pes_id = $pessoa->pes_id;
 
-                $tipoId = $this->tipoDocumentoRepository->search([['tpd_nome', '=', 'CPF']], ['tpd_id'])->first()->tpd_id;
-
                 $dataDocumento = array(
                     'doc_pes_id' => $pes_id,
-                    'doc_tpd_id' => $tipoId,
+                    'doc_tpd_id' => 2,
                     'doc_conteudo' => $cpf
                 );
 
@@ -173,20 +193,10 @@ class UsuariosController extends BaseController
 
             $dataUsuario = array(
                 'usr_usuario' => $request->input('usr_usuario'),
-                'usr_senha' => $request->input('usr_senha'),
-                'usr_ativo' => $request->input('usr_ativo')
+                'usr_senha' => bcrypt($request->input('usr_senha')),
+                'usr_ativo' => $request->input('usr_ativo'),
+                'usr_pes_id' => $pes_id
             );
-
-            $validatorUsuario = Validator::make($dataUsuario, $usuarioRequest->rules());
-
-            if($validatorUsuario->fails())
-            {
-                DB::rollback();
-                return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validatorUsuario);
-            }
-
-            $dataUsuario['usr_senha'] = bcrypt($dataUsuario['usr_senha']);
-            $dataUsuario['usr_pes_id'] = $pes_id;
 
             $this->usuarioRepository->create($dataUsuario);
 
@@ -211,8 +221,7 @@ class UsuariosController extends BaseController
     {
         $usuario = $this->usuarioRepository->find($id);
 
-        $pessoa = $this->pessoaRepository->findByIdForForm($usuario->usr_pes_id);
-        dd($pessoa);
+        $pessoa = $this->pessoaRepository->findById($usuario->usr_pes_id);
 
         return view('Seguranca::usuarios.edit', ['usuario' => $usuario, 'pessoa' => $pessoa]);
     }
@@ -231,6 +240,21 @@ class UsuariosController extends BaseController
 
         DB::beginTransaction();
         try {
+
+            $pes_id = $request->input('pes_id');
+
+            if($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id))
+            {
+                $errors = ['pes_email' => 'Email já cadastrado'];
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
+            if($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id))
+            {
+                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
             $dataUsuario = $request->only('usr_usuario', 'usr_senha', 'usr_ativo');
 
             $this->usuarioRepository->update($dataUsuario, $id, 'usr_id');
@@ -249,12 +273,16 @@ class UsuariosController extends BaseController
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
             );
+
+            $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
             
-            $this->pessoaRepository->update($dataPessoa, $request->input('pes_id'), 'pes_id');
-            
-            $dataDocumento = $request->only('doc_conteudo');
-            
-            $this->documentoRepository->updateDocumento($dataDocumento, ['doc_pes_id' => $request->input('pes_id'), 'doc_tpd_id' => 2]);
+            $dataDocumento = [
+                'doc_pes_id' => $pes_id,
+                'doc_conteudo' => $request->input('doc_conteudo'),
+                'doc_tpd_id' => 2
+            ];
+
+            $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
 
             DB::commit();
 
