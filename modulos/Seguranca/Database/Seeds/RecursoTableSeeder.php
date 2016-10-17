@@ -197,14 +197,15 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
+        // Recursos Disciplinas
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> oculto
-        $recurso->rcs_nome = 'Módulos';
-        $recurso->rcs_rota = 'modulosmatrizes';
-        $recurso->rcs_descricao = 'Recurso módulomatrizes do módulo acadêmico';
-        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Disciplinas';
+        $recurso->rcs_rota = 'disciplinas';
+        $recurso->rcs_descricao = 'Recurso disciplinas do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-book';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 9;
+        $recurso->rcs_ordem = 3;
         $recurso->save();
 
         $recurso = new Recurso();
