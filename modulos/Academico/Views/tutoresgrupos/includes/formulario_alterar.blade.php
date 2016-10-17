@@ -25,7 +25,7 @@
     <div class="form-group col-md-4 @if ($errors->has('ttg_tut_id')) has-error @endif">
         {!! Form::label('ttg_tut_id', 'Novo Tutor*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('ttg_tut_id', $tutores, $tutores, ['class' => 'form-control', 'id' => 'ttg_tut_id']) !!}
+            {!! Form::select('ttg_tut_id', $tutores, $tutores, ['class' => 'form-control', 'id' => 'ttg_tut_id', 'placeholder' => 'Selecione o novo tutor']) !!}
             @if ($errors->has('ttg_tut_id')) <p class="help-block">{{ $errors->first('ttg_tut_id') }}</p> @endif
         </div>
     </div>
@@ -42,7 +42,7 @@
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ttg_data_inicio')) has-error @endif">
-        {!! Form::label('ttg_data_inicio', 'Data de Admissão do tutor', ['class' => 'control-label']) !!}
+        {!! Form::label('ttg_data_inicio', 'Data de Admissão do tutor*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('ttg_data_inicio', old('ttg_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
             @if ($errors->has('ttg_data_inicio')) <p class="help-block">{{ $errors->first('ttg_data_inicio') }}</p> @endif

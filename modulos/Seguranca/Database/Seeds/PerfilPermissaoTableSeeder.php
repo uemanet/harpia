@@ -50,5 +50,7 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([66, 67, 68, 69]); // Permissoes do recurso módulos matrizes
 
+        $perfil->permissoes()->attach([70, 71, 72]); // Permissoes do recurso tutores do grupo
+
     }
 }
