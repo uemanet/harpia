@@ -46,6 +46,9 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoTurmas();
 
         $this->createPermissoesAcademicoModulosMatrizes();
+
+        $this->createPermissoesAcademicoDisciplinas();
+
     }
 
     private function createPermissoesIndex()
@@ -501,25 +504,53 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index do recurso Módulos Matrizes';
+        $permissao->prm_descricao = 'Permissão index do recurso Disciplinas';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão create do recurso Módulos Matrizes';
+        $permissao->prm_descricao = 'Permissão create do recurso Disciplinas';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit do recurso Módulos Matrizes';
+        $permissao->prm_descricao = 'Permissão edit do recurso Disciplinas';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete do recurso Módulos Matrizes';
+        $permissao->prm_descricao = 'Permissão delete do recurso Disciplinas';
+        $permissao->save();
+    }
+
+
+    private function createPermissoesAcademicoDisciplinas()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Disciplinas';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Disciplinas';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Disciplinas';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 19;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Disciplinas';
         $permissao->save();
     }
 }
