@@ -17,7 +17,7 @@ class Vinculo extends BaseModel
         'ucr_crs_id' => '=',
     ];
 
-    public function pessoas()
+    public function usuarios()
     {
         return $this->belongsToMany('Modulos\Seguranca\Models\Usuario', 'usr_id', 'ucr_usr_id');
     }

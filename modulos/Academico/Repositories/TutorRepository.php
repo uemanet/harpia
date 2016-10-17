@@ -15,10 +15,9 @@ class TutorRepository extends BaseRepository
 
     public function listsTutorPessoa()
     {
-      $tutores = DB::table('acd_tutores')
+        $tutores = DB::table('acd_tutores')
            ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
            ->pluck('pes_nome', 'tut_id');
-      return $tutores;
+        return $tutores;
     }
-
 }

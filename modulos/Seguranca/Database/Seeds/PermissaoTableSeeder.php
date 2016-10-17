@@ -581,22 +581,22 @@ class PermissaoTableSeeder extends Seeder
 
     private function createPermissoesAcademicoTutoresGrupos()
     {
-      $permissao = new Permissao();
-      $permissao->prm_rcs_id = 22;
-      $permissao->prm_nome = 'index';
-      $permissao->prm_descricao = 'Permissão index do recurso Tutores do Grupo';
-      $permissao->save();
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 22;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Tutores do Grupo';
+        $permissao->save();
 
-      $permissao = new Permissao();
-      $permissao->prm_rcs_id = 22;
-      $permissao->prm_nome = 'create';
-      $permissao->prm_descricao = 'Permissão create do recurso Tutores do Grupo';
-      $permissao->save();
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 22;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Tutores do Grupo';
+        $permissao->save();
 
-      $permissao = new Permissao();
-      $permissao->prm_rcs_id = 22;
-      $permissao->prm_nome = 'alterartutor';
-      $permissao->prm_descricao = 'Permissão alterartutor do recurso Tutores do Grupo';
-      $permissao->save();
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 22;
+        $permissao->prm_nome = 'alterartutor';
+        $permissao->prm_descricao = 'Permissão alterartutor do recurso Tutores do Grupo';
+        $permissao->save();
     }
 }

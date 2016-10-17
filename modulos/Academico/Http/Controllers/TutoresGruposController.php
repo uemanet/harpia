@@ -27,23 +27,21 @@ class TutoresGruposController extends BaseController
         $this->tutorRepository = $tutorRepository;
         $this->turmaRepository = $turmaRepository;
         $this->ofertacursoRepository = $ofertacursoRepository;
-
     }
 
-    public function getIndex($grupoId,Request $request)
+    public function getIndex($grupoId, Request $request)
     {
         $btnNovo = new TButton();
 
-        if($this->tutorgrupoRepository->verifyTutorExists($grupoId))
-        {
-            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
-        }
-
         $grupo = $this->grupoRepository->find($grupoId);
 
-        if (is_null($grupo)){
+        if (is_null($grupo)) {
             flash()->error('Grupo não existe!');
             return redirect()->back();
+        }
+
+        if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
+            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
@@ -102,7 +100,7 @@ class TutoresGruposController extends BaseController
     {
         $grupo = $this->grupoRepository->find($grupoId);
 
-        if (is_null($grupo)){
+        if (is_null($grupo)) {
             flash()->error('Grupo não existe!');
             return redirect()->back();
         }
@@ -111,11 +109,10 @@ class TutoresGruposController extends BaseController
 
         $distancia  = $this->tutorgrupoRepository->verifyTutorDistancia("distancia", $grupoId);
 
-        if (!is_null($presencial) && !is_null($distancia)){
+        if (!is_null($presencial) && !is_null($distancia)) {
             flash()->error('O grupo já tem um tutor presencial e um tutor à distância!');
             return redirect()->back();
         }
-        //dd($distancia, $presencial);
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
@@ -132,21 +129,17 @@ class TutoresGruposController extends BaseController
 
     public function postCreate(TutorGrupoRequest $request)
     {
-
         try {
-
             $tipoTutoria = $request->input('ttg_tipo_tutoria');
             $idTutorGrupo = $request->input('ttg_id');
             $grupoTutor = $request->input('ttg_grp_id');
 
-            if($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria, $grupoTutor))
-            {
+            if ($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria, $grupoTutor)) {
                 $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor presencial');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            if($this->tutorgrupoRepository->verifyTutorDistancia($tipoTutoria, $grupoTutor))
-            {
+            if ($this->tutorgrupoRepository->verifyTutorDistancia($tipoTutoria, $grupoTutor)) {
                 $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor à distância');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
@@ -175,12 +168,12 @@ class TutoresGruposController extends BaseController
     {
         $tutorgrupo = $this->tutorgrupoRepository->find($tutorgrupoId);
 
-        if (is_null($tutorgrupo)){
+        if (is_null($tutorgrupo)) {
             flash()->error('Este registro não existe!');
             return redirect()->back();
         }
 
-        if ($tutorgrupo->ttg_data_fim <> null){
+        if ($tutorgrupo->ttg_data_fim <> null) {
             flash()->error('Este tutor já foi desligado do grupo!');
             return redirect()->back();
         }
@@ -202,40 +195,40 @@ class TutoresGruposController extends BaseController
         return view('Academico::tutoresgrupos.alterartutor', ['tutor' => $tutor, 'tutorgrupo' => $tutorgrupo, 'turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores]);
     }
 
-    public function putAlterarTutor( $idTutorGrupo , TutorGrupoRequest $request)
+    public function putAlterarTutor($idTutorGrupo, TutorGrupoRequest $request)
     {
-      try {
-          $tutorgrupo = $this->tutorgrupoRepository->find($idTutorGrupo);
+        try {
+            $tutorgrupo = $this->tutorgrupoRepository->find($idTutorGrupo);
 
-          if (!$tutorgrupo) {
-              flash()->error('Turma não existe.');
-              return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
-          }
+            if (!$tutorgrupo) {
+                flash()->error('Turma não existe.');
+                return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+            }
 
-          $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
+            $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
 
           //Atualiza o fim do vículo do tutor antigo
           $date = date('Y-m-d');
-          $dados['ttg_data_fim'] = $date;
-          $this->tutorgrupoRepository->update($dados, $tutorgrupo->ttg_id, 'ttg_id');
+            $dados['ttg_data_fim'] = $date;
+            $this->tutorgrupoRepository->update($dados, $tutorgrupo->ttg_id, 'ttg_id');
 
 
-          $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
+            $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
-          if (!$tutorgrupo) {
-              flash()->error('Erro ao tentar salvar.');
-              return redirect()->back()->withInput($request->all());
-          }
+            if (!$tutorgrupo) {
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+            }
 
-          flash()->success('Tutor alterado com sucesso.');
-          return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
-      } catch (\Exception $e) {
-          if (config('app.debug')) {
-              throw $e;
-          }
+            flash()->success('Tutor alterado com sucesso.');
+            return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
 
-          flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-          return redirect()->back();
-      }
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
     }
 }

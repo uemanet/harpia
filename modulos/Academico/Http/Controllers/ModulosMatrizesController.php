@@ -90,7 +90,6 @@ class ModulosMatrizesController extends BaseController
 
     public function getCreate($matrizId)
     {
-
         $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
 
         if ($matriz->isEmpty()) {

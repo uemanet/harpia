@@ -51,7 +51,7 @@ class TutorGrupoRepository extends BaseRepository
           ->where('ttg_grp_id', '=', $grupoTutor)
           ->get();
 
-        if (!($result_presencial->isEmpty()) && $tipoTutoria === "presencial" ) {
+        if (!($result_presencial->isEmpty()) && $tipoTutoria === "presencial") {
             return true;
         }
     }
@@ -63,9 +63,8 @@ class TutorGrupoRepository extends BaseRepository
           ->where('ttg_grp_id', '=', $grupoTutor)
           ->get();
 
-        if (!($result_distancia->isEmpty()) && $tipoTutoria === "distancia" ) {
+        if (!($result_distancia->isEmpty()) && $tipoTutoria === "distancia") {
             return true;
         }
     }
-
 }
