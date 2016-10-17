@@ -2,6 +2,7 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
+use Harpia\Format\Format;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -33,8 +34,7 @@ class PessoasController extends BaseController
         $paginacao = null;
 
         $tableData = $this->pessoaRepository->paginateRequest($request->all());
-        if($tableData->count())
-        {
+        if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'pes_id' => '#',
                 'pes_nome' => 'Nome',
@@ -42,11 +42,11 @@ class PessoasController extends BaseController
                 'doc_conteudo' => 'CPF',
                 'pes_action' => 'Ações'
             ))
-                ->modifyCell('pes_action', function() {
+                ->modifyCell('pes_action', function () {
                     return array('style' => 'width: 140px;');
                 })
                 ->means('pes_action', 'pes_id')
-                ->modify('pes_action', function($id) {
+                ->modify('pes_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -59,6 +59,13 @@ class PessoasController extends BaseController
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/geral/pessoas/edit/' . $id,
                                 'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-eye',
+                                'action' => '/geral/pessoas/show/'.$id,
+                                'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
                         ]
@@ -98,7 +105,6 @@ class PessoasController extends BaseController
 
             flash()->success('Pessoa criada com sucesso');
             return redirect()->route('geral.pessoas.index');
-
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
@@ -122,15 +128,12 @@ class PessoasController extends BaseController
         DB::beginTransaction();
 
         try {
-            
-            if($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id))
-            {
+            if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id)) {
                 $errors = ['pes_email' => 'Email já cadastrado'];
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            if($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $id))
-            {
+            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $id)) {
                 $errors = ['doc_conteudo' => 'CPF já cadastrado'];
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
@@ -151,7 +154,6 @@ class PessoasController extends BaseController
 
             flash()->success('Pessoa editada com sucesso!');
             return redirect()->route('geral.pessoas.index');
-
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
@@ -160,6 +162,40 @@ class PessoasController extends BaseController
             flash()->danger('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+    }
+    
+    public function getShow($id)
+    {
+        $pessoa = $this->pessoaRepository->find($id);
+        
+        $pessoa->pes_sexo = ($pessoa->pes_sexo == 'M') ? 'Masculino' : 'Feminino';
+
+        $pessoa->pes_nascimento = Format::formatDate($pessoa->pes_nascimento, 'd/m/Y');
+
+        $pessoa->pes_necessidade_especial = ($pessoa->pes_necessidade_especial == 'S') ? 'Sim' : 'Não';
+
+        $pessoa->pes_estrangeiro = ($pessoa->pes_estrangeiro) ? 'Sim' : 'Não';
+
+        $documentos = [];
+
+        foreach ($pessoa->documentos as $documento) {
+            $obj = array();
+
+            $obj['tipo'] = $documento->tipo_documento->tpd_nome;
+            $obj['conteudo'] = $documento->doc_conteudo;
+
+            if ($obj['tipo'] == 'CPF') {
+                $obj['conteudo'] = Format::mask($obj['conteudo'], '###.###.###-##');
+            }
+
+            $obj['orgao'] = $documento->doc_orgao;
+            $obj['emissao'] = isset($documento->doc_dataexpedicao) ? Format::formatDate($documento->doc_dataexpedicao, 'd/m/Y') : null;
+            $obj['observacao'] = $documento->doc_observacao;
+
+            $documentos[] = (object) $obj;
+        }
+
+        return view('Geral::pessoas.show', ['pessoa' => $pessoa, 'documentos' => $documentos]);
     }
 
     public function getVerificapessoa(Request $request)
@@ -171,8 +207,7 @@ class PessoasController extends BaseController
 
         $pessoa = $this->pessoaRepository->findPessoaByCpf($cpf);
 
-        if($pessoa)
-        {
+        if ($pessoa) {
             return redirect()->route($route, ['id' => $pessoa->pes_id])->with('validado', 'true');
         }
 

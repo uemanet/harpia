@@ -48,14 +48,11 @@ class PessoaRepository extends BaseRepository
     {
         $result = $this->model->where('pes_email', $email)->get();
 
-        if(!$result->isEmpty())
-        {
-            if(!is_null($idPessoa))
-            {
+        if (!$result->isEmpty()) {
+            if (!is_null($idPessoa)) {
                 $result = $result->where('pes_id', $idPessoa);
 
-                if(!$result->isEmpty())
-                {
+                if (!$result->isEmpty()) {
                     return false;
                 }
             }
@@ -66,12 +63,12 @@ class PessoaRepository extends BaseRepository
         return false;
     }
 
-    public function findPessoaByCpf($cpf){
-
+    public function findPessoaByCpf($cpf)
+    {
         $result = $this->model->join('gra_documentos', function ($join) {
-                        $join->on('pes_id', '=', 'doc_pes_id')
+            $join->on('pes_id', '=', 'doc_pes_id')
                                 ->where('doc_tpd_id', '=', 2);
-                    })->where('doc_conteudo','=',$cpf)->select('pes_id')->first();
+        })->where('doc_conteudo', '=', $cpf)->select('pes_id')->first();
 
         return $result;
     }

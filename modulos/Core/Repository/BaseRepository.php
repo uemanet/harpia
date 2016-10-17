@@ -48,8 +48,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
             $query = $query->where($op[0], $op[1], $op[2]);
         }
 
-        if(!is_null($select))
-        {
+        if (!is_null($select)) {
             $query = $query->select(implode(',', $select));
         }
 

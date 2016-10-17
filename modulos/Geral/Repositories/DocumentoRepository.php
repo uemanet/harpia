@@ -7,7 +7,6 @@ use Modulos\Geral\Models\Documento;
 
 class DocumentoRepository extends BaseRepository
 {
-
     public function __construct(Documento $documento)
     {
         $this->model = $documento;
@@ -26,14 +25,11 @@ class DocumentoRepository extends BaseRepository
     {
         $result = $this->model->where('doc_conteudo', $cpf)->where('doc_tpd_id', 2)->get();
 
-        if(!$result->isEmpty())
-        {
-            if(!is_null($idPessoa))
-            {
+        if (!$result->isEmpty()) {
+            if (!is_null($idPessoa)) {
                 $result = $result->where('doc_pes_id', $idPessoa);
 
-                if(!$result->isEmpty())
-                {
+                if (!$result->isEmpty()) {
                     return false;
                 }
             }
@@ -48,8 +44,7 @@ class DocumentoRepository extends BaseRepository
     {
         $query = $this->model;
 
-        foreach($options as $key => $value)
-        {
+        foreach ($options as $key => $value) {
             $query = $query->where($key, '=', $value);
         }
 

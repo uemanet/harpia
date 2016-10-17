@@ -24,9 +24,7 @@ class PessoaRequest extends BaseRequest
      */
     public function rules()
     {
-
-        if($this->method() == 'POST')
-        {
+        if ($this->method() == 'POST') {
             return [
                 'pes_nome' => 'required|min:3|max:150',
                 'pes_sexo' => 'required',
@@ -61,7 +59,5 @@ class PessoaRequest extends BaseRequest
             'pes_estrangeiro' => 'boolean',
             'doc_conteudo' => 'required|cpf'
         ];
-
-
     }
 }

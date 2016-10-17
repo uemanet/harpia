@@ -26,5 +26,4 @@ class ModuloMatriz extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\MatrizCurricular', 'mdo_mtc_id', 'mtc_id');
     }
-
 }

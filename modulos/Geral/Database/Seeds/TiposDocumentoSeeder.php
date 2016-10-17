@@ -23,8 +23,7 @@ class TiposDocumentoSeeder extends Seeder
             'SOLTEIRO EMANCIPADO'
         ];
 
-        foreach($tipos as $tipo)
-        {
+        foreach ($tipos as $tipo) {
             $obj = new TipoDocumento();
             $obj->tpd_nome = $tipo;
             $obj->save();
