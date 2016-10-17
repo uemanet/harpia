@@ -47,9 +47,11 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoModulosMatrizes();
 
-        $this->createPermissoesAcademicoDisciplinas();
-
         $this->createPermissoesAcademicoVinculos();
+
+        $this->createPermissoesAcademicoTutoresGrupos();
+
+        $this->createPermissoesAcademicoDisciplinas();
     }
 
     private function createPermissoesIndex()
@@ -501,25 +503,25 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index do recurso Disciplinas';
+        $permissao->prm_descricao = 'Permissão index do recurso Módulos Matrizes';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão create do recurso Disciplinas';
+        $permissao->prm_descricao = 'Permissão create do recurso Módulos Matrizes';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit do recurso Disciplinas';
+        $permissao->prm_descricao = 'Permissão edit do recurso Módulos Matrizes';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete do recurso Disciplinas';
+        $permissao->prm_descricao = 'Permissão delete do recurso Módulos Matrizes';
         $permissao->save();
     }
 
@@ -575,5 +577,26 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Vinculos';
         $permissao->save();
+    }
+
+    private function createPermissoesAcademicoTutoresGrupos()
+    {
+      $permissao = new Permissao();
+      $permissao->prm_rcs_id = 22;
+      $permissao->prm_nome = 'index';
+      $permissao->prm_descricao = 'Permissão index do recurso Tutores do Grupo';
+      $permissao->save();
+
+      $permissao = new Permissao();
+      $permissao->prm_rcs_id = 22;
+      $permissao->prm_nome = 'create';
+      $permissao->prm_descricao = 'Permissão create do recurso Tutores do Grupo';
+      $permissao->save();
+
+      $permissao = new Permissao();
+      $permissao->prm_rcs_id = 22;
+      $permissao->prm_nome = 'alterartutor';
+      $permissao->prm_descricao = 'Permissão alterartutor do recurso Tutores do Grupo';
+      $permissao->save();
     }
 }

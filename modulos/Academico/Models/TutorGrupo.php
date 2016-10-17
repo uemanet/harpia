@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Models;
 
 use Modulos\Core\Model\BaseModel;
+use Carbon\Carbon;
 
 class TutorGrupo extends BaseModel
 {
@@ -13,7 +14,9 @@ class TutorGrupo extends BaseModel
     protected $fillable = [
         'ttg_tut_id',
         'ttg_grp_id',
-        'ttg_tipo_tutoria'
+        'ttg_tipo_tutoria',
+        'ttg_data_inicio',
+        'ttg_data_fim'
     ];
 
     protected $searchable = [
@@ -28,5 +31,18 @@ class TutorGrupo extends BaseModel
     public function grupo()
     {
         return $this->belongsTo('Modulos\Academico\Models\Grupo', 'ttg_grp_id', 'grp_id');
+    }
+
+    // Accessors
+    public function getTtgDataInicioAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutators
+    public function setTtgDataInicioAttribute($value)
+    {
+        $this->attributes['ttg_data_inicio'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }
