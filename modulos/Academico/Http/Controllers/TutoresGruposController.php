@@ -9,22 +9,35 @@ use Modulos\Academico\Http\Requests\TutorGrupoRequest;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
+use Modulos\Academico\Repositories\TutorRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
 
 class TutoresGruposController extends BaseController
 {
     protected $tutorgrupoRepository;
     protected $grupoRepository;
+    protected $tutorRepository;
+    protected $ofertacursoRepository;
 
-    public function __construct(TutorGrupoRepository $tutorgrupoRepository, GrupoRepository $grupoRepository)
+    public function __construct(TutorGrupoRepository $tutorgrupoRepository, GrupoRepository $grupoRepository, TutorRepository $tutorRepository, TurmaRepository $turmaRepository, OfertaCursoRepository $ofertacursoRepository)
     {
         $this->tutorgrupoRepository = $tutorgrupoRepository;
         $this->grupoRepository = $grupoRepository;
+        $this->tutorRepository = $tutorRepository;
+        $this->turmaRepository = $turmaRepository;
+        $this->ofertacursoRepository = $ofertacursoRepository;
+
     }
 
     public function getIndex($grupoId,Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+
+        if($this->tutorgrupoRepository->verifyTutorExists())
+        {
+            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-plus')->setStyle('btn bg-blue');
+        }
 
         $grupo = $this->grupoRepository->find($grupoId);
 
@@ -40,6 +53,7 @@ class TutoresGruposController extends BaseController
                 'ttg_id' => '#',
                 'ttg_tut_id' => 'Tutor',
                 'ttg_tipo_tutoria' => 'Tipo de Tutoria',
+                'ttg_data_inicio' => 'Data de admissão',
                 'ttg_action' => 'Ações'
             ))
                 ->modifyCell('ttg_action', function () {
@@ -60,18 +74,10 @@ class TutoresGruposController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
-                                'icon' => 'fa fa-pencil',
-                                'action' => '/academico/tutoresgrupos/edit/' . $id,
-                                'label' => 'Editar',
+                                'icon' => 'fa fa-user',
+                                'action' => '/academico/tutoresgrupos/alterartutor/' . $id,
+                                'label' => 'Alterar Tutor',
                                 'method' => 'get'
-                            ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'action' => '/academico/tutoresgrupos/delete',
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
                             ]
                         ]
                     ]);
@@ -87,10 +93,112 @@ class TutoresGruposController extends BaseController
     {
         $grupo = $this->grupoRepository->find($grupoId);
 
+        $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+        $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
+
+        $tutores = $this->tutorRepository->listsTutorPessoa();
+
+        $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
+
         $grupo = $this->grupoRepository->listsAllById($grupoId);
 
-        $tutores = $this->tutoresRepository->lists('tut_id', 'tut_pes_id');
+        return view('Academico::tutoresgrupos.create', ['turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores]);
+    }
 
-        return view('Academico::tutoresgrupos.create', ['grupo' => $grupo, 'tutores' => $tutores]);
+    public function postCreate(TutorGrupoRequest $request)
+    {
+
+        try {
+
+            $tipoTutoria = $request->input('ttg_tipo_tutoria');
+            $idTutorGrupo = $request->input('ttg_id');
+
+            if($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria))
+            {
+                $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor presencial');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
+            if($this->tutorgrupoRepository->verifyTutorDistancia($tipoTutoria))
+            {
+                $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor à distância');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
+
+            $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
+
+            if (!$tutorgrupo) {
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+            }
+
+            flash()->success('Vínculo criado com sucesso.');
+            return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function getAlterarTutor($tutorgrupoId)
+    {
+        $tutorgrupo = $this->tutorgrupoRepository->find($tutorgrupoId);
+
+        $grupo = $this->grupoRepository->find($tutorgrupo->ttg_grp_id);
+
+        $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+        $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
+
+        $tutores = $this->tutorRepository->listsTutorPessoa();
+
+        $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
+
+        $grupo = $this->grupoRepository->listsAllById($tutorgrupo->ttg_grp_id);
+
+        return view('Academico::tutoresgrupos.alterartutor', ['tutorgrupo' => $tutorgrupo, 'turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores]);
+    }
+
+    public function putAlterarTutor( $idTutorGrupo , TutorGrupoRequest $request)
+    {
+      try {
+          $tutorgrupo = $this->tutorgrupoRepository->find($idTutorGrupo);
+
+          if (!$tutorgrupo) {
+              flash()->error('Turma não existe.');
+              return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+          }
+
+          $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
+
+          //Atualiza o fim do vículo do tutor antigo
+          $date = date('Y-m-d');
+          $dados['ttg_data_fim'] = $date;
+          $this->tutorgrupoRepository->update($dados, $tutorgrupo->ttg_id, 'ttg_id');
+
+
+          $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
+
+          if (!$tutorgrupo) {
+              flash()->error('Erro ao tentar salvar.');
+              return redirect()->back()->withInput($request->all());
+          }
+
+          flash()->success('Vínculo criado com sucesso.');
+          return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
+      } catch (\Exception $e) {
+          if (config('app.debug')) {
+              throw $e;
+          }
+
+          flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+          return redirect()->back();
+      }
     }
 }

@@ -1,29 +1,26 @@
-@extends('layouts.modulos.academico')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.seguranca')
 
 @section('title')
-    Tutores do grupo
+    Alterar tutor
 @stop
 
 @section('subtitle')
-    Vínculo de tutores
+    Alterar tutor
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de vínculo de tutores</h3>
+            <h3 class="box-title">Formulário de alteração de tutor do grupo</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/tutoresgrupos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                @include('Academico::tutoresgrupos.includes.formulario')
+            {!! Form::model($tutorgrupo,["url" => url('/') . "/academico/tutoresgrupos/alterartutor/$tutorgrupo->ttg_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+                 @include('Academico::tutoresgrupos.includes.formulario_alterar')
             {!! Form::close() !!}
         </div>
     </div>
 @stop
+
 
 @section('scripts')
     <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>

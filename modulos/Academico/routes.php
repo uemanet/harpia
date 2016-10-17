@@ -88,9 +88,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getIndex')->name('academico.tutoresgrupos.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getCreate')->name('academico.tutoresgrupos.getCreate');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\TutoresGruposController@postCreate')->name('academico.tutoresgrupos.postCreate');
-        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getEdit')->name('academico.tutoresgrupos.getEdit');
-        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@putEdit')->name('academico.tutoresgrupos.putEdit');
+        Route::get('/alterartutor/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getAlterarTutor')->name('academico.tutoresgrupos.getAlterarTutor');
+        Route::put('/alterartutor/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@putAlterarTutor')->name('academico.tutoresgrupos.putAlterarTutor');
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\TutoresGruposController@postDelete')->name('academico.tutoresgrupos.delete');
+    });
 
     Route::group(['prefix' => 'modulosmatrizes'], function () {
         Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getIndex')->name('academico.modulosmatrizes.index');

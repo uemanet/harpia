@@ -63,4 +63,5 @@ class TurmaRepository extends BaseRepository
     {
         return $this->model->where('trm_id', $turmaid)->pluck('trm_nome', 'trm_id');
     }
+
 }

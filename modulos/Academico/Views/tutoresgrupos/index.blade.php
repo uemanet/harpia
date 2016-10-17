@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Turmas
+    Vínculo de Tutores
 @stop
 
 @section('subtitle')
-    Vículo de tutores :: Oferta do ano de XXXX :: Turma :: Grupo XXXX
+    Vículo de tutores :: Oferta do ano de XXXX :: Turma XXXX :: Grupo XXXX
 @stop
 
 @section('actionButton')
