@@ -34,7 +34,7 @@ class TutoresGruposController extends BaseController
     {
         $btnNovo = new TButton();
 
-        if($this->tutorgrupoRepository->verifyTutorExists())
+        if($this->tutorgrupoRepository->verifyTutorExists($grupoId))
         {
             $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-plus')->setStyle('btn bg-blue');
         }
@@ -107,6 +107,16 @@ class TutoresGruposController extends BaseController
             return redirect()->back();
         }
 
+        $presencial = $this->tutorgrupoRepository->verifyTutorPresencial("presencial", $grupoId);
+
+        $distancia  = $this->tutorgrupoRepository->verifyTutorDistancia("distancia", $grupoId);
+
+        if (!is_null($presencial) && !is_null($distancia)){
+            flash()->error('O grupo já tem um tutor presencial e um tutor à distância!');
+            return redirect()->back();
+        }
+        //dd($distancia, $presencial);
+
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
         $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
@@ -117,7 +127,7 @@ class TutoresGruposController extends BaseController
 
         $grupo = $this->grupoRepository->listsAllById($grupoId);
 
-        return view('Academico::tutoresgrupos.create', ['turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores]);
+        return view('Academico::tutoresgrupos.create', ['turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores, 'presencial' => $presencial, 'distancia' => $distancia]);
     }
 
     public function postCreate(TutorGrupoRequest $request)
@@ -127,14 +137,15 @@ class TutoresGruposController extends BaseController
 
             $tipoTutoria = $request->input('ttg_tipo_tutoria');
             $idTutorGrupo = $request->input('ttg_id');
+            $grupoTutor = $request->input('ttg_grp_id');
 
-            if($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria))
+            if($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria, $grupoTutor))
             {
                 $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor presencial');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            if($this->tutorgrupoRepository->verifyTutorDistancia($tipoTutoria))
+            if($this->tutorgrupoRepository->verifyTutorDistancia($tipoTutoria, $grupoTutor))
             {
                 $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor à distância');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
@@ -182,11 +193,13 @@ class TutoresGruposController extends BaseController
 
         $tutores = $this->tutorRepository->listsTutorPessoa();
 
+        $tutor = $this->tutorRepository->find($tutorgrupo->ttg_tut_id);
+
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
         $grupo = $this->grupoRepository->listsAllById($tutorgrupo->ttg_grp_id);
 
-        return view('Academico::tutoresgrupos.alterartutor', ['tutorgrupo' => $tutorgrupo, 'turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores]);
+        return view('Academico::tutoresgrupos.alterartutor', ['tutor' => $tutor, 'tutorgrupo' => $tutorgrupo, 'turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores]);
     }
 
     public function putAlterarTutor( $idTutorGrupo , TutorGrupoRequest $request)

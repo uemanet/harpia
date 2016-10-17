@@ -27,14 +27,16 @@ class TutorGrupoRepository extends BaseRepository
         return $this->model->where('ttg_grp_id', '=', $grupoid)->where('ttg_data_fim', '=', null)->paginate(15);
     }
 
-    public function verifyTutorExists()
+    public function verifyTutorExists($grupoId)
     {
         $result_presencial = $this->model
             ->where('ttg_tipo_tutoria', 'presencial')
+            ->where('ttg_grp_id', '=', $grupoId)
             ->get();
 
         $result_distancia = $this->model
             ->where('ttg_tipo_tutoria', 'distancia')
+            ->where('ttg_grp_id', '=', $grupoId)
             ->get();
 
         if ($result_distancia->isEmpty() || $result_presencial->isEmpty()) {
@@ -42,10 +44,11 @@ class TutorGrupoRepository extends BaseRepository
         }
     }
 
-    public function verifyTutorPresencial($tipoTutoria)
+    public function verifyTutorPresencial($tipoTutoria, $grupoTutor)
     {
         $result_presencial = $this->model
           ->where('ttg_tipo_tutoria', 'presencial')
+          ->where('ttg_grp_id', '=', $grupoTutor)
           ->get();
 
         if (!($result_presencial->isEmpty()) && $tipoTutoria === "presencial" ) {
@@ -53,10 +56,11 @@ class TutorGrupoRepository extends BaseRepository
         }
     }
 
-    public function verifyTutorDistancia($tipoTutoria)
+    public function verifyTutorDistancia($tipoTutoria, $grupoTutor)
     {
         $result_distancia = $this->model
           ->where('ttg_tipo_tutoria', 'distancia')
+          ->where('ttg_grp_id', '=', $grupoTutor)
           ->get();
 
         if (!($result_distancia->isEmpty()) && $tipoTutoria === "distancia" ) {

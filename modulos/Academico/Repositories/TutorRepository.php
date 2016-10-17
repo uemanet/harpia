@@ -20,4 +20,5 @@ class TutorRepository extends BaseRepository
            ->pluck('pes_nome', 'tut_id');
       return $tutores;
     }
+
 }
