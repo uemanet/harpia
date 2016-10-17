@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Vículo de tutores :: Oferta do ano de XXXX :: Turma XXXX :: Grupo XXXX
+    Oferta do ano de {{$oferta->ofc_ano}} :: {{$turma->trm_nome}} :: {{$grupo->grp_nome}}
 @stop
 
 @section('actionButton')

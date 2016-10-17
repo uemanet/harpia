@@ -41,6 +41,15 @@ class TutoresGruposController extends BaseController
 
         $grupo = $this->grupoRepository->find($grupoId);
 
+        if (is_null($grupo)){
+            flash()->error('Grupo não existe!');
+            return redirect()->back();
+        }
+
+        $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+        $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
+
         $actionButtons[] = $btnNovo;
 
         $tabela = null;
@@ -86,12 +95,17 @@ class TutoresGruposController extends BaseController
 
             $paginacao = $tableData->appends($request->except('page'));
         }
-        return view('Academico::tutoresgrupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::tutoresgrupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'grupo' => $grupo, 'turma' => $turma, 'oferta' => $oferta]);
     }
 
     public function getCreate($grupoId)
     {
         $grupo = $this->grupoRepository->find($grupoId);
+
+        if (is_null($grupo)){
+            flash()->error('Grupo não existe!');
+            return redirect()->back();
+        }
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
@@ -150,6 +164,16 @@ class TutoresGruposController extends BaseController
     {
         $tutorgrupo = $this->tutorgrupoRepository->find($tutorgrupoId);
 
+        if (is_null($tutorgrupo)){
+            flash()->error('Este registro não existe!');
+            return redirect()->back();
+        }
+
+        if ($tutorgrupo->ttg_data_fim <> null){
+            flash()->error('Este tutor já foi desligado do grupo!');
+            return redirect()->back();
+        }
+
         $grupo = $this->grupoRepository->find($tutorgrupo->ttg_grp_id);
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
@@ -190,7 +214,7 @@ class TutoresGruposController extends BaseController
               return redirect()->back()->withInput($request->all());
           }
 
-          flash()->success('Vínculo criado com sucesso.');
+          flash()->success('Tutor alterado com sucesso.');
           return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
       } catch (\Exception $e) {
           if (config('app.debug')) {
