@@ -40,8 +40,7 @@ class UsuariosController extends BaseController
         $tabela = null;
 
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
-        //dd($tableData);
-
+        
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'usr_id' => '#',

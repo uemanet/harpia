@@ -90,13 +90,14 @@ class ModulosMatrizesController extends BaseController
 
     public function getCreate($matrizId)
     {
-        $curso = $this->cursoRepository->listsCursoByMatriz($matrizId);
         $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
 
         if ($matriz->isEmpty()) {
             flash()->error('Matriz não existe!');
             return redirect()->back();
         }
+
+        $curso = $this->cursoRepository->listsCursoByMatriz($matrizId);
 
         return view('Academico::modulosmatrizes.create', compact('matriz', 'curso'));
     }

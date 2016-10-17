@@ -66,6 +66,13 @@ class GruposController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-user',
+                                'action' => '/academico/tutoresgrupos/index/'.$id,
+                                'label' => 'Tutores',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/grupos/edit/'.$id,
                                 'label' => 'Editar',
