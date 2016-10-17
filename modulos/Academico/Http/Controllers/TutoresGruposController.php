@@ -36,7 +36,7 @@ class TutoresGruposController extends BaseController
 
         if($this->tutorgrupoRepository->verifyTutorExists($grupoId))
         {
-            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-plus')->setStyle('btn bg-blue');
+            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
 
         $grupo = $this->grupoRepository->find($grupoId);
