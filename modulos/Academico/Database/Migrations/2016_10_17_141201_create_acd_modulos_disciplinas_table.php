@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAcdPolosOfertasCursosTable extends Migration
+class CreateAcdModulosDisciplinasTable extends Migration
 {
 
     /**
@@ -13,9 +13,9 @@ class CreateAcdPolosOfertasCursosTable extends Migration
      */
     public function up()
     {
-        Schema::create('acd_polos_ofertas_cursos', function (Blueprint $table) {
-            $table->integer('poc_pol_id')->unsigned();
-            $table->integer('poc_ofc_id')->unsigned();
+        Schema::create('acd_modulos_disciplinas', function (Blueprint $table) {
+            $table->integer('mdc_dis_id')->unsigned();
+            $table->integer('mdc_mdo_id')->unsigned();
 
             $table->foreign('poc_pol_id')->references('pol_id')->on('acd_polos');
             $table->foreign('poc_ofc_id')->references('ofc_id')->on('acd_ofertas_cursos');
@@ -29,6 +29,6 @@ class CreateAcdPolosOfertasCursosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('acd_polos_ofertas_cursos');
+        Schema::drop('acd_modulos_disciplinas');
     }
 }
