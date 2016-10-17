@@ -208,7 +208,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 6; // Categoria Segurança -> Processos
+        $recurso->rcs_ctr_id = 4; // Categoria Academico  -> Processos
         $recurso->rcs_nome = 'Vínculos';
         $recurso->rcs_rota = 'usuarioscursos';
         $recurso->rcs_descricao = 'Recurso vincular usuário ao curso do módulo Segurança';
@@ -216,6 +216,5 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 8;
         $recurso->save();
-
     }
 }

@@ -24,8 +24,6 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([23, 24, 25, 26]); //Index
 
-        $perfil->permissoes()->attach([70, 71, 72, 73, 74]); // Permissoes do recurso vinculos
-
         $perfil = Perfil::find(2);
         $perfil->permissoes()->attach([27, 28, 29, 30]); //Geral Polo
 
@@ -51,5 +49,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([62, 63, 64, 65]); // Permissoes do recurso turma
 
         $perfil->permissoes()->attach([66, 67, 68, 69]); // Permissoes do recurso módulos matrizes
+
+        $perfil->permissoes()->attach([70, 71, 72, 73]); // Permissoes do recurso vinculos
     }
 }

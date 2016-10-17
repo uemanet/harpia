@@ -47,8 +47,7 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoModulosMatrizes();
 
-        $this->createPermissoesSegurancaVinculos();
-
+        $this->createPermissoesAcademicoVinculos();
     }
 
     private function createPermissoesIndex()
@@ -522,7 +521,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-    private function createPermissoesSegurancaVinculos()
+    private function createPermissoesAcademicoVinculos()
     {
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 20;
@@ -539,13 +538,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 20;
         $permissao->prm_nome = 'vinculos';
-        $permissao->prm_descricao = 'Permissão create do recurso Vinculos';
-        $permissao->save();
-
-        $permissao = new Permissao();
-        $permissao->prm_rcs_id = 20;
-        $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit do recurso Vinculos';
+        $permissao->prm_descricao = 'Permissão vinculos do recurso Vinculos';
         $permissao->save();
 
         $permissao = new Permissao();

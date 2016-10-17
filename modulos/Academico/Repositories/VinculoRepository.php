@@ -1,9 +1,9 @@
 <?php
 
-namespace modulos\Seguranca\Repositories;
+namespace Modulos\Academico\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
-use Modulos\Seguranca\Models\Vinculo;
+use Modulos\Academico\Models\Vinculo;
 use DB;
 
 class VinculoRepository extends BaseRepository
@@ -29,14 +29,13 @@ class VinculoRepository extends BaseRepository
 
     public function getCursosDisponiveis($usuarioId)
     {
-      $result = DB::table('acd_cursos')
+        return DB::table('acd_cursos')
                   ->select('crs_id', 'crs_nome', 'crs_sigla')
                   ->whereNotIn('crs_id', DB::table('acd_cursos')
                             ->select('crs_id')
                             ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
                             ->where('ucr_usr_id', '=', $usuarioId)
                             ->pluck('crs_id'))
-                  ->get();
-      dd($result);
+                  ->pluck('crs_nome', 'crs_id');
     }
 }

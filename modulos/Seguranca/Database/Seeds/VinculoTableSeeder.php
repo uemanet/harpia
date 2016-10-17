@@ -3,7 +3,7 @@
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Modulos\Seguranca\Models\Vinculo;
+use Modulos\Academico\Models\Vinculo;
 
 class VinculoTableSeeder extends Seeder
 {

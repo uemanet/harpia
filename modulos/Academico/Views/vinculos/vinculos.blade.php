@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Módulo de Segurança :: {{ $usuario->pessoa->pes_nome }}
+    Módulo de Segurança
 @stop
 
 @section('actionButton')
@@ -21,5 +21,8 @@
         </div>
         <div class="text-center">{!! $paginacao->links() !!}</div>
     @else
+        <div class="box box-primary">
+            <div class="box-body">Sem registros para apresentar</div>
+        </div>
     @endif
 @stop

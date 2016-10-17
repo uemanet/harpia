@@ -62,16 +62,5 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 0;
         $categoria->ctr_visivel = 0;
         $categoria->save();
-
-        //Modulo Seguranca
-        $categoria = new CategoriaRecurso();
-        $categoria->ctr_mod_id = 1; //Modulo Seguranca
-        $categoria->ctr_nome = 'Processos';
-        $categoria->ctr_descricao = 'Categoria de processos do módulo segurança';
-        $categoria->ctr_icone = 'fa fa-refresh';
-        $categoria->ctr_ordem = 2;
-        $categoria->ctr_ativo = 1;
-        $categoria->ctr_visivel = 1;
-        $categoria->save();
     }
 }

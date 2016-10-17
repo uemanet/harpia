@@ -1,6 +1,6 @@
 <?php
 
-namespace modulos\Seguranca\Models;
+namespace Modulos\Academico\Models;
 
 use Modulos\Core\Model\BaseModel;
 

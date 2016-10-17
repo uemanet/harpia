@@ -114,4 +114,12 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
                 ->name('academico.async.ofertascursos.findallbycurso');
         });
     });
+
+    Route::group(['prefix' => 'usuarioscursos'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\VinculosController@getIndex')->name('academico.vinculos.index');
+        Route::get('/vinculos/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@getVinculos')->name('academico.vinculos.vinculos');
+        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@getCreate')->name('academico.vinculos.getCreate');
+        Route::post('/create/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@postCreate')->name('academico.vinculos.postCreate');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\VinculosController@postDelete')->name('academico.vinculos.delete');
+    });
 });
