@@ -39,4 +39,16 @@ class CursoRepository extends BaseRepository
     {
         return $this->model->where('crs_id', $cursodaofertaid)->pluck('crs_nome', 'crs_id');
     }
+
+    /**
+     * Busca um curso específico de acordo com a sua matriz
+     *
+     * @param $matrizId
+     *
+     * @return mixed
+     */
+    public function listsCursoByMatriz($matrizId)
+    {
+        return $this->model->where('crs_id', $matrizId)->pluck('crs_nome', 'crs_id');
+    }
 }

@@ -45,7 +45,10 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoTurmas();
 
+        $this->createPermissoesAcademicoModulosMatrizes();
+
         $this->createPermissoesSegurancaVinculos();
+
     }
 
     private function createPermissoesIndex()
@@ -492,36 +495,63 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-    private function createPermissoesSegurancaVinculos()
+    private function createPermissoesAcademicoModulosMatrizes()
     {
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index do recurso Vinculos';
+        $permissao->prm_descricao = 'Permissão index do recurso Módulos Matrizes';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'create';
-        $permissao->prm_descricao = 'Permissão create do recurso Vínculos';
-        $permissao->save();
-
-        $permissao = new Permissao();
-        $permissao->prm_rcs_id = 19;
-        $permissao->prm_nome = 'vinculos';
-        $permissao->prm_descricao = 'Permissão vinculos do recurso Vínculos';
+        $permissao->prm_descricao = 'Permissão create do recurso Módulos Matrizes';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'edit';
-        $permissao->prm_descricao = 'Permissão edit do recurso Vínculos';
+        $permissao->prm_descricao = 'Permissão edit do recurso Módulos Matrizes';
         $permissao->save();
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 19;
         $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete do recurso Vínculos';
+        $permissao->prm_descricao = 'Permissão delete do recurso Módulos Matrizes';
+        $permissao->save();
+    }
+
+    private function createPermissoesSegurancaVinculos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 20;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Vinculos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 20;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Vinculos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 20;
+        $permissao->prm_nome = 'vinculos';
+        $permissao->prm_descricao = 'Permissão create do recurso Vinculos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 20;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Vinculos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 20;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Vinculos';
         $permissao->save();
     }
 }
