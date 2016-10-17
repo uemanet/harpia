@@ -3,7 +3,6 @@
 namespace Modulos\Academico\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Modulos\Seguranca\Database\Seeds\VinculoTableSeeder;
 
 class AcademicoSeeder extends Seeder
 {

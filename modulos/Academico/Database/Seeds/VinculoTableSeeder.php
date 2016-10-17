@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Database\Seeds;
+namespace Modulos\Academico\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use Modulos\Academico\Models\Vinculo;
