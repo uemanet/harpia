@@ -22,7 +22,6 @@ class ModulosMatrizesController extends BaseController
         $this->modulomatrizRepository = $modulomatrizRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
         $this->cursoRepository = $cursoRepository;
-
     }
 
     public function getIndex($matrizId, Request $request)
@@ -32,7 +31,7 @@ class ModulosMatrizesController extends BaseController
 
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
-        if (is_null($matrizcurricular)){
+        if (is_null($matrizcurricular)) {
             flash()->error('Matriz não existe!');
             return redirect()->back();
         }
@@ -91,10 +90,9 @@ class ModulosMatrizesController extends BaseController
 
     public function getCreate($matrizId)
     {
-
         $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
 
-        if ($matriz->isEmpty()){
+        if ($matriz->isEmpty()) {
             flash()->error('Matriz não existe!');
             return redirect()->back();
         }
@@ -107,12 +105,10 @@ class ModulosMatrizesController extends BaseController
     public function postCreate(ModuloMatrizRequest $request)
     {
         try {
-
             $moduloNome = $request->input('mdo_nome');
             $idMatriz = $request->input('mdo_mtc_id');
 
-            if($this->modulomatrizRepository->verifyNameMatriz($moduloNome, $idMatriz))
-            {
+            if ($this->modulomatrizRepository->verifyNameMatriz($moduloNome, $idMatriz)) {
                 $errors = array('mdo_nome' => 'Nome do Módulo já existe');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
@@ -166,8 +162,7 @@ class ModulosMatrizesController extends BaseController
             $moduloNome = $request->input('mdo_nome');
             $idMatriz = $request->input('mdo_mtc_id');
 
-            if($this->modulomatrizRepository->verifyNameMatriz($moduloNome, $idMatriz, $id))
-            {
+            if ($this->modulomatrizRepository->verifyNameMatriz($moduloNome, $idMatriz, $id)) {
                 $errors = array('mdo_nome' => 'Nome do Módulo já existe');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
@@ -212,5 +207,4 @@ class ModulosMatrizesController extends BaseController
             return redirect()->back();
         }
     }
-
-  }
+}

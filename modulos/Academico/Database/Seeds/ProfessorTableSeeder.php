@@ -5,7 +5,7 @@ namespace Modulos\Academico\Database\Seeds;
 use Illuminate\Database\Seeder;
 use Modulos\Academico\Models\Professor;
 
-class ProfessorTableSeed extends Seeder
+class ProfessorTableSeeder extends Seeder
 {
     public function run()
     {

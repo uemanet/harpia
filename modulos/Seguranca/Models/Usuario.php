@@ -116,4 +116,9 @@ class Usuario extends BaseModel implements
     {
         return 'remember_token';
     }
+
+    public function vinculos()
+    {
+        return $this->belongsToMany('Modulos\Seguranca\Models\Vinculo', 'ucr_usr_id');
+    }
 }

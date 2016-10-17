@@ -30,4 +30,16 @@ class GrupoRepository extends BaseRepository
         }
         return $this->model->where('grp_trm_id', '=', $turmaid)->paginate(15);
     }
+
+    /**
+     * Busca um grupo específico de acordo com o seu Id
+     *
+     * @param $grupoid
+     *
+     * @return mixed
+     */
+    public function listsAllById($grupoid)
+    {
+        return $this->model->where('grp_id', $grupoid)->pluck('grp_nome', 'grp_id');
+    }
 }
