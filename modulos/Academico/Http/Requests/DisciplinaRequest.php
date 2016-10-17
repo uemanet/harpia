@@ -25,9 +25,7 @@ class DisciplinaRequest extends BaseRequest
     {
         $rules = [
             'dis_nome' => 'required|min:3|max:90',
-            'dis_ementa' => 'required',
             'dis_nvc_id' => 'required',
-            'dis_bibliografia' => 'required',
             'dis_creditos' => 'required',
             'dis_carga_horaria' => 'required'
         ];
