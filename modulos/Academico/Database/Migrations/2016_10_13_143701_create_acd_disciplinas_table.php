@@ -19,8 +19,8 @@ class CreateAcdDisciplinasTable extends Migration
             $table->string('dis_nome', 90);
             $table->integer('dis_carga_horaria');
             $table->integer('dis_creditos');
-            $table->text('dis_ementa');
-            $table->text('dis_bibliografia');
+            $table->text('dis_ementa')->nullable();
+            $table->text('dis_bibliografia')->nullable();
 
             $table->timestamps();
 
