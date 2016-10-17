@@ -61,6 +61,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoTutoresGrupos();
 
+        $this->createPermissoesAcademicoTutores();
+
     }
 
     /** Permissões do Módulo Segurança */
@@ -623,5 +625,30 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    private function createPermissoesAcademicoTutores()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Tutores';
+        $permissao->save();
 
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Tutores';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Tutores';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Tutores';
+        $permissao->save();
+    }
 }
