@@ -21,7 +21,7 @@ class ActionButton
 
         foreach ($buttons as $key => $button) {
             $rota = substr($button->getAction(), 1);
-      
+
             if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
                 $render .= '<a href="'.$button->getAction().'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
             }
@@ -39,6 +39,8 @@ class ActionButton
      case 'BUTTONS':
         return $this->renderButtonGrid($component['config'], $component['buttons']);
         break;
+    case 'LINE':
+        return $this->renderButtonGridLine($component['config'], $component['buttons']);
     }
     }
 
@@ -111,5 +113,43 @@ class ActionButton
         }
 
         return $render;
+    }
+
+    private function renderButtonGridLine($config, $buttons)
+    {
+      $seguranca = $this->app[Seguranca::class];
+
+      $flag = 0;
+
+      $render = '';
+
+      if (!empty($buttons)) {
+          foreach ($buttons as $key => $button) {
+              $rota = substr($button['action'], 1);
+
+              if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
+                  $flag += 1;
+                  if ($button['method'] == 'get') {
+                      $render.= '<div class="btn-group"><a href="'.$button['action'].'" class="'.$button['classButton'].'">
+                                    <i class="'.$button['icon'].'"></i> '.$button['label'].'
+                                  </a></div>';
+
+                  } else {
+                      $render.= '<div class="btn-group"><form action="'.$button['action'].'" method="'.strtoupper($button['method']).'" class="form-singlebutton">
+                                        <input type="hidden" name="id" value="'.$button['id'].'">
+                                        <input type="hidden" name="_token" value="'.csrf_token().'">
+                                        <input type="hidden" name="_method" value="'.strtoupper($button['method']).'">
+                                        <button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>
+                                      </form></div>';
+                  }
+              }
+          }
+
+          if ($flag == 0) {
+              $render = '';
+          }
+      }
+
+      return $render;
     }
 }

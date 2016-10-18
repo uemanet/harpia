@@ -26,4 +26,9 @@ class ModuloMatriz extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\MatrizCurricular', 'mdo_mtc_id', 'mtc_id');
     }
+
+    public function disciplinas()
+    {
+        return $this->belongsToMany('Modulos\Academico\Models\Disciplina', 'acd_modulos_disciplinas', 'mdc_mdo_id', 'mdc_dis_id');
+    }
 }

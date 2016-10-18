@@ -44,6 +44,8 @@ class ModulosMatrizesController extends BaseController
 
         $tableData = $this->modulomatrizRepository->paginateRequestByMatriz($matrizId, $request->all());
 
+        $modulos = $this->modulomatrizRepository->getAllModulosByMatriz($matrizId);
+
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'mdo_id' => '#',
@@ -85,7 +87,7 @@ class ModulosMatrizesController extends BaseController
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Academico::modulosmatrizes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso]);
+        return view('Academico::modulosmatrizes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos]);
     }
 
     public function getCreate($matrizId)
