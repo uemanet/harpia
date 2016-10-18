@@ -33,14 +33,14 @@
 </div>
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('dis_ementa')) has-error @endif">
-        {!! Form::label('dis_ementa', 'Ementa*', ['class' => 'control-label']) !!}
+        {!! Form::label('dis_ementa', 'Ementa', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::textarea('dis_ementa', old('dis_ementa'), ['class' => 'form-control']) !!}
             @if ($errors->has('dis_ementa')) <p class="help-block">{{ $errors->first('dis_ementa') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('dis_bibliografia')) has-error @endif">
-        {!! Form::label('dis_bibliografia', 'Bibliografia*', ['class' => 'control-label']) !!}
+        {!! Form::label('dis_bibliografia', 'Bibliografia', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::textarea('dis_bibliografia', old('dis_bibliografia'), ['class' => 'form-control']) !!}
             @if ($errors->has('dis_bibliografia')) <p

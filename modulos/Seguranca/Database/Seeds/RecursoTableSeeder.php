@@ -151,13 +151,13 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_nome = 'Centros';
         $recurso->rcs_rota = 'centros';
         $recurso->rcs_descricao = 'Recurso centro do módulo acadêmico';
-        $recurso->rcs_icone = 'fa fa-building';
+        $recurso->rcs_icone = 'fa fa-map-marker';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 3;
         $recurso->save();
 
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> Oculto
         $recurso->rcs_nome = 'Matrizes Curriculares';
         $recurso->rcs_rota = 'matrizescurriculares';
         $recurso->rcs_descricao = 'Recurso matriz curricular do módulo acadêmico';
@@ -197,7 +197,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Recursos Disciplinas
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> Oculto
+        $recurso->rcs_nome = 'Módulos das Matrizes';
+        $recurso->rcs_rota = 'modulosmatrizes';
+        $recurso->rcs_descricao = 'Recurso Módulos Matriz do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-book';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
+
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
         $recurso->rcs_nome = 'Disciplinas';
@@ -206,6 +215,26 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-book';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 3;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 4; // Categoria Academico  -> Processos
+        $recurso->rcs_nome = 'Vínculos';
+        $recurso->rcs_rota = 'usuarioscursos';
+        $recurso->rcs_descricao = 'Recurso vincular usuário ao curso do módulo Segurança';
+        $recurso->rcs_icone = 'fa fa-link';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 8;
+        $recurso->save();
+
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> oculto
+        $recurso->rcs_nome = 'Tutor do Grupo';
+        $recurso->rcs_rota = 'tutoresgrupos';
+        $recurso->rcs_descricao = 'Recurso tutoresgrupos do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
         $recurso->save();
     }
 }

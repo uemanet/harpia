@@ -79,7 +79,6 @@ class PerfisController extends BaseController
                     ]);
                 })
                 ->sortable(array('prf_id', 'prf_nome'));
-
             $paginacao = $tableData->appends($request->except('page'));
         }
 

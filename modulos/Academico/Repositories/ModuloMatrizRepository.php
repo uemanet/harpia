@@ -31,14 +31,11 @@ class ModuloMatrizRepository extends BaseRepository
     {
         $result = $this->model->where('mdo_nome', $moduloName)->where('mdo_mtc_id', $idMatriz)->get();
 
-        if(!$result->isEmpty())
-        {
-            if(!is_null($moduloId))
-            {
+        if (!$result->isEmpty()) {
+            if (!is_null($moduloId)) {
                 $result = $result->where('mdo_id', $moduloId);
 
-                if(!$result->isEmpty())
-                {
+                if (!$result->isEmpty()) {
                     return false;
                 }
             }
@@ -47,6 +44,5 @@ class ModuloMatrizRepository extends BaseRepository
         }
 
         return false;
-
     }
 }

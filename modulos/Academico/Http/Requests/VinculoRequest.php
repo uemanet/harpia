@@ -4,7 +4,7 @@ namespace Modulos\Academico\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
 
-class DisciplinaRequest extends BaseRequest
+class VinculoRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,7 @@ class DisciplinaRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'dis_nome' => 'required|min:3|max:90',
-            'dis_nvc_id' => 'required',
-            'dis_creditos' => 'required',
-            'dis_carga_horaria' => 'required'
+            'cursos' => 'required',
         ];
 
         return $rules;
