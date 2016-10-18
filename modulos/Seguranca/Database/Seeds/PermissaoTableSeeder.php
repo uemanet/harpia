@@ -279,6 +279,12 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'show';
         $permissao->prm_descricao = 'Permissão show do recurso Pessoas da categoria Cadastros do módulo Geral';
         $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 9; // Recurso Pessoas
+        $permissao->prm_nome = 'verificapessoa';
+        $permissao->prm_descricao = 'Permissão verificapessoa do recurso Pessoas da categoria Cadastros do módulo Geral';
+        $permissao->save();
     }
 
     /** Permissões do Módulo Acadêmico */
