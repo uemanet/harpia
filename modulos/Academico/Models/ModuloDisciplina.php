@@ -4,7 +4,7 @@ namespace Modulos\Academico\Models;
 
 use Modulos\Core\Model\BaseModel;
 
-class TutorGrupo extends BaseModel
+class ModuloDisciplina extends BaseModel
 {
     protected $table = 'acd_modulos_disciplinas';
 
