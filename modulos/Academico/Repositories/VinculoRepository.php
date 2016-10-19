@@ -38,4 +38,20 @@ class VinculoRepository extends BaseRepository
                             ->pluck('crs_id'))
                   ->pluck('crs_nome', 'crs_id');
     }
+
+    /**
+     * Verifica se o usuario tem vinculo com o curso
+     * @param $usuarioId
+     * @param $cursoId
+     * @return bool
+     */
+    public function userHasVinculo($usuarioId, $cursoId)
+    {
+        $result = DB::table('acd_usuarios_cursos')
+                     ->where([
+                         ['ucr_usr_id', '=', $usuarioId],
+                         ['ucr_crs_id', '=', $cursoId]
+                     ])->get();
+        return !$result->isEmpty();
+    }
 }
