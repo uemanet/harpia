@@ -152,7 +152,6 @@ class TutoresController extends BaseController
 
                 $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
             } else {
-
                 if ($this->pessoaRepository->verifyEmail($request->input('pes_email'))) {
                     $errors = ['pes_email' => 'Email já cadastrado'];
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
@@ -214,7 +213,6 @@ class TutoresController extends BaseController
 
         DB::beginTransaction();
         try {
-
             if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
                 $errors = ['pes_email' => 'Email já cadastrado'];
                 return redirect()->back()->withInput($request->all())->withErrors($errors);

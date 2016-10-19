@@ -62,7 +62,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoTutoresGrupos();
 
         $this->createPermissoesAcademicoTutores();
-
     }
 
     /** Permissões do Módulo Segurança */

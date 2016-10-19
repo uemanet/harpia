@@ -9,7 +9,6 @@ use Modulos\Academico\Repositories\TutorRepository;
 
 class TutorRepositoryTest extends TestCase
 {
-
     use DatabaseTransactions,
         WithoutMiddleware;
 

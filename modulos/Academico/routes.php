@@ -151,6 +151,4 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
                 ->name('academico.async.ofertascursos.findallbycurso');
         });
     });
-
-
 });

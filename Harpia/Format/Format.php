@@ -23,8 +23,7 @@ class Format
 
     public function formatDate($date, $format)
     {
-        if(!empty($date))
-        {
+        if (!empty($date)) {
             $date = date_create($date);
             return date_format($date, $format);
         }
