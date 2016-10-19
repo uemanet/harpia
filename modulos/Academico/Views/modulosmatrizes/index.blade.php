@@ -70,6 +70,13 @@
                     ],
                     'buttons' => [
                         [
+                            'classButton' => 'btn btn-success',
+                            'icon' => 'fa fa-plus',
+                            'action' => '/academico/modulosdisciplinas/create/'.$modulo->mdo_id,
+                            'label' => 'Adicionar',
+                            'method' => 'get'
+                        ],
+                        [
                             'classButton' => 'btn btn-default',
                             'icon' => 'fa fa-pencil',
                             'action' => '/academico/modulosmatrizes/edit/'.$modulo->mdo_id,
