@@ -127,6 +127,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/create', '\Modulos\Academico\Http\Controllers\TutoresController@postCreate')->name('academico.tutores.postCreate');
         Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@getEdit')->name('academico.tutores.getEdit');
         Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@putEdit')->name('academico.tutores.putEdit');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@getShow')->name('academico.tutores.show');
     });
 
     Route::group(['prefix' => 'async'], function () {

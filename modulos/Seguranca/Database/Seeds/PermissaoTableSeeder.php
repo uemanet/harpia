@@ -653,8 +653,8 @@ class PermissaoTableSeeder extends Seeder
 
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 24;
-        $permissao->prm_nome = 'delete';
-        $permissao->prm_descricao = 'Permissão delete do recurso Tutores';
+        $permissao->prm_nome = 'show';
+        $permissao->prm_descricao = 'Permissão show do recurso Tutores';
         $permissao->save();
     }
 }

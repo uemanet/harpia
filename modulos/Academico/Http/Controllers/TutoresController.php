@@ -4,7 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Validator;
+use Validator;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
@@ -63,6 +63,13 @@ class TutoresController extends BaseController
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/tutores/edit/' . $id,
                                 'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-eye',
+                                'action' => '/academico/tutores/show/'.$id,
+                                'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
                         ]
@@ -259,5 +266,12 @@ class TutoresController extends BaseController
             DB::rollback();
             return redirect()->back()->withInput($request->all())->withErrors($e);
         }
+    }
+
+    public function getShow($tutorId)
+    {
+        $tutor = $this->tutorRepository->find($tutorId);
+
+        return view('Academico::tutores.show', ['pessoa' => $tutor->pessoa]);
     }
 }

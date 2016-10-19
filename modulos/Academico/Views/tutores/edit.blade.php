@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de Edição de Tutor</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($pessoa,['route' => ['seguranca.usuarios.putEdit', $pessoa->pes_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($pessoa,['route' => ['academico.tutores.putEdit', $pessoa->pes_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
 
             <h4 class="box-title">
                 Dados de Pessoa

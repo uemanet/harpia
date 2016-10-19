@@ -117,7 +117,7 @@
         {!! Form::label('pes_necessidade_especial', 'Necessidade especial?*', ['class' => 'control-label']) !!}
 
         <div class="controls">
-            {!! Form::select('pes_necessidade_especial', ['S' => 'Sim', 'N' => 'Não'], isset($pessoa->pes_necessidade_especial) ? $pessoa->pes_necessidade_especial : old('pes_necessidade_especial'), ['class' => 'form-control']) !!}
+            {!! Form::select('pes_necessidade_especial', ['S' => 'Sim', 'N' => 'Não'], isset($pessoa->pes_necessidade_especial) ? $pessoa->pes_necessidade_especial : old('pes_necessidade_especial'), ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
             @if ($errors->has('pes_necessidade_especial')) <p class="help-block">{{ $errors->first('pes_necessidade_especial') }}</p> @endif
         </div>
     </div>

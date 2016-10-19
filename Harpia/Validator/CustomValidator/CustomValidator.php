@@ -6,11 +6,6 @@ use Illuminate\Validation\Validator;
 
 class CustomValidator extends Validator
 {
-    protected $customMessages = [
-        'cpf' => 'Cpf Inválido',
-        'cnpj' => 'Cnpj inválido'
-    ];
-    
     public function validateCpf($attribute, $value, $parameters)
     {
         $cpf = $value;
