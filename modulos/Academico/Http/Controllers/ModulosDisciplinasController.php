@@ -23,20 +23,21 @@ class ModulosDisciplinasController extends BaseController
 
     }
 
-    public function getIndex(Request $request)
+    public function getIndex($idModulo, Request $request)
     {
         $paginacao = null;
         $tabela = null;
         $tableData = null;
-
+        $disciplinas = null;
         if (!empty($request->all())) {
             $disciplinas = $this->disciplinaRepository->paginateRequest($request->all());
+            //dd($disciplinas);
         } else {
-            return view('Academico::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao]);
+            return view('Academico::modulosdisciplinas.index', ['idModulo' => $idModulo, 'tabela' => $tabela, 'paginacao' => $paginacao, 'disciplinas' => $disciplinas]);
         }
 
-            $paginacao = $tableData->appends($request->except('page'));
+            //$paginacao = $tableData->appends($request->except('page'));
 
-        return view('Academico::disciplinas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::modulosdisciplinas.index', ['idModulo' => $idModulo, 'tabela' => $tabela, 'paginacao' => $paginacao, 'disciplinas' => $disciplinas]);
     }
 }

@@ -72,7 +72,7 @@
                         [
                             'classButton' => 'btn btn-success',
                             'icon' => 'fa fa-plus',
-                            'action' => '/academico/modulosdisciplinas/create/'.$modulo->mdo_id,
+                            'action' => '/academico/modulosdisciplinas/index/'.$modulo->mdo_id,
                             'label' => 'Adicionar',
                             'method' => 'get'
                         ],
