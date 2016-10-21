@@ -112,6 +112,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@putEdit')->name('academico.modulosmatrizes.putEdit');
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@postDelete')->name('academico.modulosmatrizes.delete');
         Route::get('/adicionardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getAdicionarDisciplinas')->name('academico.modulosmatrizes.adicionardisciplinas');
+        Route::post('/adicionardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@postAdicionarDisciplinas')->name('academico.modulosmatrizes.postAdicionardisciplinas');
     });
 
     Route::group(['prefix' => 'modulosdisciplinas'], function () {

@@ -167,6 +167,11 @@ class ModulosMatrizesController extends BaseController
 
     public function getAdicionarDisciplinas($id)
     {
-        return view('Academico::modulosmatrizes.adicionardisciplinas');
+        return view('Academico::modulosmatrizes.adicionardisciplinas', ['modulo' => $id]);
+    }
+
+    public function postAdicionarDisciplinas(Request $request)
+    {
+        dd($request->all());
     }
 }
