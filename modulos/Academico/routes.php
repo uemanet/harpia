@@ -67,21 +67,21 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     });
 
     Route::group(['prefix' => 'grupos'], function () {
-        Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getIndex')->name('academico.grupos.index');
-        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getCreate')->name('academico.grupos.getCreate');
-        Route::post('/create', '\Modulos\Academico\Http\Controllers\GruposController@postCreate')->name('academico.grupos.postCreate');
-        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getEdit')->name('academico.grupos.getEdit');
-        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\GruposController@putEdit')->name('academico.grupos.putEdit');
-        Route::post('/delete', '\Modulos\Academico\Http\Controllers\GruposController@postDelete')->name('academico.grupos.delete');
+        Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getIndex')->name('academico.grupos.index')->middleware('vinculo');
+        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getCreate')->name('academico.grupos.getCreate')->middleware('vinculo');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\GruposController@postCreate')->name('academico.grupos.postCreate')->middleware('vinculo');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getEdit')->name('academico.grupos.getEdit')->middleware('vinculo');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\GruposController@putEdit')->name('academico.grupos.putEdit')->middleware('vinculo');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\GruposController@postDelete')->name('academico.grupos.delete')->middleware('vinculo');
     });
 
     Route::group(['prefix' => 'turmas'], function () {
-        Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@getIndex')->name('academico.turmas.index');
-        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@getCreate')->name('academico.turmas.getCreate');
-        Route::post('/create', '\Modulos\Academico\Http\Controllers\TurmasController@postCreate')->name('academico.turmas.postCreate');
-        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@getEdit')->name('academico.turmas.getEdit');
-        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@putEdit')->name('academico.turmas.putEdit');
-        Route::post('/delete', '\Modulos\Academico\Http\Controllers\TurmasController@postDelete')->name('academico.turmas.delete');
+        Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@getIndex')->name('academico.turmas.index')->middleware('vinculo');
+        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@getCreate')->name('academico.turmas.getCreate')->middleware('vinculo');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\TurmasController@postCreate')->name('academico.turmas.postCreate')->middleware('vinculo');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@getEdit')->name('academico.turmas.getEdit')->middleware('vinculo');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TurmasController@putEdit')->name('academico.turmas.putEdit')->middleware('vinculo');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\TurmasController@postDelete')->name('academico.turmas.delete')->middleware('vinculo');
     });
 
 

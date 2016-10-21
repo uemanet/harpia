@@ -4,8 +4,10 @@ namespace Modulos\Academico\Http\Middleware;
 
 use Auth;
 use Closure;
+use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
 
 class Vinculo
@@ -13,14 +15,20 @@ class Vinculo
     private $vinculoRepository;
     private $matrizCurricularRepository;
     private $ofertaCursoRepository;
+    private $turmaRepository;
+    private $grupoRepository;
 
     public function __construct(VinculoRepository $vinculoRepository,
                                 MatrizCurricularRepository $matrizCurricularRepository,
-                                OfertaCursoRepository $ofertaCursoRepository)
+                                OfertaCursoRepository $ofertaCursoRepository,
+                                TurmaRepository $turmaRepository,
+                                GrupoRepository $grupoRepository)
     {
         $this->vinculoRepository = $vinculoRepository;
         $this->matrizCurricularRepository = $matrizCurricularRepository;
         $this->ofertaCursoRepository = $ofertaCursoRepository;
+        $this->turmaRepository = $turmaRepository;
+        $this->grupoRepository = $grupoRepository;
     }
 
     public function handle($request, Closure $next)
@@ -100,7 +108,7 @@ class Vinculo
         $id = $request->id;
         $action = $this->actionName($request);
 
-        if(is_null($id)){
+        if (is_null($id)) {
             return $next($request);
         }
 
@@ -137,7 +145,7 @@ class Vinculo
             return $next($request);
         }
 
-        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $id)){
+        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $id)) {
             return $next($request);
         }
 
@@ -145,17 +153,79 @@ class Vinculo
         return redirect()->route('academico.ofertascursos.index');
     }
 
+    /**
+     * Verifica e filtra os vinculos da rota Turmas
+     * @param $request
+     * @param Closure $next
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function handleTurmas($request, Closure $next)
     {
         $id = $request->id;
         $action = $this->actionName($request);
 
+        if (is_null($id)) {
+            return $next($request);
+        }
+
+        if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
+            $oferta = $this->ofertaCursoRepository->find($id);
+
+            if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $oferta->ofc_crs_id)) {
+                return $next($request);
+            }
+
+            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            return redirect()->route('academico.cursos.index');
+        }
+
+        $curso = $this->turmaRepository->getCurso($id);
+
+        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
+            return $next($request);
+        }
+
+        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        return redirect()->route('academico.cursos.index');
     }
 
+    /**
+     * Verifica e filtra os vinculos da rota Grupos
+     * @param $request
+     * @param Closure $next
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function handleGrupos($request, Closure $next)
     {
-        return $next($request);
+        $id = $request->id;
+        $action = $this->actionName($request);
+
+        if (is_null($id)) {
+            return $next($request);
+        }
+
+        if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
+            $curso = $this->turmaRepository->getCurso($id);
+
+            if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
+                return $next($request);
+            }
+
+            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            return redirect()->route('academico.cursos.index');
+        }
+
+        $grupo = $this->grupoRepository->find($id);
+        $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
+
+        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
+            return $next($request);
+        }
+
+        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        return redirect()->route('academico.cursos.index');
     }
+
 
     private function handleModulosMatrizes($request, Closure $next)
     {
