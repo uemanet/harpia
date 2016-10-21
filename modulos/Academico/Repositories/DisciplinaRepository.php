@@ -38,4 +38,18 @@ class DisciplinaRepository extends BaseRepository
 
         return false;
     }
+
+    public function buscar($nome)
+    {
+        $result = $this->model
+                        ->join('acd_niveis_cursos', 'dis_nvc_id', '=', 'nvc_id')
+                        ->where('dis_nome', 'like', "%$nome%")->get();
+
+        if($result)
+        {
+            return $result;
+        }
+
+        return null;
+    }
 }
