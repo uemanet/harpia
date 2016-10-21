@@ -6,6 +6,7 @@ use Auth;
 use Closure;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
+use Modulos\Academico\Repositories\ModuloMatrizRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
@@ -17,18 +18,21 @@ class Vinculo
     private $ofertaCursoRepository;
     private $turmaRepository;
     private $grupoRepository;
+    private $moduloMatrizRepository;
 
     public function __construct(VinculoRepository $vinculoRepository,
                                 MatrizCurricularRepository $matrizCurricularRepository,
                                 OfertaCursoRepository $ofertaCursoRepository,
                                 TurmaRepository $turmaRepository,
-                                GrupoRepository $grupoRepository)
+                                GrupoRepository $grupoRepository,
+                                ModuloMatrizRepository $moduloMatrizRepository)
     {
         $this->vinculoRepository = $vinculoRepository;
         $this->matrizCurricularRepository = $matrizCurricularRepository;
         $this->ofertaCursoRepository = $ofertaCursoRepository;
         $this->turmaRepository = $turmaRepository;
         $this->grupoRepository = $grupoRepository;
+        $this->moduloMatrizRepository = $moduloMatrizRepository;
     }
 
     public function handle($request, Closure $next)
@@ -227,11 +231,49 @@ class Vinculo
     }
 
 
+    /**
+     * Verifica e filtra os vinculos da rota Turmas
+     * @param $request
+     * @param Closure $next
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function handleModulosMatrizes($request, Closure $next)
     {
-        return $next($request);
+        $id = $request->id;
+        $action = $this->actionName($request);
+
+        if (is_null($id)) {
+            return $next($request);
+        }
+
+        if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
+            $matriz = $this->matrizCurricularRepository->find($id);
+
+            if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)) {
+                return $next($request);
+            }
+
+            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            return redirect()->route('academico.cursos.index');
+        }
+
+        $modulo = $this->moduloMatrizRepository->find($id);
+        $matriz = $this->matrizCurricularRepository->find($modulo->mdo_mtc_id);
+
+        if($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)){
+            return $next($request);
+        }
+
+        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        return redirect()->route('academico.cursos.index');
     }
 
+    /**
+     * Verifica e filtra os vinculos da rota Tutores Grupos
+     * @param $request
+     * @param Closure $next
+     * @return mixed
+     */
     private function handleTutoresGrupos($request, Closure $next)
     {
         return $next($request);
