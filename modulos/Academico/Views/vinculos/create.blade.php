@@ -15,7 +15,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de usuários</h3>
+            <h3 class="box-title">Formulário de cadastro de vínculos</h3>
         </div>
         <div class="box-body">
             {!! Form::open(["url" => url('/') . "/academico/usuarioscursos/create/" . $usuario, "method" => "POST", "id" => "form", "role" => "form"]) !!}
