@@ -12,18 +12,26 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <p><strong>Nome Completo: </strong> {{$pessoa->pes_nome}}</p>
-                    <p><strong>Email: </strong> {{$pessoa->pes_email}}</p>
-                    <p><strong>Sexo: </strong> {{$pessoa->pes_sexo}}</p>
-                    <p><strong>Data de Nascimento: </strong> {{$pessoa->pes_nascimento}}</p>
-                    <p><strong>Nome da Mãe: </strong> {{$pessoa->mae}}</p>
-                    <p><strong>Nome do Pai: </strong> {{$pessoa->pai}}</p>
-                    <p><strong>Estado Civil: </strong> {{ucfirst($pessoa->pes_estado_civil)}}</p>
-                    <p><strong>Naturalidade: </strong> {{$pessoa->pes_naturalidade}}</p>
-                    <p><strong>Nacionalidade: </strong> {{$pessoa->pes_nacionalidade}}</p>
-                    <p><strong>Raça: </strong> {{ucfirst($pessoa->pes_raca)}}</p>
-                    <p><strong>Necessidade Especial: </strong> {{$pessoa->pes_necessidade_especial}}</p>
-                    <p><strong>Estrangeiro: </strong> {{$pessoa->pes_estrangeiro}}</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p><strong>Nome Completo: </strong> {{$pessoa->pes_nome}}</p>
+                            <p><strong>Email: </strong> {{$pessoa->pes_email}}</p>
+                            <p><strong>Sexo: </strong> {{$pessoa->pes_sexo}}</p>
+                            <p><strong>Data de Nascimento: </strong> {{$pessoa->pes_nascimento}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Nome da Mãe: </strong> {{$pessoa->pes_mae}}</p>
+                            <p><strong>Nome do Pai: </strong> {{$pessoa->pes_pai}}</p>
+                            <p><strong>Estado Civil: </strong> {{ucfirst($pessoa->pes_estado_civil)}}</p>
+                            <p><strong>Naturalidade: </strong> {{$pessoa->pes_naturalidade}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Nacionalidade: </strong> {{$pessoa->pes_nacionalidade}}</p>
+                            <p><strong>Raça: </strong> {{ucfirst($pessoa->pes_raca)}}</p>
+                            <p><strong>Necessidade Especial: </strong> {{$pessoa->pes_necessidade_especial}}</p>
+                            <p><strong>Estrangeiro: </strong> {{$pessoa->pes_estrangeiro}}</p>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.box-body -->
             </div>

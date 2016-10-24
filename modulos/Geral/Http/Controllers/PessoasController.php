@@ -91,6 +91,8 @@ class PessoasController extends BaseController
         try {
             $dataPessoa = $request->except('doc_conteudo');
 
+            $dataPessoa['pes_email'] = strtolower($dataPessoa['pes_email']);
+
             $pessoa = $this->pessoaRepository->create($dataPessoa);
 
             $dataDocumento = [
