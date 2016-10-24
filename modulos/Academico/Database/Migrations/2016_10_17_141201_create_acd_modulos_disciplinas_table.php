@@ -20,6 +20,8 @@ class CreateAcdModulosDisciplinasTable extends Migration
             $table->integer('mdc_mdo_id')->unsigned();
             $table->enum('mdc_tipo_avaliacao', ['numerica', 'conceitual']);
 
+            $table->timestamps();
+
             $table->foreign('mdc_dis_id')->references('dis_id')->on('acd_disciplinas');
             $table->foreign('mdc_mdo_id')->references('mdo_id')->on('acd_modulos_matrizes');
         });

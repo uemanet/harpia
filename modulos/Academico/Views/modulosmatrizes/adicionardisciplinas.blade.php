@@ -91,7 +91,7 @@
                 <tbody></tbody>
             </table>
             <div id="salvar" class="col-md-2 pull-right hidden">
-                <button type="submit" id="btnSalvar" data-mdo-id="{{$modulo}}" class="btn btn-primary btn-block">Salvar</button>
+                <button type="submit" id="btnSalvar" class="btn btn-primary btn-block">Salvar</button>
             </div>
             </form>
         </div>
@@ -209,8 +209,8 @@
                         cols += '<td id="creditos">'+data[i].dis_creditos+'</td>';
                         cols += '<td><div class="form-group">';
                         cols += '<select class="form-control" id="mdc_tipo_avaliacao">';
-                        cols += '<option value="NOTAS" selected>NOTAS</option>';
-                        cols += '<option value="CONCEITO">CONCEITO</option>';
+                        cols += '<option value="NUMERICA" selected>NUMERICA</option>';
+                        cols += '<option value="CONCEITUAL">CONCEITUAL</option>';
                         cols += '</select></div></td>';
 
                         cols += '<td>';
@@ -273,8 +273,8 @@
                 cols += '<td id="creditos">'+elementos['creditos']+'</td>';
                 cols += '<td><div class="form-group">';
                 cols += '<select class="form-control" id="mdc_tipo_avaliacao">';
-                cols += '<option value="NOTAS" selected>NOTAS</option>';
-                cols += '<option value="CONCEITO">CONCEITO</option>';
+                cols += '<option value="NUMERICA" selected>NUMERICA</option>';
+                cols += '<option value="CONCEITUAL">CONCEITUAL</option>';
                 cols += '</select></div></td>';
 
                 cols += '<td>';

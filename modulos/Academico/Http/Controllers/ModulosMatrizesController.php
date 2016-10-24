@@ -8,18 +8,22 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\ModuloMatrizRequest;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\ModuloMatrizRepository;
+use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Models\ModuloDisciplina;
 
 class ModulosMatrizesController extends BaseController
 {
     protected $modulomatrizRepository;
+    protected $modulodisciplinaRepository;
     protected $matrizcurricularRepository;
     protected $cursoRepository;
 
-    public function __construct(ModuloMatrizRepository $modulomatrizRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository)
+    public function __construct(ModuloMatrizRepository $modulomatrizRepository, ModuloDisciplinaRepository $modulodisciplinaRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository)
     {
         $this->modulomatrizRepository = $modulomatrizRepository;
+        $this->modulodisciplinaRepository = $modulodisciplinaRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
         $this->cursoRepository = $cursoRepository;
     }
@@ -170,8 +174,55 @@ class ModulosMatrizesController extends BaseController
         return view('Academico::modulosmatrizes.adicionardisciplinas', ['modulo' => $id]);
     }
 
-    public function postAdicionarDisciplinas(Request $request)
+    public function postAdicionarDisciplinas($modulo, Request $request)
     {
-        dd($request->all());
+
+      $disciplinas = $request->all();
+
+        try {
+            foreach ($disciplinas as $disciplina) {
+                $dados = $disciplina;
+            }
+
+            $disciplinas = $dados['dis_id'];
+            $tipos_avaliacao = $dados['mdc_tipo_avaliacao'];
+
+            $max = sizeof($disciplinas);
+
+            for ($i = 0 ; $i < $max ; $i++){
+                $dados2[$i]['mdc_dis_id'] = $disciplinas[$i];
+                $dados2[$i]['mdc_mdo_id'] = $modulo;
+                $dados2[$i]['mdc_tipo_avaliacao'] = strtolower($tipos_avaliacao[$i]);
+            }
+
+            //Validação
+
+            foreach($dados2 as $dado2){
+              //dd($dado2['mdc_tipo_avaliacao']);
+              if ($this->modulodisciplinaRepository->verifyDisciplinaModulo($dado2['mdc_dis_id'])) {
+                  flash()->error('A matriz curricular ja tem uma disciplina com esse nome.');
+              }
+            }
+
+            foreach($dados2 as $dado2){
+                $modulodisciplina = $this->modulodisciplinaRepository->create($dado2);
+                //dd($modulodisciplina);
+            }
+
+            if (!$modulomatriz) {
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+            }
+
+            flash()->success('Módulo criado com sucesso.');
+            return redirect('/academico/modulosmatrizes/index/'.$modulomatriz->mdo_mtc_id);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
     }
 }
