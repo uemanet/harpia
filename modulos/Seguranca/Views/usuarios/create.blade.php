@@ -4,6 +4,10 @@
     Usuários
 @stop
 
+@section('stylesheets')
+    <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
+@stop
+
 @section('subtitle')
     Cadastro de usuários
 @stop
@@ -38,14 +42,21 @@
 
 @section('scripts')
     <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/date.extensions.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
+    <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
 
     <script>
 
         $(function (){
-            Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#doc_conteudo');
-            Inputmask({"mask": "(99) 99999-9999"}).mask('#pes_telefone');
+            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
+            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                language: 'pt-BR',
+                autoclose: true
+            });
         });
     </script>
 @endsection

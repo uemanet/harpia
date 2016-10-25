@@ -45,8 +45,13 @@
     <script>
 
         $(function (){
-            Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#doc_conteudo');
-            Inputmask({"mask": "(99) 99999-9999"}).mask('#pes_telefone');
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                language: 'pt-BR',
+                autoclose: true
+            });
+            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
+            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
         });
     </script>
 @endsection

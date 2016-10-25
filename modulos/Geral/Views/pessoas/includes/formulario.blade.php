@@ -60,7 +60,7 @@
     <div class="form-group col-md-2 @if ($errors->has('pes_nascimento')) has-error @endif">
         {!! Form::label('pes_nascimento', 'Nascimento*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::date('pes_nascimento', isset($pessoa->pes_nascimento) ? $pessoa->pes_nascimento : old('pes_nascimento'), ['class' => 'form-control']) !!}
+            {!! Form::text('pes_nascimento', isset($pessoa->pes_nascimento) ? $pessoa->pes_nascimento : old('pes_nascimento'), ['class' => 'form-control datepicker']) !!}
             @if ($errors->has('pes_nascimento')) <p class="help-block">{{ $errors->first('pes_nascimento') }}</p> @endif
         </div>
     </div>
@@ -117,14 +117,14 @@
         {!! Form::label('pes_necessidade_especial', 'Necessidade especial?*', ['class' => 'control-label']) !!}
 
         <div class="controls">
-            {!! Form::select('pes_necessidade_especial', ['S' => 'Sim', 'N' => 'Não'], isset($pessoa->pes_necessidade_especial) ? $pessoa->pes_necessidade_especial : old('pes_necessidade_especial'), ['class' => 'form-control']) !!}
+            {!! Form::select('pes_necessidade_especial', ['N' => 'Não', 'S' => 'Sim'], isset($pessoa->pes_necessidade_especial) ? $pessoa->pes_necessidade_especial : old('pes_necessidade_especial'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_necessidade_especial')) <p class="help-block">{{ $errors->first('pes_necessidade_especial') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3" @if ($errors->has('pes_estrangeiro')) has-error @endif>
         {!! Form::label('pes_estrangeiro', 'Estrangeiro?*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('pes_estrangeiro', ['1' => 'Sim', '0' => 'Não'], isset($pessoa->pes_estrangeiro) ? $pessoa->pes_estrangeiro : old('pes_estrangeiro'), ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
+            {!! Form::select('pes_estrangeiro', ['0' => 'Não', '1' => 'Sim'], isset($pessoa->pes_estrangeiro) ? $pessoa->pes_estrangeiro : old('pes_estrangeiro'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_estrangeiro')) <p class="help-block">{{ $errors->first('pes_estrangeiro') }}</p> @endif
         </div>
     </div>

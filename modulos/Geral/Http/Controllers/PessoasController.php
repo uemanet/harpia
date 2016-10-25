@@ -139,8 +139,10 @@ class PessoasController extends BaseController
                 $errors = ['doc_conteudo' => 'CPF já cadastrado'];
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
-            
+
             $dataPessoa = $request->except('doc_conteudo', '_method', '_token');
+
+            $dataPessoa['pes_email'] = strtolower($dataPessoa['pes_email']);
 
             $this->pessoaRepository->update($dataPessoa, $id, 'pes_id');
 
@@ -213,6 +215,6 @@ class PessoasController extends BaseController
             return redirect()->route($route, ['id' => $pessoa->pes_id])->with('validado', 'true');
         }
 
-        return redirect()->route($route)->with('validado', 'true');
+        return redirect()->route($route)->with('validado', 'true')->withInput(['doc_conteudo' => $cpf]);
     }
 }

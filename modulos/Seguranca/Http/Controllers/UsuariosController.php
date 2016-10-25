@@ -119,7 +119,7 @@ class UsuariosController extends BaseController
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
-                'pes_email' => $request->input('pes_email'),
+                'pes_email' => strtolower($request->input('pes_email')),
                 'pes_telefone' => $request->input('pes_telefone'),
                 'pes_nascimento' => $request->input('pes_nascimento'),
                 'pes_mae' => $request->input('pes_mae'),
@@ -128,7 +128,8 @@ class UsuariosController extends BaseController
                 'pes_naturalidade' => $request->input('pes_naturalidade'),
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
+                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
+                'pes_estrangeiro' => $request->input('pes_estrangeiro')
             );
 
             $cpf = $request->input('doc_conteudo');
@@ -252,7 +253,7 @@ class UsuariosController extends BaseController
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
-                'pes_email' => $request->input('pes_email'),
+                'pes_email' => strtolower($request->input('pes_email')),
                 'pes_telefone' => $request->input('pes_telefone'),
                 'pes_nascimento' => $request->input('pes_nascimento'),
                 'pes_mae' => $request->input('pes_mae'),
