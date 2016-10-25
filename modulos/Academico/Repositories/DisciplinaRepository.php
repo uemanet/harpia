@@ -7,9 +7,12 @@ use Modulos\Academico\Models\Disciplina;
 
 class DisciplinaRepository extends BaseRepository
 {
-    public function __construct(Disciplina $disciplina)
+    protected $matrizCurricularRepository;
+
+    public function __construct(Disciplina $disciplina, MatrizCurricularRepository $matrizCurricularRepository)
     {
         $this->model = $disciplina;
+        $this->matrizCurricularRepository = $matrizCurricularRepository;
     }
 
     /**
@@ -39,17 +42,36 @@ class DisciplinaRepository extends BaseRepository
         return false;
     }
 
-    public function buscar($nome)
+    /**
+     * TODO: Não buscar disciplinas com o nível diferente do nível do curso do qual a matriz pertence
+     *
+     * Busca todas as disciplinas não pertencentes a matriz atual pelo nome da disciplina
+     *
+     * @param $matriz
+     * @param $nome
+     * @return null
+     */
+    public function buscar($matriz, $nome)
     {
+        $disciplinasMatriz = $this->matrizCurricularRepository->getDisciplinasByMatrizId($matriz);
+
+        $disciplinasId = [];
+        foreach ($disciplinasMatriz as $key => $value) {
+            $disciplinasId[] = $value->mdc_dis_id;
+        }
+
         $result = $this->model
-                        ->join('acd_niveis_cursos', 'dis_nvc_id', '=', 'nvc_id')
-                        ->where('dis_nome', 'like', "%$nome%")->get();
+            ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
+            ->where('dis_nome', 'like', "%{$nome}%")
+            ->whereNotIn('dis_id', $disciplinasId)
+            ->get();
 
         if($result)
         {
-            return $result;
+          return $result;
         }
 
         return null;
     }
+
 }

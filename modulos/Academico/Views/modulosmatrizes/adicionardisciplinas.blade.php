@@ -156,30 +156,25 @@
                 }
             });
 
-            {{--$(document).on('click', '#btnSalvar', function (e) {--}}
 
-                {{--var disciplinas = new Array();--}}
-                {{--var button = $(this);--}}
+//            $(document).on('click', '#btnSalvar', function (e) {
+//                e.preventDefault();
+//
+//                $.ajax({
+//                    type: 'POST',
+//                    url: '/academico/modulosmatrizes/adicionardisciplinas/'+id,
+//                    data: dados,
+//                    success: function (dados) {
+//                        toastr.success('Disciplinas atualizadas com sucesso.', null, {progressBar: true} );
+//                    },
+//                    error: function(xhr, textStatus, error) {
+//                        toastr.error(xhr.responseText, null, {progressBar: true} );
+//                    }
+//                });
+//
+//            });
 
-                {{--$('#selecionadas tbody tr').each(function() {--}}
-                    {{--var disc = {--}}
-                        {{--dis_id: $(this).find('#dis_id').text(),--}}
-                        {{--mdc_tipo_avaliacao: $(this).find('#mdc_tipo_avaliacao').text(),--}}
-                        {{--mdo_id: button.attr('data-mdo-id')--}}
-                    {{--};--}}
 
-                   {{--disciplinas.push(disc);--}}
-                {{--});--}}
-
-                {{--var data = JSON.stringify(disciplinas);--}}
-                {{--$.post('{{url('/')}}/academico/modulosmatrizes/adicionardisciplinas', data)--}}
-                        {{--.done(function (response) {--}}
-                            {{--console.log(response);--}}
-                            {{--if(response.redirect) {--}}
-                                {{--window.location.href = response.redirect;--}}
-                            {{--}--}}
-                        {{--});--}}
-            {{--});--}}
 
             function renderTableLocalizadas(data)
             {

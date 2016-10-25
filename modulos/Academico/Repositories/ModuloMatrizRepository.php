@@ -4,6 +4,7 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\ModuloMatriz;
+use DB;
 
 class ModuloMatrizRepository extends BaseRepository
 {
@@ -51,5 +52,23 @@ class ModuloMatrizRepository extends BaseRepository
         return $this->model->join('acd_matrizes_curriculares', function ($join) {
           $join->on('mdo_mtc_id', '=', 'mtc_id');
         })->where('mdo_mtc_id', '=', $matrizId)->get();
+    }
+
+    public function buscar($matriz, $nome)
+    {
+        $result = $this->model
+                        ->where('mdo_mtc_id', '=', $matriz)
+                        ->leftJoin('acd_modulos_disciplinas', 'mdc_mdo_id', '=', 'mdo_id')
+                        ->leftJoin('acd_disciplinas', 'dis_id', '=', 'mdc_dis_id')
+                        ->join('acd_niveis_cursos', 'nvc_id', '=', 'dis_nvc_id')
+                        ->where('dis_nome', 'like', "%$nome%")->get();
+
+
+        if($result)
+        {
+            return $result;
+        }
+
+        return null;
     }
 }

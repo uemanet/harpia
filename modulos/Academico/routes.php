@@ -111,7 +111,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getEdit')->name('academico.modulosmatrizes.getEdit');
         Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@putEdit')->name('academico.modulosmatrizes.putEdit');
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@postDelete')->name('academico.modulosmatrizes.delete');
-        Route::get('/adicionardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getAdicionarDisciplinas')->name('academico.modulosmatrizes.adicionardisciplinas');
+        Route::get('/gerenciardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getGerenciarDisciplinas')->name('academico.modulosmatrizes.gerenciardisciplinas');
         Route::post('/adicionardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@postAdicionarDisciplinas')->name('academico.modulosmatrizes.postAdicionardisciplinas');
     });
 
@@ -146,8 +146,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'disciplinas'], function() {
-           Route::get('/findbynome/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
+           Route::get('/findbynome/{matriz}/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
         });
+
+        Route::group(['prefix' => 'modulosdisciplinas'], function() {
+           Route::get('/verifydisciplina/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@verifyDisciplinas');
+           Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina');
+
+        });
+
     });
 
     Route::group(['prefix' => 'usuarioscursos'], function () {

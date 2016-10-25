@@ -37,7 +37,7 @@
                             'method' => 'get'
                         ],
                         [
-                            'classButton' => 'btn btn-box-tool',
+                            'classButton' => 'btn btn-box-tool btn-delete',
                             'icon' => 'fa fa-trash',
                             'action' => '/academico/modulosmatrizes/delete',
                             'id' => $modulo->mdo_id,
@@ -51,26 +51,18 @@
             <div id="collapseOne" class="panel-collapse collapse in">
               <div class="box-body">
                 @if(!$modulo->disciplinas->isEmpty())
-                    <table  class="table table-bordered">
+                    <table  class="table table-bordered table-hover">
                       <thead>
-                        <th>#</th>
                         <th>Nome</th>
                         <th>Carga Horária</th>
                         <th>Créditos</th>
-                        <th>Ações<th>
                       </thead>
                       <tbody>
                         @foreach($modulo->disciplinas as $disciplina)
                           <tr>
-                            <td>{{$disciplina->dis_id}}</td>
                             <td>{{$disciplina->dis_nome}}</td>
                             <td>{{$disciplina->dis_carga_horaria}} horas</td>
                             <td>{{$disciplina->dis_creditos}}</td>
-                            <td>
-                              <a href="#" class="btn btn-danger">
-                                <i class="fa fa-trash"></i>
-                              </a>
-                            </td>
                           </tr>
                         @endforeach
                       </tbody>
@@ -87,9 +79,9 @@
                     'buttons' => [
                         [
                             'classButton' => 'btn btn-success',
-                            'icon' => 'fa fa-plus',
-                            'action' => '/academico/modulosmatrizes/adicionardisciplinas/'.$modulo->mdo_id,
-                            'label' => 'Adicionar Disciplinas',
+                            'icon' => 'fa fa-cogs',
+                            'action' => '/academico/modulosmatrizes/gerenciardisciplinas/'.$modulo->mdo_id,
+                            'label' => 'Gerenciar disciplinas do módulo',
                             'method' => 'get'
                         ],
                     ]

@@ -4,20 +4,22 @@ namespace Modulos\Academico\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
 use Modulos\Academico\Repositories\DisciplinaRepository;
+use Modulos\Academico\Repositories\ModuloMatrizRepository;
 use Modulos\Core\Http\Controller\BaseController;
 
 class Disciplinas extends BaseController
 {
-    protected $disciplinasRepository;
+    protected $disciplinsRepository;
 
-    public function __construct(DisciplinaRepository $disciplina)
+    public function __construct(DisciplinaRepository $disciplina, ModuloMatrizRepository $modulomatriz)
     {
-        $this->disciplinasRepository = $disciplina;
+        $this->disciplinaRepository = $disciplina;
+        $this->modulosmatrizesRepository = $modulomatriz;
     }
 
-    public function getFindbynome($nome)
+    public function getFindbynome($matriz, $nome)
     {
-        $disciplinas = $this->disciplinasRepository->buscar($nome);
+        $disciplinas = $this->disciplinaRepository->buscar($matriz, $nome);
 
         if($disciplinas)
         {

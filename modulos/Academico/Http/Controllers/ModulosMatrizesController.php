@@ -11,7 +11,7 @@ use Modulos\Academico\Repositories\ModuloMatrizRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Models\ModuloDisciplina;
+use Modulos\Academico\Repositories\DisciplinaRepository;
 
 class ModulosMatrizesController extends BaseController
 {
@@ -19,13 +19,15 @@ class ModulosMatrizesController extends BaseController
     protected $modulodisciplinaRepository;
     protected $matrizcurricularRepository;
     protected $cursoRepository;
+    protected $disciplinaRepository;
 
-    public function __construct(ModuloMatrizRepository $modulomatrizRepository, ModuloDisciplinaRepository $modulodisciplinaRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository)
+    public function __construct(ModuloMatrizRepository $modulomatrizRepository, ModuloDisciplinaRepository $modulodisciplinaRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository, DisciplinaRepository $disciplinaRepository)
     {
         $this->modulomatrizRepository = $modulomatrizRepository;
         $this->modulodisciplinaRepository = $modulodisciplinaRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
         $this->cursoRepository = $cursoRepository;
+        $this->disciplinaRepository = $disciplinaRepository;
     }
 
     public function getIndex($matrizId, Request $request)
@@ -169,60 +171,15 @@ class ModulosMatrizesController extends BaseController
         }
     }
 
-    public function getAdicionarDisciplinas($id)
+    public function getGerenciarDisciplinas($id)
     {
-        return view('Academico::modulosmatrizes.adicionardisciplinas', ['modulo' => $id]);
+        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($id);
+
+        $modulo = $this->modulomatrizRepository->find($id);
+
+        $matriz = $this->matrizcurricularRepository->find($modulo->mdo_mtc_id);
+
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $id, 'disciplinas' => $disciplinas, 'matriz' => $matriz->mtc_id]);
     }
 
-    public function postAdicionarDisciplinas($modulo, Request $request)
-    {
-
-      $disciplinas = $request->all();
-
-        try {
-            foreach ($disciplinas as $disciplina) {
-                $dados = $disciplina;
-            }
-
-            $disciplinas = $dados['dis_id'];
-            $tipos_avaliacao = $dados['mdc_tipo_avaliacao'];
-
-            $max = sizeof($disciplinas);
-
-            for ($i = 0 ; $i < $max ; $i++){
-                $dados2[$i]['mdc_dis_id'] = $disciplinas[$i];
-                $dados2[$i]['mdc_mdo_id'] = $modulo;
-                $dados2[$i]['mdc_tipo_avaliacao'] = strtolower($tipos_avaliacao[$i]);
-            }
-
-            //Validação
-
-            foreach($dados2 as $dado2){
-              //dd($dado2['mdc_tipo_avaliacao']);
-              if ($this->modulodisciplinaRepository->verifyDisciplinaModulo($dado2['mdc_dis_id'])) {
-                  flash()->error('A matriz curricular ja tem uma disciplina com esse nome.');
-              }
-            }
-
-            foreach($dados2 as $dado2){
-                $modulodisciplina = $this->modulodisciplinaRepository->create($dado2);
-                //dd($modulodisciplina);
-            }
-
-            if (!$modulomatriz) {
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-            }
-
-            flash()->success('Módulo criado com sucesso.');
-            return redirect('/academico/modulosmatrizes/index/'.$modulomatriz->mdo_mtc_id);
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-            return redirect()->back();
-        }
-    }
 }
