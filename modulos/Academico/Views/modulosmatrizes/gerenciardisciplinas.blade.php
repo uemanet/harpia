@@ -98,7 +98,7 @@
                         <td>{{$disciplina->dis_creditos}}</td>
                         <td>{{ $disciplina->mdc_tipo_avaliacao }}</td>
                         <td>
-                            <form action="/teste" method="POST">
+                            <form action="">
                                 <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="_method" value="POST">
@@ -112,6 +112,7 @@
             <div id="salvar" class="col-md-2 pull-right hidden">
                 <button type="submit" id="btnSalvar" class="btn btn-primary btn-block">Salvar</button>
             </div>
+            <p id="msg" class="hidden">Sem disciplinas cadastradas</p>
         </div>
     </div>
 @stop
@@ -124,6 +125,9 @@
         var csrf_token = "{{csrf_token()}}";
 
         $(function() {
+
+            hiddenTableDisciplinasModulo();
+
             $('#localizar').on('click', function(e) {
                 var disciplina = $('#disciplina').val();
 
@@ -196,6 +200,52 @@
                 addDisciplinaIntoMatrizCurricular(linha);
             });
 
+            $(document).on('click', '.btn-delete', function (event) {
+                event.preventDefault();
+
+                var button = $(this);
+
+                swal({
+                    title: "Tem certeza que deseja excluir?",
+                    text: "Você não poderá recuperar essa informação!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, pode excluir!",
+                    cancelButtonText: "Não, quero cancelar!",
+                    closeOnConfirm: true
+                }, function(isConfirm){
+                    if (isConfirm) {
+
+                        var mdc_id = button.closest('form').find('input[name="id"]').val();
+                        var linha = button.closest('tr');
+
+                        var data = {mdc_id : mdc_id,mtc_id: matriz, _token : csrf_token};
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/academico/async/modulosdisciplinas/deletardisciplina',
+                            data: data,
+                            success: function (data) {
+                                toastr.success('Disciplina excluída com sucesso!', null, {progressBar: true});
+                                linha.remove();
+                                hiddenTableDisciplinasModulo();
+                            },
+                            error: function (xhr, textStatus, error) {
+                                switch (xhr.status) {
+                                    case 400:
+                                        toastr.error('Não é possível adicionar uma disciplina mais de uma vez para uma mesma matriz.', null, {progressBar: true});
+                                        break;
+                                    default:
+                                        toastr.error(xhr.responseText, null, {progressBar: true});
+                                }
+                            }
+                        });
+                    }
+                });
+
+            });
+
             var addDisciplinaIntoMatrizCurricular = function(linha) {
 
                 var disciplinaSelecionada = new Array();
@@ -223,9 +273,10 @@
                         toastr.success('Disciplina adicionada com sucesso!', null, {progressBar: true});
 
                         // Adiciona o id do retorno para a variavel que vai ser usada para montar a linha na tabela de disciplinas selecionadas
-                        disciplinaSelecionada['mtc_id'] = data.mtc_id;
+                        disciplinaSelecionada['mdc_id'] = data.mdc_id;
 
                         addLinhaTabelaSelecionadas(linha, disciplinaSelecionada);
+                        hiddenTableDisciplinasModulo();
                     },
                     error: function (xhr, textStatus, error) {
                         switch (xhr.status) {
@@ -237,21 +288,19 @@
                         }
                     }
                 });
+
             }
 
             var addLinhaTabelaSelecionadas = function(linha, disciplina) {
 
                 linha.remove();
-//                linha.fadeOut("normal", function() {
-//                    linha.remove();
-//                });
 
                 var body = $('#selecionadas tbody');
 
                 var newRow = $("<tr>");
                 var column = "";
 
-                column += '<td id="mdc_id">'+disciplina['mtc_id']+'</td>';
+                column += '<td id="mdc_id">'+disciplina['mdc_id']+'</td>';
                 column += '<td id="dis_id">'+disciplina['dis_id']+'<input type="hidden" value="'+disciplina['dis_id']+'" name="dis_id"></td>';
                 column += '<td id="nome">'+disciplina['nome']+'</td>';
                 column += '<td id="nivel">'+disciplina['nivel']+'</td>';
@@ -260,7 +309,12 @@
                 column += '<td id="mdc_tipo_avaliacao">'+disciplina['mdc_tipo_avaliacao']+'<input type="hidden" value="'+disciplina['mdc_tipo_avaliacao']+'" name="disciplinas[mdc_tipo_avaliacao][]"></td>';
 
                 column += '<td>';
-                column += '<button class="btn-delete btn btn-danger btn-sm" type="button"><i class="fa fa-trash"></i> Excluir</button>';
+                column += '<form action="" method="POST">'
+                        +'<input type="hidden" name="id" value="'+disciplina['mdc_id']+'">'
+                        +'<input type="hidden" name="_token" value="{{csrf_token()}}">'
+                        +'<input type="hidden" name="_method" value="POST">'
+                        +'<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>'
+                        +'</form>';
                 column += '</td>';
 
                 newRow.append(column);
@@ -268,6 +322,22 @@
                 body.append(newRow);
 
                 newRow.toggle("pulsate").fadeIn();
+            }
+
+            function hiddenTableDisciplinasModulo() {
+                var table = $('#selecionadas');
+                var box = table.closest('.box-body');
+                var msg = box.find('#msg');
+                var linhas = $('#selecionadas tbody tr');
+
+                if(linhas.length > 0)
+                {
+                    table.removeClass('hidden');
+                    msg.addClass('hidden');
+                } else {
+                    table.addClass('hidden');
+                    msg.removeClass('hidden');
+                }
             }
         });
     </script>

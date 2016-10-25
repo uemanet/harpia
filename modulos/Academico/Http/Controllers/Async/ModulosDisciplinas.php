@@ -12,33 +12,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ModulosDisciplinas extends BaseController
 {
-    protected $disciplinasRepository;
+    protected $moduloDisciplinaRepository;
     protected $matrizCurricularRepository;
 
-    public function __construct(ModuloDisciplinaRepository $disciplina, MatrizCurricularRepository $matrizCurricularRepository)
+    public function __construct(ModuloDisciplinaRepository $moduloDisciplinaRepository, MatrizCurricularRepository $matrizCurricularRepository)
     {
-        $this->disciplinasRepository = $disciplina;
+        $this->moduloDisciplinaRepository = $moduloDisciplinaRepository;
         $this->matrizCurricularRepository = $matrizCurricularRepository;
-    }
-
-    public function getFindbynome($nome)
-    {
-        $disciplinas = $this->disciplinasRepository->buscar($nome);
-
-        if($disciplinas)
-        {
-            return new JsonResponse($disciplinas, Response::HTTP_OK);
-        }
-
-        return new JsonResponse('Sem registros', Response::HTTP_NOT_FOUND);
     }
 
     public function postAdicionarDisciplina(Request $request)
     {
         $dados = $request->except('_token');
 
-        // TODO: 1
-        // verificar se a disciplina já está adicionada na matriz
 
         $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $dados['dis_id']);
 
@@ -47,18 +33,15 @@ class ModulosDisciplinas extends BaseController
         }
 
         try {
-            // TODO: 2
-            // Salvar
 
-//            $disciplinaCreate = $this->disciplinasRepository->create();
+            $modulodisciplina['mdc_dis_id'] = $dados['dis_id'];
+            $modulodisciplina['mdc_mdo_id'] = $dados['mod_id'];
+            $modulodisciplina['mdc_tipo_avaliacao'] = $dados['tipo_avaliacao'];
 
-            // TODO: 3
-            //Retornar o mdc_id
-            return new JsonResponse(['mtc_id' => 10], Response::HTTP_OK);
+            $disciplinaCreate = $this->moduloDisciplinaRepository->create($modulodisciplina);
+
+            return new JsonResponse(['mdc_id' => $disciplinaCreate->mdc_id], Response::HTTP_OK);
         } catch (\Exception $e) {
-
-            // TODO: 4
-            //Caso dê erro retornar o erro
 
             if (config('app.debug')) {
                 return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -68,18 +51,22 @@ class ModulosDisciplinas extends BaseController
         }
     }
 
-    public function postDelete(Request $request)
+    public function postDeletarDisciplina(Request $request)
     {
-        $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $dados['dis_id']);
+        $dados = $request->all();
+
+        $moduloDisciplina = $this->moduloDisciplinaRepository->find($dados['mdc_id']);
+
+        $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $moduloDisciplina->mdc_dis_id);
 
         if (!$disciplinaExists) {
             return new JsonResponse('Disciplina não cadastrada para esta matriz', Response::HTTP_BAD_REQUEST);
         }
 
-        // TODO: 1
-        // DELETAR
-
-        // TODO: 2
-        // ENVIAR RETORNO
+        if ($this->moduloDisciplinaRepository->delete($dados['mdc_id'])) {
+            return new JsonResponse(Response::HTTP_OK);
+        } else {
+            return new JsonResponse('Erro ao tentar excluir o módulo', Response::HTTP_BAD_REQUEST);
+        }
     }
 }
