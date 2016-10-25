@@ -60,7 +60,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoVinculos();
 
         $this->createPermissoesAcademicoTutoresGrupos();
-
     }
 
     /** Permissões do Módulo Segurança */
@@ -622,6 +621,4 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão alterartutor do recurso Tutores do Grupo';
         $permissao->save();
     }
-
-
 }
