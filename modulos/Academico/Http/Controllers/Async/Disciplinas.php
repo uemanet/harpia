@@ -9,7 +9,7 @@ use Modulos\Core\Http\Controller\BaseController;
 
 class Disciplinas extends BaseController
 {
-    protected $disciplinsRepository;
+    protected $disciplinaRepository;
 
     public function __construct(DisciplinaRepository $disciplina, ModuloMatrizRepository $modulomatriz)
     {

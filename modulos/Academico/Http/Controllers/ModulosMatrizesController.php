@@ -154,6 +154,16 @@ class ModulosMatrizesController extends BaseController
         try {
             $modulomatrizId = $request->get('id');
 
+            $modulo = $this->modulomatrizRepository->find(($modulomatrizId));
+
+            $disciplinas = $modulo->disciplinas()->get();
+
+            if (!$disciplinas->isEmpty()) {
+                flash()->error('Módulo tem disciplinas cadastradas, delete-as para excluir o módulo!');
+                return redirect()->back();
+            }
+
+
             if ($this->modulomatrizRepository->delete($modulomatrizId)) {
                 flash()->success('Módulo excluído com sucesso.');
             } else {
@@ -171,15 +181,22 @@ class ModulosMatrizesController extends BaseController
         }
     }
 
-    public function getGerenciarDisciplinas($id)
+    public function getGerenciarDisciplinas($moduloId)
     {
-        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($id);
+        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
 
-        $modulo = $this->modulomatrizRepository->find($id);
+        $modulo = $this->modulomatrizRepository->find($moduloId);
 
         $matriz = $this->matrizcurricularRepository->find($modulo->mdo_mtc_id);
 
-        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $id, 'disciplinas' => $disciplinas, 'matriz' => $matriz->mtc_id]);
+        $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
+
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $moduloId,
+                                                                        'disciplinas' => $disciplinas,
+                                                                        'matriz' => $matriz->mtc_id,
+                                                                        'moduloNome' => $modulo->mdo_nome,
+                                                                        'matrizTitulo' => $matriz->mtc_titulo,
+                                                                        'cursoNome' => $curso->crs_nome]);
     }
 
 }

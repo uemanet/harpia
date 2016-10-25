@@ -107,4 +107,21 @@ class MatrizCurricularRepository extends BaseRepository
 
         return false;
     }
+
+    public function verifyIfNomeDisciplinaExistsInMatriz($matrizId, $nomeDisciplina)
+    {
+        $exists = \DB::table('acd_modulos_disciplinas')
+            ->join('acd_modulos_matrizes', 'mdo_id', '=', 'mdc_mdo_id')
+            ->join('acd_disciplinas', 'dis_id', '=', 'mdc_dis_id')
+            ->select('mdc_dis_id')
+            ->where('mdo_mtc_id', $matrizId)
+            ->where('dis_nome', $nomeDisciplina)
+            ->first();
+
+        if ($exists) {
+            return true;
+        }
+
+        return false;
+    }
 }

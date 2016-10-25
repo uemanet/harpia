@@ -5,6 +5,7 @@ namespace Modulos\Academico\Http\Controllers\Async;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use League\Flysystem\Exception;
+use Modulos\Academico\Repositories\DisciplinaRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
@@ -12,19 +13,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ModulosDisciplinas extends BaseController
 {
+    protected $disciplinaRepository;
     protected $moduloDisciplinaRepository;
     protected $matrizCurricularRepository;
 
-    public function __construct(ModuloDisciplinaRepository $moduloDisciplinaRepository, MatrizCurricularRepository $matrizCurricularRepository)
+    public function __construct(ModuloDisciplinaRepository $moduloDisciplinaRepository, MatrizCurricularRepository $matrizCurricularRepository, DisciplinaRepository $disciplinaRepository)
     {
         $this->moduloDisciplinaRepository = $moduloDisciplinaRepository;
         $this->matrizCurricularRepository = $matrizCurricularRepository;
+        $this->disciplinaRepository = $disciplinaRepository;
     }
 
     public function postAdicionarDisciplina(Request $request)
     {
         $dados = $request->except('_token');
 
+
+        $disciplina = $this->disciplinaRepository->find($dados['dis_id']);
+
+        $disciplinaNameExists = $this->matrizCurricularRepository->verifyIfNomeDisciplinaExistsInMatriz($dados['mtc_id'], $disciplina->dis_nome);
+
+        if ($disciplinaNameExists) {
+            return new JsonResponse('Já existe uma disciplina com esse nome', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+        }
 
         $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $dados['dis_id']);
 
@@ -66,7 +77,7 @@ class ModulosDisciplinas extends BaseController
         if ($this->moduloDisciplinaRepository->delete($dados['mdc_id'])) {
             return new JsonResponse(Response::HTTP_OK);
         } else {
-            return new JsonResponse('Erro ao tentar excluir o módulo', Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(Response::HTTP_BAD_REQUEST);
         }
     }
 }

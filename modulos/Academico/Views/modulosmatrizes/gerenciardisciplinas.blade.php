@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Módulos
+    Gerenciamento de Disciplinas
 @stop
 
 @section('subtitle')
-    Adicionar disciplinas
+    Gerenciamento de disciplinas :: {{$cursoNome}} :: {{$matrizTitulo}} :: {{ $moduloNome }}
 @stop
 
 @section('content')
@@ -96,7 +96,7 @@
                         <td>{{$disciplina->nvc_nome}}</td>
                         <td>{{$disciplina->dis_carga_horaria}} horas</td>
                         <td>{{$disciplina->dis_creditos}}</td>
-                        <td>{{ $disciplina->mdc_tipo_avaliacao }}</td>
+                        <td>{{$disciplina->mdc_tipo_avaliacao}}</td>
                         <td>
                             <form action="">
                                 <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
@@ -128,6 +128,7 @@
 
             hiddenTableDisciplinasModulo();
 
+            //Eh feita a busca das disciplinas via async.
             $('#localizar').on('click', function(e) {
                 var disciplina = $('#disciplina').val();
 
@@ -141,6 +142,7 @@
                 return false;
             });
 
+            //Renderiza a tabela das disciplinas que foram localizadas na busca.
             function renderTableLocalizadas(data)
             {
                 var body = $('#localizadas tbody');
@@ -200,6 +202,7 @@
                 addDisciplinaIntoMatrizCurricular(linha);
             });
 
+            //Pega o evento do clique do botao delete e faz o tratamento via ajax.
             $(document).on('click', '.btn-delete', function (event) {
                 event.preventDefault();
 
@@ -234,7 +237,7 @@
                             error: function (xhr, textStatus, error) {
                                 switch (xhr.status) {
                                     case 400:
-                                        toastr.error('Não é possível adicionar uma disciplina mais de uma vez para uma mesma matriz.', null, {progressBar: true});
+                                        toastr.error('Erro ao tentar deletar a disciplina.', null, {progressBar: true});
                                         break;
                                     default:
                                         toastr.error(xhr.responseText, null, {progressBar: true});
@@ -246,6 +249,7 @@
 
             });
 
+            //Adiciona uma disciplina a uma matriz curricular.
             var addDisciplinaIntoMatrizCurricular = function(linha) {
 
                 var disciplinaSelecionada = new Array();
@@ -281,7 +285,7 @@
                     error: function (xhr, textStatus, error) {
                         switch (xhr.status) {
                             case 400:
-                                toastr.error('Não é possível adicionar uma disciplina mais de uma vez para uma mesma matriz.', null, {progressBar: true});
+                                toastr.error(xhr.responseText, null, {progressBar: true});
                             break;
                             default:
                                 toastr.error(xhr.responseText, null, {progressBar: true});
@@ -291,6 +295,7 @@
 
             }
 
+            //Adiciona uma linha na tabela de disciplinas do modulo
             var addLinhaTabelaSelecionadas = function(linha, disciplina) {
 
                 linha.remove();
@@ -324,6 +329,7 @@
                 newRow.toggle("pulsate").fadeIn();
             }
 
+            //Faz a verificacao da existencia de dados nas linhas da tabela, caso nao exista a tabela eh ocultada.
             function hiddenTableDisciplinasModulo() {
                 var table = $('#selecionadas');
                 var box = table.closest('.box-body');

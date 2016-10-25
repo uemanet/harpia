@@ -150,8 +150,9 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'modulosdisciplinas'], function() {
-           Route::get('/verifydisciplina/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@verifyDisciplinas');
-           Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina');             Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina');
+            Route::get('/verifydisciplina/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@verifyDisciplinas');
+            Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina');
+            Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina');
 
         });
 

@@ -44,9 +44,8 @@ class DisciplinaRepository extends BaseRepository
     }
 
     /**
-     * TODO: Não buscar disciplinas com o nível diferente do nível do curso do qual a matriz pertence
      *
-     * Busca todas as disciplinas não pertencentes a matriz atual pelo nome da disciplina
+     * Busca todas as disciplinas não pertencentes a matriz atual pelo nome da disciplina e filtra as disciplinas de acordo com o nível do curso.
      *
      * @param $matriz
      * @param $nome
@@ -72,16 +71,12 @@ class DisciplinaRepository extends BaseRepository
             $niveis[] = $nivelId->crs_nvc_id;
         }
 
-            //dd($niveis);
         $result = $this->model
             ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
             ->where('dis_nome', 'like', "%{$nome}%")
             ->where('dis_nvc_id', '=', $niveis[0])
             ->whereNotIn('dis_id', $disciplinasId)
             ->get();
-
-
-
 
 
         if($result)

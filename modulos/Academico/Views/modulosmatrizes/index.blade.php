@@ -15,16 +15,15 @@
 @section('content')
 
     @if(!$modulos->isEmpty())
-
+        <div class="box-group" id="accordion">
         @foreach($modulos as $modulo)
           <div class="panel box box-primary">
             <div class="box-header with-border">
               <h4 class="box-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$modulo->mdo_id}}">
                   {{$modulo->mdo_nome}}
                 </a>
               </h4>
-
                 <div class="box-tools pull-right">
                     {!! ActionButton::grid([
                         'type' => 'LINE',
@@ -48,19 +47,21 @@
                     ]) !!}
                 </div>
             </div>
-            <div id="collapseOne" class="panel-collapse collapse in">
+            <div id="collapse{{$modulo->mdo_id}}" class="panel-collapse collapse in">
               <div class="box-body">
                 @if(!$modulo->disciplinas->isEmpty())
                     <table  class="table table-bordered table-hover">
                       <thead>
-                        <th>Nome</th>
-                        <th>Carga Horária</th>
-                        <th>Créditos</th>
+                      <th>Nome</th>
+                      <th>Nível</th>
+                      <th>Carga Horária</th>
+                      <th>Créditos</th>
                       </thead>
                       <tbody>
                         @foreach($modulo->disciplinas as $disciplina)
                           <tr>
                             <td>{{$disciplina->dis_nome}}</td>
+                            <td>{{$disciplina->nivel->nvc_nome}}</td>
                             <td>{{$disciplina->dis_carga_horaria}} horas</td>
                             <td>{{$disciplina->dis_creditos}}</td>
                           </tr>
@@ -91,6 +92,7 @@
             </div>
           </div>
         @endforeach
+        </div>
     @else
         <div class="box box-primary">
             <div class="box-body">Sem registros para apresentar</div>
