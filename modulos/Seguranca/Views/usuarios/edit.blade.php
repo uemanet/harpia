@@ -4,21 +4,17 @@
     Usuários
 @stop
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
-@stop
-
 @section('subtitle')
-    Cadastro de usuários
+    Alterar usuario :: {{$usuario->usr_usuario}}
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Cadastro de Usuários</h3>
+            <h3 class="box-title">Formulário de edição de usuário</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/seguranca/usuarios/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($usuario,['route' => ['seguranca.usuarios.putEdit', $usuario->usr_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
             <h4 class="box-title">
                 Dados de Usuário
             </h4>
@@ -42,21 +38,20 @@
 
 @section('scripts')
     <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/inputmask.extensions.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/date.extensions.js') }}"></script>
     <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
 
     <script>
 
         $(function (){
-            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
-            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
             $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
+                format: "dd/mm/yyyy",
                 language: 'pt-BR',
                 autoclose: true
             });
+            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
+            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
         });
     </script>
 @endsection

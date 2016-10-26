@@ -3,6 +3,7 @@
 namespace Modulos\Geral\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
+use Modulos\Geral\Models\Pessoa;
 
 class PessoaRequest extends BaseRequest
 {
@@ -23,22 +24,40 @@ class PessoaRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
+        if ($this->method() == 'POST') {
+            return [
+                'pes_nome' => 'required|min:3|max:150',
+                'pes_sexo' => 'required',
+                'pes_email' => 'required|email|unique:gra_pessoas',
+                'pes_telefone' => 'required|max:20',
+                'pes_nascimento' => 'required|date_format:d/m/Y',
+                'pes_mae' => 'required|max:150',
+                'pes_pai' => 'max:150',
+                'pes_estado_civil' => 'required',
+                'pes_naturalidade' => 'max:45',
+                'pes_nacionalidade' => 'max:45',
+                'pes_raca' => 'max:45',
+                'pes_necessidade_especial' => 'max:45',
+                'pes_estrangeiro' => 'boolean',
+                'doc_conteudo' => 'required|cpf|unique:gra_documentos'
+            ];
+        }
+
+        return [
             'pes_nome' => 'required|min:3|max:150',
             'pes_sexo' => 'required',
-            'pes_email' => 'required|email|unique:pessoa',
+            'pes_email' => 'required|email',
             'pes_telefone' => 'required|max:20',
-            'pes_nascimento' => 'required|date',
+            'pes_nascimento' => 'required|date_format:d/m/Y',
             'pes_mae' => 'required|max:150',
             'pes_pai' => 'max:150',
-            'pes_estado_civil' => 'required|max:20',
+            'pes_estado_civil' => 'required',
             'pes_naturalidade' => 'max:45',
             'pes_nacionalidade' => 'max:45',
             'pes_raca' => 'max:45',
             'pes_necessidade_especial' => 'max:45',
             'pes_estrangeiro' => 'boolean',
+            'doc_conteudo' => 'required|cpf'
         ];
-
-        return $rules;
     }
 }

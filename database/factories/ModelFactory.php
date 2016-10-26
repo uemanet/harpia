@@ -1,5 +1,42 @@
 <?php
 
+/** Factories Modulo Geral */
+$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
+    return [
+        'pes_nome' => $faker->name,
+        'pes_sexo' => $faker->randomElement(['M', 'F']),
+        'pes_email' => $faker->email,
+        'pes_telefone' => $faker->phoneNumber,
+        'pes_nascimento' => $faker->date(),
+        'pes_mae' => $faker->name,
+        'pes_pai' => $faker->name,
+        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
+        'pes_naturalidade' => $faker->city,
+        'pes_nacionalidade' => $faker->country,
+        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
+        'pes_necessidade_especial' => $faker->randomElement(['s', 'n']),
+        'pes_estrangeiro' => $faker->boolean
+    ];
+});
+
+$factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generator $faker) {
+   return [
+       'doc_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
+       'doc_tpd_id' => 2,
+       'doc_conteudo' => $faker->creditCardNumber
+   ];
+});
+
+$factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $faker) {
+    return [
+        'anx_tax_id' => $faker->randomNumber(1),
+        'anx_nome' => $faker->word,
+        'anx_mime' => $faker->mimeType,
+        'anx_localizacao' => base_path(),
+    ];
+});
+
+/** Factories Modulo Segurança */
 $factory->define(Modulos\Seguranca\Models\Modulo::class, function (Faker\Generator $faker) {
     $rota = $faker->name;
 
@@ -54,36 +91,16 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
     ];
 });
 
-// Modulo GERAL
-$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
+$factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Generator $faker) {
     return [
-        'pes_nome' => $faker->name,
-        'pes_sexo' => $faker->randomElement(['M', 'F']),
-        'pes_email' => $faker->email,
-        'pes_telefone' => $faker->phoneNumber,
-        'pes_nascimento' => $faker->date(),
-        'pes_mae' => $faker->name,
-        'pes_pai' => $faker->name,
-        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
-        'pes_naturalidade' => $faker->city,
-        'pes_nacionalidade' => $faker->country,
-        'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
-        'pes_necessidade_especial' => $faker->randomElement(['sim', 'nao']),
-        'pes_estrangeiro' => $faker->boolean
+        'usr_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
+        'usr_usuario' => $faker->email,
+        'usr_senha' => $faker->password,
+        'usr_ativo' => 1
     ];
 });
 
-$factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $faker) {
-    return [
-        'anx_tax_id' => $faker->randomNumber(1),
-        'anx_nome' => $faker->word,
-        'anx_mime' => $faker->mimeType,
-        'anx_localizacao' => base_path(),
-    ];
-});
-
-
-// Modulo ACADEMICO
+/** Factories Modulo Academico */
 $factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Generator $faker){
    return [
        'dep_cen_id' => 1,

@@ -2,6 +2,7 @@
 
 namespace Modulos\Geral\Models;
 
+use Carbon\Carbon;
 use Modulos\Core\Model\BaseModel;
 
 class Pessoa extends BaseModel
@@ -40,5 +41,18 @@ class Pessoa extends BaseModel
     public function titulacoes_informacoes()
     {
         return $this->hasMany('Modulos\Geral\Models\TitulacaoInformacao', 'tin_pes_id');
+    }
+
+    // Accessors
+    public function getPesNascimentoAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutators
+    public function setPesNascimentoAttribute($value)
+    {
+        $this->attributes['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }

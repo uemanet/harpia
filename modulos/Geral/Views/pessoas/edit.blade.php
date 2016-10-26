@@ -6,19 +6,20 @@
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
+    <link rel="stylesheet" href="{{ asset('/css/plugins/daterangepicker.css') }}">
 @stop
 
 @section('subtitle')
-    Cadastro de pessoas
+    Alterar pessoa :: {{$pessoa->pes_nome}}
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de pessoas</h3>
+            <h3 class="box-title">Formulário de edição de pessoa</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/geral/pessoas/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($pessoa,["url" => url('/') . "/geral/pessoas/edit/$pessoa->pes_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Geral::pessoas.includes.formulario')
 
                 <div class="row">
@@ -33,21 +34,22 @@
 
 @section('scripts')
     <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/inputmask.date.extensions.js') }}"></script>
     <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}"></script>
+    <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
     <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
 
     <script>
 
         $(function (){
-            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
-            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
             $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
+                format: "dd/mm/yyyy",
                 language: 'pt-BR',
                 autoclose: true
             });
+            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
+            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
         });
     </script>
 @endsection
