@@ -2,7 +2,7 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
-use Harpia\Format\Format;
+use Carbon\Carbon;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -89,9 +89,7 @@ class PessoasController extends BaseController
         DB::beginTransaction();
 
         try {
-            $dataPessoa = $request->except('doc_conteudo');
-
-            $dataPessoa['pes_email'] = strtolower($dataPessoa['pes_email']);
+            $dataPessoa = $request->only($this->pessoaRepository->getFillableModelFields());
 
             $pessoa = $this->pessoaRepository->create($dataPessoa);
 
@@ -127,6 +125,13 @@ class PessoasController extends BaseController
 
     public function putEdit($id, PessoaRequest $request)
     {
+        $pessoa = $this->pessoaRepository->find($id);
+
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe');
+            return redirect('/geral/pessoas/index');
+        }
+
         DB::beginTransaction();
 
         try {
@@ -140,11 +145,9 @@ class PessoasController extends BaseController
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            $dataPessoa = $request->except('doc_conteudo', '_method', '_token');
+            $dataPessoa = $request->only($this->pessoaRepository->getFillableModelFields());
 
-            $dataPessoa['pes_email'] = strtolower($dataPessoa['pes_email']);
-
-            $this->pessoaRepository->update($dataPessoa, $id, 'pes_id');
+            $this->pessoaRepository->update($dataPessoa, $pessoa->pes_id, 'pes_id');
 
             $dataDocumento = [
                 'doc_pes_id' => $id,

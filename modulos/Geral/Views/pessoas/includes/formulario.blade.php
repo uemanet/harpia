@@ -1,3 +1,7 @@
+@section('stylesheets')
+    <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
+@stop
+
 <div class="row">
     @if(isset($pessoa->pes_id))
         {!! Form::hidden('pes_id', $pessoa->pes_id) !!}
@@ -129,3 +133,25 @@
         </div>
     </div>
 </div>
+
+@section('scripts')
+    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/inputmask.date.extensions.js') }}"></script>
+    <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
+    <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
+    <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
+
+    <script>
+
+        $(function (){
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                language: 'pt-BR',
+                autoclose: true
+            });
+            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
+            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
+        });
+    </script>
+@endsection

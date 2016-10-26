@@ -123,7 +123,8 @@ class TutoresController extends BaseController
                 'pes_naturalidade' => $request->input('pes_naturalidade'),
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
+                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
+                'pes_estrangeiro' => $request->input('pes_estrangeiro')
             );
 
             $cpf = $request->input('doc_conteudo');
@@ -235,7 +236,8 @@ class TutoresController extends BaseController
                 'pes_naturalidade' => $request->input('pes_naturalidade'),
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
+                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
+                'pes_estrangeiro' => $request->input('pes_estrangeiro')
             );
 
             $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');

@@ -35,23 +35,3 @@
         </div>
     </div>
 @stop
-
-@section('scripts')
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/date.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
-
-    <script>
-
-        $(function (){
-            $('.datepicker').datepicker({
-                format: "dd/mm/yyyy",
-                language: 'pt-BR',
-                autoclose: true
-            });
-            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
-            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
-        });
-    </script>
-@endsection
