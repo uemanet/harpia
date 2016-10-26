@@ -14,7 +14,6 @@ class CreateAcdModulosDisciplinasTable extends Migration
     public function up()
     {
         Schema::create('acd_modulos_disciplinas', function (Blueprint $table) {
-
             $table->increments('mdc_id');
             $table->integer('mdc_dis_id')->unsigned();
             $table->integer('mdc_mdo_id')->unsigned();

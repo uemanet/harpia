@@ -198,5 +198,4 @@ class ModulosMatrizesController extends BaseController
                                                                         'matrizTitulo' => $matriz->mtc_titulo,
                                                                         'cursoNome' => $curso->crs_nome]);
     }
-
 }

@@ -124,6 +124,23 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@postDelete')->name('academico.modulosdisciplinas.delete');
     });
 
+    Route::group(['prefix' => 'usuarioscursos'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\VinculosController@getIndex')->name('academico.vinculos.index');
+        Route::get('/vinculos/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@getVinculos')->name('academico.vinculos.vinculos');
+        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@getCreate')->name('academico.vinculos.getCreate');
+        Route::post('/create/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@postCreate')->name('academico.vinculos.postCreate');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\VinculosController@postDelete')->name('academico.vinculos.delete');
+    });
+
+    Route::group(['prefix' => 'tutores'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\TutoresController@getIndex')->name('academico.tutores.index');
+        Route::get('/create/{id?}', '\Modulos\Academico\Http\Controllers\TutoresController@getCreate')->name('academico.tutores.getCreate')->middleware('verificapessoa');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\TutoresController@postCreate')->name('academico.tutores.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@getEdit')->name('academico.tutores.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@putEdit')->name('academico.tutores.putEdit');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@getShow')->name('academico.tutores.show');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
@@ -145,24 +162,14 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
                 ->name('academico.async.ofertascursos.findallbycurso');
         });
 
-        Route::group(['prefix' => 'disciplinas'], function() {
-           Route::get('/findbynome/{matriz}/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
+        Route::group(['prefix' => 'disciplinas'], function () {
+            Route::get('/findbynome/{matriz}/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
         });
 
-        Route::group(['prefix' => 'modulosdisciplinas'], function() {
+        Route::group(['prefix' => 'modulosdisciplinas'], function () {
             Route::get('/verifydisciplina/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@verifyDisciplinas');
             Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina');
             Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina');
-
         });
-
-    });
-
-    Route::group(['prefix' => 'usuarioscursos'], function () {
-        Route::get('/index', '\Modulos\Academico\Http\Controllers\VinculosController@getIndex')->name('academico.vinculos.index');
-        Route::get('/vinculos/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@getVinculos')->name('academico.vinculos.vinculos');
-        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@getCreate')->name('academico.vinculos.getCreate');
-        Route::post('/create/{id}', '\Modulos\Academico\Http\Controllers\VinculosController@postCreate')->name('academico.vinculos.postCreate');
-        Route::post('/delete', '\Modulos\Academico\Http\Controllers\VinculosController@postDelete')->name('academico.vinculos.delete');
     });
 });

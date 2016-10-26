@@ -1,26 +1,21 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.academico')
 
 @section('title')
-    Usuários
+    Tutores
 @stop
 
 @section('subtitle')
-    Alterar usuario :: {{$usuario->usr_usuario}}
+    Cadastro de tutores
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de usuário</h3>
+            <h3 class="box-title">Formulário de Cadastro de Tutores</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($usuario,['route' => ['seguranca.usuarios.putEdit', $usuario->usr_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            <h4 class="box-title">
-                Dados de Usuário
-            </h4>
-            @include('Seguranca::usuarios.includes.formulario')
+            {!! Form::open(["url" => url('/') . "/academico/tutores/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
 
-            <hr>
             <h4 class="box-title">
                 Dados de Pessoa
             </h4>

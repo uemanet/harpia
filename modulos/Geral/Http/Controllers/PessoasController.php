@@ -2,7 +2,7 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
-use Harpia\Format\Format;
+use Carbon\Carbon;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -89,9 +89,7 @@ class PessoasController extends BaseController
         DB::beginTransaction();
 
         try {
-            $dataPessoa = $request->except('doc_conteudo');
-
-            $dataPessoa['pes_email'] = strtolower($dataPessoa['pes_email']);
+            $dataPessoa = $request->only($this->pessoaRepository->getFillableModelFields());
 
             $pessoa = $this->pessoaRepository->create($dataPessoa);
 
@@ -106,7 +104,7 @@ class PessoasController extends BaseController
             DB::commit();
 
             flash()->success('Pessoa criada com sucesso');
-            return redirect()->route('geral.pessoas.index');
+            return redirect()->route('geral.pessoas.show', ['id' => $pessoa->pes_id]);
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
@@ -127,6 +125,13 @@ class PessoasController extends BaseController
 
     public function putEdit($id, PessoaRequest $request)
     {
+        $pessoa = $this->pessoaRepository->find($id);
+
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe');
+            return redirect('/geral/pessoas/index');
+        }
+
         DB::beginTransaction();
 
         try {
@@ -140,11 +145,9 @@ class PessoasController extends BaseController
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            $dataPessoa = $request->except('doc_conteudo', '_method', '_token');
+            $dataPessoa = $request->only($this->pessoaRepository->getFillableModelFields());
 
-            $dataPessoa['pes_email'] = strtolower($dataPessoa['pes_email']);
-
-            $this->pessoaRepository->update($dataPessoa, $id, 'pes_id');
+            $this->pessoaRepository->update($dataPessoa, $pessoa->pes_id, 'pes_id');
 
             $dataDocumento = [
                 'doc_pes_id' => $id,
@@ -157,7 +160,7 @@ class PessoasController extends BaseController
             DB::commit();
 
             flash()->success('Pessoa editada com sucesso!');
-            return redirect()->route('geral.pessoas.index');
+            return redirect()->route('geral.pessoas.show', ['id' =>$id ]);
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
@@ -171,35 +174,8 @@ class PessoasController extends BaseController
     public function getShow($id)
     {
         $pessoa = $this->pessoaRepository->find($id);
-        
-        $pessoa->pes_sexo = ($pessoa->pes_sexo == 'M') ? 'Masculino' : 'Feminino';
 
-        $pessoa->pes_nascimento = Format::formatDate($pessoa->pes_nascimento, 'd/m/Y');
-
-        $pessoa->pes_necessidade_especial = ($pessoa->pes_necessidade_especial == 'S') ? 'Sim' : 'Não';
-
-        $pessoa->pes_estrangeiro = ($pessoa->pes_estrangeiro) ? 'Sim' : 'Não';
-
-        $documentos = [];
-
-        foreach ($pessoa->documentos as $documento) {
-            $obj = array();
-
-            $obj['tipo'] = $documento->tipo_documento->tpd_nome;
-            $obj['conteudo'] = $documento->doc_conteudo;
-
-            if ($obj['tipo'] == 'CPF') {
-                $obj['conteudo'] = Format::mask($obj['conteudo'], '###.###.###-##');
-            }
-
-            $obj['orgao'] = $documento->doc_orgao;
-            $obj['emissao'] = isset($documento->doc_dataexpedicao) ? Format::formatDate($documento->doc_dataexpedicao, 'd/m/Y') : null;
-            $obj['observacao'] = $documento->doc_observacao;
-
-            $documentos[] = (object) $obj;
-        }
-
-        return view('Geral::pessoas.show', ['pessoa' => $pessoa, 'documentos' => $documentos]);
+        return view('Geral::pessoas.show', ['pessoa' => $pessoa]);
     }
 
     public function getVerificapessoa(Request $request)

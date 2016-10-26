@@ -29,5 +29,4 @@ class ModuloDisciplina extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\ModuloMatriz', 'mdc_mdo_id', 'mdo_id');
     }
-
 }
