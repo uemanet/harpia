@@ -545,6 +545,12 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Módulos Matrizes';
         $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 20;
+        $permissao->prm_nome = 'gerenciardisciplinas';
+        $permissao->prm_descricao = 'Permissão gerenciar disciplinas do recurso Módulos Matrizes';
+        $permissao->save();
     }
 
     private function createPermissoesAcademicoDisciplinas()

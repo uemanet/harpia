@@ -72,8 +72,56 @@ class MatrizCurricularRepository extends BaseRepository
         return $this->model->where('mtc_crs_id', $cursoid)->pluck('mtc_titulo', 'mtc_id');
     }
 
+    /**
+     * Lista a matriz pelo id
+     *
+     * @param $id
+     * @return mixed
+     */
     public function listsAllById($id)
     {
         return $this->model->where('mtc_id', $id)->pluck('mtc_titulo', 'mtc_id');
+    }
+
+    public function getDisciplinasByMatrizId($id)
+    {
+        return $this->model
+            ->join('acd_modulos_matrizes', 'mdo_mtc_id', 'mtc_id')
+            ->join('acd_modulos_disciplinas', 'mdc_mdo_id', 'mdo_id')
+            ->where('mtc_id', $id)
+            ->get();
+    }
+
+    public function verifyIfDisciplinaExistsInMatriz($matrizId, $disciplinaId)
+    {
+        $exists = \DB::table('acd_modulos_disciplinas')
+            ->join('acd_modulos_matrizes', 'mdo_id', '=', 'mdc_mdo_id')
+            ->select('mdc_dis_id')
+            ->where('mdo_mtc_id', $matrizId)
+            ->where('mdc_dis_id', $disciplinaId)
+            ->first();
+
+        if ($exists) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function verifyIfNomeDisciplinaExistsInMatriz($matrizId, $nomeDisciplina)
+    {
+        $exists = \DB::table('acd_modulos_disciplinas')
+            ->join('acd_modulos_matrizes', 'mdo_id', '=', 'mdc_mdo_id')
+            ->join('acd_disciplinas', 'dis_id', '=', 'mdc_dis_id')
+            ->select('mdc_dis_id')
+            ->where('mdo_mtc_id', $matrizId)
+            ->where('dis_nome', $nomeDisciplina)
+            ->first();
+
+        if ($exists) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -27,4 +27,9 @@ class Disciplina extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\NivelCurso', 'dis_nvc_id', 'nvc_id');
     }
+
+    public function modulos()
+    {
+        return $this->belongsToMany('Modulos\Academico\Models\ModuloMatriz', 'acd_modulos_disciplinas', 'mdc_dis_id', 'mdc_mdo_id');
+    }
 }
