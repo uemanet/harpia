@@ -23,6 +23,17 @@ class TurmaRepository extends BaseRepository
         return $entries;
     }
 
+    public function getCurso($turmaId)
+    {
+        $cursoId = (DB::table('acd_ofertas_cursos')
+                    ->select('ofc_crs_id')
+                    ->join('acd_turmas', 'trm_ofc_id', '=', 'ofc_id')
+                    ->where('trm_id', '=', $turmaId)
+                    ->pluck('ofc_crs_id'))
+                    ->toArray();
+        return array_pop($cursoId);
+    }
+
     /**
      * PaginateRequest
      * @param array|null $requestParameters

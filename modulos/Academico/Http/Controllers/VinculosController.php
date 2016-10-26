@@ -27,11 +27,7 @@ class VinculosController extends BaseController
         $tabela = null;
         $tableData = null;
 
-        if (!empty($request->all())) {
-            $tableData = $this->usuarioRepository->paginateRequest($request->all());
-        } else {
-            return view('Academico::vinculos.index', ['tabela' => $tabela, 'paginacao' => $paginacao]);
-        }
+        $tableData = $this->usuarioRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -89,9 +85,10 @@ class VinculosController extends BaseController
                 'crs_nome' => 'Curso',
                 'crs_sigla' => 'Sigla',
                 'crs_action' => 'Ações',
-            ))
-                ->means('crs_action', 'ucr_id')
-                ->modify('crs_action', function ($id) {
+            ))->modifyCell('crs_action', function () {
+                return array('style' => 'width: 140px;');
+            })->means('crs_action', 'ucr_id')
+              ->modify('crs_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -109,8 +106,7 @@ class VinculosController extends BaseController
                             ],
                         ],
                     ]);
-                })
-                ->sortable(array('crs_id', 'crs_nome'));
+            })->sortable(array('crs_id', 'crs_nome'));
 
             $paginacao = $data->appends($request->except('page'));
         }

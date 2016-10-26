@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Módulo de Segurança
+    Módulo Acadêmico
 @stop
 
 @section('actionButton')
