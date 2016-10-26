@@ -60,4 +60,11 @@ class PessoaRequest extends BaseRequest
             'doc_conteudo' => 'required|cpf'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'doc_conteudo.cpf' => 'CPF Inválido'
+        ];
+    }
 }

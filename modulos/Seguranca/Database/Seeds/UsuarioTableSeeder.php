@@ -3,6 +3,7 @@
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+use Modulos\Geral\Models\Documento;
 use Modulos\Geral\Models\Pessoa;
 use Modulos\Seguranca\Models\Usuario;
 
@@ -15,7 +16,7 @@ class UsuarioTableSeeder extends Seeder
         $pessoa->pes_sexo = 'M';
         $pessoa->pes_email = 'admin@admin.com';
         $pessoa->pes_telefone = '98988888888';
-        $pessoa->pes_nascimento = '2016-05-01';
+        $pessoa->pes_nascimento = '01/05/2016';
         $pessoa->pes_mae = 'Mãe Administrador';
         $pessoa->pes_pai = 'Pai Administrador';
         $pessoa->pes_estado_civil = 'solteiro';
@@ -26,6 +27,13 @@ class UsuarioTableSeeder extends Seeder
         $pessoa->pes_estrangeiro = 0;
 
         $pessoa->save();
+
+        $documento = new Documento();
+        $documento->doc_conteudo = '63737257400';
+        $documento->doc_tpd_id = 2;
+        $documento->doc_pes_id = $pessoa->pes_id;
+
+        $documento->save();
 
         $usuario = new Usuario();
         $usuario->usr_pes_id = $pessoa->pes_id;

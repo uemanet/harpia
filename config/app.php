@@ -176,6 +176,11 @@ return [
           * Custom Validator
          */
         Harpia\Validator\CustomValidator\ValidationServiceProvider::class,
+
+        /*
+         * Format Service Provider
+         */
+        Harpia\Format\FormatServiceProvider::class,
     ],
 
     /*
@@ -239,5 +244,6 @@ return [
         'ActionButton' => Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton::class,
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,
+        'Format' => Harpia\Format\Facades\Format::class,
     ],
 ];

@@ -50,7 +50,7 @@ class ModuloMatrizRepository extends BaseRepository
     public function getAllModulosByMatriz($matrizId)
     {
         return $this->model->join('acd_matrizes_curriculares', function ($join) {
-          $join->on('mdo_mtc_id', '=', 'mtc_id');
+            $join->on('mdo_mtc_id', '=', 'mtc_id');
         })->where('mdo_mtc_id', '=', $matrizId)->get();
     }
 
@@ -64,12 +64,10 @@ class ModuloMatrizRepository extends BaseRepository
                         ->where('dis_nome', 'like', "%$nome%")->get();
 
 
-        if($result)
-        {
+        if ($result) {
             return $result;
         }
 
         return null;
     }
-
 }

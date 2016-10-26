@@ -62,7 +62,7 @@ class DisciplinaRepository extends BaseRepository
 
         $nivelIds = DB::table('acd_matrizes_curriculares')
             ->select('crs_nvc_id')
-            ->join('acd_cursos','mtc_crs_id', '=', 'crs_id')
+            ->join('acd_cursos', 'mtc_crs_id', '=', 'crs_id')
             ->where('mtc_id', '=', $matriz)
             ->get();
 
@@ -79,12 +79,10 @@ class DisciplinaRepository extends BaseRepository
             ->get();
 
 
-        if($result)
-        {
-          return $result;
+        if ($result) {
+            return $result;
         }
 
         return null;
     }
-
 }

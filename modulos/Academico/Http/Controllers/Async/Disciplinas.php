@@ -21,8 +21,7 @@ class Disciplinas extends BaseController
     {
         $disciplinas = $this->disciplinaRepository->buscar($matriz, $nome);
 
-        if($disciplinas)
-        {
+        if ($disciplinas) {
             return new JsonResponse($disciplinas, 200);
         }
 

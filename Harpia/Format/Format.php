@@ -3,7 +3,7 @@ namespace Harpia\Format;
 
 class Format
 {
-    public static function mask($val, $mask)
+    public function mask($val, $mask)
     {
         $maskared = '';
         $k = 0;
@@ -21,9 +21,13 @@ class Format
         return $maskared;
     }
 
-    public static function formatDate($date, $format)
+    public function formatDate($date, $format)
     {
-        $date = date_create($date);
-        return date_format($date, $format);
+        if (!empty($date)) {
+            $date = date_create($date);
+            return date_format($date, $format);
+        }
+
+        return '';
     }
 }

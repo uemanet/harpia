@@ -44,7 +44,6 @@ class ModulosDisciplinas extends BaseController
         }
 
         try {
-
             $modulodisciplina['mdc_dis_id'] = $dados['dis_id'];
             $modulodisciplina['mdc_mdo_id'] = $dados['mod_id'];
             $modulodisciplina['mdc_tipo_avaliacao'] = $dados['tipo_avaliacao'];
@@ -53,7 +52,6 @@ class ModulosDisciplinas extends BaseController
 
             return new JsonResponse(['mdc_id' => $disciplinaCreate->mdc_id], Response::HTTP_OK);
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
