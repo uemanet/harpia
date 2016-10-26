@@ -8,20 +8,26 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\ModuloMatrizRequest;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\ModuloMatrizRepository;
+use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\DisciplinaRepository;
 
 class ModulosMatrizesController extends BaseController
 {
     protected $modulomatrizRepository;
+    protected $modulodisciplinaRepository;
     protected $matrizcurricularRepository;
     protected $cursoRepository;
+    protected $disciplinaRepository;
 
-    public function __construct(ModuloMatrizRepository $modulomatrizRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository)
+    public function __construct(ModuloMatrizRepository $modulomatrizRepository, ModuloDisciplinaRepository $modulodisciplinaRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository, DisciplinaRepository $disciplinaRepository)
     {
         $this->modulomatrizRepository = $modulomatrizRepository;
+        $this->modulodisciplinaRepository = $modulodisciplinaRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
         $this->cursoRepository = $cursoRepository;
+        $this->disciplinaRepository = $disciplinaRepository;
     }
 
     public function getIndex($matrizId, Request $request)
@@ -39,53 +45,10 @@ class ModulosMatrizesController extends BaseController
         $curso = $this->cursoRepository->find($matrizcurricular->mtc_crs_id);
 
         $actionButtons[] = $btnNovo;
-        $paginacao = null;
-        $tabela = null;
 
-        $tableData = $this->modulomatrizRepository->paginateRequestByMatriz($matrizId, $request->all());
+        $modulos = $this->modulomatrizRepository->getAllModulosByMatriz($matrizId);
 
-        if ($tableData->count()) {
-            $tabela = $tableData->columns(array(
-                'mdo_id' => '#',
-                'mdo_nome' => 'Módulo',
-                'mdo_action' => 'Ações'
-            ))
-                ->modifyCell('mdo_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('mdo_action', 'mdo_id')
-                ->modify('mdo_action', function ($id) {
-                    return ActionButton::grid([
-                        'type' => 'SELECT',
-                        'config' => [
-                            'classButton' => 'btn-default',
-                            'label' => 'Selecione'
-                        ],
-                        'buttons' => [
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-pencil',
-                                'action' => '/academico/modulosmatrizes/edit/'.$id,
-                                'label' => 'Editar',
-                                'method' => 'get'
-                            ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'action' => '/academico/modulosmatrizes/delete',
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
-                            ]
-                        ]
-                    ]);
-                })
-                ->sortable(array('mdo_id', 'mdo_nome'));
-
-            $paginacao = $tableData->appends($request->except('page'));
-        }
-
-        return view('Academico::modulosmatrizes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso]);
+        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos]);
     }
 
     public function getCreate($matrizId)
@@ -191,6 +154,16 @@ class ModulosMatrizesController extends BaseController
         try {
             $modulomatrizId = $request->get('id');
 
+            $modulo = $this->modulomatrizRepository->find(($modulomatrizId));
+
+            $disciplinas = $modulo->disciplinas()->get();
+
+            if (!$disciplinas->isEmpty()) {
+                flash()->error('Módulo tem disciplinas cadastradas, delete-as para excluir o módulo!');
+                return redirect()->back();
+            }
+
+
             if ($this->modulomatrizRepository->delete($modulomatrizId)) {
                 flash()->success('Módulo excluído com sucesso.');
             } else {
@@ -206,5 +179,23 @@ class ModulosMatrizesController extends BaseController
             flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+    }
+
+    public function getGerenciarDisciplinas($moduloId)
+    {
+        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
+
+        $modulo = $this->modulomatrizRepository->find($moduloId);
+
+        $matriz = $this->matrizcurricularRepository->find($modulo->mdo_mtc_id);
+
+        $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
+
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $moduloId,
+                                                                        'disciplinas' => $disciplinas,
+                                                                        'matriz' => $matriz->mtc_id,
+                                                                        'moduloNome' => $modulo->mdo_nome,
+                                                                        'matrizTitulo' => $matriz->mtc_titulo,
+                                                                        'cursoNome' => $curso->crs_nome]);
     }
 }
