@@ -41,6 +41,20 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->pluck($field, $identifier);
     }
 
+    public function search(array $options, array $select = null)
+    {
+        $query = $this->model;
+        foreach ($options as $op) {
+            $query = $query->where($op[0], $op[1], $op[2]);
+        }
+
+        if (!is_null($select)) {
+            $query = $query->select(implode(',', $select));
+        }
+
+        return $query->get();
+    }
+
     public function paginate($sort = null, $search = null)
     {
         $result = $this->model;

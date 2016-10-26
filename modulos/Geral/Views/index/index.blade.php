@@ -1,11 +1,11 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.geral')
 
 @section('title')
     Módulo Geral
 @stop
 
 @section('subtitle')
-    Módulo de configurações gerais
+    Módulo de Configurações Gerais
 @stop
 
 @section('content')

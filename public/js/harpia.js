@@ -1,7 +1,7 @@
 +function ($) {
     'use strict';
 
-    $(".btn-delete").on("click", function(event) {
+    $(document).on('click', '.btn-delete', function (event) {
         event.preventDefault();
 
         var button = $(this);
