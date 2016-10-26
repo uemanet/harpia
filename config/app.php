@@ -171,6 +171,11 @@ return [
         Modulos\Seguranca\Providers\ActionButton\ActionButtonProvider::class,
         Modulos\Seguranca\Providers\MasterMenu\MasterMenuProvider::class,
         Harpia\FlashToastrAlert\FlashToastrAlertProvider::class,
+
+        /*
+          * Custom Validator
+         */
+        Harpia\Validator\CustomValidator\ValidationServiceProvider::class,
     ],
 
     /*
@@ -221,7 +226,7 @@ return [
          * Laravel removed facades
          */
         'Input' => Illuminate\Support\Facades\Input::class,
-        
+
         /*
          * Extra aliases
          */
