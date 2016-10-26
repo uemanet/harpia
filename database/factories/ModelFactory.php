@@ -201,3 +201,9 @@ $factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\G
         'mdo_qualificacao' => $faker->sentence(3)
     ];
 });
+
+$factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generator $faker) {
+    return [
+        'tut_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
+    ];
+});

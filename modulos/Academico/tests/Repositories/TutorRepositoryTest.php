@@ -5,9 +5,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
-use Modulos\Seguranca\Repositories\UsuarioRepository;
+use Modulos\Academico\Repositories\TutorRepository;
 
-class UsuarioRepositoryTest extends TestCase
+class TutorRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -31,7 +31,7 @@ class UsuarioRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(UsuarioRepository::class);
+        $this->repo = $this->app->make(TutorRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +44,7 @@ class UsuarioRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Seguranca\Models\Usuario::class, 2)->create();
+        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,10 +55,10 @@ class UsuarioRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Seguranca\Models\Usuario::class, 2)->create();
+        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
 
         $sort = [
-            'field' => 'usr_id',
+            'field' => 'tut_id',
             'sort' => 'desc'
         ];
 
@@ -66,25 +66,24 @@ class UsuarioRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->usr_id);
+        $this->assertGreaterThan(1, $response[0]->tut_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Seguranca\Models\Usuario::class, 2)->create();
+        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
 
-        factory(Modulos\Seguranca\Models\Usuario::class)->create([
-            'usr_usuario' => 'leitor@leitor.com',
-            'usr_senha' => bcrypt('123456'),
-            'usr_ativo' => 1,
-            'usr_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
+        factory(Modulos\Academico\Models\Tutor::class)->create([
+            'tut_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create([
+                'pes_nome' => 'Tutor'
+            ])->pes_id
         ]);
 
         $search = [
             [
-                'field' => 'usr_usuario',
+                'field' => 'pes_nome',
                 'type' => 'like',
-                'term' => 'leitor@leitor.com'
+                'term' => 'Tutor'
             ]
         ];
 
@@ -97,16 +96,16 @@ class UsuarioRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Seguranca\Models\Usuario::class, 2)->create();
+        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
 
         $sort = [
-            'field' => 'usr_id',
+            'field' => 'tut_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'usr_id',
+                'field' => 'tut_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -121,11 +120,11 @@ class UsuarioRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Seguranca\Models\Usuario::class, 2)->create();
+        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'usr_id',
+            'field' => 'tut_id',
             'sort' => 'asc'
         ];
 
@@ -138,43 +137,28 @@ class UsuarioRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+        $response = factory(Modulos\Academico\Models\Tutor::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\Usuario::class, $response);
+        $this->assertInstanceOf(\Modulos\Academico\Models\Tutor::class, $response);
 
-        $this->assertArrayHasKey('usr_id', $data);
+        $this->assertArrayHasKey('tut_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
 
-        $this->seeInDatabase('seg_usuarios', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Seguranca\Models\Usuario::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['usr_usuario'] = 'academico@academico.com';
-
-        $usuarioId = $updateArray['usr_id'];
-        unset($updateArray['usr_id']);
-
-        $response = $this->repo->update($updateArray, $usuarioId, 'usr_id');
-
-        $this->assertEquals(1, $response);
+        $this->seeInDatabase('acd_tutores', $data->toArray());
     }
 
     public function testDelete()
     {
-        $data = factory(Modulos\Seguranca\Models\Usuario::class)->create();
-        $usuarioId = $data->usr_id;
+        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
+        $tutorId = $data->tut_id;
 
-        $response = $this->repo->delete($usuarioId);
+        $response = $this->repo->delete($tutorId);
 
         $this->assertEquals(1, $response);
     }

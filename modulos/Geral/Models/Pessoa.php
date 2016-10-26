@@ -43,13 +43,32 @@ class Pessoa extends BaseModel
         return $this->hasMany('Modulos\Geral\Models\TitulacaoInformacao', 'tin_pes_id');
     }
 
+    public function usuario()
+    {
+        return $this->hasOne('Modulos\Seguranca\Models\Usuario', 'usr_pes_id');
+    }
+
+    public function tutor()
+    {
+        return $this->hasOne('Modulos\Academico\Models\Tutor', 'tut_pes_id');
+    }
+
+    public function aluno()
+    {
+        return $this->hasOne('Modulos\Academico\Models\Aluno', 'alu_pes_id');
+    }
+
+    public function professor()
+    {
+        return $this->hasOne('Modulos\Academico\Models\Professor', 'prf_pes_id');
+    }
+
     // Accessors
     public function getPesNascimentoAttribute($value)
     {
         setlocale(LC_ALL, 'pt_BR');
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
-
     // Mutators
     public function setPesNascimentoAttribute($value)
     {

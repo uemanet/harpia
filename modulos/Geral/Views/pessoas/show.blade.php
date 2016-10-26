@@ -75,5 +75,4 @@
             <!-- /.box -->
         </div>
     </div>
-
 @endsection

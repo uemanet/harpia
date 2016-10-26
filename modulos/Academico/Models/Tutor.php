@@ -15,7 +15,9 @@ class Tutor extends BaseModel
     ];
 
     protected $searchable = [
-        'tut_pes_id' => '='
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
+        'pes_cpf' => '='
     ];
 
     public function pessoa()

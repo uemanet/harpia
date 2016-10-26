@@ -60,6 +60,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoVinculos();
 
         $this->createPermissoesAcademicoTutoresGrupos();
+
+        $this->createPermissoesAcademicoTutores();
     }
 
     /** Permissões do Módulo Segurança */
@@ -275,6 +277,12 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 9; // Recurso Pessoas
         $permissao->prm_nome = 'show';
         $permissao->prm_descricao = 'Permissão show do recurso Pessoas da categoria Cadastros do módulo Geral';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 9; // Recurso Pessoas
+        $permissao->prm_nome = 'verificapessoa';
+        $permissao->prm_descricao = 'Permissão verificapessoa do recurso Pessoas da categoria Cadastros do módulo Geral';
         $permissao->save();
     }
 
@@ -619,6 +627,33 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 23;
         $permissao->prm_nome = 'alterartutor';
         $permissao->prm_descricao = 'Permissão alterartutor do recurso Tutores do Grupo';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoTutores()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Tutores';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Tutores';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Tutores';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 24;
+        $permissao->prm_nome = 'show';
+        $permissao->prm_descricao = 'Permissão show do recurso Tutores';
         $permissao->save();
     }
 }
