@@ -187,7 +187,7 @@ class TutoresController extends BaseController
                 throw $e;
             }
             DB::rollback();
-            flash()->danger('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back()->with('validado', true);
         }
@@ -259,7 +259,7 @@ class TutoresController extends BaseController
                 throw $e;
             }
             DB::rollback();
-            flash()->danger('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         } catch (ValidationException $e) {

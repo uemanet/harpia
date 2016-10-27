@@ -121,6 +121,7 @@ class Vinculo
         }
 
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
+
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $id)) {
                 return $next($request);
             }
@@ -179,11 +180,18 @@ class Vinculo
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
             $oferta = $this->ofertaCursoRepository->find($id);
 
+            if (!$oferta) {
+                flash()->error('Você não tem autorização para acessar este recurso.');
+
+                return redirect()->route('academico.cursos.index');
+            }
+
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $oferta->ofc_crs_id)) {
                 return $next($request);
             }
 
             flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+
             return redirect()->route('academico.cursos.index');
         }
 
@@ -194,6 +202,7 @@ class Vinculo
         }
 
         flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+
         return redirect()->route('academico.cursos.index');
     }
 
@@ -214,6 +223,11 @@ class Vinculo
 
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
             $curso = $this->turmaRepository->getCurso($id);
+
+            if (!$curso) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.cursos.index');
+            }
 
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
                 return $next($request);
@@ -253,6 +267,11 @@ class Vinculo
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
             $matriz = $this->matrizCurricularRepository->find($id);
 
+            if (!$matriz) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.cursos.index');
+            }
+
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)) {
                 return $next($request);
             }
@@ -289,7 +308,19 @@ class Vinculo
 
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
             $grupo = $this->grupoRepository->find($id);
+
+            if (!$grupo) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.cursos.index');
+            }
+
             $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
+
+            if (!$curso) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.cursos.index');
+            }
+
 
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
                 return $next($request);

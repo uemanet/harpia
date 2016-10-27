@@ -141,7 +141,7 @@ class ActionButton
                     } else {
                         $render .= '<td style="padding-right: 5px">';
                         $render .= '<div class="btn-group">';
-                        $render .= '<form action="'.$button['action'].'" method="'.strtoupper($button['method']).'" class="form-singlebutton">';
+                        $render .= '<form action="'.$button['action'].'" method="'.strtoupper($button['method']).'" class="form-linebutton">';
                         $render .= '<input type="hidden" name="id" value="'.$button['id'].'">';
                         $render .= '<input type="hidden" name="_token" value="'.csrf_token().'">';
                         $render .= '<input type="hidden" name="_method" value="'.strtoupper($button['method']).'">';

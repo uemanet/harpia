@@ -199,7 +199,7 @@ class UsuariosController extends BaseController
                 throw $e;
             }
             DB::rollback();
-            flash()->danger('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back()->with('validado', true);
         }
@@ -284,7 +284,7 @@ class UsuariosController extends BaseController
                 throw $e;
             }
             DB::rollback();
-            flash()->danger('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         } catch (ValidationException $e) {
@@ -309,7 +309,7 @@ class UsuariosController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             } else {
-                flash()->success('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+                flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
 
                 return redirect()->back();
             }

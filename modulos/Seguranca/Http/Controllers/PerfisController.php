@@ -110,7 +110,7 @@ class PerfisController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+                flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
                 return redirect()->back();
             }
@@ -158,7 +158,7 @@ class PerfisController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             } else {
-                flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+                flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
                 return redirect()->back();
             }
@@ -187,7 +187,7 @@ class PerfisController extends BaseController
                 return redirect()->back();
             }
 
-            flash()->success('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -229,7 +229,7 @@ class PerfisController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         }

@@ -34,6 +34,12 @@ class TurmasController extends BaseController
 
         $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
 
+        if (!$ofertacurso) {
+            flash()->error('Oferta não existe');
+
+            return redirect()->back();
+        }
+
         $actionButtons[] = $btnNovo;
         $paginacao = null;
         $tabela = null;
@@ -124,7 +130,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -170,7 +176,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -192,7 +198,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
