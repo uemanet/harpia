@@ -16,7 +16,7 @@ class AnexoRepository extends BaseRepository
     public function __construct(Anexo $anexo)
     {
         $this->model = $anexo;
-        $this->basePath = storage_path(). DIRECTORY_SEPARATOR .'uploads' . DIRECTORY_SEPARATOR;
+        $this->basePath = storage_path() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -30,26 +30,24 @@ class AnexoRepository extends BaseRepository
     }
 
     /**
-     * TODO Refatorar o metodo e corrigir os problemas encontrados ( GitLab issue #19)
      * Trata uploads guardando o arquivo no servidor e registrando na
      * base de dados
      * @param UploadedFile $uploadedFile
      * @param int $tipoAnexo
      * @return \Illuminate\Http\RedirectResponse|static
+     * @throws FileExistsException
      * @throws \Exception
      */
     public function salvarAnexo(UploadedFile $uploadedFile, $tipoAnexo = 1)
     {
         $hash = sha1_file($uploadedFile);
+        $dirs = $this->hashDirectories($hash);
 
-        $pDir = substr($hash, 0, 2); // first Directory
-        $sDir = substr($hash, 2, 2); // second Directory
+        $caminhoArquivo = $this->basePath . $dirs[0] . DIRECTORY_SEPARATOR . $dirs[1];
 
-        $caminhoArquivo = $this->basePath . $pDir .DIRECTORY_SEPARATOR. $sDir;
-
-        if (file_exists($caminhoArquivo.DIRECTORY_SEPARATOR.$hash)) {
+        if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
-                throw new FileExistsException($caminhoArquivo. DIRECTORY_SEPARATOR .$hash);
+                throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
             flash()->error('Arquivo já existe !');
             return redirect()->back();
@@ -63,22 +61,13 @@ class AnexoRepository extends BaseRepository
                 'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
                 'anx_localizacao' => $hash
             ];
+
             $uploadedFile->move($caminhoArquivo, $hash);
             return $this->create($anexo);
-
-        } catch (FileException $e) {
-
-            if (config('app.debug')) {
-                throw $e;
-            }
-            flash()->error('Ocorreu um problema ao salvar o arquivo!');
-
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
-
             flash()->error('Ocorreu um problema ao salvar o arquivo!');
         }
     }
@@ -116,11 +105,11 @@ class AnexoRepository extends BaseRepository
         $pDir = substr($hash, 0, 2); // first Directory
         $sDir = substr($hash, 2, 2); // second Directory
 
-        $caminhoArquivo = $this->basePath. $pDir .DIRECTORY_SEPARATOR. $sDir;
+        $caminhoArquivo = $this->basePath . $pDir . DIRECTORY_SEPARATOR . $sDir;
 
-        if (file_exists($caminhoArquivo. DIRECTORY_SEPARATOR . $hash)) {
+        if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
-                throw new FileExistsException($caminhoArquivo. DIRECTORY_SEPARATOR . $hash);
+                throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
             flash()->error('Arquivo já existe !');
             return redirect()->back();
