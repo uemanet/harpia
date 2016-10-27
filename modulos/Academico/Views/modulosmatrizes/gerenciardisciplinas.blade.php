@@ -225,22 +225,34 @@
 
                         var data = {mdc_id : mdc_id,mtc_id: matriz, _token : csrf_token};
 
+                        $.harpia.showloading();
+
+                        var result = false;
+
                         $.ajax({
                             type: 'POST',
                             url: '/academico/async/modulosdisciplinas/deletardisciplina',
                             data: data,
                             success: function (data) {
+                                $.harpia.hideloading();
+
                                 toastr.success('Disciplina excluída com sucesso!', null, {progressBar: true});
                                 linha.remove();
                                 hiddenTableDisciplinasModulo();
+
+                                result = resp;
                             },
                             error: function (xhr, textStatus, error) {
+                                $.harpia.hideloading();
+
                                 switch (xhr.status) {
                                     case 400:
                                         toastr.error('Erro ao tentar deletar a disciplina.', null, {progressBar: true});
                                         break;
                                     default:
                                         toastr.error(xhr.responseText, null, {progressBar: true});
+
+                                        result = false;
                                 }
                             }
                         });
@@ -251,6 +263,7 @@
 
             //Adiciona uma disciplina a uma matriz curricular.
             var addDisciplinaIntoMatrizCurricular = function(linha) {
+
 
                 var disciplinaSelecionada = new Array();
 
@@ -269,11 +282,17 @@
                     _token: csrf_token
                 };
 
+                $.harpia.showloading();
+
+                var result = false;
+
                 $.ajax({
                     type: 'POST',
                     url: '/academico/async/modulosdisciplinas/adicionardisciplina',
                     data: data,
                     success: function (data) {
+                        $.harpia.hideloading();
+
                         toastr.success('Disciplina adicionada com sucesso!', null, {progressBar: true});
 
                         // Adiciona o id do retorno para a variavel que vai ser usada para montar a linha na tabela de disciplinas selecionadas
@@ -281,14 +300,20 @@
 
                         addLinhaTabelaSelecionadas(linha, disciplinaSelecionada);
                         hiddenTableDisciplinasModulo();
+
+                        result = resp;
                     },
                     error: function (xhr, textStatus, error) {
+                        $.harpia.hideloading();
+
                         switch (xhr.status) {
                             case 400:
                                 toastr.error(xhr.responseText, null, {progressBar: true});
                             break;
                             default:
                                 toastr.error(xhr.responseText, null, {progressBar: true});
+
+                                result = false;
                         }
                     }
                 });
