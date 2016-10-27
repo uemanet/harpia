@@ -32,15 +32,15 @@ class ModulosMatrizesController extends BaseController
 
     public function getIndex($matrizId, Request $request)
     {
-        $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/modulosmatrizes/create/'.$matrizId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
-
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
         if (is_null($matrizcurricular)) {
-            flash()->error('Matriz não existe!');
-            return redirect()->back();
+          flash()->error('Matriz não existe!');
+          return redirect()->back();
         }
+
+        $btnNovo = new TButton();
+        $btnNovo->setName('Novo')->setAction('/academico/modulosmatrizes/create/'.$matrizId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $curso = $this->cursoRepository->find($matrizcurricular->mtc_crs_id);
 

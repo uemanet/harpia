@@ -18,6 +18,7 @@ class TutoresGruposController extends BaseController
     protected $tutorgrupoRepository;
     protected $grupoRepository;
     protected $tutorRepository;
+    protected $turmaRepository;
     protected $ofertacursoRepository;
 
     public function __construct(TutorGrupoRepository $tutorgrupoRepository, GrupoRepository $grupoRepository, TutorRepository $tutorRepository, TurmaRepository $turmaRepository, OfertaCursoRepository $ofertacursoRepository)
@@ -31,15 +32,14 @@ class TutoresGruposController extends BaseController
 
     public function getIndex($grupoId, Request $request)
     {
-        $btnNovo = new TButton();
-
         $grupo = $this->grupoRepository->find($grupoId);
 
         if (is_null($grupo)) {
-            flash()->error('Grupo não existe!');
-            return redirect()->back();
+          flash()->error('Grupo não existe!');
+          return redirect()->back();
         }
 
+        $btnNovo = new TButton();
         if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
             $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
