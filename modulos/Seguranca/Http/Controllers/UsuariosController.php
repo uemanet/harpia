@@ -5,6 +5,7 @@ namespace Modulos\Seguranca\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modulos\Geral\Repositories\DocumentoRepository;
+use Modulos\Seguranca\Repositories\PerfilRepository;
 use Validator;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -21,12 +22,19 @@ class UsuariosController extends BaseController
     protected $usuarioRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
+    protected $perfilRepository;
 
-    public function __construct(UsuarioRepository $usuarioRepository, PessoaRepository $pessoaRepository, DocumentoRepository $documentoRepository)
+    public function __construct(
+        UsuarioRepository $usuarioRepository,
+        PessoaRepository $pessoaRepository,
+        DocumentoRepository $documentoRepository,
+        PerfilRepository $perfilRepository
+    )
     {
         $this->usuarioRepository = $usuarioRepository;
         $this->pessoaRepository = $pessoaRepository;
         $this->documentoRepository = $documentoRepository;
+        $this->perfilRepository = $perfilRepository;
     }
 
     public function getIndex(Request $request)
@@ -61,6 +69,13 @@ class UsuariosController extends BaseController
                         'label' => 'Selecione'
                     ],
                     'buttons' => [
+                        [
+                            'classButton' => 'text-blue',
+                            'icon' => 'fa fa-check-square-o',
+                            'action' => '/seguranca/usuarios/atribuirperfil/'. $id,
+                            'label' => 'Atribuir Perfil',
+                            'method' => 'get'
+                        ],
                         [
                             'classButton' => '',
                             'icon' => 'fa fa-pencil',
@@ -209,6 +224,12 @@ class UsuariosController extends BaseController
     {
         $usuario = $this->usuarioRepository->find($id);
 
+        if(!$usuario)
+        {
+            flash()->error('Usuario não existe');
+            return redirect()->back();
+        }
+
         $pessoa = $this->pessoaRepository->findById($usuario->usr_pes_id);
 
         return view('Seguranca::usuarios.edit', ['usuario' => $usuario, 'pessoa' => $pessoa]);
@@ -314,5 +335,20 @@ class UsuariosController extends BaseController
                 return redirect()->back();
             }
         }
+    }
+
+    public function getAtribuirperfil($usuarioId)
+    {
+        $usuario = $this->usuarioRepository->find($usuarioId);
+
+        if(!$usuario)
+        {
+            flash()->error('Usuario não existe!');
+            return redirect()->back();
+        }
+
+        $perfis = $this->perfilRepository->all();
+
+        return view('Seguranca::usuarios.atribuirperfil', compact('usuario', 'perfis'));
     }
 }

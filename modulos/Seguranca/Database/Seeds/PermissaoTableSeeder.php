@@ -240,6 +240,12 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso usuario da categoria segurança do módulo segurança';
         $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 7;
+        $permissao->prm_nome = 'atribuirperfil';
+        $permissao->prm_descricao = 'Permissão atribuirperfil do recurso usuario da categoria segurança do módulo segurança';
+        $permissao->save();
     }
 
     /** Permissões do Módulo Geral */
