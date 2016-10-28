@@ -31,10 +31,16 @@ class GruposController extends BaseController
 
     public function getIndex($turmaId, Request $request)
     {
+        $turma = $this->turmaRepository->find($turmaId);
+        if (!$turma) {
+          flash()->error('Turma não existe');
+
+          return redirect()->back();
+        }
+
         $btnNovo = new TButton();
         $btnNovo->setName('Novo')->setAction('/academico/grupos/create/'.$turmaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
-        $turma = $this->turmaRepository->find($turmaId);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
         $actionButtons[] = $btnNovo;
@@ -100,6 +106,12 @@ class GruposController extends BaseController
     public function getCreate($turmaId)
     {
         $turma = $this->turmaRepository->find($turmaId);
+
+        if (!$turma) {
+          flash()->error('Turma não existe');
+
+          return redirect()->back();
+        }
 
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
