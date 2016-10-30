@@ -45,4 +45,9 @@ class UsuarioRepository extends BaseRepository
 
         return $result;
     }
+
+    public function sincronizarPerfis($usuarioId, array $perfis)
+    {
+        return $this->model->find($usuarioId)->perfis()->sync($perfis);
+    }
 }

@@ -121,7 +121,6 @@ class Vinculo
         }
 
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
-
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $id)) {
                 return $next($request);
             }
