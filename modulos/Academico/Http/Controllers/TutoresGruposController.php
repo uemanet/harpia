@@ -35,8 +35,8 @@ class TutoresGruposController extends BaseController
         $grupo = $this->grupoRepository->find($grupoId);
 
         if (is_null($grupo)) {
-          flash()->error('Grupo não existe!');
-          return redirect()->back();
+            flash()->error('Grupo não existe!');
+            return redirect()->back();
         }
 
         $btnNovo = new TButton();

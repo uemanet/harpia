@@ -32,9 +32,9 @@ class TurmasController extends BaseController
         $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
 
         if (!$ofertacurso) {
-          flash()->error('Oferta não existe');
+            flash()->error('Oferta não existe');
 
-          return redirect()->back();
+            return redirect()->back();
         }
 
         $btnNovo = new TButton();
@@ -108,9 +108,9 @@ class TurmasController extends BaseController
     {
         $oferta = $this->ofertacursoRepository->find($ofertaId);
         if (!$oferta) {
-          flash()->error('Oferta não existe');
+            flash()->error('Oferta não existe');
 
-          return redirect()->back();
+            return redirect()->back();
         }
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
         $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);

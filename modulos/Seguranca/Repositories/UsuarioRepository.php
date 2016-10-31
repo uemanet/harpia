@@ -45,4 +45,16 @@ class UsuarioRepository extends BaseRepository
 
         return $result;
     }
+
+    public function create(array $data)
+    {
+        $user = new Usuario();
+
+        $user->usr_usuario = $data['usr_usuario'];
+        $user->usr_senha = bcrypt($data['usr_senha']);
+        $user->usr_ativo = $data['usr_ativo'];
+        $user->usr_pes_id = $data['usr_pes_id'];
+
+        return $user->save();
+    }
 }

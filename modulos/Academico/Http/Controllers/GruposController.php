@@ -33,9 +33,9 @@ class GruposController extends BaseController
     {
         $turma = $this->turmaRepository->find($turmaId);
         if (!$turma) {
-          flash()->error('Turma não existe');
+            flash()->error('Turma não existe');
 
-          return redirect()->back();
+            return redirect()->back();
         }
 
         $btnNovo = new TButton();
@@ -108,9 +108,9 @@ class GruposController extends BaseController
         $turma = $this->turmaRepository->find($turmaId);
 
         if (!$turma) {
-          flash()->error('Turma não existe');
+            flash()->error('Turma não existe');
 
-          return redirect()->back();
+            return redirect()->back();
         }
 
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);

@@ -35,8 +35,8 @@ class ModulosMatrizesController extends BaseController
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
         if (is_null($matrizcurricular)) {
-          flash()->error('Matriz não existe!');
-          return redirect()->back();
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
         }
 
         $btnNovo = new TButton();
