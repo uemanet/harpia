@@ -89,7 +89,7 @@ class VinculosController extends BaseController
                 return array('style' => 'width: 140px;');
             })->means('crs_action', 'ucr_id')
               ->modify('crs_action', function ($id) {
-                    return ActionButton::grid([
+                  return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
                             'classButton' => 'btn-default',
@@ -106,7 +106,7 @@ class VinculosController extends BaseController
                             ],
                         ],
                     ]);
-            })->sortable(array('crs_id', 'crs_nome'));
+              })->sortable(array('crs_id', 'crs_nome'));
 
             $paginacao = $data->appends($request->except('page'));
         }
