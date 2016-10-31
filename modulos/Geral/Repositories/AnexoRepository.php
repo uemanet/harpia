@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class AnexoRepository extends BaseRepository
 {
-
     protected $basePath;
 
     public function __construct(Anexo $anexo)
@@ -79,11 +78,16 @@ class AnexoRepository extends BaseRepository
      */
     public function recuperarAnexo($anexoId)
     {
-        return null;
+        $anexo = $this->find($anexoId);
+
+        if (!$anexo) {
+            flash()->error('Arquivo não existe!');
+            return redirect()->back();
+        }
+        
     }
 
     /**
-     * TODO Refatorar o metodo e corrigir os problemas encontrados ( GitLab issue #19)
      * Atualiza o registro de um anexo
      * @param $anexoId
      * @param UploadedFile $uploadedFile
@@ -97,15 +101,14 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            return "Anexo não existe.";
+            flash()->error('Arquivo não existe!');
+            return redirect()->back();
         }
 
         $hash = sha1_file($uploadedFile);
+        $dirs = $this->hashDirectories($hash);
 
-        $pDir = substr($hash, 0, 2); // first Directory
-        $sDir = substr($hash, 2, 2); // second Directory
-
-        $caminhoArquivo = $this->basePath . $pDir . DIRECTORY_SEPARATOR . $sDir;
+        $caminhoArquivo = $this->basePath . $dirs[0] . DIRECTORY_SEPARATOR . $dirs[1];
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
@@ -116,10 +119,9 @@ class AnexoRepository extends BaseRepository
         }
 
         try {
-
-            // Exclui antigo arquivo e pasta correspondente
-            array_map('unlink', glob($this->basePath . DIRECTORY_SEPARATOR . $anexo->anx_localizacao . DIRECTORY_SEPARATOR . '*'));
-            array_map('rmdir', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR));
+            $oldDirs = $this->hashDirectories($anexo->localizacao);
+            // Exclui antigo arquivo
+            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->localizacao));
 
             // Atualiza registro com o novo arquivo
             $data = [
@@ -132,14 +134,7 @@ class AnexoRepository extends BaseRepository
 
             $uploadedFile->move($caminhoArquivo, $hash);
             return $this->update($data, $anexoId, 'anx_id');
-        } catch (FileException $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->error('Ocorreu um problema ao atualizar o arquivo!');
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
@@ -149,7 +144,6 @@ class AnexoRepository extends BaseRepository
     }
 
     /**
-     * TODO Refatorar o metodo e corrigir os problemas encontrados ( GitLab issue #19)
      * Deleta um anexo do servidor e seu registro no banco
      * @param $anexoId
      * @return int|string
@@ -160,21 +154,15 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            return "Anexo não existe.";
+            flash()->error('Arquivo não existe!');
+            return redirect()->back();
         }
 
         try {
-            // Exclui arquivo e pasta corresṕondente
-            array_map('unlink', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR . '*'));
-            array_map('rmdir', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR));
-
+            $oldDirs = $this->hashDirectories($anexo->localizacao);
+            // Exclui antigo arquivo
+            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->localizacao));
             return $this->delete($anexoId);
-        } catch (FileException $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->error('Ocorreu um problema ao excluir o arquivo!');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
