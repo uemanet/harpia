@@ -118,7 +118,7 @@ class TutoresGruposController extends BaseController
 
         $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
 
-        $tutores = $this->tutorRepository->listsTutorPessoa();
+        $tutores = $this->tutorRepository->listsTutorPessoa($grupoId);
 
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
@@ -184,7 +184,7 @@ class TutoresGruposController extends BaseController
 
         $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
 
-        $tutores = $this->tutorRepository->listsTutorPessoa();
+        $tutores = $this->tutorRepository->listsTutorPessoa($grupo->grp_id);
 
         $tutor = $this->tutorRepository->find($tutorgrupo->ttg_tut_id);
 
