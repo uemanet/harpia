@@ -344,9 +344,9 @@ class UsuariosController extends BaseController
             return redirect()->back();
         }
 
-        $perfis = $this->perfilRepository->getAllWithUsuarioModulo($usuario->usr_id);
+        $modulos = $this->perfilRepository->getModulosWithoutPerfis($usuario->usr_id);
 
-        return view('Seguranca::usuarios.atribuirperfil', compact('usuario', 'perfis'));
+        return view('Seguranca::usuarios.atribuirperfil', compact('usuario', 'modulos'));
     }
 
     public function postAtribuirperfil($usuarioId, Request $request)

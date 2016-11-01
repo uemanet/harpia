@@ -103,4 +103,30 @@ class PerfilRepository extends BaseRepository
 
         return null;
     }
+
+    public function getAllByModulo($moduloId)
+    {
+        return $result = $this->model->where('prf_mod_id', '=', $moduloId)->get();
+    }
+
+    public function getModulosWithoutPerfis($usuarioId)
+    {
+        $sql = 'SELECT mod_id, mod_nome 
+                FROM (SELECT mod_id, mod_nome, prf_id FROM seg_modulos INNER JOIN seg_perfis ON mod_id = prf_mod_id) modulos
+                LEFT JOIN (SELECT * FROM seg_perfis_usuarios WHERE pru_usr_id = :usuario) perfis
+                ON modulos.prf_id = perfis.pru_prf_id
+                WHERE pru_prf_id IS NULL';
+
+        $modulos = DB::select($sql, ['usuario' => $usuarioId]);
+
+        $retorno = [];
+
+        if($modulos) {
+            foreach($modulos as $modulo) {
+                $retorno[$modulo->mod_id] = $modulo->mod_nome;
+            }
+        }
+
+        return $retorno;
+    }
 }
