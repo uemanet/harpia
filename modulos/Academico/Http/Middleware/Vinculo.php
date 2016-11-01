@@ -131,7 +131,7 @@ class Vinculo
 
         $matriz = $this->matrizCurricularRepository->find($id);
 
-        if(!$matriz){
+        if (!$matriz) {
             flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
 
             return redirect()->route('academico.cursos.index');
@@ -202,7 +202,7 @@ class Vinculo
 
         $curso = $this->turmaRepository->getCurso($id);
 
-        if(!$curso){
+        if (!$curso) {
             flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
 
             return redirect()->route('academico.cursos.index');
