@@ -65,4 +65,68 @@ class PerfilRepository extends BaseRepository
     {
         return $this->model->find($perfilId)->permissoes()->sync($permissoes);
     }
+
+    public function getAllWithUsuarioModulo($usuarioId)
+    {
+        $sql = 'SELECT prf_id, prf_nome,mod_id, mod_nome, (CASE WHEN bol = 1 THEN 1 ELSE 0 END) AS habilitado
+                FROM (
+                    SELECT prf_id, prf_nome, mod_id, mod_nome 
+                    FROM seg_perfis
+                    INNER JOIN seg_modulos ON prf_mod_id = mod_id
+                    GROUP BY mod_id
+                ) modulos 
+                LEFT JOIN (
+                    SELECT prf_id AS perfil, 1 AS bol
+                    FROM seg_perfis
+                    INNER JOIN seg_perfis_usuarios ON prf_id = pru_prf_id
+                    WHERE pru_usr_id = :usuario
+                ) perfis 
+                ON modulos.prf_id = perfis.perfil';
+
+        $perfis = DB::select($sql, ['usuario' => $usuarioId]);
+
+        if ($perfis) {
+            $modulo = '';
+            $retorno = array();
+
+            foreach ($perfis as $perfil) {
+                if ($perfil->mod_nome != $modulo) {
+                    $modulo = $perfil->mod_nome;
+                    $retorno[$modulo][] = $perfil;
+                } else {
+                    $retorno[$modulo][] = $perfil;
+                }
+            }
+
+            return $retorno;
+        }
+
+        return null;
+    }
+
+    public function getAllByModulo($moduloId)
+    {
+        return $result = $this->model->where('prf_mod_id', '=', $moduloId)->get();
+    }
+
+    public function getModulosWithoutPerfis($usuarioId)
+    {
+        $sql = 'SELECT mod_id, mod_nome 
+                FROM (SELECT mod_id, mod_nome, prf_id FROM seg_modulos INNER JOIN seg_perfis ON mod_id = prf_mod_id) modulos
+                LEFT JOIN (SELECT * FROM seg_perfis_usuarios WHERE pru_usr_id = :usuario) perfis
+                ON modulos.prf_id = perfis.pru_prf_id
+                WHERE pru_prf_id IS NULL';
+
+        $modulos = DB::select($sql, ['usuario' => $usuarioId]);
+
+        $retorno = [];
+
+        if($modulos) {
+            foreach($modulos as $modulo) {
+                $retorno[$modulo->mod_id] = $modulo->mod_nome;
+            }
+        }
+
+        return $retorno;
+    }
 }
