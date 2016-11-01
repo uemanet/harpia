@@ -73,18 +73,22 @@ class PerfilRepository extends BaseRepository
 
     public function getModulosWithoutPerfis($usuarioId)
     {
-        $sql = 'SELECT mod_id, mod_nome 
-                FROM (SELECT mod_id, mod_nome, prf_id FROM seg_modulos LEFT JOIN seg_perfis ON mod_id = prf_mod_id) modulos
-                LEFT JOIN (SELECT * FROM seg_perfis_usuarios WHERE pru_usr_id = :usuario) perfis
-                ON modulos.prf_id = perfis.pru_prf_id
-                WHERE pru_prf_id IS NULL';
+        $subquery = DB::table('seg_modulos')
+                    ->leftJoin('seg_perfis', 'mod_id', '=', 'prf_mod_id')
+                    ->select('mod_id', 'mod_nome', 'prf_id')
+                    ->groupBy('mod_id');
 
-        $modulos = DB::select($sql, ['usuario' => $usuarioId]);
+        $result = DB::table(DB::raw("({$subquery->toSql()}) as modulos"))
+                    ->leftJoin('seg_perfis_usuarios', function ($join) use ($usuarioId) {
+                        $join->on('modulos.prf_id', '=', 'pru_prf_id')->where('pru_usr_id', '=', $usuarioId);
+                    })
+                    ->whereNull('pru_prf_id')
+                    ->get();
 
         $retorno = [];
 
-        if ($modulos) {
-            foreach ($modulos as $modulo) {
+        if ($result) {
+            foreach ($result as $modulo) {
                 $retorno[$modulo->mod_id] = $modulo->mod_nome;
             }
         }

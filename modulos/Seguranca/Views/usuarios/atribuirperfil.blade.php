@@ -4,14 +4,6 @@
     Atribuir Perfis
 @stop
 
-@section('stylesheets')
-    <style>
-        th, td {
-            text-align: center;
-        }
-    </style>
-@stop
-
 @section('subtitle')
     <b>Usuario:</b> {{ $usuario->pessoa->pes_nome }}
 @stop
