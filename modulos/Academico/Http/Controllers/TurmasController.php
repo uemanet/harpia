@@ -29,9 +29,6 @@ class TurmasController extends BaseController
 
     public function getIndex($ofertaId, Request $request)
     {
-        $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/turmas/create/'.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
-
         $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
 
         if (!$ofertacurso) {
@@ -39,6 +36,10 @@ class TurmasController extends BaseController
 
             return redirect()->back();
         }
+
+        $btnNovo = new TButton();
+        $btnNovo->setName('Novo')->setAction('/academico/turmas/create/'.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+
 
         $actionButtons[] = $btnNovo;
         $paginacao = null;
@@ -106,6 +107,11 @@ class TurmasController extends BaseController
     public function getCreate($ofertaId)
     {
         $oferta = $this->ofertacursoRepository->find($ofertaId);
+        if (!$oferta) {
+            flash()->error('Oferta não existe');
+
+            return redirect()->back();
+        }
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
         $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
