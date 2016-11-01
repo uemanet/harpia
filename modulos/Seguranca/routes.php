@@ -77,6 +77,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postDelete')->name('seguranca.usuarios.delete');
         Route::get('/atribuirperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getAtribuirperfil')->name('seguranca.usuarios.getAtribuirperfil');
         Route::post('/atribuirperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postAtribuirperfil')->name('seguranca.usuarios.postAtribuirperfil');
+        Route::post('/deletarperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postDeletarperfil')->name('seguranca.usuarios.deletarperfil');
     });
 
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
@@ -86,6 +87,10 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'recursos'], function () {
             Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Recursos@getFindallbymodulo')->name('seguranca.async.recursos.findallbymodulo');
+        });
+
+        Route::group(['prefix' => 'perfis'], function () {
+            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Perfis@getFindallbymodulo')->name('seguranca.async.perfis.findallbymodulo');
         });
     });
 });

@@ -351,29 +351,68 @@ class UsuariosController extends BaseController
 
     public function postAtribuirperfil($usuarioId, Request $request)
     {
+        $usuario = $this->usuarioRepository->find($usuarioId);
+
+        if (!$usuario) {
+            flash()->error('Usuario não existe!');
+            return redirect()->back();
+        }
+
+        $validator = Validator::make($request->all(), [
+            'mod_id' => 'required',
+            'prf_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         try {
-            if ($request->input('perfil') == "") {
-                flash()->success('Perfis atribuídos com sucesso.');
-                $perfis = [];
-                $this->usuarioRepository->sincronizarPerfis($usuarioId, $perfis);
-
-                return redirect()->route('seguranca.usuarios.getAtribuirperfil', ['id' => $usuarioId]);
+            if (!$this->perfilRepository->verifyExistsPerfilModulo($request->input('mod_id'), $usuario->usr_id)) {
+                $usuario->perfis()->attach($request->input('prf_id'));
+                flash()->success('Perfil Atribuído com sucesso');
+            } else {
+                flash()->error('Usuario já possui perfil associado ao módulo!');
             }
-
-            $perfis = explode(',', $request->input('perfil'));
-
-            $this->usuarioRepository->sincronizarPerfis($usuarioId, $perfis);
-
-            flash()->success('Perfis atribuídos com sucesso.');
-
-            return redirect()->route('seguranca.usuarios.getAtribuirperfil', ['id' => $usuarioId]);
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
+            } else {
+                flash()->error('Erro ao tentar atribuir perfil. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
             }
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+        }
+    }
+
+    public function postDeletarperfil($usuarioId, Request $request)
+    {
+        try {
+            $usuario = $this->usuarioRepository->find($usuarioId);
+
+            if (!$usuario) {
+                flash()->error('Usuario não existe!');
+                return redirect()->back();
+            }
+
+            $prf_id = $request->get('id');
+
+            if ($usuario->perfis()->detach($prf_id)) {
+                flash()->success('Perfil excluído com sucesso.');
+            } else {
+                flash()->error('Erro ao tentar excluir perfil');
+            }
 
             return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
         }
     }
 }

@@ -185,7 +185,7 @@ class PessoasController extends BaseController
             'rota' => 'required'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
