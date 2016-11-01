@@ -34,6 +34,13 @@ class MatrizesCurricularesController extends BaseController
 
     public function getIndex($cursoId, Request $request)
     {
+        $curso = $this->cursoRepository->find($cursoId);
+
+        if (is_null($curso)) {
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
+        }
+
         $btnNovo = new TButton();
         $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create/'.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
@@ -43,7 +50,6 @@ class MatrizesCurricularesController extends BaseController
         $tabela = null;
 
         $tableData = $this->matrizCurricularRepository->paginateRequestByCurso($cursoId, $request->all());
-        $curso = $this->cursoRepository->find($cursoId);
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -112,6 +118,13 @@ class MatrizesCurricularesController extends BaseController
 
     public function getCreate($cursoId, Request $request = null)
     {
+        $curso = $this->cursoRepository->find($cursoId);
+
+        if (is_null($curso)) {
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
+        }
+        
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
         // Carrega no select o curso da matriz como a unica opcao
         $curso[$cursoId] = $cursos[$cursoId];

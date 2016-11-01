@@ -18,6 +18,7 @@ class TutoresGruposController extends BaseController
     protected $tutorgrupoRepository;
     protected $grupoRepository;
     protected $tutorRepository;
+    protected $turmaRepository;
     protected $ofertacursoRepository;
 
     public function __construct(TutorGrupoRepository $tutorgrupoRepository, GrupoRepository $grupoRepository, TutorRepository $tutorRepository, TurmaRepository $turmaRepository, OfertaCursoRepository $ofertacursoRepository)
@@ -31,8 +32,6 @@ class TutoresGruposController extends BaseController
 
     public function getIndex($grupoId, Request $request)
     {
-        $btnNovo = new TButton();
-
         $grupo = $this->grupoRepository->find($grupoId);
 
         if (is_null($grupo)) {
@@ -40,6 +39,7 @@ class TutoresGruposController extends BaseController
             return redirect()->back();
         }
 
+        $btnNovo = new TButton();
         if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
             $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
@@ -118,7 +118,7 @@ class TutoresGruposController extends BaseController
 
         $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
 
-        $tutores = $this->tutorRepository->listsTutorPessoa();
+        $tutores = $this->tutorRepository->listsTutorPessoa($grupoId);
 
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
@@ -184,7 +184,7 @@ class TutoresGruposController extends BaseController
 
         $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
 
-        $tutores = $this->tutorRepository->listsTutorPessoa();
+        $tutores = $this->tutorRepository->listsTutorPessoa($grupo->grp_id);
 
         $tutor = $this->tutorRepository->find($tutorgrupo->ttg_tut_id);
 

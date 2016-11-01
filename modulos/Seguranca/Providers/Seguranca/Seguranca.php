@@ -43,6 +43,7 @@ class Seguranca implements SegurancaContract
 
         $arrayMenuCategorias = $this->makeMenuCategoriasModulos($usrId);
 
+        $arrayMenu = [];
         if (!empty($arrayMenuCategorias)) {
             $arrayMenu = $this->makeMenuRecursos($usrId, $arrayMenuCategorias);
         }
