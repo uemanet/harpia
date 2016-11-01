@@ -93,6 +93,13 @@ class MatrizesCurricularesController extends BaseController
                                 'label' => 'Excluir',
                                 'method' => 'post'
                             ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-file-text',
+                                'action' => '/academico/matrizescurriculares/anexo/'. $id,
+                                'label' => 'Anexo',
+                                'method' => 'get'
+                            ]
                         ]
                     ]);
                 })
@@ -109,6 +116,23 @@ class MatrizesCurricularesController extends BaseController
         // Carrega no select o curso da matriz como a unica opcao
         $curso[$cursoId] = $cursos[$cursoId];
         return view('Academico::matrizescurriculares.create', ['curso' => $curso, 'cursoId' => $cursoId]);
+    }
+
+    /**
+     * Retorna o anexo correspondente da matriz atual
+     * @param $matrizCurricularId
+     * @return null
+     */
+    public function getMatrizAnexo($matrizCurricularId)
+    {
+        $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
+
+        if (!$matrizCurricular) {
+            flash()->error('Matriz curricular não existe.');
+            return redirect()->back();
+        }
+
+        return $this->anexoRepository->recuperarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
     }
 
     public function postCreate(MatrizCurricularRequest $request)

@@ -6,7 +6,7 @@ use League\Flysystem\FileExistsException;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Illuminate\Support\Facades\Response;
 
 class AnexoRepository extends BaseRepository
 {
@@ -84,7 +84,13 @@ class AnexoRepository extends BaseRepository
             flash()->error('Arquivo não existe!');
             return redirect()->back();
         }
-        
+
+        $dirs = $this->hashDirectories($anexo->anx_localizacao);
+
+        $caminhoArquivo = $this->basePath . $dirs[0] . DIRECTORY_SEPARATOR . $dirs[1] . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
+
+        $headers = array('Content-Type: ' . $anexo->anx_mime);
+        return Response::download($caminhoArquivo, $anexo->anx_nome . '.' .$anexo->anx_extensao, $headers);
     }
 
     /**
@@ -119,9 +125,9 @@ class AnexoRepository extends BaseRepository
         }
 
         try {
-            $oldDirs = $this->hashDirectories($anexo->localizacao);
+            $oldDirs = $this->hashDirectories($anexo->anx_localizacao);
             // Exclui antigo arquivo
-            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->localizacao));
+            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
 
             // Atualiza registro com o novo arquivo
             $data = [
@@ -159,9 +165,9 @@ class AnexoRepository extends BaseRepository
         }
 
         try {
-            $oldDirs = $this->hashDirectories($anexo->localizacao);
+            $oldDirs = $this->hashDirectories($anexo->anx_localizacao);
             // Exclui antigo arquivo
-            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->localizacao));
+            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
             return $this->delete($anexoId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
