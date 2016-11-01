@@ -2,7 +2,6 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
-use Carbon\Carbon;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -11,6 +10,7 @@ use Illuminate\Http\Request;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use DB;
+use Validator;
 
 class PessoasController extends BaseController
 {
@@ -178,8 +178,17 @@ class PessoasController extends BaseController
         return view('Geral::pessoas.show', ['pessoa' => $pessoa]);
     }
 
-    public function getVerificapessoa(Request $request)
+    public function postVerificapessoa(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'doc_conteudo' => 'required|cpf',
+            'rota' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $cpf = $request->input('doc_conteudo');
         $route = $request->input('rota');
 

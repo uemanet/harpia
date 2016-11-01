@@ -197,7 +197,7 @@ class UsuariosController extends BaseController
 
             $dataUsuario = array(
                 'usr_usuario' => $request->input('usr_usuario'),
-                'usr_senha' => bcrypt($request->input('usr_senha')),
+                'usr_senha' => $request->input('usr_senha'),
                 'usr_ativo' => $request->input('usr_ativo'),
                 'usr_pes_id' => $pes_id
             );
