@@ -59,15 +59,25 @@ class MatrizesCurricularesController extends BaseController
                 'mtc_horas' => 'Horas',
                 'mtc_horas_praticas' => 'Horas práticas',
                 'mtc_data' => 'Data',
+                'mtc_anx_projeto_pedagogico' => 'Projeto Pedagógico',
                 'mtc_action' => 'Ações'
             ))
                 ->modifyCell('mtc_action', function () {
                     return array('style' => 'width: 140px;');
                 })
                 ->means('mtc_action', 'mtc_id')
+                ->means('mtc_anx_projeto_pedagogico', 'mtc_id')
                 ->means('mtc_crs_id', 'curso')
                 ->modify('mtc_crs_id', function ($curso) {
                     return $curso->crs_nome;
+                })
+                ->modify('mtc_anx_projeto_pedagogico', function ($id) {
+                    $button = new TButton();
+                    $button->setName('Anexo')
+                        ->setAction('/academico/matrizescurriculares/anexo/'. $id)
+                        ->setIcon('fa fa-file-text')->setStyle('btn bg-blue');
+
+                    return ActionButton::render(array($button));
                 })
                 ->modify('mtc_action', function ($id) {
                     return ActionButton::grid([
@@ -99,13 +109,6 @@ class MatrizesCurricularesController extends BaseController
                                 'label' => 'Excluir',
                                 'method' => 'post'
                             ],
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-file-text',
-                                'action' => '/academico/matrizescurriculares/anexo/'. $id,
-                                'label' => 'Anexo',
-                                'method' => 'get'
-                            ]
                         ]
                     ]);
                 })

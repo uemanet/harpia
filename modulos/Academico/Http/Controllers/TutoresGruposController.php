@@ -83,7 +83,7 @@ class TutoresGruposController extends BaseController
                                 'classButton' => '',
                                 'icon' => 'fa fa-user',
                                 'action' => '/academico/tutoresgrupos/alterartutor/' . $id,
-                                'label' => 'Alterar Tutor',
+                                'label' => 'Substituir tutor',
                                 'method' => 'get'
                             ]
                         ]
