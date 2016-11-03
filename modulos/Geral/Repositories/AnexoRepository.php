@@ -40,9 +40,9 @@ class AnexoRepository extends BaseRepository
     public function salvarAnexo(UploadedFile $uploadedFile, $tipoAnexo = 1)
     {
         $hash = sha1_file($uploadedFile);
-        $dirs = $this->hashDirectories($hash);
+        list($firstDir, $secondDir) = $this->hashDirectories($hash);
 
-        $caminhoArquivo = $this->basePath . $dirs[0] . DIRECTORY_SEPARATOR . $dirs[1];
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir;
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
@@ -85,9 +85,9 @@ class AnexoRepository extends BaseRepository
             return redirect()->back();
         }
 
-        $dirs = $this->hashDirectories($anexo->anx_localizacao);
+        list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
 
-        $caminhoArquivo = $this->basePath . $dirs[0] . DIRECTORY_SEPARATOR . $dirs[1] . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
 
         $headers = array('Content-Type: ' . $anexo->anx_mime);
         return Response::download($caminhoArquivo, $anexo->anx_nome . '.' .$anexo->anx_extensao, $headers);
@@ -112,9 +112,9 @@ class AnexoRepository extends BaseRepository
         }
 
         $hash = sha1_file($uploadedFile);
-        $dirs = $this->hashDirectories($hash);
+        list($firstDir, $secondDir) = $this->hashDirectories($hash);
 
-        $caminhoArquivo = $this->basePath . $dirs[0] . DIRECTORY_SEPARATOR . $dirs[1];
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir;
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
@@ -125,9 +125,9 @@ class AnexoRepository extends BaseRepository
         }
 
         try {
-            $oldDirs = $this->hashDirectories($anexo->anx_localizacao);
+            list($firstOldDir, $secondOldDir) = $this->hashDirectories($anexo->anx_localizacao);
             // Exclui antigo arquivo
-            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
+            array_map('unlink', glob($this->basePath . $firstOldDir . DIRECTORY_SEPARATOR . $secondOldDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
 
             // Atualiza registro com o novo arquivo
             $data = [
@@ -165,9 +165,9 @@ class AnexoRepository extends BaseRepository
         }
 
         try {
-            $oldDirs = $this->hashDirectories($anexo->anx_localizacao);
+            list($firstOldDir, $secondOldDir) = $this->hashDirectories($anexo->anx_localizacao);
             // Exclui antigo arquivo
-            array_map('unlink', glob($this->basePath . $oldDirs[0] . DIRECTORY_SEPARATOR . $oldDirs[1] . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
+            array_map('unlink', glob($this->basePath . $firstOldDir . DIRECTORY_SEPARATOR . $secondOldDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
             return $this->delete($anexoId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
