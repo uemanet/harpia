@@ -51,22 +51,22 @@ class TutorRepository extends BaseRepository
 
     public function listsTutorPessoa($idGrupo)
     {
-      $tutoresvinculados = DB::table('acd_tutores')
+        $tutoresvinculados = DB::table('acd_tutores')
          ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
          ->join('acd_grupos', 'ttg_grp_id', '=', 'grp_id')
          ->where('grp_id', '=', $idGrupo)
          ->where('ttg_data_fim', null)
          ->get();
-      $tutoresvinculadosId = [];
+        $tutoresvinculadosId = [];
 
-      foreach ($tutoresvinculados as $key => $value) {
-        $tutoresvinculadosId[] = $value->tut_id;
-      }
+        foreach ($tutoresvinculados as $key => $value) {
+            $tutoresvinculadosId[] = $value->tut_id;
+        }
 
-      $tutores = DB::table('acd_tutores')
+        $tutores = DB::table('acd_tutores')
            ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
            ->whereNotIn('tut_id', $tutoresvinculadosId)
            ->pluck('pes_nome', 'tut_id');
-      return $tutores;
+        return $tutores;
     }
 }
