@@ -118,16 +118,13 @@ class MatrizesCurricularesController extends BaseController
 
     public function getCreate($cursoId, Request $request = null)
     {
-        $curso = $this->cursoRepository->find($cursoId);
+        $curso = $this->cursoRepository->listsByCursoId($cursoId);
 
         if (is_null($curso)) {
             flash()->error('Matriz não existe!');
             return redirect()->back();
         }
-        
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        // Carrega no select o curso da matriz como a unica opcao
-        $curso[$cursoId] = $cursos[$cursoId];
+
         return view('Academico::matrizescurriculares.create', ['curso' => $curso, 'cursoId' => $cursoId]);
     }
 

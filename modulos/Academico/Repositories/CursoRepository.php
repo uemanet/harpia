@@ -59,6 +59,15 @@ class CursoRepository extends BaseRepository
             ->pluck($field, $identifier);
     }
 
+    public function listsByCursoId($cursoId)
+    {
+        return $this->model
+            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
+            ->where('ucr_usr_id', '=', Auth::user()->usr_id)
+            ->where('crs_id', $cursoId)
+            ->pluck('crs_nome', 'crs_id');
+    }
+
 
     /**
      * Formata datas pt_BR para default MySQL
