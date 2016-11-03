@@ -73,9 +73,9 @@ class MatrizesCurricularesController extends BaseController
                 })
                 ->modify('mtc_anx_projeto_pedagogico', function ($id) {
                     $button = new TButton();
-                    $button->setName('Anexo')
+                    $button->setName('Download do projeto')
                         ->setAction('/academico/matrizescurriculares/anexo/'. $id)
-                        ->setIcon('fa fa-file-text')->setStyle('btn bg-blue');
+                        ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
 
                     return ActionButton::render(array($button));
                 })
