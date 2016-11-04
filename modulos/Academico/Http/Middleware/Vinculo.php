@@ -131,6 +131,12 @@ class Vinculo
 
         $matriz = $this->matrizCurricularRepository->find($id);
 
+        if (!$matriz) {
+            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+
+            return redirect()->route('academico.cursos.index');
+        }
+
         if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)) {
             return $next($request);
         }
@@ -195,6 +201,12 @@ class Vinculo
         }
 
         $curso = $this->turmaRepository->getCurso($id);
+
+        if (!$curso) {
+            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+
+            return redirect()->route('academico.cursos.index');
+        }
 
         if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
             return $next($request);

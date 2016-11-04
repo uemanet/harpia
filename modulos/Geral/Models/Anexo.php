@@ -14,6 +14,7 @@ class Anexo extends BaseModel
         'anx_tax_id',
         'anx_nome',
         'anx_mime',
+        'anx_extensao',
         'anx_localizacao'
     ];
 

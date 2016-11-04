@@ -17,6 +17,7 @@ class CreateGraAnexosTable extends Migration
             $table->integer('anx_tax_id')->unsigned();
             $table->string('anx_nome', 45);
             $table->string('anx_mime', 45);
+            $table->string('anx_extensao', 20);
             $table->string('anx_localizacao', 255);
 
             $table->timestamps();
