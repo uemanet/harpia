@@ -62,6 +62,10 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoTutoresGrupos();
 
         $this->createPermissoesAcademicoTutores();
+
+        /** Permissões do Módulo Integração */
+
+        $this->createPermissoesIntegracaoDashboard();
     }
 
     /** Permissões do Módulo Segurança */
@@ -678,6 +682,17 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 24;
         $permissao->prm_nome = 'show';
         $permissao->prm_descricao = 'Permissão show do recurso Tutores';
+        $permissao->save();
+    }
+
+    /** Permissões do Módulo Integração */
+
+    private function createPermissoesIntegracaoDashboard()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 25; // Recurso Dashboard
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
         $permissao->save();
     }
 }
