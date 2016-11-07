@@ -74,5 +74,11 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil = Perfil::find(4);
 
         $perfil->permissoes()->attach([91]);
+
+        /** Perfil Administrador do Módulo de Monitoramento */
+
+        $perfil = Perfil::find(5);
+
+        $perfil->permissoes()->attach([92]);
     }
 }
