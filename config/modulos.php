@@ -4,6 +4,7 @@ return [
     'modulos' => [
         'Geral',
         'Seguranca',
-        'Academico'
+        'Academico',
+        'Integracao'
     ]
 ];
