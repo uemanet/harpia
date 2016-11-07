@@ -6,13 +6,26 @@ use League\Flysystem\FileExistsException;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Illuminate\Support\Facades\Response;
 
 class AnexoRepository extends BaseRepository
 {
+    protected $basePath;
+
     public function __construct(Anexo $anexo)
     {
         $this->model = $anexo;
+        $this->basePath = storage_path() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * Array com o nome dos diretorios baseados no hash passado
+     * @param $hash
+     * @return array
+     */
+    private function hashDirectories($hash)
+    {
+        return array(substr($hash, 0, 2), substr($hash, 2, 2));
     }
 
     /**
@@ -21,20 +34,19 @@ class AnexoRepository extends BaseRepository
      * @param UploadedFile $uploadedFile
      * @param int $tipoAnexo
      * @return \Illuminate\Http\RedirectResponse|static
+     * @throws FileExistsException
      * @throws \Exception
      */
     public function salvarAnexo(UploadedFile $uploadedFile, $tipoAnexo = 1)
     {
         $hash = sha1_file($uploadedFile);
+        list($firstDir, $secondDir) = $this->hashDirectories($hash);
 
-        $pDir = substr($hash, 0, 2); // first Directory
-        $sDir = substr($hash, 2, 2); // second Directory
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir;
 
-        $caminhoArquivo = storage_path(). DIRECTORY_SEPARATOR .'uploads' . DIRECTORY_SEPARATOR. $pDir .DIRECTORY_SEPARATOR. $sDir;
-
-        if (file_exists($caminhoArquivo.$hash)) {
+        if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
-                throw new FileExistsException($caminhoArquivo.$hash);
+                throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
             flash()->error('Arquivo já existe !');
             return redirect()->back();
@@ -45,23 +57,40 @@ class AnexoRepository extends BaseRepository
                 'anx_tax_id' => $tipoAnexo,
                 'anx_nome' => $uploadedFile->getClientOriginalName(),
                 'anx_mime' => $uploadedFile->getClientMimeType(),
-                'anx_localizacao' => $caminhoArquivo
+                'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
+                'anx_localizacao' => $hash
             ];
 
             $uploadedFile->move($caminhoArquivo, $hash);
-
             return $this->create($anexo);
-        } catch (FileException $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-            flash()->error('Ocorreu um problema ao salvar o arquivo!');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
             flash()->error('Ocorreu um problema ao salvar o arquivo!');
         }
+    }
+
+    /**
+     * TODO Implementar funcionalidade de recuperacao de arquivo
+     * @param $anexoId
+     * @return null
+     */
+    public function recuperarAnexo($anexoId)
+    {
+        $anexo = $this->find($anexoId);
+
+        if (!$anexo) {
+            flash()->error('Arquivo não existe!');
+            return redirect()->back();
+        }
+
+        list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
+
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
+
+        $headers = array('Content-Type: ' . $anexo->anx_mime);
+        return Response::download($caminhoArquivo, $anexo->anx_nome . '.' .$anexo->anx_extensao, $headers);
     }
 
     /**
@@ -78,49 +107,44 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            return "Anexo não existe.";
+            flash()->error('Arquivo não existe!');
+            return redirect()->back();
         }
 
         $hash = sha1_file($uploadedFile);
+        list($firstDir, $secondDir) = $this->hashDirectories($hash);
 
-        $pDir = substr($hash, 0, 2); // first Directory
-        $sDir = substr($hash, 2, 2); // second Directory
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir;
 
-        $caminhoArquivo = storage_path(). DIRECTORY_SEPARATOR .'uploads' . DIRECTORY_SEPARATOR. $pDir .DIRECTORY_SEPARATOR. $sDir;
-
-        if (file_exists($caminhoArquivo.$hash)) {
+        if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
-                throw new FileExistsException($caminhoArquivo.$hash);
+                throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
             flash()->error('Arquivo já existe !');
             return redirect()->back();
         }
 
         try {
-
-            // Exclui antigo arquivo e pasta corresṕondente
-            array_map('unlink', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR . '*'));
-            array_map('rmdir', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR));
+            list($firstOldDir, $secondOldDir) = $this->hashDirectories($anexo->anx_localizacao);
+            // Exclui antigo arquivo
+            array_map('unlink', glob($this->basePath . $firstOldDir . DIRECTORY_SEPARATOR . $secondOldDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
 
             // Atualiza registro com o novo arquivo
             $data = [
                 'anx_tax_id' => $tipoAnexo,
                 'anx_nome' => $uploadedFile->getClientOriginalName(),
                 'anx_mime' => $uploadedFile->getClientMimeType(),
-                'anx_localizacao' => $caminhoArquivo
+                'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
+                'anx_localizacao' => $hash
             ];
 
             $uploadedFile->move($caminhoArquivo, $hash);
             return $this->update($data, $anexoId, 'anx_id');
-        } catch (FileException $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-            flash()->error('Ocorreu um problema ao atualizar o arquivo!');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->error('Ocorreu um problema ao atualizar o arquivo!');
         }
     }
@@ -136,24 +160,20 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            return "Anexo não existe.";
+            flash()->error('Arquivo não existe!');
+            return redirect()->back();
         }
 
         try {
-            // Exclui arquivo e pasta corresṕondente
-            array_map('unlink', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR . '*'));
-            array_map('rmdir', glob($anexo->anx_localizacao . DIRECTORY_SEPARATOR));
-
+            list($firstOldDir, $secondOldDir) = $this->hashDirectories($anexo->anx_localizacao);
+            // Exclui antigo arquivo
+            array_map('unlink', glob($this->basePath . $firstOldDir . DIRECTORY_SEPARATOR . $secondOldDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
             return $this->delete($anexoId);
-        } catch (FileException $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-            flash()->error('Ocorreu um problema ao excluir o arquivo!');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
+
             flash()->error('Ocorreu um problema ao excluir o arquivo!');
         }
     }
