@@ -263,7 +263,7 @@ class RecursoTableSeeder extends Seeder
         // MODULO INTEGRAÇÃO
         // Recurso Dashboard
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 6; // Categoria Acadêmico
+        $recurso->rcs_ctr_id = 6; // Categoria Integracao
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
         $recurso->rcs_descricao = 'Recurso dashboard do módulo integração';

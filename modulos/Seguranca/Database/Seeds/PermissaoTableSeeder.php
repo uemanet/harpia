@@ -690,7 +690,7 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesIntegracaoDashboard()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 8; // Recurso Dashboard
+        $permissao->prm_rcs_id = 25; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
         $permissao->save();

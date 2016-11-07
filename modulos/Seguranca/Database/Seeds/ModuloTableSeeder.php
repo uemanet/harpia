@@ -44,8 +44,8 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_rota = 'integracao';
         $modulo->mod_nome = 'Integração';
         $modulo->mod_descricao = 'Módulo de Integração';
-        $modulo->mod_icone = 'fa fa-university';
-        $modulo->mod_class = 'bg-green';
+        $modulo->mod_icone = 'fa fa-cogs';
+        $modulo->mod_class = 'bg-aqua';
         $modulo->mod_ativo = 1;
         $modulo->save();
     }
