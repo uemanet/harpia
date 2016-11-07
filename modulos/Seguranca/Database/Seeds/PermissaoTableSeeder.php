@@ -63,16 +63,15 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoTutores();
 
-//        /** Permissões do Módulo Integração */
-//
-//        $this->createPermissoesIntegracaoDashboard();
-//
-//        /** Permissões do Módulo de Monitoramento */
-//
-//        $this->createPermissoesMonitoramentoDashboard();
-
         $this->createPermissoesAcademicoProfessores();
 
+        /** Permissões do Módulo Integração */
+
+        $this->createPermissoesIntegracaoDashboard();
+
+        /** Permissões do Módulo de Monitoramento */
+
+        $this->createPermissoesMonitoramentoDashboard();
     }
 
     /** Permissões do Módulo Segurança */
@@ -692,27 +691,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-//    /** Permissões do Módulo Integração */
-//
-//    private function createPermissoesIntegracaoDashboard()
-//    {
-//        $permissao = new Permissao();
-//        $permissao->prm_rcs_id = 25; // Recurso Dashboard
-//        $permissao->prm_nome = 'index';
-//        $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
-//        $permissao->save();
-//    }
-//
-//    /** Permissões do Módulo Integração */
-//
-//    private function createPermissoesMonitoramentoDashboard()
-//    {
-//        $permissao = new Permissao();
-//        $permissao->prm_rcs_id = 26; // Recurso Dashboard
-//        $permissao->prm_nome = 'index';
-//        $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria de Monitoramento do módulo de monitoramento';
-//    }
-
     private function createPermissoesAcademicoProfessores()
     {
         $permissao = new Permissao();
@@ -737,6 +715,28 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 25;
         $permissao->prm_nome = 'show';
         $permissao->prm_descricao = 'Permissão show do recurso Professores';
+        $permissao->save();
+    }
+
+    /** Permissões do Módulo Integração */
+
+    private function createPermissoesIntegracaoDashboard()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 26; // Recurso Dashboard
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
+        $permissao->save();
+    }
+
+    /** Permissões do Módulo Integração */
+
+    private function createPermissoesMonitoramentoDashboard()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 27; // Recurso Dashboard
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
     }
 }
