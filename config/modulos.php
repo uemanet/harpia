@@ -5,6 +5,7 @@ return [
         'Geral',
         'Seguranca',
         'Academico',
-        'Integracao'
+        'Integracao',
+        'Monitoramento'
     ]
 ];

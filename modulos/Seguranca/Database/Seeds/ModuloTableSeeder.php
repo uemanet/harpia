@@ -48,5 +48,15 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_class = 'bg-aqua';
         $modulo->mod_ativo = 1;
         $modulo->save();
+
+        //Modulo Integração
+        $modulo = new Modulo;
+        $modulo->mod_rota = 'monitoramento';
+        $modulo->mod_nome = 'Monitoramento';
+        $modulo->mod_descricao = 'Módulo de Monitoramento';
+        $modulo->mod_icone = 'fa fa-line-chart';
+        $modulo->mod_class = 'bg-yellow';
+        $modulo->mod_ativo = 1;
+        $modulo->save();
     }
 }
