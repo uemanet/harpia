@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.integracao')
 
 @section('title')
     Módulo Integração
