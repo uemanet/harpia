@@ -3,6 +3,7 @@ namespace Modulos\Geral\Models;
 
 use Illuminate\Support\Facades\Storage;
 use Modulos\Core\Model\BaseModel;
+use DB;
 
 class Configuracao extends BaseModel
 {
@@ -21,4 +22,9 @@ class Configuracao extends BaseModel
     protected $searchable = [
         'cnf_nome' => 'like'
     ];
+
+    public static function destroy($config)
+    {
+        return;
+    }
 }

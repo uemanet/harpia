@@ -181,6 +181,11 @@ return [
          * Format Service Provider
          */
         Harpia\Format\FormatServiceProvider::class,
+
+        /*
+         * Settings Service Provider
+         */
+        Harpia\Settings\SettingServiceProvider::class,
     ],
 
     /*
@@ -245,5 +250,6 @@ return [
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,
         'Format' => Harpia\Format\Facades\Format::class,
+        'Setting' => Harpia\Settings\Facades\Setting::class
     ],
 ];

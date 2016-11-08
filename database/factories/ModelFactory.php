@@ -7,7 +7,7 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_sexo' => $faker->randomElement(['M', 'F']),
         'pes_email' => $faker->email,
         'pes_telefone' => $faker->phoneNumber,
-        'pes_nascimento' => $faker->date('d\/m\/Y'),
+        'pes_nascimento' => $faker->date('d/m/Y'),
         'pes_mae' => $faker->name,
         'pes_pai' => $faker->name,
         'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
