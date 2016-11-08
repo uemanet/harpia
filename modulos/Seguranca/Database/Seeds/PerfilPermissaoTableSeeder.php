@@ -71,17 +71,19 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([91, 92, 93, 94]); // Permissoes do recurso Tutores
 
+        $perfil->permissoes()->attach([95, 96, 97, 98]); // Permissoes do recurso Professores
+
 
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
 
-        $perfil->permissoes()->attach([95]);
+        $perfil->permissoes()->attach([99]);
 
         /** Perfil Administrador do Módulo de Monitoramento */
 
         $perfil = Perfil::find(5);
 
-        $perfil->permissoes()->attach([96]);
+        $perfil->permissoes()->attach([100]);
     }
 }
