@@ -80,6 +80,8 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([99]);
 
+        $perfil->permissoes()->attach([96, 97, 98, 99]); // Permissoes do recurso Tutores
+
         /** Perfil Administrador do Módulo de Monitoramento */
 
         $perfil = Perfil::find(5);
