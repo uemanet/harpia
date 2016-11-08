@@ -201,6 +201,12 @@ $factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\G
     ];
 });
 
+$factory->define(Modulos\Academico\Models\Aluno::class, function (Faker\Generator $faker) {
+    return [
+        'alu_pes_id' => factory(Modulos\Geral\Models\Aluno::class)->create()->pes_id
+    ];
+});
+
 $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generator $faker) {
     return [
         'tut_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
