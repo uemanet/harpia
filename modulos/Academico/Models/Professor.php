@@ -12,11 +12,12 @@ class Professor extends BaseModel
 
     protected $fillable = [
         'prf_pes_id',
-        'prf_matricula'
     ];
 
     protected $searchable = [
-        'prf_id' => '='
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
+        'pes_cpf' => '='
     ];
 
     public function centro()

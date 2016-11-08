@@ -260,6 +260,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 9;
         $recurso->save();
 
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_nome = 'Professores';
+        $recurso->rcs_rota = 'professores';
+        $recurso->rcs_descricao = 'Recurso professores do módulo Acadêmico';
+        $recurso->rcs_icone = 'fa fa-id-card-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 10;
+        $recurso->save();
+
         // MODULO INTEGRAÇÃO
         // Recurso Dashboard
         $recurso = new Recurso();

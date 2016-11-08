@@ -74,13 +74,9 @@ class ProfessorRepositoryTest extends TestCase
     {
         factory(Professor::class, 2)->create();
 
-        factory(Professor::class)->create([
-            'prf_matricula' => 'abc123',
-        ]);
-
         $search = [
             [
-                'field' => 'prf_matricula',
+                'field' => 'prf_id',
                 'type' => 'like',
                 'term' => 'abc123'
             ]
