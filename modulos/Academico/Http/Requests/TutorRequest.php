@@ -24,7 +24,7 @@ class TutorRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'tut_pes_id' => 'required|unique:acd_tutor'
+            'tut_pes_id' => 'required|unique:acd_tutores'
         ];
 
         return $rules;
