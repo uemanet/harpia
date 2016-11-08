@@ -51,6 +51,13 @@ class AmbientesVirtuaisController extends BaseController
                         ],
                         'buttons' => [
                             [
+                                'classButton' => 'text-blue',
+                                'icon' => 'fa fa-server',
+                                'action' => '/integracao/ambientesvirtuais/adicionarservico/'. $id,
+                                'label' => 'Web Services',
+                                'method' => 'get'
+                            ],
+                            [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/integracao/ambientesvirtuais/edit/' . $id,
@@ -164,5 +171,19 @@ class AmbientesVirtuaisController extends BaseController
             flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+    }
+
+    public function getAtribuirservico($ambienteId)
+    {
+        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+
+        if (!$ambiente) {
+            flash()->error('Ambiente não existe!');
+            return redirect()->back();
+        }
+
+        $modulos = $this->perfilRepository->getModulosWithoutPerfis($usuario->usr_id);
+
+        return view('Seguranca::usuarios.atribuirperfil', compact('usuario', 'modulos'));
     }
 }
