@@ -251,6 +251,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico->Cadastros
+        $recurso->rcs_nome = 'Alunos';
+        $recurso->rcs_rota = 'alunos';
+        $recurso->rcs_descricao = 'Recurso alunos do módulo Acadêmico';
+        $recurso->rcs_icone = 'fa fa-address-card-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 9;
+        $recurso->save();
+
+        $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Cadastros
         $recurso->rcs_nome = 'Tutores';
         $recurso->rcs_rota = 'tutores';
@@ -258,16 +268,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-group';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 10;
-        $recurso->save();
-
-        $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
-        $recurso->rcs_nome = 'Alunos';
-        $recurso->rcs_rota = 'alunos';
-        $recurso->rcs_descricao = 'Recurso alunos do módulo Acadêmico';
-        $recurso->rcs_icone = 'fa fa-address-card-o';
-        $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 9;
         $recurso->save();
 
         // MODULO INTEGRAÇÃO

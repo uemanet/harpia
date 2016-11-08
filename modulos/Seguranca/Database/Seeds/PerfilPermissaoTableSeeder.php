@@ -67,9 +67,9 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([84, 85, 86]); // Permissoes do recurso Tutores Grupos
 
-        $perfil->permissoes()->attach([87, 88, 89, 90]); // Permissoes do recurso Tutores
+        $perfil->permissoes()->attach([87, 88, 89, 90]); // Permissoes do recurso Alunos
 
-        $perfil->permissoes()->attach([91, 92, 93, 94]); // Permissoes do recurso Alunos
+        $perfil->permissoes()->attach([91, 92, 93, 94]); // Permissoes do recurso Tutores
 
 
         /** Perfil Administrador do Módulo Integração */

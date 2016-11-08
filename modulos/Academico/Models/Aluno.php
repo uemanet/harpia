@@ -6,7 +6,6 @@ use Modulos\Core\Model\BaseModel;
 
 class Aluno extends BaseModel
 {
-
     protected $table = 'acd_alunos';
 
     protected $primaryKey = 'alu_id';
