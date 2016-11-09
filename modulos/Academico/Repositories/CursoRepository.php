@@ -14,7 +14,6 @@ class CursoRepository extends BaseRepository
         $this->model = $curso;
     }
 
-
     /**
      * Paginate
      * @param null $sort
@@ -51,12 +50,17 @@ class CursoRepository extends BaseRepository
      * @param $field
      * @return mixed
      */
-    public function lists($identifier, $field)
+    public function lists($identifier, $field, $all = false)
     {
-        return $this->model
-            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
-            ->where('ucr_usr_id', '=', Auth::user()->usr_id)
-            ->pluck($field, $identifier);
+        if(!$all) {
+            return $this->model
+                ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
+                ->where('ucr_usr_id', '=', Auth::user()->usr_id)
+                ->pluck($field, $identifier);
+        }
+
+        return $this->model->pluck($field, $identifier);
+
     }
 
     public function listsByCursoId($cursoId)
