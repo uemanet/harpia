@@ -3,7 +3,6 @@
 namespace Harpia\Settings;
 
 use Modulos\Geral\Repositories\ConfiguracaoRepository;
-use Modulos\Seguranca\Repositories\ModuloRepository;
 
 class Setting
 {

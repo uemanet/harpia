@@ -30,10 +30,21 @@ class ConfiguracaoRepository extends BaseRepository
 
     public function getAll()
     {
-        return DB::table('gra_configuracoes')
-            ->select('mod_nome', 'cnf_nome', 'cnf_valor')
-            ->join('seg_modulos', 'mod_id', '=', 'cnf_mod_id')
+        $query = DB::table('gra_configuracoes')
+            ->select('cnf_id', 'cnf_mod_id', 'cnf_nome', 'cnf_valor')
             ->get()->toArray();
+
+        $result = array();
+
+        /**
+         * Conversacao explicita de um objeto Array para tipo array
+         * @see \Illuminate\Support\Facades\DB
+         */
+        foreach ($query as $item) {
+            $result[] = (array) $item;
+        }
+
+        return $result;
     }
 
     /**
@@ -69,7 +80,7 @@ class ConfiguracaoRepository extends BaseRepository
             ->where('cnf_nome', '=', $config)
             ->pluck('cnf_id')->toArray();
 
-        if(!empty($id)){
+        if (!empty($id)) {
             return $this->model->destroy(array_shift($id));
         }
 

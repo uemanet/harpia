@@ -157,12 +157,9 @@ class ConfiguracaoRepositoryTest extends TestCase
         $data = factory(Configuracao::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['cnf_nome'] = 'abcde_edcba';
+        $updateArray['cnf_valor'] = 'abcde_edcba';
 
-        $pessoaId = $updateArray['cnf_id'];
-        unset($updateArray['cnf_id']);
-
-        $response = $this->repo->update($updateArray, $pessoaId, 'cnf_id');
+        $response = $this->repo->update($updateArray);
 
         $this->assertEquals(1, $response);
     }
@@ -170,11 +167,39 @@ class ConfiguracaoRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Configuracao::class)->create();
-        $pessoaId = $data->cnf_id;
+        $config = $data->cnf_nome;
 
-        $response = $this->repo->delete($pessoaId);
+        $response = $this->repo->delete($config);
 
         $this->assertEquals(1, $response);
+    }
+
+    public function testGetByName()
+    {
+        $response = factory(Configuracao::class)->create();
+
+        $data = $response->toArray();
+        $config = $data['cnf_nome'];
+
+        $this->assertEquals($this->repo->getByName($config), $response->cnf_valor);
+    }
+
+    public function testConfigExists()
+    {
+        $response = factory(Configuracao::class)->create();
+
+        $data = $response->toArray();
+        $config = $data['cnf_nome'];
+
+        $this->assertTrue($this->repo->configExists($config));
+    }
+
+    public function testGetAll()
+    {
+        $response = factory(Configuracao::class, 2)->create();
+        $data = $response->toArray();
+        $this->assertNotEmpty($this->repo->getAll());
+        $this->assertEquals($this->repo->getAll(), $data);
     }
 
     public function tearDown()

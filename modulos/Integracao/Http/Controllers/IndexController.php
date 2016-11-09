@@ -3,6 +3,7 @@
 namespace Modulos\Integracao\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Setting;
 
 /**
  * Class IndexController.
