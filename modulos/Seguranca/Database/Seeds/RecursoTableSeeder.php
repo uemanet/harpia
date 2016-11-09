@@ -302,6 +302,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
+        // Recurso AmbientesVirtuais
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 6; // Categoria Integracao
+        $recurso->rcs_nome = 'Ambientes Virtuais';
+        $recurso->rcs_rota = 'ambientesvirtuais';
+        $recurso->rcs_descricao = 'Recurso ambientes virtuais do módulo integração';
+        $recurso->rcs_icone = 'fa fa-laptop';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 2;
+        $recurso->save();
+
         // MODULO MONITORAMENTO
         // Recurso Dashboard
         $recurso = new Recurso();
