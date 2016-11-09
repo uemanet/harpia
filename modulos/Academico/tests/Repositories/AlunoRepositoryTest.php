@@ -1,14 +1,16 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Academico\Models\Professor;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
 
-class ProfessorRepositoryTest extends TestCase
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Artisan;
+use Modulos\Academico\Models\Aluno;
+use Modulos\Academico\Repositories\AlunoRepository;
+use Modulos\Geral\Models\Pessoa;
+
+class AlunoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -32,7 +34,7 @@ class ProfessorRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(ProfessorRepository::class);
+        $this->repo = $this->app->make(AlunoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +47,7 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Professor::class, 2)->create();
+        factory(Aluno::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -56,10 +58,10 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Professor::class, 2)->create();
+        factory(Aluno::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'alu_id',
             'sort' => 'desc'
         ];
 
@@ -67,18 +69,26 @@ class ProfessorRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->prf_id);
+        $this->assertGreaterThan(1, $response[0]->alu_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Professor::class, 2)->create();
+        factory(Aluno::class, 2)->create();
+
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Antonio',
+        ]);
+
+        factory(Aluno::class)->create([
+           'alu_pes_id' => $pessoa->pes_id
+        ]);
 
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'pes_nome',
                 'type' => 'like',
-                'term' => 'abc123'
+                'term' => 'Antonio'
             ]
         ];
 
@@ -91,16 +101,16 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Professor::class, 2)->create();
+        factory(Aluno::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'alu_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'alu_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -115,11 +125,11 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Professor::class, 2)->create();
+        factory(Aluno::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'prf_id',
+            'field' => 'alu_id',
             'sort' => 'asc'
         ];
 
@@ -132,51 +142,46 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Professor::class)->create();
+        $response = factory(Aluno::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(Professor::class, $response);
+        $this->assertInstanceOf(Aluno::class, $response);
 
-        $this->assertArrayHasKey('prf_id', $data);
+        $this->assertArrayHasKey('alu_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Professor::class)->create();
+        $data = factory(Aluno::class)->create();
 
-        $this->seeInDatabase('acd_professores', $data->toArray());
+        $this->seeInDatabase('acd_alunos', $data->toArray());
     }
 
-    public function testUpdate()
-    {
-        $data = factory(Professor::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['prf_matricula'] = 'abcde_edcba';
-
-        $professorId = $updateArray['prf_id'];
-        unset($updateArray['prf_id']);
-
-        $response = $this->repo->update($updateArray, $professorId, 'prf_id');
-
-        $this->assertEquals(1, $response);
-    }
+//    public function testUpdate()
+//    {
+//        $data = factory(Aluno::class)->create();
+//
+//        $updateArray = $data->toArray();
+//        $updateArray['cen_nome'] = 'abcde_edcba';
+//
+//        $centroId = $updateArray['cen_id'];
+//        unset($updateArray['cen_id']);
+//
+//        $response = $this->repo->update($updateArray, $centroId, 'cen_id');
+//
+//        $this->assertEquals(1, $response);
+//    }
 
     public function testDelete()
     {
-        $data = factory(Professor::class)->create();
-        $professorId = $data->prf_id;
+        $data = factory(Aluno::class)->create();
+        $alunoId = $data->alu_id;
 
-        $response = $this->repo->delete($professorId);
+        $response = $this->repo->delete($alunoId);
 
         $this->assertEquals(1, $response);
     }
-
-    public function testLists()
-    {
-    }
-
 
     public function tearDown()
     {

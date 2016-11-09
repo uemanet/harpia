@@ -142,6 +142,24 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\TutoresController@getShow')->name('academico.tutores.show');
     });
 
+    Route::group(['prefix' => 'alunos'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\AlunosController@getIndex')->name('academico.alunos.index');
+        Route::get('/create/{id?}', '\Modulos\Academico\Http\Controllers\AlunosController@getCreate')->name('academico.alunos.getCreate')->middleware('verificapessoa');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\AlunosController@postCreate')->name('academico.alunos.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\AlunosController@getEdit')->name('academico.alunos.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\AlunosController@putEdit')->name('academico.alunos.putEdit');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\AlunosController@getShow')->name('academico.alunos.show');
+    });
+
+    Route::group(['prefix' => 'professores'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\ProfessoresController@getIndex')->name('academico.professores.index');
+        Route::get('/create/{id?}', '\Modulos\Academico\Http\Controllers\ProfessoresController@getCreate')->name('academico.professores.getCreate')->middleware('verificapessoa');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\ProfessoresController@postCreate')->name('academico.professores.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\ProfessoresController@getEdit')->name('academico.professores.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\ProfessoresController@putEdit')->name('academico.professores.putEdit');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\ProfessoresController@getShow')->name('academico.professores.show');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')

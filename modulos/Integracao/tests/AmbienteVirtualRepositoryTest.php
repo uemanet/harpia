@@ -2,13 +2,12 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Academico\Models\Professor;
+use Modulos\Integracao\Repositories\AmbienteVitualRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class ProfessorRepositoryTest extends TestCase
+class AmbienteVitualRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -32,7 +31,7 @@ class ProfessorRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(ProfessorRepository::class);
+        $this->repo = $this->app->make(AmbienteVitualRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +44,7 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Professor::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -56,10 +55,10 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Professor::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'amb_id',
             'sort' => 'desc'
         ];
 
@@ -67,18 +66,22 @@ class ProfessorRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->prf_id);
+        $this->assertEquals(2, $response[0]->amb_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Professor::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
+
+        factory(Modulos\Integracao\Models\AmbienteVitual::class)->create([
+            'amb_nome' => 'icatu',
+        ]);
 
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'amb_nome',
                 'type' => 'like',
-                'term' => 'abc123'
+                'term' => 'icatu'
             ]
         ];
 
@@ -86,21 +89,23 @@ class ProfessorRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertCount(1, $response);
+        $this->assertGreaterThan(0, $response->total());
+
+        $this->assertEquals('icatu', $response[0]->amb_nome);
     }
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Professor::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'amb_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'amb_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -111,15 +116,17 @@ class ProfessorRepositoryTest extends TestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
         $this->assertGreaterThan(0, $response->total());
+
+        $this->assertEquals(2, $response[0]->amb_id);
     }
 
     public function testPaginateRequest()
     {
-        factory(Professor::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'prf_id',
+            'field' => 'amb_id',
             'sort' => 'asc'
         ];
 
@@ -132,51 +139,44 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Professor::class)->create();
+        $response = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
 
-        $data = $response->toArray();
+        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteVitual::class, $response);
 
-        $this->assertInstanceOf(Professor::class, $response);
-
-        $this->assertArrayHasKey('prf_id', $data);
+        $this->assertArrayHasKey('amb_id', $response->toArray());
     }
 
     public function testFind()
     {
-        $data = factory(Professor::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
 
-        $this->seeInDatabase('acd_professores', $data->toArray());
+        $this->seeInDatabase('acd_ambientes_virtuais', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Professor::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['prf_matricula'] = 'abcde_edcba';
+        $updateArray['amb_nome'] = 'abcde_edcba';
 
-        $professorId = $updateArray['prf_id'];
-        unset($updateArray['prf_id']);
+        $ambientevirtualdId = $updateArray['amb_id'];
+        unset($updateArray['amb_id']);
 
-        $response = $this->repo->update($updateArray, $professorId, 'prf_id');
+        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'amb_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Professor::class)->create();
-        $professorId = $data->prf_id;
+        $data = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
+        $ambientevirtualId = $data->amb_id;
 
-        $response = $this->repo->delete($professorId);
+        $response = $this->repo->delete($ambientevirtualId);
 
         $this->assertEquals(1, $response);
     }
-
-    public function testLists()
-    {
-    }
-
 
     public function tearDown()
     {

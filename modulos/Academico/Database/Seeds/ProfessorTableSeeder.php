@@ -15,7 +15,6 @@ class ProfessorTableSeeder extends Seeder
             $professor = new Professor();
 
             $professor->prf_pes_id = $i;
-            $professor->prf_matricula = $faker->ean13;
 
             $professor->save();
         }

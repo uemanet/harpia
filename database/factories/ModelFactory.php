@@ -128,8 +128,7 @@ $factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generato
 
 $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
     return [
-        'prf_pes_id' => 1,
-        'prf_matricula' => $faker->bankAccountNumber,
+        'prf_pes_id' => 1
     ];
 });
 
@@ -211,8 +210,22 @@ $factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\G
     ];
 });
 
+$factory->define(Modulos\Academico\Models\Aluno::class, function (Faker\Generator $faker) {
+    return [
+        'alu_pes_id' => factory(Modulos\Geral\Models\Aluno::class)->create()->pes_id
+    ];
+});
+
 $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generator $faker) {
     return [
         'tut_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\AmbienteVitual::class, function (Faker\Generator $faker) {
+    return [
+        'amb_nome' => $faker->name,
+        'amb_versao' => $faker->sentence(2),
+        'amb_token' => $faker->sentence(3)
     ];
 });

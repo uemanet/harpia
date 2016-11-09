@@ -2,21 +2,20 @@
 
 namespace Modulos\Academico\Repositories;
 
+use Modulos\Academico\Models\Aluno;
 use Modulos\Core\Repository\BaseRepository;
-use Modulos\Academico\Models\Tutor;
-use DB;
 
-class TutorRepository extends BaseRepository
+class AlunoRepository extends BaseRepository
 {
-    public function __construct(Tutor $tutor)
+    public function __construct(Aluno $aluno)
     {
-        $this->model = $tutor;
+        $this->model = $aluno;
     }
 
     public function paginate($sort = null, $search = null)
     {
         $result = $this->model->join('gra_pessoas', function ($join) {
-            $join->on('tut_pes_id', '=', 'pes_id');
+            $join->on('alu_pes_id', '=', 'pes_id');
         })->leftJoin('gra_documentos', function ($join) {
             $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
         });
@@ -45,26 +44,5 @@ class TutorRepository extends BaseRepository
         $result = $result->paginate(15);
 
         return $result;
-    }
-    
-    public function listsTutorPessoa($idGrupo)
-    {
-        $tutoresvinculados = DB::table('acd_tutores')
-         ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
-         ->join('acd_grupos', 'ttg_grp_id', '=', 'grp_id')
-         ->where('grp_id', '=', $idGrupo)
-         ->where('ttg_data_fim', null)
-         ->get();
-        $tutoresvinculadosId = [];
-
-        foreach ($tutoresvinculados as $key => $value) {
-            $tutoresvinculadosId[] = $value->tut_id;
-        }
-
-        $tutores = DB::table('acd_tutores')
-           ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
-           ->whereNotIn('tut_id', $tutoresvinculadosId)
-           ->pluck('pes_nome', 'tut_id');
-        return $tutores;
     }
 }
