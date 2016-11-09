@@ -20,4 +20,14 @@ class AmbienteVirtual extends BaseModel
         'amb_nome' => 'like'
     ];
 
+    public function servicos()
+    {
+        return $this->belongsToMany('Modulos\Integracao\Models\Servico', 'int_ambientes_servicos', 'asr_amb_id', 'asr_ser_id');
+    }
+
+    public function ambienteservico()
+    {
+        return $this->hasMany('Modulos\Integracao\Models\AmbienteServico', 'asr_amb_id', 'amb_id');
+    }
+
 }

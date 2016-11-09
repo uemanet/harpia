@@ -6,16 +6,21 @@ use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Http\Requests\AmbienteVirtualRequest;
+use Modulos\Integracao\Http\Requests\ServicoRequest;
 use Illuminate\Http\Request;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Repositories\ServicoRepository;
 
 class AmbientesVirtuaisController extends BaseController
 {
     protected $ambientevirtualRepository;
+    protected $servicoRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository)
+    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository)
     {
         $this->ambientevirtualRepository = $ambientevirtualRepository;
+        $this->servicoRepository = $servicoRepository;
+
     }
 
     public function getIndex(Request $request)
@@ -173,7 +178,7 @@ class AmbientesVirtuaisController extends BaseController
         }
     }
 
-    public function getAtribuirservico($ambienteId)
+    public function getAdicionarServico($ambienteId)
     {
         $ambiente = $this->ambientevirtualRepository->find($ambienteId);
 
@@ -182,8 +187,55 @@ class AmbientesVirtuaisController extends BaseController
             return redirect()->back();
         }
 
-        $modulos = $this->perfilRepository->getModulosWithoutPerfis($usuario->usr_id);
+        $servicos = $this->servicoRepository->lists('ser_id', 'ser_nome');
 
-        return view('Seguranca::usuarios.atribuirperfil', compact('usuario', 'modulos'));
+        $servicosdoambiente = $ambiente->servicos()->get();
+
+        //dd($servicosdoambiente);
+        return view('Integracao::ambientesvirtuais.adicionarservico', compact('ambiente', 'servicos', 'servicosdoambiente'));
+    }
+
+    public function postAdicionarServico($ambienteId, Request $request)
+    {
+        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+
+        dd($ambienteId, $request);
+
+
+        if (!$ambiente) {
+            flash()->error('Ambiente não existe!');
+            return redirect()->back();
+        }
+
+        $modulodisciplina['asr_ser_id'] = $dados['dis_id'];
+        $modulodisciplina['asr_mdo_id'] = $dados['mod_id'];
+        $modulodisciplina['asr_tipo_avaliacao'] = $dados['tipo_avaliacao'];
+
+        $validator = Validator::make($request->all(), [
+            'mod_id' => 'required',
+            'prf_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            if (!$this->perfilRepository->verifyExistsPerfilModulo($request->input('mod_id'), $ambiente->usr_id)) {
+                $ambiente->perfis()->attach($request->input('prf_id'));
+                flash()->success('Perfil Atribuído com sucesso');
+            } else {
+                flash()->error('Ambiente já possui perfil associado ao módulo!');
+            }
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->error('Erro ao tentar atribuir perfil. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
+        }
     }
 }
