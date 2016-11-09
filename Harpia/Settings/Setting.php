@@ -65,9 +65,14 @@ class Setting
         return $this->configuracaoRepository->getAll();
     }
 
-    public function unset($config)
+    /**
+     * Remove uma dada configuracao da tabela
+     * @param $config
+     * @return int
+     */
+    public function remove($config)
     {
-        $this->configuracaoRepository->delete($config);
+        return $this->configuracaoRepository->delete($config);
     }
 
     /**

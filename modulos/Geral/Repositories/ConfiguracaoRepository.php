@@ -57,4 +57,22 @@ class ConfiguracaoRepository extends BaseRepository
 
         return false;
     }
+
+    /**
+     * @see \Modulos\Core\Repository\BaseRepository
+     * @param $config
+     * @return int
+     */
+    public function delete($config)
+    {
+        $id = DB::table('gra_configuracoes')
+            ->where('cnf_nome', '=', $config)
+            ->pluck('cnf_id')->toArray();
+
+        if(!empty($id)){
+            return $this->model->destroy(array_shift($id));
+        }
+
+        return null;
+    }
 }

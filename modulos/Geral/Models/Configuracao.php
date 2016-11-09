@@ -22,9 +22,4 @@ class Configuracao extends BaseModel
     protected $searchable = [
         'cnf_nome' => 'like'
     ];
-
-    public static function destroy($config)
-    {
-        return;
-    }
 }
