@@ -237,7 +237,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_descricao = 'Recurso vincular usuário ao curso do módulo Segurança';
         $recurso->rcs_icone = 'fa fa-link';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 8;
+        $recurso->rcs_ordem = 1;
         $recurso->save();
 
         $recurso = new Recurso();

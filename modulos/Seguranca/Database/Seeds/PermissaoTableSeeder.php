@@ -777,12 +777,25 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    // 3 permissoes
     private function createPermissoesMatricularAlunoCurso()
     {
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 27;
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Matricular aluno no curso';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 27;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Matricular aluno no curso';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 27;
+        $permissao->prm_nome = 'show';
+        $permissao->prm_descricao = 'Permissão show do recurso Matricular aluno no curso';
         $permissao->save();
     }
 
@@ -798,6 +811,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    // 4 permissoes
     private function createPermissoesIntegracaoAmbientes()
     {
         $permissao = new Permissao();
