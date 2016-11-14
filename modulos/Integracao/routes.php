@@ -15,5 +15,6 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postDelete')->name('integracao.ambientesvirtuais.delete');
         Route::get('/adicionarservico/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getAdicionarServico')->name('integracao.ambientesvirtuais.getAdicionarServico');
         Route::post('/adicionarservico/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postAdicionarServico')->name('integracao.ambientesvirtuais.postAdicionarServico');
+        Route::post('/deletarservico/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postDeletarServico')->name('integracao.ambientesvirtuais.postDeletarServico');
     });
 });

@@ -9,17 +9,21 @@ use Modulos\Integracao\Http\Requests\AmbienteVirtualRequest;
 use Modulos\Integracao\Http\Requests\ServicoRequest;
 use Illuminate\Http\Request;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Repositories\AmbienteServicoRepository;
 use Modulos\Integracao\Repositories\ServicoRepository;
+use Validator;
 
 class AmbientesVirtuaisController extends BaseController
 {
     protected $ambientevirtualRepository;
     protected $servicoRepository;
+    protected $ambienteservicoRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository)
+    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository, AmbienteServicoRepository $ambienteservicoRepository)
     {
         $this->ambientevirtualRepository = $ambientevirtualRepository;
         $this->servicoRepository = $servicoRepository;
+        $this->ambienteservicoRepository = $ambienteservicoRepository;
 
     }
 
@@ -187,11 +191,10 @@ class AmbientesVirtuaisController extends BaseController
             return redirect()->back();
         }
 
-        $servicos = $this->servicoRepository->lists('ser_id', 'ser_nome');
+        $servicos = $this->servicoRepository->listsServicosWithoutAmbiente($ambienteId);
 
         $servicosdoambiente = $ambiente->servicos()->get();
 
-        //dd($servicosdoambiente);
         return view('Integracao::ambientesvirtuais.adicionarservico', compact('ambiente', 'servicos', 'servicosdoambiente'));
     }
 
@@ -199,21 +202,19 @@ class AmbientesVirtuaisController extends BaseController
     {
         $ambiente = $this->ambientevirtualRepository->find($ambienteId);
 
-        dd($ambienteId, $request);
-
-
         if (!$ambiente) {
             flash()->error('Ambiente não existe!');
             return redirect()->back();
         }
 
-        $modulodisciplina['asr_ser_id'] = $dados['dis_id'];
-        $modulodisciplina['asr_mdo_id'] = $dados['mod_id'];
-        $modulodisciplina['asr_tipo_avaliacao'] = $dados['tipo_avaliacao'];
+        $dados['asr_ser_id'] = $request->asr_ser_id;
+        $dados['asr_amb_id'] = $ambienteId;
+        $dados['asr_token'] = $request->asr_token;
 
-        $validator = Validator::make($request->all(), [
-            'mod_id' => 'required',
-            'prf_id' => 'required'
+        $validator = Validator::make($dados, [
+            'asr_ser_id' => 'required',
+            'asr_amb_id' => 'required',
+            'asr_token' => 'required|max:255'
         ]);
 
         if ($validator->fails()) {
@@ -221,21 +222,51 @@ class AmbientesVirtuaisController extends BaseController
         }
 
         try {
-            if (!$this->perfilRepository->verifyExistsPerfilModulo($request->input('mod_id'), $ambiente->usr_id)) {
-                $ambiente->perfis()->attach($request->input('prf_id'));
-                flash()->success('Perfil Atribuído com sucesso');
-            } else {
-                flash()->error('Ambiente já possui perfil associado ao módulo!');
+
+            if (!$this->servicoRepository->verifyIfExistsAmbienteServico($dados['asr_amb_id'] , $dados['asr_ser_id'])) {
+
+              $ambienteservico = $this->ambienteservicoRepository->create($dados);
+
+              if (!$ambienteservico) {
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+              }
+              flash()->success('Serviço Atribuído com sucesso');
+              return redirect()->back();
+
             }
+            flash()->error('Esse ambiente já possui este serviço!');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             } else {
-                flash()->error('Erro ao tentar atribuir perfil. Caso o problema persista, entre em contato com o suporte.');
+                flash()->error('Erro ao tentar atribuir serviço ao ambiente. Caso o problema persista, entre em contato com o suporte.');
 
                 return redirect()->back();
             }
+        }
+    }
+
+    public function postDeletarServico(Request $request)
+    {
+        try {
+            $ambienteservicoId = $request->get('id');
+
+            if ($this->ambienteservicoRepository->delete($ambienteservicoId)) {
+                flash()->success('Serviço excluído com sucesso.');
+            } else {
+                flash()->error('Erro ao tentar excluir o serviço');
+            }
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar deletar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

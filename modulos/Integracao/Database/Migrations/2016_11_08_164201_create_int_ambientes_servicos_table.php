@@ -18,7 +18,7 @@ class CreateIntAmbientesServicosTable extends Migration
             $table->increments('asr_id');
             $table->integer('asr_amb_id')->unsigned();
             $table->integer('asr_ser_id')->unsigned();
-            $table->string('asr_token', 45);
+            $table->string('asr_token', 255);
 
             $table->timestamps();
 
