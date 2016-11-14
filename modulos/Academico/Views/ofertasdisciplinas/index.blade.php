@@ -28,8 +28,9 @@
             <div class="row">
                 <form method="GET" action="{{ url('/academico/ofertasdisciplinas/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="ofc_ano" id="ofc_ano" value="{{Input::get('ofd_per_nome')}}" placeholder="Ano da Oferta">
+                        <input type="text" class="form-control" name="dis_nome" id="dis_nome" value="{{Input::get('dis_nome')}}" placeholder="Ano da Oferta">
                     </div>
+
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
                     </div>

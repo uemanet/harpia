@@ -183,9 +183,18 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'modulosdisciplinas'], function () {
+            Route::get('/getalldisciplinasbymodulo/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@getAllDisciplinasByModulo');
             Route::get('/verifydisciplina/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@verifyDisciplinas');
             Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina');
             Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina');
+        });
+
+        Route::group(['prefix' => 'modulosmatriz'], function () {
+           Route::get('/findallbymatriz/{id}', '\Modulos\Academico\Http\Controllers\Async\ModuloMatriz@getFindallbymatriz');
+        });
+
+        Route::group(['prefix' => 'ofertasturma'], function () {
+            Route::get('/ofertabyturma/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getOfertabyturma');
         });
     });
 });
