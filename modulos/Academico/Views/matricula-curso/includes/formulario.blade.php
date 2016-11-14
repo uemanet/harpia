@@ -91,13 +91,13 @@
                     $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaId)
                             .done(function (data) {
                                 if(!$.isEmptyObject(data)) {
-                                    selectTurmas.append("<option>Selecione a turma</option>");
+                                    selectTurmas.append("<option value=''>Selecione a turma</option>");
 
                                     $.each(data, function (key, obj) {
                                         selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
                                     });
                                 }else {
-                                    selectTurmas.append("<option>Sem turmas cadastradas</option>");
+                                    selectTurmas.append("<option value=''>Sem turmas cadastradas</option>");
                                 }
                             });
 
@@ -111,7 +111,7 @@
                                         selectPolos.append('<option value="'+obj.pol_id+'">'+obj.pol_nome+'</option>');
                                     });
                                 }else {
-                                    selectPolos.append("<option>Sem polos cadastrados</option>");
+                                    selectPolos.append("<option value=''>Sem polos cadastrados</option>");
                                 }
                             });
                 }
@@ -136,7 +136,7 @@
                                        selectGrupos.append('<option value="'+obj.grp_id+'">'+obj.grp_nome+'</option>');
                                     });
                                 }else {
-                                    selectGrupos.append("<option>Sem grupos cadastrados</option>");
+                                    selectGrupos.append("<option value=''>Sem grupos cadastrados</option>");
                                 }
                             });
                 }

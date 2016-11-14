@@ -13,6 +13,8 @@ class Matricula extends BaseModel
     protected $fillable = [
         'mat_alu_id',
         'mat_trm_id',
+        'mat_pol_id',
+        'mat_grp_id',
         'mat_situacao'
     ];
 

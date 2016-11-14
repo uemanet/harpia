@@ -55,4 +55,28 @@ class MatriculaCursoRepository extends BaseRepository
 
         return false;
     }
+
+    public function verifyIfExistsMatriculaInCursoGraducao($alunoId)
+    {
+        $result = $this->model
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id')->where('crs_nvc_id', '=', '3');
+            })
+            ->where('mat_alu_id', '=', $alunoId)
+            ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
+            ->get();
+
+        if($result->count())
+        {
+            return true;
+        }
+
+        return false;
+    }
 }

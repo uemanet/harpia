@@ -164,6 +164,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getIndex')->name('academico.matricularalunocurso.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getCreate')->name('academico.matricularalunocurso.getCreate');
         Route::post('/create/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@postCreate')->name('academico.matricularalunocurso.postCreate');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getShow')->name('academico.matricularalunocurso.show');
     });
 
     Route::group(['prefix' => 'async'], function () {
