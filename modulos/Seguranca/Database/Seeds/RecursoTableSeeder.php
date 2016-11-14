@@ -251,13 +251,23 @@ class RecursoTableSeeder extends Seeder
         $recurso->save();
 
         $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico->Cadastros
+        $recurso->rcs_nome = 'Alunos';
+        $recurso->rcs_rota = 'alunos';
+        $recurso->rcs_descricao = 'Recurso alunos do módulo Acadêmico';
+        $recurso->rcs_icone = 'fa fa-address-card-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 9;
+        $recurso->save();
+
+        $recurso = new Recurso();
         $recurso->rcs_ctr_id = 3; // Categoria Cadastros
         $recurso->rcs_nome = 'Tutores';
         $recurso->rcs_rota = 'tutores';
         $recurso->rcs_descricao = 'Recurso tutores do módulo Acadêmico';
         $recurso->rcs_icone = 'fa fa-group';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 9;
+        $recurso->rcs_ordem = 11;
         $recurso->save();
 
         $recurso = new Recurso();
@@ -280,6 +290,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-tachometer';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // Recurso AmbientesVirtuais
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 6; // Categoria Integracao
+        $recurso->rcs_nome = 'Ambientes Virtuais';
+        $recurso->rcs_rota = 'ambientesvirtuais';
+        $recurso->rcs_descricao = 'Recurso ambientes virtuais do módulo integração';
+        $recurso->rcs_icone = 'fa fa-laptop';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 2;
         $recurso->save();
 
         // MODULO MONITORAMENTO

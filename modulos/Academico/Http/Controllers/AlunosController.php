@@ -4,26 +4,26 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Modulos\Academico\Http\Requests\TutorRequest;
-use Validator;
-use Modulos\Academico\Repositories\TutorRepository;
+use Modulos\Academico\Http\Requests\AlunoRequest;
+use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
+use ActionButton;
+use Validator;
 use DB;
 
-class TutoresController extends BaseController
+class AlunosController extends BaseController
 {
-    protected $tutorRepository;
+    protected $alunoRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
-
-    public function __construct(TutorRepository $tutor, PessoaRepository $pessoa, DocumentoRepository $documento)
+    
+    public function __construct(AlunoRepository $aluno, PessoaRepository $pessoa, DocumentoRepository $documento)
     {
-        $this->tutorRepository = $tutor;
+        $this->alunoRepository = $aluno;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
     }
@@ -31,27 +31,27 @@ class TutoresController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/tutores/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/academico/alunos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->tutorRepository->paginateRequest($request->all());
+        $tableData = $this->alunoRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'tut_id' => '#',
+                'alu_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
-                'tut_action' => 'Ações'
+                'alu_action' => 'Ações'
             ))
-                ->modifyCell('tut_action', function () {
+                ->modifyCell('alu_action', function () {
                     return array('style' => 'width: 140px;');
                 })
-                ->means('tut_action', 'tut_id')
-                ->modify('tut_action', function ($id) {
+                ->means('alu_action', 'alu_id')
+                ->modify('alu_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -62,47 +62,47 @@ class TutoresController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/tutores/edit/' . $id,
+                                'action' => '/academico/alunos/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/tutores/show/'.$id,
+                                'action' => '/academico/alunos/show/'.$id,
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
                         ]
                     ]);
                 })
-                ->sortable(array('tut_id', 'pes_nome'));
+                ->sortable(array('alu_id', 'pes_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Academico::tutores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::alunos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate($pessoaId = null)
     {
         if (is_null($pessoaId)) {
-            return view('Academico::tutores.create', ['pessoa' => []]);
+            return view('Academico::alunos.create', ['pessoa' => []]);
         }
 
         $pessoa = $this->pessoaRepository->findById($pessoaId);
 
         if ($pessoa) {
-            return view('Academico::tutores.create', ['pessoa' => $pessoa]);
+            return view('Academico::alunos.create', ['pessoa' => $pessoa]);
         }
 
-        return view('Academico::tutores.create', ['pessoa' => []]);
+        return view('Academico::alunos.create', ['pessoa' => []]);
     }
 
     public function postCreate(Request $request)
     {
         $pessoaRequest = new PessoaRequest();
-        $tutorRequest = new TutorRequest();
+        $alunoRequest = new AlunoRequest();
 
         try {
             $validator = Validator::make($request->all(), $pessoaRequest->rules());
@@ -177,20 +177,20 @@ class TutoresController extends BaseController
                 $this->documentoRepository->create($dataDocumento);
             }
 
-            $validator = Validator::make(['tut_pes_id' => $pes_id], $tutorRequest->rules());
+            $validator = Validator::make(['alu_pes_id' => $pes_id], $alunoRequest->rules());
 
             if ($validator->fails()) {
-                flash()->error('Tutor já cadastrado!');
-                return redirect()->route('academico.tutores.index');
+                flash()->error('Aluno já cadastrado!');
+                return redirect()->route('academico.alunos.index');
             }
 
-            $this->tutorRepository->create(['tut_pes_id' => $pes_id]);
+            $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
 
             DB::commit();
 
-            flash()->success('Tutor criado com sucesso!');
+            flash()->success('Aluno criado com sucesso!');
 
-            return redirect()->route('academico.tutores.index');
+            return redirect()->route('academico.alunos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -202,13 +202,13 @@ class TutoresController extends BaseController
         }
     }
 
-    public function getEdit($tutorId)
+    public function getEdit($alunoId)
     {
-        $tutor = $this->tutorRepository->find($tutorId);
+        $aluno = $this->alunoRepository->find($alunoId);
 
-        $pessoa = $this->pessoaRepository->findById($tutor->tut_pes_id);
+        $pessoa = $this->pessoaRepository->findById($aluno->alu_pes_id);
 
-        return view('Academico::tutores.edit', ['pessoa' => $pessoa]);
+        return view('Academico::alunos.edit', ['pessoa' => $pessoa]);
     }
 
     public function putEdit($pessoaId, Request $request)
@@ -261,8 +261,8 @@ class TutoresController extends BaseController
 
             DB::commit();
 
-            flash()->success('Tutor editado com sucesso!');
-            return redirect()->route('academico.tutores.index');
+            flash()->success('Aluno editado com sucesso!');
+            return redirect()->route('academico.alunos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -277,10 +277,10 @@ class TutoresController extends BaseController
         }
     }
 
-    public function getShow($tutorId)
+    public function getShow($alunoId)
     {
-        $tutor = $this->tutorRepository->find($tutorId);
+        $aluno = $this->alunoRepository->find($alunoId);
 
-        return view('Academico::tutores.show', ['pessoa' => $tutor->pessoa]);
+        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa]);
     }
 }

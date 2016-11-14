@@ -201,6 +201,13 @@ class UsuariosController extends BaseController
                 'usr_pes_id' => $pes_id
             );
 
+            $validator = Validator::make($dataUsuario, ['usr_pes_id' => 'required|unique:seg_usuarios']);
+
+            if ($validator->fails()) {
+                flash()->error('Usuário já cadastrado');
+                return redirect()->route('seguranca.usuarios.index');
+            }
+
             $this->usuarioRepository->create($dataUsuario);
 
             DB::commit();
