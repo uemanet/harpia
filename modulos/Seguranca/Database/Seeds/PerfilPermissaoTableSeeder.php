@@ -88,6 +88,7 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil = Perfil::find(5);
 
-        $perfil->permissoes()->attach([107]);
+        $perfil->permissoes()->attach([107]); // Permissoes do recurso Dashboard
+
     }
 }
