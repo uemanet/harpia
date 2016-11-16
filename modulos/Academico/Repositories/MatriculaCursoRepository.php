@@ -22,12 +22,12 @@ class MatriculaCursoRepository extends BaseRepository
                             $join->on('trm_ofc_id', '=', 'ofc_id');
                         })
                         ->where('mat_alu_id', '=', $alunoId)
-                        ->where(function ($query) use($turmaId, $ofertaCursoId) {
+                        ->where(function ($query) use ($turmaId, $ofertaCursoId) {
                             $query->where('mat_trm_id', '=', $turmaId)
                                     ->orWhere('trm_ofc_id', '=', $ofertaCursoId);
                         })->get();
 
-        if($result->count()) {
+        if ($result->count()) {
             return true;
         }
 
@@ -48,8 +48,7 @@ class MatriculaCursoRepository extends BaseRepository
                         ->where('ofc_crs_id', '=', $cursoId)
                         ->get();
 
-        if($result->count())
-        {
+        if ($result->count()) {
             return true;
         }
 
@@ -72,8 +71,7 @@ class MatriculaCursoRepository extends BaseRepository
             ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
             ->get();
 
-        if($result->count())
-        {
+        if ($result->count()) {
             return true;
         }
 

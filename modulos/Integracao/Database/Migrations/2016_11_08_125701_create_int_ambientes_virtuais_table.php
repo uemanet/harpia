@@ -14,7 +14,6 @@ class CreateIntAmbientesVirtuaisTable extends Migration
     public function up()
     {
         Schema::create('int_ambientes_virtuais', function (Blueprint $table) {
-
             $table->increments('amb_id');
             $table->string('amb_nome', 45);
             $table->string('amb_versao', 20);

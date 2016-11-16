@@ -13,8 +13,7 @@ class MatrizCurricularSeeder extends Seeder
     {
         $faker = Factory::create();
 
-        for($i=1;$i<=5;$i++)
-        {
+        for ($i=1;$i<=5;$i++) {
             $matriz = new MatrizCurricular();
             $matriz->mtc_crs_id = $i;
             $matriz->mtc_anx_projeto_pedagogico = factory(Anexo::class)->create()->anx_id;
@@ -26,6 +25,5 @@ class MatrizCurricularSeeder extends Seeder
             $matriz->mtc_horas_praticas = 250;
             $matriz->save();
         }
-
     }
 }

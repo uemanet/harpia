@@ -123,7 +123,6 @@ $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Gener
     ];
 });
 
-
 $factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\Generator $faker){
     return [
         'per_nome' => $faker->word,
@@ -155,9 +154,10 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
 });
 
 $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
+    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
     return [
-        'ofc_crs_id' => 1,
-        'ofc_mtc_id' => 1,
+        'ofc_crs_id' => $curso->crs_id,
+        'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create(['mtc_crs_id' => $curso->crs_id])->mtc_id,
         'ofc_mdl_id' => 1,
         'ofc_ano' =>2005
     ];
@@ -165,7 +165,7 @@ $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Ge
 
 $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
     return [
-        'mtc_crs_id' => 1,
+        'mtc_crs_id' => factory(Modulos\Academico\Models\Curso::class)->create()->crs_id,
         'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
         'mtc_descricao' => $faker->words(5, true),
         'mtc_data' => $faker->date('d/m/Y'),
@@ -213,7 +213,28 @@ $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generato
     ];
 });
 
-$factory->define(Modulos\Academico\Models\AmbienteVitual::class, function (Faker\Generator $faker) {
+$factory->define(Modulos\Academico\Models\Matricula::class, function () {
+    $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+    $turma = factory(Modulos\Academico\Models\Turma::class)->create(['trm_ofc_id' => $oferta->ofc_id]);
+    $polo = factory(Modulos\Academico\Models\Polo::class)->create();
+    $oferta->polos()->attach($polo->pol_id);
+    $grupo = factory(Modulos\Academico\Models\Grupo::class)->create([
+        'grp_trm_id' => $turma->trm_id,
+        'grp_pol_id' => $polo->pol_id
+    ]);
+
+    return [
+        'mat_alu_id' => factory(Modulos\Academico\Models\Aluno::class)->create()->alu_id,
+        'mat_trm_id' => $turma->trm_id,
+        'mat_pol_id' => $polo->pol_id,
+        'mat_grp_id' => $grupo->grp_id,
+        'mat_situacao' => 'cursando'
+    ];
+});
+
+
+/** Factories Modulo Integracao */
+$factory->define(Modulos\Integracao\Models\AmbienteVirtual::class, function (Faker\Generator $faker) {
     return [
         'amb_nome' => $faker->name,
         'amb_versao' => $faker->sentence(2),

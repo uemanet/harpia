@@ -19,7 +19,5 @@ class Alunos extends BaseController
     {
         $cpf = $request->input('doc_conteudo');
         $nome = $request->input('pes_nome');
-        
-        
     }
 }

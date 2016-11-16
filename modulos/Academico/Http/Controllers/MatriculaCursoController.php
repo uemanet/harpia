@@ -67,7 +67,7 @@ class MatriculaCursoController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
-        if(!$aluno) {
+        if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->back();
         }
@@ -79,19 +79,17 @@ class MatriculaCursoController extends BaseController
 
     public function postCreate($alunoId, MatriculaCursoRequest $request)
     {
-        try{
+        try {
 
             // verifica se aluno possui matricula na oferta de curso ou na turma
-            if($this->matriculaCursoRepository->verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $request->input('ofc_id'), $request->input('mat_trm_id')))
-            {
+            if ($this->matriculaCursoRepository->verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $request->input('ofc_id'), $request->input('mat_trm_id'))) {
                 flash()->error('Aluno já possui matricula na oferta ou turma');
                 return redirect()->route('academico.matricularalunocurso.show', $alunoId);
             }
 
             // verifica se aluno possui matricula ativa no curso, mesmo sendo em ofertas diferentes, contanto que tenha concluido, evadido
             // ou abandonado o curso
-            if($this->matriculaCursoRepository->verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $request->input('crs_id')))
-            {
+            if ($this->matriculaCursoRepository->verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $request->input('crs_id'))) {
                 flash()->error('Aluno já possui matricula ativa no curso selecionado');
                 return redirect()->route('academico.matricularalunocurso.show', $alunoId);
             }
@@ -100,10 +98,8 @@ class MatriculaCursoController extends BaseController
             $curso = $this->cursoRepository->find($request->input('crs_id'));
             
             // caso seja de Graducao
-            if($curso->crs_nvc_id == 3)
-            {
-                if($this->matriculaCursoRepository->verifyIfExistsMatriculaInCursoGraducao($alunoId))
-                {
+            if ($curso->crs_nvc_id == 3) {
+                if ($this->matriculaCursoRepository->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
                     flash()->error('Aluno já possui matricula ativa em outro curso de graduação');
                     return redirect()->route('academico.matricularalunocurso.show', $alunoId);
                 }
@@ -121,7 +117,6 @@ class MatriculaCursoController extends BaseController
 
             flash()->success('Matricula efetuada com sucesso!');
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
-
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

@@ -27,5 +27,4 @@ class PeriodoLetivoSeeder extends Seeder
         $periodo->per_fim = '10/12/2017';
         $periodo->save();
     }
-
 }

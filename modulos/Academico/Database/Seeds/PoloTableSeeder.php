@@ -10,8 +10,7 @@ class PoloTableSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-        for($i=0;$i<20;$i++)
-        {
+        for ($i=0;$i<20;$i++) {
             $polo = new Polo();
             $polo->pol_nome = $faker->city;
 

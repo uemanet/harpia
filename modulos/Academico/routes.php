@@ -198,8 +198,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina');
         });
 
-        Route::group(['prefix' => 'grupos'], function() {
-           Route::get('/findallbyturmapolo/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturmapolo');
+        Route::group(['prefix' => 'grupos'], function () {
+            Route::get('/findallbyturmapolo/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturmapolo');
         });
     });
 });

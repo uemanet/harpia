@@ -29,5 +29,4 @@ class AmbienteVirtual extends BaseModel
     {
         return $this->hasMany('Modulos\Integracao\Models\AmbienteServico', 'asr_amb_id', 'amb_id');
     }
-
 }

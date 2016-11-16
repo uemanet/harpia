@@ -17,6 +17,8 @@
                     <table class="table table-bordered">
                         <tr>
                             <th>Curso</th>
+                            <th>Nível do Curso</th>
+                            <th>Modalidade</th>
                             <th>Oferta de Curso</th>
                             <th>Turma</th>
                             <th>Polo</th>
@@ -26,6 +28,8 @@
                         @foreach($aluno->matriculas as $matricula)
                             <tr>
                                 <td>{{$matricula->turma->ofertacurso->curso->crs_nome}}</td>
+                                <td>{{$matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome}}</td>
+                                <td>{{$matricula->turma->ofertacurso->modalidade->mdl_nome}}</td>
                                 <td>{{$matricula->turma->ofertacurso->ofc_ano}}</td>
                                 <td>{{$matricula->turma->trm_nome}}</td>
                                 <td>@if($matricula->polo) {{$matricula->polo->pol_nome}} @endif</td>

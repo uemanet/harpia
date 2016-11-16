@@ -14,7 +14,6 @@ class CreateIntServicosTable extends Migration
     public function up()
     {
         Schema::create('int_servicos', function (Blueprint $table) {
-
             $table->increments('ser_id');
             $table->string('ser_nome', 45);
             $table->string('ser_slug', 45);

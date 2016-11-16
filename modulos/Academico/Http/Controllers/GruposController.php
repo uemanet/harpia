@@ -117,7 +117,7 @@ class GruposController extends BaseController
 
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id)->pluck('pol_nome', 'pol_id');
+        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
 
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
 

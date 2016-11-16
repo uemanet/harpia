@@ -37,5 +37,4 @@ class Matricula extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Grupo', 'mat_grp_id');
     }
-
 }

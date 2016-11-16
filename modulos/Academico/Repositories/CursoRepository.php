@@ -52,7 +52,7 @@ class CursoRepository extends BaseRepository
      */
     public function lists($identifier, $field, $all = false)
     {
-        if(!$all) {
+        if (!$all) {
             return $this->model
                 ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
                 ->where('ucr_usr_id', '=', Auth::user()->usr_id)
@@ -60,7 +60,6 @@ class CursoRepository extends BaseRepository
         }
 
         return $this->model->pluck($field, $identifier);
-
     }
 
     public function listsByCursoId($cursoId)
