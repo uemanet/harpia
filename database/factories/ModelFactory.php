@@ -29,10 +29,10 @@ $factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generato
 
 $factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $faker) {
     return [
-        'anx_tax_id' => $faker->randomNumber(1),
+        'anx_tax_id' => 1,
         'anx_nome' => $faker->word,
-        'anx_mime' => $faker->mimeType,
-        'anx_localizacao' => base_path(),
+        'anx_mime' => 'application/pdf',
+        'anx_localizacao' => $faker->sha1,
     ];
 });
 
