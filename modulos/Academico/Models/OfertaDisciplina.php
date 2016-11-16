@@ -19,7 +19,7 @@ class OfertaDisciplina extends BaseModel
     ];
 
     protected $searchable = [
-        'ofd_per_id' => 'like'
+        'ofd_per_id' => 'like',
     ];
 
     public function periodoLetivo()

@@ -42,58 +42,10 @@ class OfertasDisciplinasController extends BaseController
 
     public function getIndex(Request $request)
     {
-        $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/ofertasdisciplinas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        $actionButtons[] = $btnNovo;
-
-        $paginacao = null;
-        $tabela = null;
-
-        $tableData = $this->ofertadisciplinaRepository->paginateRequest($request->all());
-        if ($tableData->count()) {
-            $tabela = $tableData->columns(array(
-                'ofd_id' => '#',
-                'ofd_mdc_id' => 'Disciplina',
-                'ofd_per_id' => 'Periodo Letivo',
-                'ofd_action' => 'Ações'
-            ))
-                ->modifyCell('ofc_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('ofd_action', 'ofd_id')
-                ->means('ofd_mdc_id', 'modulosDisciplinas')
-                ->modify('ofd_mdc_id', function ($modulosDisciplinas) {
-                    return $modulosDisciplinas->disciplina->dis_nome;
-                })
-                ->means('ofd_per_id', 'periodoletivo')
-                ->modify('ofd_per_id', function ($periodoletivo) {
-                    return $periodoletivo->per_nome;
-                })
-                ->modify('ofd_action', function ($id) {
-                    return ActionButton::grid([
-                        'type' => 'SELECT',
-                        'config' => [
-                            'classButton' => 'btn-default',
-                            'label' => 'Selecione'
-                        ],
-                        'buttons' => [
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-plus',
-                                'action' => '#'.$id,
-                                'label' => '#',
-                                'method' => 'get'
-                            ]
-                        ]
-                    ]);
-                })
-                ->sortable(array('ofd_id', 'ofd_mdc_id'));
-
-            $paginacao = $tableData->appends($request->except('page'));
-        }
-
-        return view('Academico::ofertasdisciplinas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::ofertasdisciplinas.index', compact('cursos', 'periodoletivo'));
     }
 
     public function getCreate()
@@ -108,28 +60,21 @@ class OfertasDisciplinasController extends BaseController
     public function postCreate(OfertaDisciplinaRequest $request)
     {
         try {
+            if (!$this->ofertadisciplinaRepository->verifyDisciplinaTurmaPeriodo($request->ofd_trm_id, $request->ofd_per_id))
+            {
+                $ofertadisciplina = $this->ofertadisciplinaRepository->create($request->all());
 
-
-            $ofertadisciplina = $this->ofertadisciplinaRepository->create($request->all());
-
-
-
-//            $oferta = $this->ofertadisciplinaRepository->find($ofertadisciplina->ofc_id);
-//
-//            if (!is_null($request->polos)) {
-//                foreach ($request->polos as $key => $polo) {
-//                    $oferta->polos()->attach($polo);
-//                }
-//            }
-
-            if (!$ofertadisciplina) {
-                flash()->error('Erro ao tentar salvar.');
-
-                return redirect()->back()->withInput($request->all());
+                if (!$ofertadisciplina) {
+                    flash()->error('Erro ao tentar salvar.');
+                    return redirect()->back()->withInput($request->all());
+                }
+                flash()->success('Oferta de disciplina criada com sucesso');
+                return redirect('/academico/ofertasdisciplinas/index');
             }
 
-            flash()->success('Oferta de disciplina criada com sucesso.');
-            return redirect('/academico/ofertasdisciplinas/index');
+            flash()->error('Disciplina já existente para esse periodo e turma.');
+            return redirect()->back()->withInput($request->all());
+
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
