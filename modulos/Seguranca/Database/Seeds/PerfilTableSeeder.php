@@ -37,7 +37,7 @@ class PerfilTableSeeder extends Seeder
         $perfil->prf_descricao = 'Perfil administrador do módulo integração';
         $perfil->save();
 
-        // Modulo Integração
+        // Modulo monitoramento
         $perfil = new Perfil();
         $perfil->prf_mod_id = 5;
         $perfil->prf_nome = 'Administrador';

@@ -13,51 +13,40 @@ class OfertaDisciplinaRepository extends BaseRepository
         $this->model = $ofertaDisciplina;
     }
 
-    public function paginate($sort = null, $search = null)
-    {
-        $result = $this->model->join('acd_modulos_disciplinas', function ($join) {
-            $join->on('ofd_mdc_id', '=', 'mdc_id');
-        })
-            ->join('acd_disciplinas', function ($join) {
-                $join->on('mdc_dis_id', '=', 'dis_id');
-            })
-            ->join('acd_periodos_letivos', function ($join) {
-                $join->on('ofd_per_id', '=', 'per_id');
-            });
+    public function findAll(array $options, array $select = null) {
+        $query = $this->model
+                        ->join('acd_modulos_disciplinas', function ($join) {
+                            $join->on('ofd_mdc_id', '=', 'mdc_id');
+                        })
+                        ->join('acd_disciplinas', function ($join) {
+                            $join->on('mdc_dis_id', '=', 'dis_id');
+                        })
+                        ->join('acd_professores', function ($join) {
+                            $join->on('ofd_prf_id', '=', 'prf_id');
+                        })
+                        ->join('gra_pessoas', function ($join) {
+                            $join->on('prf_pes_id', '=', 'pes_id');
+                        });
 
-        if (!empty($search)) {
-            foreach ($search as $key => $value) {
-                switch ($value['type']) {
-                    case 'like':
-                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
-                        break;
-                    default:
-                        $result = $result->where($value['field'], $value['type'], $value['term']);
-                }
+        if(!empty($options)) {
+            foreach ($options as $key => $value) {
+                $query = $query->where($key, '=', $value);
             }
         }
 
-        if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
+        if(!is_null($select)) {
+            $query = $query->select($select);
         }
 
-        $result = $result->paginate(15);
-
-        return $result;
+        return $query->get();
     }
 
-    public function findAll(array $options) {
-        $result = $this->model
-                        ->join('acd_modulos_disicplinas', function ($join) {
-                            $join->on('');
-                        });
-    }
-
-    public function verifyDisciplinaTurmaPeriodo($turmaId, $periodoId)
+    public function verifyDisciplinaTurmaPeriodo($turmaId, $periodoId, $disciplinaId)
     {
         $exists = $this->model->where('ofd_trm_id', $turmaId)
-                           ->where('ofd_per_id', $periodoId)
-                           ->first();
+                              ->where('ofd_per_id', $periodoId)
+                              ->where('ofd_mdc_id', $disciplinaId)
+                              ->first();
 
         if ($exists) {
             return true;

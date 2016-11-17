@@ -42,10 +42,15 @@ class OfertasDisciplinasController extends BaseController
 
     public function getIndex(Request $request)
     {
+        $btnNovo = new TButton();
+        $btnNovo->setName('Oferecer Disciplinas')->setAction('/academico/ofertasdisciplinas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+
+        $actionButton[] = $btnNovo;
+
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
         $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::ofertasdisciplinas.index', compact('cursos', 'periodoletivo'));
+        return view('Academico::ofertasdisciplinas.index', compact('cursos', 'periodoletivo', 'actionButton'));
     }
 
     public function getCreate()
@@ -55,33 +60,5 @@ class OfertasDisciplinasController extends BaseController
         $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
         return view('Academico::ofertasdisciplinas.create', compact('cursos', 'professor', 'periodoletivo'));
-    }
-
-    public function postCreate(OfertaDisciplinaRequest $request)
-    {
-        try {
-            if (!$this->ofertadisciplinaRepository->verifyDisciplinaTurmaPeriodo($request->ofd_trm_id, $request->ofd_per_id))
-            {
-                $ofertadisciplina = $this->ofertadisciplinaRepository->create($request->all());
-
-                if (!$ofertadisciplina) {
-                    flash()->error('Erro ao tentar salvar.');
-                    return redirect()->back()->withInput($request->all());
-                }
-                flash()->success('Oferta de disciplina criada com sucesso');
-                return redirect('/academico/ofertasdisciplinas/index');
-            }
-
-            flash()->error('Disciplina já existente para esse periodo e turma.');
-            return redirect()->back()->withInput($request->all());
-
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-            return redirect()->back();
-        }
     }
 }

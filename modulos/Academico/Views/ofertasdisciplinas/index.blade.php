@@ -8,6 +8,10 @@
     Gerenciamento de ofertas de disciplinas
 @stop
 
+@section('actionButton')
+    {!!ActionButton::render($actionButton)!!}
+@stop
+
 @section('stylesheets')
     <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
 @stop
@@ -44,8 +48,27 @@
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
-                    <button class="btn btn-primary form-control"><i class="fa fa-search"></i></button>
+                    <button class="btn btn-primary form-control" id="btnLocalizar"><i class="fa fa-search"></i></button>
                 </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="box box-primary hidden" id="boxDisciplinas">
+        <div class="box-header with-border">
+            <h3 class="box-title">Disciplinas Ofertadas</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12 conteudo"></div>
             </div>
         </div>
         <!-- /.box-body -->
@@ -61,6 +84,8 @@
 
             var selectOfertas = $('#ofc_id');
             var selectTurmas = $('#trm_id');
+
+            var boxDisciplinas = $('#boxDisciplinas');
 
             $('#crs_id').change(function () {
                 var curso = $(this).val();
@@ -102,6 +127,48 @@
                                 }
                             });
                 }
+            });
+
+            $('#btnLocalizar').click(function () {
+                var turma = selectTurmas.val();
+                var periodo = $('#per_id').val();
+
+                if(turma == '' || periodo == '') {
+                    return false;
+                }
+
+                $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turma + "&ofd_per_id=" + periodo)
+                .done(function (data) {
+                    boxDisciplinas.removeClass('hidden');
+                    boxDisciplinas.find('.conteudo').empty();
+                    if(!$.isEmptyObject(data)) {
+
+                        var table = '';
+                        table += "<table class='table table-bordered'>";
+                        table += '<tr>';
+                        table += "<th>Disciplina</th>";
+                        table += "<th>Carga Horária</th>";
+                        table += "<th>Créditos</th>";
+                        table += "<th>Vagas</th>";
+                        table += "<th>Professor</th>";
+                        table += '</tr>';
+
+                        $.each(data, function (key, obj) {
+                            table += '<tr>';
+                            table += "<td>"+obj.dis_nome+"</td>";
+                            table += "<td>"+obj.dis_carga_horaria+"</td>";
+                            table += "<td>"+obj.dis_creditos+"</td>";
+                            table += "<td>"+obj.ofd_qtd_vagas+"</td>";
+                            table += "<td>"+obj.pes_nome+"</td>";
+                            table += '</tr>';
+                        });
+
+                        table += "</table>";
+                        boxDisciplinas.find('.conteudo').append(table);
+                    } else {
+                        boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
+                    }
+                });
             });
         });
     </script>

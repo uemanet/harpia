@@ -67,6 +67,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoProfessores();
 
+        $this->createPermissoesAcademicoOfertasDisciplinas();
+
         /** Permissões do Módulo Integração */
 
         $this->createPermissoesIntegracaoDashboard();
@@ -747,7 +749,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão show do recurso Tutores';
         $permissao->save();
     }
-        // 4 permissoes
+    // 4 permissoes
     private function createPermissoesAcademicoProfessores()
     {
         $permissao = new Permissao();
@@ -772,6 +774,21 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 26;
         $permissao->prm_nome = 'show';
         $permissao->prm_descricao = 'Permissão show do recurso Professores';
+        $permissao->save();
+    }
+
+    private function createPermissoesAcademicoOfertasDisciplinas()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 30;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Ofertar Disciplina';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 30;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Ofertar Disciplina';
         $permissao->save();
     }
 
