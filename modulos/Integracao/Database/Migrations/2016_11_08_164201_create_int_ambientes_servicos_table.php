@@ -14,7 +14,6 @@ class CreateIntAmbientesServicosTable extends Migration
     public function up()
     {
         Schema::create('int_ambientes_servicos', function (Blueprint $table) {
-
             $table->increments('asr_id');
             $table->integer('asr_amb_id')->unsigned();
             $table->integer('asr_ser_id')->unsigned();

@@ -41,6 +41,7 @@ class CursosController extends BaseController
         $tabela = null;
 
         $tableData = $this->cursoRepository->paginateRequest($request->all());
+
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'crs_id' => '#',
