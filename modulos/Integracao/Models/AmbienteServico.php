@@ -24,5 +24,4 @@ class AmbienteServico extends BaseModel
     {
         return $this->belongsTo('Modulos\Integracao\Models\Servico', 'asr_ser_id', 'ser_id');
     }
-
 }

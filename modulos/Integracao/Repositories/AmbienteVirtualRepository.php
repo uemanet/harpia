@@ -11,5 +11,4 @@ class AmbienteVirtualRepository extends BaseRepository
     {
         $this->model = $ambientevirtual;
     }
-
 }

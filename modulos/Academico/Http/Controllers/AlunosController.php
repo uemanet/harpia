@@ -281,6 +281,6 @@ class AlunosController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
-        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa]);
+        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
     }
 }

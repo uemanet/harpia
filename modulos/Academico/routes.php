@@ -165,6 +165,13 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/create', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getCreate')->name('academico.ofertasdisciplinas.getCreate');
     });
 
+    Route::group(['prefix' => 'matricularalunocurso'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getIndex')->name('academico.matricularalunocurso.index');
+        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getCreate')->name('academico.matricularalunocurso.getCreate');
+        Route::post('/create/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@postCreate')->name('academico.matricularalunocurso.postCreate');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getShow')->name('academico.matricularalunocurso.show');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
@@ -208,6 +215,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertasdisciplinas'], function () {
            Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getFindall');
             Route::post('/oferecerdisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postOferecerdisciplina');
+        });
+
+        Route::group(['prefix' => 'grupos'], function () {
+            Route::get('/findallbyturmapolo/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturmapolo');
         });
     });
 });

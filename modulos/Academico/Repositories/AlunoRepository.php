@@ -45,4 +45,30 @@ class AlunoRepository extends BaseRepository
 
         return $result;
     }
+    
+    public function findByNomeOrCpf(array $search)
+    {
+        $result = $this->model->join('gra_pessoas', function ($join) {
+            $join->on('alu_pes_id', '=', 'pes_id');
+        })->leftJoin('gra_documentos', function ($join) {
+            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+        });
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                if ($key == 'pes_cpf') {
+                    $result = $result->where('doc_conteudo', '=', $value);
+                }
+                if ($key == 'pes_nome') {
+                    $result = $result->where($key, 'like', "%{$value}%");
+                }
+            }
+
+            $result = $result->orderBy('pes_nome', 'ASC')->get();
+
+            return $result;
+        }
+
+        return null;
+    }
 }
