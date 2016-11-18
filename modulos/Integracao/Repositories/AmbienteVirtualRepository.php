@@ -12,7 +12,6 @@ class AmbienteVirtualRepository extends BaseRepository
     {
         $this->model = $ambientevirtual;
     }
-<<<<<<< HEAD
 
     public function verifyIfExistsAmbienteTurma($ambienteId, $turmaId)
     {
@@ -29,6 +28,4 @@ class AmbienteVirtualRepository extends BaseRepository
 
     }
 
-=======
->>>>>>> 2f12d20f70c82c9b1b44dbd02e0b83adf50ef6b4
 }

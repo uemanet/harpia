@@ -28,12 +28,9 @@ class AmbientesVirtuaisController extends BaseController
         $this->ambientevirtualRepository = $ambientevirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteservicoRepository = $ambienteservicoRepository;
-<<<<<<< HEAD
         $this->cursoRepository = $cursoRepository;
         $this->ambienteturmaRepository = $ambienteturmaRepository;
 
-=======
->>>>>>> 2f12d20f70c82c9b1b44dbd02e0b83adf50ef6b4
     }
 
     public function getIndex(Request $request)
