@@ -33,6 +33,6 @@ class CreateIntAmbientesServicosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('int_servicos');
+        Schema::drop('int_ambientes_servicos');
     }
 }

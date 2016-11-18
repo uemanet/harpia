@@ -10,7 +10,9 @@ use Modulos\Integracao\Http\Requests\ServicoRequest;
 use Illuminate\Http\Request;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\AmbienteServicoRepository;
+use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 use Modulos\Integracao\Repositories\ServicoRepository;
+use Modulos\Academico\Repositories\CursoRepository;
 use Validator;
 
 class AmbientesVirtuaisController extends BaseController
@@ -18,12 +20,17 @@ class AmbientesVirtuaisController extends BaseController
     protected $ambientevirtualRepository;
     protected $servicoRepository;
     protected $ambienteservicoRepository;
+    protected $cursoRepository;
+    protected $ambienteturmaRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository, AmbienteServicoRepository $ambienteservicoRepository)
+    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository, AmbienteServicoRepository $ambienteservicoRepository, CursoRepository $cursoRepository,  AmbienteTurmaRepository $ambienteturmaRepository)
     {
         $this->ambientevirtualRepository = $ambientevirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteservicoRepository = $ambienteservicoRepository;
+        $this->cursoRepository = $cursoRepository;
+        $this->ambienteturmaRepository = $ambienteturmaRepository;
+
     }
 
     public function getIndex(Request $request)
@@ -58,6 +65,13 @@ class AmbientesVirtuaisController extends BaseController
                             'label' => 'Selecione'
                         ],
                         'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-plus',
+                                'action' => '/integracao/ambientesvirtuais/adicionarturma/'. $id,
+                                'label' => 'Turmas',
+                                'method' => 'get'
+                            ],
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-server',
@@ -253,6 +267,98 @@ class AmbientesVirtuaisController extends BaseController
                 flash()->success('Serviço excluído com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir o serviço');
+            }
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar deletar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function getAdicionarTurma($ambienteId)
+    {
+        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+
+        if (!$ambiente) {
+            flash()->error('Ambiente não existe!');
+            return redirect()->back();
+        }
+
+        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+
+        //$turmasdoambiente = $ambiente->turmas()->get();
+
+        return view('Integracao::ambientesvirtuais.adicionarturma', compact('ambiente', 'cursos'));
+    }
+
+    public function postAdicionarTurma($ambienteId, Request $request)
+    {
+        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+
+        if (!$ambiente) {
+            flash()->error('Ambiente não existe!');
+            return redirect()->back();
+        }
+
+        $validate['atr_trm_id'] = $request->atr_trm_id;
+        $validate['atr_amb_id'] = $ambienteId;
+        $validate['crs_id'] = $request->crs_id;
+        $validate['ofc_id'] = $request->ofc_id;
+
+        $validator = Validator::make($validate, [
+            'atr_trm_id' => 'required',
+            'atr_amb_id' => 'required',
+            'crs_id' => 'required',
+            'ofc_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $dados['atr_trm_id'] = $validate['atr_trm_id'];
+        $dados['atr_amb_id'] = $validate['atr_amb_id'];
+        try {
+
+            if (!$this->ambientevirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'] , $dados['atr_trm_id'])) {
+
+              $ambienteturma = $this->ambienteturmaRepository->create($dados);
+
+              if (!$ambienteturma) {
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+              }
+              flash()->success('Turma vinculada com sucesso');
+              return redirect()->back();
+
+            }
+            flash()->error('Esse ambiente já possui esta turma!');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->error('Erro ao tentar vincular turma ao ambiente. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
+        }
+    }
+
+    public function postDeletarTurma(Request $request)
+    {
+        try {
+            $ambienteturmaId = $request->get('id');
+
+            if ($this->ambienteturmaRepository->delete($ambienteturmaId)) {
+                flash()->success('Turma excluída com sucesso.');
+            } else {
+                flash()->error('Erro ao tentar excluir a turma');
             }
 
             return redirect()->back();
