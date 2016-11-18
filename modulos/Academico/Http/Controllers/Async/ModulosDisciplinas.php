@@ -84,6 +84,5 @@ class ModulosDisciplinas extends BaseController
         $disciplina = $this->moduloDisciplinaRepository->getAllDisciplinasByModulo($moduloId);
 
         return new JsonResponse($disciplina, 200);
-
     }
 }

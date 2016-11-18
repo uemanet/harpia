@@ -32,6 +32,6 @@ class Professor extends BaseModel
 
     public function ofertasDisciplinas()
     {
-        return $this->hasMany('Modulos\Geral\Models\OfertaDisciplina', 'ofd_prf_id' ,'prf_id');
+        return $this->hasMany('Modulos\Geral\Models\OfertaDisciplina', 'ofd_prf_id', 'prf_id');
     }
 }

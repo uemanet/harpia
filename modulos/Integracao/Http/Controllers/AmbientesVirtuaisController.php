@@ -30,7 +30,6 @@ class AmbientesVirtuaisController extends BaseController
         $this->ambienteservicoRepository = $ambienteservicoRepository;
         $this->cursoRepository = $cursoRepository;
         $this->ambienteturmaRepository = $ambienteturmaRepository;
-
     }
 
     public function getIndex(Request $request)
@@ -324,18 +323,15 @@ class AmbientesVirtuaisController extends BaseController
         $dados['atr_trm_id'] = $validate['atr_trm_id'];
         $dados['atr_amb_id'] = $validate['atr_amb_id'];
         try {
+            if (!$this->ambientevirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'], $dados['atr_trm_id'])) {
+                $ambienteturma = $this->ambienteturmaRepository->create($dados);
 
-            if (!$this->ambientevirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'] , $dados['atr_trm_id'])) {
-
-              $ambienteturma = $this->ambienteturmaRepository->create($dados);
-
-              if (!$ambienteturma) {
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-              }
-              flash()->success('Turma vinculada com sucesso');
-              return redirect()->back();
-
+                if (!$ambienteturma) {
+                    flash()->error('Erro ao tentar salvar.');
+                    return redirect()->back()->withInput($request->all());
+                }
+                flash()->success('Turma vinculada com sucesso');
+                return redirect()->back();
             }
             flash()->error('Esse ambiente já possui esta turma!');
             return redirect()->back();

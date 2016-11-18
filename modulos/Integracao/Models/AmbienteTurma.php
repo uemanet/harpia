@@ -23,5 +23,4 @@ class AmbienteTurma extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Turma', 'atr_trm_id', 'trm_id');
     }
-
 }
