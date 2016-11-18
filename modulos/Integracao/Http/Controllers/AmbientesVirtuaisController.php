@@ -10,6 +10,7 @@ use Modulos\Integracao\Http\Requests\ServicoRequest;
 use Illuminate\Http\Request;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\AmbienteServicoRepository;
+use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 use Modulos\Integracao\Repositories\ServicoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Validator;
@@ -20,13 +21,15 @@ class AmbientesVirtuaisController extends BaseController
     protected $servicoRepository;
     protected $ambienteservicoRepository;
     protected $cursoRepository;
+    protected $ambienteturmaRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository, AmbienteServicoRepository $ambienteservicoRepository, CursoRepository $cursoRepository)
+    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository, AmbienteServicoRepository $ambienteservicoRepository, CursoRepository $cursoRepository,  AmbienteTurmaRepository $ambienteturmaRepository)
     {
         $this->ambientevirtualRepository = $ambientevirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteservicoRepository = $ambienteservicoRepository;
         $this->cursoRepository = $cursoRepository;
+        $this->ambienteturmaRepository = $ambienteturmaRepository;
 
     }
 
@@ -347,6 +350,28 @@ class AmbientesVirtuaisController extends BaseController
 
                 return redirect()->back();
             }
+        }
+    }
+
+    public function postDeletarTurma(Request $request)
+    {
+        try {
+            $ambienteturmaId = $request->get('id');
+
+            if ($this->ambienteturmaRepository->delete($ambienteturmaId)) {
+                flash()->success('Turma excluída com sucesso.');
+            } else {
+                flash()->error('Erro ao tentar excluir a turma');
+            }
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar deletar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 }

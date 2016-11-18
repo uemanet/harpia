@@ -57,8 +57,8 @@
                     @foreach($ambiente->ambienteturma as $ambienteturma)
                         <tr>
                             <td>{{$ambienteturma->turma->trm_id}}</td>
-                            <td>{{$ambienteturma->turma->oferta->curso->crs_nome}}</td>
-                            <td>{{$ambienteturma->turma->oferta->ofc_ano}}</td>
+                            <td>{{$ambienteturma->turma->ofertacurso->curso->crs_nome}}</td>
+                            <td>{{$ambienteturma->turma->ofertacurso->ofc_ano}}</td>
                             <td>{{$ambienteturma->turma->trm_nome}}</td>
                             <td>
                                 {!! ActionButton::grid([
@@ -80,7 +80,7 @@
                 </tbody>
             </table>
         @else
-            <p>Sem turmas vinculadar ao ambiente virtual</p>
+            <p>Sem turmas vinculadas ao ambiente virtual</p>
         @endif
         </div>
     </div>

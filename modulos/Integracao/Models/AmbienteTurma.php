@@ -21,7 +21,7 @@ class AmbienteTurma extends BaseModel
 
     public function turma()
     {
-        return $this->belongsTo('Modulos\Integracao\Models\Turma', 'atr_trm_id', 'trm_id');
+        return $this->belongsTo('Modulos\Academico\Models\Turma', 'atr_trm_id', 'trm_id');
     }
 
 }
