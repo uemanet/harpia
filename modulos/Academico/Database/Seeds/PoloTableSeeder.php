@@ -8,16 +8,13 @@ class PoloTableSeeder extends Seeder
 {
     public function run()
     {
-        $polo1 = new Polo();
+        $faker = \Faker\Factory::create();
 
-        $polo1->pol_nome = 'São Luís';
+        for ($i=0;$i<20;$i++) {
+            $polo = new Polo();
+            $polo->pol_nome = $faker->city;
 
-        $polo1->save();
-
-        $polo2 = new Polo();
-
-        $polo2->pol_nome = 'Codó';
-
-        $polo2->save();
+            $polo->save();
+        }
     }
 }

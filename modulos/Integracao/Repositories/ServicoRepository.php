@@ -34,16 +34,15 @@ class ServicoRepository extends BaseRepository
 
     public function verifyIfExistsAmbienteServico($ambienteId, $servicoId)
     {
-      $exists = DB::table('int_ambientes_servicos')
+        $exists = DB::table('int_ambientes_servicos')
                   ->where('asr_amb_id', '=', $ambienteId)
                   ->where('asr_ser_id', '=', $servicoId)
                   ->first();
                   
-      if ($exists) {
-          return true;
-      }
+        if ($exists) {
+            return true;
+        }
 
-      return false;
-
+        return false;
     }
 }

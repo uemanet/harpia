@@ -28,9 +28,12 @@ class AmbientesVirtuaisController extends BaseController
         $this->ambientevirtualRepository = $ambientevirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteservicoRepository = $ambienteservicoRepository;
+<<<<<<< HEAD
         $this->cursoRepository = $cursoRepository;
         $this->ambienteturmaRepository = $ambienteturmaRepository;
 
+=======
+>>>>>>> 2f12d20f70c82c9b1b44dbd02e0b83adf50ef6b4
     }
 
     public function getIndex(Request $request)
@@ -235,18 +238,15 @@ class AmbientesVirtuaisController extends BaseController
         }
 
         try {
+            if (!$this->servicoRepository->verifyIfExistsAmbienteServico($dados['asr_amb_id'], $dados['asr_ser_id'])) {
+                $ambienteservico = $this->ambienteservicoRepository->create($dados);
 
-            if (!$this->servicoRepository->verifyIfExistsAmbienteServico($dados['asr_amb_id'] , $dados['asr_ser_id'])) {
-
-              $ambienteservico = $this->ambienteservicoRepository->create($dados);
-
-              if (!$ambienteservico) {
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-              }
-              flash()->success('Serviço Atribuído com sucesso');
-              return redirect()->back();
-
+                if (!$ambienteservico) {
+                    flash()->error('Erro ao tentar salvar.');
+                    return redirect()->back()->withInput($request->all());
+                }
+                flash()->success('Serviço Atribuído com sucesso');
+                return redirect()->back();
             }
             flash()->error('Esse ambiente já possui este serviço!');
             return redirect()->back();

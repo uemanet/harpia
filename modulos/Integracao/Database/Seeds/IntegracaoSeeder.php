@@ -9,6 +9,5 @@ class IntegracaoSeeder extends Seeder
     {
         $this->call(ServicoTableSeeder::class);
         $this->command->info('Servicos Table seeded');
-
     }
 }

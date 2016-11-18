@@ -11,5 +11,4 @@ class AmbienteServicoRepository extends BaseRepository
     {
         $this->model = $ambienteservico;
     }
-
 }

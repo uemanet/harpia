@@ -67,6 +67,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoProfessores();
 
+        $this->createPermissoesMatricularAlunoCurso();
+
         /** Permissões do Módulo Integração */
 
         $this->createPermissoesIntegracaoDashboard();
@@ -775,18 +777,41 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    // 3 permissoes
+    private function createPermissoesMatricularAlunoCurso()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 27;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Matricular aluno no curso';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 27;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Matricular aluno no curso';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 27;
+        $permissao->prm_nome = 'show';
+        $permissao->prm_descricao = 'Permissão show do recurso Matricular aluno no curso';
+        $permissao->save();
+    }
+
     /** Permissões do Módulo Integração */
 
     // 1 permissao
     private function createPermissoesIntegracaoDashboard()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 27; // Recurso Dashboard
+        $permissao->prm_rcs_id = 28; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
         $permissao->save();
     }
 
+    // 4 permissoes
     private function createPermissoesIntegracaoAmbientes()
     {
         $permissao = new Permissao();
@@ -820,7 +845,7 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesMonitoramentoDashboard()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 28; // Recurso Dashboard
+        $permissao->prm_rcs_id = 29; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();

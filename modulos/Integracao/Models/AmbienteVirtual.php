@@ -34,10 +34,13 @@ class AmbienteVirtual extends BaseModel
     {
         return $this->hasMany('Modulos\Integracao\Models\AmbienteServico', 'asr_amb_id', 'amb_id');
     }
+<<<<<<< HEAD
 
     public function ambienteturma()
     {
         return $this->hasMany('Modulos\Integracao\Models\AmbienteTurma', 'atr_amb_id', 'amb_id');
     }
 
+=======
+>>>>>>> 2f12d20f70c82c9b1b44dbd02e0b83adf50ef6b4
 }

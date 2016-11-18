@@ -22,4 +22,9 @@ class Aluno extends BaseModel
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'alu_pes_id');
     }
+
+    public function matriculas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Matricula', 'mat_alu_id');
+    }
 }

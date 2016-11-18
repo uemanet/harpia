@@ -22,9 +22,8 @@ class PoloRepository extends BaseRepository
     {
         $entries = DB::table('acd_polos_ofertas_cursos')
                         ->join('acd_polos', 'poc_pol_id', '=', 'pol_id')
-                        ->select('pol_id', 'pol_nome')
                         ->where('poc_ofc_id', '=', $idOfertaCurso)
-                        ->pluck('pol_nome', 'pol_id');
+                        ->get();
 
         return $entries;
     }

@@ -67,5 +67,20 @@ class CursoTableSeeder extends Seeder
         $curso->crs_eixo = 'Computação';
         $curso->crs_habilitacao = 'Bacharel';
         $curso->save();
+
+        // Cursos Técnicos
+        $curso = new Curso();
+        $curso->crs_dep_id = 1;
+        $curso->crs_nvc_id = 1;  // Nivel Tecnico
+        $curso->crs_prf_diretor = 5;
+        $curso->crs_nome = 'Técnico em Informática';
+        $curso->crs_sigla = 'TI';
+        $curso->crs_descricao = 'Curso Técnico com habilitação em Informática';
+        $curso->crs_resolucao = 'MEC 20/2010';
+        $curso->crs_autorizacao = 'MEC 90/2012';
+        $curso->crs_data_autorizacao = $faker->date('d/m/Y');
+        $curso->crs_eixo = 'Computação';
+        $curso->crs_habilitacao = 'Técnico';
+        $curso->save();
     }
 }

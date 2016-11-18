@@ -19,7 +19,4 @@ class Servico extends BaseModel
     protected $searchable = [
         'ser_nome' => 'like'
     ];
-
-    
-
 }
