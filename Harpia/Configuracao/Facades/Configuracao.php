@@ -1,10 +1,10 @@
 <?php
 
-namespace Harpia\Settings\Facades;
+namespace Harpia\Configuracao\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Setting extends Facade
+class Configuracao extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -12,6 +12,6 @@ class Setting extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Setting';
+        return 'Configuracao';
     }
 }

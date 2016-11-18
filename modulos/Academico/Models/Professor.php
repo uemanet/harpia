@@ -29,4 +29,9 @@ class Professor extends BaseModel
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'prf_pes_id');
     }
+
+    public function ofertasDisciplinas()
+    {
+        return $this->hasMany('Modulos\Geral\Models\OfertaDisciplina', 'ofd_prf_id' ,'prf_id');
+    }
 }

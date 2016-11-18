@@ -3,8 +3,7 @@
 namespace Modulos\Integracao\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Setting;
-
+use Configuracao;
 /**
  * Class IndexController.
  */
@@ -16,6 +15,6 @@ class IndexController extends Controller
      */
     public function getIndex()
     {
-        return view('Integracao::index.index');
+        return Configuracao::remove('min_temp_click');
     }
 }

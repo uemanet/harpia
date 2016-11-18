@@ -49,7 +49,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->mod_ativo = 1;
         $modulo->save();
 
-        //Modulo Integração
+        //Modulo monitoramento
         $modulo = new Modulo;
         $modulo->mod_rota = 'monitoramento';
         $modulo->mod_nome = 'Monitoramento';

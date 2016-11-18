@@ -1,10 +1,10 @@
 <?php
 
-namespace Harpia\Settings;
+namespace Harpia\Configuracao;
 
 use Modulos\Geral\Repositories\ConfiguracaoRepository;
 
-class Setting
+class Configuracao
 {
     private $configuracaoRepository;
 

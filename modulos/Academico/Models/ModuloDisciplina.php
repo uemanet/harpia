@@ -29,4 +29,9 @@ class ModuloDisciplina extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\ModuloMatriz', 'mdc_mdo_id', 'mdo_id');
     }
+
+    public function ofertasDisciplinas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\OfertaDisciplina', 'ofd_mdc_id', 'mdc_id');
+    }
 }
