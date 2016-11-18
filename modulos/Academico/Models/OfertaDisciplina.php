@@ -42,4 +42,9 @@ class OfertaDisciplina extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Turma', 'ofd_trm_id', 'trm_id');
     }
+
+    public function matriculasOfertasDisciplinas()
+    {
+        return $this->hasMany('Modulos\Aacademico\Models\MatriculaOfertaDisciplina', 'mof_ofd_id', 'ofd_id');
+    }
 }

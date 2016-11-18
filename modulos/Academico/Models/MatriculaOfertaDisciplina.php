@@ -11,27 +11,18 @@ class MatriculaOfertaDisciplina extends BaseModel
     protected $primaryKey = 'mof_id';
 
     protected $fillable = [
-        'mdc_dis_id',
-        'mdc_mdo_id',
-        'mdc_tipo_avaliacao'
+        'mof_mat_id',
+        'mof_ofd_id',
+        'mof_tipo_matricula'
     ];
 
-    protected $searchable = [
-        'mdc_dis_id' => 'like'
-    ];
-
-    public function disciplina()
+    public function matriculaCurso()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Disciplina', 'mdc_dis_id', 'dis_id');
+        return $this->belongsTo('Modulos\Academico\Models\Matricula', 'mof_mat_id', 'mat_id');
     }
 
-    public function modulo()
+    public function ofertaDisciplina()
     {
-        return $this->belongsTo('Modulos\Academico\Models\ModuloMatriz', 'mdc_mdo_id', 'mdo_id');
-    }
-
-    public function ofertasDisciplinas()
-    {
-        return $this->hasMany('Modulos\Academico\Models\OfertaDisciplina', 'ofd_mdc_id', 'mdc_id');
+        return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'mof_ofd_id', 'ofd_id');
     }
 }

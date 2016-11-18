@@ -37,4 +37,9 @@ class Matricula extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Grupo', 'mat_grp_id');
     }
+
+    public function matriculasOfertasDisciplinas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_mat_id', 'mat_id');
+    }
 }
