@@ -290,6 +290,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
 
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 4; // Categoria Processos do Módulo Acadêmico
+        $recurso->rcs_nome = 'Ofertar Disciplina';
+        $recurso->rcs_rota = 'ofertasdisciplinas';
+        $recurso->rcs_descricao = 'Recurso Ofertar Disciplina';
+        $recurso->rcs_icone = 'fa fa-clipboard';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
+
         // MODULO INTEGRAÇÃO
         // Recurso Dashboard
         $recurso = new Recurso();

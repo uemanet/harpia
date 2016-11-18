@@ -47,4 +47,5 @@ class ModuloDisciplinaRepository extends BaseRepository
         $result = $this->model
               ->where('mdc_dis_id', '=', $data['dis_id']);
     }
+
 }

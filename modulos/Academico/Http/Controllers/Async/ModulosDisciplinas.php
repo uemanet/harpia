@@ -78,4 +78,12 @@ class ModulosDisciplinas extends BaseController
             return new JsonResponse(Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function getAllDisciplinasByModulo($moduloId)
+    {
+        $disciplina = $this->moduloDisciplinaRepository->getAllDisciplinasByModulo($moduloId);
+
+        return new JsonResponse($disciplina, 200);
+
+    }
 }

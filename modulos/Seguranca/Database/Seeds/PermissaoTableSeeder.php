@@ -69,6 +69,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesMatricularAlunoCurso();
 
+        $this->createPermissoesAcademicoOfertarDisciplina();
+
         /** Permissões do Módulo Integração */
 
         $this->createPermissoesIntegracaoDashboard();
@@ -749,7 +751,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão show do recurso Tutores';
         $permissao->save();
     }
-        // 4 permissoes
+    // 4 permissoes
     private function createPermissoesAcademicoProfessores()
     {
         $permissao = new Permissao();
@@ -799,13 +801,29 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    // 2 permissoes
+    private function createPermissoesAcademicoOfertarDisciplina()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 28;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Ofertar Disciplina';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 28;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Ofertar Disciplina';
+        $permissao->save();
+    }
+
     /** Permissões do Módulo Integração */
 
     // 1 permissao
     private function createPermissoesIntegracaoDashboard()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 28; // Recurso Dashboard
+        $permissao->prm_rcs_id = 29; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
         $permissao->save();
@@ -815,25 +833,25 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesIntegracaoAmbientes()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 27;
+        $permissao->prm_rcs_id = 30;
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 27;
+        $permissao->prm_rcs_id = 30;
         $permissao->prm_nome = 'create';
         $permissao->prm_descricao = 'Permissão create do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 27;
+        $permissao->prm_rcs_id = 30;
         $permissao->prm_nome = 'edit';
         $permissao->prm_descricao = 'Permissão edit do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 27;
+        $permissao->prm_rcs_id = 30;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Ambientes';
         $permissao->save();
@@ -845,7 +863,7 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesMonitoramentoDashboard()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 29; // Recurso Dashboard
+        $permissao->prm_rcs_id = 31; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
