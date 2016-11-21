@@ -38,6 +38,9 @@
 
 </div>
 
+
+
+
 @section('scripts')
     @parent
 
@@ -157,13 +160,28 @@
             $(document).on('click', '.btn-primary', function (event) {
                 event.preventDefault();
 
+                var tutor = $('#tut_id').find(":selected").val();
+                var datainicio = $('#date_ini').val().replace(/\//g, "\-");
+                var datafim = $('#date_fim').val().replace(/\//g, "\-");
+                var token = "d96e17231ca92f4a84329951eab44501";
+                var timeclicks = 1200;
+                var moodlewsformat = "json";
+                var wsfunction = "get_tutor_online_time"
 
+                var request = $.ajax({
+                        url: "http://172.16.0.42/moodle/webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
+                        type: "POST",
+                        //data: jsonData,
+                        dataType: "json",
+                        success: function (data) {
+                             console.log(data)
+                        }
+                    });
+                    console.log(request);
+                });
 
-                console.log($('#tut_id').children().onselect(function($this){
-                  return $this.val();
-                }));
-            });
         </script>
+
 
 
 @stop
