@@ -220,5 +220,14 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'grupos'], function () {
             Route::get('/findallbyturmapolo/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturmapolo');
         });
+
+        Route::group(['prefix' => 'grupos'], function () {
+            Route::get('/findallbyturma/{id}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturma');
+        });
+
+        Route::group(['prefix' => 'tutores'], function () {
+            Route::get('/findallbygrupo/{id}', '\Modulos\Academico\Http\Controllers\Async\Tutores@getFindallbygrupo');
+        });
+
     });
 });

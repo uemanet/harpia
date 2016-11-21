@@ -3,6 +3,7 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Grupo;
 use Modulos\Core\Repository\BaseRepository;
+use DB;
 
 class GrupoRepository extends BaseRepository
 {
@@ -42,12 +43,22 @@ class GrupoRepository extends BaseRepository
     {
         return $this->model->where('grp_id', $grupoid)->pluck('grp_nome', 'grp_id');
     }
-    
+
     public function getAllByTurmaAndPolo($turmaId, $poloId)
     {
         return $this->model
                     ->where('grp_trm_id', '=', $turmaId)
                     ->where('grp_pol_id', '=', $poloId)
                     ->get();
+    }
+
+    public function findAllByTurma($TurmaId)
+    {
+        $entries = DB::table('acd_grupos')
+            ->select('grp_id', 'grp_nome')
+            ->where('grp_trm_id', '=', $TurmaId)
+            ->get();
+
+        return $entries;
     }
 }
