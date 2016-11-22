@@ -7,5 +7,6 @@ Route::group(['prefix' => 'monitoramento', 'middleware' => ['auth']], function (
 
     Route::group(['prefix' => 'tempoonline'], function () {
         Route::get('/index', '\Modulos\Monitoramento\Http\Controllers\TempoOnlineController@getIndex');
+        Route::get('/monitorar/{id}', '\Modulos\Monitoramento\Http\Controllers\TempoOnlineController@getMonitorar');
     });
 });

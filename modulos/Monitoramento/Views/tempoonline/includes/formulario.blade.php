@@ -149,7 +149,6 @@
         })
 
     </script>
-
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
         <script type="text/javascript">
@@ -163,22 +162,50 @@
                 var tutor = $('#tut_id').find(":selected").val();
                 var datainicio = $('#date_ini').val().replace(/\//g, "\-");
                 var datafim = $('#date_fim').val().replace(/\//g, "\-");
-                var token = "d96e17231ca92f4a84329951eab44501";
-                var timeclicks = 1200;
+                var token = '{{$ambiente->asr_token}}';
+                var timeclicks = {{$timeclicks}};
                 var moodlewsformat = "json";
-                var wsfunction = "get_tutor_online_time"
+                var wsfunction = "get_tutor_online_time";
+                var url = "{{$ambiente->amb_url}}";
 
                 var request = $.ajax({
-                        url: "http://172.16.0.42/moodle/webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
+                        url: url+"moodle/webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
                         type: "POST",
                         //data: jsonData,
                         dataType: "json",
                         success: function (data) {
-                             console.log(data)
+                          console.log(data);
+                          var dias = new Array();
+                          var tempos = new Array();
+
+                          for (i = 0; i < data.length; i++) {
+                            dias[i] = data[i].date;
+                            tempos[i] = data[i].onlinetime;
+                          }
+
+                          console.log(dias, tempos);
+                          var buyerData = {
+
+                              labels : dias,
+                              datasets : [
+                              {
+                                  fillColor : "rgba(172,194,132,0.4)",
+                                  strokeColor : "#ACC26D",
+                                  pointColor : "#fff",
+                                  pointStrokeColor : "#9DB86D",
+                                  data : tempos
+                              }
+                          ]
+                          }
+                          // get line chart canvas
+                          var buyers = document.getElementById('buyers').getContext('2d');
+                          // draw line chart
+                          new Chart(buyers).Bar(buyerData);
+
                         }
                     });
-                    console.log(request);
                 });
+
 
         </script>
 
