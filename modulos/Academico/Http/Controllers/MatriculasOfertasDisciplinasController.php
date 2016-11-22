@@ -7,6 +7,7 @@ use Modulos\Academico\Models\OfertaDisciplina;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
@@ -25,13 +26,15 @@ class MatriculasOfertasDisciplinasController extends BaseController
     protected $cursoRepository;
     protected $alunoRepository;
     protected $matriculaRepository;
+    protected $matriculaOfertaDisciplinaRepository;
 
     public function __construct(OfertaDisciplinaRepository $ofertadisciplinaRepository,
                                 ModuloDisciplinaRepository $modulodisciplinaRepository,
                                 PeriodoLetivoRepository $periodoletivoRepository,
                                 CursoRepository $cursoRepository,
                                 AlunoRepository $alunoRepository,
-                                MatriculaCursoRepository $matriculaCursoRepository)
+                                MatriculaCursoRepository $matriculaCursoRepository,
+                                MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository)
     {
         $this->ofertadisciplinaRepository = $ofertadisciplinaRepository;
         $this->modulodisciplinaRepository = $modulodisciplinaRepository;
@@ -39,6 +42,7 @@ class MatriculasOfertasDisciplinasController extends BaseController
         $this->cursoRepository = $cursoRepository;
         $this->alunoRepository = $alunoRepository;
         $this->matriculaRepository = $matriculaCursoRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
 
     }
 
