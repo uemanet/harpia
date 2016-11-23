@@ -23,7 +23,7 @@
     </div>
     <div class="form-group col-md-3">
         {!! Form::label('date_ini', 'Data de início*', ['class' => 'control-label']) !!}
-        {!! Form::text('date_ini', old('date_ini'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+        {!! Form::text('date_ini', old('date_ini'), ['class' => 'form-control datepicker2', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
     </div>
     <div class="form-group col-md-3">
         {!! Form::label('date_fim', 'Data de fim*', ['class' => 'control-label']) !!}
@@ -104,7 +104,6 @@
         $('#trm_id').change(function (e) {
             var turmaId = $(this).val();
             var selectGrupos = $('#grp_id');
-            //console.log(selectGrupos);
 
             if (turmaId) {
                 selectGrupos.empty();
@@ -114,7 +113,6 @@
                             if (!$.isEmptyObject(data)){
                                 selectGrupos.append('<option>Selecione o grupo</option>');
                                 $.each(data, function (key, obj) {
-                                  console.log(obj);
                                     selectGrupos.append('<option value="'+obj.grp_id+'">'+obj.grp_nome+'</option>')
                                 });
                             }else {
@@ -128,7 +126,6 @@
         $('#grp_id').change(function (e) {
             var grupoId = $(this).val();
             var selectTutores = $('#tut_id');
-            //console.log(selectGrupos);
 
             if (grupoId) {
                 selectTutores.empty();
@@ -159,13 +156,17 @@
             $(document).on('click', '.btn-primary', function (event) {
                 event.preventDefault();
 
+                var grafico = $('#grafico');
+                grafico.empty();
+                grafico.append('<canvas id="grafico-tempo" height="400"></canvas>');
+
                 var tutor = $('#tut_id').find(":selected").val();
                 var datainicio = $('#date_ini').val().replace(/\//g, "\-");
                 var datafim = $('#date_fim').val().replace(/\//g, "\-");
                 var token = '{{$ambiente->asr_token}}';
                 var timeclicks = {{$timeclicks}};
                 var moodlewsformat = "json";
-                var wsfunction = "get_tutor_online_time";
+                var wsfunction = "{{$wsfunction}}";
                 var url = "{{$ambiente->amb_url}}";
 
                 var request = $.ajax({
@@ -174,33 +175,54 @@
                         //data: jsonData,
                         dataType: "json",
                         success: function (data) {
-                          console.log(data);
+
+                          if (data.errorcode === "startdateerror"){
+                            toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});
+                          }
+
+                          if (data.errorcode === "enddateerror"){
+                            toastr.error('A data de fim não deve maior que o dia atual', null, {progressBar: true});
+                          }
                           var dias = new Array();
                           var tempos = new Array();
 
                           for (i = 0; i < data.length; i++) {
                             dias[i] = data[i].date;
-                            tempos[i] = data[i].onlinetime;
+                            tempos[i] = Math.floor(data[i].onlinetime/60);
                           }
 
-                          console.log(dias, tempos);
-                          var buyerData = {
-
+                          var DadosDoGrafico = {
                               labels : dias,
                               datasets : [
-                              {
-                                  fillColor : "rgba(172,194,132,0.4)",
-                                  strokeColor : "#ACC26D",
-                                  pointColor : "#fff",
-                                  pointStrokeColor : "#9DB86D",
-                                  data : tempos
-                              }
-                          ]
-                          }
+                                  {
+                                      fillColor : "rgba(172,194,132,0.4)",
+                                      strokeColor : "#ACC26D",
+                                      pointColor : "#fff",
+                                      pointStrokeColor : "#9DB86D",
+                                      data : tempos
+                                  }
+                              ]
+                          };
+
+                          var chartOptions = {
+                            //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+                            scaleBeginAtZero: true,
+                            //Boolean - Whether grid lines are shown across the chart
+                            scaleShowGridLines: true,
+                            //Number - Width of the grid lines
+                            scaleGridLineWidth: 1,
+                            //Boolean - Whether to show horizontal lines (except X axis)
+                            scaleShowHorizontalLines: true,
+                            //Boolean - Whether to show vertical lines (except Y axis)
+                            scaleShowVerticalLines: true,
+                            //Boolean - whether to make the chart responsive
+                            responsive: true,
+                            maintainAspectRatio: false
+                          };
                           // get line chart canvas
-                          var buyers = document.getElementById('buyers').getContext('2d');
+                          var monitoramento = document.getElementById('grafico-tempo').getContext('2d');
                           // draw line chart
-                          new Chart(buyers).Bar(buyerData);
+                          new Chart(monitoramento).Line(DadosDoGrafico, chartOptions);
 
                         }
                     });

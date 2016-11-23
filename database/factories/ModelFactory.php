@@ -7,7 +7,7 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_sexo' => $faker->randomElement(['M', 'F']),
         'pes_email' => $faker->email,
         'pes_telefone' => $faker->phoneNumber,
-        'pes_nascimento' => $faker->date(),
+        'pes_nascimento' => $faker->date('d/m/Y'),
         'pes_mae' => $faker->name,
         'pes_pai' => $faker->name,
         'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
@@ -31,8 +31,17 @@ $factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $f
     return [
         'anx_tax_id' => 1,
         'anx_nome' => $faker->word,
-        'anx_mime' => 'application/pdf',
+        'anx_mime' => $faker->mimeType,
+        'anx_extensao' => $faker->word,
         'anx_localizacao' => $faker->sha1,
+    ];
+});
+
+$factory->define(Modulos\Geral\Models\Configuracao::class, function (Faker\Generator $faker){
+    return [
+        'cnf_mod_id' => random_int(1, 4),
+        'cnf_nome' => $faker->name,
+        'cnf_valor' => $faker->word
     ];
 });
 

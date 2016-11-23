@@ -15,17 +15,16 @@ class AmbienteVirtualRepository extends BaseRepository
 
     public function verifyIfExistsAmbienteTurma($ambienteId, $turmaId)
     {
-      $exists = DB::table('int_ambientes_turmas')
+        $exists = DB::table('int_ambientes_turmas')
                   ->where('atr_amb_id', '=', $ambienteId)
                   ->where('atr_trm_id', '=', $turmaId)
                   ->first();
 
-      if ($exists) {
-          return true;
-      }
+        if ($exists) {
+            return true;
+        }
 
-      return false;
-
+        return false;
     }
 
     public function findAmbientesWithMonitor()

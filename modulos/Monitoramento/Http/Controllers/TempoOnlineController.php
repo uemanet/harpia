@@ -29,19 +29,19 @@ class TempoOnlineController extends Controller
 
     public function getIndex()
     {
-        //$ambientes = $this->cursoRepository->lists('crs_id', 'crs_nome');
-
         $ambientes = $this->ambientevirtualRepository->findAmbientesWithMonitor();
-
         return view('Monitoramento::tempoonline.index', compact('ambientes') );
     }
 
     public function getMonitorar($idAmbiente)
     {
         $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
-        //dd($ambiente);
-        $timeclicks = 1800;
+
+        $timeclicks = Configuracao::get('time_between_clicks');
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        return view('Monitoramento::tempoonline.monitorar', compact('cursos', 'ambiente', 'timeclicks'));
+
+        $wsfunction = "get_tutor_online_time";
+
+        return view('Monitoramento::tempoonline.monitorar', compact('cursos', 'ambiente', 'timeclicks', 'wsfunction'));
     }
 }

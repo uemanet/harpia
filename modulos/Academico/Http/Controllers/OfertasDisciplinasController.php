@@ -37,7 +37,6 @@ class OfertasDisciplinasController extends BaseController
         $this->professorRepository = $professorRepository;
         $this->periodoletivoRepository = $periodoletivoRepository;
         $this->cursoRepository = $cursoRepository;
-
     }
 
     public function getIndex(Request $request)
