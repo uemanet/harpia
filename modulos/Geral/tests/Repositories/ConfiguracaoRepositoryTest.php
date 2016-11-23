@@ -2,13 +2,13 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Geral\Repositories\PessoaRepository;
+use Modulos\Geral\Repositories\ConfiguracaoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
-use Carbon\Carbon;
+use Modulos\Geral\Models\Configuracao;
 
-class PessoaRepositoryTest extends TestCase
+class ConfiguracaoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -32,7 +32,7 @@ class PessoaRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(PessoaRepository::class);
+        $this->repo = $this->app->make(ConfiguracaoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +45,7 @@ class PessoaRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
+        factory(Configuracao::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -56,10 +56,10 @@ class PessoaRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
+        factory(Configuracao::class, 2)->create();
 
         $sort = [
-            'field' => 'pes_id',
+            'field' => 'cnf_id',
             'sort' => 'desc'
         ];
 
@@ -67,22 +67,22 @@ class PessoaRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->pes_id);
+        $this->assertGreaterThan(1, $response[0]->cnf_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
+        factory(Configuracao::class, 2)->create();
 
-        factory(Modulos\Geral\Models\Pessoa::class)->create([
-            'pes_nome' => 'seguranca',
+        factory(Configuracao::class)->create([
+            'cnf_nome' => 'arquivo',
         ]);
 
         $search = [
             [
-                'field' => 'pes_nome',
+                'field' => 'cnf_nome',
                 'type' => 'like',
-                'term' => 'seguranca'
+                'term' => 'arquivo'
             ]
         ];
 
@@ -95,16 +95,16 @@ class PessoaRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
+        factory(Configuracao::class, 2)->create();
 
         $sort = [
-            'field' => 'pes_id',
+            'field' => 'cnf_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'pes_id',
+                'field' => 'cnf_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -119,11 +119,11 @@ class PessoaRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Geral\Models\Pessoa::class, 2)->create();
+        factory(Configuracao::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'pes_id',
+            'field' => 'cnf_id',
             'sort' => 'asc'
         ];
 
@@ -136,49 +136,70 @@ class PessoaRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Geral\Models\Pessoa::class)->create();
+        $response = factory(Configuracao::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(\Modulos\Geral\Models\Pessoa::class, $response);
+        $this->assertInstanceOf(Configuracao::class, $response);
 
-        $this->assertArrayHasKey('pes_id', $data);
+        $this->assertArrayHasKey('cnf_id', $data);
     }
 
     public function testFind()
     {
-        $dados = factory(Modulos\Geral\Models\Pessoa::class)->create();
+        $data = factory(Configuracao::class)->create();
 
-        $data = $dados->toArray();
-        // Retorna para date format americano antes de comparar com o banco
-        $data['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $data['pes_nascimento'])->toDateString();
-
-        $this->seeInDatabase('gra_pessoas', $data);
+        $this->seeInDatabase('gra_configuracoes', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
+        $data = factory(Configuracao::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['pes_nome'] = 'abcde_edcba';
+        $updateArray['cnf_valor'] = 'abcde_edcba';
 
-        $pessoaId = $updateArray['pes_id'];
-        unset($updateArray['pes_id']);
-
-        $response = $this->repo->update($updateArray, $pessoaId, 'pes_id');
+        $response = $this->repo->update($updateArray);
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
-        $pessoaId = $data->pes_id;
+        $data = factory(Configuracao::class)->create();
+        $config = $data->cnf_nome;
 
-        $response = $this->repo->delete($pessoaId);
+        $response = $this->repo->delete($config);
 
         $this->assertEquals(1, $response);
+    }
+
+    public function testGetByName()
+    {
+        $response = factory(Configuracao::class)->create();
+
+        $data = $response->toArray();
+        $config = $data['cnf_nome'];
+
+        $this->assertEquals($this->repo->getByName($config), $response->cnf_valor);
+    }
+
+    public function testConfigExists()
+    {
+        $response = factory(Configuracao::class)->create();
+
+        $data = $response->toArray();
+        $config = $data['cnf_nome'];
+
+        $this->assertTrue($this->repo->configExists($config));
+    }
+
+    public function testGetAll()
+    {
+        $response = factory(Configuracao::class, 2)->create();
+        $data = $response->toArray();
+        $this->assertNotEmpty($this->repo->getAll());
+        $this->assertEquals($this->repo->getAll(), $data);
     }
 
     public function tearDown()

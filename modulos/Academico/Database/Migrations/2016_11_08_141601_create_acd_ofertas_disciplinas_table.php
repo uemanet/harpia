@@ -27,7 +27,6 @@ class CreateAcdOfertasDisciplinasTable extends Migration
             $table->foreign('ofd_trm_id')->references('trm_id')->on('acd_turmas');
             $table->foreign('ofd_per_id')->references('per_id')->on('acd_periodos_letivos');
             $table->foreign('ofd_prf_id')->references('prf_id')->on('acd_professores');
-
         });
     }
 

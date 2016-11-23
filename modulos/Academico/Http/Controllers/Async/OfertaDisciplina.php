@@ -42,8 +42,7 @@ class OfertaDisciplina extends BaseController
     public function postOferecerdisciplina(Request $request)
     {
         try {
-            if (!$this->ofertaDisciplinaRepository->verifyDisciplinaTurmaPeriodo($request->ofd_trm_id, $request->ofd_per_id, $request->ofd_mdc_id))
-            {
+            if (!$this->ofertaDisciplinaRepository->verifyDisciplinaTurmaPeriodo($request->ofd_trm_id, $request->ofd_per_id, $request->ofd_mdc_id)) {
                 $ofertadisciplina = $this->ofertaDisciplinaRepository->create($request->except('_token'));
 
                 if (!$ofertadisciplina) {
@@ -53,7 +52,6 @@ class OfertaDisciplina extends BaseController
             }
 
             return new JsonResponse('Disciplina já existente para esse periodo e turma.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
-
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

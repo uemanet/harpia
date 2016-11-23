@@ -14,7 +14,6 @@ class CreateIntAmbientesTurmasTable extends Migration
     public function up()
     {
         Schema::create('int_ambientes_turmas', function (Blueprint $table) {
-
             $table->increments('atr_id');
             $table->integer('atr_amb_id')->unsigned();
             $table->integer('atr_trm_id')->unsigned();

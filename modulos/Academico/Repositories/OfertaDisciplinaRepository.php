@@ -13,7 +13,8 @@ class OfertaDisciplinaRepository extends BaseRepository
         $this->model = $ofertaDisciplina;
     }
 
-    public function findAll(array $options, array $select = null) {
+    public function findAll(array $options, array $select = null)
+    {
         $query = $this->model
                         ->join('acd_modulos_disciplinas', function ($join) {
                             $join->on('ofd_mdc_id', '=', 'mdc_id');
@@ -28,13 +29,13 @@ class OfertaDisciplinaRepository extends BaseRepository
                             $join->on('prf_pes_id', '=', 'pes_id');
                         });
 
-        if(!empty($options)) {
+        if (!empty($options)) {
             foreach ($options as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
 
-        if(!is_null($select)) {
+        if (!is_null($select)) {
             $query = $query->select($select);
         }
 
@@ -53,8 +54,5 @@ class OfertaDisciplinaRepository extends BaseRepository
         }
 
         return false;
-
     }
-
-
 }

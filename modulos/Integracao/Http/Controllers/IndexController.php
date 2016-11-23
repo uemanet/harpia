@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
  */
 class IndexController extends Controller
 {
+
     /**
      * @return \Illuminate\View\View
      */

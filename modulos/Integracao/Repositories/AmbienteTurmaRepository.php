@@ -11,5 +11,4 @@ class AmbienteTurmaRepository extends BaseRepository
     {
         $this->model = $ambienteturma;
     }
-
 }
