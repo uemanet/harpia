@@ -38,9 +38,6 @@
 
 </div>
 
-
-
-
 @section('scripts')
     @parent
 
@@ -76,7 +73,6 @@
                         });
             }
         });
-
 
         $('#ofc_id').change(function (e) {
             var ofertaId = $(this).val();
@@ -175,6 +171,7 @@
                         //data: jsonData,
                         dataType: "json",
                         success: function (data) {
+                          $.harpia.hideloading();
 
                           if (data.errorcode === "startdateerror"){
                             toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});
@@ -224,13 +221,15 @@
                           // draw line chart
                           new Chart(monitoramento).Line(DadosDoGrafico, chartOptions);
 
+                        },
+                        error: function (error) {
+                            $.harpia.hideloading();
+                            toastr.error('Erro ao tentar se comunicar com o Ambiente Virtual.', null, {progressBar: true});
+
                         }
                     });
                 });
 
 
         </script>
-
-
-
 @stop

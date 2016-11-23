@@ -334,5 +334,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
         $recurso->save();
+
+        // MODULO MONITORAMENTO
+        // Recurso Dashboard
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 7; // Categoria Monitoramento
+        $recurso->rcs_nome = 'Dashboard';
+        $recurso->rcs_rota = 'tempoonline';
+        $recurso->rcs_descricao = 'Recurso tempo online do módulo monitoramento';
+        $recurso->rcs_icone = 'fa fa-bar-chart';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
     }
 }

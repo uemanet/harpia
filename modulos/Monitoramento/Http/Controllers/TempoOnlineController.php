@@ -35,6 +35,13 @@ class TempoOnlineController extends Controller
 
     public function getMonitorar($idAmbiente)
     {
+        $ambientevirtual = $this->ambientevirtualRepository->find($idAmbiente);
+
+        if (is_null($ambientevirtual)) {
+            flash()->error('Ambiente não existe!');
+            return redirect()->back();
+        }
+        
         $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
 
         $timeclicks = Configuracao::get('time_between_clicks');

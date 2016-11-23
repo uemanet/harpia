@@ -6,21 +6,17 @@
 @endsection
 
 @section('title')
-   Tutor
+   Tempo Online
 @stop
 
 @section('subtitle')
-    Tempo Online
+    {{$ambiente->amb_nome}}
 @stop
 
 @section('content')
-
-
-
-
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de ambientes virtuais</h3>
+            <h3 class="box-title">Visualização de dados do ambiente virtual</h3>
         </div>
         <div class="box-body">
             {!! Form::open(["url" => url('/') . "/monitoramento/ambientesvirtuais/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
@@ -29,8 +25,6 @@
         </div>
         <div class="text-center margin" id="grafico"></div>
     </div>
-
-
 @stop
 
 @section('scripts')

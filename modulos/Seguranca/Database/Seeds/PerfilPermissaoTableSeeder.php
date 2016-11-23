@@ -91,5 +91,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil = Perfil::find(5);
 
         $perfil->permissoes()->attach([109]); // Permissoes do recurso Dashboard
+
+        $perfil->permissoes()->attach([110, 111]); // Permissoes do recurso Tempo Online
     }
 }

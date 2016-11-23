@@ -80,6 +80,8 @@ class PermissaoTableSeeder extends Seeder
         /** Permissões do Módulo de Monitoramento */
 
         $this->createPermissoesMonitoramentoDashboard();
+
+        $this->createPermissoesMonitoramentoTempoOnline();
     }
 
     /** Permissões do Módulo Segurança */
@@ -866,6 +868,21 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 31; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria de Monitoramento do módulo de monitoramento';
+        $permissao->save();
+    }
+
+    private function createPermissoesMonitoramentoTempoOnline()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 32; // Recurso Tempo Online
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 32; // Recurso Tempo Online
+        $permissao->prm_nome = 'monitorar';
+        $permissao->prm_descricao = 'Permissão monitorar do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
     }
 }
