@@ -95,11 +95,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $vagas = $query[0]->ofd_qtd_vagas;
             $qtd = $query->count();
 
-            if(($vagas - $qtd) > 0) {
-                return true;
+            if(($vagas == $qtd)) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }
