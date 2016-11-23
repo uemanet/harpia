@@ -40,6 +40,12 @@ class AcademicoSeeder extends Seeder
         $this->call(PeriodoLetivoSeeder::class);
         $this->command->info('Periodo Letivo Table seeded!');
 
+        $this->call(DisciplinasTableSeeder::class);
+        $this->command->info('Disciplinas Table seeded!');
+
+        $this->call(AlunosTableSeeder::class);
+        $this->command->info('Alunos Table seeded!');
+
         $this->call(TutorTableSeeder::class);
         $this->command->info('Tutor Table seeded!');
 
