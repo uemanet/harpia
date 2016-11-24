@@ -54,5 +54,8 @@ elixir(function(mix) {
     mix.copy("node_modules/admin-lte/plugins/iCheck/square/blue.css", "public/css/plugins/icheck/icheck.css");
     mix.copy("node_modules/admin-lte/plugins/iCheck/square/blue.png", "public/css/plugins/icheck");
     mix.copy("node_modules/admin-lte/plugins/iCheck/square/blue@2x.png", "public/css/plugins/icheck");
+    mix.copy("node_modules/admin-lte/plugins/iCheck/minimal/blue.css", "public/css/plugins/icheck/minimal/icheck.css");
+    mix.copy("node_modules/admin-lte/plugins/iCheck/minimal/blue.png", "public/css/plugins/icheck/minimal");
+    mix.copy("node_modules/admin-lte/plugins/iCheck/minimal/blue@2x.png", "public/css/plugins/icheck/minimal");
     mix.copy("node_modules/admin-lte/plugins/iCheck/icheck.min.js", "public/js/plugins/icheck/");
 });

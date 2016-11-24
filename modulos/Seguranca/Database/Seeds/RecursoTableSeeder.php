@@ -300,6 +300,16 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 3;
         $recurso->save();
 
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 4; // Categoria Processos do Módulo Acadêmico
+        $recurso->rcs_nome = 'Matricular Aluno na Disciplina';
+        $recurso->rcs_rota = 'matricularalunodisciplina';
+        $recurso->rcs_descricao = 'Recurso Matricular Aluno na Disciplina';
+        $recurso->rcs_icone = 'fa fa-book';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 4;
+        $recurso->save();
+
         // MODULO INTEGRAÇÃO
         // Recurso Dashboard
         $recurso = new Recurso();

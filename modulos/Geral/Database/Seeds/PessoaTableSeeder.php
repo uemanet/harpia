@@ -1,7 +1,9 @@
 <?php
 namespace Modulos\Geral\Database\Seeds;
 
+use Harpia\Format\Format;
 use Illuminate\Database\Seeder;
+use Modulos\Geral\Models\Documento;
 use Modulos\Geral\Models\Pessoa;
 
 class PessoaTableSeeder extends Seeder
@@ -11,6 +13,7 @@ class PessoaTableSeeder extends Seeder
         // Cadastrar 50 pessoas na base
 
         $faker = \Faker\Factory::create();
+        $format = new Format();
 
         for ($i=0;$i<50;$i++) {
             $pessoa = new Pessoa();
@@ -30,6 +33,14 @@ class PessoaTableSeeder extends Seeder
             $pessoa->pes_estrangeiro = 0;
 
             $pessoa->save();
+            
+            $documento = new Documento();
+            
+            $documento->doc_pes_id = $pessoa->pes_id;
+            $documento->doc_tpd_id = 2;
+            $documento->doc_conteudo = $format->generateCpf();
+
+            $documento->save();
         }
     }
 }

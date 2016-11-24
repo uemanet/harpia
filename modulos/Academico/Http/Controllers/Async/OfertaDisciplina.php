@@ -32,6 +32,7 @@ class OfertaDisciplina extends BaseController
             'dis_carga_horaria',
             'dis_creditos',
             'ofd_qtd_vagas',
+            'ofd_id',
             'prf_id',
             'pes_nome'
         ]);
