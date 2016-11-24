@@ -16,7 +16,6 @@ class AmbienteVirtualRepository extends BaseRepository
     public function verifyIfExistsAmbienteTurma($ambienteId, $turmaId)
     {
         $exists = DB::table('int_ambientes_turmas')
-                  ->where('atr_amb_id', '=', $ambienteId)
                   ->where('atr_trm_id', '=', $turmaId)
                   ->first();
 

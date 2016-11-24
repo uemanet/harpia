@@ -21,4 +21,11 @@ class OfertasCursos extends BaseController
 
         return new JsonResponse($ofertas, 200);
     }
+
+    public function getFindallbycursowithoutpresencial($cursoId)
+    {
+        $ofertas = $this->ofertaCursoRepository->findAllByCursowithoutpresencial($cursoId);
+
+        return new JsonResponse($ofertas, 200);
+    }
 }

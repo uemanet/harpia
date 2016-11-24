@@ -290,8 +290,6 @@ class AmbientesVirtuaisController extends BaseController
 
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        //$turmasdoambiente = $ambiente->turmas()->get();
-
         return view('Integracao::ambientesvirtuais.adicionarturma', compact('ambiente', 'cursos'));
     }
 
@@ -333,7 +331,7 @@ class AmbientesVirtuaisController extends BaseController
                 flash()->success('Turma vinculada com sucesso');
                 return redirect()->back();
             }
-            flash()->error('Esse ambiente já possui esta turma!');
+            flash()->error('Essa turma já está vinculada em um ambiente!');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

@@ -45,13 +45,23 @@ class OfertaCursoRepository extends BaseRepository
     }
 
     /**
-     * Busca todas as matrizes de acordo com o curso informado
+     * Busca todas as ofertas de curso de acordo com o curso informado
      * @param $cursoid
      * @return mixed
      */
     public function findAllByCurso($cursoid)
     {
         return $this->model->where('ofc_crs_id', $cursoid)->get(['ofc_id', 'ofc_ano']);
+    }
+
+    /**
+     * Busca todas as ofertas de curso de acordo com o curso informado sem a modalidade presencial
+     * @param $cursoid
+     * @return mixed
+     */
+    public function findAllByCursowithoutpresencial($cursoid)
+    {
+        return $this->model->where('ofc_crs_id', $cursoid)->where('ofc_mdl_id', '<>', 1)->get(['ofc_id', 'ofc_ano']);
     }
 
     /**

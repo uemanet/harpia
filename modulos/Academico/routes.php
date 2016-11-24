@@ -198,6 +198,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
                 ->name('academico.async.ofertascursos.findallbycurso');
         });
 
+        Route::group(['prefix' => 'ofertascursos'], function () {
+            Route::get('/findallbycursowithoutpresencial/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycursowithoutpresencial')
+                ->name('academico.async.ofertascursos.findallbycursowithoutpresencial');
+        });
+
         Route::group(['prefix' => 'disciplinas'], function () {
             Route::get('/findbynome/{matriz}/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
         });

@@ -111,7 +111,7 @@
                 selectOfertas.empty();
                 selectTurmas.empty();
 
-                $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
+                $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycursowithoutpresencial/" + crsId)
                         .done(function (data) {
                             if(!$.isEmptyObject(data)) {
                                 selectOfertas.append("<option>Selecione a oferta</option>");
