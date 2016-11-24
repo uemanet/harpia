@@ -349,7 +349,7 @@ class RecursoTableSeeder extends Seeder
         // Recurso Dashboard
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 7; // Categoria Monitoramento
-        $recurso->rcs_nome = 'Dashboard';
+        $recurso->rcs_nome = 'Tempo Online';
         $recurso->rcs_rota = 'tempoonline';
         $recurso->rcs_descricao = 'Recurso tempo online do módulo monitoramento';
         $recurso->rcs_icone = 'fa fa-bar-chart';
