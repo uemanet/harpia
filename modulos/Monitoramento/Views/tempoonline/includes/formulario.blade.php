@@ -166,7 +166,7 @@
                 var url = "{{$ambiente->amb_url}}";
 
                 var request = $.ajax({
-                        url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
+                        url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor_id="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
                         type: "POST",
                         //data: jsonData,
                         dataType: "json",
@@ -182,10 +182,10 @@
                           }
                           var dias = new Array();
                           var tempos = new Array();
-
-                          for (i = 0; i < data.length; i++) {
-                            dias[i] = data[i].date;
-                            tempos[i] = Math.floor(data[i].onlinetime/60);
+                          console.log(data);
+                          for (i = 0; i < data.items.length; i++) {
+                            dias[i] = data.items[i].date;
+                            tempos[i] = Math.floor(data.items[i].onlinetime/60);
                           }
 
                           var DadosDoGrafico = {
