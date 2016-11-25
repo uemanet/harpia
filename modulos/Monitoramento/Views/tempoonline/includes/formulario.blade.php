@@ -166,7 +166,7 @@
                 var url = "{{$ambiente->amb_url}}";
 
                 var request = $.ajax({
-                        url: url+"moodle/webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
+                        url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
                         type: "POST",
                         //data: jsonData,
                         dataType: "json",
