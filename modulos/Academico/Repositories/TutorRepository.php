@@ -46,7 +46,7 @@ class TutorRepository extends BaseRepository
 
         return $result;
     }
-    
+
     public function listsTutorPessoa($idGrupo)
     {
         $tutoresvinculados = DB::table('acd_tutores')
@@ -66,5 +66,17 @@ class TutorRepository extends BaseRepository
            ->whereNotIn('tut_id', $tutoresvinculadosId)
            ->pluck('pes_nome', 'tut_id');
         return $tutores;
+    }
+
+    public function findAllByGrupo($GrupoId)
+    {
+        $entries = DB::table('acd_tutores')
+            ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
+            ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
+            ->select('tut_id', 'pes_nome')
+            ->where('ttg_grp_id', '=', $GrupoId)
+            ->get();
+
+        return $entries;
     }
 }

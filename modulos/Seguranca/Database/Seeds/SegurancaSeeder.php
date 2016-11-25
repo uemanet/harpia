@@ -3,6 +3,7 @@
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+use Configuracao;
 
 class SegurancaSeeder extends Seeder
 {
@@ -36,5 +37,8 @@ class SegurancaSeeder extends Seeder
 
         $this->call(PerfilUsuarioTableSeeder::class);
         $this->command->info('Perfil usuario table seeded!');
+
+        Configuracao::set('time_between_clicks', 1200, 5);
+        $this->command->info('Configuracao table seeded!');
     }
 }

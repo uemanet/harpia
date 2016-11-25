@@ -9,7 +9,7 @@ class ServicoTableSeeder extends Seeder
     public function run()
     {
         $Servico = new Servico();
-        $Servico->ser_nome = 'MonitoramentoTutores';
+        $Servico->ser_nome = 'MonitoramentoTempo';
         $Servico->save();
 
         $Servico = new Servico();

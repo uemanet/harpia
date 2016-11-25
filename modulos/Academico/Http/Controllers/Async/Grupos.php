@@ -9,15 +9,22 @@ use Modulos\Core\Http\Controller\BaseController;
 class Grupos extends BaseController
 {
     protected $grupoRepository;
-    
+
     public function __construct(GrupoRepository $grupo)
     {
         $this->grupoRepository = $grupo;
     }
-    
+
     public function getFindallbyturmapolo($turmaId, $poloId)
     {
         $grupos = $this->grupoRepository->getAllByTurmaAndPolo($turmaId, $poloId);
+
+        return new JsonResponse($grupos, 200);
+    }
+
+    public function getFindallbyturma($idTurma)
+    {
+        $grupos = $this->grupoRepository->findAllByTurma($idTurma);
 
         return new JsonResponse($grupos, 200);
     }
