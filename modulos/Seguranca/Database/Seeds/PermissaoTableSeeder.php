@@ -874,6 +874,18 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Ambientes';
         $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 31;
+        $permissao->prm_nome = 'adicionarservico';
+        $permissao->prm_descricao = 'Permissão serviços do recurso Ambientes';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 31;
+        $permissao->prm_nome = 'adicionarturma';
+        $permissao->prm_descricao = 'Permissão turmas do recurso Ambientes';
+        $permissao->save();
     }
 
     /** Permissões do Módulo Integração */
