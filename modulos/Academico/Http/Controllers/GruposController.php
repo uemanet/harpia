@@ -31,10 +31,16 @@ class GruposController extends BaseController
 
     public function getIndex($turmaId, Request $request)
     {
+        $turma = $this->turmaRepository->find($turmaId);
+        if (!$turma) {
+            flash()->error('Turma não existe');
+
+            return redirect()->back();
+        }
+
         $btnNovo = new TButton();
         $btnNovo->setName('Novo')->setAction('/academico/grupos/create/'.$turmaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
-        $turma = $this->turmaRepository->find($turmaId);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
         $actionButtons[] = $btnNovo;
@@ -66,6 +72,13 @@ class GruposController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-user',
+                                'action' => '/academico/tutoresgrupos/index/'.$id,
+                                'label' => 'Tutores',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/grupos/edit/'.$id,
                                 'label' => 'Editar',
@@ -94,11 +107,17 @@ class GruposController extends BaseController
     {
         $turma = $this->turmaRepository->find($turmaId);
 
+        if (!$turma) {
+            flash()->error('Turma não existe');
+
+            return redirect()->back();
+        }
+
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id);
+        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
 
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
 
@@ -124,7 +143,7 @@ class GruposController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -135,7 +154,7 @@ class GruposController extends BaseController
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id);
+        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id)->pluck('pol_nome', 'pol_id');
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
@@ -172,7 +191,7 @@ class GruposController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -194,7 +213,7 @@ class GruposController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

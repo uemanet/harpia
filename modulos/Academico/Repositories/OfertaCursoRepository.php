@@ -4,20 +4,49 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\OfertaCurso;
+use Auth;
 
 class OfertaCursoRepository extends BaseRepository
 {
     public function __construct(OfertaCurso $ofertacurso)
     {
         $this->model = $ofertacurso;
-        //dd($this);
     }
 
     /**
-     * Busca todas as matrizes de acordo com o curso informado
-     *
+     * Paginate
+     * @param null $sort
+     * @param null $search
+     * @return mixed
+     */
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->model
+            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'ofc_crs_id')
+            ->where('ucr_usr_id', '=', Auth::user()->usr_id);
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        return $result->paginate(15);
+    }
+
+    /**
+     * Busca todas as ofertas de curso de acordo com o curso informado
      * @param $cursoid
-     *
      * @return mixed
      */
     public function findAllByCurso($cursoid)
@@ -26,10 +55,19 @@ class OfertaCursoRepository extends BaseRepository
     }
 
     /**
-     * Busca todas as matrizes de acordo com o curso informado e retorna como lists para popular um field select
-     *
+     * Busca todas as ofertas de curso de acordo com o curso informado sem a modalidade presencial
      * @param $cursoid
-     *
+     * @return mixed
+     */
+    public function findAllByCursowithoutpresencial($cursoid)
+    {
+        return $this->model->where('ofc_crs_id', $cursoid)->where('ofc_mdl_id', '<>', 1)->get(['ofc_id', 'ofc_ano']);
+    }
+
+    /**
+     * Busca todas as matrizes de acordo com o curso informado e
+     * retorna como lists para popular um field select
+     * @param $cursoid
      * @return mixed
      */
     public function listsAllByCurso($cursoid)
@@ -39,9 +77,7 @@ class OfertaCursoRepository extends BaseRepository
 
     /**
      * Busca uma oferta de curso específica de acordo com o seu Id
-     *
      * @param $ofertaid
-     *
      * @return mixed
      */
     public function listsAllById($ofertaid)
@@ -51,9 +87,7 @@ class OfertaCursoRepository extends BaseRepository
 
     /**
      * Busca um curso específico de acordo com a sua oferta
-     *
      * @param $turmadaofertaid
-     *
      * @return mixed
      */
     public function listsOfertaByTurma($turmadaofertaid)

@@ -1,7 +1,7 @@
 +function ($) {
     'use strict';
 
-    $(".btn-delete").on("click", function(event) {
+    $(document).on('click', '.btn-delete', function (event) {
         event.preventDefault();
 
         var button = $(this);
@@ -110,4 +110,35 @@ $.harpia = {};
             }).promise();
         });
     };
+
+    $.harpia.httppost = function(url, data) {
+
+        $.harpia.showloading();
+
+        var result = false;
+
+        return $.ajax({
+            url: url,
+            type: "POST",
+            data: data,
+            success: function(resp) {
+
+                $.harpia.hideloading();
+
+                result = resp;
+            },
+            error: function(e) {
+                $.harpia.hideloading();
+
+                sweetAlert("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
+
+                result = false;
+            }
+        }).then(function() {
+            return $.Deferred(function(def) {
+                def.resolveWith({},[result]);
+            }).promise();
+        });
+    };
+
 }(jQuery);

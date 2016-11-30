@@ -34,6 +34,13 @@ class MatrizesCurricularesController extends BaseController
 
     public function getIndex($cursoId, Request $request)
     {
+        $curso = $this->cursoRepository->find($cursoId);
+
+        if (is_null($curso)) {
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
+        }
+
         $btnNovo = new TButton();
         $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create/'.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
@@ -43,7 +50,6 @@ class MatrizesCurricularesController extends BaseController
         $tabela = null;
 
         $tableData = $this->matrizCurricularRepository->paginateRequestByCurso($cursoId, $request->all());
-        $curso = $this->cursoRepository->find($cursoId);
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -53,15 +59,25 @@ class MatrizesCurricularesController extends BaseController
                 'mtc_horas' => 'Horas',
                 'mtc_horas_praticas' => 'Horas práticas',
                 'mtc_data' => 'Data',
+                'mtc_anx_projeto_pedagogico' => 'Projeto Pedagógico',
                 'mtc_action' => 'Ações'
             ))
                 ->modifyCell('mtc_action', function () {
                     return array('style' => 'width: 140px;');
                 })
                 ->means('mtc_action', 'mtc_id')
+                ->means('mtc_anx_projeto_pedagogico', 'mtc_id')
                 ->means('mtc_crs_id', 'curso')
                 ->modify('mtc_crs_id', function ($curso) {
                     return $curso->crs_nome;
+                })
+                ->modify('mtc_anx_projeto_pedagogico', function ($id) {
+                    $button = new TButton();
+                    $button->setName('Download do projeto')
+                        ->setAction('/academico/matrizescurriculares/anexo/'. $id)
+                        ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
+
+                    return ActionButton::render(array($button));
                 })
                 ->modify('mtc_action', function ($id) {
                     return ActionButton::grid([
@@ -71,6 +87,13 @@ class MatrizesCurricularesController extends BaseController
                             'label' => 'Selecione'
                         ],
                         'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-object-group',
+                                'action' => '/academico/modulosmatrizes/index/'.$id,
+                                'label' => 'Módulos',
+                                'method' => 'get'
+                            ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
@@ -85,7 +108,7 @@ class MatrizesCurricularesController extends BaseController
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
-                            ]
+                            ],
                         ]
                     ]);
                 })
@@ -98,10 +121,31 @@ class MatrizesCurricularesController extends BaseController
 
     public function getCreate($cursoId, Request $request = null)
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        // Carrega no select o curso da matriz como a unica opcao
-        $curso[$cursoId] = $cursos[$cursoId];
+        $curso = $this->cursoRepository->listsByCursoId($cursoId);
+
+        if (is_null($curso)) {
+            flash()->error('Matriz não existe!');
+            return redirect()->back();
+        }
+
         return view('Academico::matrizescurriculares.create', ['curso' => $curso, 'cursoId' => $cursoId]);
+    }
+
+    /**
+     * Retorna o anexo correspondente da matriz atual
+     * @param $matrizCurricularId
+     * @return null
+     */
+    public function getMatrizAnexo($matrizCurricularId)
+    {
+        $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
+
+        if (!$matrizCurricular) {
+            flash()->error('Matriz curricular não existe.');
+            return redirect()->back();
+        }
+
+        return $this->anexoRepository->recuperarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
     }
 
     public function postCreate(MatrizCurricularRequest $request)
@@ -135,7 +179,7 @@ class MatrizesCurricularesController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -187,7 +231,7 @@ class MatrizesCurricularesController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -213,7 +257,7 @@ class MatrizesCurricularesController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

@@ -17,8 +17,15 @@ class OfertasCursos extends BaseController
 
     public function getFindallbycurso($cursoId)
     {
-        $matrizes = $this->ofertaCursoRepository->findAllByCurso($cursoId);
+        $ofertas = $this->ofertaCursoRepository->findAllByCurso($cursoId);
 
-        return new JsonResponse($matrizes, 200);
+        return new JsonResponse($ofertas, 200);
+    }
+
+    public function getFindallbycursowithoutpresencial($cursoId)
+    {
+        $ofertas = $this->ofertaCursoRepository->findAllByCursowithoutpresencial($cursoId);
+
+        return new JsonResponse($ofertas, 200);
     }
 }

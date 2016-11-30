@@ -16,7 +16,6 @@ class CreateAcdProfessoresTable extends Migration
         Schema::create('acd_professores', function (Blueprint $table) {
             $table->increments('prf_id');
             $table->integer('prf_pes_id')->unsigned();
-            $table->string('prf_matricula', 45)->nullable();
 
             $table->timestamps();
 

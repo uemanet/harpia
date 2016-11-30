@@ -21,13 +21,3 @@
         </div>
     </div>
 </div>
-
-<hr />
-
-@include('Geral::pessoas.includes.formulario')
-
-<div class="row">
-<div class="form-group col-md-12">
-    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
-</div>
-</div>

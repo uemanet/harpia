@@ -27,6 +27,11 @@ class PeriodoLetivo extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_per_id', 'per_id');
     }
 
+    public function ofertasDisciplinas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\OfertaDisciplina', 'ofd_per_id', 'per_id');
+    }
+
     // Accessors
     public function getPerInicioAttribute($value)
     {

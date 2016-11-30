@@ -6,6 +6,7 @@ use Modulos\Geral\Repositories\PessoaRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Carbon\Carbon;
 
 class PessoaRepositoryTest extends TestCase
 {
@@ -146,9 +147,13 @@ class PessoaRepositoryTest extends TestCase
 
     public function testFind()
     {
-        $data = factory(Modulos\Geral\Models\Pessoa::class)->create();
+        $dados = factory(Modulos\Geral\Models\Pessoa::class)->create();
 
-        $this->seeInDatabase('gra_pessoas', $data->toArray());
+        $data = $dados->toArray();
+        // Retorna para date format americano antes de comparar com o banco
+        $data['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $data['pes_nascimento'])->toDateString();
+
+        $this->seeInDatabase('gra_pessoas', $data);
     }
 
     public function testUpdate()

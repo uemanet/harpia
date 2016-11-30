@@ -62,5 +62,27 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 0;
         $categoria->ctr_visivel = 0;
         $categoria->save();
+
+        //Modulo Integração
+        $categoria = new CategoriaRecurso();
+        $categoria->ctr_mod_id = 4; // Modulo Integração
+        $categoria->ctr_nome = 'Cadastro';
+        $categoria->ctr_descricao = 'Categoria de cadastro do módulo integração';
+        $categoria->ctr_icone = 'fa fa-plus';
+        $categoria->ctr_ordem = 1;
+        $categoria->ctr_ativo = 1;
+        $categoria->ctr_visivel = 1;
+        $categoria->save();
+
+        //Modulo Integração
+        $categoria = new CategoriaRecurso();
+        $categoria->ctr_mod_id = 5; // Modulo Integração
+        $categoria->ctr_nome = 'Monitoramento';
+        $categoria->ctr_descricao = 'Categoria de monitoramento do módulo de monitoramento';
+        $categoria->ctr_icone = 'fa fa-plus';
+        $categoria->ctr_ordem = 1;
+        $categoria->ctr_ativo = 1;
+        $categoria->ctr_visivel = 1;
+        $categoria->save();
     }
 }

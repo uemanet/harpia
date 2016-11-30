@@ -41,6 +41,7 @@ class CursosController extends BaseController
         $tabela = null;
 
         $tableData = $this->cursoRepository->paginateRequest($request->all());
+
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'crs_id' => '#',
@@ -124,7 +125,7 @@ class CursosController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -168,7 +169,7 @@ class CursosController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -190,7 +191,7 @@ class CursosController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

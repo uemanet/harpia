@@ -104,7 +104,7 @@ return [
     | the box, Laravel uses the Monolog PHP logging library. This gives
     | you a variety of powerful log handlers / formatters to utilize.
     |
-    | Available Settings: "single", "daily", "syslog", "errorlog"
+    | Available Configuracao: "single", "daily", "syslog", "errorlog"
     |
     */
 
@@ -171,6 +171,21 @@ return [
         Modulos\Seguranca\Providers\ActionButton\ActionButtonProvider::class,
         Modulos\Seguranca\Providers\MasterMenu\MasterMenuProvider::class,
         Harpia\FlashToastrAlert\FlashToastrAlertProvider::class,
+
+        /*
+          * Custom Validator
+         */
+        Harpia\Validator\CustomValidator\ValidationServiceProvider::class,
+
+        /*
+         * Format Service Provider
+         */
+        Harpia\Format\FormatServiceProvider::class,
+
+        /*
+         * Configuracao Service Provider
+         */
+        Harpia\Configuracao\ConfiguracaoServiceProvider::class,
     ],
 
     /*
@@ -221,7 +236,7 @@ return [
          * Laravel removed facades
          */
         'Input' => Illuminate\Support\Facades\Input::class,
-        
+
         /*
          * Extra aliases
          */
@@ -234,5 +249,7 @@ return [
         'ActionButton' => Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton::class,
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,
+        'Format' => Harpia\Format\Facades\Format::class,
+        'Configuracao' => Harpia\Configuracao\Facades\Configuracao::class
     ],
 ];

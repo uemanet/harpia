@@ -24,6 +24,10 @@ class CreateSegModulosTable extends Migration
             $table->boolean('mod_ativo')->default(1);
             $table->timestamps();
         });
+
+        Schema::table('gra_configuracoes', function (Blueprint $table) {
+            $table->foreign('cnf_mod_id')->references('mod_id')->on('seg_modulos');
+        });
     }
 
     /**

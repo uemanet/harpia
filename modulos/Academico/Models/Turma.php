@@ -27,6 +27,11 @@ class Turma extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\OfertaCurso', 'trm_ofc_id');
     }
 
+    public function ofertasDisciplina()
+    {
+        return $this->hasMany('Modulos\Academico\Models\OfertaDisciplina', 'ofd_trm_id', 'ofd_id');
+    }
+
     public function periodo()
     {
         return $this->belongsTo('Modulos\Academico\Models\PeriodoLetivo', 'trm_per_id');

@@ -36,7 +36,7 @@ class Usuario extends BaseModel implements
      *
      * @var array
      */
-    protected $fillable = ['usr_usuario', 'usr_ativo'];
+    protected $fillable = ['usr_usuario', 'usr_ativo', 'usr_pes_id'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -115,5 +115,10 @@ class Usuario extends BaseModel implements
     public function getRememberTokenName()
     {
         return 'remember_token';
+    }
+
+    public function vinculos()
+    {
+        return $this->belongsToMany('Modulos\Seguranca\Models\Vinculo', 'ucr_usr_id');
     }
 }

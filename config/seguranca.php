@@ -2,7 +2,8 @@
 
 return [
     'prelogin_openactions' => array(
-        'login/index/index'
+        'login/index/index',
+        'index/index/index'
     ),
 
     'postlogin_openactions' => array(

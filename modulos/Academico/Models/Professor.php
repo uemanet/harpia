@@ -12,11 +12,12 @@ class Professor extends BaseModel
 
     protected $fillable = [
         'prf_pes_id',
-        'prf_matricula'
     ];
 
     protected $searchable = [
-        'prf_id' => '='
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
+        'pes_cpf' => '='
     ];
 
     public function centro()
@@ -27,5 +28,10 @@ class Professor extends BaseModel
     public function pessoa()
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'prf_pes_id');
+    }
+
+    public function ofertasDisciplinas()
+    {
+        return $this->hasMany('Modulos\Geral\Models\OfertaDisciplina', 'ofd_prf_id', 'prf_id');
     }
 }

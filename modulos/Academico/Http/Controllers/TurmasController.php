@@ -29,10 +29,17 @@ class TurmasController extends BaseController
 
     public function getIndex($ofertaId, Request $request)
     {
+        $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
+
+        if (!$ofertacurso) {
+            flash()->error('Oferta não existe');
+
+            return redirect()->back();
+        }
+
         $btnNovo = new TButton();
         $btnNovo->setName('Novo')->setAction('/academico/turmas/create/'.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
-        $ofertacurso = $this->ofertacursoRepository->find($ofertaId);
 
         $actionButtons[] = $btnNovo;
         $paginacao = null;
@@ -100,6 +107,11 @@ class TurmasController extends BaseController
     public function getCreate($ofertaId)
     {
         $oferta = $this->ofertacursoRepository->find($ofertaId);
+        if (!$oferta) {
+            flash()->error('Oferta não existe');
+
+            return redirect()->back();
+        }
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
         $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
@@ -124,7 +136,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -170,7 +182,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -192,7 +204,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->success('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

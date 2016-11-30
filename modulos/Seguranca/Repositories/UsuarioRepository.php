@@ -17,7 +17,7 @@ class UsuarioRepository extends BaseRepository
         $result = $this->model->leftJoin('gra_pessoas', function ($join) {
             $join->on('pes_id', '=', 'usr_pes_id');
         })->leftJoin('gra_documentos', function ($join) {
-            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 1, 'and', true);
+            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
         });
 
         if (!empty($search)) {
@@ -44,5 +44,22 @@ class UsuarioRepository extends BaseRepository
         $result = $result->paginate(15);
 
         return $result;
+    }
+
+    public function create(array $data)
+    {
+        $user = new Usuario();
+
+        $user->usr_usuario = $data['usr_usuario'];
+        $user->usr_senha = bcrypt($data['usr_senha']);
+        $user->usr_ativo = $data['usr_ativo'];
+        $user->usr_pes_id = $data['usr_pes_id'];
+
+        return $user->save();
+    }
+    
+    public function sincronizarPerfis($usuarioId, array $perfis)
+    {
+        return $this->model->find($usuarioId)->perfis()->sync($perfis);
     }
 }
