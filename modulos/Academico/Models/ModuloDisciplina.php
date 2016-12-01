@@ -13,7 +13,8 @@ class ModuloDisciplina extends BaseModel
     protected $fillable = [
         'mdc_dis_id',
         'mdc_mdo_id',
-        'mdc_tipo_avaliacao'
+        'mdc_tipo_avaliacao',
+        'mdc_tipo_disciplina'
     ];
 
     protected $searchable = [
