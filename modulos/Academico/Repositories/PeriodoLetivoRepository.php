@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\PeriodoLetivo;
 use Carbon\Carbon;
+use DB;
 
 class PeriodoLetivoRepository extends BaseRepository
 {
@@ -27,5 +28,19 @@ class PeriodoLetivoRepository extends BaseRepository
         $data['per_fim'] = Carbon::createFromFormat('d/m/Y', $data['per_fim'])->toDateString();
 
         return $this->model->where($attribute, '=', $id)->update($data);
+    }
+
+    public function getAllByTurma($turmaId)
+    {
+
+        $result = $this->model
+                        ->where('per_id', '>=', function ($query) use ($turmaId) {
+                            $query->select('trm_per_id')
+                                    ->from('acd_turmas')
+                                    ->where('trm_id', '=', $turmaId);
+                        })
+                        ->get();
+        
+        return $result;
     }
 }

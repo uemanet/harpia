@@ -46,7 +46,8 @@ class MatriculaOfertaDisciplina extends BaseController
                     $this->matriculaOfertaDisciplinaRepository->create([
                         'mof_mat_id' => $matriculaId,
                         'mof_ofd_id' => $ofertaId,
-                        'mof_tipo_matricula' => 'matriculacomum'
+                        'mof_tipo_matricula' => 'matriculacomum',
+                        'mof_status' => 'cursando'
                     ]);
                 }else{
                     DB::rollBack();

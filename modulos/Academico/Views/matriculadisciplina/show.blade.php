@@ -27,15 +27,19 @@
                 <div class="form-group col-md-3">
                     {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
                     <select id="crs_id" class="form-control">
-                        <option>Selecione o curso</option>
-                        @foreach($matriculas as $matricula)
-                            <option value="{{$matricula->crs_id}}" data-trm-id={{$matricula->trm_id}} data-mat-id={{$matricula->mat_id}}>{{$matricula->crs_nome}}</option>
+                        @if($matriculas->count())
+                            <option>Selecione o curso</option>
+                            @foreach($matriculas as $matricula)
+                                <option value="{{$matricula->crs_id}}" data-trm-id={{$matricula->trm_id}} data-mat-id={{$matricula->mat_id}}>{{$matricula->crs_nome}}</option>
                             @endforeach
+                        @else
+                            <option value="">Nenhuma matrícula disponível</option>
+                        @endif
                     </select>
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('ofd_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_per_id', $periodoletivo, null, ['class' => 'form-control', 'placeholder' => 'Escolha o periodo']) !!}
+                    {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
@@ -116,6 +120,28 @@
                 localizarDisciplinasOfertadas(turma, periodo, alunoId);
             });
 
+            $('#crs_id').change(function () {
+                var turmaId = $(this).find('option:selected').attr('data-trm-id');
+                var selectPeriodos = $('#ofd_per_id');
+
+                if(turmaId) {
+                    $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+                    .done(function (response) {
+                        selectPeriodos.empty();
+                        if(!$.isEmptyObject(response))
+                        {
+                            selectPeriodos.append("<option value=''>Selecione um periodo</option>");
+                            $.each(response, function (key, obj) {
+                               selectPeriodos.append("<option value='"+obj.per_id+"'>"+obj.per_nome+"</option>");
+                            });
+                        } else {
+                            selectPeriodos.append("<option value=''>Sem períodos disponíveis</option>");
+                        }
+                    });
+                }
+            });
+
+            // evento para selecionar todos os checkboxes
             $(document).on('click', '#select_all',function(event) {
                 if(this.checked) {
                     $(':checkbox').each(function() {
@@ -129,6 +155,7 @@
                 }
             });
 
+            // evento do botão de confirmar a matricula na(s) disciplina(s)
             $(document).on('click', '#confirmMatricula', function (e) {
 
                 var quant = $('.ofertas:checked').length;
@@ -194,13 +221,21 @@
                     $.each(disciplinas, function (key, obj) {
                         table += '<tr>';
 
-                        table += "<td><label><input type='checkbox' class='icheckbox_minimal-blue ofertas' value='"+obj.ofd_id+"'></label></td>";
+                        if(obj.quant_matriculas == obj.ofd_qtd_vagas) {
+                            table += "<td></td>";
+                        } else {
+                            table += "<td><label><input type='checkbox' class='icheckbox_minimal-blue ofertas' value='"+obj.ofd_id+"'></label></td>";
+                        }
                         table += "<td>"+obj.dis_nome+"</td>";
                         table += "<td>"+obj.dis_carga_horaria+"</td>";
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        table += "<td><span class='label label-danger'>Não Matriculado</span></td>";
+                        if(obj.quant_matriculas == obj.ofd_qtd_vagas) {
+                            table += "<td><span class='label label-danger'>Não Disponível</span></td>";
+                        } else {
+                            table += "<td><span class='label label-success'>Disponível</span></td>";
+                        }
                         table += '</tr>';
                     });
 

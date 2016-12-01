@@ -244,5 +244,9 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/findallbygrupo/{id}', '\Modulos\Academico\Http\Controllers\Async\Tutores@getFindallbygrupo');
         });
 
+        Route::group(['prefix' => 'periodosletivos'], function () {
+           Route::get('/findallbyturma/{id}', '\Modulos\Academico\Http\Controllers\Async\PeriodoLetivo@getFindallbyturma');
+        });
+
     });
 });
