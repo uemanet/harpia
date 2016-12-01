@@ -9,7 +9,7 @@ class AlunosTableSeeder extends Seeder
 {
     public function run()
     {
-        for($i = 30; $i <= 50; $i++) {
+        for ($i = 30; $i <= 50; $i++) {
             $aluno = new Aluno();
 
             $aluno->alu_pes_id = $i;

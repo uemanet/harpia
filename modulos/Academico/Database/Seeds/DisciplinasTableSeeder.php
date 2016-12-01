@@ -12,14 +12,13 @@ class DisciplinasTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         // criar 30 disciplinas
-        for($i=0;$i<30;$i++)
-        {
+        for ($i=0;$i<30;$i++) {
             $disciplina = new Disciplina();
 
             $disciplina->dis_nome = $faker->sentence(2);
             $disciplina->dis_carga_horaria = $faker->randomNumber(2);
             $disciplina->dis_creditos = $faker->randomNumber(2);
-            $disciplina->dis_nvc_id = $faker->randomElement([1,2,3,4,5]);
+            $disciplina->dis_nvc_id = $faker->randomElement([1, 2, 3, 4, 5]);
 
             $disciplina->save();
         }
