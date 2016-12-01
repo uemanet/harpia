@@ -126,7 +126,14 @@ class AlunosController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $cpf = $request->input('doc_conteudo');
@@ -246,7 +253,14 @@ class AlunosController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');

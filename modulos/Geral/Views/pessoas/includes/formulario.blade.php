@@ -134,6 +134,93 @@
     </div>
 </div>
 
+<h4 class="box-title">
+    Endereço
+</h4>
+
+<div class="row">
+    <div class="form-group col-md-2 @if ($errors->has('pes_cep')) has-error @endif">
+        {!! Form::label('pes_cep', 'CEP*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_cep', isset($pessoa->pes_cep) ? $pessoa->pes_cep : old('pes_cep'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_cep')) <p class="help-block">{{ $errors->first('pes_cep') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-6 @if ($errors->has('pes_endereco')) has-error @endif">
+        {!! Form::label('pes_endereco', 'Endereço*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_endereco', isset($pessoa->pes_endereco) ? $pessoa->pes_endereco : old('pes_endereco'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_endereco')) <p class="help-block">{{ $errors->first('pes_endereco') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-4 @if ($errors->has('pes_complemento')) has-error @endif">
+        {!! Form::label('pes_complemento', 'Complemento', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_complemento', isset($pessoa->pes_complemento) ? $pessoa->pes_complemento : old('pes_complemento'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_complemento')) <p class="help-block">{{ $errors->first('pes_complemento') }}</p> @endif
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-md-2 @if ($errors->has('pes_numero')) has-error @endif">
+        {!! Form::label('pes_numero', 'Número*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_numero', isset($pessoa->pes_numero) ? $pessoa->pes_numero : old('pes_numero'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_numero')) <p class="help-block">{{ $errors->first('pes_numero') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-4 @if ($errors->has('pes_bairro')) has-error @endif">
+        {!! Form::label('pes_bairro', 'Bairro*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_bairro', isset($pessoa->pes_bairro) ? $pessoa->pes_bairro : old('pes_bairro'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_bairro')) <p class="help-block">{{ $errors->first('pes_bairro') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-4 @if ($errors->has('pes_cidade')) has-error @endif">
+        {!! Form::label('pes_cidade', 'Cidade*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_cidade', isset($pessoa->pes_cidade) ? $pessoa->pes_cidade : old('pes_cidade'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_cidade')) <p class="help-block">{{ $errors->first('pes_cidade') }}</p> @endif
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
+            {!! Form::label('pes_estado', 'Estado*') !!}
+            {!! Form::select('pes_estado', [
+                    'AC' => 'Acre',
+                    'AL' => 'Alagoas',
+                    'AP' => 'Amapá',
+                    'AM' => 'Amazonas',
+                    'BA' => 'Bahia',
+                    'CE' => 'Ceará',
+                    'DF' => 'Distrito Federal',
+                    'ES' => 'Espirito Santo',
+                    'GO' => 'Goiás',
+                    'MA' => 'Maranhão',
+                    'MT' => 'Mato Grosso',
+                    'MS' => 'Mato Grosso do Sul',
+                    'MG' => 'Minas Gerais',
+                    'PA' => 'Pará',
+                    'PB' => 'Paraiba',
+                    'PR' => 'Paraná',
+                    'PE' => 'Pernambuco',
+                    'PI' => 'Piauí',
+                    'RJ' => 'Rio de Janeiro',
+                    'RN' => 'Rio Grande do Norte',
+                    'RS' => 'Rio Grande do Sul',
+                    'RO' => 'Rondônia',
+                    'RR' => 'Roraima',
+                    'SC' => 'Santa Catarina',
+                    'SP' => 'São Paulo',
+                    'SE' => 'Sergipe',
+                    'TO' => 'Tocantis',
+                ], old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...', 'required' => 'required']) !!}
+            @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
+        </div>
+    </div>
+</div>
+
 @section('scripts')
     <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
     <script src="{{ asset('/js/plugins/input-mask/inputmask.date.extensions.js') }}"></script>
@@ -152,6 +239,28 @@
             });
             $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
             $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
+            $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
+
+            $("#pes_cep").focusout(function(e){
+                var str = e.target.value;
+
+                var cep = str.replace(/\D/g, '');
+
+                $.harpia.httpget('https://viacep.com.br/ws/'+cep+'/json/').done(function(data) {
+                    if(!data.erro) {
+                        $("#pes_cidade").val(data.localidade);
+                        $("#pes_estado").val(data.uf);
+                        $("#pes_bairro").val(data.bairro);
+                        $("#pes_endereco").val(data.logradouro);
+                    } else {
+                        $("#pes_cidade").val('');
+                        $("#pes_estado").val('');
+                        $("#pes_bairro").val('');
+                        $("#pes_endereco").val('');
+                    }
+                });
+
+            });
         });
     </script>
 @endsection
