@@ -28,14 +28,7 @@ class ModulosDisciplinas extends BaseController
     {
         $dados = $request->except('_token');
 
-
         $disciplina = $this->disciplinaRepository->find($dados['dis_id']);
-
-        $disciplinaNameExists = $this->matrizCurricularRepository->verifyIfNomeDisciplinaExistsInMatriz($dados['mtc_id'], $disciplina->dis_nome);
-
-        if ($disciplinaNameExists) {
-            return new JsonResponse('Já existe uma disciplina com esse nome', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
-        }
 
         $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $dados['dis_id']);
 
@@ -43,10 +36,26 @@ class ModulosDisciplinas extends BaseController
             return new JsonResponse('Disciplina duplicada', Response::HTTP_BAD_REQUEST);
         }
 
+        $disciplinaNameExists = $this->matrizCurricularRepository->verifyIfNomeDisciplinaExistsInMatriz($dados['mtc_id'], $disciplina->dis_nome);
+
+        if ($disciplinaNameExists) {
+            return new JsonResponse('Já existe uma disciplina com esse nome', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+        }
+
+        if($dados['tipo_disciplina'] == 'tcc')
+        {
+            $disciplinaTccExists = $this->matrizCurricularRepository->verifyIfExistsDisciplinaTccInMatriz($dados['mtc_id']);
+
+            if($disciplinaTccExists) {
+                return new JsonResponse('Já existe uma disciplina do tipo TCC cadastrada nessa matriz', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+            }
+        }
+
         try {
             $modulodisciplina['mdc_dis_id'] = $dados['dis_id'];
             $modulodisciplina['mdc_mdo_id'] = $dados['mod_id'];
             $modulodisciplina['mdc_tipo_avaliacao'] = $dados['tipo_avaliacao'];
+            $modulodisciplina['mdc_tipo_disciplina'] = $dados['tipo_disciplina'];
 
             $disciplinaCreate = $this->moduloDisciplinaRepository->create($modulodisciplina);
 

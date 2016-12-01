@@ -35,4 +35,26 @@ class ModuloDisciplina extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\OfertaDisciplina', 'ofd_mdc_id', 'mdc_id');
     }
+
+    public function getMdcTipoDisciplinaAttribute($value)
+    {
+        $values = [
+            'obrigatoria' => 'Obrigatória',
+            'optativa' => 'Optativa',
+            'eletiva' => 'Eletiva',
+            'tcc' => 'TCC'
+        ];
+
+        return $values[$value];
+    }
+
+    public function getMdcTipoAvaliacaoAttribute($value)
+    {
+        $values = [
+            'numerica' => 'Numérica',
+            'conceito' => 'Conceito'
+        ];
+
+        return $values[$value];
+    }
 }
