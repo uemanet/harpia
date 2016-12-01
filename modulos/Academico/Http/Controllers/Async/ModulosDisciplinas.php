@@ -42,11 +42,10 @@ class ModulosDisciplinas extends BaseController
             return new JsonResponse('Já existe uma disciplina com esse nome', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
 
-        if($dados['tipo_disciplina'] == 'tcc')
-        {
+        if ($dados['tipo_disciplina'] == 'tcc') {
             $disciplinaTccExists = $this->matrizCurricularRepository->verifyIfExistsDisciplinaTccInMatriz($dados['mtc_id']);
 
-            if($disciplinaTccExists) {
+            if ($disciplinaTccExists) {
                 return new JsonResponse('Já existe uma disciplina do tipo TCC cadastrada nessa matriz', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
             }
         }

@@ -138,7 +138,7 @@ class MatrizCurricularRepository extends BaseRepository
                         ->where('mdc_tipo_disciplina', '=', 'tcc')
                         ->count();
 
-        if($query > 0) {
+        if ($query > 0) {
             return true;
         }
 

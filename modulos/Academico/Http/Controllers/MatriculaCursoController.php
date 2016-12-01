@@ -131,7 +131,7 @@ class MatriculaCursoController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
-        if(!$aluno){
+        if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->route('academico.matricularalunocurso.index');
         }
