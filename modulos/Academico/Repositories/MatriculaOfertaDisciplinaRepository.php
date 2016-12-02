@@ -16,10 +16,10 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
     {
         $query = $this->model
-            ->join('acd_matriculas', function ($join){
-               $join->on('mof_mat_id', '=', 'mat_id');
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
             })
-            ->join('acd_ofertas_disciplinas', function ($join){
+            ->join('acd_ofertas_disciplinas', function ($join) {
                 $join->on('mof_ofd_id', '=', 'ofd_id');
             })
             ->join('acd_modulos_disciplinas', function ($join) {
@@ -36,7 +36,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             })
             ->where('mat_alu_id', '=', $alunoId);
 
-        if(!is_null($options)) {
+        if (!is_null($options)) {
             foreach ($options as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
@@ -44,8 +44,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         $disciplinas = $query->get();
 
-        if($disciplinas->count()) {
-            for($i=0;$i<$disciplinas->count();$i++) {
+        if ($disciplinas->count()) {
+            for ($i=0;$i<$disciplinas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinas[$i]->ofd_id)
                                         ->where('mof_status', '=', 'cursando')
@@ -91,7 +91,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                     ->where('ofd_per_id', '=', $periodoId)
                     ->where('ofd_trm_id', '=', $turmaId);
 
-        if(!empty($disciplinasCursadas)) {
+        if (!empty($disciplinasCursadas)) {
             $query = $query->whereNotIn('ofd_id', $disciplinasCursadas);
         } else {
             $query = $query->whereNotIn('ofd_id', [0]);
@@ -100,8 +100,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $disciplinasOfertadas =  $query->get();
 
 
-        if($disciplinasOfertadas->count()) {
-            for($i=0;$i<$disciplinasOfertadas->count();$i++) {
+        if ($disciplinasOfertadas->count()) {
+            for ($i=0;$i<$disciplinasOfertadas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
                                         ->where('mof_status', '=', 'cursando')
@@ -109,7 +109,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
                 $disciplinasOfertadas[$i]->disponivel = 1;
 
-                if($quantMatriculas >= $disciplinasOfertadas[$i]->ofd_qtd_vagas) {
+                if ($quantMatriculas >= $disciplinasOfertadas[$i]->ofd_qtd_vagas) {
                     $disciplinasOfertadas[$i]->disponivel = 0;
                 }
             }
@@ -135,11 +135,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                     ->where('mof_status', '=', 'cursando')
                     ->get();
 
-        if($query->count()) {
+        if ($query->count()) {
             $vagas = $query[0]->ofd_qtd_vagas;
             $qtd = $query->count();
 
-            if(($vagas == $qtd)) {
+            if (($vagas == $qtd)) {
                 return false;
             }
         }

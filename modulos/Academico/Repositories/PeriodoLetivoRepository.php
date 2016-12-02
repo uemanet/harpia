@@ -32,7 +32,6 @@ class PeriodoLetivoRepository extends BaseRepository
 
     public function getAllByTurma($turmaId)
     {
-
         $result = $this->model
                         ->where('per_id', '>=', function ($query) use ($turmaId) {
                             $query->select('trm_per_id')

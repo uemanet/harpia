@@ -43,7 +43,6 @@ class MatriculasOfertasDisciplinasController extends BaseController
         $this->alunoRepository = $alunoRepository;
         $this->matriculaRepository = $matriculaCursoRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
-
     }
 
     public function getIndex(Request $request)
@@ -90,7 +89,7 @@ class MatriculasOfertasDisciplinasController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
-        if(!$aluno){
+        if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->route('academico.matriculasofertasdisciplinas.index');
         }
