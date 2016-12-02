@@ -177,14 +177,14 @@
             @if ($errors->has('pes_bairro')) <p class="help-block">{{ $errors->first('pes_bairro') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-4 @if ($errors->has('pes_cidade')) has-error @endif">
+    <div class="form-group col-md-3 @if ($errors->has('pes_cidade')) has-error @endif">
         {!! Form::label('pes_cidade', 'Cidade*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_cidade', isset($pessoa->pes_cidade) ? $pessoa->pes_cidade : old('pes_cidade'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_cidade')) <p class="help-block">{{ $errors->first('pes_cidade') }}</p> @endif
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
             {!! Form::label('pes_estado', 'Estado*') !!}
             {!! Form::select('pes_estado', [
@@ -215,7 +215,7 @@
                     'SP' => 'São Paulo',
                     'SE' => 'Sergipe',
                     'TO' => 'Tocantis',
-                ], old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...', 'required' => 'required']) !!}
+                ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...', 'required' => 'required']) !!}
             @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
         </div>
     </div>

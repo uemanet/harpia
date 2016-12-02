@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Modulos\Academico\Http\Requests\ProfessorRequest;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Validator;
 use Modulos\Core\Http\Controller\BaseController;
@@ -101,6 +102,7 @@ class ProfessoresController extends BaseController
     public function postCreate(Request $request)
     {
         $pessoaRequest = new PessoaRequest();
+        $professorRequest = new ProfessorRequest();
 
         try {
             $validator = Validator::make($request->all(), $pessoaRequest->rules());
@@ -180,6 +182,13 @@ class ProfessoresController extends BaseController
                 );
 
                 $this->documentoRepository->create($dataDocumento);
+            }
+
+            $validator = Validator::make(['prf_pes_id' => $pes_id], $professorRequest->rules());
+
+            if ($validator->fails()) {
+                flash()->error('Professor já cadastrado!');
+                return redirect()->route('academico.professores.index');
             }
 
             $this->professorRepository->create(['prf_pes_id' => $pes_id]);
