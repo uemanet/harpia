@@ -46,7 +46,10 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         if($disciplinas->count()) {
             for($i=0;$i<$disciplinas->count();$i++) {
-                $quantMatriculas = $this->model->where('mof_ofd_id', '=', $disciplinas[$i]->ofd_id)->count();
+                $quantMatriculas = $this->model
+                                        ->where('mof_ofd_id', '=', $disciplinas[$i]->ofd_id)
+                                        ->where('mof_status', '=', 'cursando')
+                                        ->count();
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
             }
         }
@@ -99,7 +102,10 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         if($disciplinasOfertadas->count()) {
             for($i=0;$i<$disciplinasOfertadas->count();$i++) {
-                $quantMatriculas = $this->model->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)->count();
+                $quantMatriculas = $this->model
+                                        ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
+                                        ->where('mof_status', '=', 'cursando')
+                                        ->count();
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
                 $disciplinasOfertadas[$i]->disponivel = 1;
 
@@ -115,7 +121,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function verifyMatriculaDisciplina($matriculaId, $ofertaId)
     {
         $query = $this->model->where('mof_ofd_id', '=', $ofertaId)
-                             ->where('mof_mat_id', '=', $matriculaId);
+                             ->where('mof_mat_id', '=', $matriculaId)
+                            ->where('mof_status', '=', 'cursando');
 
         return $query->first();
     }
@@ -124,7 +131,9 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     {
         $query = $this->model
                     ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
-                    ->where('mof_ofd_id', '=', $ofertaId)->get();
+                    ->where('mof_ofd_id', '=', $ofertaId)
+                    ->where('mof_status', '=', 'cursando')
+                    ->get();
 
         if($query->count()) {
             $vagas = $query[0]->ofd_qtd_vagas;

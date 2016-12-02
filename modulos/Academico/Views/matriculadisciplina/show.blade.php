@@ -175,30 +175,26 @@
             });
 
             var localizarDisciplinasOfertadas = function (turmaId, periodoId, alunoId) {
-                var disciplinasOfertadas = null;
-                var disciplinasCursadas = null;
 
                 // pega as disciplinas oferecidas no qual o aluno não está matriculado
                 $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinasnotcursadasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
-                        .done(function (data) {
-                            boxDisciplinasNaoMatriculadas.removeClass('hidden');
-                            //boxFormDisciplinas.show();
+                .done(function (data) {
+                    boxDisciplinasNaoMatriculadas.removeClass('hidden');
 
-                            boxDisciplinasNaoMatriculadas.find('.conteudo').empty();
+                    boxDisciplinasNaoMatriculadas.find('.conteudo').empty();
 
-                            renderTableDisciplinasNaoMatriculadas(data);
-                        });
+                    renderTableDisciplinasNaoMatriculadas(data);
+                });
 
                 // pega as disciplinas oferecidas no qual o aluno está matriculado
                 $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinascursadasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
-                        .done(function (data) {
-                            boxDisciplinasMatriculadas.removeClass('hidden');
-                            //boxFormDisciplinas.show();
+                .done(function (data) {
+                    boxDisciplinasMatriculadas.removeClass('hidden');
 
-                            boxDisciplinasMatriculadas.find('.conteudo').empty();
+                    boxDisciplinasMatriculadas.find('.conteudo').empty();
 
-                            renderTableDisciplinasMatriculadas(data);
-                        });
+                    renderTableDisciplinasMatriculadas(data);
+                });
             };
 
             var renderTableDisciplinasNaoMatriculadas = function (disciplinas) {
