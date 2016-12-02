@@ -186,6 +186,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'turmas'], function () {
             Route::get('/findallbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacurso')
                 ->name('academico.async.turmas.findallbyofertacurso');
+            Route::get('/findallbyofertacursowithoutambiente/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoWithoutAmbiente')
+                ->name('academico.async.turmas.findallbyofertacursowithoutambiente');
         });
 
         Route::group(['prefix' => 'polos'], function () {

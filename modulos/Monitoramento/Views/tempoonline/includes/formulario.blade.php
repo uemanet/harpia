@@ -168,7 +168,7 @@
                 var request = $.ajax({
                         url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor_id="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
                         type: "POST",
-                        //data: jsonData,
+                        
                         dataType: "json",
                         success: function (data) {
                           $.harpia.hideloading();
@@ -182,7 +182,7 @@
                           }
                           var dias = new Array();
                           var tempos = new Array();
-                          console.log(data);
+
                           for (i = 0; i < data.items.length; i++) {
                             dias[i] = data.items[i].date;
                             tempos[i] = Math.floor(data.items[i].onlinetime/60);
@@ -214,6 +214,9 @@
                             scaleShowVerticalLines: true,
                             //Boolean - whether to make the chart responsive
                             responsive: true,
+
+                            bezierCurve: false,
+
                             maintainAspectRatio: false
                           };
                           // get line chart canvas

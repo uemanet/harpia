@@ -26,6 +26,25 @@ class AmbienteVirtualRepository extends BaseRepository
         return false;
     }
 
+    public function findTurmasWithoutAmbiente($ofertaId)
+    {
+        $turmasvinculadas = DB::table('int_ambientes_turmas')
+           ->get();
+
+        $turmasvinculadasId = [];
+
+        foreach ($turmasvinculadas as $key => $value) {
+            $turmasvinculadasId[] = $value->atr_trm_id;
+        }
+
+        $turmas = DB::table('acd_turmas')
+           ->whereNotIn('trm_id', $turmasvinculadasId)
+           ->where('trm_ofc_id', '=', $ofertaId)
+           ->get();
+
+        return $turmas;
+    }
+
     public function findAmbientesWithMonitor()
     {
       $entries = DB::table('int_ambientes_virtuais')
