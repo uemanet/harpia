@@ -310,6 +310,17 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 4;
         $recurso->save();
 
+        // Recurso Titulacoes
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
+        $recurso->rcs_nome = 'Titulações';
+        $recurso->rcs_rota = 'titulacoes';
+        $recurso->rcs_descricao = 'Recurso titulacoes da categoria cadastro do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-file-text-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
+
         // MODULO INTEGRAÇÃO
         // Recurso Dashboard
         $recurso = new Recurso();

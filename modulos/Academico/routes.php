@@ -177,6 +177,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getShow')->name('academico.matriculasofertasdisciplinas.show');
     });
 
+    Route::group(['prefix' => 'titulacoes'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\TitulacoesController@getIndex')->name('academico.titulacoes.index');
+        Route::get('/create', '\Modulos\Academico\Http\Controllers\TitulacoesController@getCreate')->name('academico.titulacoes.getCreate');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\TitulacoesController@postCreate')->name('academico.titulacoes.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\TitulacoesController@getEdit')->name('academico.titulacoes.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\TitulacoesController@putEdit')->name('academico.titulacoes.putEdit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\TitulacoesController@postDelete')->name('academico.titulacoes.delete');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
