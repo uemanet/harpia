@@ -21,9 +21,19 @@ class MatriculaOfertaDisciplina extends BaseController
         $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
-    public function getFindAllDisciplinasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
+    public function getFindAllDisciplinasCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
     {
-        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasAndCursadasByAluno($alunoId, $turmaId, $periodoId);
+        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
+            'ofd_per_id' => $periodoId,
+            'ofd_trm_id' => $turmaId
+        ]);
+
+        return new JsonResponse($disciplinas, 200);
+    }
+    
+    public function getFindAllDisciplinasNotCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
+    {
+        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasNotCursadasByAluno($alunoId,$turmaId, $periodoId);
 
         return new JsonResponse($disciplinas, 200);
     }

@@ -175,35 +175,33 @@
             });
 
             var localizarDisciplinasOfertadas = function (turmaId, periodoId, alunoId) {
-                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
+                var disciplinasOfertadas = null;
+                var disciplinasCursadas = null;
+
+                // pega as disciplinas oferecidas no qual o aluno não está matriculado
+                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinasnotcursadasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
                         .done(function (data) {
                             boxDisciplinasNaoMatriculadas.removeClass('hidden');
-                            boxDisciplinasMatriculadas.removeClass('hidden');
-                            boxFormDisciplinas.show();
+                            //boxFormDisciplinas.show();
 
                             boxDisciplinasNaoMatriculadas.find('.conteudo').empty();
+
+                            renderTableDisciplinasNaoMatriculadas(data);
+                        });
+
+                // pega as disciplinas oferecidas no qual o aluno está matriculado
+                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinascursadasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
+                        .done(function (data) {
+                            boxDisciplinasMatriculadas.removeClass('hidden');
+                            //boxFormDisciplinas.show();
+
                             boxDisciplinasMatriculadas.find('.conteudo').empty();
 
-                            var disciplinasOfertadas = new Array();
-                            var disciplinasCursadas = new Array();
-
-                            if(!$.isEmptyObject(data)) {
-                                $.each(data, function (key, obj) {
-                                   if(obj.matriculado) {
-                                       disciplinasCursadas.push(obj);
-                                   } else {
-                                       disciplinasOfertadas.push(obj);
-                                   }
-                                });
-                            }
-
-                            renderTableDisciplinasNaoMatriculadas(disciplinasOfertadas, disciplinasCursadas.length);
-                            renderTableDisciplinasMatriculadas(disciplinasCursadas);
+                            renderTableDisciplinasMatriculadas(data);
                         });
             };
 
-            var renderTableDisciplinasNaoMatriculadas = function (disciplinas, quantDisciplinasCursadas) {
-
+            var renderTableDisciplinasNaoMatriculadas = function (disciplinas) {
                 if(disciplinas.length) {
 
                     var table = '';
@@ -221,20 +219,20 @@
                     $.each(disciplinas, function (key, obj) {
                         table += '<tr>';
 
-                        if(obj.quant_matriculas == obj.ofd_qtd_vagas) {
-                            table += "<td></td>";
-                        } else {
+                        if(obj.disponivel) {
                             table += "<td><label><input type='checkbox' class='icheckbox_minimal-blue ofertas' value='"+obj.ofd_id+"'></label></td>";
+                        } else {
+                            table += "<td></td>";
                         }
                         table += "<td>"+obj.dis_nome+"</td>";
                         table += "<td>"+obj.dis_carga_horaria+"</td>";
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        if(obj.quant_matriculas == obj.ofd_qtd_vagas) {
-                            table += "<td><span class='label label-danger'>Não Disponível</span></td>";
-                        } else {
+                        if(obj.disponivel) {
                             table += "<td><span class='label label-success'>Disponível</span></td>";
+                        } else {
+                            table += "<td><span class='label label-danger'>Não Disponível</span></td>";
                         }
                         table += '</tr>';
                     });
@@ -249,16 +247,11 @@
                     boxDisciplinasNaoMatriculadas.find('.conteudo').append(table);
                     boxDisciplinasNaoMatriculadas.find('.conteudo').append(button);
                 } else {
-                    if(quantDisciplinasCursadas > 0) {
-                        boxDisciplinasNaoMatriculadas.find('.conteudo').append('<p>Aluno já está matriculado em todas as disciplinas ofertadas para este período</p>');
-                    } else {
-                        boxDisciplinasNaoMatriculadas.find('.conteudo').append('<p>Não há disponibilidade de disciplinas ofertadas para este período</p>');
-                    }
+                        boxDisciplinasNaoMatriculadas.find('.conteudo').append('<p>Não há disciplinas disponíveis para este período</p>');
                 }
             };
 
             var renderTableDisciplinasMatriculadas = function (disciplinas) {
-
                 if(disciplinas.length) {
 
                     var table = '';
@@ -279,7 +272,11 @@
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        table += "<td><span class='label label-success'>Matriculado</span></td>";
+                        if(obj.mof_status == 'cursando') {
+                            table += "<td><span class='label label-success'>Cursando</span></td>";
+                        } else {
+                            table += "<td><span class='label label-warning'>Cancelado</span></td>";
+                        }
                         table += '</tr>';
                     });
 
