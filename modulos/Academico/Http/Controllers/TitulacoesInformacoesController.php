@@ -2,20 +2,19 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Academico\Http\Requests\TitulacaoRequest;
-use Modulos\Academico\Repositories\TitulacaoRepository;
+use Modulos\Academico\Repositories\TitulacaoInformacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
 
-class TitulacoesController extends BaseController
+class TitulacoesInformacoesController extends BaseController
 {
-    protected $titulacaoRepository;
+    protected $titulacaoInformacaoRepository;
 
-    public function __construct(TitulacaoRepository $titulacaoRepository)
+    public function __construct(TitulacaoInformacaoRepository $titulacaoInformacaoRepository)
     {
-        $this->titulacaoRepository = $titulacaoRepository;
+        $this->titulacaoInformacaoRepository = $titulacaoInformacaoRepository;
     }
 
     public function getIndex(Request $request)
@@ -28,7 +27,7 @@ class TitulacoesController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->titulacaoRepository->paginateRequest($request->all());
+        $tableData = $this->titulacaoInformacaoRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
