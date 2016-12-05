@@ -146,4 +146,9 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         return true;
     }
+
+    public function getMatriculasByOfertaDisciplina($ofertaId)
+    {
+        return $this->model->where('mof_ofd_id', '=', $ofertaId)->get();
+    }
 }

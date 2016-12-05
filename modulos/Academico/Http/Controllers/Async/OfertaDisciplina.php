@@ -5,16 +5,19 @@ namespace Modulos\Academico\Http\Controllers\Async;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 
 class OfertaDisciplina extends BaseController
 {
     protected $ofertaDisciplinaRepository;
+    protected $matriculaOfertaDisciplinaRepository;
 
-    public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository)
+    public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository, MatriculaOfertaDisciplinaRepository $matricula)
     {
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matricula;
     }
 
     public function getFindallbycurso($cursoId)
@@ -36,6 +39,13 @@ class OfertaDisciplina extends BaseController
             'prf_id',
             'pes_nome'
         ]);
+
+        for($i = 0;$i < $retorno->count(); $i++)
+        {
+            $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
+
+            $retorno[$i]->qtdMatriculas = $qtdMatriculas;
+        }
 
         return new JsonResponse($retorno, 200);
     }
@@ -59,5 +69,22 @@ class OfertaDisciplina extends BaseController
             }
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    public function postDeletarofertadisciplina(Request $request)
+    {
+        $ofertaId = $request->input('ofd_id');
+
+        $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($ofertaId)->count();
+
+        if($qtdMatriculas) {
+            return new JsonResponse('Não foi possivel deletar oferta. A mesma já possui alunos matriculados', Response::HTTP_BAD_GATEWAY, [], JSON_UNESCAPED_UNICODE);
+        }
+
+        if($this->ofertaDisciplinaRepository->delete($ofertaId)) {
+            return new JsonResponse(Response::HTTP_OK);
+        }
+
+        return new JsonResponse(Response::HTTP_BAD_REQUEST);
     }
 }

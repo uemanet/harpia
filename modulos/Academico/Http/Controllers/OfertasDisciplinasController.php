@@ -47,7 +47,6 @@ class OfertasDisciplinasController extends BaseController
         $actionButton[] = $btnNovo;
 
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
         return view('Academico::ofertasdisciplinas.index', compact('cursos', 'periodoletivo', 'actionButton'));
     }
