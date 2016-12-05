@@ -4,6 +4,7 @@ namespace Modulos\Geral\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Documento;
+use Carbon\Carbon;
 
 class DocumentoRepository extends BaseRepository
 {
@@ -54,5 +55,12 @@ class DocumentoRepository extends BaseRepository
     public function updateOrCreate(array $attributes, array $data)
     {
         return $this->model->updateOrCreate($attributes, $data);
+    }
+
+    public function update(array $data, $id, $attribute = "id")
+    {
+        $data['doc_dataexpedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_dataexpedicao'])->toDateString();
+
+        return $this->model->where($attribute, '=', $id)->update($data);
     }
 }

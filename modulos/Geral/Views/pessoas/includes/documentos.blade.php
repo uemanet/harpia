@@ -22,6 +22,7 @@
                             <th>Orgão Emissor</th>
                             <th>Data de Emissão</th>
                             <th>Observação</th>
+                            <th></th>
                         </tr>
                         @foreach($pessoa->documentos as $documento)
                             <tr>
@@ -34,26 +35,40 @@
                                 <td>{{$documento->doc_orgao}}</td>
                                 <td>{{Format::formatDate($documento->doc_dataexpedicao, 'd/m/Y')}}</td>
                                 <td>{{$documento->doc_observacao}}</td>
+                                <td>
+                                  {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                      [
+                                        'classButton' => '',
+                                        'icon' => 'fa fa-pencil',
+                                        'action' => '/geral/documentos/create/' . $pessoa->pes_id,
+                                        'label' => ' Editar',
+                                        'method' => 'get'
+                                      ],
+                                    ]
+                                  ]) !!}
+                                </td>
                             </tr>
                         @endforeach
                     </table>
                 @else
                     <p>Sem documentos para apresentar</p>
                 @endif
-            </div>
-            {!! ActionButton::grid([
-                'type' => 'LINE',
-                'buttons' => [
-                    [
-                        'classButton' => 'btn btn-primary',
-                        'icon' => 'fa fa-plus-square',
-                        'action' => '/academico/documentos/create/' . $pessoa->pes_id,
-                        'label' => ' Novo Documento',
-                        'method' => 'get'
-                    ],
-                ]
-            ]) !!}
             <!-- /.box-body -->
+            {!! ActionButton::grid([
+              'type' => 'LINE',
+              'buttons' => [
+              [
+              'classButton' => 'btn btn-primary',
+              'icon' => 'fa fa-plus-square',
+              'action' => '/geral/documentos/create/' . $pessoa->pes_id,
+              'label' => ' Novo Documento',
+              'method' => 'get'
+              ],
+              ]
+              ]) !!}
+          </div>
         </div>
         <!-- /.box -->
     </div>

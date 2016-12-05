@@ -1,11 +1,11 @@
 <?php
 
-namespace Modulos\Academico\Http\Controllers;
+namespace Modulos\Geral\Http\Controllers;
 
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Academico\Http\Requests\DocumentoRequest;
+use Modulos\Geral\Http\Requests\DocumentoRequest;
 use Illuminate\Http\Request;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\TipoDocumentoRepository;
@@ -36,7 +36,7 @@ class DocumentosController extends BaseController
         }
         $tiposdocumentos = $this->tipodocumentoRepository->lists('tpd_id', 'tpd_nome');
 
-        return view('Geral::documentos.create', compact('pessoa', 'tiposdocumentos');
+        return view('Geral::documentos.create', compact('pessoa', 'tiposdocumentos'));
     }
 
     public function postCreate(DocumentoRequest $request)
@@ -71,7 +71,7 @@ class DocumentosController extends BaseController
         }
         $tiposdocumentos = $this->tipodocumentoRepository->lists('tpd_id', 'tpd_nome');
 
-        return view('Geral::documentos.edit', compact('documento', 'tiposdocumentos');
+        return view('Geral::documentos.edit', compact('documento', 'tiposdocumentos'));
     }
 
     public function putEdit($id, DocumentoRequest $request)

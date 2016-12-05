@@ -26,8 +26,8 @@ class DocumentoRequest extends BaseRequest
         return [
             'doc_pes_id' => 'required',
             'doc_tpd_id' => 'required',
-            'doc_conteudo' => 'required',
-            'doc_data_expedicao' => 'required',
+            'doc_conteudo' => 'required:max:255',
+            'doc_dataexpedicao' => 'required',
             'doc_orgao' => 'max:255',
             'doc_observacao' => 'max:255'
         ];

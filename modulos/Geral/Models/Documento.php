@@ -2,6 +2,7 @@
 namespace Modulos\Geral\Models;
 
 use Modulos\Core\Model\BaseModel;
+use Carbon\Carbon;
 
 class Documento extends BaseModel
 {
@@ -30,5 +31,18 @@ class Documento extends BaseModel
     public function tipo_documento()
     {
         return $this->belongsTo('Modulos\Geral\Models\TipoDocumento', 'doc_tpd_id');
+    }
+
+    // Accessors
+    public function getDocDataexpedicaoAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutators
+    public function setDocDataexpedicaoAttribute($value)
+    {
+        $this->attributes['doc_dataexpedicao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }
