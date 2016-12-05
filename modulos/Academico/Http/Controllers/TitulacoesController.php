@@ -139,7 +139,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação atualizada com sucesso.');
-            return redirect('/academico/polos/index');
+            return redirect('/academico/titulacoes/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

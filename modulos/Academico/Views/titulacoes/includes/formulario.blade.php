@@ -9,7 +9,7 @@
     <div class="form-group col-md-6 @if ($errors->has('tit_peso')) has-error @endif">
         {!! Form::label('tit_peso', 'Peso*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::text('tit_peso', old('tit_peso'), ['class' => 'form-control']) !!}
+            {!! Form::number('tit_peso', old('tit_peso'), ['class' => 'form-control']) !!}
             @if ($errors->has('tit_peso')) <p class="help-block">{{ $errors->first('tit_peso') }}</p> @endif
         </div>
     </div>

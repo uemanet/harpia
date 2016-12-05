@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Titulações
+    Centros
 @stop
 
 @section('subtitle')
-    Módulo Acadêmico
+    Gerenciamento de centros
 @stop
 
 @section('actionButton')
@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/titulacoes/index') }}">
+                <form method="GET" action="{{ url('/academico/centros/index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="tit_nome" id="tit_nome" value="{{Input::get('tit_nome')}}" placeholder="Nome da titulação">
+                        <input type="text" class="form-control" name="cen_nome" id="cen_nome" value="{{Input::get('cen_nome')}}" placeholder="Nome do centro">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

@@ -20,14 +20,40 @@
                             <th>Nome</th>
                             <th>Titulo</th>
                             <th>Instituição</th>
+                            <th>Data de Início</th>
                             <th>Data de Conclusão</th>
+                            <th>Ações</th>
                         </tr>
                         @foreach($pessoa->titulacoes_informacoes as $titulacao)
                             <tr>
                                 <td>{{$titulacao->titulacao->tit_nome}}</td>
                                 <td>{{$titulacao->tin_titulo}}</td>
                                 <td>{{$titulacao->tin_instituicao}}</td>
+                                <td>{{Format::formatDate($titulacao->tin_anoinicio, 'd/m/Y')}}</td>
                                 <td>{{Format::formatDate($titulacao->tin_anofim, 'd/m/Y')}}</td>
+                                <td>
+
+                                    {!! ActionButton::grid([
+                                         'type' => 'LINE',
+                                         'buttons' => [
+                            [
+                                'classButton' => 'btn btn-success',
+                                'icon' => 'fa fa-pencil',
+                                'action' => '/academico/titulacoesinformacoes/edit/' . $titulacao->tin_id,
+                                'label' => '',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete btn btn-danger',
+                                'icon' => 'fa fa-trash',
+                                'action' => '/academico/titulacoesinformacoes/delete',
+                                'id' => $titulacao->tin_id,
+                                'label' => '',
+                                'method' => 'post'
+                            ]
+                        ]
+                ]) !!}
+                                </td>
                             </tr>
                         @endforeach
                     </table>
@@ -36,6 +62,20 @@
                 @endif
             </div>
             <!-- /.box-body -->
+            <div class="box-footer">
+                {!! ActionButton::grid([
+                    'type' => 'LINE',
+                    'buttons' => [
+                        [
+                            'classButton' => 'btn btn-primary',
+                            'icon' => 'fa fa-plus-square',
+                            'action' => '/academico/titulacoesinformacoes/create/' . $pessoa->pes_id,
+                            'label' => ' Nova Titulação',
+                            'method' => 'get'
+                        ],
+                    ]
+                ]) !!}
+            </div>
         </div>
         <!-- /.box -->
     </div>
