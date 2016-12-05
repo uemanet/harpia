@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('ofd_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_per_id', $periodoletivo, null, ['class' => 'form-control', 'placeholder' => 'Escolha o periodo']) !!}
+                    {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
@@ -95,6 +95,7 @@
                 var boxDisciplinas = $('#boxDisciplinas');
                 var boxFormDisciplinas = $('#formDisciplinas');
                 boxFormDisciplinas.hide();
+
 
                 // Botao de Localizar Disciplinas Ofertadas
                 $('#btnLocalizar').click(function () {
@@ -155,6 +156,7 @@
                         }
                     });
 
+                    resetForm();
                 });
 
                 var localizarDisciplinasOfertadas = function (turmaId, periodoId) {
@@ -192,7 +194,49 @@
                                     boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
                                 }
                             });
-                }
+                };
+
+                var resetForm = function () {
+                    resetSelectMatrizes();
+                    $('#ofd_mdo_id').empty();
+                    $('#ofd_mdc_id').empty();
+                    resetSelectProfessores();
+                    $('#ofd_qtd_vagas').val('');
+                };
+
+                var resetSelectMatrizes = function () {
+                    $('#mtc_id').empty();
+                    var crsId = $('#crs_id').val();
+                    // Populando o select de matrizes
+                    $.harpia.httpget("{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/" + crsId)
+                            .done(function (data) {
+                                if(!$.isEmptyObject(data)) {
+                                    $('#mtc_id').append("<option value=''>Selecione a matriz</option>");
+                                    $.each(data, function (key, value) {
+                                        $('#mtc_id').append('<option value="'+value.mtc_id+'">'+value.mtc_titulo+'</option>');
+                                    });
+                                } else {
+                                    $('#mtc_id').append("<option value=''>Sem matrizes cadastradas</option>");
+                                }
+                            });
+                };
+                
+                var resetSelectProfessores = function () {
+                    $('#ofd_prf_id').empty();
+
+                    $.harpia.httpget("{{url('/')}}/academico/async/professores/findall")
+                            .done(function (data) {
+
+                                if(!$.isEmptyObject(data)) {
+                                    $('#ofd_prf_id').append("<option value=''>Selecione o professor</option>");
+                                    $.each(data, function (key, value) {
+                                        $('#ofd_prf_id').append('<option value="'+key+'">'+value+'</option>');
+                                    });
+                                } else {
+                                    $('#ofd_prf_id').append("<option value=''>Sem professores cadastrados</option>");
+                                }
+                            });
+                };
             });
     </script>
 

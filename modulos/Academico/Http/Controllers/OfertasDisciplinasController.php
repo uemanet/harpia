@@ -39,7 +39,7 @@ class OfertasDisciplinasController extends BaseController
         $this->cursoRepository = $cursoRepository;
     }
 
-    public function getIndex(Request $request)
+    public function getIndex()
     {
         $btnNovo = new TButton();
         $btnNovo->setName('Oferecer Disciplinas')->setAction('/academico/ofertasdisciplinas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
@@ -56,8 +56,7 @@ class OfertasDisciplinasController extends BaseController
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
         $professor = $this->professorRepository->lists('prf_id', 'pes_nome', true);
-        $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::ofertasdisciplinas.create', compact('cursos', 'professor', 'periodoletivo'));
+        return view('Academico::ofertasdisciplinas.create', compact('cursos', 'professor'));
     }
 }
