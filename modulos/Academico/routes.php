@@ -251,7 +251,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'professores'], function () {
-           Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\Professor@getFindall');
+            Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\Professor@getFindall');
         });
     });
 });

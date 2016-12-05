@@ -40,8 +40,7 @@ class OfertaDisciplina extends BaseController
             'pes_nome'
         ]);
 
-        for($i = 0;$i < $retorno->count(); $i++)
-        {
+        for ($i = 0;$i < $retorno->count(); $i++) {
             $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
 
             $retorno[$i]->qtdMatriculas = $qtdMatriculas;
@@ -77,11 +76,11 @@ class OfertaDisciplina extends BaseController
 
         $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($ofertaId)->count();
 
-        if($qtdMatriculas) {
+        if ($qtdMatriculas) {
             return new JsonResponse('Não foi possivel deletar oferta. A mesma já possui alunos matriculados', Response::HTTP_BAD_GATEWAY, [], JSON_UNESCAPED_UNICODE);
         }
 
-        if($this->ofertaDisciplinaRepository->delete($ofertaId)) {
+        if ($this->ofertaDisciplinaRepository->delete($ofertaId)) {
             return new JsonResponse(Response::HTTP_OK);
         }
 
