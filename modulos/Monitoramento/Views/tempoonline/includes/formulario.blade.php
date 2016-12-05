@@ -35,7 +35,6 @@
             {!! Form::submit('Visualizar informações', ['class' => 'btn btn-primary']) !!}
         </div>
     </div>
-
 </div>
 
 @section('scripts')
@@ -144,92 +143,100 @@
     </script>
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("select").select2();
-            });
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("select").select2();
+        });
 
-            $(document).on('click', '.btn-primary', function (event) {
-                event.preventDefault();
 
-                var grafico = $('#grafico');
-                grafico.empty();
-                grafico.append('<canvas id="grafico-tempo" height="400"></canvas>');
+        $(document).on('click', '.btn-primary', function (event) {
+            event.preventDefault();
 
-                var tutor = $('#tut_id').find(":selected").val();
-                var datainicio = $('#date_ini').val().replace(/\//g, "\-");
-                var datafim = $('#date_fim').val().replace(/\//g, "\-");
-                var token = '{{$ambiente->asr_token}}';
-                var timeclicks = {{$timeclicks}};
-                var moodlewsformat = "json";
-                var wsfunction = "{{$wsfunction}}";
-                var url = "{{$ambiente->amb_url}}";
+            var parseTime = function (data){
+                d = Number(data);
+                var h = Math.floor(d / 3600);
+                var m = Math.floor(d % 3600 / 60);
+                var s = Math.floor(d % 3600 % 60);
+                data = ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
+                return data;
+            };
 
-                var request = $.ajax({
-                        url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor_id="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
-                        type: "POST",
-                        //data: jsonData,
-                        dataType: "json",
-                        success: function (data) {
-                          $.harpia.hideloading();
+            var grafico = $('#grafico');
+            grafico.empty();
+            grafico.append('<canvas id="grafico-tempo" height="400"></canvas>');
 
-                          if (data.errorcode === "startdateerror"){
-                            toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});
-                          }
+            var tutor = $('#tut_id').find(":selected").val();
+            var datainicio = $('#date_ini').val().replace(/\//g, "\-");
+            var datafim = $('#date_fim').val().replace(/\//g, "\-");
+            var token = '{{$ambiente->asr_token}}';
+            var timeclicks = '{{$timeclicks}}';
+            var moodlewsformat = "json";
+            var wsfunction = '{{$wsfunction}}';
+            var url = '{{$ambiente->amb_url}}';
 
-                          if (data.errorcode === "enddateerror"){
-                            toastr.error('A data de fim não deve maior que o dia atual', null, {progressBar: true});
-                          }
-                          var dias = new Array();
-                          var tempos = new Array();
-                          console.log(data);
-                          for (i = 0; i < data.items.length; i++) {
-                            dias[i] = data.items[i].date;
-                            tempos[i] = Math.floor(data.items[i].onlinetime/60);
-                          }
+            var request = $.ajax({
+                url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor_id="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
+                type: "POST",
+                //data: jsonData,
+                dataType: "json",
+                success: function (data) {
+                    $.harpia.hideloading();
 
-                          var DadosDoGrafico = {
-                              labels : dias,
-                              datasets : [
-                                  {
-                                      fillColor : "rgba(172,194,132,0.4)",
-                                      strokeColor : "#ACC26D",
-                                      pointColor : "#fff",
-                                      pointStrokeColor : "#9DB86D",
-                                      data : tempos
-                                  }
-                              ]
-                          };
+                    if (data.errorcode === "startdateerror"){
+                        toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});
+                        return;
+                    }
 
-                          var chartOptions = {
-                            //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-                            scaleBeginAtZero: true,
-                            //Boolean - Whether grid lines are shown across the chart
-                            scaleShowGridLines: true,
-                            //Number - Width of the grid lines
-                            scaleGridLineWidth: 1,
-                            //Boolean - Whether to show horizontal lines (except X axis)
-                            scaleShowHorizontalLines: true,
-                            //Boolean - Whether to show vertical lines (except Y axis)
-                            scaleShowVerticalLines: true,
-                            //Boolean - whether to make the chart responsive
-                            responsive: true,
-                            maintainAspectRatio: false
-                          };
-                          // get line chart canvas
-                          var monitoramento = document.getElementById('grafico-tempo').getContext('2d');
-                          // draw line chart
-                          new Chart(monitoramento).Line(DadosDoGrafico, chartOptions);
+                    if (data.errorcode === "enddateerror"){
+                        toastr.error('A data de fim não deve maior que o dia atual', null, {progressBar: true});
+                        return;
+                    }
+                    var dias = new Array();
+                    var tempos = new Array();
+                    console.log(data);
+                    for (var i = 0; i < data.items.length; i++) {
+                        dias[i] = data.items[i].date.replace(/-/g, "\/");
+                        tempos[i] = Math.floor(data.items[i].onlinetime);
+                    }
 
-                        },
-                        error: function (error) {
-                            $.harpia.hideloading();
-                            toastr.error('Erro ao tentar se comunicar com o Ambiente Virtual.', null, {progressBar: true});
+                    var chartData = {
+                        labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                        datasets: [{
+                            label: 'apples',
+                            data: [12, 19, 3, 17, 6, 3, 7],
+                            backgroundColor: "rgba(153,255,51,0.4)"
+                        }, {
+                            label: 'oranges',
+                            data: [2, 29, 5, 5, 2, 3, 10],
+                            backgroundColor: "rgba(255,153,0,0.4)"
+                        }]
+                    };
 
-                        }
+                    var chartOptions = {
+                        responsive: true,
+                        tooltipYPadding : 5,
+                        tooltipCornerRadius : 0,
+                        tooltipTitleFontStyle : 'normal',
+                        tooltipFillColor : 'rgba(0,160,0,0.8)',
+                        animationEasing : 'easeOutBounce',
+                        scaleLineColor : 'black',
+                        scaleFontSize : 5
+                    };
+
+                    var ctx = document.getElementById('grafico-tempo').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: chartData,
+                        options: chartOptions
                     });
-                });
+                },
+                error: function (error) {
+                    $.harpia.hideloading();
+                    toastr.error('Erro ao tentar se comunicar com o Ambiente Virtual.', null, {progressBar: true});
 
+                }
+            });
+        });
 
-        </script>
+    </script>
 @stop
