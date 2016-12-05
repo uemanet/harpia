@@ -41,6 +41,18 @@
                     <p>Sem documentos para apresentar</p>
                 @endif
             </div>
+            {!! ActionButton::grid([
+                'type' => 'LINE',
+                'buttons' => [
+                    [
+                        'classButton' => 'btn btn-primary',
+                        'icon' => 'fa fa-plus-square',
+                        'action' => '/academico/documentos/create/' . $pessoa->pes_id,
+                        'label' => ' Novo Documento',
+                        'method' => 'get'
+                    ],
+                ]
+            ]) !!}
             <!-- /.box-body -->
         </div>
         <!-- /.box -->
