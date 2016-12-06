@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if($errors->has('mat_pol_id')) has-error @endif">
-        {!! Form::label('mat_pol_id', 'Polo', ['class' => 'control-label']) !!}
+        {!! Form::label('mat_pol_id', 'Polo*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('mat_pol_id', [], null , ['class' => 'form-control grp']) !!}
             @if ($errors->has('mat_pol_id')) <p class="help-block">{{ $errors->first('mat_pol_id') }}</p> @endif
@@ -38,6 +38,13 @@
         <div class="controls">
             {!! Form::select('mat_grp_id', [], null , ['class' => 'form-control']) !!}
             @if ($errors->has('mat_grp_id')) <p class="help-block">{{ $errors->first('mat_grp_id') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-3 @if($errors->has('mat_modo_entrada')) has-error @endif">
+        {!! Form::label('mat_modo_entrada', 'Modo de Entrada*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('mat_modo_entrada', $modosEntrada, null , ['class' => 'form-control', 'placeholder' => 'Selecione o modo']) !!}
+            @if ($errors->has('mat_modo_entrada')) <p class="help-block">{{ $errors->first('mat_modo_entrada') }}</p> @endif
         </div>
     </div>
 </div>

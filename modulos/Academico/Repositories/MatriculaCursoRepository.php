@@ -4,6 +4,7 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
+use DB;
 
 class MatriculaCursoRepository extends BaseRepository
 {
@@ -77,6 +78,26 @@ class MatriculaCursoRepository extends BaseRepository
 
         return false;
     }
+    
+    public function verifyExistsVagasByTurma($turmaId)
+    {
+        $result = $this->model
+                        ->rightJoin('acd_turmas', function ($join) {
+                            $join->on('mat_trm_id', '=', 'trm_id');
+                        })
+                        ->select('trm_qtd_vagas', DB::raw('COUNT(mat_trm_id) as qtd_matriculas'))
+                        ->where('trm_id', '=', $turmaId)
+                        ->groupBy('trm_id')
+                        ->first();
+
+        if($result) {
+            if($result->qtd_matriculas < $result->trm_qtd_vagas) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public function findAll(array $options, array $select = null)
     {
@@ -108,5 +129,67 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         return $query->get();
+    }
+
+    public function createMatricula($alunoId, array $options)
+    {
+        // verifica se aluno possui matricula na oferta de curso ou na turma
+        if ($this->verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $options['ofc_id'], $options['mat_trm_id'])) {
+            return array(
+                'type' => 'error',
+                'message' => 'Aluno já possui matricula na oferta ou turma'
+            );
+        }
+
+        // verifica se aluno possui matricula ativa no curso, mesmo sendo em ofertas diferentes, contanto que tenha concluido, evadido
+        // ou abandonado o curso
+        if ($this->verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $options['crs_id'])) {
+            return array(
+                'type' => 'error',
+                'message' => 'Aluno já possui matricula ativa no curso selecionado'
+            );
+        }
+
+        // Verifica o nivel do curso, e caso seja de GRADUACAO, verifica se o aluno possui matrícula em algum curso de graduacao
+        $curso = DB::table('acd_cursos')->where('crs_id', $options['crs_id'])->first();
+
+        // caso seja de Graducao
+        if ($curso->crs_nvc_id == 3) {
+            if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
+                return array(
+                    'type' => 'error',
+                    'message' => 'Aluno já possui matricula ativa em outro curso de graduação'
+                );
+            }
+        }
+
+        // verifica se a turma ainda possui vagas disponiveis
+        if(!$this->verifyExistsVagasByTurma($options['mat_trm_id'])) {
+            return array(
+                'type' => 'error',
+                'message' => 'A turma escolhida não possui mais vagas disponiveis'
+            );
+        }
+
+        $dataMatricula = [
+            'mat_alu_id' => $alunoId,
+            'mat_trm_id' => $options['mat_trm_id'],
+            'mat_pol_id' => $options['mat_pol_id'],
+            'mat_grp_id' => ($options['mat_grp_id'] == '') ? null : $options['mat_grp_id'],
+            'mat_modo_entrada' => $options['mat_modo_entrada'],
+            'mat_situacao' => 'cursando'
+        ];
+
+        if($this->create($dataMatricula)) {
+            return array(
+                'type' => 'success',
+                'message' => 'Matricula efetuada com sucesso!'
+            );
+        }
+
+        return array(
+            'type' => 'error',
+            'message' => 'Erro ao tentar matricular aluno'
+        );
     }
 }
