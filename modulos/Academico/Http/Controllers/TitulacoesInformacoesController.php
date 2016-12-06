@@ -14,7 +14,6 @@ class TitulacoesInformacoesController extends BaseController
     protected $titulacaoInformacaoRepository;
     protected $titulacaoRepository;
     protected $pessoaRepository;
-    protected $url;
 
     public function __construct(TitulacaoInformacaoRepository $titulacaoInformacaoRepository, TitulacaoRepository $titulacaoRepository, PessoaRepository $pessoaRepository)
     {
@@ -26,13 +25,16 @@ class TitulacoesInformacoesController extends BaseController
     public function getCreate($pessoaId, Request $request)
     {
 
+        $url = $request->session()->get('last_acad_route');
+        $id = $request->session()->get('last_id');
+
         $titulacoes = $this->titulacaoRepository->lists('tit_id', 'tit_nome');
         $pessoa = $this->pessoaRepository->find($pessoaId);
 
 
         if (is_null($pessoa)) {
             flash()->error('Pessoa não existe!');
-            return redirect()->back();
+            return redirect()->route($url, ['id' => $id]);
         }
 
         return view('Academico::titulacoesinformacoes.create', compact('titulacoes', 'pessoa'));
@@ -40,14 +42,14 @@ class TitulacoesInformacoesController extends BaseController
 
     public function postCreate($pessoaId, TitulacaoInformacaoRequest $request)
     {
-        try {
+        $url = $request->session()->get('last_acad_route');
+        $id = $request->session()->get('last_id');
 
+        try {
             $data = $request->all();
             $data['tin_pes_id'] = $pessoaId;
 
             $titulacao = $this->titulacaoInformacaoRepository->create($data);
-
-
 
             if (!$titulacao) {
                 flash()->error('Erro ao tentar salvar.');
@@ -56,7 +58,7 @@ class TitulacoesInformacoesController extends BaseController
             }
 
             flash()->success('Titulação adicionada com sucesso.');
-            return redirect()->back();
+            return redirect()->route($url, ['id' => $id]);
 
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -68,16 +70,25 @@ class TitulacoesInformacoesController extends BaseController
         }
     }
 
-    public function getEdit($titulacaoId)
+    public function getEdit($titulacaoId, Request $request)
     {
+        $url = $request->session()->get('last_acad_route');
+        $id = $request->session()->get('last_id');
+
         $titulacaoInfo = $this->titulacaoInformacaoRepository->find($titulacaoId);
+
+        if (!$titulacaoInfo) {
+            flash()->error('Titulação não existe.');
+            return redirect()->route($url, ['id' => $id]);
+        }
+
         $pessoa = $titulacaoInfo->tin_pes_id;
 
         $titulacoes = $this->titulacaoRepository->lists('tit_id', 'tit_nome');
 
         if (!$titulacaoInfo) {
             flash()->error('Titulação não existe.');
-            return redirect()->back();
+            return redirect()->route($url, ['id' => $id]);
         }
 
         return view('Academico::titulacoesinformacoes.edit', ['pessoa' => $pessoa,'titulacaoInfo' => $titulacaoInfo, 'titulacoes' => $titulacoes]);
@@ -85,6 +96,9 @@ class TitulacoesInformacoesController extends BaseController
 
     public function putEdit($titulacaoId, TitulacaoInformacaoRequest $request)
     {
+        $url = $request->session()->get('last_acad_route');
+        $id = $request->session()->get('last_id');
+
         try {
             $titulacao = $this->titulacaoInformacaoRepository->find($titulacaoId);
 
@@ -101,7 +115,7 @@ class TitulacoesInformacoesController extends BaseController
             }
 
             flash()->success('Titulação atualizada com sucesso.');
-            return redirect()->back();
+            return redirect()->route($url, ['id' => $id]);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

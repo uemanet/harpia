@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('tin_titulo')) has-error @endif">
-        {!! Form::label('tin_titulo', 'Título*', ['class' => 'control-label']) !!}
+        {!! Form::label('tin_titulo', 'Título/Curso*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('tin_titulo', old('tin_titulo'), ['class' => 'form-control']) !!}
             @if ($errors->has('tin_titulo')) <p class="help-block">{{ $errors->first('tin_titulo') }}</p> @endif

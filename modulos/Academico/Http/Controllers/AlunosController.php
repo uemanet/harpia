@@ -280,7 +280,7 @@ class AlunosController extends BaseController
     public function getShow($alunoId)
     {
         $aluno = $this->alunoRepository->find($alunoId);
-
+        session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
         return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
     }
 }

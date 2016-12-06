@@ -30,4 +30,16 @@ class TitulacaoInformacao extends BaseModel
     {
         return $this->belongsTo('Modulos\Geral\Models\Titulacao', 'tin_tit_id');
     }
+
+    // Accessors
+    public function getTinAnofimAttribute($value)
+    {
+        if ($value == 0){
+            return null;
+        }
+
+        return $value;
+
+
+    }
 }

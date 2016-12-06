@@ -17,11 +17,11 @@
                 @if(!$pessoa->titulacoes_informacoes->isEmpty())
                     <table class="table table-bordered">
                         <tr>
-                            <th>Nome</th>
-                            <th>Titulo</th>
+                            <th>Titulação</th>
+                            <th>Título/Curso</th>
                             <th>Instituição</th>
-                            <th>Data de Início</th>
-                            <th>Data de Conclusão</th>
+                            <th>Ano de Início</th>
+                            <th>Ano de Conclusão</th>
                             <th>Ações</th>
                         </tr>
                         @foreach($pessoa->titulacoes_informacoes as $titulacao)
@@ -29,15 +29,15 @@
                                 <td>{{$titulacao->titulacao->tit_nome}}</td>
                                 <td>{{$titulacao->tin_titulo}}</td>
                                 <td>{{$titulacao->tin_instituicao}}</td>
-                                <td>{{Format::formatDate($titulacao->tin_anoinicio, 'd/m/Y')}}</td>
-                                <td>{{Format::formatDate($titulacao->tin_anofim, 'd/m/Y')}}</td>
+                                <td>{{($titulacao->tin_anoinicio)}}</td>
+                                <td>{{($titulacao->tin_anofim)}}</td>
                                 <td>
 
                                     {!! ActionButton::grid([
                                          'type' => 'LINE',
                                          'buttons' => [
                             [
-                                'classButton' => 'btn btn-success',
+                                'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/academico/titulacoesinformacoes/edit/' . $titulacao->tin_id,
                                 'label' => '',

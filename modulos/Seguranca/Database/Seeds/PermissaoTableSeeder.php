@@ -868,15 +868,9 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-    // 4 permissoes
+    // 3 permissoes
     private function createPermissoesAcademicoTitulacoesInformacoes()
     {
-        $permissao = new Permissao();
-        $permissao->prm_rcs_id = 31;
-        $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index do recurso Titulações Informações';
-        $permissao->save();
-
         $permissao = new Permissao();
         $permissao->prm_rcs_id = 31;
         $permissao->prm_nome = 'create';

@@ -281,6 +281,8 @@ class TutoresController extends BaseController
     {
         $tutor = $this->tutorRepository->find($tutorId);
 
+        session(['last_acad_route' => 'academico.tutores.show', 'last_id' => $tutorId]);
+
         return view('Academico::tutores.show', ['pessoa' => $tutor->pessoa]);
     }
 }
