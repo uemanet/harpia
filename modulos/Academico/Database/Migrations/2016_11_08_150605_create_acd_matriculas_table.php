@@ -16,7 +16,7 @@ class CreateAcdMatriculasTable extends Migration
             $table->increments('mat_id');
             $table->integer('mat_alu_id')->unsigned();
             $table->integer('mat_trm_id')->unsigned();
-            $table->integer('mat_pol_id')->unsigned()->nullable();
+            $table->integer('mat_pol_id')->unsigned();
             $table->integer('mat_grp_id')->unsigned()->nullable();
             $table->enum('mat_situacao', [
                 'cursando',
@@ -24,10 +24,13 @@ class CreateAcdMatriculasTable extends Migration
                 'reprovado',
                 'evadido',
                 'trancado',
-                'transferencia externa',
-                'transferencia interna para',
-                'transferencia interna de',
                 'desistente'
+            ]);
+            $table->enum('mat_modo_entrada', [
+                'vestibular',
+                'transferencia_externa',
+                'transferencia_interna_de',
+                'transferencia_interna_para'
             ]);
             $table->date('mat_data_conclusao')->nullable();
 
