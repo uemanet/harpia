@@ -30,7 +30,7 @@ class TempoOnlineController extends Controller
     public function getIndex()
     {
         $ambientes = $this->ambientevirtualRepository->findAmbientesWithMonitor();
-        return view('Monitoramento::tempoonline.index', compact('ambientes') );
+        return view('Monitoramento::tempoonline.index', compact('ambientes'));
     }
 
     public function getMonitorar($idAmbiente)
