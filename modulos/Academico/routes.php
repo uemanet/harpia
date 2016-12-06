@@ -186,6 +186,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'turmas'], function () {
             Route::get('/findallbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacurso')
                 ->name('academico.async.turmas.findallbyofertacurso');
+            Route::get('/findallwithvagasdisponiveis/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallwithvagasdisponiveis');
         });
 
         Route::group(['prefix' => 'polos'], function () {

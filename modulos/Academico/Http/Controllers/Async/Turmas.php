@@ -21,4 +21,11 @@ class Turmas extends BaseController
 
         return new JsonResponse($turmas, 200);
     }
+
+    public function getFindallwithvagasdisponiveis($ofertaCursoId)
+    {
+        $turmas = $this->turmaRepository->findAllWithVagasDisponiveisByOfertaCurso($ofertaCursoId);
+
+        return new JsonResponse($turmas, 200);
+    }
 }

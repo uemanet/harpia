@@ -23,6 +23,21 @@ class TurmaRepository extends BaseRepository
         return $entries;
     }
 
+    public function findAllWithVagasDisponiveisByOfertaCurso($ofertaCursoId)
+    {
+        $entries = $this->model
+                        ->leftJoin('acd_matriculas', function ($join) {
+                            $join->on('mat_trm_id', '=', 'trm_id');
+                        })
+                        ->select('acd_turmas.*', DB::raw('COUNT(mat_trm_id) as qtd_matriculas'))
+                        ->where('trm_ofc_id', '=', $ofertaCursoId)
+                        ->groupBy('trm_id')
+                        ->havingRaw('qtd_matriculas < trm_qtd_vagas')
+                        ->get();
+
+        return $entries;
+    }
+
     public function getCurso($turmaId)
     {
         $cursoId = (DB::table('acd_ofertas_cursos')
