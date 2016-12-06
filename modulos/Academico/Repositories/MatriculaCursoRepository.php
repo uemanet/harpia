@@ -26,7 +26,9 @@ class MatriculaCursoRepository extends BaseRepository
                         ->where(function ($query) use ($turmaId, $ofertaCursoId) {
                             $query->where('mat_trm_id', '=', $turmaId)
                                     ->orWhere('trm_ofc_id', '=', $ofertaCursoId);
-                        })->get();
+                        })
+                        ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
+                        ->get();
 
         if ($result->count()) {
             return true;
@@ -97,6 +99,34 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         return false;
+    }
+
+    public function listsCursosNotMatriculadoByAluno($alunoId)
+    {
+        $cursosMatriculados = $this->model
+                                    ->join('acd_turmas', function ($join) {
+                                        $join->on('mat_trm_id', '=', 'trm_id');
+                                    })
+                                    ->join('acd_ofertas_cursos', function ($join) {
+                                        $join->on('trm_ofc_id', '=', 'ofc_id');
+                                    })
+                                    ->join('acd_cursos', function ($join) {
+                                        $join->on('ofc_crs_id', '=', 'crs_id');
+                                    })
+                                    ->select('crs_id')
+                                    ->where('mat_alu_id', '=', $alunoId)
+                                    ->whereIn('mat_situacao', ['cursando'])
+                                    ->pluck('crs_id')
+                                    ->toArray();
+
+        $query = DB::table('acd_cursos')
+                    ->whereNotIn('crs_id', $cursosMatriculados);
+
+        if($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
+            $query = $query->where('crs_nvc_id', '<>', 3);
+        }
+
+        return $query->pluck('crs_nome', 'crs_id');
     }
 
     public function findAll(array $options, array $select = null)

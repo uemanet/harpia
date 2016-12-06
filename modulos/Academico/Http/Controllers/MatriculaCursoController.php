@@ -72,7 +72,7 @@ class MatriculaCursoController extends BaseController
             return redirect()->back();
         }
 
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome', true);
+        $cursos = $this->matriculaCursoRepository->listsCursosNotMatriculadoByAluno($alunoId);
         $modosEntrada = array(
             'vestibular' => 'Vestibular',
             'transferencia_externa' => 'Transferência Externa',
