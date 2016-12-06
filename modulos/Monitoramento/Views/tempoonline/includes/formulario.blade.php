@@ -35,14 +35,15 @@
             {!! Form::submit('Visualizar informações', ['class' => 'btn btn-primary']) !!}
         </div>
     </div>
+
 </div>
 
 @section('scripts')
     @parent
 
     <script type="application/javascript">
-        $(document).ready(function(){
-            $('#crs_id').prop('selectedIndex',0);
+        $(document).ready(function () {
+            $('#crs_id').prop('selectedIndex', 0);
         });
     </script>
     <script type="application/javascript">
@@ -52,7 +53,7 @@
 
             var selectOfertas = $('#ofc_id');
             var selectTurmas = $('#trm_id');
-            if(crsId) {
+            if (crsId) {
 
                 // Populando o select de ofertas de cursos
                 selectOfertas.empty();
@@ -60,10 +61,10 @@
 
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
                         .done(function (data) {
-                            if(!$.isEmptyObject(data)) {
+                            if (!$.isEmptyObject(data)) {
                                 selectOfertas.append("<option>Selecione a oferta</option>");
                                 $.each(data, function (key, value) {
-                                    selectOfertas.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+'</option>');
+                                    selectOfertas.append('<option value="' + value.ofc_id + '">' + value.ofc_ano + '</option>');
                                 });
                             } else {
                                 selectOfertas.append("<option>Sem ofertas cadastradas</option>");
@@ -83,12 +84,12 @@
 
                 $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacurso/' + ofertaId)
                         .done(function (data) {
-                            if (!$.isEmptyObject(data)){
+                            if (!$.isEmptyObject(data)) {
                                 selectTurmas.append('<option>Selecione a turma</option>');
                                 $.each(data, function (key, obj) {
-                                    selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>')
+                                    selectTurmas.append('<option value="' + obj.trm_id + '">' + obj.trm_nome + '</option>')
                                 });
-                            }else {
+                            } else {
                                 selectTurmas.append('<option>Sem turmas cadastradas</option>')
                             }
                         });
@@ -105,12 +106,12 @@
 
                 $.harpia.httpget('{{url("/")}}/academico/async/grupos/findallbyturma/' + turmaId)
                         .done(function (data) {
-                            if (!$.isEmptyObject(data)){
+                            if (!$.isEmptyObject(data)) {
                                 selectGrupos.append('<option>Selecione o grupo</option>');
                                 $.each(data, function (key, obj) {
-                                    selectGrupos.append('<option value="'+obj.grp_id+'">'+obj.grp_nome+'</option>')
+                                    selectGrupos.append('<option value="' + obj.grp_id + '">' + obj.grp_nome + '</option>')
                                 });
-                            }else {
+                            } else {
                                 selectGrupos.append('<option>Sem grupos cadastrados</option>')
                             }
                         });
@@ -127,12 +128,12 @@
 
                 $.harpia.httpget('{{url("/")}}/academico/async/tutores/findallbygrupo/' + grupoId)
                         .done(function (data) {
-                            if (!$.isEmptyObject(data)){
+                            if (!$.isEmptyObject(data)) {
                                 selectTutores.append('<option>Selecione o tutor</option>');
                                 $.each(data, function (key, obj) {
-                                    selectTutores.append('<option value="'+obj.tut_id+'">'+obj.pes_nome+'</option>')
+                                    selectTutores.append('<option value="' + obj.tut_id + '">' + obj.pes_nome + '</option>')
                                 });
-                            }else {
+                            } else {
                                 selectTutores.append('<option>Sem tutores cadastrados nesse grupo</option>')
                             }
                         });
@@ -144,22 +145,12 @@
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("select").select2();
         });
 
-
         $(document).on('click', '.btn-primary', function (event) {
             event.preventDefault();
-
-            var parseTime = function (data){
-                d = Number(data);
-                var h = Math.floor(d / 3600);
-                var m = Math.floor(d % 3600 / 60);
-                var s = Math.floor(d % 3600 % 60);
-                data = ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
-                return data;
-            };
 
             var grafico = $('#grafico');
             grafico.empty();
@@ -169,66 +160,107 @@
             var datainicio = $('#date_ini').val().replace(/\//g, "\-");
             var datafim = $('#date_fim').val().replace(/\//g, "\-");
             var token = '{{$ambiente->asr_token}}';
-            var timeclicks = '{{$timeclicks}}';
+            var timeclicks = {{$timeclicks}};
             var moodlewsformat = "json";
-            var wsfunction = '{{$wsfunction}}';
-            var url = '{{$ambiente->amb_url}}';
+            var wsfunction = "{{$wsfunction}}";
+            var url = "{{$ambiente->amb_url}}";
 
             var request = $.ajax({
-                url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction="+wsfunction+"&start_date="+datainicio+"&end_date="+datafim+"&tutor_id="+2+"&time_between_clicks="+timeclicks+"&moodlewsrestformat="+moodlewsformat,
+                url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&start_date=" + datainicio + "&end_date=" + datafim + "&tutor_id=" + 2 + "&time_between_clicks=" + timeclicks + "&moodlewsrestformat=" + moodlewsformat,
                 type: "POST",
-                //data: jsonData,
+
                 dataType: "json",
-                success: function (data) {
+                success: function (moodledata) {
                     $.harpia.hideloading();
 
-                    if (data.errorcode === "startdateerror"){
+                    if (moodledata.errorcode === "startdateerror") {
                         toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});
-                        return;
                     }
 
-                    if (data.errorcode === "enddateerror"){
+                    if (moodledata.errorcode === "enddateerror") {
                         toastr.error('A data de fim não deve maior que o dia atual', null, {progressBar: true});
-                        return;
                     }
+
                     var dias = new Array();
                     var tempos = new Array();
-                    console.log(data);
-                    for (var i = 0; i < data.items.length; i++) {
-                        dias[i] = data.items[i].date.replace(/-/g, "\/");
-                        tempos[i] = Math.floor(data.items[i].onlinetime);
+
+                    for (var i = 0; i < moodledata.items.length; i++) {
+                        dias[i] = moodledata.items[i].date.replace(/-/g, "\/");
+                        tempos[i] = Math.floor(moodledata.items[i].onlinetime / 3600);
                     }
 
-                    var chartData = {
-                        labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-                        datasets: [{
-                            label: 'apples',
-                            data: [12, 19, 3, 17, 6, 3, 7],
-                            backgroundColor: "rgba(153,255,51,0.4)"
-                        }, {
-                            label: 'oranges',
-                            data: [2, 29, 5, 5, 2, 3, 10],
-                            backgroundColor: "rgba(255,153,0,0.4)"
-                        }]
-                    };
-
-                    var chartOptions = {
-                        responsive: true,
-                        tooltipYPadding : 5,
-                        tooltipCornerRadius : 0,
-                        tooltipTitleFontStyle : 'normal',
-                        tooltipFillColor : 'rgba(0,160,0,0.8)',
-                        animationEasing : 'easeOutBounce',
-                        scaleLineColor : 'black',
-                        scaleFontSize : 5
-                    };
-
-                    var ctx = document.getElementById('grafico-tempo').getContext('2d');
-                    var myChart = new Chart(ctx, {
+                    var config;
+                    config = {
                         type: 'line',
-                        data: chartData,
-                        options: chartOptions
-                    });
+                        data: {
+                            labels: dias,
+                            datasets: [{
+                                label: moodledata.fullname,
+                                data: tempos,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            title: {
+                                display: true,
+                                text: 'Gráfico de Acesso ao AVA'
+                            },
+                            hover: {
+                                mode: 'nearest',
+                                intersect: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    beginAtZero: true,
+                                    scaleLabel: {
+                                        display: false,
+                                        labelString: 'Dias'
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    beginAtZero: true,
+                                    ticks: {
+                                        suggestedMax: 6,
+                                        fixedStepSize: 1
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Tempo Online (Horas)',
+                                        stacked: true
+                                    }
+                                }]
+                            },
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false,
+                                bodyFontColor: "#fff",
+                                bodyFontStyle: "bold",
+                                bodyFontFamily: "'Helvetica', 'Arial', sans-serif",
+                                footerFontSize: 15,
+                                callbacks: {
+                                    label: function (tooltipItem, data) {
+                                        var value = data.datasets[0].data[tooltipItem.index];
+                                        seconds = moodledata.items[tooltipItem.index].onlinetime;
+                                        var h = Math.floor(seconds / 3600);
+                                        var m = Math.floor(seconds % 3600 / 60);
+                                        var s = Math.floor(seconds % 3600 % 60);
+                                        var humanFormat = h + 'h:' + m + 'm:' + s + 's';
+                                        return humanFormat;
+                                    },
+                                },
+                            }
+                        }
+                    };
+
+                    // get line chart canvas
+                    var monitoramento = document.getElementById('grafico-tempo').getContext('2d');
+                    // draw line chart
+                    new Chart(monitoramento, config);
+
                 },
                 error: function (error) {
                     $.harpia.hideloading();
@@ -237,6 +269,7 @@
                 }
             });
         });
+
 
     </script>
 @stop

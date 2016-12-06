@@ -10,6 +10,7 @@ class ServicoTableSeeder extends Seeder
     {
         $Servico = new Servico();
         $Servico->ser_nome = 'MonitoramentoTempo';
+        $Servico->ser_slug = 'get_tutor_online_time';
         $Servico->save();
 
         $Servico = new Servico();
