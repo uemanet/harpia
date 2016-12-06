@@ -2,7 +2,7 @@
     <div class="form-group col-md-4 @if ($errors->has('doc_tpd_id')) has-error @endif">
         {!! Form::label('doc_tpd_id', 'Tipo de Documento*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('doc_tpd_id', $tiposdocumentos, old('doc_tpd_id'), ['placeholder' => 'Selecione um documento','class' => 'form-control']) !!}
+            {!! Form::select('doc_tpd_id', $tiposdocumentos, old('doc_tpd_id'), ['class' => 'form-control']) !!}
             @if ($errors->has('doc_tpd_id')) <p class="help-block">{{ $errors->first('doc_tpd_id') }}</p> @endif
         </div>
     </div>

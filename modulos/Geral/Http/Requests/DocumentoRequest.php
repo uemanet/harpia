@@ -27,7 +27,7 @@ class DocumentoRequest extends BaseRequest
             'doc_pes_id' => 'required',
             'doc_tpd_id' => 'required',
             'doc_conteudo' => 'required:max:255',
-            'doc_dataexpedicao' => 'required',
+            'doc_data_expedicao' => 'date_format:d/m/Y',
             'doc_orgao' => 'max:255',
             'doc_observacao' => 'max:255'
         ];

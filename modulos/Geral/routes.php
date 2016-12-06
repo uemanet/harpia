@@ -20,7 +20,7 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
         Route::post('/create/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@postCreate')->name('geral.documentos.postCreate');
         Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getEdit')->name('geral.documentos.getEdit');
         Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@putEdit')->name('geral.documentos.putEdit');
-        Route::post('/delete', '\Modulos\Academico\Http\Controllers\DocumentosController@postDelete')->name('geral.documentos.delete');
+        Route::post('/delete', '\Modulos\Geral\Http\Controllers\DocumentosController@postDelete')->name('geral.documentos.delete');
     });
 
     Route::group(['prefix' => 'async'], function () {

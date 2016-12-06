@@ -10,7 +10,7 @@
 @stop
 
 @section('subtitle')
-    Alterar documento :: {{$tiposdocumentos->tpd_nome}}
+    Alterar documento :: {{$documentotipo}}
 @stop
 
 @section('content')
@@ -20,7 +20,7 @@
         </div>
         <div class="box-body">
             {!! Form::model($documento,["url" => url('/') . "/geral/documentos/edit/$documento->doc_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                 @include('Geral::documentos.includes.formulario')
+                 @include('Geral::documentos.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>

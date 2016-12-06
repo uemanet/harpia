@@ -33,19 +33,27 @@
                                     <td>{{$documento->doc_conteudo}}</td>
                                 @endif
                                 <td>{{$documento->doc_orgao}}</td>
-                                <td>{{Format::formatDate($documento->doc_dataexpedicao, 'd/m/Y')}}</td>
+                                <td>{{$documento->doc_data_expedicao}}</td>
                                 <td>{{$documento->doc_observacao}}</td>
                                 <td>
                                   {!! ActionButton::grid([
                                     'type' => 'LINE',
                                     'buttons' => [
                                       [
-                                        'classButton' => '',
+                                        'classButton' => 'btn btn-primary',
                                         'icon' => 'fa fa-pencil',
-                                        'action' => '/geral/documentos/create/' . $pessoa->pes_id,
-                                        'label' => ' Editar',
+                                        'action' => '/geral/documentos/edit/' . $documento->doc_id,
+                                        'label' => '',
                                         'method' => 'get'
                                       ],
+                                      [
+                                          'classButton' => 'btn-delete btn btn-danger btn-sm',
+                                          'icon' => 'fa fa-trash',
+                                          'action' => '/geral/documentos/delete',
+                                          'id' => $documento->doc_id,
+                                          'label' => '',
+                                          'method' => 'post'
+                                      ]
                                     ]
                                   ]) !!}
                                 </td>
@@ -57,17 +65,17 @@
                 @endif
             <!-- /.box-body -->
             {!! ActionButton::grid([
-              'type' => 'LINE',
-              'buttons' => [
-              [
-              'classButton' => 'btn btn-primary',
-              'icon' => 'fa fa-plus-square',
-              'action' => '/geral/documentos/create/' . $pessoa->pes_id,
-              'label' => ' Novo Documento',
-              'method' => 'get'
-              ],
-              ]
-              ]) !!}
+                'type' => 'LINE',
+                'buttons' => [
+                  [
+                    'classButton' => 'btn btn-primary',
+                    'icon' => 'fa fa-plus-square',
+                    'action' => '/geral/documentos/create/' . $pessoa->pes_id,
+                    'label' => ' Novo Documento',
+                    'method' => 'get'
+                  ],
+                ]
+            ]) !!}
           </div>
         </div>
         <!-- /.box -->

@@ -57,10 +57,35 @@ class DocumentoRepository extends BaseRepository
         return $this->model->updateOrCreate($attributes, $data);
     }
 
+    /**
+     * Formata datas pt_BR para default MySQL
+     * para update de registros
+     * @param array $data
+     * @param $id
+     * @param string $attribute
+     * @return mixed
+     */
     public function update(array $data, $id, $attribute = "id")
     {
-        $data['doc_dataexpedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_dataexpedicao'])->toDateString();
-
+      if ($data['doc_data_expedicao'] != ""){
+        $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
+      }else{
+        $data['doc_data_expedicao'] = null;
+      }
         return $this->model->where($attribute, '=', $id)->update($data);
+    }
+
+    public function verifyTipoExists($tipodocumentoId, $pessoaId)
+    {
+        $tipo_exists = $this->model
+            ->where('doc_pes_id', '=', $pessoaId)
+            ->where('doc_tpd_id', '=', $tipodocumentoId)
+            ->get();
+
+        if ($tipo_exists->isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }

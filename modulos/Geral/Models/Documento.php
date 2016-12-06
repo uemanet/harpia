@@ -1,4 +1,5 @@
 <?php
+
 namespace Modulos\Geral\Models;
 
 use Modulos\Core\Model\BaseModel;
@@ -14,7 +15,7 @@ class Documento extends BaseModel
         'doc_pes_id',
         'doc_tpd_id',
         'doc_conteudo',
-        'doc_dataexpedicao',
+        'doc_data_expedicao',
         'doc_orgao',
         'doc_observacao'
     ];
@@ -33,16 +34,22 @@ class Documento extends BaseModel
         return $this->belongsTo('Modulos\Geral\Models\TipoDocumento', 'doc_tpd_id');
     }
 
-    // Accessors
-    public function getDocDataexpedicaoAttribute($value)
+    // // Accessors
+    public function getDocDataExpedicaoAttribute($value)
     {
+        if ($value === null){
+          return null;
+        }
+
         setlocale(LC_ALL, 'pt_BR');
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
     // Mutators
-    public function setDocDataexpedicaoAttribute($value)
+    public function setDocDataExpedicaoAttribute($value)
     {
-        $this->attributes['doc_dataexpedicao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if ($value != null){
+            $this->attributes['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
 }
