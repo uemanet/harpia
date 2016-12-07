@@ -84,6 +84,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesMonitoramentoDashboard();
 
         $this->createPermissoesMonitoramentoTempoOnline();
+
+        $this->createPermissoesGeralDocumentos();
     }
 
     /** Permissões do Módulo Segurança */
@@ -912,6 +914,27 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 33; // Recurso Tempo Online
         $permissao->prm_nome = 'monitorar';
         $permissao->prm_descricao = 'Permissão monitorar do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
+        $permissao->save();
+    }
+
+    private function createPermissoesGeralDocumentos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 34;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Documentos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 34;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Documentos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 34;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Documentos';
         $permissao->save();
     }
 }

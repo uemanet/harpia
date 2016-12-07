@@ -96,5 +96,11 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([114, 115]); // Permissoes do recurso Tempo Online
 
+        /** Perfil Administrador do Módulo Geral */
+
+        $perfil = Perfil::find(2);
+
+        $perfil->permissoes()->attach([116, 117, 118]); // Permissoes do recurso Documentos
+
     }
 }
