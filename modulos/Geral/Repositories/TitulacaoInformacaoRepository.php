@@ -1,8 +1,7 @@
 <?php
 
-namespace Modulos\Academico\Repositories;
+namespace Modulos\Geral\Repositories;
 
-use Illuminate\Support\Facades\DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\TitulacaoInformacao;
 

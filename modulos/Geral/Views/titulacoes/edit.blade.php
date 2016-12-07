@@ -14,8 +14,8 @@
             <h3 class="box-title">Formulário de edição de titulações</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($titulacao, ["url" => url('/') . "/academico/titulacoes/edit/$titulacao->tit_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                @include('Academico::titulacoes.includes.formulario')
+            {!! Form::model($titulacao, ["url" => url('/') . "/geral/titulacoes/edit/$titulacao->tit_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+                @include('Geral::titulacoes.includes.formulario')
             {!! Form::close() !!}
 
         </div>

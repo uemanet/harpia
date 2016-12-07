@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Academico\Http\Requests;
+namespace Modulos\Geral\Http\Requests;
 
 use App\Http\Middleware\VerifyCsrfToken;
 use Modulos\Core\Http\Request\BaseRequest;

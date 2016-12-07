@@ -1,9 +1,9 @@
 <?php
 
-namespace Modulos\Academico\Http\Controllers;
+namespace Modulos\Geral\Http\Controllers;
 
-use Modulos\Academico\Http\Requests\TitulacaoRequest;
-use Modulos\Academico\Repositories\TitulacaoRepository;
+use Modulos\Geral\Http\Requests\TitulacaoRequest;
+use Modulos\Geral\Repositories\TitulacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -21,7 +21,7 @@ class TitulacoesController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/titulacoes/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setAction('/geral/titulacoes/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -52,14 +52,14 @@ class TitulacoesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/titulacoes/edit/' . $id,
+                                'action' => '/geral/titulacoes/edit/' . $id,
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/titulacoes/delete',
+                                'action' => '/geral/titulacoes/delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -71,12 +71,12 @@ class TitulacoesController extends BaseController
 
             $paginacao = $tableData->appends($request->except('page'));
         }
-        return view('Academico::titulacoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Geral::titulacoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
     {
-        return view('Academico::titulacoes.create');
+        return view('Geral::titulacoes.create');
     }
 
     public function postCreate(TitulacaoRequest $request)
@@ -98,7 +98,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação criada com sucesso.');
-            return redirect('/academico/titulacoes/index');
+            return redirect('/geral/titulacoes/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -118,7 +118,7 @@ class TitulacoesController extends BaseController
             return redirect()->back();
         }
 
-        return view('Academico::titulacoes.edit', compact('titulacao'));
+        return view('Geral::titulacoes.edit', compact('titulacao'));
     }
 
     public function putEdit($titulacaoId, TitulacaoRequest $request)
@@ -128,7 +128,7 @@ class TitulacoesController extends BaseController
 
             if (!$titulacao) {
                 flash()->error('Titulação não existe.');
-                return redirect('academico/titulacoes/index');
+                return redirect('geral/titulacoes/index');
             }
 
             $requestData = $request->only($this->titulacaoRepository->getFillableModelFields());
@@ -139,7 +139,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação atualizada com sucesso.');
-            return redirect('/academico/titulacoes/index');
+            return redirect('/geral/titulacoes/index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

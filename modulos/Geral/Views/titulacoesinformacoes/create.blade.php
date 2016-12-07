@@ -14,8 +14,8 @@
             <h3 class="box-title">Formulário de cadastro de titulações</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/titulacoes/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('Academico::titulacoes.includes.formulario')
+            {!! Form::open(['route' => ['geral.titulacoesinformacoes.postCreate', $pessoa->pes_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            @include('Geral::titulacoesinformacoes.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>

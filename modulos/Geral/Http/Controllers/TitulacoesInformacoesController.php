@@ -1,10 +1,10 @@
 <?php
 
-namespace Modulos\Academico\Http\Controllers;
+namespace Modulos\Geral\Http\Controllers;
 
-use Modulos\Academico\Http\Requests\TitulacaoInformacaoRequest;
-use Modulos\Academico\Repositories\TitulacaoInformacaoRepository;
-use Modulos\Academico\Repositories\TitulacaoRepository;
+use Modulos\Geral\Http\Requests\TitulacaoInformacaoRequest;
+use Modulos\Geral\Repositories\TitulacaoInformacaoRepository;
+use Modulos\Geral\Repositories\TitulacaoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
@@ -34,10 +34,10 @@ class TitulacoesInformacoesController extends BaseController
 
         if (is_null($pessoa)) {
             flash()->error('Pessoa não existe!');
-            return redirect()->route($url, ['id' => $id]);
+            return redirect()->back();
         }
 
-        return view('Academico::titulacoesinformacoes.create', compact('titulacoes', 'pessoa'));
+        return view('Geral::titulacoesinformacoes.create', compact('titulacoes', 'pessoa'));
     }
 
     public function postCreate($pessoaId, TitulacaoInformacaoRequest $request)
@@ -60,6 +60,7 @@ class TitulacoesInformacoesController extends BaseController
             flash()->success('Titulação adicionada com sucesso.');
             return redirect()->route($url, ['id' => $id]);
 
+
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -79,7 +80,7 @@ class TitulacoesInformacoesController extends BaseController
 
         if (!$titulacaoInfo) {
             flash()->error('Titulação não existe.');
-            return redirect()->route($url, ['id' => $id]);
+            return redirect()->back();
         }
 
         $pessoa = $titulacaoInfo->tin_pes_id;
@@ -88,10 +89,10 @@ class TitulacoesInformacoesController extends BaseController
 
         if (!$titulacaoInfo) {
             flash()->error('Titulação não existe.');
-            return redirect()->route($url, ['id' => $id]);
+            return redirect()->back();
         }
 
-        return view('Academico::titulacoesinformacoes.edit', ['pessoa' => $pessoa,'titulacaoInfo' => $titulacaoInfo, 'titulacoes' => $titulacoes]);
+        return view('Geral::titulacoesinformacoes.edit', ['pessoa' => $pessoa,'titulacaoInfo' => $titulacaoInfo, 'titulacoes' => $titulacoes]);
     }
 
     public function putEdit($titulacaoId, TitulacaoInformacaoRequest $request)
@@ -104,7 +105,7 @@ class TitulacoesInformacoesController extends BaseController
 
             if (!$titulacao) {
                 flash()->error('Titulação não existe.');
-                return redirect('academico/titulacoesinformacoes/index');
+                return redirect()->back();
             }
 
             $requestData = $request->only($this->titulacaoInformacaoRepository->getFillableModelFields());

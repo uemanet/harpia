@@ -39,14 +39,14 @@
                             [
                                 'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/titulacoesinformacoes/edit/' . $titulacao->tin_id,
+                                'action' => '/geral/titulacoesinformacoes/edit/' . $titulacao->tin_id,
                                 'label' => '',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete btn btn-danger',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/titulacoesinformacoes/delete',
+                                'action' => '/geral/titulacoesinformacoes/delete',
                                 'id' => $titulacao->tin_id,
                                 'label' => '',
                                 'method' => 'post'
@@ -69,7 +69,7 @@
                         [
                             'classButton' => 'btn btn-primary',
                             'icon' => 'fa fa-plus-square',
-                            'action' => '/academico/titulacoesinformacoes/create/' . $pessoa->pes_id,
+                            'action' => '/geral/titulacoesinformacoes/create/' . $pessoa->pes_id,
                             'label' => ' Nova Titulação',
                             'method' => 'get'
                         ],

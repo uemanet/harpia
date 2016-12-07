@@ -45,6 +45,28 @@ $factory->define(Modulos\Geral\Models\Configuracao::class, function (Faker\Gener
     ];
 });
 
+$factory->define(Modulos\Geral\Models\Titulacao::class, function(Faker\Generator $faker){
+    return [
+        'tit_nome' => $faker->word,
+        'tit_peso' => $faker->word,
+        'tit_descricao' => $faker->sentence(3),
+    ];
+});
+
+$factory->define(Modulos\Geral\Models\TitulacaoInformacao::class, function(Faker\Generator $faker){
+    return [
+        'tin_pes_id' =>  1,
+        'tin_tit_id' =>  1,
+        'tin_titulo' =>  $faker->word,
+        'tin_codigo_externo' =>  $faker->randomNumber(4),
+        'tin_instituicao' =>  $faker->word,
+        'tin_instituicao_sigla' =>  $faker->word,
+        'tin_instituicao_sede' =>  $faker->word,
+        'tin_anoinicio' =>  $faker->randomNumber(4),
+        'tin_anofim' =>  $faker->randomNumber(4),
+    ];
+});
+
 /** Factories Modulo Segurança */
 $factory->define(Modulos\Seguranca\Models\Modulo::class, function (Faker\Generator $faker) {
     $rota = $faker->name;

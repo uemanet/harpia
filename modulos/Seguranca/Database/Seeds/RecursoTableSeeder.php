@@ -103,6 +103,28 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
+        // Recurso Titulacoes
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 2; // Categoria Geral
+        $recurso->rcs_nome = 'Titulações';
+        $recurso->rcs_rota = 'titulacoes';
+        $recurso->rcs_descricao = 'Recurso titulacoes da categoria cadastro do módulo geral';
+        $recurso->rcs_icone = 'fa fa-file-text-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
+
+        //Recurso Titulacoes Informacoes
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Geral -> oculto
+        $recurso->rcs_nome = 'Titulações Informações';
+        $recurso->rcs_rota = 'titulacoesinformacoes';
+        $recurso->rcs_descricao = 'Recurso titulacoesinformacoes do módulo geral';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
         // MODULO ACADEMICO
 
         // Recurso Dashboard
@@ -308,28 +330,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-book';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 4;
-        $recurso->save();
-
-        // Recurso Titulacoes
-        $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Acadêmico
-        $recurso->rcs_nome = 'Titulações';
-        $recurso->rcs_rota = 'titulacoes';
-        $recurso->rcs_descricao = 'Recurso titulacoes da categoria cadastro do módulo acadêmico';
-        $recurso->rcs_icone = 'fa fa-file-text-o';
-        $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 3;
-        $recurso->save();
-
-        //Recurso Titulacoes Informacoes
-        $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Acadêmico -> oculto
-        $recurso->rcs_nome = 'Titulações Informações';
-        $recurso->rcs_rota = 'titulacoesinformacoes';
-        $recurso->rcs_descricao = 'Recurso titulacoesinformacoes do módulo acadêmico';
-        $recurso->rcs_icone = 'fa fa-plus';
-        $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 1;
         $recurso->save();
 
         // MODULO INTEGRAÇÃO
