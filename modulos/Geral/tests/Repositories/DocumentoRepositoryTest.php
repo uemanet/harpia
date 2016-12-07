@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Geral\Repositories\DocumentoRepository;
+use Carbon\Carbon;
 
 class DocumentoRepositoryTest extends TestCase
 {
@@ -147,9 +148,15 @@ class DocumentoRepositoryTest extends TestCase
 
     public function testFind()
     {
-        $data = factory(Modulos\Geral\Models\Documento::class)->create();
 
-        $this->seeInDatabase('gra_documentos', $data->toArray());
+        $dados = factory(Modulos\Geral\Models\Documento::class)->create();
+
+        $data = $dados->toArray();
+
+        // Retorna para date format americano antes de comparar com o banco
+        $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
+
+        $this->seeInDatabase('gra_documentos', $data);
     }
 
     public function testUpdate()
@@ -157,7 +164,7 @@ class DocumentoRepositoryTest extends TestCase
         $data = factory(Modulos\Geral\Models\Documento::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['doc_conteudo'] = '45602578906';
+        $updateArray['doc_conteudo'] = '123456';
 
         $documentoId = $updateArray['doc_id'];
         unset($updateArray['doc_id']);
@@ -175,6 +182,16 @@ class DocumentoRepositoryTest extends TestCase
         $response = $this->repo->delete($documentoId);
 
         $this->assertEquals(1, $response);
+    }
+
+    public function testExistsTipoDocumento()
+    {
+        $data = factory(Modulos\Geral\Models\Documento::class)->create();
+        $documentoId = $data->doc_id;
+
+        $response = $this->repo->verifyTipoExists($data->doc_tpd_id, $data->doc_pes_id);
+
+        $this->assertEquals(false, $response);
     }
 
     public function tearDown()
