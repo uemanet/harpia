@@ -96,14 +96,14 @@ class DocumentosController extends BaseController
         return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa'));
     }
 
-    public function putEdit($id, DocumentoRequest $request)
+    public function putEdit($DocumentoId, DocumentoRequest $request)
     {
       $url = $request->session()->get('last_acad_route');
       $id = $request->session()->get('last_id');
 
         try {
 
-            $documento = $this->documentoRepository->find($id);
+            $documento = $this->documentoRepository->find($DocumentoId);
 
             if (!$documento) {
                 flash()->error('Documento não existe.');
