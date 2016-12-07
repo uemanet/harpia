@@ -37,14 +37,14 @@
                                          'type' => 'LINE',
                                          'buttons' => [
                             [
-                                'classButton' => 'btn btn-primary',
+                                'classButton' => 'btn btn-primary btn-sm',
                                 'icon' => 'fa fa-pencil',
                                 'action' => '/geral/titulacoesinformacoes/edit/' . $titulacao->tin_id,
                                 'label' => '',
                                 'method' => 'get'
                             ],
                             [
-                                'classButton' => 'btn-delete btn btn-danger',
+                                'classButton' => 'btn-delete btn btn-danger btn-sm',
                                 'icon' => 'fa fa-trash',
                                 'action' => '/geral/titulacoesinformacoes/delete',
                                 'id' => $titulacao->tin_id,
