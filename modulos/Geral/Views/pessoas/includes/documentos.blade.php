@@ -40,7 +40,7 @@
                                     'type' => 'LINE',
                                     'buttons' => [
                                       [
-                                        'classButton' => 'btn btn-primary',
+                                        'classButton' => 'btn btn-primary btn-sm',
                                         'icon' => 'fa fa-pencil',
                                         'action' => '/geral/documentos/edit/' . $documento->doc_id,
                                         'label' => '',
