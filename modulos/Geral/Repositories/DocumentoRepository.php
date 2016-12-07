@@ -4,6 +4,7 @@ namespace Modulos\Geral\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Documento;
+use Carbon\Carbon;
 
 class DocumentoRepository extends BaseRepository
 {
@@ -54,5 +55,37 @@ class DocumentoRepository extends BaseRepository
     public function updateOrCreate(array $attributes, array $data)
     {
         return $this->model->updateOrCreate($attributes, $data);
+    }
+
+    /**
+     * Formata datas pt_BR para default MySQL
+     * para update de registros
+     * @param array $data
+     * @param $id
+     * @param string $attribute
+     * @return mixed
+     */
+    public function update(array $data, $id, $attribute = "id")
+    {
+      if ($data['doc_data_expedicao'] != ""){
+        $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
+      }else{
+        $data['doc_data_expedicao'] = null;
+      }
+        return $this->model->where($attribute, '=', $id)->update($data);
+    }
+
+    public function verifyTipoExists($tipodocumentoId, $pessoaId)
+    {
+        $tipo_exists = $this->model
+            ->where('doc_pes_id', '=', $pessoaId)
+            ->where('doc_tpd_id', '=', $tipodocumentoId)
+            ->get();
+
+        if ($tipo_exists->isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -278,6 +278,8 @@ class ProfessoresController extends BaseController
     public function getShow($professorId)
     {
         $professor = $this->professorRepository->find($professorId);
+        
+        session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
         return view('Academico::professores.show', ['pessoa' => $professor->pessoa]);
     }

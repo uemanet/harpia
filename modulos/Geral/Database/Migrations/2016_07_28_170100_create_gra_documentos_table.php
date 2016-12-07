@@ -17,7 +17,7 @@ class CreateGraDocumentosTable extends Migration
             $table->integer('doc_pes_id')->unsigned();
             $table->integer('doc_tpd_id')->unsigned();
             $table->string('doc_conteudo', 150);
-            $table->date('doc_dataexpedicao')->nullable();
+            $table->date('doc_data_expedicao')->nullable();
             $table->string('doc_orgao', 255)->nullable();
             $table->string('doc_observacao', 255)->nullable();
 

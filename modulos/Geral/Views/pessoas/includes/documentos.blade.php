@@ -22,6 +22,7 @@
                             <th>Orgão Emissor</th>
                             <th>Data de Emissão</th>
                             <th>Observação</th>
+                            <th></th>
                         </tr>
                         @foreach($pessoa->documentos as $documento)
                             <tr>
@@ -32,16 +33,50 @@
                                     <td>{{$documento->doc_conteudo}}</td>
                                 @endif
                                 <td>{{$documento->doc_orgao}}</td>
-                                <td>{{Format::formatDate($documento->doc_dataexpedicao, 'd/m/Y')}}</td>
+                                <td>{{$documento->doc_data_expedicao}}</td>
                                 <td>{{$documento->doc_observacao}}</td>
+                                <td>
+                                  {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                      [
+                                        'classButton' => 'btn btn-primary btn-sm',
+                                        'icon' => 'fa fa-pencil',
+                                        'action' => '/geral/documentos/edit/' . $documento->doc_id,
+                                        'label' => '',
+                                        'method' => 'get'
+                                      ],
+                                      [
+                                          'classButton' => 'btn-delete btn btn-danger btn-sm',
+                                          'icon' => 'fa fa-trash',
+                                          'action' => '/geral/documentos/delete',
+                                          'id' => $documento->doc_id,
+                                          'label' => '',
+                                          'method' => 'post'
+                                      ]
+                                    ]
+                                  ]) !!}
+                                </td>
                             </tr>
                         @endforeach
                     </table>
                 @else
                     <p>Sem documentos para apresentar</p>
                 @endif
-            </div>
             <!-- /.box-body -->
+            {!! ActionButton::grid([
+                'type' => 'LINE',
+                'buttons' => [
+                  [
+                    'classButton' => 'btn btn-primary',
+                    'icon' => 'fa fa-plus-square',
+                    'action' => '/geral/documentos/create/' . $pessoa->pes_id,
+                    'label' => ' Novo Documento',
+                    'method' => 'get'
+                  ],
+                ]
+            ]) !!}
+          </div>
         </div>
         <!-- /.box -->
     </div>
