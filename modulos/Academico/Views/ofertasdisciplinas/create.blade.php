@@ -122,7 +122,7 @@
                     if(turmaId == '' || periodoId == '' || professorId == '' || disciplinaId == '' || qtdVagas == '') {
                         return false;
                     }
-                    
+
                     var token = "{{csrf_token()}}";
 
                     var dados = {
