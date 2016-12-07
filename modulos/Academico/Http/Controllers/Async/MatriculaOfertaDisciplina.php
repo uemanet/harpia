@@ -36,23 +36,22 @@ class MatriculaOfertaDisciplina extends BaseController
         DB::beginTransaction();
 
         try {
-            foreach($ofertas as $ofertaId) {
-                if(!$this->matriculaOfertaDisciplinaRepository->verifyQtdVagas($ofertaId)) {
+            foreach ($ofertas as $ofertaId) {
+                if (!$this->matriculaOfertaDisciplinaRepository->verifyQtdVagas($ofertaId)) {
                     return new JsonResponse("Sem vagas disponiveis", Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
                 $matricula = $this->matriculaOfertaDisciplinaRepository->verifyMatriculaDisciplina($matriculaId, $ofertaId);
-                if (!$matricula){
+                if (!$matricula) {
                     $this->matriculaOfertaDisciplinaRepository->create([
                         'mof_mat_id' => $matriculaId,
                         'mof_ofd_id' => $ofertaId,
                         'mof_tipo_matricula' => 'matriculacomum'
                     ]);
-                }else{
+                } else {
                     DB::rollBack();
                     return new JsonResponse("Aluno já matriculado nessa disciplina para esse periodo e turma", Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
-
             }
 
             DB::commit();
@@ -64,6 +63,5 @@ class MatriculaOfertaDisciplina extends BaseController
             }
             return new JsonResponse('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
-
     }
 }

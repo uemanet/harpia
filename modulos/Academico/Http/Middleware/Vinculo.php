@@ -11,6 +11,7 @@ use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
+use Modulos\Academico\Repositories\AlunoRepository;
 
 class Vinculo
 {
@@ -21,14 +22,16 @@ class Vinculo
     private $grupoRepository;
     private $moduloMatrizRepository;
     private $tutorGrupoRepository;
+    private $alunoRepository;
 
-    public function __construct(VinculoRepository $vinculoRepository,
+    public function __construct( VinculoRepository $vinculoRepository,
                                 MatrizCurricularRepository $matrizCurricularRepository,
                                 OfertaCursoRepository $ofertaCursoRepository,
                                 TurmaRepository $turmaRepository,
                                 GrupoRepository $grupoRepository,
                                 ModuloMatrizRepository $moduloMatrizRepository,
-                                TutorGrupoRepository $tutorGrupoRepository)
+                                TutorGrupoRepository $tutorGrupoRepository,
+                                AlunoRepository $alunoRepository )
     {
         $this->vinculoRepository = $vinculoRepository;
         $this->matrizCurricularRepository = $matrizCurricularRepository;
@@ -37,6 +40,7 @@ class Vinculo
         $this->grupoRepository = $grupoRepository;
         $this->moduloMatrizRepository = $moduloMatrizRepository;
         $this->tutorGrupoRepository = $tutorGrupoRepository;
+        $this->alunoRepository = $alunoRepository;
     }
 
     public function handle($request, Closure $next)
@@ -65,6 +69,12 @@ class Vinculo
             case "modulosmatrizes":
                 return $this->handleModulosMatrizes($request, $next);
                 break;
+            case "alunos":
+                return $this->handleAlunos($request, $next);
+                break;
+            case "matriculasofertasdisciplinas":
+                return $this->handleMatriculaDisciplina($request, $next);
+                break;
             default:
                 flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
                 return redirect()->back();
@@ -74,12 +84,22 @@ class Vinculo
     private function routeName($request)
     {
         $path = explode('/', $request->getPathInfo());
+
+        if($path[2] == "async"){
+            return $path[3];
+        }
+
         return $path[2];
     }
 
     private function actionName($request)
     {
         $path = explode('/', $request->getPathInfo());
+
+        if($path[2] == "async"){
+            return $path[4];
+        }
+
         return $path[3];
     }
 
@@ -351,5 +371,35 @@ class Vinculo
 
         flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
         return redirect()->route('academico.cursos.index');
+    }
+
+    private function handleAlunos($request, Closure $next)
+    {
+        $id = $request->id;
+        $action = $this->actionName($request);
+
+        if (is_null($id) || ($action == "create")) {
+            return $next($request);
+        }
+
+        if(($action == "edit") || ($action == "show")){
+            /* TODO:
+             AQUI:
+               1 - Obter cursos nos quais o aluno esta matriculado
+               2 - Checar se o usuario atual tem vinculo com qualquer dos cursos do Aluno
+
+            AlunoRepository:
+               1 - Implementar getCursos para retornar os cursos nos quais o Aluno esta matriculado
+               2 - Reescrever Paginate: mostrar somente alunos sem matriculas ou matriculado em algum curso com vinculo ao usuario atual
+            */
+        }
+
+        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        return redirect()->route('academico.alunos.index');
+    }
+
+    private function handleMatriculaDisciplina($request, Closure $next)
+    {
+        return $next($request);
     }
 }

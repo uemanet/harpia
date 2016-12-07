@@ -71,4 +71,9 @@ class AlunoRepository extends BaseRepository
 
         return null;
     }
+
+    public function getCursos()
+    {
+        return null;
+    }
 }
