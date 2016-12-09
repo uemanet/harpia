@@ -36,9 +36,9 @@ class PessoaRequest extends BaseRequest
                 'pes_estado_civil' => 'required',
                 'pes_naturalidade' => 'required|max:45',
                 'pes_nacionalidade' => 'required|max:45',
-                'pes_raca' => 'max:45',
-                'pes_necessidade_especial' => 'max:45',
-                'pes_estrangeiro' => 'boolean',
+                'pes_raca' => 'required|max:45',
+                'pes_necessidade_especial' => 'required|max:45',
+                'pes_estrangeiro' => 'required|boolean',
                 'doc_conteudo' => 'required|cpf|unique:gra_documentos'
             ];
         }
@@ -52,11 +52,11 @@ class PessoaRequest extends BaseRequest
             'pes_mae' => 'required|max:150',
             'pes_pai' => 'max:150',
             'pes_estado_civil' => 'required',
-            'pes_naturalidade' => 'max:45',
-            'pes_nacionalidade' => 'max:45',
-            'pes_raca' => 'max:45',
-            'pes_necessidade_especial' => 'max:45',
-            'pes_estrangeiro' => 'boolean',
+            'pes_naturalidade' => 'required|max:45',
+            'pes_nacionalidade' => 'required|max:45',
+            'pes_raca' => 'required|max:45',
+            'pes_necessidade_especial' => 'required|max:45',
+            'pes_estrangeiro' => 'required|boolean',
             'doc_conteudo' => 'required|cpf'
         ];
     }

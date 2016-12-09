@@ -24,14 +24,14 @@ class Vinculo
     private $tutorGrupoRepository;
     private $alunoRepository;
 
-    public function __construct( VinculoRepository $vinculoRepository,
+    public function __construct(VinculoRepository $vinculoRepository,
                                 MatrizCurricularRepository $matrizCurricularRepository,
                                 OfertaCursoRepository $ofertaCursoRepository,
                                 TurmaRepository $turmaRepository,
                                 GrupoRepository $grupoRepository,
                                 ModuloMatrizRepository $moduloMatrizRepository,
                                 TutorGrupoRepository $tutorGrupoRepository,
-                                AlunoRepository $alunoRepository )
+                                AlunoRepository $alunoRepository)
     {
         $this->vinculoRepository = $vinculoRepository;
         $this->matrizCurricularRepository = $matrizCurricularRepository;
@@ -85,7 +85,7 @@ class Vinculo
     {
         $path = explode('/', $request->getPathInfo());
 
-        if($path[2] == "async"){
+        if ($path[2] == "async") {
             return $path[3];
         }
 
@@ -96,7 +96,7 @@ class Vinculo
     {
         $path = explode('/', $request->getPathInfo());
 
-        if($path[2] == "async"){
+        if ($path[2] == "async") {
             return $path[4];
         }
 
@@ -388,18 +388,17 @@ class Vinculo
             return $next($request);
         }
 
-        if(($action == "edit") || ($action == "show")){
-
+        if (($action == "edit") || ($action == "show")) {
             $cursos = $this->alunoRepository->getCursos($id);
 
             // Aluno nao esta matriculado em curso algum
-            if(empty($cursos)){
+            if (empty($cursos)) {
                 return $next($request);
             }
 
             // Verifica todos os cursos do aluno e o vinculo do usuario atual com cada um destes
-            foreach ($cursos as $key => $value){
-                if($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $value)){
+            foreach ($cursos as $key => $value) {
+                if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $value)) {
                     return $next($request);
                 }
             }

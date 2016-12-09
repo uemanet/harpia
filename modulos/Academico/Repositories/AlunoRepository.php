@@ -114,7 +114,7 @@ class AlunoRepository extends BaseRepository
             }
         }
 
-        if(!$vinculo){
+        if (!$vinculo) {
             return $this->paginate($sort, $search);
         }
 
@@ -163,12 +163,12 @@ class AlunoRepository extends BaseRepository
                     ->where('mat_alu_id', '=', $alunoId)
                     ->get();
 
-        if(!$result->isEmpty()){
+        if (!$result->isEmpty()) {
             $cursos = [];
 
             $result = $result->toArray();
 
-            foreach ($result as $curso){
+            foreach ($result as $curso) {
                 $cursos[] = $curso->crs_id;
             }
 
