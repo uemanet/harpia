@@ -60,21 +60,18 @@ class DisciplinaRepository extends BaseRepository
             $disciplinasId[] = $value->mdc_dis_id;
         }
 
-        $nivelIds = DB::table('acd_matrizes_curriculares')
+        $query = DB::table('acd_matrizes_curriculares')
             ->select('crs_nvc_id')
             ->join('acd_cursos', 'mtc_crs_id', '=', 'crs_id')
             ->where('mtc_id', '=', $matriz)
-            ->get();
+            ->first();
 
-        $niveis = array();
-        foreach ($nivelIds as $nivelId) {
-            $niveis[] = $nivelId->crs_nvc_id;
-        }
+        $nivel = $query->crs_nvc_id;
 
         $result = $this->model
             ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
             ->where('dis_nome', 'like', "%{$nome}%")
-            ->where('dis_nvc_id', '=', $niveis[0])
+            ->where('dis_nvc_id', '=', $nivel)
             ->whereNotIn('dis_id', $disciplinasId)
             ->get();
 
@@ -84,5 +81,18 @@ class DisciplinaRepository extends BaseRepository
         }
 
         return null;
+    }
+
+    public function getDisciplinasModulosAnteriores($matrizId, $moduloId)
+    {
+        $entries = DB::table('acd_modulos_disciplinas')
+                    ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+                    ->join('acd_modulos_matrizes', 'mdc_mdo_id', 'mdo_id')
+                    ->select('acd_disciplinas.*', 'mdc_id')
+                    ->where('mdo_mtc_id', '=', $matrizId)
+                    ->where('mdo_id', '<', $moduloId)
+                    ->get();
+
+        return $entries;
     }
 }

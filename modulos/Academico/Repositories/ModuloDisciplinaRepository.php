@@ -39,6 +39,27 @@ class ModuloDisciplinaRepository extends BaseRepository
             ->join('acd_niveis_cursos', 'acd_disciplinas.dis_nvc_id', 'nvc_id')
             ->where('mdc_mdo_id', '=', $id)->get();
 
+        if($result->count()) {
+            // busca as disciplinas que são pré-requisitos
+            for($i = 0; $i < $result->count(); $i++) {
+
+                $disciplinas = [];
+                if(!is_null($result[$i]->mdc_pre_requisitos)) {
+                    $ids = json_decode($result[$i]->mdc_pre_requisitos);
+
+                    foreach($ids as $id) {
+                        $disciplina = $this->model
+                                            ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+                                            ->where('mdc_id', $id)
+                                            ->first();
+                        $disciplinas[] = $disciplina;
+                    }
+                }
+
+                $result[$i]->pre_requisitos = $disciplinas;
+            }
+        }
+
         return $result;
     }
 

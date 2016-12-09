@@ -55,6 +55,7 @@ class ModulosDisciplinas extends BaseController
             $modulodisciplina['mdc_mdo_id'] = $dados['mod_id'];
             $modulodisciplina['mdc_tipo_avaliacao'] = $dados['tipo_avaliacao'];
             $modulodisciplina['mdc_tipo_disciplina'] = $dados['tipo_disciplina'];
+            $modulodisciplina['mdc_pre_requisitos'] = (empty($dados['pre_requisitos'])) ? null : json_encode($dados['pre_requisitos']);
 
             $disciplinaCreate = $this->moduloDisciplinaRepository->create($modulodisciplina);
 

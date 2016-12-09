@@ -185,17 +185,17 @@ class ModulosMatrizesController extends BaseController
     {
         $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
 
+        //dd($disciplinas);
+
         $modulo = $this->modulomatrizRepository->find($moduloId);
 
         $matriz = $this->matrizcurricularRepository->find($modulo->mdo_mtc_id);
 
         $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
 
-        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $moduloId,
+        return view('Academico::modulosmatrizes.gerenciardisciplinas_new', ['modulo' => $modulo,
                                                                         'disciplinas' => $disciplinas,
-                                                                        'matriz' => $matriz->mtc_id,
-                                                                        'moduloNome' => $modulo->mdo_nome,
-                                                                        'matrizTitulo' => $matriz->mtc_titulo,
-                                                                        'cursoNome' => $curso->crs_nome]);
+                                                                        'matriz' => $matriz,
+                                                                        'curso' => $curso]);
     }
 }
