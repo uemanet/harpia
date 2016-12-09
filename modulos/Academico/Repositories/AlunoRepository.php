@@ -4,12 +4,53 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Aluno;
 use Modulos\Core\Repository\BaseRepository;
+use DB;
 
 class AlunoRepository extends BaseRepository
 {
     public function __construct(Aluno $aluno)
     {
         $this->model = $aluno;
+    }
+
+    /**
+     * Paginacao com os vinculos
+     * @param null $sort
+     * @param null $search
+     * @return mixed
+     */
+    public function paginateWithBonds($sort = null, $search = null)
+    {
+        $result = $this->model->join('gra_pessoas', function ($join) {
+            $join->on('alu_pes_id', '=', 'pes_id');
+        })->leftJoin('gra_documentos', function ($join) {
+            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+        });
+
+        if (!empty($search)) {
+            foreach ($search as $value) {
+                if ($value['field'] == 'pes_cpf') {
+                    $result = $result->where('doc_conteudo', '=', $value['term']);
+                    continue;
+                }
+
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        $result = $result->paginate(15);
+
+        return $result;
     }
 
     public function paginate($sort = null, $search = null)
@@ -45,7 +86,42 @@ class AlunoRepository extends BaseRepository
 
         return $result;
     }
-    
+
+    /**
+     * @param bool $vinculo
+     * @param array|null $requestParameters
+     * @return mixed
+     */
+    public function paginateRequest(array $requestParameters = null, $vinculo = true)
+    {
+        $sort = [];
+        if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
+            $sort = [
+                'field' => $requestParameters['field'],
+                'sort' => $requestParameters['sort']
+            ];
+        }
+
+        $searchable = $this->model->searchable();
+        $search = [];
+        foreach ($requestParameters as $key => $value) {
+            if (array_key_exists($key, $searchable) and !empty($value)) {
+                $search[] = [
+                    'field' => $key,
+                    'type' => $searchable[$key],
+                    'term' => $value
+                ];
+            }
+        }
+
+        if(!$vinculo){
+            return $this->paginate($sort, $search);
+        }
+
+        return $this->paginateWithBonds($sort, $search);
+    }
+
+
     public function findByNomeOrCpf(array $search)
     {
         $result = $this->model->join('gra_pessoas', function ($join) {
@@ -72,8 +148,33 @@ class AlunoRepository extends BaseRepository
         return null;
     }
 
-    public function getCursos()
+    /**
+     * Retorna os cursos nos quais o aluno esta matriculado
+     * @param $alunoId
+     * @return mixed
+     */
+    public function getCursos($alunoId)
     {
-        return null;
+        $result = DB::table('acd_matriculas')
+                    ->select('crs_id')
+                    ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
+                    ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
+                    ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
+                    ->where('mat_alu_id', '=', $alunoId)
+                    ->get();
+
+        if(!$result->isEmpty()){
+            $cursos = [];
+
+            $result = $result->toArray();
+
+            foreach ($result as $curso){
+                $cursos[] = $curso->crs_id;
+            }
+
+            return $cursos;
+        }
+
+        return [];
     }
 }

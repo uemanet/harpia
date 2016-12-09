@@ -373,6 +373,12 @@ class Vinculo
         return redirect()->route('academico.cursos.index');
     }
 
+    /**
+     * Verifica e filtra os vinculos na rota de alunos
+     * @param $request
+     * @param Closure $next
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function handleAlunos($request, Closure $next)
     {
         $id = $request->id;
@@ -383,15 +389,20 @@ class Vinculo
         }
 
         if(($action == "edit") || ($action == "show")){
-            /* TODO:
-             AQUI:
-               1 - Obter cursos nos quais o aluno esta matriculado
-               2 - Checar se o usuario atual tem vinculo com qualquer dos cursos do Aluno
 
-            AlunoRepository:
-               1 - Implementar getCursos para retornar os cursos nos quais o Aluno esta matriculado
-               2 - Reescrever Paginate: mostrar somente alunos sem matriculas ou matriculado em algum curso com vinculo ao usuario atual
-            */
+            $cursos = $this->alunoRepository->getCursos($id);
+
+            // Aluno nao esta matriculado em curso algum
+            if(empty($cursos)){
+                return $next($request);
+            }
+
+            // Verifica todos os cursos do aluno e o vinculo do usuario atual com cada um destes
+            foreach ($cursos as $key => $value){
+                if($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $value)){
+                    return $next($request);
+                }
+            }
         }
 
         flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
