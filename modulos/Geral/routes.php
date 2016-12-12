@@ -21,6 +21,7 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getEdit')->name('geral.documentos.getEdit');
         Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@putEdit')->name('geral.documentos.putEdit');
         Route::post('/delete', '\Modulos\Geral\Http\Controllers\DocumentosController@postDelete')->name('geral.documentos.delete');
+        Route::get('/anexo/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getDocumentoAnexo')->name('geral.documentos.getAnexo');
     });
 
     Route::group(['prefix' => 'async'], function () {

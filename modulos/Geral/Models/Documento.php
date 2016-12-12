@@ -17,7 +17,9 @@ class Documento extends BaseModel
         'doc_conteudo',
         'doc_data_expedicao',
         'doc_orgao',
-        'doc_observacao'
+        'doc_observacao',
+        'doc_anx_documento'
+
     ];
 
     protected $searchable = [

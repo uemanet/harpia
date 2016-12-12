@@ -53,6 +53,13 @@
                                           'id' => $documento->doc_id,
                                           'label' => '',
                                           'method' => 'post'
+                                      ],
+                                      [
+                                          'classButton' => 'btn btn-success btn-sm',
+                                          'icon' => 'fa fa-download',
+                                          'action' => '/geral/documentos/anexo/' . $documento->doc_id,
+                                          'label' => '',
+                                          'method' => 'get'
                                       ]
                                     ]
                                   ]) !!}

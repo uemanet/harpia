@@ -16,6 +16,7 @@ class CreateGraDocumentosTable extends Migration
             $table->increments('doc_id');
             $table->integer('doc_pes_id')->unsigned();
             $table->integer('doc_tpd_id')->unsigned();
+            $table->integer('doc_anx_documento')->unsigned()->nullable();
             $table->string('doc_conteudo', 150);
             $table->date('doc_data_expedicao')->nullable();
             $table->string('doc_orgao', 255)->nullable();
@@ -25,6 +26,7 @@ class CreateGraDocumentosTable extends Migration
 
             $table->foreign('doc_pes_id')->references('pes_id')->on('gra_pessoas');
             $table->foreign('doc_tpd_id')->references('tpd_id')->on('gra_tipos_documentos');
+            $table->foreign('doc_anx_documento')->references('anx_id')->on('gra_anexos');
         });
     }
 

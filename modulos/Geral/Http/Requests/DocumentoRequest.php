@@ -26,6 +26,7 @@ class DocumentoRequest extends BaseRequest
         return [
             'doc_pes_id' => 'required',
             'doc_tpd_id' => 'required',
+            'doc_file' => 'mimes:pdf',
             'doc_conteudo' => 'required:max:255',
             'doc_data_expedicao' => 'date_format:d/m/Y',
             'doc_orgao' => 'max:255',
