@@ -200,7 +200,7 @@ class ModulosMatrizesController extends BaseController
 
         $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
 
-        return view('Academico::modulosmatrizes.gerenciardisciplinas_new', ['modulo' => $modulo,
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $modulo,
                                                                         'disciplinas' => $disciplinas,
                                                                         'matriz' => $matriz,
                                                                         'curso' => $curso]);
