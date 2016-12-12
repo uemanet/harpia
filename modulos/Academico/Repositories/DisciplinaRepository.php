@@ -87,8 +87,9 @@ class DisciplinaRepository extends BaseRepository
     {
         $entries = DB::table('acd_modulos_disciplinas')
                     ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+                    ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
                     ->join('acd_modulos_matrizes', 'mdc_mdo_id', 'mdo_id')
-                    ->select('acd_disciplinas.*', 'mdc_id')
+                    ->select('acd_disciplinas.*', 'mdc_id', 'nvc_nome')
                     ->where('mdo_mtc_id', '=', $matrizId)
                     ->where('mdo_id', '<', $moduloId)
                     ->get();

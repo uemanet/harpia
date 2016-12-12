@@ -30,7 +30,7 @@ class ModulosMatrizesController extends BaseController
         $this->disciplinaRepository = $disciplinaRepository;
     }
 
-    public function getIndex($matrizId, Request $request)
+    public function getIndex($matrizId)
     {
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
@@ -48,7 +48,16 @@ class ModulosMatrizesController extends BaseController
 
         $modulos = $this->modulomatrizRepository->getAllModulosByMatriz($matrizId);
 
-        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos]);
+        $disciplinas = [];
+
+        // pega todas as disciplinas em conjunto com os seus pré-requisitos
+        if($modulos->count()) {
+            foreach ($modulos as $modulo) {
+                $disciplinas[$modulo->mdo_id] = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($modulo->mdo_id);
+            }
+        }
+
+        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos, 'disciplinas' => $disciplinas]);
     }
 
     public function getCreate($matrizId)
@@ -184,8 +193,6 @@ class ModulosMatrizesController extends BaseController
     public function getGerenciarDisciplinas($moduloId)
     {
         $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
-
-        //dd($disciplinas);
 
         $modulo = $this->modulomatrizRepository->find($moduloId);
 

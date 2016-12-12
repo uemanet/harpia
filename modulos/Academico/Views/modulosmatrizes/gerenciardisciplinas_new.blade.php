@@ -68,7 +68,7 @@
         </div>
         <div class="box-body">
             @if($disciplinas->count())
-                <table class="table table-bordered table-hover" id="selecionadas">
+                <table class="table table-bordered table-hover" id="tableDisciplinasModulo">
                     <thead>
                         <th>#</th>
                         <th>Nome</th>
@@ -77,7 +77,7 @@
                         <th>Créditos</th>
                         <th>Tipo de Avaliação</th>
                         <th>Tipo da Disciplina</th>
-                        <th>Pré-Requistos</th>
+                        <th>Pré-Requisitos</th>
                         <th>Ações</th>
                     </thead>
                     <tbody>
@@ -90,7 +90,7 @@
                             <td>{{$disciplina->dis_creditos}}</td>
                             <td>{{$disciplina->mdc_tipo_avaliacao}}</td>
                             <td>{{$disciplina->mdc_tipo_disciplina}}</td>
-                            @if($disciplina->pre_requisitos)
+                            @if(!empty($disciplina->pre_requisitos))
                                 <td>
                                     @foreach($disciplina->pre_requisitos as $disc)
                                         <p>{{ $disc->dis_nome }}</p>
@@ -102,6 +102,7 @@
                             <td>
                                 <form action="">
                                     <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
+                                    <input type="hidden" name="mtc_id" value="{{ $matriz->mtc_id }}">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     <input type="hidden" name="_method" value="POST">
                                     <button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>
@@ -129,7 +130,7 @@
             var modulo = "{{$modulo->mdo_id}}";
             var csrf_token = "{{csrf_token()}}";
 
-            /* Botão Localizar Disciplinas */
+            /* Pega o evento do botao de localizar disciplinas,e faz a busca via async */
             $('#btnLocalizar').click(function (event) {
                 event.preventDefault();
 
@@ -139,16 +140,18 @@
                     return false;
                 }
 
+                // função que renderiza a tabela de disciplinas localizadas
                 renderTableLocalizadas(disciplina, matriz, modulo);
             });
 
-            /* Botão Adicionar Disciplina */
+            /* Pega o evento do botão de adicionar disciplina, e faz a adição via ajax */
             $(document).on('click','.btn-add-disciplina', function (e) {
 
                 e.currentTarget.setAttribute("disabled", true);
 
                 var linha = $(this).closest('tr');
 
+                // função que adiciona uma disciplina no módulo
                 addDisciplina(linha);
 
                 verifyTablesEmpty();
@@ -189,10 +192,7 @@
                                 $.harpia.hideloading();
 
                                 toastr.success('Disciplina excluída com sucesso!', null, {progressBar: true});
-                                linha.remove();
-                                hiddenTableDisciplinasModulo();
-
-                                result = resp;
+                                renderTableDisciplinasModulo(modulo);
                             },
                             error: function (xhr, textStatus, error) {
                                 $.harpia.hideloading();
@@ -227,31 +227,35 @@
 
                     boxBody.empty();
 
-                    var table = '<table class="table table-bordered table-hover">';
-                    table += '<tr>';
-
-                    if(!$.isEmptyObject(data.prerequisitos)) {
-                        table += '<th width="1%">#</th>';
-                        table += '<th width="20%">Nome</th>';
-                        table += '<th width="5%">Carga Horária</th>';
-                        table += '<th width="5%">Créditos</th>';
-                        table += '<th width="13%">Tipo de Avaliação</th>';
-                        table += '<th width="13%">Tipo da Disciplina</th>';
-                        table += '<th>Pré-Requisitos</th>';
-                        table += '<th width="10%">Ações</th>';
-                    } else {
-                        table += '<th width="1%">#</th>';
-                        table += '<th>Nome</th>';
-                        table += '<th width="10%">Carga Horária</th>';
-                        table += '<th width="5%">Créditos</th>';
-                        table += '<th width="18%">Tipo de Avaliação</th>';
-                        table += '<th width="18%">Tipo da Disciplina</th>';
-                        table += '<th width="10%">Ações</th>';
-                    }
-
-                    table += '</tr>';
-
                     if(!$.isEmptyObject(data.disciplinas)) {
+
+                        var table = '<table class="table table-bordered table-hover" id="tableDisciplinasLocalizadas">';
+                        table += '<thead>';
+                        table += '<tr>';
+
+                        if(!$.isEmptyObject(data.prerequisitos)) {
+                            table += '<th width="1%">#</th>';
+                            table += '<th width="20%">Nome</th>';
+                            table += '<th width="5%">Carga Horária</th>';
+                            table += '<th width="5%">Créditos</th>';
+                            table += '<th width="13%">Tipo de Avaliação</th>';
+                            table += '<th width="13%">Tipo da Disciplina</th>';
+                            table += '<th>Pré-Requisitos</th>';
+                            table += '<th width="10%">Ações</th>';
+                        } else {
+                            table += '<th width="1%">#</th>';
+                            table += '<th>Nome</th>';
+                            table += '<th width="10%">Carga Horária</th>';
+                            table += '<th width="5%">Créditos</th>';
+                            table += '<th width="18%">Tipo de Avaliação</th>';
+                            table += '<th width="18%">Tipo da Disciplina</th>';
+                            table += '<th width="10%">Ações</th>';
+                        }
+
+                        table += '</tr>';
+                        table += '</thead>';
+                        table += '<tbody>';
+
                         $.each(data.disciplinas, function (key, value) {
                             table += '<tr>';
 
@@ -291,6 +295,7 @@
 
                         });
 
+                        table += '</tbody>';
                         table += '</table>';
 
                         boxBody.append(table);
@@ -357,9 +362,10 @@
                     boxBody.empty();
 
                     if(!$.isEmptyObject(response)) {
-                        var table = '<table class="table table-bordered table-hover" id="selecionadas">';
+                        var table = '<table class="table table-bordered table-hover" id="tableDisciplinasCadastradas">';
 
                         // cabeçalho da tabela
+                        table += '<thead>';
                         table += '<tr>';
                         table += '<th>#</th>';
                         table += '<th>Nome</th>';
@@ -368,10 +374,12 @@
                         table += '<th>Créditos</th>';
                         table += '<th>Tipo de Avaliação</th>';
                         table += '<th>Tipo da Disciplina</th>';
-                        table += '<th>Pré-Requistos</th>';
+                        table += '<th>Pré-Requisitos</th>';
                         table += '<th>Ações</th>';
                         table += '</tr>';
+                        table += '</thead>';
 
+                        table += '<tbody>';
                         $.each(response, function (key, obj) {
                             table += '<tr>';
                             table += '<td>'+obj.mdc_id+'</td>';
@@ -397,11 +405,13 @@
                             table += '<td>';
                             table += '<form action="">'
                             table += '<input type="hidden" name="id" value="'+obj.mdc_id+'">';
+                            table += '<input type="hidden" name="mtc_id" value="'+matriz+'">';
                             table += '<input type="hidden" name="_token" value="'+csrf_token+'">';
                             table += '<input type="hidden" name="_method" value="POST">';
                             table += '<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>';
                             table += '</form></td>';
                         });
+                        table += '</tbody>';
 
                         boxBody.append(table);
                     } else {
@@ -412,12 +422,12 @@
 
             var verifyTablesEmpty = function () {
 
-                if($('#boxDisciplinasLocalizadas table tr').length == 0) {
+                if(!($(document).find('#tableDisciplinasLocalizadas tbody tr').length > 0)) {
                     $('#boxDisciplinasLocalizadas .box-body').empty();
                     $('#boxDisciplinasLocalizadas .box-body').append('<p>Sem registros</p>');
                 }
 
-                if($('#boxDisciplinasCadastradas table tr').length == 0) {
+                if(!($(document).find('#tableDisciplinasModulo tbody tr').length > 0)) {
                     $('#boxDisciplinasCadastradas .box-body').empty();
                     $('#boxDisciplinasCadastradas .box-body').append('<p>Sem disciplinas cadastradas</p>');
                 }
