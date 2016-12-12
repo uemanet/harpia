@@ -191,13 +191,13 @@ class AlunosController extends BaseController
                 return redirect()->route('academico.alunos.index');
             }
 
-            $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
+            $aluno = $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
 
             DB::commit();
 
             flash()->success('Aluno criado com sucesso!');
 
-            return redirect()->route('academico.alunos.index');
+            return redirect()->route('academico.alunos.show', $aluno->alu_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -275,8 +275,10 @@ class AlunosController extends BaseController
 
             DB::commit();
 
+            $pessoa = $this->pessoaRepository->find($pessoaId);
+
             flash()->success('Aluno editado com sucesso!');
-            return redirect()->route('academico.alunos.index');
+            return redirect()->route('academico.alunos.show', $pessoa->aluno->alu_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
