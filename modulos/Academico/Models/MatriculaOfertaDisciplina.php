@@ -14,6 +14,7 @@ class MatriculaOfertaDisciplina extends BaseModel
         'mof_mat_id',
         'mof_ofd_id',
         'mof_tipo_matricula',
+        'mof_situacaomatricula',
         'mof_status'
     ];
 
@@ -25,5 +26,10 @@ class MatriculaOfertaDisciplina extends BaseModel
     public function ofertaDisciplina()
     {
         return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'mof_ofd_id', 'ofd_id');
+    }
+
+    public function situacaoMatricula()
+    {
+        return $this->belongsTo('Modulos\Academico\Models\SituacaoMatriculaDisciplina', 'mof_situacaomatricula', 'stm_id');
     }
 }

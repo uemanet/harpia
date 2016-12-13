@@ -18,19 +18,14 @@ class CreateAcdMatriculasOfertasDisciplinasTable extends Migration
             $table->integer('mof_mat_id')->unsigned();
             $table->integer('mof_ofd_id')->unsigned();
             $table->enum('mof_tipo_matricula', ['matriculacomum', 'aproveitamentointerno', 'aproveitamentoexterno']);
-            $table->float('mof_nota1')->nulllable();
-            $table->float('mof_nota2')->nulllable();
-            $table->float('mof_nota3')->nulllable();
-            $table->string('mof_conceito')->nulllable();
-            $table->float('mof_recuperacao')->nulllable();
-            $table->float('mof_final')->nulllable();
-            $table->float('mof_mediafinal')->nulllable();
-            $table->enum('mof_situacaomatricula', [
-                'aprovado_media',
-                'aprovado_final',
-                'reprovado_media',
-                'reprovado_final'
-            ])->nulllable();
+            $table->float('mof_nota1')->nullable();
+            $table->float('mof_nota2')->nullable();
+            $table->float('mof_nota3')->nullable();
+            $table->string('mof_conceito')->nullable();
+            $table->float('mof_recuperacao')->nullable();
+            $table->float('mof_final')->nullable();
+            $table->float('mof_mediafinal')->nullable();
+            $table->integer('mof_situacaomatricula')->unsigned()->nullable();
             $table->enum('mof_status', [
                'cursando',
                 'cancelado'
@@ -40,6 +35,7 @@ class CreateAcdMatriculasOfertasDisciplinasTable extends Migration
 
             $table->foreign('mof_mat_id')->references('mat_id')->on('acd_matriculas');
             $table->foreign('mof_ofd_id')->references('ofd_id')->on('acd_ofertas_disciplinas');
+            $table->foreign('mof_situacaomatricula')->references('stm_id')->on('acd_situacoes_matricula_disciplina');
         });
     }
 

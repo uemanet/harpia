@@ -8,9 +8,28 @@ use DB;
 
 class MatriculaOfertaDisciplinaRepository extends BaseRepository
 {
-    public function __construct(MatriculaOfertaDisciplina $matricula)
+    protected $moduloDisciplinaRepository;
+    protected $ofertaDisciplinaRepository;
+
+    public function __construct(
+        MatriculaOfertaDisciplina $matricula,
+        ModuloDisciplinaRepository $modulo,
+        OfertaDisciplinaRepository $oferta
+    )
     {
         $this->model = $matricula;
+        $this->moduloDisciplinaRepository = $modulo;
+        $this->ofertaDisciplinaRepository = $oferta;
+    }
+
+    public function findBy(array $options) {
+        $query = $this->model;
+
+        foreach ($options as $key => $value) {
+            $query = $query->where($key, '=', $value);
+        }
+
+        return $query->get();
     }
 
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
@@ -150,5 +169,72 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function getMatriculasByOfertaDisciplina($ofertaId)
     {
         return $this->model->where('mof_ofd_id', '=', $ofertaId)->get();
+    }
+    
+    public function verifyIfAlunoAprovadoPreRequisitos($matriculaId, $ofertaDisciplinaId) 
+    {
+        $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaDisciplinaId);
+
+        $preRequisitos = $this->moduloDisciplinaRepository->getDisciplinasPreRequisitos($ofertaDisciplina->ofd_mdc_id);
+
+        if(!empty($preRequisitos)) {
+
+            $quantAprovadas = 0;
+
+            foreach ($preRequisitos as $req) {
+                // busca a oferta de disciplina
+                $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id])->first();
+
+                // busca a matricula do aluno nessa disciplina
+                $matriculaOferta = $this->findBy(['mof_mat_id' => $matriculaId, 'mof_ofd_id' => $oferta->ofd_id])->first();
+                //dd($matriculaOferta);
+
+                if($matriculaOferta) {
+                    if(in_array($matriculaOferta->mof_situacaomatricula, [1, 2])) {
+                        $quantAprovadas++;
+                    }
+                }
+            }
+
+            if($quantAprovadas < count($preRequisitos)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function createMatricula(array $data)
+    {
+        $ofertaId = $data['ofd_id'];
+
+        // verifica se a disciplina possui vagas disponiveis
+        if (!($this->verifyQtdVagas($ofertaId))) {
+            return array("type" => "error", "message" => "Sem vagas disponiveis");
+        }
+
+        // verifica se já existe uma matricula ativa nessa oferta de disciplina
+        $matriculaExists = $this->verifyMatriculaDisciplina($data['mat_id'], $data['ofd_id']);
+
+        if($matriculaExists) {
+            return array("type" => "error", "message" => "Aluno já matriculado nessa disciplina para esse periodo e turma");
+        }
+
+        // verifica se o aluno está aprovado nas disciplinas pre-requisitos, caso existam
+        $aprovadoPreRequisitos = $this->verifyIfAlunoAprovadoPreRequisitos($data['mat_id'], $data['ofd_id']);
+
+        if(!$aprovadoPreRequisitos) {
+            return array("type" => "error", "message" => "Aluno possui pre-requisitos não satisfeitos");
+        }
+
+        $this->create([
+            'mof_mat_id' => $data['mat_id'],
+            'mof_ofd_id' => $data['ofd_id'],
+            'mof_tipo_matricula' => 'matriculacomum',
+            'mof_situacaomatricula' => null,
+            'mof_status' => 'cursando'
+        ]);
+
+        return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!');
     }
 }

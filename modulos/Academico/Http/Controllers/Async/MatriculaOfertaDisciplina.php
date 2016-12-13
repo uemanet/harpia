@@ -47,21 +47,12 @@ class MatriculaOfertaDisciplina extends BaseController
 
         try {
             foreach ($ofertas as $ofertaId) {
-                if (!$this->matriculaOfertaDisciplinaRepository->verifyQtdVagas($ofertaId)) {
-                    return new JsonResponse("Sem vagas disponiveis", Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
-                }
 
-                $matricula = $this->matriculaOfertaDisciplinaRepository->verifyMatriculaDisciplina($matriculaId, $ofertaId);
-                if (!$matricula) {
-                    $this->matriculaOfertaDisciplinaRepository->create([
-                        'mof_mat_id' => $matriculaId,
-                        'mof_ofd_id' => $ofertaId,
-                        'mof_tipo_matricula' => 'matriculacomum',
-                        'mof_status' => 'cursando'
-                    ]);
-                } else {
-                    DB::rollBack();
-                    return new JsonResponse("Aluno já matriculado nessa disciplina para esse periodo e turma", Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+                $result = $this->matriculaOfertaDisciplinaRepository->createMatricula(['mat_id' => $matriculaId, 'ofd_id' => $ofertaId]);
+
+                if($result['type'] == 'error') {
+                    DB::rollback();
+                    return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
             }
 
