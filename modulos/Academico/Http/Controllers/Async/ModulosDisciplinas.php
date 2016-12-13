@@ -32,7 +32,7 @@ class ModulosDisciplinas extends BaseController
         try {
             $response = $this->moduloDisciplinaRepository->create($dados);
 
-            if($response['type'] == 'error') {
+            if ($response['type'] == 'error') {
                 return new JsonResponse($response['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
             }
 
@@ -70,7 +70,6 @@ class ModulosDisciplinas extends BaseController
 
             DB::rollback();
             return new JsonResponse(Response::HTTP_BAD_REQUEST);
-
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
@@ -79,7 +78,6 @@ class ModulosDisciplinas extends BaseController
 
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 
     public function getAllDisciplinasByModulo($moduloId)

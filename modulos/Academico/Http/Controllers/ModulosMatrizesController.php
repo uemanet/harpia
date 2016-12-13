@@ -51,7 +51,7 @@ class ModulosMatrizesController extends BaseController
         $disciplinas = [];
 
         // pega todas as disciplinas em conjunto com os seus pré-requisitos
-        if($modulos->count()) {
+        if ($modulos->count()) {
             foreach ($modulos as $modulo) {
                 $disciplinas[$modulo->mdo_id] = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($modulo->mdo_id);
             }

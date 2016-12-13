@@ -261,7 +261,7 @@
 
                             table += '<td id="dis_id">'+value.dis_id+'</td>';
                             table += '<td id="nome">'+value.dis_nome+'</td>';
-                            table += '<td id="cargahoraria">'+value.dis_carga_horaria+'</td>';
+                            table += '<td id="cargahoraria">'+value.dis_carga_horaria+' h</td>';
                             table += '<td id="creditos">'+value.dis_creditos+'</td>';
 
                             table += '<td><div class="form-group">';
@@ -390,7 +390,6 @@
                             table += '<td>'+obj.mdc_tipo_avaliacao+'</td>';
                             table += '<td>'+obj.mdc_tipo_disciplina+'</td>';
                             var prerequisitos = obj.pre_requisitos;
-                            console.log(prerequisitos);
                             if(prerequisitos.length) {
                                 table += '<td>';
 
@@ -422,7 +421,9 @@
 
             var verifyTablesEmpty = function () {
 
-                if(!($(document).closest('#tableDisciplinasLocalizadas tbody').find('tr').length > 0)) {
+                var linhas = $('#tableDisciplinasLocalizadas tbody tr').length;
+
+                if(!((linhas - 1) > 0)) {
                     $('#boxDisciplinasLocalizadas .box-body').empty();
                     $('#boxDisciplinasLocalizadas .box-body').append('<p>Sem registros</p>');
                 }

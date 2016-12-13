@@ -24,7 +24,6 @@ class Disciplinas extends BaseController
         $disciplinas['disciplinas'] = $this->disciplinaRepository->buscar($matrizId, $nome);
 
         if ($disciplinas['disciplinas']) {
-
             $disciplinas['prerequisitos'] = $this->disciplinaRepository->getDisciplinasModulosAnteriores($matrizId, $moduloId);
 
             return new JsonResponse($disciplinas, 200);

@@ -15,8 +15,7 @@ class ModuloDisciplinaRepository extends BaseRepository
         ModuloDisciplina $modulodisciplina,
         DisciplinaRepository $disciplina,
         MatrizCurricularRepository $matriz
-    )
-    {
+    ) {
         $this->model = $modulodisciplina;
         $this->disciplinaRepository = $disciplina;
         $this->matrizCurricularRepository = $matriz;
@@ -48,20 +47,19 @@ class ModuloDisciplinaRepository extends BaseRepository
             ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
             ->where('mdc_mdo_id', '=', $moduloId)->get();
 
-        if($result->count()) {
+        if ($result->count()) {
             // busca as disciplinas que são pré-requisitos
-            for($i = 0; $i < $result->count(); $i++) {
-
+            for ($i = 0; $i < $result->count(); $i++) {
                 $disciplinas = [];
-                if(!is_null($result[$i]->mdc_pre_requisitos)) {
+                if (!is_null($result[$i]->mdc_pre_requisitos)) {
                     $ids = json_decode($result[$i]->mdc_pre_requisitos);
 
-                    foreach($ids as $id) {
+                    foreach ($ids as $id) {
                         $disciplina = $this->model
                                             ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
                                             ->where('mdc_id', $id)
                                             ->first();
-                        if($disciplina) {
+                        if ($disciplina) {
                             $disciplinas[] = $disciplina;
                         }
                     }
@@ -125,7 +123,7 @@ class ModuloDisciplinaRepository extends BaseRepository
         }
         
         // verifica se veio disciplina pré-requisitos
-        if(!empty($dados['pre_requisitos'])) {
+        if (!empty($dados['pre_requisitos'])) {
 
             // pega os id's da disciplinas que podem ser adicionadas como pré-requisitos
             $disciplinasAptasPreRequisitos = $this->disciplinaRepository
@@ -133,8 +131,8 @@ class ModuloDisciplinaRepository extends BaseRepository
                                                     ->pluck('mdc_id')->toArray();
 
             // verifica, uma a uma, se existe alguma que não está apta a ser cadastrada como pré-requisito
-            foreach($dados['pre_requisitos'] as $preRequisito) {
-                if(!in_array($preRequisito, $disciplinasAptasPreRequisitos)) {
+            foreach ($dados['pre_requisitos'] as $preRequisito) {
+                if (!in_array($preRequisito, $disciplinasAptasPreRequisitos)) {
                     return array('type' => 'error', 'message' => 'Disciplina(s) inválidas para pré-requisito(s)');
                 }
             }
