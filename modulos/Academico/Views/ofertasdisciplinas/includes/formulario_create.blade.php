@@ -47,16 +47,27 @@
     @parent
     <script type="application/javascript">
 
+        var selectMatriz = $('#mtc_id');
+        var selectOfertas = $('#ofc_id');
+        var selectTurmas = $('#ofd_trm_id');
+        var selectPeriodos = $('#ofd_per_id');
+        var selectModulos = $('#ofd_mdo_id');
+        var selectDisciplinas = $('#ofd_mdc_id');
+
+        // populando select de matrizes e ofertas de cursos
         $('#crs_id').change(function (e) {
             var crsId = $(this).val();
 
-            var selectMatriz = $('#mtc_id');
-            var selectOfertas = $('#ofc_id');
-
             if(crsId) {
 
-                // Populando o select de matrizes
+                // limpando todos os selects
                 selectMatriz.empty();
+                selectOfertas.empty();
+                selectTurmas.empty();
+                selectPeriodos.empty();
+                selectModulos.empty();
+
+                // Populando o select de matrizes
                 $.harpia.httpget("{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/" + crsId)
                         .done(function (data) {
                             if(!$.isEmptyObject(data)) {
@@ -70,7 +81,6 @@
                         });
 
                 // Populando o select de ofertas de cursos
-                selectOfertas.empty();
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
                         .done(function (data) {
                             if(!$.isEmptyObject(data)) {
@@ -85,35 +95,14 @@
             }
         });
 
-        $('#mtc_id').change(function (e) {
-            var matrizId = $(this).val();
-
-            var selectModulos = $('#ofd_mdo_id');
-
-            if(matrizId) {
-                selectModulos.empty();
-
-                $.harpia.httpget('{{url("/")}}/academico/async/modulosmatriz/findallbymatriz/' + matrizId)
-                        .done(function (data) {
-                            if(!$.isEmptyObject(data)) {
-                                selectModulos.append('<option value="">Selecione o módulo</option>');
-                                $.each(data, function (key, obj) {
-                                    selectModulos.append('<option value="'+obj.mdo_id+'">'+obj.mdo_nome+'</option>');
-                                });
-                            } else {
-                                selectModulos.append('<option value="">Sem módulos cadastrados</option>');
-                            }
-                        });
-            }
-        });
-
+        // populando select de turmas
         $('#ofc_id').change(function (e) {
             var ofertaId = $(this).val();
 
-            var selectTurmas = $('#ofd_trm_id');
-
             if (ofertaId) {
+                // limpando selects
                 selectTurmas.empty();
+                selectPeriodos.empty();
 
                 $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacurso/' + ofertaId)
                         .done(function (data) {
@@ -130,10 +119,51 @@
 
         });
 
+        // populando select de periodos letivos
+        selectTurmas.change(function() {
+            var turmaId = $(this).val();
+
+            if(turmaId) {
+                // limpando selects
+                selectPeriodos.empty();
+                $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+                .done(function(response) {
+                    if(!$.isEmptyObject(response))
+                    {
+                        selectPeriodos.append("<option value=''>Selecione um periodo</option>");
+                        $.each(response, function (key, obj) {
+                            selectPeriodos.append("<option value='"+obj.per_id+"'>"+obj.per_nome+"</option>");
+                        });
+                    } else {
+                        selectPeriodos.append("<option value=''>Sem períodos disponíveis</option>");
+                    }
+                });
+            }
+        });
+
+        $('#mtc_id').change(function (e) {
+            var matrizId = $(this).val();
+
+            if(matrizId) {
+                selectModulos.empty();
+                selectDisciplinas.empty();
+
+                $.harpia.httpget('{{url("/")}}/academico/async/modulosmatriz/findallbymatriz/' + matrizId)
+                        .done(function (data) {
+                            if(!$.isEmptyObject(data)) {
+                                selectModulos.append('<option value="">Selecione o módulo</option>');
+                                $.each(data, function (key, obj) {
+                                    selectModulos.append('<option value="'+obj.mdo_id+'">'+obj.mdo_nome+'</option>');
+                                });
+                            } else {
+                                selectModulos.append('<option value="">Sem módulos cadastrados</option>');
+                            }
+                        });
+            }
+        });
+
         $('#ofd_mdo_id').change(function (e) {
             var moduloId = $(this).val();
-
-            var selectDisciplinas = $('#ofd_mdc_id');
 
             if (moduloId) {
                 selectDisciplinas.empty();
