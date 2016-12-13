@@ -24,7 +24,14 @@ class Pessoa extends BaseModel
         'pes_nacionalidade',
         'pes_raca',
         'pes_necessidade_especial',
-        'pes_estrangeiro'
+        'pes_estrangeiro',
+        'pes_cidade',
+        'pes_bairro',
+        'pes_estado',
+        'pes_cep',
+        'pes_numero',
+        'pes_endereco',
+        'pes_complemento'
     ];
 
     protected $searchable = [
