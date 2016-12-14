@@ -84,7 +84,7 @@ class TitulacoesController extends BaseController
         $titulacaoId = $request->input('tit_nome');
 
         try {
-            if ($this->titulacaoRepository->verifyTitulacao($titulacaoId)){
+            if ($this->titulacaoRepository->verifyTitulacao($titulacaoId)) {
                 $errors = array('tit_nome' => 'Nome da titulação já existe !');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }

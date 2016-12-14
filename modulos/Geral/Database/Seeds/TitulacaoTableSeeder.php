@@ -29,6 +29,5 @@ class TitulacaoTableSeeder extends Seeder
 
             $titulacao->save();
         }
-
     }
 }

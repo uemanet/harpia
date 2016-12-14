@@ -24,7 +24,6 @@ class TitulacoesInformacoesController extends BaseController
 
     public function getCreate($pessoaId, Request $request)
     {
-
         $url = $request->session()->get('last_acad_route');
         $id = $request->session()->get('last_id');
 
@@ -59,8 +58,6 @@ class TitulacoesInformacoesController extends BaseController
 
             flash()->success('Titulação adicionada com sucesso.');
             return redirect()->route($url, ['id' => $id]);
-
-
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -92,7 +89,7 @@ class TitulacoesInformacoesController extends BaseController
             return redirect()->back();
         }
 
-        return view('Geral::titulacoesinformacoes.edit', ['pessoa' => $pessoa,'titulacaoInfo' => $titulacaoInfo, 'titulacoes' => $titulacoes]);
+        return view('Geral::titulacoesinformacoes.edit', ['pessoa' => $pessoa, 'titulacaoInfo' => $titulacaoInfo, 'titulacoes' => $titulacoes]);
     }
 
     public function putEdit($titulacaoId, TitulacaoInformacaoRequest $request)
