@@ -112,15 +112,15 @@ $factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Genera
 /** Factories Modulo Academico */
 $factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Generator $faker){
    return [
-       'dep_cen_id' => 1,
-       'dep_prf_diretor' => 1,
+       'dep_cen_id' => factory(Modulos\Academico\Models\Centro::class)->create()->cen_id,
+       'dep_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
        'dep_nome' => $faker->word
    ];
 });
 
 $factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generator $faker){
     return [
-        'cen_prf_diretor' => 1,
+        'cen_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'cen_nome' => $faker->word,
         'cen_sigla' => $faker->word,
     ];
@@ -128,7 +128,7 @@ $factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generato
 
 $factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
     return [
-        'prf_pes_id' => 1
+        'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
     ];
 });
 
@@ -148,9 +148,9 @@ $factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator
 
 $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generator $faker) {
     return [
-        'crs_dep_id' => 1,
+        'crs_dep_id' => factory(Modulos\Academico\Models\Departamento::class)->create()->dep_id,
         'crs_nvc_id' => 1,
-        'crs_prf_diretor' => 1,
+        'crs_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'crs_nome' => $faker->name,
         'crs_sigla' => $faker->name,
         'crs_descricao' => $faker->sentence(3),
@@ -162,7 +162,7 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
     ];
 });
 
-$factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
+$factory->define(Modulos\Academico\Models\OfertaCurso::class, function () {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
     return [
         'ofc_crs_id' => $curso->crs_id,
@@ -186,24 +186,24 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
 
 $factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
    return [
-       'grp_trm_id' => 1,
-       'grp_pol_id' => 1,
+       'grp_trm_id' => factory(Modulos\Academico\Models\Turma::class)->create()->trm_id,
+       'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
        'grp_nome' => $faker->name
    ];
 });
 
 $factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generator $faker) {
     return [
-        'trm_ofc_id' => 1,
-        'trm_per_id' => 1,
+        'trm_ofc_id' => factory(Modulos\Academico\Models\OfertaCurso::class)->create()->ofc_id,
+        'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
         'trm_nome' => $faker->sentence(3),
-        'trm_qtd_vagas' => 30
+        'trm_qtd_vagas' => 50
     ];
 });
 
 $factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\Generator $faker) {
     return [
-        'mdo_mtc_id' => 1,
+        'mdo_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create()->mtc_id,
         'mdo_nome' => $faker->name,
         'mdo_descricao' => $faker->sentence(3),
         'mdo_qualificacao' => $faker->sentence(3)
@@ -212,13 +212,80 @@ $factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\G
 
 $factory->define(Modulos\Academico\Models\Aluno::class, function (Faker\Generator $faker) {
     return [
-        'alu_pes_id' => factory(Modulos\Geral\Models\Aluno::class)->create()->pes_id
+        'alu_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
     ];
 });
 
 $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generator $faker) {
     return [
         'tut_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
+   return [
+       'dis_nvc_id' => $faker->randomElement([1,2,3,4,5]),
+       'dis_nome' => $faker->sentence(3),
+       'dis_carga_horaria' => $faker->randomNumber(2),
+       'dis_bibliografia' => $faker->text(),
+       'dis_creditos' => $faker->randomNumber(2),
+       'dis_ementa' => $faker->text()
+   ];
+});
+
+$factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function () {
+    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+    $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+        'mtc_crs_id' => $curso->crs_id
+    ]);
+
+    $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+        'mdo_mtc_id' => $matrizCurricular->mtc_id
+    ]);
+
+    $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create([
+        'dis_nvc_id' => $curso->crs_nvc_id
+    ]);
+
+    return [
+        'mdc_dis_id' => $disciplina->dis_id,
+        'mdc_mdo_id' => $moduloMatriz->mdo_id,
+        'mdc_tipo_avaliacao' => 'numerica'
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function () {
+
+    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+    $ofertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+        'ofc_crs_id' => $curso->crs_id
+    ]);
+
+    $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+        'trm_ofc_id' => $ofertaCurso->ofc_id
+    ]);
+
+    $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+        'mdo_mtc_id' => $ofertaCurso->ofc_mtc_id
+    ]);
+
+    $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create([
+        'dis_nvc_id' => $curso->crs_nvc_id
+    ]);
+
+    $moduloDisciplina = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+       'mdc_dis_id' => $disciplina->dis_id,
+        'mdc_mdo_id' => $moduloMatriz->mdo_id
+    ]);
+
+    return [
+        'ofd_mdc_id' => $moduloDisciplina->mdc_id,
+        'ofd_trm_id' => $turma->trm_id,
+        'ofd_per_id' => $turma->trm_per_id,
+        'ofd_prf_id' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
+        'ofd_qtd_vagas' => 500
     ];
 });
 
@@ -238,6 +305,57 @@ $factory->define(Modulos\Academico\Models\Matricula::class, function () {
         'mat_pol_id' => $polo->pol_id,
         'mat_grp_id' => $grupo->grp_id,
         'mat_situacao' => 'cursando'
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, function () {
+    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+    $ofertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+        'ofc_crs_id' => $curso->crs_id
+    ]);
+
+    $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+        'trm_ofc_id' => $ofertaCurso->ofc_id
+    ]);
+
+    $polo = factory(Modulos\Academico\Models\Polo::class)->create();
+    $ofertaCurso->polos()->attach($polo->pol_id);
+    $grupo = factory(Modulos\Academico\Models\Grupo::class)->create([
+        'grp_trm_id' => $turma->trm_id,
+        'grp_pol_id' => $polo->pol_id
+    ]);
+
+    $matricula = factory(Modulos\Academico\Models\Matricula::class)->create([
+        'mat_trm_id' => $turma->trm_id,
+        'mat_pol_id' => $polo->pol_id,
+        'mat_grp_id' => $grupo->grp_id
+    ]);
+
+    $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+        'mdo_mtc_id' => $ofertaCurso->ofc_mtc_id
+    ]);
+
+    $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create([
+        'dis_nvc_id' => $curso->crs_nvc_id
+    ]);
+
+    $moduloDisciplina = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+        'mdc_dis_id' => $disciplina->dis_id,
+        'mdc_mdo_id' => $moduloMatriz->mdo_id
+    ]);
+
+    $ofertaDisciplina = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
+        'ofd_mdc_id' => $moduloDisciplina->mdc_id,
+        'ofd_trm_id' => $turma->trm_id,
+        'ofd_per_id' => $turma->trm_per_id
+    ]);
+
+    return [
+        'mof_mat_id' => $matricula->mat_id,
+        'mof_ofd_id' => $ofertaDisciplina->ofd_id,
+        'mof_tipo_matricula' => 'matriculacomum',
+        'mof_status' => 'cursando'
     ];
 });
 

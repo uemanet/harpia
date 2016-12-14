@@ -25,7 +25,16 @@ class CreateAcdMatriculasOfertasDisciplinasTable extends Migration
             $table->float('mof_recuperacao')->nulllable();
             $table->float('mof_final')->nulllable();
             $table->float('mof_mediafinal')->nulllable();
-            $table->enum('mof_situacaomatricula', ['Aprovadopormedia', 'aprovadoporfinal', 'reprovadopormedia', 'reprovadoporfinal'])->nulllable();
+            $table->enum('mof_situacaomatricula', [
+                'aprovado_media',
+                'aprovado_final',
+                'reprovado_media',
+                'reprovado_final'
+            ])->nulllable();
+            $table->enum('mof_status', [
+               'cursando',
+                'cancelado'
+            ]);
 
             $table->timestamps();
 
