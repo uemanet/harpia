@@ -67,7 +67,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             for ($i=0;$i<$disciplinas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinas[$i]->ofd_id)
-                                        ->where('mof_status', '=', 'cursando')
+                                        ->where('mof_situacao_matricula', '=', 'cursando')
                                         ->count();
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
             }
@@ -82,7 +82,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
             'ofd_trm_id' => $turmaId,
-            'mof_status' => 'cursando'
+            'mof_situacao_matricula' => 'cursando'
         ])->pluck('mof_ofd_id')->toArray();
 
         // pega as disciplinas ofertadas no periodo e turma correspondentes, e verifica se o aluno
@@ -124,7 +124,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             for ($i=0;$i<$disciplinasOfertadas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
-                                        ->where('mof_status', '=', 'cursando')
+                                        ->where('mof_situacao_matricula', '=', 'cursando')
                                         ->count();
 
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
@@ -143,7 +143,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     {
         $query = $this->model->where('mof_ofd_id', '=', $ofertaId)
                              ->where('mof_mat_id', '=', $matriculaId)
-                            ->where('mof_status', '=', 'cursando');
+                            ->where('mof_situacao_matricula', '=', 'cursando');
 
         return $query->first();
     }
@@ -153,7 +153,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $query = $this->model
                     ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
                     ->where('mof_ofd_id', '=', $ofertaId)
-                    ->where('mof_status', '=', 'cursando')
+                    ->where('mof_situacao_matricula', '=', 'cursando')
                     ->get();
 
         if ($query->count()) {
@@ -188,10 +188,9 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
                 // busca a matricula do aluno nessa disciplina
                 $matriculaOferta = $this->findBy(['mof_mat_id' => $matriculaId, 'mof_ofd_id' => $oferta->ofd_id])->first();
-                //dd($matriculaOferta);
 
                 if ($matriculaOferta) {
-                    if (in_array($matriculaOferta->mof_situacaomatricula, [1, 2])) {
+                    if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
                         $quantAprovadas++;
                     }
                 }
@@ -232,8 +231,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             'mof_mat_id' => $data['mat_id'],
             'mof_ofd_id' => $data['ofd_id'],
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacaomatricula' => null,
-            'mof_status' => 'cursando'
+            'mof_situacao_matricula' => 'cursando'
         ]);
 
         return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!');
