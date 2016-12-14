@@ -50,7 +50,7 @@ class MatriculasOfertasDisciplinasController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->alunoRepository->paginateRequest($request->all());
+        $tableData = $this->alunoRepository->paginateRequest($request->all(), null, true);
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(

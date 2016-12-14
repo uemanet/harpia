@@ -72,8 +72,11 @@ class Vinculo
             case "alunos":
                 return $this->handleAlunos($request, $next);
                 break;
-            case "matriculasofertasdisciplinas":
+            case "matricularalunodisciplina":
                 return $this->handleMatriculaDisciplina($request, $next);
+                break;
+            case "matriculasofertasdisciplinas":
+                return $this->handleAsyncMatriculaDisciplina($request, $next);
                 break;
             default:
                 flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
@@ -101,6 +104,17 @@ class Vinculo
         }
 
         return $path[3];
+    }
+
+    private function routeParameters($request)
+    {
+        $url = explode('/', $request->getPathInfo());
+
+        if($url[2] == "async"){
+            return array_slice($url, 5);
+        }
+
+        return array_slice($url, 4);
     }
 
     /**
@@ -408,8 +422,58 @@ class Vinculo
         return redirect()->route('academico.alunos.index');
     }
 
+    /**
+     * Verifica e filtra os vinculos na rota de matriculas ofertas disciplinas
+     * @param $request
+     * @param Closure $next
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function handleMatriculaDisciplina($request, Closure $next)
     {
+        $id = $request->id;
+        $action = $this->actionName($request);
+
+        if (is_null($id) || ($action == "index")) {
+            return $next($request);
+        }
+
+        if ($action == "show") {
+            $cursos = $this->alunoRepository->getCursos($id);
+
+            // Aluno nao esta matriculado em curso algum
+            if (empty($cursos)) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.matriculasofertasdisciplinas.index');
+            }
+
+            // Verifica todos os cursos do aluno e o vinculo do usuario atual com cada um destes
+            foreach ($cursos as $key => $value) {
+                if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $value)) {
+                    return $next($request);
+                }
+            }
+        }
+
+        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        return redirect()->route('academico.matriculasofertasdisciplinas.index');
+    }
+
+    /**
+     * Verifica e filtra os vinculos no Async de matriculas ofertas disciplinas
+     * @param $request
+     * @param $next
+     * @return mixed
+     */
+    public function handleAsyncMatriculaDisciplina($request, $next)
+    {
+        $parameters = $this->routeParameters($request);
+        dd($parameters);
+
+        if($request->getMethod() == "GET"){
+
+        }
+
+        dd($parameters);
         return $next($request);
     }
 }

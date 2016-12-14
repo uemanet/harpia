@@ -15,12 +15,61 @@ class AlunoRepository extends BaseRepository
     }
 
     /**
+     * Pagina somente alunos matriculados em cursos vinculados com o usuario logado
+     * @param null $sort
+     * @param null $search
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginateOnlyWithBonds($sort = null, $search = null)
+    {
+        $result = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            })->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
+            })->join('acd_usuarios_cursos', function ($join) {
+                $join->on('ucr_crs_id', '=', 'crs_id');
+            })->leftJoin('gra_documentos', function ($join) {
+                $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+            })->where('ucr_usr_id', '=', Auth::user()->usr_id);
+
+        if (!empty($search)) {
+            foreach ($search as $value) {
+                if ($value['field'] == 'pes_cpf') {
+                    $result = $result->where('doc_conteudo', '=', $value['term']);
+                    continue;
+                }
+
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        return $this->model->paginateWithBonds($result->get(), 15);
+    }
+
+    /**
      * Paginacao com os vinculos
      * @param null $sort
      * @param null $search
      * @return mixed
      */
-    public function paginateWithBonds($sort = null, $search = null)
+    public function paginateAllWithBonds($sort = null, $search = null)
     {
         $vinculados = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')
             ->join('acd_matriculas', function ($join) {
@@ -115,10 +164,11 @@ class AlunoRepository extends BaseRepository
 
     /**
      * @param bool $vinculo
+     * @param bool $onlyBonds
      * @param array|null $requestParameters
      * @return mixed
      */
-    public function paginateRequest(array $requestParameters = null, $vinculo = false)
+    public function paginateRequest(array $requestParameters = null, $vinculo = false, $onlyBonds = false)
     {
         $sort = [];
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
@@ -140,11 +190,15 @@ class AlunoRepository extends BaseRepository
             }
         }
 
-        if (!$vinculo) {
-            return $this->paginate($sort, $search);
+        if($vinculo){
+            return $this->paginateAllWithBonds($sort, $search);
         }
 
-        return $this->paginateWithBonds($sort, $search);
+        if($onlyBonds){
+            return $this->paginateOnlyWithBonds($sort, $search);
+        }
+
+        return $this->paginate($sort, $search);
     }
 
 
