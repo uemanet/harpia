@@ -31,6 +31,14 @@ class PessoaTableSeeder extends Seeder
             $pessoa->pes_raca = $faker->randomElement(array('branco', 'pardo', 'negro', 'mulato'));
             $pessoa->pes_necessidade_especial = 'Não';
             $pessoa->pes_estrangeiro = 0;
+            $pessoa->pes_endereco = $faker->streetAddress;
+            $pessoa->pes_complemento = $faker->streetName;
+            $pessoa->pes_numero = $faker->randomNumber(4);
+            $pessoa->pes_cep = $faker->postcode;
+            $pessoa->pes_cidade = $faker->city;
+            $pessoa->pes_bairro = $faker->randomElement(array('João Paulo', 'Cohab', 'Cohama', 'Coroadinho', 'Barreto'));
+            $pessoa->pes_estado = $faker->randomElement(array('MA', 'SP', 'CE', 'PI'));
+
 
             $pessoa->save();
             

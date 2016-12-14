@@ -92,8 +92,8 @@ class MatriculaCursoRepository extends BaseRepository
                         ->groupBy('trm_id')
                         ->first();
 
-        if($result) {
-            if($result->qtd_matriculas < $result->trm_qtd_vagas) {
+        if ($result) {
+            if ($result->qtd_matriculas < $result->trm_qtd_vagas) {
                 return true;
             }
         }
@@ -122,7 +122,7 @@ class MatriculaCursoRepository extends BaseRepository
         $query = DB::table('acd_cursos')
                     ->whereNotIn('crs_id', $cursosMatriculados);
 
-        if($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
+        if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
             $query = $query->where('crs_nvc_id', '<>', 3);
         }
 
@@ -135,26 +135,26 @@ class MatriculaCursoRepository extends BaseRepository
             ->join('acd_turmas', function ($join) {
                 $join->on('mat_trm_id', '=', 'trm_id');
             })
-            ->join('acd_ofertas_cursos', function ($join){
+            ->join('acd_ofertas_cursos', function ($join) {
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
-            ->join('acd_cursos', function ($join){
+            ->join('acd_cursos', function ($join) {
                 $join->on('ofc_crs_id', '=', 'crs_id');
             })
-            ->leftJoin('acd_polos', function ($join){
+            ->leftJoin('acd_polos', function ($join) {
                 $join->on('mat_pol_id', '=', 'pol_id');
             })
-            ->leftJoin('acd_grupos', function ($join){
+            ->leftJoin('acd_grupos', function ($join) {
                 $join->on('mat_grp_id', '=', 'grp_id');
             });
 
-        if(!empty($options)) {
+        if (!empty($options)) {
             foreach ($options as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
 
-        if(!is_null($select)) {
+        if (!is_null($select)) {
             $query = $query->select($select);
         }
 
@@ -194,7 +194,7 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         // verifica se a turma ainda possui vagas disponiveis
-        if(!$this->verifyExistsVagasByTurma($options['mat_trm_id'])) {
+        if (!$this->verifyExistsVagasByTurma($options['mat_trm_id'])) {
             return array(
                 'type' => 'error',
                 'message' => 'A turma escolhida não possui mais vagas disponiveis'
@@ -210,7 +210,7 @@ class MatriculaCursoRepository extends BaseRepository
             'mat_situacao' => 'cursando'
         ];
 
-        if($this->create($dataMatricula)) {
+        if ($this->create($dataMatricula)) {
             return array(
                 'type' => 'success',
                 'message' => 'Matricula efetuada com sucesso!'

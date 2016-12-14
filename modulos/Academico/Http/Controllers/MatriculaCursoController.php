@@ -86,7 +86,6 @@ class MatriculaCursoController extends BaseController
     public function postCreate($alunoId, MatriculaCursoRequest $request)
     {
         try {
-
             $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
             //dd($result);
             flash()->{$result['type']}($result['message']);
@@ -105,7 +104,7 @@ class MatriculaCursoController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
-        if(!$aluno){
+        if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->route('academico.matricularalunocurso.index');
         }

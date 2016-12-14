@@ -54,6 +54,7 @@
                     <th>Carga Horária</th>
                     <th>Créditos</th>
                     <th>Tipo de Avaliação</th>
+                    <th>Tipo da Disciplina</th>
                     <th>Ações</th>
                     </thead>
                     <tbody></tbody>
@@ -85,6 +86,7 @@
                 <th>Carga Horária</th>
                 <th>Créditos</th>
                 <th>Tipo de Avaliação</th>
+                <th>Tipo da Disciplina</th>
                 <th>Ações</th>
                 </thead>
                 <tbody>
@@ -97,6 +99,7 @@
                         <td>{{$disciplina->dis_carga_horaria}} horas</td>
                         <td>{{$disciplina->dis_creditos}}</td>
                         <td>{{$disciplina->mdc_tipo_avaliacao}}</td>
+                        <td>{{$disciplina->mdc_tipo_disciplina}}</td>
                         <td>
                             <form action="">
                                 <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
@@ -173,6 +176,13 @@
                         cols += '<select class="form-control" id="mdc_tipo_avaliacao">';
                         cols += '<option value="numerica" selected>NUMERICA</option>';
                         cols += '<option value="conceitual">CONCEITUAL</option>';
+                        cols += '</select></div></td>';
+                        cols += '<td><div class="form-group">';
+                        cols += '<select class="form-control" id="mdc_tipo_disciplina">';
+                        cols += '<option value="obrigatoria" selected>OBRIGATÓRIA</option>';
+                        cols += '<option value="eletiva">ELETIVA</option>';
+                        cols += '<option value="optativa">OPTATIVA</option>';
+                        cols += '<option value="tcc">TCC</option>';
                         cols += '</select></div></td>';
 
                         cols += '<td>';
@@ -273,10 +283,12 @@
                 disciplinaSelecionada['cargahoraria'] = linha.find('#cargahoraria').text();
                 disciplinaSelecionada['creditos'] = linha.find('#creditos').text();
                 disciplinaSelecionada['mdc_tipo_avaliacao'] = linha.find('#mdc_tipo_avaliacao').val();
+                disciplinaSelecionada['mdc_tipo_disciplina'] = linha.find('#mdc_tipo_disciplina').val();
 
                 var data = {
                     dis_id: linha.find('#dis_id').text(),
                     tipo_avaliacao: linha.find('#mdc_tipo_avaliacao').val(),
+                    tipo_disciplina: linha.find('#mdc_tipo_disciplina').val(),
                     mtc_id: matriz,
                     mod_id: modulo,
                     _token: csrf_token
@@ -337,6 +349,7 @@
                 column += '<td id="cargahoraria">'+disciplina['cargahoraria']+'</td>';
                 column += '<td id="creditos">'+disciplina['creditos']+'</td>';
                 column += '<td id="mdc_tipo_avaliacao">'+disciplina['mdc_tipo_avaliacao']+'<input type="hidden" value="'+disciplina['mdc_tipo_avaliacao']+'" name="disciplinas[mdc_tipo_avaliacao][]"></td>';
+                column += '<td id="mdc_tipo_avaliacao">'+disciplina['mdc_tipo_disciplina']+'<input type="hidden" value="'+disciplina['mdc_tipo_disciplina']+'" name="disciplinas[mdc_tipo_disciplina][]"></td>';
 
                 column += '<td>';
                 column += '<form action="" method="POST">'
