@@ -9,6 +9,7 @@ use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
 use Modulos\Seguranca\Repositories\UsuarioRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
+use Auth;
 
 class VinculosController extends BaseController
 {
@@ -77,7 +78,7 @@ class VinculosController extends BaseController
         $tabela = null;
         $paginacao = null;
 
-        $data = $this->vinculoRepository->getCursosVinculados($usuarioId);
+        $data = $this->vinculoRepository->paginateCursosVinculados($usuarioId);
         $usuario = $this->usuarioRepository->find($usuarioId);
 
         if ($data->count()) {

@@ -18,7 +18,7 @@ class VinculoRepository extends BaseRepository
      *
      * @param $usuarioId
      */
-    public function getCursosVinculados($usuarioId)
+    public function paginateCursosVinculados($usuarioId)
     {
         return $this->model
             ->select('ucr_id', 'crs_id', 'crs_nome', 'crs_sigla')
@@ -26,6 +26,16 @@ class VinculoRepository extends BaseRepository
             ->where('ucr_usr_id', '=', $usuarioId)->paginate(15);
     }
 
+    public function getCursos($usuarioId)
+    {
+        $result = DB::table('acd_cursos')
+            ->select('crs_id')
+            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
+            ->where('ucr_usr_id', '=', $usuarioId)
+            ->pluck('crs_id')->toArray();
+
+        return $result;
+    }
 
     public function getCursosDisponiveis($usuarioId)
     {
@@ -52,6 +62,7 @@ class VinculoRepository extends BaseRepository
                          ['ucr_usr_id', '=', $usuarioId],
                          ['ucr_crs_id', '=', $cursoId]
                      ])->get();
+
         return !$result->isEmpty();
     }
 }
