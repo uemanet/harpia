@@ -51,6 +51,5 @@ class AcademicoSeeder extends Seeder
 
         $this->call(VinculoTableSeeder::class);
         $this->command->info('Vinculo Table seeded!');
-
     }
 }
