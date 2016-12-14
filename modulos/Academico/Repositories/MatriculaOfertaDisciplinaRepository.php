@@ -63,7 +63,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
-            'ofd_trm_id' => $turmaId
+            'ofd_trm_id' => $turmaId,
+            'mof_status' => 'cursando'
         ])->pluck('mof_ofd_id')->toArray();
 
         // pega as disciplinas ofertadas no periodo e turma correspondentes, e verifica se o aluno
