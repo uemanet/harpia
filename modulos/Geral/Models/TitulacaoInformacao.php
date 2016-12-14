@@ -13,6 +13,7 @@ class TitulacaoInformacao extends BaseModel
         'tin_pes_id',
         'tin_tit_id',
         'tin_titulo',
+        'tin_codigo_externo',
         'tin_instituicao',
         'tin_instituicao_sigla',
         'tin_instituicao_sede',
@@ -28,5 +29,17 @@ class TitulacaoInformacao extends BaseModel
     public function titulacao()
     {
         return $this->belongsTo('Modulos\Geral\Models\Titulacao', 'tin_tit_id');
+    }
+
+    // Accessors
+    public function getTinAnofimAttribute($value)
+    {
+        if ($value == 0){
+            return null;
+        }
+
+        return $value;
+
+
     }
 }

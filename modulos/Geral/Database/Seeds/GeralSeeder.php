@@ -15,5 +15,8 @@ class GeralSeeder extends Seeder
 
         $this->call(PessoaTableSeeder::class);
         $this->command->info('Pessoas Table seeded');
+
+        $this->call(TitulacaoTableSeeder::class);
+        $this->command->info('Titulacoes Table seeded');
     }
 }
