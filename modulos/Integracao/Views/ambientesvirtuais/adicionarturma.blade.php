@@ -135,7 +135,7 @@
             if (ofertaId) {
                 selectTurmas.empty();
 
-                $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacurso/' + ofertaId)
+                $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacursowithoutambiente/' + ofertaId)
                         .done(function (data) {
                             if (!$.isEmptyObject(data)){
                                 selectTurmas.append('<option>Selecione a turma</option>');

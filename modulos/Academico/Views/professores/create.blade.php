@@ -12,6 +12,7 @@
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">Formulário de Cadastro de Professores</h3>
+            <span class="label label-primary pull-right">Professor</span>
         </div>
         <div class="box-body">
             {!! Form::open(["url" => url('/') . "/academico/professores/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
@@ -23,7 +24,7 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+                    {!! Form::submit('Salvar Professor', ['class' => 'btn btn-primary pull-right']) !!}
                 </div>
             </div>
             {!! Form::close() !!}

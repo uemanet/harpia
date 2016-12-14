@@ -84,26 +84,26 @@ class MatriculaCursoRepository extends BaseRepository
             ->join('acd_turmas', function ($join) {
                 $join->on('mat_trm_id', '=', 'trm_id');
             })
-            ->join('acd_ofertas_cursos', function ($join){
+            ->join('acd_ofertas_cursos', function ($join) {
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
-            ->join('acd_cursos', function ($join){
+            ->join('acd_cursos', function ($join) {
                 $join->on('ofc_crs_id', '=', 'crs_id');
             })
-            ->leftJoin('acd_polos', function ($join){
+            ->leftJoin('acd_polos', function ($join) {
                 $join->on('mat_pol_id', '=', 'pol_id');
             })
-            ->leftJoin('acd_grupos', function ($join){
+            ->leftJoin('acd_grupos', function ($join) {
                 $join->on('mat_grp_id', '=', 'grp_id');
             });
 
-        if(!empty($options)) {
+        if (!empty($options)) {
             foreach ($options as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
 
-        if(!is_null($select)) {
+        if (!is_null($select)) {
             $query = $query->select($select);
         }
 

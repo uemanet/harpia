@@ -30,7 +30,7 @@ class TempoOnlineController extends Controller
     public function getIndex()
     {
         $ambientes = $this->ambientevirtualRepository->findAmbientesWithMonitor();
-        return view('Monitoramento::tempoonline.index', compact('ambientes') );
+        return view('Monitoramento::tempoonline.index', compact('ambientes'));
     }
 
     public function getMonitorar($idAmbiente)
@@ -41,13 +41,13 @@ class TempoOnlineController extends Controller
             flash()->error('Ambiente não existe!');
             return redirect()->back();
         }
-        
+
         $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
 
         $timeclicks = Configuracao::get('time_between_clicks');
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        $wsfunction = "get_tutor_online_time";
+        $wsfunction = $ambiente->ser_slug;
 
         return view('Monitoramento::tempoonline.monitorar', compact('cursos', 'ambiente', 'timeclicks', 'wsfunction'));
     }

@@ -26,31 +26,45 @@ class AmbienteVirtualRepository extends BaseRepository
         return false;
     }
 
+    public function findTurmasWithoutAmbiente($ofertaId)
+    {
+        $turmasvinculadas = DB::table('int_ambientes_turmas')
+           ->get();
+
+        $turmasvinculadasId = [];
+
+        foreach ($turmasvinculadas as $key => $value) {
+            $turmasvinculadasId[] = $value->atr_trm_id;
+        }
+
+        $turmas = DB::table('acd_turmas')
+           ->whereNotIn('trm_id', $turmasvinculadasId)
+           ->where('trm_ofc_id', '=', $ofertaId)
+           ->get();
+
+        return $turmas;
+    }
+
     public function findAmbientesWithMonitor()
     {
-      $entries = DB::table('int_ambientes_virtuais')
+        $entries = DB::table('int_ambientes_virtuais')
                   ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
                   ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
                   ->where('ser_nome', '=', 'MonitoramentoTempo')
                   ->get();
 
-      return $entries;
-
-
+        return $entries;
     }
 
     public function findAmbienteWithMonitor($ambienteId)
     {
-      $entries = DB::table('int_ambientes_virtuais')
+        $entries = DB::table('int_ambientes_virtuais')
                   ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
                   ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
                   ->where('ser_nome', '=', 'MonitoramentoTempo')
                   ->where('amb_id', '=', $ambienteId)
                   ->first();
 
-      return $entries;
-
-
+        return $entries;
     }
-
 }
