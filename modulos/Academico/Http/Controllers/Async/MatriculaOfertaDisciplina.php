@@ -47,10 +47,9 @@ class MatriculaOfertaDisciplina extends BaseController
 
         try {
             foreach ($ofertas as $ofertaId) {
-
                 $result = $this->matriculaOfertaDisciplinaRepository->createMatricula(['mat_id' => $matriculaId, 'ofd_id' => $ofertaId]);
 
-                if($result['type'] == 'error') {
+                if ($result['type'] == 'error') {
                     DB::rollback();
                     return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }

@@ -95,8 +95,7 @@ class ModuloDisciplinaRepository extends BaseRepository
 
         $disciplina = $this->find($moduloDisciplinaId);
 
-        if(!is_null($disciplina->mdc_pre_requisitos)) {
-
+        if (!is_null($disciplina->mdc_pre_requisitos)) {
             $requisitos = json_decode($disciplina->mdc_pre_requisitos);
 
             foreach ($requisitos as $req) {
