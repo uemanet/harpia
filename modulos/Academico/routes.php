@@ -186,6 +186,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'turmas'], function () {
             Route::get('/findallbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacurso')
                 ->name('academico.async.turmas.findallbyofertacurso');
+            Route::get('/findallbyofertacursowithoutambiente/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoWithoutAmbiente')
+                ->name('academico.async.turmas.findallbyofertacursowithoutambiente');
         });
 
         Route::group(['prefix' => 'polos'], function () {
@@ -229,8 +231,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'matriculasofertasdisciplinas'], function () {
-            Route::get('/findalldisciplinascursadasbyalunoturmaperiodo/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllDisciplinasCursadasByAlunoTurmaPeriodo');
             Route::get('/findalldisciplinasnotcursadasbyalunoturmaperiodo/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllDisciplinasNotCursadasByAlunoTurmaPeriodo');
+            Route::get('/findalldisciplinasbyalunoturmaperiodo/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllDisciplinasByAlunoTurmaPeriodo');
             Route::post('/matricular', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postMatricularAlunoDisciplinas');
         });
 

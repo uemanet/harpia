@@ -23,7 +23,7 @@
               </div>
               <div class="form-group col-md-3">
                   <div class="controls">
-                      {!! Form::text('asr_token', old('amb_token'), ['class' => 'form-control select-control', 'placeholder' => 'Digite o token']) !!}
+                      {!! Form::text('asr_token', old('asr_token'), ['id' => 'asr_token','class' => 'form-control select-control', 'placeholder' => 'Digite o token']) !!}
                       @if ($errors->has('asr_token')) <p class="help-block">{{ $errors->first('asr_token') }}</p> @endif
                   </div>
               </div>
@@ -76,5 +76,40 @@
         </div>
     </div>
 </div>
+
+@stop
+
+@section('scripts')
+
+
+    <script type="application/javascript">
+    $(document).on('click', '.btn-primary', function (event) {
+        event.preventDefault();
+        var btn = $(this);
+        var url = "{{$ambiente->amb_url}}";
+        var token = $('#asr_token').val();
+        var servico = $('#asr_ser_id').find(":selected").val();
+
+        var request = $.ajax({
+                url: url+"webservice/rest/server.php?wstoken="+token+"&wsfunction=ping&moodlewsrestformat=json",
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  //$.harpia.hideloading();
+                  if (data.response === true){
+                    btn.closest('form').trigger("submit");
+                  }
+                    toastr.error('Este token é inválido.', null, {progressBar: true});
+                },
+                error: function (error) {
+
+                    toastr.error('Erro ao tentar se comunicar com o Ambiente Virtual.', null, {progressBar: true});
+
+                }
+            });
+
+    });
+
+    </script>
 
 @stop
