@@ -107,6 +107,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                                         ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
                                         ->where('mof_status', '=', 'cursando')
                                         ->count();
+
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
                 $disciplinasOfertadas[$i]->disponivel = 1;
 
