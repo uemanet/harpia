@@ -144,18 +144,23 @@ class DocumentosController extends BaseController
             }
 
             $dados = $request->only($this->documentoRepository->getFillableModelFields());
+            $dados['doc_anx_documento'] = $documento->doc_anx_documento;
 
-//            $dados = $request->only('doc_anx_projeto_pedagogico', 'mtc_descricao', 'mtc_titulo',
-//                'mtc_data', 'mtc_creditos', 'mtc_horas', 'mtc_horas_praticas');
 
             if ($request->file('doc_file') != null) {
                 // Novo Anexo
                 $anexoDocumento = $request->file('doc_file');
-                // Atualiza anexo
-                $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
+
+                if($documento->doc_anx_documento != null){
+                    // Atualiza anexo
+                    $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
+                } else {
+                    // Cria um novo anexo caso o documento nao tenha anteriormente
+                    $anexo = $this->anexoRepository->salvarAnexo($anexoDocumento);
+                    $dados['doc_anx_documento'] = $anexo->anx_id;
+                }
             }
 
-            $dados['doc_anx_documento'] = $documento->doc_anx_documento;
             if (!$this->documentoRepository->update($dados, $documento->doc_id, 'doc_id')) {
                 DB::rollBack();
                 flash()->error('Erro ao tentar atualizar');
@@ -163,11 +168,6 @@ class DocumentosController extends BaseController
             }
 
             DB::commit();
-
-//            if (!$this->documentoRepository->update($requestData, $documento->doc_id, 'doc_id')) {
-//                flash()->error('Erro ao tentar salvar.');
-//                return redirect()->back()->withInput($request->all());
-//            }
 
             flash()->success('Documento atualizado com sucesso.');
             return redirect()->route($url, ['id' => $id]);

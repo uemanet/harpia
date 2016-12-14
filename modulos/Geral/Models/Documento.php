@@ -36,6 +36,11 @@ class Documento extends BaseModel
         return $this->belongsTo('Modulos\Geral\Models\TipoDocumento', 'doc_tpd_id');
     }
 
+    public function anexo()
+    {
+        return $this->belongsTo('Modulos\Geral\Models\Anexo', 'anx_id');
+    }
+
     // // Accessors
     public function getDocDataExpedicaoAttribute($value)
     {

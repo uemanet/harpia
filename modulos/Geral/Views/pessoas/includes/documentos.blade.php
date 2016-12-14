@@ -35,33 +35,39 @@
                                 <td>{{$documento->doc_orgao}}</td>
                                 <td>{{$documento->doc_data_expedicao}}</td>
                                 <td>{{$documento->doc_observacao}}</td>
+                                <?php
+                                    $botoes =  [
+                                          [
+                                            'classButton' => 'btn btn-primary btn-sm',
+                                            'icon' => 'fa fa-pencil',
+                                            'action' => '/geral/documentos/edit/' . $documento->doc_id,
+                                            'label' => '',
+                                            'method' => 'get'
+                                          ],
+                                          [
+                                              'classButton' => 'btn-delete btn btn-danger btn-sm',
+                                              'icon' => 'fa fa-trash',
+                                              'action' => '/geral/documentos/delete',
+                                              'id' => $documento->doc_id,
+                                              'label' => '',
+                                              'method' => 'post'
+                                          ]
+                                        ];
+                                ?>
+                                @if(!is_null($documento->doc_anx_documento))
+                                    <?php $botoes[] =  [
+                                              'classButton' => 'btn btn-success btn-sm docAnexo',
+                                              'icon' => 'fa fa-download',
+                                              'action' => '/geral/documentos/anexo/' . $documento->doc_id,
+                                              'label' => '',
+                                              'method' => 'get'
+                                          ];
+                                    ?>
+                                @endif
                                 <td>
                                   {!! ActionButton::grid([
                                     'type' => 'LINE',
-                                    'buttons' => [
-                                      [
-                                        'classButton' => 'btn btn-primary btn-sm',
-                                        'icon' => 'fa fa-pencil',
-                                        'action' => '/geral/documentos/edit/' . $documento->doc_id,
-                                        'label' => '',
-                                        'method' => 'get'
-                                      ],
-                                      [
-                                          'classButton' => 'btn-delete btn btn-danger btn-sm',
-                                          'icon' => 'fa fa-trash',
-                                          'action' => '/geral/documentos/delete',
-                                          'id' => $documento->doc_id,
-                                          'label' => '',
-                                          'method' => 'post'
-                                      ],
-                                      [
-                                          'classButton' => 'btn btn-success btn-sm',
-                                          'icon' => 'fa fa-download',
-                                          'action' => '/geral/documentos/anexo/' . $documento->doc_id,
-                                          'label' => '',
-                                          'method' => 'get'
-                                      ]
-                                    ]
+                                    'buttons' => $botoes
                                   ]) !!}
                                 </td>
                             </tr>
