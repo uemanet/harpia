@@ -34,12 +34,10 @@ class TitulacaoInformacao extends BaseModel
     // Accessors
     public function getTinAnofimAttribute($value)
     {
-        if ($value == 0){
+        if ($value == 0) {
             return null;
         }
 
         return $value;
-
-
     }
 }

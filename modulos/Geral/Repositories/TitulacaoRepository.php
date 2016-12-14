@@ -12,8 +12,8 @@ class TitulacaoRepository extends BaseRepository
         $this->model = $titulacao;
     }
 
-    public function verifyTitulacao($titulacaoName) {
-
+    public function verifyTitulacao($titulacaoName)
+    {
         $query = $this->model->where('tit_nome', '=', $titulacaoName);
 
         return $query->first();

@@ -79,6 +79,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId)
     {
         // pega as disciplinas cursadas pelo aluno
+
         $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
             'ofd_trm_id' => $turmaId,

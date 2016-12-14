@@ -186,7 +186,6 @@ class TitulacaoRepositoryTest extends TestCase
         $response = $this->repo->verifyTitulacao($titulacaoName);
 
         $this->assertNotEquals(null, $response);
-
     }
 
     public function tearDown()
