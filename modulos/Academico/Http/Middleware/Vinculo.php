@@ -5,9 +5,11 @@ namespace Modulos\Academico\Http\Middleware;
 use Auth;
 use Closure;
 use Modulos\Academico\Repositories\GrupoRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\ModuloMatrizRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
@@ -23,6 +25,8 @@ class Vinculo
     private $moduloMatrizRepository;
     private $tutorGrupoRepository;
     private $alunoRepository;
+    private $ofertaDisciplinaRepository;
+    private $matriculaCursoRepository;
 
     public function __construct(VinculoRepository $vinculoRepository,
                                 MatrizCurricularRepository $matrizCurricularRepository,
@@ -31,16 +35,20 @@ class Vinculo
                                 GrupoRepository $grupoRepository,
                                 ModuloMatrizRepository $moduloMatrizRepository,
                                 TutorGrupoRepository $tutorGrupoRepository,
-                                AlunoRepository $alunoRepository)
+                                AlunoRepository $alunoRepository,
+                                OfertaDisciplinaRepository $ofertaDisciplinaRepository,
+                                MatriculaCursoRepository $matriculaCursoRepository)
     {
-        $this->vinculoRepository = $vinculoRepository;
-        $this->matrizCurricularRepository = $matrizCurricularRepository;
-        $this->ofertaCursoRepository = $ofertaCursoRepository;
-        $this->turmaRepository = $turmaRepository;
-        $this->grupoRepository = $grupoRepository;
-        $this->moduloMatrizRepository = $moduloMatrizRepository;
-        $this->tutorGrupoRepository = $tutorGrupoRepository;
-        $this->alunoRepository = $alunoRepository;
+        $this->vinculoRepository            = $vinculoRepository;
+        $this->matrizCurricularRepository   = $matrizCurricularRepository;
+        $this->ofertaCursoRepository        = $ofertaCursoRepository;
+        $this->turmaRepository              = $turmaRepository;
+        $this->grupoRepository              = $grupoRepository;
+        $this->moduloMatrizRepository       = $moduloMatrizRepository;
+        $this->tutorGrupoRepository         = $tutorGrupoRepository;
+        $this->alunoRepository              = $alunoRepository;
+        $this->ofertaDisciplinaRepository   = $ofertaDisciplinaRepository;
+        $this->matriculaCursoRepository     = $matriculaCursoRepository;
     }
 
     public function handle($request, Closure $next)
@@ -110,7 +118,7 @@ class Vinculo
     {
         $url = explode('/', $request->getPathInfo());
 
-        if($url[2] == "async"){
+        if ($url[2] == "async") {
             return array_slice($url, 5);
         }
 
@@ -466,14 +474,53 @@ class Vinculo
      */
     public function handleAsyncMatriculaDisciplina($request, $next)
     {
-        $parameters = $this->routeParameters($request);
-        dd($parameters);
+        if ($request->getMethod() == "GET") {
+            // Pega os parametros via rota
+            // id Aluno + id Curso + id Periodo
+            $parameters = $this->routeParameters($request);
 
-        if($request->getMethod() == "GET"){
+            $cursos = $this->alunoRepository->getCursos($parameters[0]);
 
+            // Aluno nao esta matriculado em curso algum
+            if (empty($cursos)) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.matriculasofertasdisciplinas.index');
+            }
+
+            // Verifica todos os cursos do aluno e o vinculo do usuario atual com cada um destes
+            foreach ($cursos as $key => $value) {
+                if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $value)) {
+                    return $next($request);
+                }
+            }
         }
 
-        dd($parameters);
-        return $next($request);
+        if ($request->getMethod() == "POST") {
+            $parameters = $request->all();
+            $ofertas    = $parameters["ofertas"];
+            $matriculaId  = $parameters["mof_mat_id"];
+
+            // Verifica o vinculo na matricula
+            $matricula = $this->matriculaCursoRepository->find($matriculaId);
+            $curso = $this->turmaRepository->getCurso($matricula->mat_trm_id);
+
+            if (!$this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
+                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                return redirect()->route('academico.matriculasofertasdisciplinas.index');
+            }
+
+            // Verifica os vinculos nas ofertas
+            foreach ($ofertas as $key => $value) {
+                $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($value);
+                $curso = $this->turmaRepository->getCurso($ofertaDisciplina->ofd_trm_id);
+
+                if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
+                    return $next($request);
+                }
+            }
+        }
+
+        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        return redirect()->route('academico.matriculasofertasdisciplinas.index');
     }
 }

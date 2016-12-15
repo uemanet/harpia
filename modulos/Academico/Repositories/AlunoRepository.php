@@ -190,11 +190,11 @@ class AlunoRepository extends BaseRepository
             }
         }
 
-        if($vinculo){
+        if ($vinculo) {
             return $this->paginateAllWithBonds($sort, $search);
         }
 
-        if($onlyBonds){
+        if ($onlyBonds) {
             return $this->paginateOnlyWithBonds($sort, $search);
         }
 
