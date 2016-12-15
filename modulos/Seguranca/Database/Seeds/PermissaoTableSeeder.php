@@ -976,25 +976,25 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesAcademicoLancamentoTcc()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 34; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 34; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'create';
         $permissao->prm_descricao = 'Permissão create do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 34; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'alunosturma';
         $permissao->prm_descricao = 'Permissão alunosturma do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 34; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'edit';
         $permissao->prm_descricao = 'Permissão edit do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
