@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('doc_conteudo')) has-error @endif">
-      {!! Form::label('doc_conteudo', 'Conteúdo', ['class' => 'control-label']) !!}
+      {!! Form::label('doc_conteudo', 'Conteúdo*', ['class' => 'control-label']) !!}
       <div class="controls">
         {!! Form::text('doc_conteudo', old('doc_conteudo'), ['class' => 'form-control']) !!}
         @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="form-group col-md-2 @if ($errors->has('doc_data_expedicao')) has-error @endif">
-        {!! Form::label('doc_data_expedicao', 'Data de expedição*', ['class' => 'control-label']) !!}
+        {!! Form::label('doc_data_expedicao', 'Data de expedição', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('doc_data_expedicao', old('doc_data_expedicao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
             @if ($errors->has('doc_data_expedicao')) <p class="help-block">{{ $errors->first('doc_data_expedicao') }}</p> @endif
