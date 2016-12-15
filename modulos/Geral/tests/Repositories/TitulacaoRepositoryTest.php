@@ -2,13 +2,13 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Academico\Models\Professor;
+use Modulos\Geral\Models\Titulacao;
+use Modulos\Geral\Repositories\TitulacaoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class ProfessorRepositoryTest extends TestCase
+class TitulacaoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -32,7 +32,7 @@ class ProfessorRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(ProfessorRepository::class);
+        $this->repo = $this->app->make(TitulacaoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +45,7 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Professor::class, 2)->create();
+        factory(Titulacao::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -56,10 +56,10 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Professor::class, 2)->create();
+        factory(Titulacao::class, 2)->create();
 
         $sort = [
-            'field' => 'pes_id',
+            'field' => 'tit_id',
             'sort' => 'desc'
         ];
 
@@ -67,24 +67,22 @@ class ProfessorRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->pes_id);
+        $this->assertGreaterThan(1, $response[0]->tit_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Professor::class, 2)->create();
+        factory(Titulacao::class, 2)->create();
 
-        factory(Professor::class)->create([
-            'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create([
-                'pes_nome' => 'abc123'
-            ])->pes_id
+        factory(Titulacao::class)->create([
+            'tit_nome' => 'graduacao',
         ]);
 
         $search = [
             [
-                'field' => 'pes_nome',
+                'field' => 'tit_nome',
                 'type' => 'like',
-                'term' => 'abc123'
+                'term' => 'graduacao'
             ]
         ];
 
@@ -97,16 +95,16 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Professor::class, 2)->create();
+        factory(Titulacao::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'tit_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'tit_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -121,11 +119,11 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Professor::class, 2)->create();
+        factory(Titulacao::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'pes_id',
+            'field' => 'tit_id',
             'sort' => 'asc'
         ];
 
@@ -138,51 +136,57 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Professor::class)->create();
+        $response = factory(Titulacao::class)->create();
 
         $data = $response->toArray();
 
-        $this->assertInstanceOf(Professor::class, $response);
+        $this->assertInstanceOf(Titulacao::class, $response);
 
-        $this->assertArrayHasKey('prf_id', $data);
+        $this->assertArrayHasKey('tit_id', $data);
     }
 
     public function testFind()
     {
-        $data = factory(Professor::class)->create();
+        $data = factory(Titulacao::class)->create();
 
-        $this->seeInDatabase('acd_professores', $data->toArray());
+        $this->seeInDatabase('gra_titulacoes', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Professor::class)->create();
+        $data = factory(Titulacao::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['prf_matricula'] = 'abcde_edcba';
+        $updateArray['tit_nome'] = 'abcde_edcba';
 
-        $professorId = $updateArray['prf_id'];
-        unset($updateArray['prf_id']);
+        $titulacaoId = $updateArray['tit_id'];
+        unset($updateArray['tit_id']);
 
-        $response = $this->repo->update($updateArray, $professorId, 'prf_id');
+        $response = $this->repo->update($updateArray, $titulacaoId, 'tit_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Professor::class)->create();
-        $professorId = $data->prf_id;
+        $data = factory(Titulacao::class)->create();
+        $titulacaoId = $data->tit_id;
 
-        $response = $this->repo->delete($professorId);
+        $response = $this->repo->delete($titulacaoId);
 
         $this->assertEquals(1, $response);
     }
 
-    public function testLists()
+    public function testVerifyTitulacao()
     {
-    }
+        $data = factory(Titulacao::class)->create();
 
+        $titulacaoName = $data->tit_nome;
+
+        $response = $this->repo->verifyTitulacao($titulacaoName);
+
+        $this->assertNotEquals(null, $response);
+    }
 
     public function tearDown()
     {

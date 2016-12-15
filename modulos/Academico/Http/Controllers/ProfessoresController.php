@@ -304,6 +304,8 @@ class ProfessoresController extends BaseController
         
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
+        session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
+
         return view('Academico::professores.show', ['pessoa' => $professor->pessoa]);
     }
 }

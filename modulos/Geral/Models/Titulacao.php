@@ -14,4 +14,8 @@ class Titulacao extends BaseModel
         'tit_descricao',
         'tit_peso'
     ];
+
+    protected $searchable = [
+        'tit_nome' => 'like'
+    ];
 }

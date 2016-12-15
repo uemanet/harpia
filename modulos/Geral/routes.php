@@ -24,6 +24,23 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
         Route::get('/anexo/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getDocumentoAnexo')->name('geral.documentos.getAnexo');
     });
 
+    Route::group(['prefix' => 'titulacoes'], function () {
+        Route::get('/index', '\Modulos\Geral\Http\Controllers\TitulacoesController@getIndex')->name('geral.titulacoes.index');
+        Route::get('/create', '\Modulos\Geral\Http\Controllers\TitulacoesController@getCreate')->name('geral.titulacoes.getCreate');
+        Route::post('/create', '\Modulos\Geral\Http\Controllers\TitulacoesController@postCreate')->name('geral.titulacoes.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\TitulacoesController@getEdit')->name('geral.titulacoes.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\TitulacoesController@putEdit')->name('geral.titulacoes.putEdit');
+        Route::post('/delete', '\Modulos\Geral\Http\Controllers\TitulacoesController@postDelete')->name('geral.titulacoes.delete');
+    });
+
+    Route::group(['prefix' => 'titulacoesinformacoes'], function () {
+        Route::get('/create/{id}', '\Modulos\Geral\Http\Controllers\TitulacoesInformacoesController@getCreate')->name('geral.titulacoesinformacoes.getCreate');
+        Route::post('/create/{id}', '\Modulos\Geral\Http\Controllers\TitulacoesInformacoesController@postCreate')->name('geral.titulacoesinformacoes.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\TitulacoesInformacoesController@getEdit')->name('geral.titulacoesinformacoes.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\TitulacoesInformacoesController@putEdit')->name('geral.titulacoesinformacoes.putEdit');
+        Route::post('/delete', '\Modulos\Geral\Http\Controllers\TitulacoesInformacoesController@postDelete')->name('geral.titulacoesinformacoes.delete');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'pessoas'], function () {
             //Route::get('/verificapessoa/{cpf}', '\Modulos\Geral\Http\Controllers\Async\Pessoas@getVerificapessoa');
