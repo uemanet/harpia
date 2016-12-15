@@ -22,7 +22,7 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getEdit')->name('geral.documentos.getEdit');
         Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@putEdit')->name('geral.documentos.putEdit');
         Route::post('/delete', '\Modulos\Geral\Http\Controllers\DocumentosController@postDelete')->name('geral.documentos.delete');
-
+    });
     Route::group(['prefix' => 'titulacoes'], function () {
         Route::get('/index', '\Modulos\Geral\Http\Controllers\TitulacoesController@getIndex')->name('geral.titulacoes.index');
         Route::get('/create', '\Modulos\Geral\Http\Controllers\TitulacoesController@getCreate')->name('geral.titulacoes.getCreate');
