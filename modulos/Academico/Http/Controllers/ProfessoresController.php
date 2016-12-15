@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Modulos\Academico\Http\Requests\ProfessorRequest;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Validator;
 use Modulos\Core\Http\Controller\BaseController;
@@ -101,6 +102,7 @@ class ProfessoresController extends BaseController
     public function postCreate(Request $request)
     {
         $pessoaRequest = new PessoaRequest();
+        $professorRequest = new ProfessorRequest();
 
         try {
             $validator = Validator::make($request->all(), $pessoaRequest->rules());
@@ -124,7 +126,14 @@ class ProfessoresController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $cpf = $request->input('doc_conteudo');
@@ -173,6 +182,13 @@ class ProfessoresController extends BaseController
                 );
 
                 $this->documentoRepository->create($dataDocumento);
+            }
+
+            $validator = Validator::make(['prf_pes_id' => $pes_id], $professorRequest->rules());
+
+            if ($validator->fails()) {
+                flash()->error('Professor já cadastrado!');
+                return redirect()->route('academico.professores.index');
             }
 
             $this->professorRepository->create(['prf_pes_id' => $pes_id]);
@@ -244,7 +260,14 @@ class ProfessoresController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');
@@ -278,6 +301,8 @@ class ProfessoresController extends BaseController
     public function getShow($professorId)
     {
         $professor = $this->professorRepository->find($professorId);
+
+        session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
         return view('Academico::professores.show', ['pessoa' => $professor->pessoa]);
     }

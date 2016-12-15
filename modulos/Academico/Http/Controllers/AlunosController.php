@@ -126,7 +126,14 @@ class AlunosController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $cpf = $request->input('doc_conteudo');
@@ -184,13 +191,13 @@ class AlunosController extends BaseController
                 return redirect()->route('academico.alunos.index');
             }
 
-            $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
+            $aluno = $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
 
             DB::commit();
 
             flash()->success('Aluno criado com sucesso!');
 
-            return redirect()->route('academico.alunos.index');
+            return redirect()->route('academico.alunos.show', $aluno->alu_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -246,7 +253,14 @@ class AlunosController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');
@@ -261,8 +275,10 @@ class AlunosController extends BaseController
 
             DB::commit();
 
+            $pessoa = $this->pessoaRepository->find($pessoaId);
+
             flash()->success('Aluno editado com sucesso!');
-            return redirect()->route('academico.alunos.index');
+            return redirect()->route('academico.alunos.show', $pessoa->aluno->alu_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -280,7 +296,7 @@ class AlunosController extends BaseController
     public function getShow($alunoId)
     {
         $aluno = $this->alunoRepository->find($alunoId);
-
+        session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
         return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
     }
 }
