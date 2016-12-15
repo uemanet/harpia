@@ -192,7 +192,7 @@ class LancamentosTccsController extends BaseController
             $lancamentotcc = $this->lancamentotccRepository->find($lancamentotccId);
 
             if (!$lancamentotcc) {
-                flash()->error('LancamentoTcc não existe.');
+                flash()->error('Lançamento de TCC não existe.');
                 return redirect('academico/lancamentotccs/index');
             }
 
@@ -203,7 +203,7 @@ class LancamentosTccsController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('LancamentoTcc atualizado com sucesso.');
+            flash()->success('Lançamento de TCC atualizado com sucesso.');
             return redirect('/academico/lancamentostccs/alunosturma/'.$lancamentotcc->matriculaCurso->turma->trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {

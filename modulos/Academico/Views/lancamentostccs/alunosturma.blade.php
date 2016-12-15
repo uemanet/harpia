@@ -21,9 +21,9 @@
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <th style="width: 10px">Matrícula</th>
-                        <th style="width: 10px">Nome</th>
-                        <th style="width: 10px">Status</th>
-                        <th style="width: 20px"></th>
+                        <th >Nome</th>
+                        <th >Status</th>
+                        <th ></th>
                     </thead>
                     <tbody>
                         @foreach($dados as $dado)
