@@ -42,4 +42,5 @@ class Matricula extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_mat_id', 'mat_id');
     }
+
 }
