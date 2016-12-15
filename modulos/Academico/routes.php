@@ -186,6 +186,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@putEdit')->name('academico.lancamentostccs.putEdit');
     });
 
+    Route::group(['prefix' => 'conclusaocurso'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\ConclusaoCursoController@getIndex')->name('academico.conclusaocurso.index');
+    });
+
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
