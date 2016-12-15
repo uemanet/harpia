@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
-                    {!! Form::select('per_id', $periodoletivo, null, ['class' => 'form-control', 'placeholder' => 'Escolha o periodo']) !!}
+                    {!! Form::select('per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
@@ -84,15 +84,18 @@
 
             var selectOfertas = $('#ofc_id');
             var selectTurmas = $('#trm_id');
+            var selectPeriodos = $("#per_id");
 
             var boxDisciplinas = $('#boxDisciplinas');
 
+            // populando o select de ofertas de curso
             $('#crs_id').change(function () {
                 var curso = $(this).val();
 
                 if(curso) {
                     selectOfertas.empty();
                     selectTurmas.empty();
+                    selectPeriodos.empty();
 
                     $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/"+curso)
                     .done(function (data) {
@@ -109,11 +112,13 @@
 
             });
 
+            // populando o select de turmas
             selectOfertas.change(function () {
                 var oferta = $(this).val();
 
                 if(oferta) {
                     selectTurmas.empty();
+                    selectPeriodos.empty();
 
                     $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/"+oferta)
                             .done(function (data) {
@@ -126,6 +131,27 @@
                                     selectTurmas.append('<option value="">Sem turmas cadastradas</option>');
                                 }
                             });
+                }
+            });
+
+            selectTurmas.change(function() {
+                var turmaId = $(this).val();
+
+                if(turmaId) {
+                    // limpando selects
+                    selectPeriodos.empty();
+                    $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+                    .done(function(response) {
+                        if(!$.isEmptyObject(response))
+                        {
+                            selectPeriodos.append("<option value=''>Selecione um periodo</option>");
+                            $.each(response, function (key, obj) {
+                                selectPeriodos.append("<option value='"+obj.per_id+"'>"+obj.per_nome+"</option>");
+                            });
+                        } else {
+                            selectPeriodos.append("<option value=''>Sem períodos disponíveis</option>");
+                        }
+                    });
                 }
             });
 
@@ -158,7 +184,7 @@
                             table += "<td>"+obj.dis_nome+"</td>";
                             table += "<td>"+obj.dis_carga_horaria+"</td>";
                             table += "<td>"+obj.dis_creditos+"</td>";
-                            table += "<td>"+obj.ofd_qtd_vagas+"</td>";
+                            table += "<td>"+obj.qtdMatriculas+"/<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                             table += "<td>"+obj.pes_nome+"</td>";
                             table += '</tr>';
                         });

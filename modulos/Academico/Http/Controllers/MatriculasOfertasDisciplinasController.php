@@ -43,7 +43,6 @@ class MatriculasOfertasDisciplinasController extends BaseController
         $this->alunoRepository = $alunoRepository;
         $this->matriculaRepository = $matriculaCursoRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
-
     }
 
     public function getIndex(Request $request)
@@ -90,7 +89,7 @@ class MatriculasOfertasDisciplinasController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
-        if(!$aluno){
+        if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->route('academico.matriculasofertasdisciplinas.index');
         }
@@ -105,8 +104,7 @@ class MatriculasOfertasDisciplinasController extends BaseController
     public function getCreate()
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::ofertasdisciplinas.create', compact('cursos', 'professor', 'periodoletivo'));
+        return view('Academico::ofertasdisciplinas.create', compact('cursos', 'professor'));
     }
 }

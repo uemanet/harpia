@@ -124,4 +124,24 @@ class MatrizCurricularRepository extends BaseRepository
 
         return false;
     }
+
+    public function verifyIfExistsDisciplinaTccInMatriz($matrizId)
+    {
+        $query = $this->model
+                        ->join('acd_modulos_matrizes', function ($join) {
+                            $join->on('mdo_mtc_id', '=', 'mtc_id');
+                        })
+                        ->join('acd_modulos_disciplinas', function ($join) {
+                            $join->on('mdc_mdo_id', '=', 'mdo_id');
+                        })
+                        ->where('mtc_id', '=', $matrizId)
+                        ->where('mdc_tipo_disciplina', '=', 'tcc')
+                        ->count();
+
+        if ($query > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }

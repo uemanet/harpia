@@ -59,7 +59,7 @@ class ProfessorRepositoryTest extends TestCase
         factory(Professor::class, 2)->create();
 
         $sort = [
-            'field' => 'prf_id',
+            'field' => 'pes_id',
             'sort' => 'desc'
         ];
 
@@ -67,16 +67,22 @@ class ProfessorRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->prf_id);
+        $this->assertGreaterThan(1, $response[0]->pes_id);
     }
 
     public function testPaginateWithSearch()
     {
         factory(Professor::class, 2)->create();
 
+        factory(Professor::class)->create([
+            'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create([
+                'pes_nome' => 'abc123'
+            ])->pes_id
+        ]);
+
         $search = [
             [
-                'field' => 'prf_id',
+                'field' => 'pes_nome',
                 'type' => 'like',
                 'term' => 'abc123'
             ]
@@ -119,7 +125,7 @@ class ProfessorRepositoryTest extends TestCase
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'prf_id',
+            'field' => 'pes_id',
             'sort' => 'asc'
         ];
 
