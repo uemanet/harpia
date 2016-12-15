@@ -104,7 +104,7 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil = Perfil::find(2);
 
-        $perfil->permissoes()->attach([123, 124, 125]); // Permissoes do recurso Documentos
+        $perfil->permissoes()->attach([123, 124, 125, 126]); // Permissoes do recurso Documentos
 
     }
 }
