@@ -99,7 +99,10 @@
                   if (data.response === true){
                     btn.closest('form').trigger("submit");
                   }
+
+                  if (data.response != true){
                     toastr.error('Este token é inválido.', null, {progressBar: true});
+                  }
                 },
                 error: function (error) {
 
