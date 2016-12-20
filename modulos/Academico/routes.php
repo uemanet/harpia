@@ -212,12 +212,9 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertascursos'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycurso')
                 ->name('academico.async.ofertascursos.findallbycurso');
-        });
-
-        Route::group(['prefix' => 'ofertascursos'], function () {
             Route::get('/findallbycursowithoutpresencial/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycursowithoutpresencial')
                 ->name('academico.async.ofertascursos.findallbycursowithoutpresencial');
-        });
+        });        
 
         Route::group(['prefix' => 'disciplinas'], function () {
             Route::get('/findbynome/{matriz}/{nome}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
@@ -268,6 +265,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'professores'], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\Professor@getFindall');
+        });
+        
+        Route::group(['prefix' => 'conclusaocurso'], function () {
+            Route::get('/findallalunosaptosounao', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@getAllalunosaptosounao'); 
         });
     });
 });
