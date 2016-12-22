@@ -45,7 +45,7 @@ class AlunoRepository extends BaseRepository
 
         return $result;
     }
-    
+
     public function findByNomeOrCpf(array $search)
     {
         $result = $this->model->join('gra_pessoas', function ($join) {
