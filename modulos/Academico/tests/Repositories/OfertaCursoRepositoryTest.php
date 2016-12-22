@@ -26,6 +26,12 @@ class OfertaCursoRepositoryTest extends TestCase
         return $app;
     }
 
+    public function login()
+    {
+        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+        $this->be($user);
+    }
+
     public function setUp()
     {
         parent::setUp();
@@ -33,6 +39,7 @@ class OfertaCursoRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(OfertaCursoRepository::class);
+        $this->login();
     }
 
     public function testAllWithEmptyDatabase()
@@ -45,7 +52,16 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(OfertaCurso::class, 2)->create();
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+
+        foreach ($vinculos as $vinculo) {
+            factory(OfertaCurso::class)->create([
+                'ofc_crs_id' => $vinculo->ucr_crs_id,
+                'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+                    'mtc_crs_id' => $vinculo->ucr_crs_id
+                ])->mtc_id,
+            ]);
+        }
 
         $response = $this->repo->paginate();
 
@@ -56,7 +72,16 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(OfertaCurso::class, 2)->create();
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+
+        foreach ($vinculos as $vinculo) {
+            factory(OfertaCurso::class)->create([
+                'ofc_crs_id' => $vinculo->ucr_crs_id,
+                'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+                    'mtc_crs_id' => $vinculo->ucr_crs_id
+                ])->mtc_id,
+            ]);
+        }
 
         $sort = [
             'field' => 'ofc_id',
@@ -67,14 +92,32 @@ class OfertaCursoRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertGreaterThan(1, $response[0]->ofc_id);
+        $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSearch()
     {
-        factory(OfertaCurso::class)->create([
-            'ofc_ano' => '2005',
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+
+        foreach ($vinculos as $vinculo) {
+            factory(OfertaCurso::class)->create([
+                'ofc_crs_id' => $vinculo->ucr_crs_id,
+                'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+                    'mtc_crs_id' => $vinculo->ucr_crs_id
+                ])->mtc_id,
+            ]);
+        }
+
+
+        $ofertaCurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_ano' => 2005
         ]);
+
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class)->create([
+            'ucr_usr_id' => Auth::user()->usr_id,
+            'ucr_crs_id' => $ofertaCurso->ofc_crs_id
+        ]);
+
 
         $search = [
             [
@@ -93,7 +136,16 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(OfertaCurso::class, 2)->create();
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+
+        foreach ($vinculos as $vinculo) {
+            factory(OfertaCurso::class)->create([
+                'ofc_crs_id' => $vinculo->ucr_crs_id,
+                'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+                    'mtc_crs_id' => $vinculo->ucr_crs_id
+                ])->mtc_id,
+            ]);
+        }
 
         $sort = [
             'field' => 'ofc_id',
@@ -117,7 +169,18 @@ class OfertaCursoRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(OfertaCurso::class, 2)->create();
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+
+        foreach ($vinculos as $vinculo) {
+            factory(OfertaCurso::class)->create([
+                'ofc_crs_id' => $vinculo->ucr_crs_id,
+                'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+                    'mtc_crs_id' => $vinculo->ucr_crs_id
+                ])->mtc_id,
+                'ofc_mdl_id' => 1,
+                'ofc_ano' => 2005
+            ]);
+        }
 
         $requestParameters = [
             'page' => '1',
