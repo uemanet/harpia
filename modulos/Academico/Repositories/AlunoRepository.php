@@ -201,7 +201,6 @@ class AlunoRepository extends BaseRepository
         return $this->paginate($sort, $search);
     }
 
-
     public function findByNomeOrCpf(array $search)
     {
         $result = $this->model->join('gra_pessoas', function ($join) {

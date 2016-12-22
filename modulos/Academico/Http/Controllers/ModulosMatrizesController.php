@@ -30,7 +30,7 @@ class ModulosMatrizesController extends BaseController
         $this->disciplinaRepository = $disciplinaRepository;
     }
 
-    public function getIndex($matrizId, Request $request)
+    public function getIndex($matrizId)
     {
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
@@ -48,7 +48,16 @@ class ModulosMatrizesController extends BaseController
 
         $modulos = $this->modulomatrizRepository->getAllModulosByMatriz($matrizId);
 
-        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos]);
+        $disciplinas = [];
+
+        // pega todas as disciplinas em conjunto com os seus pré-requisitos
+        if ($modulos->count()) {
+            foreach ($modulos as $modulo) {
+                $disciplinas[$modulo->mdo_id] = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($modulo->mdo_id);
+            }
+        }
+
+        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos, 'disciplinas' => $disciplinas]);
     }
 
     public function getCreate($matrizId)
@@ -191,11 +200,9 @@ class ModulosMatrizesController extends BaseController
 
         $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
 
-        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $moduloId,
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $modulo,
                                                                         'disciplinas' => $disciplinas,
-                                                                        'matriz' => $matriz->mtc_id,
-                                                                        'moduloNome' => $modulo->mdo_nome,
-                                                                        'matrizTitulo' => $matriz->mtc_titulo,
-                                                                        'cursoNome' => $curso->crs_nome]);
+                                                                        'matriz' => $matriz,
+                                                                        'curso' => $curso]);
     }
 }

@@ -14,7 +14,8 @@ class ModuloDisciplina extends BaseModel
         'mdc_dis_id',
         'mdc_mdo_id',
         'mdc_tipo_avaliacao',
-        'mdc_tipo_disciplina'
+        'mdc_tipo_disciplina',
+        'mdc_pre_requisitos'
     ];
 
     protected $searchable = [

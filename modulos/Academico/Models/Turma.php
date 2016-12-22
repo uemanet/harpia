@@ -41,4 +41,9 @@ class Turma extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\Grupo', 'grp_trm_id');
     }
+
+    public function matriculas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Matricula', 'mat_trm_id');
+    }
 }
