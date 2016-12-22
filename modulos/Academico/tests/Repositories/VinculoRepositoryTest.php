@@ -234,7 +234,7 @@ class VinculoRepositoryTest extends TestCase
         $this->assertTrue($query);
 
         $query = $this->repo->userHasVinculo(Auth::user()->usr_id, $curso->crs_id);
-        
+
         $this->assertFalse($query);
     }
 

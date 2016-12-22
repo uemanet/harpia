@@ -81,7 +81,7 @@ class AlunoRepositoryTest extends TestCase
         ]);
 
         factory(Aluno::class)->create([
-           'alu_pes_id' => $pessoa->pes_id
+            'alu_pes_id' => $pessoa->pes_id
         ]);
 
         $search = [
@@ -158,20 +158,20 @@ class AlunoRepositoryTest extends TestCase
         $this->seeInDatabase('acd_alunos', $data->toArray());
     }
 
-//    public function testUpdate()
-//    {
-//        $data = factory(Aluno::class)->create();
-//
-//        $updateArray = $data->toArray();
-//        $updateArray['cen_nome'] = 'abcde_edcba';
-//
-//        $centroId = $updateArray['cen_id'];
-//        unset($updateArray['cen_id']);
-//
-//        $response = $this->repo->update($updateArray, $centroId, 'cen_id');
-//
-//        $this->assertEquals(1, $response);
-//    }
+    public function testUpdate()
+    {
+        $data = factory(Aluno::class)->create();
+
+        $updateArray = $data->toArray();
+        $updateArray['alu_pes_id'] = 20;
+
+        $alunoId = $updateArray['alu_id'];
+        unset($updateArray['alu_id']);
+
+        $response = $this->repo->update($updateArray, $alunoId, 'alu_id');
+
+        $this->assertEquals(1, $response);
+    }
 
     public function testDelete()
     {
