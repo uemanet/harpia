@@ -19,6 +19,7 @@ class CreateAcdModulosDisciplinasTable extends Migration
             $table->integer('mdc_mdo_id')->unsigned();
             $table->enum('mdc_tipo_avaliacao', ['numerica', 'conceitual']);
             $table->enum('mdc_tipo_disciplina', ['obrigatoria', 'eletiva', 'optativa', 'tcc']);
+            $table->json('mdc_pre_requisitos')->nullable();
 
             $table->timestamps();
 
