@@ -30,7 +30,7 @@ class LancamentoTcc extends BaseModel
 
     public function matriculaCurso()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Matricula', 'ltc_id' ,'mat_ltc_id');
+        return $this->belongsTo('Modulos\Academico\Models\Matricula', 'ltc_id', 'mat_ltc_id');
     }
 
     // Accessors
@@ -45,5 +45,4 @@ class LancamentoTcc extends BaseModel
     {
         $this->attributes['ltc_data_apresentacao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
-
 }

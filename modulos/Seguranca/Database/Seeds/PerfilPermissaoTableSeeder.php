@@ -103,6 +103,5 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil = Perfil::find(3);
 
         $perfil->permissoes()->attach([123, 124, 125, 126]); //Permissões dp recurso lançamento de TCC
-
     }
 }

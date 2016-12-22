@@ -94,23 +94,23 @@ class ModuloDisciplinaRepository extends BaseRepository
     {
         $result = $this->model
             ->join('acd_disciplinas', function ($join) {
-            $join->on('mdc_dis_id', '=', 'dis_id');
-        })
+                $join->on('mdc_dis_id', '=', 'dis_id');
+            })
             ->join('acd_ofertas_disciplinas', function ($join) {
-            $join->on('ofd_mdc_id', '=', 'mdc_id');
-        })
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
             ->join('acd_matriculas_ofertas_disciplinas', function ($join) {
-            $join->on('mof_ofd_id', '=', 'ofd_id');
-        })
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
             ->join('acd_matriculas', function ($join) {
-            $join->on('mof_mat_id', '=', 'mat_id');
-        })
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
             ->join('acd_turmas', function ($join) {
-            $join->on('mat_trm_id', '=', 'trm_id');
-        })
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
             ->join('acd_ofertas_cursos', function ($join) {
-            $join->on('trm_ofc_id', '=', 'ofc_id');
-        })
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
             ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->groupby('trm_id')->distinct();
 
@@ -208,6 +208,5 @@ class ModuloDisciplinaRepository extends BaseRepository
         $disciplinaCreate = $this->model->create($modulodisciplina);
 
         return array('type' => 'success', 'data' => ['mdc_id' => $disciplinaCreate->mdc_id]);
-
     }
 }
