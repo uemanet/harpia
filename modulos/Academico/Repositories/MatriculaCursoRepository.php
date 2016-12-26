@@ -178,7 +178,7 @@ class MatriculaCursoRepository extends BaseRepository
         return false;
     }
 
-    public function getAlunosAptosOrNot($ofertaCursoId, $turmaId, $poloId)
+    public function verifyIfAlunoIsAptoOrNot($matriculaId, $ofertaCursoId)
     {
         // busca as informacoes da oferta de curso
         $ofertaCurso = $this->ofertaCursoRepository->find($ofertaCursoId);
@@ -188,8 +188,51 @@ class MatriculaCursoRepository extends BaseRepository
 
         // busca todas as disciplinas da matriz do curso
         $disciplinasMatriz = $this->matrizCurricularRepository->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
-                                    ->pluck('mdc_id')->toArray();
+            ->pluck('mdc_id')->toArray();
 
+        // busca as informações da matricula
+        $matricula = $this->find($matriculaId);
+
+        if($matricula->mat_situacao == 'concluido') {
+            return 2;
+        }
+
+        if($matricula->mat_situacao == 'cursando') {
+            $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAluno($matricula->mat_alu_id);
+
+            $quantDisciplinasAprovadas = 0;
+            $quantDisciplinasMatriz = count($disciplinasMatriz);
+
+            foreach($disciplinasAluno as $disciplina) {
+                // Verifica se a oferta de disciplina está na matriz do curso
+                if(in_array($disciplina->mdc_id, $disciplinasMatriz)) {
+                    // Caso o aluno foi aprovado na disciplina, incrementa a variavel
+                    if(in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                        $quantDisciplinasAprovadas++;
+                    }
+                }
+            }
+
+            $temTcc = false;
+            // Verifica se a matriz possui disciplina tcc
+            if($this->matrizCurricularRepository->verifyIfExistsDisciplinaTccInMatriz($matrizCurricular->mtc_id)) {
+                // verifica se o aluno foi aprovado e possui Tcc lançado
+                if($this->verifyIfAlunoAprovadoLancadoTcc($matricula->mat_id)) {
+                    $temTcc = true;
+                }
+            }
+
+            // Casos de situações
+            if(($quantDisciplinasAprovadas == $quantDisciplinasMatriz) && $temTcc) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    public function getAlunosAptosOrNot($ofertaCursoId, $turmaId, $poloId)
+    {
         // busca todas as matriculas da turma
         $matriculas = $this->findAll(['mat_trm_id' => $turmaId, 'mat_pol_id' => $poloId], null, ['pes_nome' => 'asc']);
 
@@ -212,34 +255,7 @@ class MatriculaCursoRepository extends BaseRepository
                 }
 
                 if($matricula->mat_situacao == 'cursando') {
-                    $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAluno($matricula->alu_id);
-                    
-                    $quantDisciplinasAprovadas = 0;
-                    $quantDisciplinasMatriz = count($disciplinasMatriz);
-
-                    foreach($disciplinasAluno as $disciplina) {
-                        // Verifica se a oferta de disciplina está na matriz do curso
-                        if(in_array($disciplina->mdc_id, $disciplinasMatriz)) {
-                            // Caso o aluno foi aprovado na disciplina, incrementa a variavel
-                            if(in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                                $quantDisciplinasAprovadas++;
-                            }
-                        }
-                    }
-
-                    $temTcc = false;
-                    // Verifica se a matriz possui disciplina tcc
-                    if($this->matrizCurricularRepository->verifyIfExistsDisciplinaTccInMatriz($matrizCurricular->mtc_id)) {
-                        // verifica se o aluno foi aprovado e possui Tcc lançado
-                        if($this->verifyIfAlunoAprovadoLancadoTcc($matricula->mat_id)) {
-                            $temTcc = true;
-                        }
-                    }
-
-                    // Casos de situações
-                    if(($quantDisciplinasAprovadas == $quantDisciplinasMatriz) && $temTcc) {
-                        $obj->status = 1;
-                    }
+                    $obj->status = $this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCursoId);
                 }
 
                 $result[] = $obj;

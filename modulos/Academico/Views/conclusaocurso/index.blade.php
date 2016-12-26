@@ -170,6 +170,20 @@
                 });
             });
 
+            // evento para selecionar todos os checkboxes
+            $(document).on('click', '#select_all',function(event) {
+                if(this.checked) {
+                    $(':checkbox').each(function() {
+                        this.checked = true;
+                    });
+                }
+                else {
+                    $(':checkbox').each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+
             // evento click do botao de buscar
             $('#btnBuscar').click(function (event) {
                 event.preventDefault();
@@ -186,19 +200,30 @@
 
                 $.harpia.httpget("{{url('/')}}/academico/async/conclusaocurso/findallalunosaptosounao?" + data).done(function (response) {
                     console.log(response);
-                    var boxAlunos = $('#boxAlunos');
+                    $('#boxAlunos').removeClass('hidden');
+                    var boxAlunos = $('#boxAlunos .box-body');
+                    boxAlunos.empty();
+
                     if(!$.isEmptyObject(response)) {
-                        var table = '<table class="table table-bordered table-hover">';
+                        var table = '<div class="row">';
+                        table += '<div class="col-md-12">';
+                        table += '<table class="table table-bordered table-hover">';
 
                         table += '<tr>';
-                        table += '<th>#</th>';
+                        table += '<th width="1%"><div class="checkobx"><label><input id="select_all" type="checkbox"></label></div></th>';
+                        table += '<th width="1%">#</th>';
                         table += '<th>Aluno</th>';
                         table += '<th>Situação</th>';
-                        table += '<th>Data de Conclusão</th>';
+                        table += '<th width="15%">Data de Conclusão</th>';
                         table += '</tr>';
 
                         $.each(response, function (key, obj) {
                             table += '<tr>';
+                            if(obj.status == 1) {
+                                table += '<td><div class="checkobx"><label><input type="checkbox" class="matriculas"></label></div></td>';
+                            } else {
+                                table += '<td></td>';
+                            }
                             table += '<td>'+obj.mat_id+'</td>';
                             table += '<td>'+obj.pes_nome+'</td>';
                             if(obj.status == 0) {
@@ -208,10 +233,40 @@
                             } else {
                                 table += '<td><span class="label label-info">Concluído</span></td>';
                             }
-                            table += '<td>'+obj.mat_id+'</td>';
+                            table += '<td>'+obj.data_conclusao+'</td>';
+                            table += '</tr>';
                         });
+
+                        table += '</table></div></div>';
+
+                        table += "<div class='row'>";
+                        table += "<div class='col-md-12'>"
+                        table += "<div class='form-group'>";
+                        table += "<button class='btn btn-primary' id='confirmConclusao'>Confirmar Conclusão</button>";
+                        table += "</div></div></div>";
+
+                        boxAlunos.append(table);
+                    } else {
+                        boxAlunos.append('<p>Sem registros para apresentar</p>');
                     }
                 });
+            });
+
+            // evento do botão de confirmar a matricula na(s) disciplina(s)
+            $(document).on('click', '#confirmConclusao', function (e) {
+
+                var quant = $('.matriculas:checked').length;
+
+                if(!(quant > 0)) {
+                    return false;
+                }
+
+                var matriculasIds = new Array();
+
+                $('.matriculas:checked').each(function () {
+                    matriculasIds.push($(this).val());
+                });
+                
             });
         });
     </script>
