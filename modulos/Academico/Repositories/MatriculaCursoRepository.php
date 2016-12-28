@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Repositories;
 
+use Harpia\Format\Format;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
 use DB;
@@ -171,7 +172,7 @@ class MatriculaCursoRepository extends BaseRepository
             ->whereNotNull('mat_ltc_id')
             ->first();
 
-        if($result->count()) {
+        if(!is_null($result)) {
             return true;
         }
 
@@ -200,15 +201,23 @@ class MatriculaCursoRepository extends BaseRepository
         if($matricula->mat_situacao == 'cursando') {
             $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAluno($matricula->mat_alu_id);
 
+            $quantDisciplinasObrigatorias = 0;
+            $quantDisciplinasObrigatoriasAprovadas = 0;
             $quantDisciplinasAprovadas = 0;
             $quantDisciplinasMatriz = count($disciplinasMatriz);
 
             foreach($disciplinasAluno as $disciplina) {
+                if($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                    $quantDisciplinasObrigatorias++;
+                }
                 // Verifica se a oferta de disciplina está na matriz do curso
                 if(in_array($disciplina->mdc_id, $disciplinasMatriz)) {
                     // Caso o aluno foi aprovado na disciplina, incrementa a variavel
                     if(in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
                         $quantDisciplinasAprovadas++;
+                        if($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                            $quantDisciplinasObrigatoriasAprovadas++;
+                        }
                     }
                 }
             }
@@ -223,7 +232,7 @@ class MatriculaCursoRepository extends BaseRepository
             }
 
             // Casos de situações
-            if(($quantDisciplinasAprovadas == $quantDisciplinasMatriz) && $temTcc) {
+            if(($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias) && $temTcc) {
                 return 1;
             }
         }
@@ -249,7 +258,8 @@ class MatriculaCursoRepository extends BaseRepository
 
                 if($matricula->mat_situacao == 'concluido') {
                     $obj->status = 2;
-                    $obj->data_conclusao = $matricula->mat_data_conclusao;
+                    $format = new Format();
+                    $obj->data_conclusao = $format->formatDate($matricula->mat_data_conclusao, 'd/m/Y');
                     $result[] = $obj;
                     continue;
                 }
@@ -263,5 +273,26 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         return $result;
+    }
+
+    public function concluirMatricula($matriculaId, $ofertaCursoId)
+    {
+        // verifica se matricula existe
+        $matricula = $this->find($matriculaId);
+
+        if($matricula) {
+            // verifica se matricula está apta para conclusao
+            $result = $this->verifyIfAlunoIsAptoOrNot($matriculaId, $ofertaCursoId);
+
+            if($result == 1) {
+                $matricula->mat_situacao = 'concluido';
+                $matricula->mat_data_conclusao = date('Y-m-d');
+                $matricula->save();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -88,6 +88,8 @@
         $(function () {
             $('select').select2();
 
+            var token = "{{csrf_token()}}";
+
             var cursosSelect = $('#crs_id');
             var ofertasCursoSelect = $('#ofc_id');
             var turmaSelect = $('#trm_id');
@@ -196,11 +198,36 @@
                     return false;
                 }
 
+                renderTableAlunos(ofertaCursoId, turmaId, poloId);
+            });
+
+            // evento do botão de confirmar a matricula na(s) disciplina(s)
+            $(document).on('click', '#confirmConclusao', function (e) {
+
+                var quant = $('.matriculas:checked').length;
+
+                if(!(quant > 0)) {
+                    return false;
+                }
+
+                var matriculasIds = new Array();
+                var ofertaCursoId = ofertasCursoSelect.val();
+
+                $('.matriculas:checked').each(function () {
+                    matriculasIds.push($(this).val());
+                });
+
+                sendMatriculas(ofertaCursoId, matriculasIds);
+            });
+
+            var renderTableAlunos = function (ofertaCursoId, turmaId, poloId) {
+
                 var data = 'ofc_id=' + ofertaCursoId + '&trm_id=' + turmaId + '&pol_id=' + poloId;
 
                 $.harpia.httpget("{{url('/')}}/academico/async/conclusaocurso/findallalunosaptosounao?" + data).done(function (response) {
-                    console.log(response);
+
                     $('#boxAlunos').removeClass('hidden');
+
                     var boxAlunos = $('#boxAlunos .box-body');
                     boxAlunos.empty();
 
@@ -210,17 +237,16 @@
                         table += '<table class="table table-bordered table-hover">';
 
                         table += '<tr>';
-                        table += '<th width="1%"><div class="checkobx"><label><input id="select_all" type="checkbox"></label></div></th>';
+                        table += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
                         table += '<th width="1%">#</th>';
                         table += '<th>Aluno</th>';
                         table += '<th>Situação</th>';
-                        table += '<th width="15%">Data de Conclusão</th>';
                         table += '</tr>';
 
                         $.each(response, function (key, obj) {
                             table += '<tr>';
                             if(obj.status == 1) {
-                                table += '<td><div class="checkobx"><label><input type="checkbox" class="matriculas"></label></div></td>';
+                                table += '<td><label><input type="checkbox" class="matriculas" value="'+obj.mat_id+'"></label></td>';
                             } else {
                                 table += '<td></td>';
                             }
@@ -231,9 +257,8 @@
                             } else if(obj.status == 1) {
                                 table += '<td><span class="label label-success">Apto</span></td>';
                             } else {
-                                table += '<td><span class="label label-info">Concluído</span></td>';
+                                table += '<td><p><span class="label label-info">Concluído</span></p><p><strong>Data de Conclusão:</strong> '+obj.data_conclusao+'</p></td>';
                             }
-                            table += '<td>'+obj.data_conclusao+'</td>';
                             table += '</tr>';
                         });
 
@@ -250,24 +275,47 @@
                         boxAlunos.append('<p>Sem registros para apresentar</p>');
                     }
                 });
-            });
+            };
 
-            // evento do botão de confirmar a matricula na(s) disciplina(s)
-            $(document).on('click', '#confirmConclusao', function (e) {
+            var sendMatriculas = function (ofertaCursoId, matriculasIds) {
 
-                var quant = $('.matriculas:checked').length;
+                var dados = {
+                    matriculas: matriculasIds,
+                    ofc_id: ofertaCursoId,
+                    _token: token
+                };
 
-                if(!(quant > 0)) {
-                    return false;
-                }
+                $.harpia.showloading();
 
-                var matriculasIds = new Array();
+                $.ajax({
+                    type: 'POST',
+                    url: '/academico/async/conclusaocurso/concluirmatriculas',
+                    data: dados,
+                    success: function(response) {
 
-                $('.matriculas:checked').each(function () {
-                    matriculasIds.push($(this).val());
+                        $.harpia.hideloading();
+
+                        toastr.success('Conclusão de Curso efetuada com sucesso!', null, {progressBar: true});
+
+                        var ofertaCursoId = $('#ofc_id').val();
+                        var turmaId = $('#trm_id').val();
+                        var poloId = $('#pol_id').val();
+
+                        renderTableAlunos(ofertaCursoId, turmaId, poloId);
+                    },
+                    error: function(xhr, textStatus, error) {
+                        $.harpia.hideloading();
+
+                        switch (xhr.status) {
+                            case 400:
+                                toastr.error(xhr.responseText, null, {progressBar: true});
+                                break;
+                            default:
+                                toastr.error(xhr.responseText, null, {progressBar: true});
+                        }
+                    }
                 });
-                
-            });
+            };
         });
     </script>
 @stop

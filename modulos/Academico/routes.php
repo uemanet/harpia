@@ -268,7 +268,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
         
         Route::group(['prefix' => 'conclusaocurso'], function () {
-            Route::get('/findallalunosaptosounao', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@getAllalunosaptosounao'); 
+            Route::get('/findallalunosaptosounao', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@getAllalunosaptosounao');
+            Route::post('/concluirmatriculas', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@postConcluirMatriculas');
         });
     });
 });
