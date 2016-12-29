@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Models;
 
+use Carbon\Carbon;
 use Modulos\Core\Model\BaseModel;
 
 class Matricula extends BaseModel
@@ -41,6 +42,13 @@ class Matricula extends BaseModel
     public function matriculasOfertasDisciplinas()
     {
         return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_mat_id', 'mat_id');
+    }
+
+    // Retorna a data em padrao pt-BR em vez do padrao internacional
+    public function getMatDataConclusaoAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
 }

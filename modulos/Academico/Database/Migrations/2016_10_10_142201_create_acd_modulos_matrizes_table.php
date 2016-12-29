@@ -19,6 +19,8 @@ class CreateAcdModulosMatrizesTable extends Migration
             $table->string('mdo_nome', 45);
             $table->string('mdo_descricao', 255);
             $table->string('mdo_qualificacao', 45);
+            $table->integer('mdo_cargahoraria_min_eletivas')->nullable();
+            $table->integer('mdo_creditos_min_eletivas')->nullable();
             $table->timestamps();
 
             $table->foreign('mdo_mtc_id')->references('mtc_id')->on('acd_matrizes_curriculares');

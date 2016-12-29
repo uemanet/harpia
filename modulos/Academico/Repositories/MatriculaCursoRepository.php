@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Repositories;
 
-use Harpia\Format\Format;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
 use DB;
@@ -258,8 +257,7 @@ class MatriculaCursoRepository extends BaseRepository
 
                 if($matricula->mat_situacao == 'concluido') {
                     $obj->status = 2;
-                    $format = new Format();
-                    $obj->data_conclusao = $format->formatDate($matricula->mat_data_conclusao, 'd/m/Y');
+                    $obj->data_conclusao = $matricula->mat_data_conclusao;
                     $result[] = $obj;
                     continue;
                 }

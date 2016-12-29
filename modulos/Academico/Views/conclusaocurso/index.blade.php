@@ -240,7 +240,7 @@
                         table += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
                         table += '<th width="1%">#</th>';
                         table += '<th>Aluno</th>';
-                        table += '<th>Situação</th>';
+                        table += '<th width="20%">Situação</th>';
                         table += '</tr>';
 
                         $.each(response, function (key, obj) {
@@ -271,10 +271,19 @@
                         table += "</div></div></div>";
 
                         boxAlunos.append(table);
+                        hiddenButton();
                     } else {
                         boxAlunos.append('<p>Sem registros para apresentar</p>');
                     }
                 });
+            };
+
+            var hiddenButton = function() {
+                var quant = $(document).find('.matriculas').length;
+
+                if(quant == 0) {
+                    $(document).find('#confirmConclusao').addClass('hidden');
+                }
             };
 
             var sendMatriculas = function (ofertaCursoId, matriculasIds) {

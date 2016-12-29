@@ -85,7 +85,11 @@ class ModulosMatrizesController extends BaseController
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            $modulomatriz = $this->modulomatrizRepository->create($request->all());
+            $dados = $request->all();
+            $dados['mdo_cargahoraria_min_eletivas'] = ($request->input('mdo_cargahoraria_min_eletivas') == '') ? null : $request->input('mdo_cargahoraria_min_eletivas');
+            $dados['mdo_creditos_min_eletivas'] = ($request->input('mdo_creditos_min_eletivas') == '') ? null : $request->input('mdo_creditos_min_eletivas');
+
+            $modulomatriz = $this->modulomatrizRepository->create($dados);
 
             if (!$modulomatriz) {
                 flash()->error('Erro ao tentar salvar.');
@@ -140,6 +144,8 @@ class ModulosMatrizesController extends BaseController
             }
 
             $requestData = $request->only($this->modulomatrizRepository->getFillableModelFields());
+            $requestData['mdo_cargahoraria_min_eletivas'] = ($request->input('mdo_cargahoraria_min_eletivas') == '') ? null : $request->input('mdo_cargahoraria_min_eletivas');
+            $requestData['mdo_creditos_min_eletivas'] = ($request->input('mdo_creditos_min_eletivas') == '') ? null : $request->input('mdo_creditos_min_eletivas');
 
             if (!$this->modulomatrizRepository->update($requestData, $modulo->mdo_id, 'mdo_id')) {
                 flash()->error('Erro ao tentar salvar.');
