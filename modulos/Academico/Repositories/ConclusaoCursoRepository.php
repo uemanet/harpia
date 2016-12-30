@@ -7,7 +7,6 @@ use Modulos\Core\Repository\BaseRepository;
 
 class ConclusaoCursoRepository extends BaseRepository
 {
-    
     public function __construct(\Modulos\Core\Model\BaseModel $model)
     {
         parent::__construct($model);

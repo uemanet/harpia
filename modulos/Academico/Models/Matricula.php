@@ -50,5 +50,4 @@ class Matricula extends BaseModel
         setlocale(LC_ALL, 'pt_BR');
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
-
 }

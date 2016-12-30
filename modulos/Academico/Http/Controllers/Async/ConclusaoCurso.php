@@ -34,11 +34,11 @@ class ConclusaoCurso extends BaseController
 
         DB::beginTransaction();
         
-        try{
+        try {
             foreach ($matriculas as $matricula) {
                 $result = $this->matriculaCursoRepository->concluirMatricula($matricula, $ofertaCursoId);
 
-                if(!$result) {
+                if (!$result) {
                     DB::rollback();
                     return new JsonResponse('Matricula(s) não está apta para conclusão de curso', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
@@ -46,7 +46,7 @@ class ConclusaoCurso extends BaseController
                 DB::commit();
                 return new JsonResponse("Matriculas concluidas com sucesso", 200);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {
                 throw $e;

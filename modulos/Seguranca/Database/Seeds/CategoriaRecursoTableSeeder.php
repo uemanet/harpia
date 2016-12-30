@@ -96,7 +96,6 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
         $categoria->save();
-
     }
 
     private function categoriasModuloMonitoramento()
