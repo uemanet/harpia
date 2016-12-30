@@ -12,18 +12,21 @@ class MatriculaCursoRepository extends BaseRepository
     protected $ofertaCursoRepository;
     protected $matrizCurricularRepository;
     protected $matriculaOfertaDisciplinaRepository;
+    protected $moduloMatrizRepository;
 
     public function __construct(
         Matricula $matricula,
         OfertaCursoRepository $oferta,
         MatrizCurricularRepository $matriz,
-        MatriculaOfertaDisciplinaRepository $matriculaOferta
+        MatriculaOfertaDisciplinaRepository $matriculaOferta,
+        ModuloMatrizRepository $modulo
     )
     {
         $this->model = $matricula;
         $this->ofertaCursoRepository = $oferta;
         $this->matrizCurricularRepository = $matriz;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOferta;
+        $this->moduloMatrizRepository = $modulo;
     }
 
     public function verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $ofertaCursoId, $turmaId)
@@ -186,6 +189,9 @@ class MatriculaCursoRepository extends BaseRepository
         // busca as informacoes da matriz curricular do curso
         $matrizCurricular = $this->matrizCurricularRepository->find($ofertaCurso->ofc_mtc_id);
 
+        //busca os modulos da matriz
+        $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($matrizCurricular->mtc_id);
+
         // busca todas as disciplinas da matriz do curso
         $disciplinasMatriz = $this->matrizCurricularRepository->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
             ->pluck('mdc_id')->toArray();
@@ -198,26 +204,46 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         if($matricula->mat_situacao == 'cursando') {
-            $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAluno($matricula->mat_alu_id);
 
             $quantDisciplinasObrigatorias = 0;
             $quantDisciplinasObrigatoriasAprovadas = 0;
-            $quantDisciplinasAprovadas = 0;
-            $quantDisciplinasMatriz = count($disciplinasMatriz);
 
-            foreach($disciplinasAluno as $disciplina) {
-                if($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
-                    $quantDisciplinasObrigatorias++;
-                }
-                // Verifica se a oferta de disciplina está na matriz do curso
-                if(in_array($disciplina->mdc_id, $disciplinasMatriz)) {
-                    // Caso o aluno foi aprovado na disciplina, incrementa a variavel
-                    if(in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                        $quantDisciplinasAprovadas++;
-                        if($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
-                            $quantDisciplinasObrigatoriasAprovadas++;
+            foreach($modulos as $modulo) {
+                $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAlunoModuloMatriz($matricula->mat_alu_id, $modulo->mdo_id);
+
+                $cargaHorariaEletivas = 0;
+                $creditosEletivas = 0;
+
+                foreach($disciplinasAluno as $disciplina) {
+                    if($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                        $quantDisciplinasObrigatorias++;
+                    }
+                    // Verifica se a oferta de disciplina está na matriz do curso
+                    if(in_array($disciplina->mdc_id, $disciplinasMatriz)) {
+                        // Caso o aluno foi aprovado na disciplina, incrementa a variavel
+                        if(in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+
+                            if($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                                $quantDisciplinasObrigatoriasAprovadas++;
+                            }
+
+                            if($disciplina->mdc_tipo_disciplina == 'eletiva') {
+                                $cargaHorariaEletivas += $disciplina->dis_carga_horaria;
+                                $creditosEletivas += $disciplina->dis_creditos;
+                            }
+
                         }
                     }
+                }
+
+                // se o aluno não atingir a carga horaria minima de disciplinas eletivas do módulo, não está apto para conclusão
+                if((!is_null($modulo->mdo_cargahoraria_min_eletivas)) && ($cargaHorariaEletivas < $modulo->mdo_cargahoraria_min_eletivas)) {
+                    return 0;
+                }
+
+                // se o aluno não atingir os creditos minimos de disciplinas eletivas do módulo, não está apto para conclusão
+                if((!is_null($modulo->mdo_creditos_min_eletivas)) && ($creditosEletivas < $modulo->mdo_creditos_min_eletivas)) {
+                    return 0;
                 }
             }
 
@@ -228,6 +254,11 @@ class MatriculaCursoRepository extends BaseRepository
                 if($this->verifyIfAlunoAprovadoLancadoTcc($matricula->mat_id)) {
                     $temTcc = true;
                 }
+            }
+
+            // se o curso for de nivel Tecnico, não possui tcc, mas seta a variavel true
+            if($ofertaCurso->curso->crs_nvc_id == 1) {
+                $temTcc = true;
             }
 
             // Casos de situações
