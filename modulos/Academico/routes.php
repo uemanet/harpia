@@ -177,6 +177,16 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getShow')->name('academico.matriculasofertasdisciplinas.show');
     });
 
+    Route::group(['prefix' => 'lancamentostccs'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getIndex')->name('academico.lancamentostccs.index');
+        Route::get('/alunosturma/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getAlunosTurma')->name('academico.lancamentostccs.getAlunosturma');
+        Route::get('/create/{idAluno}/{idTurma}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getCreate')->name('academico.lancamentostccs.getCreate');
+        Route::post('/create/{idTurma}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@postCreate')->name('academico.lancamentostccs.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getEdit')->name('academico.lancamentostccs.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@putEdit')->name('academico.lancamentostccs.putEdit');
+    });
+
+    //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
@@ -206,7 +216,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'disciplinas'], function () {
-            Route::get('/findbynome/{matriz}/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
+            Route::get('/findbynome/{matriz}/{nome}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
         });
 
         Route::group(['prefix' => 'modulosdisciplinas'], function () {
