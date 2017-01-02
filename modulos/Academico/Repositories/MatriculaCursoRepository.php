@@ -4,6 +4,7 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
+use DB;
 
 class MatriculaCursoRepository extends BaseRepository
 {
@@ -108,5 +109,28 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         return $query->get();
+    }
+
+    public function findMatriculaIdByTurmaAluno($alunoId, $turmaId)
+    {
+      $matricula = DB::table('acd_matriculas')
+        ->where('mat_trm_id', '=', $turmaId)
+        ->where('mat_alu_id', '=', $alunoId)
+        ->first();
+
+      return $matricula;
+    }
+
+
+    public function findDadosByTurmaId($turmaId)
+    {
+      $dados = DB::table('acd_matriculas')
+          ->join('acd_alunos', function ($join) {
+              $join->on('mat_alu_id', '=', 'alu_id');
+          })
+          ->join('gra_pessoas', function ($join) {
+              $join->on('alu_pes_id', '=', 'pes_id');
+          })->orderBy('pes_nome', 'asc')->get();
+      return $dados;
     }
 }

@@ -17,11 +17,15 @@ class Disciplinas extends BaseController
         $this->modulosmatrizesRepository = $modulomatriz;
     }
 
-    public function getFindbynome($matriz, $nome)
+    public function getFindbynome($matrizId, $nome, $moduloId)
     {
-        $disciplinas = $this->disciplinaRepository->buscar($matriz, $nome);
+        $disciplinas = array();
 
-        if ($disciplinas) {
+        $disciplinas['disciplinas'] = $this->disciplinaRepository->buscar($matrizId, $nome);
+
+        if ($disciplinas['disciplinas']) {
+            $disciplinas['prerequisitos'] = $this->disciplinaRepository->getDisciplinasModulosAnteriores($matrizId, $moduloId);
+
             return new JsonResponse($disciplinas, 200);
         }
 

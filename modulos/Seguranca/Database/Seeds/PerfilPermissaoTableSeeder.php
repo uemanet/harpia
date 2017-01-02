@@ -104,7 +104,12 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil = Perfil::find(2);
 
+        /** Perfil Administrador do Módulo Acadêmico */
         $perfil->permissoes()->attach([123, 124, 125]); // Permissoes do recurso Documentos
+
+        $perfil = Perfil::find(3);
+
+        $perfil->permissoes()->attach([126, 127, 128, 129]); //Permissões dp recurso lançamento de TCC
 
     }
 }
