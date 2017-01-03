@@ -26,7 +26,9 @@ class MatriculaCursoRequest extends BaseRequest
         $rules = [
             'crs_id' => 'required',
             'ofc_id' => 'required',
-            'mat_trm_id' => 'required'
+            'mat_trm_id' => 'required',
+            'mat_pol_id' => 'required',
+            'mat_modo_entrada' => 'required'
         ];
 
         return $rules;
