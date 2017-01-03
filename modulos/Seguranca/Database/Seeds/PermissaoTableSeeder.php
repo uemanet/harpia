@@ -90,6 +90,7 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesMonitoramentoTempoOnline();
 
         $this->createPermissoesGeralDocumentos();
+
         //Permissão de lançamento de TCC no módulo Acadêmico
         $this->createPermissoesAcademicoLancamentoTcc();
     }
