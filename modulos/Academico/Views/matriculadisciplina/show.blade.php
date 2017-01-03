@@ -268,10 +268,18 @@
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        if(obj.mof_status == 'cursando') {
-                            table += "<td><span class='label label-success'>Cursando</span></td>";
-                        } else {
+                        if(obj.mof_situacao_matricula == 'cursando') {
+                            table += "<td><span class='label label-info'>Cursando</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'cancelado') {
                             table += "<td><span class='label label-warning'>Cancelado</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'aprovado_media') {
+                            table += "<td><span class='label label-success'>Aprovado por Media</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'aprovado_final') {
+                            table += "<td><span class='label label-success'>Aprovado por Final</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'reprovado_media') {
+                            table += "<td><span class='label label-danger'>Reprovado por Media</span></td>";
+                        } else {
+                            table += "<td><span class='label label-danger'>Reprovado por Final</span></td>";
                         }
                         table += '</tr>';
                     });

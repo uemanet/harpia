@@ -150,6 +150,30 @@ class ModuloDisciplinaRepository extends BaseRepository
         return $query;
     }
 
+    public function getDisciplinasPreRequisitos($moduloDisciplinaId)
+    {
+        $preRequisitos = [];
+
+        $disciplina = $this->find($moduloDisciplinaId);
+
+        if (!is_null($disciplina->mdc_pre_requisitos)) {
+            $requisitos = json_decode($disciplina->mdc_pre_requisitos);
+
+            foreach ($requisitos as $req) {
+                $result = $this->model
+                    ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+                    ->where('mdc_id', $req)
+                    ->first();
+
+                if ($result) {
+                    $preRequisitos[] = $result;
+                }
+            }
+        }
+
+        return $preRequisitos;
+    }
+
     public function create(array $dados)
     {
         // buscar dados da disciplina
