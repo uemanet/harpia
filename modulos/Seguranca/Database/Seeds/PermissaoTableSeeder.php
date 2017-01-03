@@ -92,9 +92,7 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesGeralDocumentos();
 
         //Permissão de lançamento de TCC no módulo Acadêmico
-
         $this->createPermissoesAcademicoLancamentoTcc();
-
     }
 
     /** Permissões do Módulo Segurança */
@@ -995,7 +993,14 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Documentos';
         $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 36;
+        $permissao->prm_nome = 'anexo';
+        $permissao->prm_descricao = 'Permissão anexo do recurso Documentos';
+        $permissao->save();
     }
+
     private function createPermissoesAcademicoLancamentoTcc()
     {
         $permissao = new Permissao();

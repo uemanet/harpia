@@ -17,7 +17,9 @@ class Documento extends BaseModel
         'doc_conteudo',
         'doc_data_expedicao',
         'doc_orgao',
-        'doc_observacao'
+        'doc_observacao',
+        'doc_anx_documento'
+
     ];
 
     protected $searchable = [
@@ -32,6 +34,11 @@ class Documento extends BaseModel
     public function tipo_documento()
     {
         return $this->belongsTo('Modulos\Geral\Models\TipoDocumento', 'doc_tpd_id');
+    }
+
+    public function anexo()
+    {
+        return $this->belongsTo('Modulos\Geral\Models\Anexo', 'anx_id');
     }
 
     // // Accessors
