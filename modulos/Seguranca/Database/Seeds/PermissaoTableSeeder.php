@@ -89,8 +89,8 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesMonitoramentoTempoOnline();
 
+        $this->createPermissoesGeralDocumentos();
         //Permissão de lançamento de TCC no módulo Acadêmico
-
         $this->createPermissoesAcademicoLancamentoTcc();
     }
 
@@ -973,28 +973,55 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    private function createPermissoesGeralDocumentos()
+    {
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 36;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Documentos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 36;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Documentos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 36;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Documentos';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 36;
+        $permissao->prm_nome = 'anexo';
+        $permissao->prm_descricao = 'Permissão anexo do recurso Documentos';
+        $permissao->save();
+    }
+
     private function createPermissoesAcademicoLancamentoTcc()
     {
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 37; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 37; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'create';
         $permissao->prm_descricao = 'Permissão create do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 37; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'alunosturma';
         $permissao->prm_descricao = 'Permissão alunosturma do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
 
         $permissao = new Permissao();
-        $permissao->prm_rcs_id = 36; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 37; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'edit';
         $permissao->prm_descricao = 'Permissão edit do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
