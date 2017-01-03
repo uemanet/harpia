@@ -159,7 +159,9 @@ class ProfessorRepositoryTest extends TestCase
         $data = factory(Professor::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['prf_matricula'] = 'abcde_edcba';
+        $updateArray['prf_pes_id'] = factory(Modulos\Geral\Models\Pessoa::class)->create([
+            'pes_nome' => 'abc123'
+        ])->pes_id;
 
         $professorId = $updateArray['prf_id'];
         unset($updateArray['prf_id']);

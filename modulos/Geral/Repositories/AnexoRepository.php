@@ -72,7 +72,6 @@ class AnexoRepository extends BaseRepository
     }
 
     /**
-     * TODO Implementar funcionalidade de recuperacao de arquivo
      * @param $anexoId
      * @return null
      */

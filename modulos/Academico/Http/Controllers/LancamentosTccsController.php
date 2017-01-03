@@ -15,7 +15,6 @@ use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 
-
 class LancamentosTccsController extends BaseController
 {
     protected $lancamentotccRepository;
@@ -38,7 +37,6 @@ class LancamentosTccsController extends BaseController
         $this->professorRepository = $professorRepository;
         $this->alunoRepository = $alunoRepository;
         $this->matriculacursoRepository = $matriculacursoRepository;
-
     }
 
     public function getIndex(Request $request)
@@ -89,14 +87,14 @@ class LancamentosTccsController extends BaseController
         $dados = $this->matriculacursoRepository->findDadosByTurmaId($turmaId);
 
         if (!$turma) {
-          flash()->error('Turma não existe!');
-          return redirect()->back();
+            flash()->error('Turma não existe!');
+            return redirect()->back();
         }
 
         $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($turmaId);
 
 
-        return view('Academico::lancamentostccs.alunosturma', compact('turma' , 'dados', 'disciplina'));
+        return view('Academico::lancamentostccs.alunosturma', compact('turma', 'dados', 'disciplina'));
     }
 
     public function getCreate($alunoId, $turmaId)
@@ -104,8 +102,8 @@ class LancamentosTccsController extends BaseController
         $turma = $this->turmaRepository->find($turmaId);
 
         if (!$turma) {
-          flash()->error('Turma não existe!');
-          return redirect()->back();
+            flash()->error('Turma não existe!');
+            return redirect()->back();
         }
 
         $aluno = $this->alunoRepository->find($alunoId);
@@ -113,11 +111,11 @@ class LancamentosTccsController extends BaseController
         $matricula = $this->matriculacursoRepository->findMatriculaIdByTurmaAluno($alunoId, $turmaId);
 
         if (!$aluno) {
-          flash()->error('Aluno não existe!');
-          return redirect()->back();
+            flash()->error('Aluno não existe!');
+            return redirect()->back();
         }
 
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome',true);
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
         $tiposdetcc = [
             'artigo' => 'Artigo',
             'monografia' => 'Monografia',
@@ -132,11 +130,9 @@ class LancamentosTccsController extends BaseController
         return view('Academico::lancamentostccs.create', compact('turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula'));
     }
 
-    public function postCreate($turmaId,LancamentoTccRequest $request)
+    public function postCreate($turmaId, LancamentoTccRequest $request)
     {
-
         try {
-
             $lancamentotcc = $this->lancamentotccRepository->create($request->all());
 
             $matricula = Matricula::find($request->mat_id);
@@ -165,11 +161,11 @@ class LancamentosTccsController extends BaseController
         $lancamentoTcc = $this->lancamentotccRepository->find($lancamentoTccId);
 
         if (!$lancamentoTcc) {
-          flash()->error('Este TCC não existe!');
-          return redirect()->back();
-         }
+            flash()->error('Este TCC não existe!');
+            return redirect()->back();
+        }
 
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome',true);
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
         $tiposdetcc = [
             'artigo' => 'Artigo',
