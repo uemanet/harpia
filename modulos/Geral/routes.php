@@ -4,7 +4,7 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'index'], function () {
         Route::get('/', '\Modulos\Geral\Http\Controllers\IndexController@getIndex');
     });
-    
+
     Route::group(['prefix' => 'pessoas'], function () {
         Route::get('/index', '\Modulos\Geral\Http\Controllers\PessoasController@getIndex')->name('geral.pessoas.index');
         Route::get('/create', '\Modulos\Geral\Http\Controllers\PessoasController@getCreate')->name('geral.pessoas.getCreate');
@@ -13,6 +13,15 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
         Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\PessoasController@putEdit')->name('geral.pessoas.putEdit');
         Route::get('/show/{id}', '\Modulos\Geral\Http\Controllers\PessoasController@getShow')->name('geral.pessoas.show');
         Route::post('/verificapessoa', '\Modulos\Geral\Http\Controllers\PessoasController@postVerificaPessoa')->name('geral.pessoas.verificapessoa');
+    });
+
+    Route::group(['prefix' => 'documentos'], function () {
+        Route::get('/create/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getCreate')->name('geral.documentos.getCreate');
+        Route::post('/create/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@postCreate')->name('geral.documentos.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getEdit')->name('geral.documentos.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@putEdit')->name('geral.documentos.putEdit');
+        Route::post('/delete', '\Modulos\Geral\Http\Controllers\DocumentosController@postDelete')->name('geral.documentos.delete');
+        Route::get('/anexo/{id}', '\Modulos\Geral\Http\Controllers\DocumentosController@getDocumentoAnexo')->name('geral.documentos.getAnexo');
     });
 
     Route::group(['prefix' => 'titulacoes'], function () {

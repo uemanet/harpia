@@ -90,7 +90,7 @@ class AnexoRepository extends BaseRepository
         $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
 
         $headers = array('Content-Type: ' . $anexo->anx_mime);
-        return Response::download($caminhoArquivo, $anexo->anx_nome . '.' .$anexo->anx_extensao, $headers);
+        return Response::download($caminhoArquivo, $anexo->anx_nome, $headers);
     }
 
     /**

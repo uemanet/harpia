@@ -72,12 +72,73 @@ class ModuloDisciplinaRepository extends BaseRepository
         return $result;
     }
 
+    public function getAllTurmasWithTcc($id)
+    {
+        $result = $this->model
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
+            ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+            ->join('acd_niveis_cursos', 'acd_disciplinas.dis_nvc_id', 'nvc_id')
+            ->where('mdc_mdo_id', '=', $id)->get();
+
+        return $result;
+    }
+
     public function verifyDisciplinaAdicionada($data)
     {
         $result = $this->model
               ->where('mdc_dis_id', '=', $data['dis_id']);
     }
 
+
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->model
+            ->join('acd_disciplinas', function ($join) {
+            $join->on('mdc_dis_id', '=', 'dis_id');
+        })
+            ->join('acd_ofertas_disciplinas', function ($join) {
+            $join->on('ofd_mdc_id', '=', 'mdc_id');
+        })
+            ->join('acd_matriculas_ofertas_disciplinas', function ($join) {
+            $join->on('mof_ofd_id', '=', 'ofd_id');
+        })
+            ->join('acd_matriculas', function ($join) {
+            $join->on('mof_mat_id', '=', 'mat_id');
+        })
+            ->join('acd_turmas', function ($join) {
+            $join->on('mat_trm_id', '=', 'trm_id');
+        })
+            ->join('acd_ofertas_cursos', function ($join) {
+            $join->on('trm_ofc_id', '=', 'ofc_id');
+        })
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
+            ->groupby('trm_id')->distinct();
+
+        if (!empty($search)) {
+            foreach ($search as $value) {
+                if ($value['field'] == 'pes_cpf') {
+                    $result = $result->where('doc_conteudo', '=', $value['term']);
+                    continue;
+                }
+
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        $result = $result->paginate(15);
+
+        return $result;
+    }
     public function updatePreRequisitos($matrizId, $moduloDisciplinaId)
     {
         $query = DB::table('acd_modulos_disciplinas')
@@ -145,7 +206,7 @@ class ModuloDisciplinaRepository extends BaseRepository
                 return array('type' => 'error', 'message' => 'Já existe uma disciplina do tipo TCC cadastrada nessa matriz');
             }
         }
-        
+
         // verifica se veio disciplina pré-requisitos
         if (!empty($dados['pre_requisitos'])) {
 
@@ -171,5 +232,6 @@ class ModuloDisciplinaRepository extends BaseRepository
         $disciplinaCreate = $this->model->create($modulodisciplina);
 
         return array('type' => 'success', 'data' => ['mdc_id' => $disciplinaCreate->mdc_id]);
+
     }
 }

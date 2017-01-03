@@ -378,5 +378,29 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
         $recurso->save();
+
+        // MODULO Geral
+        // Recurso Documento
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 2; // Categoria Oculta
+        $recurso->rcs_nome = 'Documentos';
+        $recurso->rcs_rota = 'documentos';
+        $recurso->rcs_descricao = 'Recurso documentos do módulo geral';
+        $recurso->rcs_icone = 'fa fa-address-card-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // MODULO Acadêmico
+        // Recurso Lançamento de TCC
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 4; // Categoria Processos no módulo acadêmico
+        $recurso->rcs_nome = 'Lançamento de TCC';
+        $recurso->rcs_rota = 'lancamentostccs';
+        $recurso->rcs_descricao = 'Recurso lançamento de tcc do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-archive';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 5;
+        $recurso->save();
     }
 }
