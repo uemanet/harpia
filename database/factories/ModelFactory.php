@@ -30,6 +30,7 @@ $factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generato
    return [
        'doc_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
        'doc_tpd_id' => 2,
+       'doc_data_expedicao' => $faker->date('d/m/Y'),
        'doc_conteudo' => $faker->creditCardNumber
    ];
 });
