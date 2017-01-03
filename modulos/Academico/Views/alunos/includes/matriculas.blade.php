@@ -14,40 +14,48 @@
             <!-- /.box-header -->
             <div class="box-body">
                 @if(!$aluno->matriculas->isEmpty())
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>Curso</th>
-                            <th>Nível do Curso</th>
-                            <th>Modalidade</th>
-                            <th>Oferta de Curso</th>
-                            <th>Turma</th>
-                            <th>Polo</th>
-                            <th>Grupo</th>
-                            <th>Situação</th>
-                        </tr>
+                    <div class="box-group" id="accordion">
                         @foreach($aluno->matriculas as $matricula)
-                            <tr>
-                                <td>{{$matricula->turma->ofertacurso->curso->crs_nome}}</td>
-                                <td>{{$matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome}}</td>
-                                <td>{{$matricula->turma->ofertacurso->modalidade->mdl_nome}}</td>
-                                <td>{{$matricula->turma->ofertacurso->ofc_ano}}</td>
-                                <td>{{$matricula->turma->trm_nome}}</td>
-                                <td>@if($matricula->polo) {{$matricula->polo->pol_nome}} @endif</td>
-                                <td>@if($matricula->grupo) {{$matricula->grupo->grp_nome}} @endif</td>
-                                <td>
+                            <div class="panel box box-success">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$loop->index}}">
+                                            {{ $matricula->turma->ofertacurso->curso->crs_nome }}
+                                        </a>
+                                    </h4>
                                     @if($matricula->mat_situacao == 'cursando')
-                                        <span class="label label-info">Cursando</span>
+                                        <span class="label label-info pull-right">Cursando</span>
                                     @elseif($matricula->mat_situacao == 'reprovado')
-                                        <span class="label label-danger">Reprovado</span>
+                                        <span class="label label-danger pull-right">Reprovado</span>
                                     @elseif($matricula->mat_situacao == 'concluido')
-                                        <span class="label label-success">Concluído</span>
+                                        <span class="label label-success pull-right">Concluído</span>
                                     @else
-                                        <span class="label label-warning">{{ucfirst($matricula->mat_situacao)}}</span>
+                                        <span class="label label-warning pull-right">{{ucfirst($matricula->mat_situacao)}}</span>
                                     @endif
-                                </td>
-                            </tr>
+                                </div>
+                                <div class="panel-collapse collapse" id="collapse{{ $loop->index }}">
+                                    <div class="box-body">
+                                        <div class="col-md-4">
+                                            <p><strong>Nível do Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}</p>
+                                            <p><strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}</p>
+                                            <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Oferta de Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
+                                            <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
+                                            <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p><strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else Sem Grupo @endif</p>
+                                            @if($matricula->mat_situacao == 'concluido')
+                                                <p><strong>Data de Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
-                    </table>
+                    </div>
                 @else
                     <p>Aluno não possui nenhuma matrícula</p>
                 @endif

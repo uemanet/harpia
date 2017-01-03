@@ -72,50 +72,23 @@ class MatriculaCursoController extends BaseController
             return redirect()->back();
         }
 
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome', true);
+        $cursos = $this->matriculaCursoRepository->listsCursosNotMatriculadoByAluno($alunoId);
+        $modosEntrada = array(
+            'vestibular' => 'Vestibular',
+            'transferencia_externa' => 'Transferência Externa',
+            'transferencia_interna_de' => 'Transferência Interna De',
+            'transferencia_interna_para' => 'Transferência Interna Para'
+        );
 
-        return view('Academico::matricula-curso.create', compact('aluno', 'cursos'));
+        return view('Academico::matricula-curso.create', compact('aluno', 'cursos', 'modosEntrada'));
     }
 
     public function postCreate($alunoId, MatriculaCursoRequest $request)
     {
         try {
-
-            // verifica se aluno possui matricula na oferta de curso ou na turma
-            if ($this->matriculaCursoRepository->verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $request->input('ofc_id'), $request->input('mat_trm_id'))) {
-                flash()->error('Aluno já possui matricula na oferta ou turma');
-                return redirect()->route('academico.matricularalunocurso.show', $alunoId);
-            }
-
-            // verifica se aluno possui matricula ativa no curso, mesmo sendo em ofertas diferentes, contanto que tenha concluido, evadido
-            // ou abandonado o curso
-            if ($this->matriculaCursoRepository->verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $request->input('crs_id'))) {
-                flash()->error('Aluno já possui matricula ativa no curso selecionado');
-                return redirect()->route('academico.matricularalunocurso.show', $alunoId);
-            }
-            
-            // Verifica o nivel do curso, e caso seja de GRADUACAO, verifica se o aluno possui matrícula em algum curso de graduacao
-            $curso = $this->cursoRepository->find($request->input('crs_id'));
-            
-            // caso seja de Graducao
-            if ($curso->crs_nvc_id == 3) {
-                if ($this->matriculaCursoRepository->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
-                    flash()->error('Aluno já possui matricula ativa em outro curso de graduação');
-                    return redirect()->route('academico.matricularalunocurso.show', $alunoId);
-                }
-            }
-
-            $dataMatricula = [
-                'mat_alu_id' => $alunoId,
-                'mat_trm_id' => $request->input('mat_trm_id'),
-                'mat_pol_id' => ($request->input('mat_pol_id') == '') ? null : $request->input('mat_pol_id'),
-                'mat_grp_id' => ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id'),
-                'mat_situacao' => 'cursando'
-            ];
-
-            $this->matriculaCursoRepository->create($dataMatricula);
-
-            flash()->success('Matricula efetuada com sucesso!');
+            $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
+            //dd($result);
+            flash()->{$result['type']}($result['message']);
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
         } catch (\Exception $e) {
             if (config('app.debug')) {

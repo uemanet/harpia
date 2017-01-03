@@ -16,13 +16,13 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
         'pes_necessidade_especial' => $faker->randomElement(['s', 'n']),
         'pes_estrangeiro' => $faker->boolean,
-        'pes_endereco' => $faker->address,
-        'pes_numero' => $faker->numerify('##'),
-        'pes_complemento' => $faker->word,
-        'pes_cep' => $faker->word,
+        'pes_endereco' => $faker->streetName,
+        'pes_numero' => '1',
+        'pes_complemento' => null,
+        'pes_cep' => $faker->postcode,
         'pes_cidade' => $faker->city,
-        'pes_bairro' => $faker->word,
-        'pes_estado' => $faker->randomElement(['MA', 'SP', 'SE', 'MT'])
+        'pes_bairro' => $faker->state,
+        'pes_estado' => 'SP'
     ];
 });
 
@@ -207,6 +207,7 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
         'mtc_crs_id' => factory(Modulos\Academico\Models\Curso::class)->create()->crs_id,
         'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
         'mtc_titulo' => $faker->word,
+        'mtc_titulo' => ucfirst($faker->word),
         'mtc_descricao' => $faker->words(5, true),
         'mtc_data' => $faker->date('d/m/Y'),
         'mtc_creditos' => $faker->randomNumber(3),
@@ -336,7 +337,8 @@ $factory->define(Modulos\Academico\Models\Matricula::class, function () {
         'mat_trm_id' => $turma->trm_id,
         'mat_pol_id' => $polo->pol_id,
         'mat_grp_id' => $grupo->grp_id,
-        'mat_situacao' => 'cursando'
+        'mat_situacao' => 'cursando',
+        'mat_modo_entrada' => 'vestibular'
     ];
 });
 

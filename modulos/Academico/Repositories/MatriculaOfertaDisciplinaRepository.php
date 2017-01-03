@@ -8,9 +8,28 @@ use DB;
 
 class MatriculaOfertaDisciplinaRepository extends BaseRepository
 {
-    public function __construct(MatriculaOfertaDisciplina $matricula)
-    {
+    protected $moduloDisciplinaRepository;
+    protected $ofertaDisciplinaRepository;
+
+    public function __construct(
+        MatriculaOfertaDisciplina $matricula,
+        ModuloDisciplinaRepository $modulo,
+        OfertaDisciplinaRepository $oferta
+    ) {
         $this->model = $matricula;
+        $this->moduloDisciplinaRepository = $modulo;
+        $this->ofertaDisciplinaRepository = $oferta;
+    }
+
+    public function findBy(array $options)
+    {
+        $query = $this->model;
+
+        foreach ($options as $key => $value) {
+            $query = $query->where($key, '=', $value);
+        }
+
+        return $query->get();
     }
 
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
@@ -48,7 +67,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             for ($i=0;$i<$disciplinas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinas[$i]->ofd_id)
-                                        ->where('mof_status', '=', 'cursando')
+                                        ->where('mof_situacao_matricula', '=', 'cursando')
                                         ->count();
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
             }
@@ -64,7 +83,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
             'ofd_trm_id' => $turmaId,
-            'mof_status' => 'cursando'
+            'mof_situacao_matricula' => 'cursando'
         ])->pluck('mof_ofd_id')->toArray();
 
         // pega as disciplinas ofertadas no periodo e turma correspondentes, e verifica se o aluno
@@ -106,7 +125,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             for ($i=0;$i<$disciplinasOfertadas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
-                                        ->where('mof_status', '=', 'cursando')
+                                        ->where('mof_situacao_matricula', '=', 'cursando')
                                         ->count();
 
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
@@ -125,7 +144,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     {
         $query = $this->model->where('mof_ofd_id', '=', $ofertaId)
                              ->where('mof_mat_id', '=', $matriculaId)
-                            ->where('mof_status', '=', 'cursando');
+                            ->where('mof_situacao_matricula', '=', 'cursando');
 
         return $query->first();
     }
@@ -135,7 +154,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $query = $this->model
                     ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
                     ->where('mof_ofd_id', '=', $ofertaId)
-                    ->where('mof_status', '=', 'cursando')
+                    ->where('mof_situacao_matricula', '=', 'cursando')
                     ->get();
 
         if ($query->count()) {
@@ -153,5 +172,69 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function getMatriculasByOfertaDisciplina($ofertaId)
     {
         return $this->model->where('mof_ofd_id', '=', $ofertaId)->get();
+    }
+    
+    public function verifyIfAlunoAprovadoPreRequisitos($matriculaId, $ofertaDisciplinaId)
+    {
+        $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaDisciplinaId);
+
+        $preRequisitos = $this->moduloDisciplinaRepository->getDisciplinasPreRequisitos($ofertaDisciplina->ofd_mdc_id);
+
+        if (!empty($preRequisitos)) {
+            $quantAprovadas = 0;
+
+            foreach ($preRequisitos as $req) {
+                // busca a oferta de disciplina
+                $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id])->first();
+
+                // busca a matricula do aluno nessa disciplina
+                $matriculaOferta = $this->findBy(['mof_mat_id' => $matriculaId, 'mof_ofd_id' => $oferta->ofd_id])->first();
+
+                if ($matriculaOferta) {
+                    if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                        $quantAprovadas++;
+                    }
+                }
+            }
+
+            if ($quantAprovadas < count($preRequisitos)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function createMatricula(array $data)
+    {
+        $ofertaId = $data['ofd_id'];
+
+        // verifica se a disciplina possui vagas disponiveis
+        if (!($this->verifyQtdVagas($ofertaId))) {
+            return array("type" => "error", "message" => "Sem vagas disponiveis");
+        }
+
+        // verifica se já existe uma matricula ativa nessa oferta de disciplina
+        $matriculaExists = $this->verifyMatriculaDisciplina($data['mat_id'], $data['ofd_id']);
+
+        if ($matriculaExists) {
+            return array("type" => "error", "message" => "Aluno já matriculado nessa disciplina para esse periodo e turma");
+        }
+
+        // verifica se o aluno está aprovado nas disciplinas pre-requisitos, caso existam
+        $aprovadoPreRequisitos = $this->verifyIfAlunoAprovadoPreRequisitos($data['mat_id'], $data['ofd_id']);
+
+        if (!$aprovadoPreRequisitos) {
+            return array("type" => "error", "message" => "Aluno possui pre-requisitos não satisfeitos");
+        }
+
+        $this->create([
+            'mof_mat_id' => $data['mat_id'],
+            'mof_ofd_id' => $data['ofd_id'],
+            'mof_tipo_matricula' => 'matriculacomum',
+            'mof_situacao_matricula' => 'cursando'
+        ]);
+
+        return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!');
     }
 }

@@ -56,7 +56,10 @@ class MatriculaCursoTest extends TestCase
     {
         $data = factory(\Modulos\Academico\Models\Matricula::class)->create();
 
-        $this->seeInDatabase('acd_matriculas', $data->toArray());
+        $data = $data->toArray();
+        unset($data['mat_modo_entrada']);
+
+        $this->seeInDatabase('acd_matriculas', $data);
     }
 
     public function tearDown()
