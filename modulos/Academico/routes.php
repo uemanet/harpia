@@ -177,6 +177,16 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getShow')->name('academico.matriculasofertasdisciplinas.show');
     });
 
+    Route::group(['prefix' => 'lancamentostccs'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getIndex')->name('academico.lancamentostccs.index');
+        Route::get('/alunosturma/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getAlunosTurma')->name('academico.lancamentostccs.getAlunosturma');
+        Route::get('/create/{idAluno}/{idTurma}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getCreate')->name('academico.lancamentostccs.getCreate');
+        Route::post('/create/{idTurma}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@postCreate')->name('academico.lancamentostccs.postCreate');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getEdit')->name('academico.lancamentostccs.getEdit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@putEdit')->name('academico.lancamentostccs.putEdit');
+    });
+
+    //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')
@@ -207,7 +217,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'disciplinas'], function () {
-            Route::get('/findbynome/{matriz}/{nome}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
+            Route::get('/findbynome/{matriz}/{nome}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Disciplinas@getFindByNome');
         });
 
         Route::group(['prefix' => 'modulosdisciplinas'], function () {
@@ -228,9 +238,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertasdisciplinas'], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getFindall');
             Route::post('/oferecerdisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postOferecerdisciplina');
+            Route::post('/deletarofertadisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postDeletarofertadisciplina');
         });
 
         Route::group(['prefix' => 'matriculasofertasdisciplinas'], function () {
+            Route::get('/findalldisciplinasnotcursadasbyalunoturmaperiodo/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllDisciplinasNotCursadasByAlunoTurmaPeriodo');
             Route::get('/findalldisciplinasbyalunoturmaperiodo/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllDisciplinasByAlunoTurmaPeriodo');
             Route::post('/matricular', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postMatricularAlunoDisciplinas');
         });
@@ -245,6 +257,14 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'tutores'], function () {
             Route::get('/findallbygrupo/{id}', '\Modulos\Academico\Http\Controllers\Async\Tutores@getFindallbygrupo');
+        });
+
+        Route::group(['prefix' => 'periodosletivos'], function () {
+            Route::get('/findallbyturma/{id}', '\Modulos\Academico\Http\Controllers\Async\PeriodoLetivo@getFindallbyturma');
+        });
+
+        Route::group(['prefix' => 'professores'], function () {
+            Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\Professor@getFindall');
         });
     });
 });

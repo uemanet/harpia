@@ -49,21 +49,31 @@
             </div>
             <div id="collapse{{$modulo->mdo_id}}" class="panel-collapse collapse in">
               <div class="box-body">
-                @if(!$modulo->disciplinas->isEmpty())
+                @if($disciplinas[$modulo->mdo_id]->count())
                     <table  class="table table-bordered table-hover">
                       <thead>
                       <th>Nome</th>
                       <th>Nível</th>
                       <th>Carga Horária</th>
                       <th>Créditos</th>
+                      <th>Pré-Requisitos</th>
                       </thead>
                       <tbody>
-                        @foreach($modulo->disciplinas as $disciplina)
+                        @foreach($disciplinas[$modulo->mdo_id] as $disciplina)
                           <tr>
                             <td>{{$disciplina->dis_nome}}</td>
-                            <td>{{$disciplina->nivel->nvc_nome}}</td>
+                            <td>{{$disciplina->nvc_nome}}</td>
                             <td>{{$disciplina->dis_carga_horaria}} horas</td>
                             <td>{{$disciplina->dis_creditos}}</td>
+                            @if(!empty($disciplina->pre_requisitos))
+                                <td>
+                                    @foreach($disciplina->pre_requisitos as $pre)
+                                        <p>{{$pre->dis_nome}}</p>
+                                    @endforeach
+                                </td>
+                            @else
+                                <td><p>Sem pré-requsitos</p></td>
+                            @endif
                           </tr>
                         @endforeach
                       </tbody>

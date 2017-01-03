@@ -103,6 +103,28 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
+        // Recurso Titulacoes
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 2; // Categoria Geral
+        $recurso->rcs_nome = 'Titulações';
+        $recurso->rcs_rota = 'titulacoes';
+        $recurso->rcs_descricao = 'Recurso titulacoes da categoria cadastro do módulo geral';
+        $recurso->rcs_icone = 'fa fa-file-text-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
+
+        //Recurso Titulacoes Informacoes
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Geral -> oculto
+        $recurso->rcs_nome = 'Titulações Informações';
+        $recurso->rcs_rota = 'titulacoesinformacoes';
+        $recurso->rcs_descricao = 'Recurso titulacoesinformacoes do módulo geral';
+        $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
         // MODULO ACADEMICO
 
         // Recurso Dashboard
@@ -355,6 +377,30 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_icone = 'fa fa-bar-chart';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // MODULO Geral
+        // Recurso Documento
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 2; // Categoria Oculta
+        $recurso->rcs_nome = 'Documentos';
+        $recurso->rcs_rota = 'documentos';
+        $recurso->rcs_descricao = 'Recurso documentos do módulo geral';
+        $recurso->rcs_icone = 'fa fa-address-card-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // MODULO Acadêmico
+        // Recurso Lançamento de TCC
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 4; // Categoria Processos no módulo acadêmico
+        $recurso->rcs_nome = 'Lançamento de TCC';
+        $recurso->rcs_rota = 'lancamentostccs';
+        $recurso->rcs_descricao = 'Recurso lançamento de tcc do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-archive';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 5;
         $recurso->save();
     }
 }

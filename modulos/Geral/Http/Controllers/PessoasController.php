@@ -170,10 +170,13 @@ class PessoasController extends BaseController
             return redirect()->back();
         }
     }
-    
+
     public function getShow($id)
     {
         $pessoa = $this->pessoaRepository->find($id);
+        session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $pessoa->pes_id]);
+
+        session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $id]);
 
         return view('Geral::pessoas.show', ['pessoa' => $pessoa]);
     }
