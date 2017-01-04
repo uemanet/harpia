@@ -9,6 +9,20 @@ class CategoriaRecursoTableSeeder extends Seeder
 {
     public function run()
     {
+        $this->categoriasModuloSeguranca();
+
+        $this->categoriasModuloGeral();
+
+        $this->categoriasModuloAcademico();
+
+        $this->categoriasModuloIntegracao();
+
+        $this->categoriasModuloMonitoramento();
+    }
+
+    private function categoriasModuloSeguranca()
+    {
+        // Categoria Segurança - id: 1
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 1; // Modulo Seguranca
         $categoria->ctr_nome = 'Segurança';
@@ -18,8 +32,11 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
         $categoria->save();
+    }
 
-        //Modulo Geral
+    private function categoriasModuloGeral()
+    {
+        // Categoria Cadastro - id: 2
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 2; //Modulo Geral
         $categoria->ctr_nome = 'Cadastro';
@@ -30,10 +47,24 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        //Modulo Academico
+        // Categoria Oculto - id = 3
+        $categoria = new CategoriaRecurso();
+        $categoria->ctr_mod_id = 2; // Modulo Geral
+        $categoria->ctr_nome = 'Oculto';
+        $categoria->ctr_descricao = 'Categoria oculta do módulo Geral';
+        $categoria->ctr_icone = 'fa fa-plus';
+        $categoria->ctr_ordem = 0;
+        $categoria->ctr_ativo = 0;
+        $categoria->ctr_visivel = 0;
+        $categoria->save();
+    }
+
+    private function categoriasModuloAcademico()
+    {
+        // Categoria Cadastros - id: 4
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
-        $categoria->ctr_nome = 'Cadastro';
+        $categoria->ctr_nome = 'Cadastros';
         $categoria->ctr_descricao = 'Categoria de cadastro do módulo acadêmica';
         $categoria->ctr_icone = 'fa fa-plus';
         $categoria->ctr_ordem = 1;
@@ -41,7 +72,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        //Modulo Academico
+        // Categoria Processos - id: 5
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Processos';
@@ -52,7 +83,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        //Modulo Academico
+        // Categoria Oculto - id: 6
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Oculto';
@@ -62,38 +93,33 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 0;
         $categoria->ctr_visivel = 0;
         $categoria->save();
+    }
 
-        //Modulo Integração
+    private function categoriasModuloIntegracao()
+    {
+        // Categoria Cadastros - id: 7
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 4; // Modulo Integração
-        $categoria->ctr_nome = 'Cadastro';
+        $categoria->ctr_nome = 'Cadastros';
         $categoria->ctr_descricao = 'Categoria de cadastro do módulo integração';
         $categoria->ctr_icone = 'fa fa-plus';
         $categoria->ctr_ordem = 1;
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
         $categoria->save();
+    }
 
-        //Modulo Integração
+    private function categoriasModuloMonitoramento()
+    {
+        // Categoria Monitoramento - id: 8
         $categoria = new CategoriaRecurso();
-        $categoria->ctr_mod_id = 5; // Modulo Integração
+        $categoria->ctr_mod_id = 5; // Modulo Monitoramento
         $categoria->ctr_nome = 'Monitoramento';
         $categoria->ctr_descricao = 'Categoria de monitoramento do módulo de monitoramento';
         $categoria->ctr_icone = 'fa fa-plus';
         $categoria->ctr_ordem = 1;
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
-        $categoria->save();
-
-        //Modulo Integração
-        $categoria = new CategoriaRecurso();
-        $categoria->ctr_mod_id = 2; // Modulo Integração
-        $categoria->ctr_nome = 'Oculto';
-        $categoria->ctr_descricao = 'Categoria oculta do módulo Geral';
-        $categoria->ctr_icone = 'fa fa-plus';
-        $categoria->ctr_ordem = 0;
-        $categoria->ctr_ativo = 0;
-        $categoria->ctr_visivel = 0;
         $categoria->save();
     }
 }

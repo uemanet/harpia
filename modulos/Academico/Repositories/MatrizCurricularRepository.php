@@ -83,12 +83,12 @@ class MatrizCurricularRepository extends BaseRepository
         return $this->model->where('mtc_id', $id)->pluck('mtc_titulo', 'mtc_id');
     }
 
-    public function getDisciplinasByMatrizId($id)
+    public function getDisciplinasByMatrizId($matrizCurricularId)
     {
         return $this->model
             ->join('acd_modulos_matrizes', 'mdo_mtc_id', 'mtc_id')
             ->join('acd_modulos_disciplinas', 'mdc_mdo_id', 'mdo_id')
-            ->where('mtc_id', $id)
+            ->where('mtc_id', $matrizCurricularId)
             ->get();
     }
 

@@ -87,8 +87,9 @@ class ModuloDisciplinaRepository extends BaseRepository
     {
         $result = $this->model
               ->where('mdc_dis_id', '=', $data['dis_id']);
-    }
 
+        return $result;
+    }
 
     public function paginate($sort = null, $search = null)
     {
@@ -139,6 +140,7 @@ class ModuloDisciplinaRepository extends BaseRepository
 
         return $result;
     }
+
     public function updatePreRequisitos($matrizId, $moduloDisciplinaId)
     {
         $query = DB::table('acd_modulos_disciplinas')
@@ -212,8 +214,8 @@ class ModuloDisciplinaRepository extends BaseRepository
 
             // pega os id's da disciplinas que podem ser adicionadas como pré-requisitos
             $disciplinasAptasPreRequisitos = $this->disciplinaRepository
-                                                    ->getDisciplinasModulosAnteriores($dados['mtc_id'], $dados['mod_id'])
-                                                    ->pluck('mdc_id')->toArray();
+                ->getDisciplinasModulosAnteriores($dados['mtc_id'], $dados['mod_id'])
+                ->pluck('mdc_id')->toArray();
 
             // verifica, uma a uma, se existe alguma que não está apta a ser cadastrada como pré-requisito
             foreach ($dados['pre_requisitos'] as $preRequisito) {

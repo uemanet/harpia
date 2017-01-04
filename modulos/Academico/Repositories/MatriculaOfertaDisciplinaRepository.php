@@ -32,6 +32,68 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $query->get();
     }
 
+    public function getAllMatriculasByAluno($alunoId)
+    {
+        $query = $this->model
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->join('acd_modulos_matrizes', function ($join) {
+                $join->on('mdc_mdo_id', '=', 'mdo_id');
+            })
+            ->join('acd_disciplinas', function ($join) {
+                $join->on('mdc_dis_id', '=', 'dis_id');
+            })
+            ->join('acd_professores', function ($join) {
+                $join->on('ofd_prf_id', '=', 'prf_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('prf_pes_id', '=', 'pes_id');
+            })
+            ->where('mat_alu_id', '=', $alunoId)
+            ->orderBy('mdo_id')
+            ->get();
+
+        return $query;
+    }
+
+    public function getAllMatriculasByAlunoModuloMatriz($alunoId, $moduloId)
+    {
+        $query = $this->model
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->join('acd_modulos_matrizes', function ($join) {
+                $join->on('mdc_mdo_id', '=', 'mdo_id');
+            })
+            ->join('acd_disciplinas', function ($join) {
+                $join->on('mdc_dis_id', '=', 'dis_id');
+            })
+            ->join('acd_professores', function ($join) {
+                $join->on('ofd_prf_id', '=', 'prf_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('prf_pes_id', '=', 'pes_id');
+            })
+            ->where('mat_alu_id', '=', $alunoId)
+            ->where('mdc_mdo_id', '=', $moduloId)
+            ->get();
+
+        return $query;
+    }
+
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
     {
         $query = $this->model

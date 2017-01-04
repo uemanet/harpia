@@ -44,8 +44,8 @@ class Documento extends BaseModel
     // // Accessors
     public function getDocDataExpedicaoAttribute($value)
     {
-        if ($value === null){
-          return null;
+        if ($value === null) {
+            return null;
         }
 
         setlocale(LC_ALL, 'pt_BR');
@@ -55,7 +55,7 @@ class Documento extends BaseModel
     // Mutators
     public function setDocDataExpedicaoAttribute($value)
     {
-        if ($value != null){
+        if ($value != null) {
             $this->attributes['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
         }
     }

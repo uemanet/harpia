@@ -64,16 +64,14 @@ class DocumentosController extends BaseController
         $id = $request->session()->get('last_id');
 
         try {
-
             DB::beginTransaction();
 
             $dados = $request->all();
 
-            if ($request->file('doc_file') != null){
+            if ($request->file('doc_file') != null) {
                 $anexoDocumento = $request->file('doc_file');
                 $anexoCriado = $this->anexoRepository->salvarAnexo($anexoDocumento);
                 $dados['doc_anx_documento'] = $anexoCriado->anx_id;
-
             }
 
             unset($dados['doc_file']);
@@ -151,7 +149,7 @@ class DocumentosController extends BaseController
                 // Novo Anexo
                 $anexoDocumento = $request->file('doc_file');
 
-                if($documento->doc_anx_documento != null){
+                if ($documento->doc_anx_documento != null) {
                     // Atualiza anexo
                     $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
                 } else {
@@ -202,5 +200,4 @@ class DocumentosController extends BaseController
             return redirect()->back();
         }
     }
-
 }
