@@ -15,7 +15,7 @@ class Turmas extends BaseController
     public function __construct(TurmaRepository $turma, AmbienteVirtualRepository $ambiente)
     {
         $this->turmaRepository = $turma;
-        $this->ambienteRepository = $ambiente;
+        $this->ambientevirtualRepository = $ambiente;
     }
 
     public function getFindallbyofertacurso($idOfertaCurso)
@@ -25,9 +25,16 @@ class Turmas extends BaseController
         return new JsonResponse($turmas, 200);
     }
 
+    public function getFindallwithvagasdisponiveis($ofertaCursoId)
+    {
+        $turmas = $this->turmaRepository->findAllWithVagasDisponiveisByOfertaCurso($ofertaCursoId);
+
+        return new JsonResponse($turmas, 200);
+    }
+
     public function getFindallbyofertacursoWithoutAmbiente($idOfertaCurso)
     {
-        $turmas = $this->ambienteRepository->findTurmasWithoutAmbiente($idOfertaCurso);
+        $turmas = $this->ambientevirtualRepository->findTurmasWithoutAmbiente($idOfertaCurso);
 
         return new JsonResponse($turmas, 200);
     }

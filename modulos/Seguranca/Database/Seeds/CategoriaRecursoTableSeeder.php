@@ -46,11 +46,22 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;
         $categoria->save();
+
+        // Categoria Oculto - id = 3
+        $categoria = new CategoriaRecurso();
+        $categoria->ctr_mod_id = 2; // Modulo Geral
+        $categoria->ctr_nome = 'Oculto';
+        $categoria->ctr_descricao = 'Categoria oculta do módulo Geral';
+        $categoria->ctr_icone = 'fa fa-plus';
+        $categoria->ctr_ordem = 0;
+        $categoria->ctr_ativo = 0;
+        $categoria->ctr_visivel = 0;
+        $categoria->save();
     }
 
     private function categoriasModuloAcademico()
     {
-        // Categoria Cadastros - id: 3
+        // Categoria Cadastros - id: 4
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Cadastros';
@@ -61,7 +72,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        // Categoria Processos - id: 4
+        // Categoria Processos - id: 5
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Processos';
@@ -72,7 +83,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        // Categoria Oculto - id: 5
+        // Categoria Oculto - id: 6
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Oculto';
@@ -86,7 +97,7 @@ class CategoriaRecursoTableSeeder extends Seeder
 
     private function categoriasModuloIntegracao()
     {
-        // Categoria Cadastros - id: 6
+        // Categoria Cadastros - id: 7
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 4; // Modulo Integração
         $categoria->ctr_nome = 'Cadastros';
@@ -100,9 +111,9 @@ class CategoriaRecursoTableSeeder extends Seeder
 
     private function categoriasModuloMonitoramento()
     {
-        // Categoria Monitoramento - id: 7
+        // Categoria Monitoramento - id: 8
         $categoria = new CategoriaRecurso();
-        $categoria->ctr_mod_id = 5; // Modulo Integração
+        $categoria->ctr_mod_id = 5; // Modulo Monitoramento
         $categoria->ctr_nome = 'Monitoramento';
         $categoria->ctr_descricao = 'Categoria de monitoramento do módulo de monitoramento';
         $categoria->ctr_icone = 'fa fa-plus';

@@ -20,7 +20,7 @@ class AlunosController extends BaseController
     protected $alunoRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
-    
+
     public function __construct(AlunoRepository $aluno, PessoaRepository $pessoa, DocumentoRepository $documento)
     {
         $this->alunoRepository = $aluno;
@@ -38,7 +38,7 @@ class AlunosController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->alunoRepository->paginateRequest($request->all());
+        $tableData = $this->alunoRepository->paginateRequest($request->all(), true);
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -297,6 +297,7 @@ class AlunosController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
         session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
+
         return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
     }
 }

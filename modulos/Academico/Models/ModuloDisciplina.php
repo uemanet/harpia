@@ -53,7 +53,7 @@ class ModuloDisciplina extends BaseModel
     {
         $values = [
             'numerica' => 'Numérica',
-            'conceitual' => 'Conceito'
+            'conceitual' => 'Conceitual'
         ];
 
         return $values[$value];

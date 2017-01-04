@@ -15,7 +15,14 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_nacionalidade' => $faker->country,
         'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
         'pes_necessidade_especial' => $faker->randomElement(['s', 'n']),
-        'pes_estrangeiro' => $faker->boolean
+        'pes_estrangeiro' => $faker->boolean,
+        'pes_endereco' => $faker->streetName,
+        'pes_numero' => '1',
+        'pes_complemento' => null,
+        'pes_cep' => $faker->postcode,
+        'pes_cidade' => $faker->city,
+        'pes_bairro' => $faker->state,
+        'pes_estado' => 'SP'
     ];
 });
 
@@ -23,6 +30,7 @@ $factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generato
    return [
        'doc_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
        'doc_tpd_id' => 2,
+       'doc_data_expedicao' => $faker->date('d/m/Y'),
        'doc_conteudo' => $faker->creditCardNumber
    ];
 });
@@ -179,18 +187,18 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
         'crs_resolucao' => $faker->sentence(3),
         'crs_autorizacao' => $faker->sentence(3),
         'crs_data_autorizacao' => $faker->date('d/m/Y'),
-        'crs_eixo' => $faker->sentence(3),
-        'crs_habilitacao' => $faker->sentence(3)
+        'crs_eixo' => $faker->word,
+        'crs_habilitacao' => $faker->word
     ];
 });
 
-$factory->define(Modulos\Academico\Models\OfertaCurso::class, function () {
+$factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
     return [
         'ofc_crs_id' => $curso->crs_id,
         'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create(['mtc_crs_id' => $curso->crs_id])->mtc_id,
         'ofc_mdl_id' => 1,
-        'ofc_ano' =>2005
+        'ofc_ano' => $faker->year
     ];
 });
 
@@ -198,6 +206,8 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
     return [
         'mtc_crs_id' => factory(Modulos\Academico\Models\Curso::class)->create()->crs_id,
         'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
+        'mtc_titulo' => $faker->word,
+        'mtc_titulo' => ucfirst($faker->word),
         'mtc_descricao' => $faker->words(5, true),
         'mtc_data' => $faker->date('d/m/Y'),
         'mtc_creditos' => $faker->randomNumber(3),
@@ -255,7 +265,7 @@ $factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Gen
    ];
 });
 
-$factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function () {
+$factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
 
     $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
@@ -273,7 +283,8 @@ $factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function () {
     return [
         'mdc_dis_id' => $disciplina->dis_id,
         'mdc_mdo_id' => $moduloMatriz->mdo_id,
-        'mdc_tipo_avaliacao' => 'numerica'
+        'mdc_tipo_avaliacao' => $faker->randomElement(['numerica', 'conceitual']),
+        'mdc_tipo_disciplina' => $faker->randomElement(['obrigatoria', 'eletiva', 'optativa', 'tcc'])
     ];
 });
 
@@ -326,7 +337,8 @@ $factory->define(Modulos\Academico\Models\Matricula::class, function () {
         'mat_trm_id' => $turma->trm_id,
         'mat_pol_id' => $polo->pol_id,
         'mat_grp_id' => $grupo->grp_id,
-        'mat_situacao' => 'cursando'
+        'mat_situacao' => 'cursando',
+        'mat_modo_entrada' => 'vestibular'
     ];
 });
 
@@ -378,6 +390,16 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
         'mof_ofd_id' => $ofertaDisciplina->ofd_id,
         'mof_tipo_matricula' => 'matriculacomum',
         'mof_status' => 'cursando'
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Generator $faker){
+
+    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+    return [
+        'ucr_usr_id' => 1,
+        'ucr_crs_id' => $curso->crs_id
     ];
 });
 

@@ -25,10 +25,13 @@ class CreateAcdMatriculasTable extends Migration
                 'reprovado',
                 'evadido',
                 'trancado',
-                'transferencia externa',
-                'transferencia interna para',
-                'transferencia interna de',
                 'desistente'
+            ]);
+            $table->enum('mat_modo_entrada', [
+                'vestibular',
+                'transferencia_externa',
+                'transferencia_interna_de',
+                'transferencia_interna_para'
             ]);
             $table->date('mat_data_conclusao')->nullable();
 

@@ -10,7 +10,7 @@ class ModuloTableSeeder extends Seeder
     public function run()
     {
         //Modulo Segurança
-        $modulo = new Modulo;
+        $modulo = new Modulo; // id = 1
         $modulo->mod_rota = 'seguranca';
         $modulo->mod_nome = 'Segurança';
         $modulo->mod_descricao = 'Módulo de gerenciamento de permissões de acesso do usuário';
@@ -20,7 +20,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->save();
 
         //Modulo Geral
-        $modulo = new Modulo;
+        $modulo = new Modulo;  // id = 2
         $modulo->mod_rota = 'geral';
         $modulo->mod_nome = 'Geral';
         $modulo->mod_descricao = 'Módulo de cadastro Geral';
@@ -30,7 +30,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->save();
 
         //Modulo Acadêmico
-        $modulo = new Modulo;
+        $modulo = new Modulo; // id = 3
         $modulo->mod_rota = 'academico';
         $modulo->mod_nome = 'Acadêmico';
         $modulo->mod_descricao = 'Módulo de cadastro Acadêmico';
@@ -40,7 +40,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->save();
 
         //Modulo Integração
-        $modulo = new Modulo;
+        $modulo = new Modulo; // id = 4
         $modulo->mod_rota = 'integracao';
         $modulo->mod_nome = 'Integração';
         $modulo->mod_descricao = 'Módulo de Integração';
@@ -50,7 +50,7 @@ class ModuloTableSeeder extends Seeder
         $modulo->save();
 
         //Modulo monitoramento
-        $modulo = new Modulo;
+        $modulo = new Modulo; // id = 5
         $modulo->mod_rota = 'monitoramento';
         $modulo->mod_nome = 'Monitoramento';
         $modulo->mod_descricao = 'Módulo de Monitoramento';

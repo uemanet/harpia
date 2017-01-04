@@ -11,4 +11,12 @@ class TipoDocumentoRepository extends BaseRepository
     {
         $this->model = $tipo;
     }
+
+    public function listsTipoDocumentoByDocumentoId($documentoId)
+    {
+        return $this->model
+                    ->join('gra_documentos', 'doc_tpd_id', 'tpd_id')
+                    ->where('doc_id', '=', $documentoId)
+                    ->pluck('tpd_nome', 'tpd_id');
+    }
 }

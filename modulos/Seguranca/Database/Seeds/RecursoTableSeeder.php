@@ -104,7 +104,7 @@ class RecursoTableSeeder extends Seeder
     {
         // Recurso Index - id: 8
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 2; // Categoria Geral
+        $recurso->rcs_ctr_id = 2; // Categoria Cadastro - Modulo Geral
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
         $recurso->rcs_descricao = 'Recurso dashboard da categoria Cadastros do módulo Geral';
@@ -115,7 +115,7 @@ class RecursoTableSeeder extends Seeder
 
         // Recurso Pessoas - id: 9
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 2; // Categoria Geral
+        $recurso->rcs_ctr_id = 2; // Categoria Cadastro - Modulo Geral
         $recurso->rcs_nome = 'Pessoas';
         $recurso->rcs_rota = 'pessoas';
         $recurso->rcs_descricao = 'Cadastros de Pessoas';
@@ -126,7 +126,7 @@ class RecursoTableSeeder extends Seeder
 
         // Recurso Titulacoes - id: 10
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 2; // Categoria Geral
+        $recurso->rcs_ctr_id = 2; // Categoria Cadastro - Modulo Geral
         $recurso->rcs_nome = 'Titulações';
         $recurso->rcs_rota = 'titulacoes';
         $recurso->rcs_descricao = 'Recurso titulacoes da categoria cadastro do módulo geral';
@@ -137,11 +137,22 @@ class RecursoTableSeeder extends Seeder
 
         //Recurso Titulacoes Informacoes - id: 11
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Oculto
+        $recurso->rcs_ctr_id = 3; // Categoria Oculto - Modulo Geral
         $recurso->rcs_nome = 'Titulações Informações';
         $recurso->rcs_rota = 'titulacoesinformacoes';
         $recurso->rcs_descricao = 'Recurso titulacoesinformacoes do módulo geral';
         $recurso->rcs_icone = 'fa fa-plus';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 1;
+        $recurso->save();
+
+        // Recurso Documento - id = 12
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 3; // Categoria Oculto - Modulo Geral
+        $recurso->rcs_nome = 'Documentos';
+        $recurso->rcs_rota = 'documentos';
+        $recurso->rcs_descricao = 'Recurso documentos do módulo geral';
+        $recurso->rcs_icone = 'fa fa-address-card-o';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
         $recurso->save();
@@ -151,9 +162,9 @@ class RecursoTableSeeder extends Seeder
     {
         /** Categoria Cadastros */
 
-        // Recurso Dashboard - id: 12
+        // Recurso Dashboard - id: 13
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Academico
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
         $recurso->rcs_descricao = 'Recurso dashboard do módulo acadêmico';
@@ -162,9 +173,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Polos - id: 13
+        // Recurso Polos - id: 14
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Polos';
         $recurso->rcs_rota = 'polos';
         $recurso->rcs_descricao = 'Recurso polos da categoria cadastro do módulo acadêmico';
@@ -173,9 +184,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
 
-        // Recurso Centros - id: 14
+        // Recurso Centros - id: 15
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Centros';
         $recurso->rcs_rota = 'centros';
         $recurso->rcs_descricao = 'Recurso centro do módulo acadêmico';
@@ -184,9 +195,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 3;
         $recurso->save();
 
-        // Recurso Departamentos - id: 15
+        // Recurso Departamentos - id: 16
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Departamentos';
         $recurso->rcs_rota = 'departamentos';
         $recurso->rcs_descricao = 'Recurso departamento do módulo acadêmico';
@@ -195,9 +206,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 4;
         $recurso->save();
 
-        // Recurso Disciplinas - id: 16
+        // Recurso Disciplinas - id: 17
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Disciplinas';
         $recurso->rcs_rota = 'disciplinas';
         $recurso->rcs_descricao = 'Recurso disciplinas do módulo acadêmico';
@@ -206,9 +217,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
-        // Recurso Cursos - id: 17
+        // Recurso Cursos - id: 18
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Cursos';
         $recurso->rcs_rota = 'cursos';
         $recurso->rcs_descricao = 'Recurso curso do módulo acadêmico';
@@ -217,9 +228,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 6;
         $recurso->save();
 
-        // Recurso Periodos Letivos - id: 18
+        // Recurso Periodos Letivos - id: 19
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Períodos Letivos';
         $recurso->rcs_rota = 'periodosletivos';
         $recurso->rcs_descricao = 'Recurso período letivo do módulo acadêmico';
@@ -228,9 +239,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 7;
         $recurso->save();
 
-        // Recurso Ofertas de Cursos - id: 19
+        // Recurso Ofertas de Cursos - id: 20
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Ofertas de Cursos';
         $recurso->rcs_rota = 'ofertascursos';
         $recurso->rcs_descricao = 'Recurso ofertas de cursos do módulo acadêmico na categoria de processos';
@@ -239,9 +250,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Recurso Alunos - id: 20
+        // Recurso Alunos - id: 21
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros->Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Alunos';
         $recurso->rcs_rota = 'alunos';
         $recurso->rcs_descricao = 'Recurso alunos do módulo Acadêmico';
@@ -250,9 +261,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 9;
         $recurso->save();
 
-        // Recurso Professores - id: 21
+        // Recurso Professores - id: 22
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Professores';
         $recurso->rcs_rota = 'professores';
         $recurso->rcs_descricao = 'Recurso professores do módulo Acadêmico';
@@ -261,9 +272,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 10;
         $recurso->save();
 
-        // Recurso Tutores - id: 22
+        // Recurso Tutores - id: 23
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 3; // Categoria Cadastros
+        $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Acadêmico
         $recurso->rcs_nome = 'Tutores';
         $recurso->rcs_rota = 'tutores';
         $recurso->rcs_descricao = 'Recurso tutores do módulo Acadêmico';
@@ -274,7 +285,7 @@ class RecursoTableSeeder extends Seeder
 
         /** Categoria Processos */
 
-        // Recurso Vinculos - id: 23
+        // Recurso Vinculos - id: 24
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 4; // Categoria Academico  -> Processos
         $recurso->rcs_nome = 'Vínculos';
@@ -285,9 +296,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Matricular Aluno No Curso - id: 24
+        // Recurso Matricular Aluno No Curso - id: 25
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 4; // Categoria Processos do Módulo Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
         $recurso->rcs_nome = 'Matricular aluno no curso';
         $recurso->rcs_rota = 'matricularalunocurso';
         $recurso->rcs_descricao = 'Recurso Matricular aluno no curso do módulo Acadêmico';
@@ -296,9 +307,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
 
-        // Recurso Ofertar Disciplina - id: 25
+        // Recurso Ofertar Disciplina - id: 26
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 4; // Categoria Processos do Módulo Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
         $recurso->rcs_nome = 'Ofertar Disciplina';
         $recurso->rcs_rota = 'ofertasdisciplinas';
         $recurso->rcs_descricao = 'Recurso Ofertar Disciplina';
@@ -307,9 +318,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 3;
         $recurso->save();
 
-        // Recurso Matricular Aluno na Disciplina - id: 26
+        // Recurso Matricular Aluno na Disciplina - id: 27
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 4; // Categoria Processos do Módulo Acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
         $recurso->rcs_nome = 'Matricular Aluno na Disciplina';
         $recurso->rcs_rota = 'matricularalunodisciplina';
         $recurso->rcs_descricao = 'Recurso Matricular Aluno na Disciplina';
@@ -318,9 +329,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 4;
         $recurso->save();
 
-        // Recurso Lançamento de TCC - id: 27
+        // Recurso Lançamento de TCC - id: 28
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 4; // Categoria Processos no módulo acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
         $recurso->rcs_nome = 'Lançamento de TCC';
         $recurso->rcs_rota = 'lancamentostccs';
         $recurso->rcs_descricao = 'Recurso lançamento de tcc do módulo acadêmico';
@@ -329,9 +340,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
-        // Recurso Conclusão de Curso - id: 28
+        // Recurso Conclusão de Curso - id: 29
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 4; // Categoria Processos no módulo acadêmico
+        $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
         $recurso->rcs_nome = 'Conclusão de Curso';
         $recurso->rcs_rota = 'conclusaocurso';
         $recurso->rcs_descricao = 'Recurso Conclusão de Curso do Módulo Acadêmico';
@@ -342,9 +353,9 @@ class RecursoTableSeeder extends Seeder
 
         /* Categoria Oculto */
 
-        // Recurso Tutor do Grupo - id: 29
+        // Recurso Tutor do Grupo - id: 30
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Oculto
+        $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Tutor do Grupo';
         $recurso->rcs_rota = 'tutoresgrupos';
         $recurso->rcs_descricao = 'Recurso tutoresgrupos do módulo acadêmico';
@@ -353,9 +364,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Matrizes Curriculares - id: 30
+        // Recurso Matrizes Curriculares - id: 31
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Oculto
+        $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Matrizes Curriculares';
         $recurso->rcs_rota = 'matrizescurriculares';
         $recurso->rcs_descricao = 'Recurso matriz curricular do módulo acadêmico';
@@ -364,9 +375,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
-        // Recurso Grupos - id: 31
+        // Recurso Grupos - id: 32
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Oculto
+        $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Grupos';
         $recurso->rcs_rota = 'grupos';
         $recurso->rcs_descricao = 'Recurso grupo do módulo acadêmico';
@@ -375,9 +386,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Recurso Turmas - id: 32
+        // Recurso Turmas - id: 33
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Oculto
+        $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Turmas';
         $recurso->rcs_rota = 'turmas';
         $recurso->rcs_descricao = 'Recurso turmas do módulo acadêmico';
@@ -386,9 +397,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Recurso Módulos das Matrizes - id: 33
+        // Recurso Módulos das Matrizes - id: 34
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 5; // Categoria Oculto
+        $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Módulos das Matrizes';
         $recurso->rcs_rota = 'modulosmatrizes';
         $recurso->rcs_descricao = 'Recurso Módulos Matriz do módulo acadêmico';
@@ -400,9 +411,9 @@ class RecursoTableSeeder extends Seeder
 
     private function recursosModuloIntegracao()
     {
-        // Recurso Dashboard - id: 34
+        // Recurso Dashboard - id: 35
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 6; // Categoria Integracao
+        $recurso->rcs_ctr_id = 7; // Categoria Cadastros - Módulo Integração
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
         $recurso->rcs_descricao = 'Recurso dashboard do módulo integração';
@@ -411,9 +422,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso AmbientesVirtuais - id: 35
+        // Recurso AmbientesVirtuais - id: 36
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 6; // Categoria Integracao
+        $recurso->rcs_ctr_id = 7; // Categoria Cadastros - Módulo Integracao
         $recurso->rcs_nome = 'Ambientes Virtuais';
         $recurso->rcs_rota = 'ambientesvirtuais';
         $recurso->rcs_descricao = 'Recurso ambientes virtuais do módulo integração';
@@ -425,9 +436,9 @@ class RecursoTableSeeder extends Seeder
 
     private function recursosModuloMonitoramento()
     {
-        // Recurso Dashboard - id: 36
+        // Recurso Dashboard - id: 37
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 7; // Categoria Monitoramento
+        $recurso->rcs_ctr_id = 8; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Dashboard';
         $recurso->rcs_rota = 'index';
         $recurso->rcs_descricao = 'Recurso dashboard do módulo monitoramento';
@@ -436,9 +447,9 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Tempo Online - id: 37
+        // Recurso Tempo Online - id: 38
         $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 7; // Categoria Monitoramento
+        $recurso->rcs_ctr_id = 8; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Tempo Online';
         $recurso->rcs_rota = 'tempoonline';
         $recurso->rcs_descricao = 'Recurso tempo online do módulo monitoramento';
@@ -446,5 +457,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 1;
         $recurso->save();
+
     }
 }
