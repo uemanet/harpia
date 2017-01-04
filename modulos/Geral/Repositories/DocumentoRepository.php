@@ -67,11 +67,11 @@ class DocumentoRepository extends BaseRepository
      */
     public function update(array $data, $id, $attribute = "id")
     {
-      if ($data['doc_data_expedicao'] != ""){
-        $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
-      }else{
-        $data['doc_data_expedicao'] = null;
-      }
+        if ($data['doc_data_expedicao'] != "") {
+            $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
+        } else {
+            $data['doc_data_expedicao'] = null;
+        }
         return $this->model->where($attribute, '=', $id)->update($data);
     }
 

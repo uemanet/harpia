@@ -94,7 +94,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesMonitoramentoDashboard();
 
         $this->createPermissoesMonitoramentoTempoOnline();
-
     }
 
     /** Permissões do Módulo Segurança */
@@ -1050,5 +1049,4 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão monitorar do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
     }
-
 }

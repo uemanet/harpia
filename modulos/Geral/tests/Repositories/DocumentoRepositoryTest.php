@@ -148,7 +148,6 @@ class DocumentoRepositoryTest extends TestCase
 
     public function testFind()
     {
-
         $dados = factory(Modulos\Geral\Models\Documento::class)->create();
 
         $data = $dados->toArray();
