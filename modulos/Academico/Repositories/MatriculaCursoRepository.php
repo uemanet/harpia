@@ -94,7 +94,7 @@ class MatriculaCursoRepository extends BaseRepository
 
         return false;
     }
-    
+
     public function verifyExistsVagasByTurma($turmaId)
     {
         $result = $this->model
@@ -250,25 +250,59 @@ class MatriculaCursoRepository extends BaseRepository
 
     public function findMatriculaIdByTurmaAluno($alunoId, $turmaId)
     {
+        $matriculadoemtcc = null;
+
         $matricula = DB::table('acd_matriculas')
             ->where('mat_trm_id', '=', $turmaId)
             ->where('mat_alu_id', '=', $alunoId)
             ->first();
+
+        if($matricula != null){
+            $matriculadoemtcc = DB::table('acd_modulos_disciplinas')
+                ->join('acd_ofertas_disciplinas', 'ofd_mdc_id', '=', 'mdc_id')
+                ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
+                ->where('mdc_tipo_disciplina', '=', 'tcc')
+                ->where('mof_mat_id', '=', $matricula->mat_id)->first();
+        }
+
+        if($matriculadoemtcc === null){
+          return null;
+
+        }
 
         return $matricula;
     }
 
     public function findDadosByTurmaId($turmaId)
     {
+
+        $dados = DB::table('acd_matriculas_ofertas_disciplinas')
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
+            ->get();
+
+        $matriculasId = [];
+
+        foreach ($dados as $key => $value) {
+            $matriculasId[] = $value->mof_mat_id;
+        }
+
         $dados = DB::table('acd_matriculas')
             ->join('acd_alunos', function ($join) {
-                $join->on('mat_alu_id', '=', 'alu_id');
+              $join->on('mat_alu_id', '=', 'alu_id');
             })
             ->join('gra_pessoas', function ($join) {
-                $join->on('alu_pes_id', '=', 'pes_id');
+              $join->on('alu_pes_id', '=', 'pes_id');
             })
             ->where('mat_trm_id', '=', $turmaId)
-            ->orderBy('pes_nome', 'asc')->get();
+            ->whereIn('mat_id', $matriculasId)
+            ->orderBy('pes_nome', 'asc')
+            ->get();
 
         return $dados;
     }

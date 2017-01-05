@@ -50,6 +50,7 @@ class LancamentosTccsController extends BaseController
             $tabela = $tableData->columns(array(
                 'trm_id' => '#',
                 'trm_nome' => 'Turma',
+                'crs_nome' => 'Curso',
                 'ofc_ano' => 'Ano da Oferta',
                 'trm_action' => ''
 
@@ -94,6 +95,11 @@ class LancamentosTccsController extends BaseController
         $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($turmaId);
 
 
+        if ($disciplina === null) {
+            flash()->error('Turma sem alunos matriculados em disciplina do tipo TCC');
+            return redirect()->back();
+        }
+
         return view('Academico::lancamentostccs.alunosturma', compact('turma', 'dados', 'disciplina'));
     }
 
@@ -110,12 +116,18 @@ class LancamentosTccsController extends BaseController
 
         $matricula = $this->matriculacursoRepository->findMatriculaIdByTurmaAluno($alunoId, $turmaId);
 
+        if (!$matricula) {
+            flash()->error('Aluno não está matriculado na disciplina de TCC!');
+            return redirect()->back();
+        }
+
         if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->back();
         }
 
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
+
         $tiposdetcc = [
             'artigo' => 'Artigo',
             'monografia' => 'Monografia',
