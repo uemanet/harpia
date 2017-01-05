@@ -4,6 +4,8 @@ namespace Modulos\Academico\Http\Middleware;
 
 use Auth;
 use Closure;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
@@ -28,6 +30,8 @@ class Vinculo
     private $ofertaDisciplinaRepository;
     private $matriculaCursoRepository;
 
+    private $defaultResponse;
+
     public function __construct(VinculoRepository $vinculoRepository,
                                 MatrizCurricularRepository $matrizCurricularRepository,
                                 OfertaCursoRepository $ofertaCursoRepository,
@@ -49,6 +53,7 @@ class Vinculo
         $this->alunoRepository              = $alunoRepository;
         $this->ofertaDisciplinaRepository   = $ofertaDisciplinaRepository;
         $this->matriculaCursoRepository     = $matriculaCursoRepository;
+        $this->defaultResponse              = "Você não tem autorização para acessar este recurso. Contate o Administrador.";
     }
 
     public function handle($request, Closure $next)
@@ -87,7 +92,7 @@ class Vinculo
                 return $this->handleAsyncMatriculaDisciplina($request, $next);
                 break;
             default:
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                flash()->error($this->defaultResponse);
                 return redirect()->back();
         }
     }
@@ -143,7 +148,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.cursos.index');
     }
 
@@ -167,14 +172,14 @@ class Vinculo
                 return $next($request);
             }
 
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
             return redirect()->route('academico.cursos.index');
         }
 
         $matriz = $this->matrizCurricularRepository->find($id);
 
         if (!$matriz) {
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
 
             return redirect()->route('academico.cursos.index');
         }
@@ -183,7 +188,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.cursos.index');
     }
 
@@ -205,7 +210,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.ofertascursos.index');
     }
 
@@ -237,7 +242,7 @@ class Vinculo
                 return $next($request);
             }
 
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
 
             return redirect()->route('academico.cursos.index');
         }
@@ -245,7 +250,7 @@ class Vinculo
         $curso = $this->turmaRepository->getCurso($id);
 
         if (!$curso) {
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
 
             return redirect()->route('academico.cursos.index');
         }
@@ -254,7 +259,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
 
         return redirect()->route('academico.cursos.index');
     }
@@ -278,7 +283,7 @@ class Vinculo
             $curso = $this->turmaRepository->getCurso($id);
 
             if (!$curso) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                flash()->error($this->defaultResponse);
                 return redirect()->route('academico.cursos.index');
             }
 
@@ -286,7 +291,7 @@ class Vinculo
                 return $next($request);
             }
 
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
             return redirect()->route('academico.cursos.index');
         }
 
@@ -297,7 +302,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.cursos.index');
     }
 
@@ -321,7 +326,7 @@ class Vinculo
             $matriz = $this->matrizCurricularRepository->find($id);
 
             if (!$matriz) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                flash()->error($this->defaultResponse);
                 return redirect()->route('academico.cursos.index');
             }
 
@@ -329,7 +334,7 @@ class Vinculo
                 return $next($request);
             }
 
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
             return redirect()->route('academico.cursos.index');
         }
 
@@ -340,7 +345,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.cursos.index');
     }
 
@@ -363,14 +368,14 @@ class Vinculo
             $grupo = $this->grupoRepository->find($id);
 
             if (!$grupo) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                flash()->error($this->defaultResponse);
                 return redirect()->route('academico.cursos.index');
             }
 
             $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
 
             if (!$curso) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                flash()->error($this->defaultResponse);
                 return redirect()->route('academico.cursos.index');
             }
 
@@ -379,7 +384,7 @@ class Vinculo
                 return $next($request);
             }
 
-            flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+            flash()->error($this->defaultResponse);
             return redirect()->route('academico.cursos.index');
         }
 
@@ -391,7 +396,7 @@ class Vinculo
             return $next($request);
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.cursos.index');
     }
 
@@ -426,7 +431,7 @@ class Vinculo
             }
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.alunos.index');
     }
 
@@ -450,7 +455,7 @@ class Vinculo
 
             // Aluno nao esta matriculado em curso algum
             if (empty($cursos)) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+                flash()->error($this->defaultResponse);
                 return redirect()->route('academico.matriculasofertasdisciplinas.index');
             }
 
@@ -462,7 +467,7 @@ class Vinculo
             }
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
+        flash()->error($this->defaultResponse);
         return redirect()->route('academico.matriculasofertasdisciplinas.index');
     }
 
@@ -483,8 +488,8 @@ class Vinculo
 
             // Aluno nao esta matriculado em curso algum
             if (empty($cursos)) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
-                return redirect()->route('academico.matriculasofertasdisciplinas.index');
+                // Sem autorizacao para o recurso
+                return new JsonResponse($this->defaultResponse, Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
             }
 
             // Verifica todos os cursos do aluno e o vinculo do usuario atual com cada um destes
@@ -505,8 +510,8 @@ class Vinculo
             $curso = $this->turmaRepository->getCurso($matricula->mat_trm_id);
 
             if (!$this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
-                flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
-                return redirect()->route('academico.matriculasofertasdisciplinas.index');
+                // Sem autorizacao para o recurso
+                return new JsonResponse($this->defaultResponse, Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
             }
 
             // Verifica os vinculos nas ofertas
@@ -520,7 +525,7 @@ class Vinculo
             }
         }
 
-        flash()->error('Você não tem autorização para acessar este recurso. Contate o Administrador.');
-        return redirect()->route('academico.matriculasofertasdisciplinas.index');
+        // Sem autorizacao para o recurso
+        return new JsonResponse($this->defaultResponse, Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
     }
 }
