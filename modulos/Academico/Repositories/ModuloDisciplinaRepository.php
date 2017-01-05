@@ -112,6 +112,9 @@ class ModuloDisciplinaRepository extends BaseRepository
             ->join('acd_ofertas_cursos', function ($join) {
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
+            })
             ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->groupby('trm_id')->distinct();
 
