@@ -322,10 +322,10 @@
 
                         switch (xhr.status) {
                             case 400:
-                                toastr.error(xhr.responseText, null, {progressBar: true});
+                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
                                 break;
                             default:
-                                toastr.error(xhr.responseText, null, {progressBar: true});
+                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
 
                                 result = false;
                         }
