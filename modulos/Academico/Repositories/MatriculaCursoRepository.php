@@ -250,10 +250,25 @@ class MatriculaCursoRepository extends BaseRepository
 
     public function findMatriculaIdByTurmaAluno($alunoId, $turmaId)
     {
+        $matriculadoemtcc = null;
+
         $matricula = DB::table('acd_matriculas')
             ->where('mat_trm_id', '=', $turmaId)
             ->where('mat_alu_id', '=', $alunoId)
             ->first();
+
+        if($matricula != null){
+            $matriculadoemtcc = DB::table('acd_modulos_disciplinas')
+                ->join('acd_ofertas_disciplinas', 'ofd_mdc_id', '=', 'mdc_id')
+                ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
+                ->where('mdc_tipo_disciplina', '=', 'tcc')
+                ->where('mof_mat_id', '=', $matricula->mat_id)->first();
+        }
+
+        if($matriculadoemtcc === null){
+          return null;
+
+        }
 
         return $matricula;
     }
