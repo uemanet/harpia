@@ -30,7 +30,8 @@ class DocumentosController extends BaseController
         $this->anexoRepository = $anexoRepository;
     }
 
-    public function getCreate($pessoaId, Request $request){
+    public function getCreate($pessoaId, Request $request)
+    {
         $url = $request->session()->get('last_acad_route');
         $id = $request->session()->get('last_id');
 
@@ -45,10 +46,11 @@ class DocumentosController extends BaseController
         return view('Geral::documentos.create', compact('pessoa', 'tiposdocumentos'));
     }
 
-    public function getDocumentoAnexo($documentoId){
+    public function getDocumentoAnexo($documentoId)
+    {
         $documento = $this->documentoRepository->find($documentoId);
 
-        if (!$documento){
+        if (!$documento) {
             flash()->error('Documento não existe.');
             return redirect()->back();
         }
@@ -201,9 +203,4 @@ class DocumentosController extends BaseController
             return redirect()->back();
         }
     }
-
-
-
-
-    
 }

@@ -257,7 +257,7 @@ class MatriculaCursoRepository extends BaseRepository
             ->where('mat_alu_id', '=', $alunoId)
             ->first();
 
-        if($matricula != null){
+        if ($matricula != null) {
             $matriculadoemtcc = DB::table('acd_modulos_disciplinas')
                 ->join('acd_ofertas_disciplinas', 'ofd_mdc_id', '=', 'mdc_id')
                 ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
@@ -265,9 +265,8 @@ class MatriculaCursoRepository extends BaseRepository
                 ->where('mof_mat_id', '=', $matricula->mat_id)->first();
         }
 
-        if($matriculadoemtcc === null){
-          return null;
-
+        if ($matriculadoemtcc === null) {
+            return null;
         }
 
         return $matricula;
@@ -275,7 +274,6 @@ class MatriculaCursoRepository extends BaseRepository
 
     public function findDadosByTurmaId($turmaId)
     {
-
         $dados = DB::table('acd_matriculas_ofertas_disciplinas')
             ->join('acd_ofertas_disciplinas', function ($join) {
                 $join->on('mof_ofd_id', '=', 'ofd_id');
@@ -294,10 +292,10 @@ class MatriculaCursoRepository extends BaseRepository
 
         $dados = DB::table('acd_matriculas')
             ->join('acd_alunos', function ($join) {
-              $join->on('mat_alu_id', '=', 'alu_id');
+                $join->on('mat_alu_id', '=', 'alu_id');
             })
             ->join('gra_pessoas', function ($join) {
-              $join->on('alu_pes_id', '=', 'pes_id');
+                $join->on('alu_pes_id', '=', 'pes_id');
             })
             ->where('mat_trm_id', '=', $turmaId)
             ->whereIn('mat_id', $matriculasId)
