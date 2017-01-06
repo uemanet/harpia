@@ -41,7 +41,8 @@ class DocumentosController extends BaseController
             flash()->error('Pessoa não existe');
             return redirect()->back();
         }
-        $tiposdocumentos = $this->tipodocumentoRepository->lists('tpd_id', 'tpd_nome');
+
+        $tiposdocumentos = $this->tipodocumentoRepository->listsTiposDocumentosWithoutPessoa($pessoaId);
 
         return view('Geral::documentos.create', compact('pessoa', 'tiposdocumentos'));
     }
