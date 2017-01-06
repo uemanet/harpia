@@ -39,14 +39,14 @@
     <div class="form-group col-md-2 @if ($errors->has('tin_anoinicio')) has-error @endif">
         {!! Form::label('tin_anoinicio', 'Ano Inicio*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::number('tin_anoinicio', old('tin_anoinicio'), ['class' => 'form-control']) !!}
+            {!! Form::number('tin_anoinicio', old('tin_anoinicio'), ['min' => 1, 'max' => 9999, 'maxlength' => 4 ,'class' => 'form-control']) !!}
             @if ($errors->has('tin_anoinicio')) <p class="help-block">{{ $errors->first('tin_anoinicio') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-2 @if ($errors->has('tin_anofim')) has-error @endif">
         {!! Form::label('tin_anofim', 'Ano Fim', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::number('tin_anofim', old('tin_anofim'), ['class' => 'form-control']) !!}
+            {!! Form::number('tin_anofim', old('tin_anofim'), ['min' => 1, 'max' => 9999, 'maxlength' => 4, 'class' => 'form-control']) !!}
             @if ($errors->has('tin_anofim')) <p class="help-block">{{ $errors->first('tin_anofim') }}</p> @endif
         </div>
     </div>
