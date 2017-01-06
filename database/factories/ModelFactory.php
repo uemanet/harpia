@@ -1,7 +1,7 @@
 <?php
 
 /** Factories Modulo Geral */
-$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker) {
+$factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $faker){
     return [
         'pes_nome' => $faker->name,
         'pes_sexo' => $faker->randomElement(['M', 'F']),
