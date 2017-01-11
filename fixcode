@@ -10,3 +10,9 @@ bin/php-cs-fixer fix app --level=psr2
 
 echo "Fixing modulos folder"
 bin/php-cs-fixer fix modulos --level=psr2
+
+echo "Fixing database folder"
+bin/php-cs-fixer fix database --level=psr2
+
+echo "Fixing config folder"
+bin/php-cs-fixer fix config --level=psr2

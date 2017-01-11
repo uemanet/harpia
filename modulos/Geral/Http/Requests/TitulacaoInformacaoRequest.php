@@ -24,7 +24,7 @@ class TitulacaoInformacaoRequest extends BaseRequest
      */
     public function rules()
     {
-      $rules = [
+        $rules = [
             'tin_tit_id' => 'required',
             'tin_titulo' => 'required|min:3|max:150',
             'tin_instituicao' => 'required|min:3|max:150',

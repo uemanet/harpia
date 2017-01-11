@@ -27,7 +27,7 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
 });
 
 $factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generator $faker) {
-   return [
+    return [
        'doc_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
        'doc_tpd_id' => 2,
        'doc_data_expedicao' => $faker->date('d/m/Y'),
@@ -45,7 +45,7 @@ $factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $f
     ];
 });
 
-$factory->define(Modulos\Geral\Models\Configuracao::class, function (Faker\Generator $faker){
+$factory->define(Modulos\Geral\Models\Configuracao::class, function (Faker\Generator $faker) {
     return [
         'cnf_mod_id' => random_int(1, 4),
         'cnf_nome' => $faker->name,
@@ -53,7 +53,7 @@ $factory->define(Modulos\Geral\Models\Configuracao::class, function (Faker\Gener
     ];
 });
 
-$factory->define(Modulos\Geral\Models\Titulacao::class, function(Faker\Generator $faker){
+$factory->define(Modulos\Geral\Models\Titulacao::class, function (Faker\Generator $faker) {
     return [
         'tit_nome' => $faker->word,
         'tit_peso' => $faker->word,
@@ -61,7 +61,7 @@ $factory->define(Modulos\Geral\Models\Titulacao::class, function(Faker\Generator
     ];
 });
 
-$factory->define(Modulos\Geral\Models\TitulacaoInformacao::class, function(Faker\Generator $faker){
+$factory->define(Modulos\Geral\Models\TitulacaoInformacao::class, function (Faker\Generator $faker) {
     return [
         'tin_pes_id' =>  1,
         'tin_tit_id' =>  1,
@@ -140,15 +140,15 @@ $factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Genera
 });
 
 /** Factories Modulo Academico */
-$factory->define(Modulos\Academico\Models\Departamento::class, function(Faker\Generator $faker){
-   return [
+$factory->define(Modulos\Academico\Models\Departamento::class, function (Faker\Generator $faker) {
+    return [
        'dep_cen_id' => factory(Modulos\Academico\Models\Centro::class)->create()->cen_id,
        'dep_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
        'dep_nome' => $faker->word
    ];
 });
 
-$factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generator $faker){
+$factory->define(Modulos\Academico\Models\Centro::class, function (Faker\Generator $faker) {
     return [
         'cen_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'cen_nome' => $faker->word,
@@ -156,13 +156,13 @@ $factory->define(Modulos\Academico\Models\Centro::class, function(Faker\Generato
     ];
 });
 
-$factory->define(Modulos\Academico\Models\Professor::class, function(Faker\Generator $faker){
+$factory->define(Modulos\Academico\Models\Professor::class, function (Faker\Generator $faker) {
     return [
         'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
     ];
 });
 
-$factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function(Faker\Generator $faker){
+$factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function (Faker\Generator $faker) {
     return [
         'per_nome' => $faker->word,
         'per_inicio' => $faker->date('d/m/Y'),
@@ -217,7 +217,7 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
 });
 
 $factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
-   return [
+    return [
        'grp_trm_id' => factory(Modulos\Academico\Models\Turma::class)->create()->trm_id,
        'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
        'grp_nome' => $faker->name
@@ -255,8 +255,8 @@ $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generato
 });
 
 $factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
-   return [
-       'dis_nvc_id' => $faker->randomElement([1,2,3,4,5]),
+    return [
+       'dis_nvc_id' => $faker->randomElement([1, 2, 3, 4, 5]),
        'dis_nome' => $faker->sentence(3),
        'dis_carga_horaria' => $faker->randomNumber(2),
        'dis_bibliografia' => $faker->text(),
@@ -289,7 +289,6 @@ $factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function (Fak
 });
 
 $factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function () {
-
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
 
     $ofertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
@@ -393,8 +392,7 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
     ];
 });
 
-$factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Generator $faker){
-
+$factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
 
     return [

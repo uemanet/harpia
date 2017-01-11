@@ -50,7 +50,8 @@
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
             "php artisan optimize",
-            "chmod +x fixcode"
+            "chmod +x fixcode",
+            "bash bin/setup.sh"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
