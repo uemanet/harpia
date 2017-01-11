@@ -8,4 +8,6 @@ Homestead.json
 .idea
 .DS_STORE
 /bin
+!*/bin/pre-commit
+!*/bin/setup.sh
 *_reports
