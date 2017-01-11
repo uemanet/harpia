@@ -87,7 +87,7 @@ class MatriculaCursoController extends BaseController
     {
         try {
             $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
-            //dd($result);
+            
             flash()->{$result['type']}($result['message']);
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
         } catch (\Exception $e) {
