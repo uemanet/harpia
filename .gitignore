@@ -6,8 +6,6 @@ Homestead.yaml
 Homestead.json
 .env
 .idea
-.DS_STORE
 /bin
-!*/bin/pre-commit
-!*/bin/setup.sh
+.DS_STORE
 *_reports
