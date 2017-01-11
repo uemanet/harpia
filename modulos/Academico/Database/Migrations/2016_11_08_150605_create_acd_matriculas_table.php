@@ -16,6 +16,7 @@ class CreateAcdMatriculasTable extends Migration
             $table->increments('mat_id');
             $table->integer('mat_alu_id')->unsigned();
             $table->integer('mat_trm_id')->unsigned();
+            $table->integer('mat_ltc_id')->unsigned()->nullable();
             $table->integer('mat_pol_id')->unsigned()->nullable();
             $table->integer('mat_grp_id')->unsigned()->nullable();
             $table->enum('mat_situacao', [
@@ -24,15 +25,19 @@ class CreateAcdMatriculasTable extends Migration
                 'reprovado',
                 'evadido',
                 'trancado',
-                'transferencia externa',
-                'transferencia interna para',
-                'transferencia interna de',
                 'desistente'
+            ]);
+            $table->enum('mat_modo_entrada', [
+                'vestibular',
+                'transferencia_externa',
+                'transferencia_interna_de',
+                'transferencia_interna_para'
             ]);
             $table->date('mat_data_conclusao')->nullable();
 
             $table->timestamps();
 
+            $table->foreign('mat_ltc_id')->references('ltc_id')->on('acd_lancamentos_tccs');
             $table->foreign('mat_alu_id')->references('alu_id')->on('acd_alunos');
             $table->foreign('mat_trm_id')->references('trm_id')->on('acd_turmas');
             $table->foreign('mat_pol_id')->references('pol_id')->on('acd_polos');

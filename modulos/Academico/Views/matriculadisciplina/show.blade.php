@@ -27,15 +27,19 @@
                 <div class="form-group col-md-3">
                     {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
                     <select id="crs_id" class="form-control">
-                        <option>Selecione o curso</option>
-                        @foreach($matriculas as $matricula)
-                            <option value="{{$matricula->crs_id}}" data-trm-id={{$matricula->trm_id}} data-mat-id={{$matricula->mat_id}}>{{$matricula->crs_nome}}</option>
+                        @if($matriculas->count())
+                            <option>Selecione o curso</option>
+                            @foreach($matriculas as $matricula)
+                                <option value="{{$matricula->crs_id}}" data-trm-id={{$matricula->trm_id}} data-mat-id={{$matricula->mat_id}}>{{$matricula->crs_nome}}</option>
                             @endforeach
+                        @else
+                            <option value="">Nenhuma matrícula disponível</option>
+                        @endif
                     </select>
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('ofd_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_per_id', $periodoletivo, null, ['class' => 'form-control', 'placeholder' => 'Escolha o periodo']) !!}
+                    {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
@@ -116,6 +120,28 @@
                 localizarDisciplinasOfertadas(turma, periodo, alunoId);
             });
 
+            $('#crs_id').change(function () {
+                var turmaId = $(this).find('option:selected').attr('data-trm-id');
+                var selectPeriodos = $('#ofd_per_id');
+
+                if(turmaId) {
+                    $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+                    .done(function (response) {
+                        selectPeriodos.empty();
+                        if(!$.isEmptyObject(response))
+                        {
+                            selectPeriodos.append("<option value=''>Selecione um periodo</option>");
+                            $.each(response, function (key, obj) {
+                               selectPeriodos.append("<option value='"+obj.per_id+"'>"+obj.per_nome+"</option>");
+                            });
+                        } else {
+                            selectPeriodos.append("<option value=''>Sem períodos disponíveis</option>");
+                        }
+                    });
+                }
+            });
+
+            // evento para selecionar todos os checkboxes
             $(document).on('click', '#select_all',function(event) {
                 if(this.checked) {
                     $(':checkbox').each(function() {
@@ -129,6 +155,7 @@
                 }
             });
 
+            // evento do botão de confirmar a matricula na(s) disciplina(s)
             $(document).on('click', '#confirmMatricula', function (e) {
 
                 var quant = $('.ofertas:checked').length;
@@ -148,35 +175,29 @@
             });
 
             var localizarDisciplinasOfertadas = function (turmaId, periodoId, alunoId) {
-                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
-                        .done(function (data) {
-                            boxDisciplinasNaoMatriculadas.removeClass('hidden');
-                            boxDisciplinasMatriculadas.removeClass('hidden');
-                            boxFormDisciplinas.show();
 
-                            boxDisciplinasNaoMatriculadas.find('.conteudo').empty();
-                            boxDisciplinasMatriculadas.find('.conteudo').empty();
+                // pega as disciplinas oferecidas no qual o aluno não está matriculado
+                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinasnotcursadasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
+                .done(function (data) {
+                    boxDisciplinasNaoMatriculadas.removeClass('hidden');
 
-                            var disciplinasOfertadas = new Array();
-                            var disciplinasCursadas = new Array();
+                    boxDisciplinasNaoMatriculadas.find('.conteudo').empty();
 
-                            if(!$.isEmptyObject(data)) {
-                                $.each(data, function (key, obj) {
-                                   if(obj.matriculado) {
-                                       disciplinasCursadas.push(obj);
-                                   } else {
-                                       disciplinasOfertadas.push(obj);
-                                   }
-                                });
-                            }
+                    renderTableDisciplinasNaoMatriculadas(data);
+                });
 
-                            renderTableDisciplinasNaoMatriculadas(disciplinasOfertadas, disciplinasCursadas.length);
-                            renderTableDisciplinasMatriculadas(disciplinasCursadas);
-                        });
+                // pega as disciplinas oferecidas no qual o aluno está matriculado
+                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/findalldisciplinascursadasbyalunoturmaperiodo/"+alunoId+"/"+turmaId+"/"+periodoId)
+                .done(function (data) {
+                    boxDisciplinasMatriculadas.removeClass('hidden');
+
+                    boxDisciplinasMatriculadas.find('.conteudo').empty();
+
+                    renderTableDisciplinasMatriculadas(data);
+                });
             };
 
-            var renderTableDisciplinasNaoMatriculadas = function (disciplinas, quantDisciplinasCursadas) {
-
+            var renderTableDisciplinasNaoMatriculadas = function (disciplinas) {
                 if(disciplinas.length) {
 
                     var table = '';
@@ -194,13 +215,21 @@
                     $.each(disciplinas, function (key, obj) {
                         table += '<tr>';
 
-                        table += "<td><label><input type='checkbox' class='icheckbox_minimal-blue ofertas' value='"+obj.ofd_id+"'></label></td>";
+                        if(obj.disponivel) {
+                            table += "<td><label><input type='checkbox' class='icheckbox_minimal-blue ofertas' value='"+obj.ofd_id+"'></label></td>";
+                        } else {
+                            table += "<td></td>";
+                        }
                         table += "<td>"+obj.dis_nome+"</td>";
                         table += "<td>"+obj.dis_carga_horaria+"</td>";
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        table += "<td><span class='label label-danger'>Não Matriculado</span></td>";
+                        if(obj.disponivel) {
+                            table += "<td><span class='label label-success'>Disponível</span></td>";
+                        } else {
+                            table += "<td><span class='label label-danger'>Não Disponível</span></td>";
+                        }
                         table += '</tr>';
                     });
 
@@ -214,16 +243,11 @@
                     boxDisciplinasNaoMatriculadas.find('.conteudo').append(table);
                     boxDisciplinasNaoMatriculadas.find('.conteudo').append(button);
                 } else {
-                    if(quantDisciplinasCursadas > 0) {
-                        boxDisciplinasNaoMatriculadas.find('.conteudo').append('<p>Aluno já está matriculado em todas as disciplinas ofertadas para este período</p>');
-                    } else {
-                        boxDisciplinasNaoMatriculadas.find('.conteudo').append('<p>Não há disponibilidade de disciplinas ofertadas para este período</p>');
-                    }
+                        boxDisciplinasNaoMatriculadas.find('.conteudo').append('<p>Não há disciplinas disponíveis para este período</p>');
                 }
             };
 
             var renderTableDisciplinasMatriculadas = function (disciplinas) {
-
                 if(disciplinas.length) {
 
                     var table = '';
@@ -244,7 +268,19 @@
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        table += "<td><span class='label label-success'>Matriculado</span></td>";
+                        if(obj.mof_situacao_matricula == 'cursando') {
+                            table += "<td><span class='label label-info'>Cursando</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'cancelado') {
+                            table += "<td><span class='label label-warning'>Cancelado</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'aprovado_media') {
+                            table += "<td><span class='label label-success'>Aprovado por Media</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'aprovado_final') {
+                            table += "<td><span class='label label-success'>Aprovado por Final</span></td>";
+                        } else if(obj.mof_situacao_matricula == 'reprovado_media') {
+                            table += "<td><span class='label label-danger'>Reprovado por Media</span></td>";
+                        } else {
+                            table += "<td><span class='label label-danger'>Reprovado por Final</span></td>";
+                        }
                         table += '</tr>';
                     });
 
@@ -286,10 +322,10 @@
 
                         switch (xhr.status) {
                             case 400:
-                                toastr.error(xhr.responseText, null, {progressBar: true});
+                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
                                 break;
                             default:
-                                toastr.error(xhr.responseText, null, {progressBar: true});
+                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
 
                                 result = false;
                         }

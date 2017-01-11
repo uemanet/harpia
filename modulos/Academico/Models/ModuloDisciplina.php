@@ -13,7 +13,9 @@ class ModuloDisciplina extends BaseModel
     protected $fillable = [
         'mdc_dis_id',
         'mdc_mdo_id',
-        'mdc_tipo_avaliacao'
+        'mdc_tipo_avaliacao',
+        'mdc_tipo_disciplina',
+        'mdc_pre_requisitos'
     ];
 
     protected $searchable = [
@@ -33,5 +35,27 @@ class ModuloDisciplina extends BaseModel
     public function ofertasDisciplinas()
     {
         return $this->hasMany('Modulos\Academico\Models\OfertaDisciplina', 'ofd_mdc_id', 'mdc_id');
+    }
+
+    public function getMdcTipoDisciplinaAttribute($value)
+    {
+        $values = [
+            'obrigatoria' => 'Obrigatória',
+            'optativa' => 'Optativa',
+            'eletiva' => 'Eletiva',
+            'tcc' => 'TCC'
+        ];
+
+        return $values[$value];
+    }
+
+    public function getMdcTipoAvaliacaoAttribute($value)
+    {
+        $values = [
+            'numerica' => 'Numérica',
+            'conceitual' => 'Conceitual'
+        ];
+
+        return $values[$value];
     }
 }

@@ -10,6 +10,7 @@ use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
+use DB;
 
 class ModulosDisciplinas extends BaseController
 {
@@ -28,29 +29,14 @@ class ModulosDisciplinas extends BaseController
     {
         $dados = $request->except('_token');
 
-
-        $disciplina = $this->disciplinaRepository->find($dados['dis_id']);
-
-        $disciplinaNameExists = $this->matrizCurricularRepository->verifyIfNomeDisciplinaExistsInMatriz($dados['mtc_id'], $disciplina->dis_nome);
-
-        if ($disciplinaNameExists) {
-            return new JsonResponse('Já existe uma disciplina com esse nome', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
-        }
-
-        $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $dados['dis_id']);
-
-        if ($disciplinaExists) {
-            return new JsonResponse('Disciplina duplicada', Response::HTTP_BAD_REQUEST);
-        }
-
         try {
-            $modulodisciplina['mdc_dis_id'] = $dados['dis_id'];
-            $modulodisciplina['mdc_mdo_id'] = $dados['mod_id'];
-            $modulodisciplina['mdc_tipo_avaliacao'] = $dados['tipo_avaliacao'];
+            $response = $this->moduloDisciplinaRepository->create($dados);
 
-            $disciplinaCreate = $this->moduloDisciplinaRepository->create($modulodisciplina);
+            if ($response['type'] == 'error') {
+                return new JsonResponse($response['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+            }
 
-            return new JsonResponse(['mdc_id' => $disciplinaCreate->mdc_id], Response::HTTP_OK);
+            return new JsonResponse(['mdc_id' => $response['data']['mdc_id']], Response::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -64,18 +50,33 @@ class ModulosDisciplinas extends BaseController
     {
         $dados = $request->all();
 
-        $moduloDisciplina = $this->moduloDisciplinaRepository->find($dados['mdc_id']);
+        DB::beginTransaction();
+        
+        try {
+            $moduloDisciplina = $this->moduloDisciplinaRepository->find($dados['mdc_id']);
 
-        $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $moduloDisciplina->mdc_dis_id);
+            $disciplinaExists = $this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($dados['mtc_id'], $moduloDisciplina->mdc_dis_id);
 
-        if (!$disciplinaExists) {
-            return new JsonResponse('Disciplina não cadastrada para esta matriz', Response::HTTP_BAD_REQUEST);
-        }
+            if (!$disciplinaExists) {
+                return new JsonResponse('Disciplina não cadastrada para esta matriz', Response::HTTP_BAD_REQUEST);
+            }
 
-        if ($this->moduloDisciplinaRepository->delete($dados['mdc_id'])) {
-            return new JsonResponse(Response::HTTP_OK);
-        } else {
+            // Ao deletar a disciplina, caso ela seja pré-requisito de outra, precisa-se removê-la da lista dos outros registros
+            if ($this->moduloDisciplinaRepository->delete($dados['mdc_id'])) {
+                $this->moduloDisciplinaRepository->updatePreRequisitos($dados['mtc_id'], $dados['mdc_id']);
+                DB::commit();
+                return new JsonResponse(Response::HTTP_OK);
+            }
+
+            DB::rollback();
             return new JsonResponse(Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

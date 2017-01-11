@@ -13,7 +13,8 @@ class MatriculaOfertaDisciplina extends BaseModel
     protected $fillable = [
         'mof_mat_id',
         'mof_ofd_id',
-        'mof_tipo_matricula'
+        'mof_tipo_matricula',
+        'mof_situacao_matricula'
     ];
 
     public function matriculaCurso()

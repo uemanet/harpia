@@ -21,9 +21,19 @@ class MatriculaOfertaDisciplina extends BaseController
         $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
-    public function getFindAllDisciplinasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
+    public function getFindAllDisciplinasCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
     {
-        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasAndCursadasByAluno($alunoId, $turmaId, $periodoId);
+        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
+            'ofd_per_id' => $periodoId,
+            'ofd_trm_id' => $turmaId
+        ]);
+
+        return new JsonResponse($disciplinas, 200);
+    }
+    
+    public function getFindAllDisciplinasNotCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
+    {
+        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId);
 
         return new JsonResponse($disciplinas, 200);
     }
@@ -36,23 +46,13 @@ class MatriculaOfertaDisciplina extends BaseController
         DB::beginTransaction();
 
         try {
-            foreach($ofertas as $ofertaId) {
-                if(!$this->matriculaOfertaDisciplinaRepository->verifyQtdVagas($ofertaId)) {
-                    return new JsonResponse("Sem vagas disponiveis", Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
-                }
+            foreach ($ofertas as $ofertaId) {
+                $result = $this->matriculaOfertaDisciplinaRepository->createMatricula(['mat_id' => $matriculaId, 'ofd_id' => $ofertaId]);
 
-                $matricula = $this->matriculaOfertaDisciplinaRepository->verifyMatriculaDisciplina($matriculaId, $ofertaId);
-                if (!$matricula){
-                    $this->matriculaOfertaDisciplinaRepository->create([
-                        'mof_mat_id' => $matriculaId,
-                        'mof_ofd_id' => $ofertaId,
-                        'mof_tipo_matricula' => 'matriculacomum'
-                    ]);
-                }else{
-                    DB::rollBack();
-                    return new JsonResponse("Aluno já matriculado nessa disciplina para esse periodo e turma", Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+                if ($result['type'] == 'error') {
+                    DB::rollback();
+                    return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
-
             }
 
             DB::commit();
@@ -64,6 +64,5 @@ class MatriculaOfertaDisciplina extends BaseController
             }
             return new JsonResponse('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
-
     }
 }

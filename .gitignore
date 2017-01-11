@@ -6,6 +6,6 @@ Homestead.yaml
 Homestead.json
 .env
 .idea
-.DS_STORE
 /bin
+.DS_STORE
 *_reports

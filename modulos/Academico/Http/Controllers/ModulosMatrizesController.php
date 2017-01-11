@@ -30,7 +30,7 @@ class ModulosMatrizesController extends BaseController
         $this->disciplinaRepository = $disciplinaRepository;
     }
 
-    public function getIndex($matrizId, Request $request)
+    public function getIndex($matrizId)
     {
         $matrizcurricular = $this->matrizcurricularRepository->find($matrizId);
 
@@ -48,7 +48,16 @@ class ModulosMatrizesController extends BaseController
 
         $modulos = $this->modulomatrizRepository->getAllModulosByMatriz($matrizId);
 
-        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos]);
+        $disciplinas = [];
+
+        // pega todas as disciplinas em conjunto com os seus pré-requisitos
+        if ($modulos->count()) {
+            foreach ($modulos as $modulo) {
+                $disciplinas[$modulo->mdo_id] = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($modulo->mdo_id);
+            }
+        }
+
+        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos, 'disciplinas' => $disciplinas]);
     }
 
     public function getCreate($matrizId)
@@ -76,7 +85,11 @@ class ModulosMatrizesController extends BaseController
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            $modulomatriz = $this->modulomatrizRepository->create($request->all());
+            $dados = $request->all();
+            $dados['mdo_cargahoraria_min_eletivas'] = ($request->input('mdo_cargahoraria_min_eletivas') == '') ? null : $request->input('mdo_cargahoraria_min_eletivas');
+            $dados['mdo_creditos_min_eletivas'] = ($request->input('mdo_creditos_min_eletivas') == '') ? null : $request->input('mdo_creditos_min_eletivas');
+
+            $modulomatriz = $this->modulomatrizRepository->create($dados);
 
             if (!$modulomatriz) {
                 flash()->error('Erro ao tentar salvar.');
@@ -131,6 +144,8 @@ class ModulosMatrizesController extends BaseController
             }
 
             $requestData = $request->only($this->modulomatrizRepository->getFillableModelFields());
+            $requestData['mdo_cargahoraria_min_eletivas'] = ($request->input('mdo_cargahoraria_min_eletivas') == '') ? null : $request->input('mdo_cargahoraria_min_eletivas');
+            $requestData['mdo_creditos_min_eletivas'] = ($request->input('mdo_creditos_min_eletivas') == '') ? null : $request->input('mdo_creditos_min_eletivas');
 
             if (!$this->modulomatrizRepository->update($requestData, $modulo->mdo_id, 'mdo_id')) {
                 flash()->error('Erro ao tentar salvar.');
@@ -191,11 +206,9 @@ class ModulosMatrizesController extends BaseController
 
         $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
 
-        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $moduloId,
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $modulo,
                                                                         'disciplinas' => $disciplinas,
-                                                                        'matriz' => $matriz->mtc_id,
-                                                                        'moduloNome' => $modulo->mdo_nome,
-                                                                        'matrizTitulo' => $matriz->mtc_titulo,
-                                                                        'cursoNome' => $curso->crs_nome]);
+                                                                        'matriz' => $matriz,
+                                                                        'curso' => $curso]);
     }
 }

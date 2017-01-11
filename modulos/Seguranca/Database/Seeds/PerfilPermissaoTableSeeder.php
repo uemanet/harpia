@@ -35,66 +35,74 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([30, 31, 32, 33, 34]); //Permissões Pessoas
 
+        $perfil->permissoes()->attach([35, 36, 37, 38]); // Permissoes do recurso Titulações
+
+        $perfil->permissoes()->attach([39, 40, 41]); // Permissoes do recurso Titulações Informações
+
+        $perfil->permissoes()->attach([42, 43, 44, 45]); // Permissoes do recurso Documentos
+
         /** Perfil Administrador do Módulo Acadêmico */
 
         $perfil = Perfil::find(3);
 
-        $perfil->permissoes()->attach([35]); //Index Dashboard
+        $perfil->permissoes()->attach([46]); //Index Dashboard
 
-        $perfil->permissoes()->attach([36, 37, 38, 39]); //Permissões do recurso polo
+        $perfil->permissoes()->attach([47, 48, 49, 50]); //Permissões do recurso polo
 
-        $perfil->permissoes()->attach([40, 41, 42, 43]); // Permissoes do recurso departamentos
+        $perfil->permissoes()->attach([51, 52, 53, 54]); // Permissoes do recurso Centros
 
-        $perfil->permissoes()->attach([44, 45, 46, 47]); // Permissoes do recurso periodos letivos
+        $perfil->permissoes()->attach([55, 56, 57, 58]); // Permissoes do recurso Departamentos
 
-        $perfil->permissoes()->attach([48, 49, 50, 51]); // Permissoes do recurso cursos
+        $perfil->permissoes()->attach([59, 60, 61, 62]); // Permissoes do recurso Disciplinas
 
-        $perfil->permissoes()->attach([52, 53, 54, 55]); // Permissoes do recurso centros
+        $perfil->permissoes()->attach([63, 64, 65, 66]); // Permissoes do recurso Cursos
 
-        $perfil->permissoes()->attach([56, 57, 58, 59, 60]); // Permissoes do recurso matrizes curriculares
+        $perfil->permissoes()->attach([67, 68, 69, 70]); // Permissoes do recurso Períodos Letivos
 
-        $perfil->permissoes()->attach([61, 62]); // Permissoes do recurso Oferta de Cursos
+        $perfil->permissoes()->attach([71, 72]); // Permissoes do recurso Oferta de Cursos
 
-        $perfil->permissoes()->attach([63, 64, 65, 66]); // Permissoes do recurso Grupos
+        $perfil->permissoes()->attach([73, 74, 75, 76]); // Permissoes do recurso Alunos
 
-        $perfil->permissoes()->attach([67, 68, 69, 70]); // Permissoes do recurso Turmas
+        $perfil->permissoes()->attach([77, 78, 79, 80]); // Permissoes do recurso Professores
 
-        $perfil->permissoes()->attach([71, 72, 73, 74, 75]); // Permissoes do recurso Módulos Matrizes
+        $perfil->permissoes()->attach([81, 82, 83, 84]); // Permissoes do recurso Tutores
 
-        $perfil->permissoes()->attach([76, 77, 78, 79]); // Permissoes do recurso Disciplinas
+        $perfil->permissoes()->attach([85, 86, 87, 88]); // Permissoes do recurso Vinculos
 
-        $perfil->permissoes()->attach([80, 81, 82, 83]); // Permissoes do recurso Vinculos
+        $perfil->permissoes()->attach([89, 90, 91]); // Permissoes do recurso Matricular Aluno no Curso
 
-        $perfil->permissoes()->attach([84, 85, 86]); // Permissoes do recurso Tutores Grupos
+        $perfil->permissoes()->attach([92, 93]); // Permissoes do recurso Ofertar Disciplina
 
-        $perfil->permissoes()->attach([87, 88, 89, 90]); // Permissoes do recurso Alunos
+        $perfil->permissoes()->attach([94, 95]); // Permissoes do recurso Matricular Aluno na Disciplina
 
-        $perfil->permissoes()->attach([91, 92, 93, 94]); // Permissoes do recurso Tutores
+        $perfil->permissoes()->attach([96, 97, 98, 99]); // Permissoes do recurso Lançamento de TCC
 
-        $perfil->permissoes()->attach([95, 96, 97, 98]); // Permissoes do recurso Professores
+        $perfil->permissoes()->attach([100, 101]); // Permissoes do recurso Conclusão de Curso
 
-        $perfil->permissoes()->attach([99, 100, 101]); // Permissoes do recurso Matricular aluno no curso
+        $perfil->permissoes()->attach([102, 103, 104]); // Permissoes do recurso Tutores Grupos
 
-        $perfil->permissoes()->attach([102, 103]); // Permissoes do recurso Ofertar Disciplina
+        $perfil->permissoes()->attach([105, 106, 107, 108, 109]); // Permissoes do recurso Matrizes Curriculares
 
-        $perfil->permissoes()->attach([104, 105]); // Permissoes do recurso Matricular Aluno na Disciplina
+        $perfil->permissoes()->attach([110, 111, 112, 113]); // Permissoes do recurso Grupos
 
+        $perfil->permissoes()->attach([114, 115, 116, 117]); // Permissoes do recurso Turmas
+
+        $perfil->permissoes()->attach([118, 119, 120, 121, 122]); // Permissoes do recurso Módulos Matrizes
 
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
 
-        $perfil->permissoes()->attach([106]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([123]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([107, 108, 109, 110, 111, 112]); // Permissoes do recurso Ambientes
+        $perfil->permissoes()->attach([124, 125, 126, 127, 128, 129]); // Permissoes do recurso Ambientes
 
         /** Perfil Administrador do Módulo de Monitoramento */
 
         $perfil = Perfil::find(5);
 
-        $perfil->permissoes()->attach([113]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([130]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([114, 115]); // Permissoes do recurso Tempo Online
-
+        $perfil->permissoes()->attach([131, 132]); // Permissoes do recurso Tempo Online
     }
 }

@@ -3,11 +3,13 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Academico\Models\Curso;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Carbon\Carbon;
+use Auth;
 
 class CursoRepositoryTest extends TestCase
 {
@@ -27,6 +29,13 @@ class CursoRepositoryTest extends TestCase
         return $app;
     }
 
+    public function login()
+    {
+        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+
+        $this->actingAs($user);
+    }
+
     public function setUp()
     {
         parent::setUp();
@@ -34,6 +43,7 @@ class CursoRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(CursoRepository::class);
+        $this->login();
     }
 
     public function testAllWithEmptyDatabase()
@@ -46,18 +56,17 @@ class CursoRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Curso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Curso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
         $sort = [
             'field' => 'crs_id',
@@ -67,16 +76,21 @@ class CursoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->crs_id);
+        $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Curso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
-        factory(Curso::class)->create([
+        $curso = factory(Curso::class)->create([
             'crs_nome' => 'eletrônica',
+        ]);
+
+        // Cria vinculo
+        factory(\Modulos\Academico\Models\Vinculo::class)->create([
+            'ucr_usr_id' => Auth::user()->usr_id,
+            'ucr_crs_id' => $curso->crs_id
         ]);
 
         $search = [
@@ -90,13 +104,12 @@ class CursoRepositoryTest extends TestCase
         $response = $this->repo->paginate(null, $search);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertCount(1, $response);
     }
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Curso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
         $sort = [
             'field' => 'crs_id',
@@ -120,7 +133,7 @@ class CursoRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Curso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',

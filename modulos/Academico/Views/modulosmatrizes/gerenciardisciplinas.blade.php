@@ -1,11 +1,15 @@
 @extends('layouts.modulos.academico')
 
+@section('stylesheets')
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+@endsection
+
 @section('title')
     Gerenciamento de Disciplinas
 @stop
 
 @section('subtitle')
-    Gerenciamento de disciplinas :: {{$cursoNome}} :: {{$matrizTitulo}} :: {{ $moduloNome }}
+    Gerenciamento de disciplinas :: {{$curso->crs_nome}} :: {{$matriz->mtc_titulo}} :: {{ $modulo->mdo_nome }}
 @stop
 
 @section('content')
@@ -22,19 +26,22 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="disciplina" placeholder="Nome da Disciplina">
+                <form action="#" id="formLocalizar">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="disciplina" placeholder="Nome da Disciplina">
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <button class="form-control btn btn-primary" id="localizar">Buscar</button>
-                </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="form-control btn btn-primary" id="btnLocalizar">Buscar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <div class="box box-primary hidden">
+    <!-- Box Disciplinas Localizadas -->
+    <div id="boxDisciplinasLocalizadas" class="box box-primary hidden">
         <div class="box-header with-border">
             <h3 class="box-title">
                 Disciplinas Localizadas
@@ -45,27 +52,11 @@
             </div>
         </div>
         <div class="box-body">
-            <div id="table-localizadas">
-                <table class="table table-bordered table-hover" id="localizadas">
-                    <thead>
-                    <th>#</th>
-                    <th>Nome</th>
-                    <th>Nível</th>
-                    <th>Carga Horária</th>
-                    <th>Créditos</th>
-                    <th>Tipo de Avaliação</th>
-                    <th>Ações</th>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="mensagem-localizadas" class="hidden">
-                <p>Sem registros</p>
-            </div>
         </div>
     </div>
 
-    <div class="box box-primary">
+    <!-- Box Disciplinas Cadastradas no Módulo -->
+    <div id="boxDisciplinasCadastradas" class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">
                 Disciplinas do módulo
@@ -76,130 +67,94 @@
             </div>
         </div>
         <div class="box-body">
-            <table class="table table-bordered table-hover" id="selecionadas">
-                <thead>
-                <th>#</th>
-                <th>DISID</th>
-                <th>Nome</th>
-                <th>Nível</th>
-                <th>Carga Horária</th>
-                <th>Créditos</th>
-                <th>Tipo de Avaliação</th>
-                <th>Ações</th>
-                </thead>
-                <tbody>
-                @foreach($disciplinas as $disciplina)
-                    <tr>
-                        <td>{{$disciplina->mdc_id}}</td>
-                        <td>{{$disciplina->dis_id}}</td>
-                        <td>{{$disciplina->dis_nome}}</td>
-                        <td>{{$disciplina->nvc_nome}}</td>
-                        <td>{{$disciplina->dis_carga_horaria}} horas</td>
-                        <td>{{$disciplina->dis_creditos}}</td>
-                        <td>{{$disciplina->mdc_tipo_avaliacao}}</td>
-                        <td>
-                            <form action="">
-                                <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
-                                <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="_method" value="POST">
-                                <button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-            <div id="salvar" class="col-md-2 pull-right hidden">
-                <button type="submit" id="btnSalvar" class="btn btn-primary btn-block">Salvar</button>
-            </div>
-            <p id="msg" class="hidden">Sem disciplinas cadastradas</p>
+            @if($disciplinas->count())
+                <table class="table table-bordered table-hover" id="tableDisciplinasModulo">
+                    <thead>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Nível</th>
+                        <th>Carga Horária</th>
+                        <th>Créditos</th>
+                        <th>Tipo de Avaliação</th>
+                        <th>Tipo da Disciplina</th>
+                        <th>Pré-Requisitos</th>
+                        <th>Ações</th>
+                    </thead>
+                    <tbody>
+                    @foreach($disciplinas as $disciplina)
+                        <tr>
+                            <td>{{$disciplina->mdc_id}}</td>
+                            <td>{{$disciplina->dis_nome}}</td>
+                            <td>{{$disciplina->nvc_nome}}</td>
+                            <td>{{$disciplina->dis_carga_horaria}} horas</td>
+                            <td>{{$disciplina->dis_creditos}}</td>
+                            <td>{{$disciplina->mdc_tipo_avaliacao}}</td>
+                            <td>{{$disciplina->mdc_tipo_disciplina}}</td>
+                            @if(!empty($disciplina->pre_requisitos))
+                                <td>
+                                    @foreach($disciplina->pre_requisitos as $disc)
+                                        <p>{{ $disc->dis_nome }}</p>
+                                    @endforeach
+                                </td>
+                            @else
+                                <td>Sem pré-requisitos</td>
+                            @endif
+                            <td>
+                                <form action="">
+                                    <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
+                                    <input type="hidden" name="mtc_id" value="{{ $matriz->mtc_id }}">
+                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                    <input type="hidden" name="_method" value="POST">
+                                    <button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p>Sem disciplinas cadastradas</p>
+            @endif
         </div>
     </div>
 @stop
 
 @section('scripts')
-    <script type="application/javascript">
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
-        var matriz = "{{$matriz}}";
-        var modulo = "{{$modulo}}";
-        var csrf_token = "{{csrf_token()}}";
+    <script type="text/javascript">
 
         $(function() {
 
-            hiddenTableDisciplinasModulo();
+            var matriz = "{{$matriz->mtc_id}}";
+            var modulo = "{{$modulo->mdo_id}}";
+            var csrf_token = "{{csrf_token()}}";
 
-            //Eh feita a busca das disciplinas via async.
-            $('#localizar').on('click', function(e) {
+            /* Pega o evento do botao de localizar disciplinas,e faz a busca via async */
+            $('#btnLocalizar').click(function (event) {
+                event.preventDefault();
+
                 var disciplina = $('#disciplina').val();
 
-                if(disciplina)
-                {
-                    $.harpia.httpget('{{url('/')}}/academico/async/disciplinas/findbynome/' + matriz + '/' + disciplina).done(function(data) {
-                        renderTableLocalizadas(data);
-                    });
+                if(!disciplina) {
+                    return false;
                 }
 
-                return false;
+                // função que renderiza a tabela de disciplinas localizadas
+                renderTableLocalizadas(disciplina, matriz, modulo);
             });
 
-            //Renderiza a tabela das disciplinas que foram localizadas na busca.
-            function renderTableLocalizadas(data)
-            {
-                var body = $('#localizadas tbody');
-                var div_table = $('#table-localizadas');
-                var mensagem = $('#mensagem-localizadas');
-
-                body.empty();
-
-                if(data.length)
-                {
-                    // ESCONDER MENSAGEM
-                    mensagem.addClass('hidden');
-
-                    // Mostrar Tabela
-                    div_table.removeClass('hidden');
-
-                    for(var i = 0; i < data.length; i++)
-                    {
-                        var newRow = $("<tr>");
-                        var cols = "";
-
-                        cols += '<td id="dis_id">'+data[i].dis_id+'</td>';
-                        cols += '<td id="nome">'+data[i].dis_nome+'</td>';
-                        cols += '<td id="nivel">'+data[i].nvc_nome+'</td>';
-                        cols += '<td id="cargahoraria">'+data[i].dis_carga_horaria+'</td>';
-                        cols += '<td id="creditos">'+data[i].dis_creditos+'</td>';
-                        cols += '<td><div class="form-group">';
-                        cols += '<select class="form-control" id="mdc_tipo_avaliacao">';
-                        cols += '<option value="numerica" selected>NUMERICA</option>';
-                        cols += '<option value="conceitual">CONCEITUAL</option>';
-                        cols += '</select></div></td>';
-
-                        cols += '<td>';
-                        cols += '<button class="btn btn-success btn-add-disciplina" type="button"><i class="fa fa-plus"></i> Adicionar ao módulo</button>';
-                        cols += '</td>';
-
-                        newRow.append(cols);
-
-                        body.append(newRow);
-                    }
-                } else {
-                    // esconder tabela
-                    div_table.addClass('hidden');
-                    // mostrar mensagem
-                    mensagem.removeClass('hidden');
-                }
-
-                body.closest('.box').removeClass('hidden');
-            }
-
+            /* Pega o evento do botão de adicionar disciplina, e faz a adição via ajax */
             $(document).on('click','.btn-add-disciplina', function (e) {
 
                 e.currentTarget.setAttribute("disabled", true);
 
                 var linha = $(this).closest('tr');
 
-                addDisciplinaIntoMatrizCurricular(linha);
+                // função que adiciona uma disciplina no módulo
+                addDisciplina(linha);
+
+                verifyTablesEmpty();
             });
 
             //Pega o evento do clique do botao delete e faz o tratamento via ajax.
@@ -237,10 +192,7 @@
                                 $.harpia.hideloading();
 
                                 toastr.success('Disciplina excluída com sucesso!', null, {progressBar: true});
-                                linha.remove();
-                                hiddenTableDisciplinasModulo();
-
-                                result = resp;
+                                renderTableDisciplinasModulo(modulo);
                             },
                             error: function (xhr, textStatus, error) {
                                 $.harpia.hideloading();
@@ -256,27 +208,119 @@
                                 }
                             }
                         });
+
+                        verifyTablesEmpty();
                     }
                 });
 
             });
 
-            //Adiciona uma disciplina a uma matriz curricular.
-            var addDisciplinaIntoMatrizCurricular = function(linha) {
+            /* Functions */
 
+            var renderTableLocalizadas = function (disciplinaNome, matrizId, moduloId) {
 
-                var disciplinaSelecionada = new Array();
+                $('#boxDisciplinasLocalizadas').removeClass('hidden');
 
-                disciplinaSelecionada['dis_id'] = linha.find('#dis_id').text();
-                disciplinaSelecionada['nome'] = linha.find('#nome').text();
-                disciplinaSelecionada['nivel'] = linha.find('#nivel').text();
-                disciplinaSelecionada['cargahoraria'] = linha.find('#cargahoraria').text();
-                disciplinaSelecionada['creditos'] = linha.find('#creditos').text();
-                disciplinaSelecionada['mdc_tipo_avaliacao'] = linha.find('#mdc_tipo_avaliacao').val();
+                var boxBody = $('#boxDisciplinasLocalizadas .box-body');
+
+                $.harpia.httpget('{{url('/')}}/academico/async/disciplinas/findbynome/' + matrizId + '/' + disciplinaNome + '/' + moduloId).done(function(data) {
+
+                    boxBody.empty();
+
+                    if(!$.isEmptyObject(data.disciplinas)) {
+
+                        var table = '<table class="table table-bordered table-hover" id="tableDisciplinasLocalizadas">';
+                        table += '<thead>';
+                        table += '<tr>';
+
+                        if(!$.isEmptyObject(data.prerequisitos)) {
+                            table += '<th width="1%">#</th>';
+                            table += '<th width="20%">Nome</th>';
+                            table += '<th width="5%">Carga Horária</th>';
+                            table += '<th width="5%">Créditos</th>';
+                            table += '<th width="13%">Tipo de Avaliação</th>';
+                            table += '<th width="13%">Tipo da Disciplina</th>';
+                            table += '<th>Pré-Requisitos</th>';
+                            table += '<th width="10%">Ações</th>';
+                        } else {
+                            table += '<th width="1%">#</th>';
+                            table += '<th>Nome</th>';
+                            table += '<th width="10%">Carga Horária</th>';
+                            table += '<th width="5%">Créditos</th>';
+                            table += '<th width="18%">Tipo de Avaliação</th>';
+                            table += '<th width="18%">Tipo da Disciplina</th>';
+                            table += '<th width="10%">Ações</th>';
+                        }
+
+                        table += '</tr>';
+                        table += '</thead>';
+                        table += '<tbody>';
+
+                        $.each(data.disciplinas, function (key, value) {
+                            table += '<tr>';
+
+                            table += '<td id="dis_id">'+value.dis_id+'</td>';
+                            table += '<td id="nome">'+value.dis_nome+'</td>';
+                            table += '<td id="cargahoraria">'+value.dis_carga_horaria+' h</td>';
+                            table += '<td id="creditos">'+value.dis_creditos+'</td>';
+
+                            table += '<td><div class="form-group">';
+                            table += '<select class="form-control" id="mdc_tipo_avaliacao">';
+                            table += '<option value="numerica" selected>NUMERICA</option>';
+                            table += '<option value="conceitual">CONCEITUAL</option>';
+                            table += '</select></div></td>';
+
+                            table += '<td><div class="form-group">';
+                            table += '<select class="form-control" id="mdc_tipo_disciplina">';
+                            table += '<option value="obrigatoria" selected>OBRIGATÓRIA</option>';
+                            table += '<option value="eletiva">ELETIVA</option>';
+                            table += '<option value="optativa">OPTATIVA</option>';
+                            table += '<option value="tcc">TCC</option>';
+                            table += '</select></div></td>';
+
+                            if(!$.isEmptyObject(data.prerequisitos)) {
+                                table += '<td><div class="form-group">';
+                                table += '<select class="form-control" id="prerequisitos" multiple>';
+                                $.each(data.prerequisitos, function (key, obj) {
+                                    table += '<option value="'+obj.mdc_id+'">'+obj.dis_nome+'</option>';
+                                });
+                                table += '</select></div></td>';
+                            }
+
+                            table += '<td>';
+                            table += '<button class="btn btn-success btn-add-disciplina" type="button"><i class="fa fa-plus"></i> Adicionar ao módulo</button>';
+                            table += '</td>';
+
+                            table += '</tr>';
+
+                        });
+
+                        table += '</tbody>';
+                        table += '</table>';
+
+                        boxBody.append(table);
+
+                        $(document).find('select').select2();
+                    } else {
+                        boxBody.append('<p>Sem registros</p>');
+                    }
+                });
+
+            };
+
+            var addDisciplina = function (linha) {
+
+                var prerequisitos = new Array();
+
+                if(linha.find('#prerequisitos').length) {
+                    prerequisitos = linha.find('#prerequisitos').val();
+                }
 
                 var data = {
                     dis_id: linha.find('#dis_id').text(),
                     tipo_avaliacao: linha.find('#mdc_tipo_avaliacao').val(),
+                    tipo_disciplina: linha.find('#mdc_tipo_disciplina').val(),
+                    pre_requisitos: prerequisitos,
                     mtc_id: matriz,
                     mod_id: modulo,
                     _token: csrf_token
@@ -284,24 +328,18 @@
 
                 $.harpia.showloading();
 
-                var result = false;
-
                 $.ajax({
                     type: 'POST',
                     url: '/academico/async/modulosdisciplinas/adicionardisciplina',
                     data: data,
-                    success: function (data) {
+                    success: function (response) {
                         $.harpia.hideloading();
 
                         toastr.success('Disciplina adicionada com sucesso!', null, {progressBar: true});
 
-                        // Adiciona o id do retorno para a variavel que vai ser usada para montar a linha na tabela de disciplinas selecionadas
-                        disciplinaSelecionada['mdc_id'] = data.mdc_id;
+                        linha.remove();
 
-                        addLinhaTabelaSelecionadas(linha, disciplinaSelecionada);
-                        hiddenTableDisciplinasModulo();
-
-                        result = resp;
+                        renderTableDisciplinasModulo(modulo);
                     },
                     error: function (xhr, textStatus, error) {
                         $.harpia.hideloading();
@@ -309,67 +347,87 @@
                         switch (xhr.status) {
                             case 400:
                                 toastr.error(xhr.responseText, null, {progressBar: true});
-                            break;
+                                break;
                             default:
                                 toastr.error(xhr.responseText, null, {progressBar: true});
-
-                                result = false;
                         }
                     }
                 });
+            };
 
-            }
+            var renderTableDisciplinasModulo = function(moduloId) {
+                var boxBody = $('#boxDisciplinasCadastradas .box-body');
 
-            //Adiciona uma linha na tabela de disciplinas do modulo
-            var addLinhaTabelaSelecionadas = function(linha, disciplina) {
+                $.harpia.httpget('{{url("/")}}/academico/async/modulosdisciplinas/getalldisciplinasbymodulo/' + moduloId).done(function (response) {
+                    boxBody.empty();
 
-                linha.remove();
+                    if(!$.isEmptyObject(response)) {
+                        var table = '<table class="table table-bordered table-hover" id="tableDisciplinasCadastradas">';
 
-                var body = $('#selecionadas tbody');
+                        // cabeçalho da tabela
+                        table += '<thead>';
+                        table += '<tr>';
+                        table += '<th>#</th>';
+                        table += '<th>Nome</th>';
+                        table += '<th>Nível</th>';
+                        table += '<th>Carga Horária</th>';
+                        table += '<th>Créditos</th>';
+                        table += '<th>Tipo de Avaliação</th>';
+                        table += '<th>Tipo da Disciplina</th>';
+                        table += '<th>Pré-Requisitos</th>';
+                        table += '<th>Ações</th>';
+                        table += '</tr>';
+                        table += '</thead>';
 
-                var newRow = $("<tr>");
-                var column = "";
+                        table += '<tbody>';
+                        $.each(response, function (key, obj) {
+                            table += '<tr>';
+                            table += '<td>'+obj.mdc_id+'</td>';
+                            table += '<td>'+obj.dis_nome+'</td>';
+                            table += '<td>'+obj.nvc_nome+'</td>';
+                            table += '<td>'+obj.dis_carga_horaria+'</td>';
+                            table += '<td>'+obj.dis_creditos+'</td>';
+                            table += '<td>'+obj.mdc_tipo_avaliacao+'</td>';
+                            table += '<td>'+obj.mdc_tipo_disciplina+'</td>';
+                            var prerequisitos = obj.pre_requisitos;
+                            if(prerequisitos.length) {
+                                table += '<td>';
 
-                column += '<td id="mdc_id">'+disciplina['mdc_id']+'</td>';
-                column += '<td id="dis_id">'+disciplina['dis_id']+'<input type="hidden" value="'+disciplina['dis_id']+'" name="dis_id"></td>';
-                column += '<td id="nome">'+disciplina['nome']+'</td>';
-                column += '<td id="nivel">'+disciplina['nivel']+'</td>';
-                column += '<td id="cargahoraria">'+disciplina['cargahoraria']+'</td>';
-                column += '<td id="creditos">'+disciplina['creditos']+'</td>';
-                column += '<td id="mdc_tipo_avaliacao">'+disciplina['mdc_tipo_avaliacao']+'<input type="hidden" value="'+disciplina['mdc_tipo_avaliacao']+'" name="disciplinas[mdc_tipo_avaliacao][]"></td>';
+                                $.each(prerequisitos, function (key, value) {
+                                   table += '<p>'+value.dis_nome+'</p>';
+                                });
 
-                column += '<td>';
-                column += '<form action="" method="POST">'
-                        +'<input type="hidden" name="id" value="'+disciplina['mdc_id']+'">'
-                        +'<input type="hidden" name="_token" value="{{csrf_token()}}">'
-                        +'<input type="hidden" name="_method" value="POST">'
-                        +'<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>'
-                        +'</form>';
-                column += '</td>';
+                                table += '</td>';
+                            } else {
+                                table += '<td>Sem pré-requisitos</td>';
+                            }
+                            table += '<td>';
+                            table += '<form action="">'
+                            table += '<input type="hidden" name="id" value="'+obj.mdc_id+'">';
+                            table += '<input type="hidden" name="mtc_id" value="'+matriz+'">';
+                            table += '<input type="hidden" name="_token" value="'+csrf_token+'">';
+                            table += '<input type="hidden" name="_method" value="POST">';
+                            table += '<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>';
+                            table += '</form></td>';
+                        });
+                        table += '</tbody>';
 
-                newRow.append(column);
+                        boxBody.append(table);
+                    } else {
+                        boxBody.append('<p>Sem disciplinas cadastradas</p>');
+                    }
+                });
+            };
 
-                body.append(newRow);
+            var verifyTablesEmpty = function () {
 
-                newRow.toggle("pulsate").fadeIn();
-            }
+                var linhas = $('#tableDisciplinasLocalizadas tbody tr').length;
 
-            //Faz a verificacao da existencia de dados nas linhas da tabela, caso nao exista a tabela eh ocultada.
-            function hiddenTableDisciplinasModulo() {
-                var table = $('#selecionadas');
-                var box = table.closest('.box-body');
-                var msg = box.find('#msg');
-                var linhas = $('#selecionadas tbody tr');
-
-                if(linhas.length > 0)
-                {
-                    table.removeClass('hidden');
-                    msg.addClass('hidden');
-                } else {
-                    table.addClass('hidden');
-                    msg.removeClass('hidden');
+                if(!((linhas - 1) > 0)) {
+                    $('#boxDisciplinasLocalizadas .box-body').empty();
+                    $('#boxDisciplinasLocalizadas .box-body').append('<p>Sem registros</p>');
                 }
-            }
+            };
         });
     </script>
-@endsection
+@stop

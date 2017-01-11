@@ -28,6 +28,13 @@ class CreateGraPessoasTable extends Migration
             $table->string('pes_raca', 45)->nullable();
             $table->string('pes_necessidade_especial', 150)->nullable();
             $table->boolean('pes_estrangeiro')->default(0);
+            $table->string('pes_endereco');
+            $table->string('pes_numero', 45);
+            $table->string('pes_complemento', 150)->nullable();
+            $table->string('pes_cep', 10);
+            $table->string('pes_cidade', 150);
+            $table->string('pes_bairro', 150);
+            $table->char('pes_estado', 2);
             $table->timestamps();
         });
     }

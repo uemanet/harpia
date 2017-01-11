@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Models;
 
+use Carbon\Carbon;
 use Modulos\Core\Model\BaseModel;
 
 class Matricula extends BaseModel
@@ -15,7 +16,8 @@ class Matricula extends BaseModel
         'mat_trm_id',
         'mat_pol_id',
         'mat_grp_id',
-        'mat_situacao'
+        'mat_situacao',
+        'mat_modo_entrada'
     ];
 
     public function aluno()
@@ -41,5 +43,30 @@ class Matricula extends BaseModel
     public function matriculasOfertasDisciplinas()
     {
         return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_mat_id', 'mat_id');
+    }
+
+    public function getMatModoEntradaAttribute($value)
+    {
+        $values = [
+            'vestibular' => 'Vestibular',
+            'transferencia_externa' => 'Transferência Externa',
+            'transferencia_interna_de' => 'Transferência Interna De',
+            'trnasferencia_interna_para' => 'Transferência Interna Para'
+        ];
+
+        return $values[$value];
+    }
+
+    // Accessors
+    public function getMatDataConclusaoAttribute($value)
+    {
+        setlocale(LC_ALL, 'pt_BR');
+        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+    }
+
+    // Mutators
+    public function setMatDataConclusaoAttribute($value)
+    {
+        $this->attributes['mat_data_conclusao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 }
