@@ -102,7 +102,7 @@
 
                                     $.each(data, function (key, obj) {
                                         if (obj.trm_qtd_vagas == obj.qtd_matriculas){
-                                            selectTurmas.append('<option disabled="disabled" value="'+obj.trm_id+'">'+obj.trm_nome+' (Sem vagas)</option>');
+                                            selectTurmas.append('<option disabled="disabled" value="'+obj.trm_id+'">'+obj.trm_nome+' (Vagas Esgotadas)</option>');
                                         }else {
                                             selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
                                         }
