@@ -19,7 +19,7 @@
             <h3 class="box-title"><b>Aluno</b>: {{$lancamentoTcc->matriculaCurso->aluno->pessoa->pes_nome}} <b>Disciplina</b>: {{$disciplina->dis_nome}}</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($lancamentoTcc,["url" => url('/') . "/academico/lancamentostccs/edit/$lancamentoTcc->ltc_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($lancamentoTcc,["url" => url('/') . "/academico/lancamentostccs/edit/$lancamentoTcc->ltc_id", "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
                  @include('Academico::lancamentostccs.includes.formulario_edit')
             {!! Form::close() !!}
         </div>

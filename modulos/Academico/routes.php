@@ -184,6 +184,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/create/{idTurma}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@postCreate')->name('academico.lancamentostccs.postCreate');
         Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getEdit')->name('academico.lancamentostccs.getEdit');
         Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@putEdit')->name('academico.lancamentostccs.putEdit');
+        Route::get('/anexo/{id}', '\Modulos\Academico\Http\Controllers\LancamentosTccsController@getTccAnexo')->name('academico.lancamentostccs.getTccAnexo');
     });
 
     Route::group(['prefix' => 'conclusaocurso'], function () {
@@ -267,7 +268,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'professores'], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\Professor@getFindall');
         });
-        
+
         Route::group(['prefix' => 'conclusaocurso'], function () {
             Route::get('/findallalunosaptosounao', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@getAllalunosaptosounao');
             Route::post('/concluirmatriculas', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@postConcluirMatriculas');
