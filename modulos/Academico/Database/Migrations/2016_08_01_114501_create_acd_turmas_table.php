@@ -19,7 +19,7 @@ class CreateAcdTurmasTable extends Migration
             $table->integer('trm_per_id')->unsigned();
             $table->string('trm_nome', 45);
             $table->smallInteger('trm_qtd_vagas')->unsigned();
-            $table->boolean('trm_eh_integrada');
+            $table->boolean('trm_integrada');
 
             $table->timestamps();
 

@@ -16,7 +16,7 @@ class Turma extends BaseModel
         'trm_per_id',
         'trm_nome',
         'trm_qtd_vagas',
-        'trm_eh_integrada'
+        'trm_integrada'
     ];
 
     protected $searchable = [
