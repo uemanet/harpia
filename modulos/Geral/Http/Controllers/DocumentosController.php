@@ -56,9 +56,6 @@ class DocumentosController extends BaseController
             return redirect()->back();
         }
 
-
-
-
         return $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
     }
 
@@ -116,6 +113,9 @@ class DocumentosController extends BaseController
 
         $documento = $this->documentoRepository->find($documentoId);
         $pessoa = $this->pessoaRepository->find($documento->doc_pes_id);
+        $idAnexo = $this->anexoRepository->find($documento->doc_anx_documento);
+
+//        dd($documento);
 
         if (!$documento) {
             flash()->error('Recurso não existe.');
@@ -127,7 +127,7 @@ class DocumentosController extends BaseController
             $documentotipo = $tipo;
         }
 
-        return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa'));
+        return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa', 'idAnexo'));
     }
 
     public function putEdit($DocumentoId, DocumentoRequest $request)
