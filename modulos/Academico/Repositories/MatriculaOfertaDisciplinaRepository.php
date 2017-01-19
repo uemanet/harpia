@@ -233,7 +233,9 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function getMatriculasByOfertaDisciplina($ofertaId)
     {
-        return $this->model->where('mof_ofd_id', '=', $ofertaId)->get();
+        return $this->model->where('mof_ofd_id', '=', $ofertaId)
+                    ->where('mof_situacao_matricula', '=', 'cursando')
+                    ->get();
     }
     
     public function verifyIfAlunoAprovadoPreRequisitos($matriculaId, $ofertaDisciplinaId)
