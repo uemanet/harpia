@@ -389,7 +389,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão delete do recurso Titulações Informações';
         $permissao->save();
     }
-    
+
     // 4 permissooes
     private function createPermissoesGeralDocumentos()
     {
@@ -805,6 +805,12 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_rcs_id = 28; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'edit';
         $permissao->prm_descricao = 'Permissão edit do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
+        $permissao->save();
+
+        $permissao = new Permissao();
+        $permissao->prm_rcs_id = 28; // Recurso Lançamento de Tcc
+        $permissao->prm_nome = 'anexo';
+        $permissao->prm_descricao = 'Permissão anexo do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
     }
 
