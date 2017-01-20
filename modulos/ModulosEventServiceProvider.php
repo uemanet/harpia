@@ -38,8 +38,17 @@ class ModulosEventServiceProvider extends ServiceProvider
         foreach ($directories as $directory) {
             if ($this->hasListenFile($directory)) {
                 foreach ($this->listeners($directory) as $event => $listeners) {
-                    foreach ($listeners as $listener) {
-                        Event::listen($event, $listener);
+                    foreach ($listeners as $listener => $priority) {
+
+                        /* Se o evento nao tem prioridade definida,
+                         * o valor default = 0
+                         */
+                        if (is_int($listener)) {
+                            $listener = $priority;
+                            $priority = 0;
+                        }
+
+                        Event::listen($event, $listener, $priority);
                     }
                 }
             }
