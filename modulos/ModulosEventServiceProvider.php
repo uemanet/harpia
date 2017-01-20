@@ -3,13 +3,25 @@
 namespace Modulos;
 
 use Illuminate\Support\Facades\Event;
+use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class ModulosEventServiceProvider extends ServiceProvider
 {
     protected $listen = [];
-
     protected $subscribe = [];
+
+    private $path;
+
+    /**
+     * ModulosEventServiceProvider constructor.
+     * @param \Illuminate\Contracts\Foundation\Application $app
+     */
+    public function __construct(\Illuminate\Contracts\Foundation\Application $app)
+    {
+        $this->path = base_path() . DIRECTORY_SEPARATOR . 'modulos';
+        parent::__construct($app);
+    }
 
     /**
      * Registra os events e listeners
@@ -17,6 +29,10 @@ class ModulosEventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (!chdir($this->path)) {
+            return;
+        }
+
         $directories = array_filter(glob('*'), 'is_dir');
 
         foreach ($directories as $directory) {
