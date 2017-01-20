@@ -273,5 +273,9 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/findallalunosaptosounao', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@getAllalunosaptosounao');
             Route::post('/concluirmatriculas', '\Modulos\Academico\Http\Controllers\Async\ConclusaoCurso@postConcluirMatriculas');
         });
+
+        Route::group(['prefix' => 'anexos'], function () {
+            Route::post('/deletaranexolancamentotcc', '\Modulos\Academico\Http\Controllers\Async\LancamentosTccs@postDeletarAnexo');
+        });
     });
 });

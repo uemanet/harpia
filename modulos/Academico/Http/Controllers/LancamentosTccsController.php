@@ -217,9 +217,11 @@ class LancamentosTccsController extends BaseController
             'plano_de_negocio' => 'Plano de Negócio'
         ];
 
+        $anexo = $this->anexoRepository->find($lancamentoTcc->ltc_anx_tcc);
+
         $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($lancamentoTcc->matriculaCurso->turma->trm_id);
 
-        return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula'));
+        return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula', 'anexo'));
     }
 
     public function putEdit($lancamentotccId, LancamentoTccRequest $request)
