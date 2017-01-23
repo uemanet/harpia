@@ -160,6 +160,7 @@ return [
          * Provider de configuracao dos modulos
          */
         Modulos\ModulosServiceProvider::class,
+        Modulos\ModulosEventServiceProvider::class,
 
         /*
          * Extra providers
