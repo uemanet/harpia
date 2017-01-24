@@ -58,7 +58,7 @@
                     <div class="col-md-1">
                         <label for="">&nbsp;</label>
                         <div class="form-group">
-                            <input type="submit" class="form-control btn-primary" value="Buscar">
+                            <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
                         </div>
                     </div>
                 </div>
@@ -80,6 +80,7 @@
             var turmaSelect = $('#trm_id');
             var periodosLetivosSelect = $('#per_id');
             var disciplinasOfertadasSelect = $('#ofd_id');
+            var btnBuscar = $('#btnBuscar');
 
             // evento change select de cursos
             $('#crs_id').change(function () {
@@ -177,7 +178,6 @@
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoLetivoId).done(function (response) {
-                    console.log(response);
                     if(!$.isEmptyObject(response)) {
                         disciplinasOfertadasSelect.append('<option value="">Selecione a disciplina ofertada</option>');
                         $.each(response, function (key, obj) {
@@ -187,6 +187,26 @@
                         disciplinasOfertadasSelect.append('<option>Sem disciplinas ofertadas disponíveis</option>');
                     }
                 })
+            });
+
+            // evento do botao Buscar
+            btnBuscar.click(function (event) {
+
+                // parar o evento de submissao do formaulario
+                event.preventDefault();
+
+                var turmaId = turmaSelect.val();
+                var disciplinaOfertadaId = disciplinasOfertadasSelect.val();
+                var cursoId = $('#crs_id').val();
+
+                if((!turmaId || turmaId == '') || (!disciplinaOfertadaId || disciplinaOfertadaId == '') || (!cursoId || cursoId == '')) {
+                    return false;
+                }
+
+                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/getalunosmatriculaslote/"+cursoId+"/"+turmaId+"/" + disciplinaOfertadaId).done(function (response) {
+                    console.log(response);
+                });
+
             });
         });
     </script>
