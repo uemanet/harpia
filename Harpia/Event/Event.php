@@ -16,7 +16,6 @@ abstract class Event implements EventInterface
      */
     protected $entry;
 
-
     /**
      * Event constructor.
      * Recebe um objeto model associado ao evento
