@@ -14,30 +14,17 @@ abstract class Event implements EventInterface
      * Registro da base de dados relacionado ao evento
      * @var BaseModel
      */
-    protected $registro;
+    protected $entry;
 
-    /**
-     * Mensagem
-     * @var string
-     */
-    protected $message;
-
-    /**
-     * Informacao extra sobre o evento
-     * @var string
-     */
-    protected $extraInformation;
 
     /**
      * Event constructor.
      * Recebe um objeto model associado ao evento
-     * @param BaseModel $registro
+     * @param BaseModel $entry
      */
-    public function __construct(BaseModel $registro, $message = null, $extraInformation = null)
+    public function __construct(BaseModel $entry)
     {
-        $this->message = $message;
-        $this->extraInformation = $extraInformation;
-        $this->registro = $registro;
+        $this->registro = $entry;
     }
 
     /**
@@ -46,16 +33,6 @@ abstract class Event implements EventInterface
      */
     public function getData()
     {
-        return $this->registro;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    public function getExtraInformation()
-    {
-        return $this->extraInformation;
+        return $this->entry;
     }
 }

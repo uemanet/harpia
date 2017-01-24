@@ -3,6 +3,8 @@
 namespace Modulos\Integracao\Events;
 
 use Harpia\Event\Event;
+use Harpia\Event\EventInterface;
+use Modulos\Core\Model\BaseModel;
 
 /**
  * Class AtualizarSyncEvent
@@ -10,27 +12,22 @@ use Harpia\Event\Event;
  */
 class AtualizarSyncEvent extends Event
 {
-    private $table;
-    private $tableId;
     private $action;
     private $status;
-    private $message;
     private $sendingDate;
+    private $message;
     private $extraInformation;
-
 
     /**
      * AtualizarSyncEvent constructor.
-     * @param $table
-     * @param $tableId
+     * @param BaseModel $entry
      * @param string $action
      * @param int $status default = 2 for success
      * @param null $message
      * @param null $sendingDate
      * @param null $extraInformation
      */
-    public function __construct($table,
-                                $tableId,
+    public function __construct(BaseModel $entry,
                                 $action = 'UPDATE',
                                 $status = 2,
                                 $message = null,
@@ -39,13 +36,12 @@ class AtualizarSyncEvent extends Event
     {
         $date = new \DateTime('NOW');
 
-        $this->table = $table;
-        $this->tableId = $tableId;
+        $this->entry = $entry;
         $this->action = $action;
         $this->status = $status;
         $this->message = $message;
         $this->extraInformation = $extraInformation;
-        $this->sendingDate = $date->format('Y-m-d H:i:s');
+        $this->sendingDate = is_null($sendingDate) ? $date->format('Y-m-d H:i:s') : $sendingDate;
     }
 
     /**
@@ -55,8 +51,8 @@ class AtualizarSyncEvent extends Event
     public function getData()
     {
         return [
-            'sym_table' => $this->table,
-            'sym_table_id' => $this->tableId,
+            'sym_table' => $this->entry->getTable(),
+            'sym_table_id' => $this->entry->getKey(),
             'sym_action' => $this->action,
             'sym_status' => $this->status,
             'sym_mensagem' => $this->message,

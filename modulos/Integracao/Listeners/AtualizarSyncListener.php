@@ -16,5 +16,6 @@ class AtualizarSyncListener
 
     public function handle(AtualizarSyncEvent $event)
     {
+        dd($event);
     }
 }

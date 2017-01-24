@@ -25,9 +25,9 @@ class NovaSyncListener
             'sym_table_id' => $entry->getKey(),
             'sym_action' => 'CREATE',
             'sym_status' => 1,
-            'sym_mensagem' => $event->getMessage(),
-            'sym_data_envio' => $date->format('Y-m-d H:i:s'),
-            'sym_extra' => $event->getExtraInformation()
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => null
         ];
 
         try {
@@ -37,5 +37,7 @@ class NovaSyncListener
                 throw $e;
             }
         }
+
+        return true;
     }
 }
