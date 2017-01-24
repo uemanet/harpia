@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Events\NovaTurmaEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -123,6 +124,10 @@ class TurmasController extends BaseController
     {
         try {
             $turma = $this->turmaRepository->create($request->all());
+
+            if ($turma->trm_integrada == 1) {
+                event(new NovaTurmaEvent($turma));
+            }
 
             if (!$turma) {
                 flash()->error('Erro ao tentar salvar.');

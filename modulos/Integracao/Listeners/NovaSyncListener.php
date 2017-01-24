@@ -9,11 +9,11 @@ class NovaSyncListener
 {
     protected $sincronizacaoRepository;
 
-    public function __construct(SincronizacaoRepository $sincronizacaoRepository)
+    public function __construct(SincronizacaoRepository $repository)
     {
-        $this->sincronizacaoRepository = $sincronizacaoRepository;
+        $this->sincronizacaoRepository = $repository;
     }
-
+    
     public function handle(Event $event)
     {
         $entry = $event->getData();
