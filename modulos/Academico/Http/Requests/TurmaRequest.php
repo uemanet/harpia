@@ -27,7 +27,8 @@ class TurmaRequest extends BaseRequest
             'trm_ofc_id' => 'required',
             'trm_per_id' => 'required',
             'trm_nome' => 'required|min:3|max:45',
-            'trm_qtd_vagas'=>'integer|min:1|max:9999'
+            'trm_qtd_vagas' => 'integer|min:1|max:9999',
+            'trm_integrada' => 'integer|required'
         ];
 
         return $rules;
