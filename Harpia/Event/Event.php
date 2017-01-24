@@ -23,7 +23,7 @@ abstract class Event implements EventInterface
      */
     public function __construct(BaseModel $entry)
     {
-        $this->registro = $entry;
+        $this->entry = $entry;
     }
 
     /**
