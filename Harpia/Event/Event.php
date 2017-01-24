@@ -2,7 +2,7 @@
 
 namespace Harpia\Event;
 
-use App\Models\BaseModel;
+use Modulos\Core\Model\BaseModel;
 
 /**
  * Class Event
