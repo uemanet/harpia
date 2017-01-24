@@ -2,7 +2,7 @@
 
 namespace Harpia\Event;
 
-use App\Models\BaseModel;
+use Modulos\Core\Model\BaseModel;
 
 /**
  * Class Event
@@ -15,7 +15,6 @@ abstract class Event implements EventInterface
      * @var BaseModel
      */
     protected $entry;
-
 
     /**
      * Event constructor.
