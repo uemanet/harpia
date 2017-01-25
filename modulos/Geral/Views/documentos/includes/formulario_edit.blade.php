@@ -39,16 +39,16 @@
     <div class="form-group col-md-4 @if ($errors->has('doc_anx_nome')) has-error @endif">
         {!! Form::label('doc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
         <div class="control">
-            @if($idAnexo != null)
-            <input type="text" class="form-control first" placeholder="{{$idAnexo->anx_nome}}" disabled="">
+            @if($Anexo != null)
+            <input type="text" class="form-control first" placeholder="{{$Anexo->anx_nome}}" disabled="">
             @else
             <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
             @endif
         </div>
     </div>
-    @if($idAnexo != null)
+    @if($Anexo != null)
     {!! Form::label('', 'Ação', ['class' => 'control-label']) !!}
-    <div class="control">
+    <div class="control botaoDelete">
         <button type="button" class="btn-delete btn btn-danger"><i class="fa fa-trash"></i> Excluir Anexo</button>
     </div>
     @endif
@@ -108,6 +108,7 @@
                                 $.harpia.hideloading();
 
                                 toastr.success('Anexo excluído com sucesso!', null, {progressBar: true});
+                                $(".botaoDelete").remove();
                                 $(".first").attr("placeholder", "Sem anexo").val("").focus().blur();
                             },
                             error: function (xhr, textStatus, error) {

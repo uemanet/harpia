@@ -112,22 +112,23 @@ class DocumentosController extends BaseController
         $id = $request->session()->get('last_id');
 
         $documento = $this->documentoRepository->find($documentoId);
-        $pessoa = $this->pessoaRepository->find($documento->doc_pes_id);
-        $idAnexo = $this->anexoRepository->find($documento->doc_anx_documento);
-
-//        dd($documento);
 
         if (!$documento) {
             flash()->error('Recurso não existe.');
             return redirect()->back();
         }
+
+        $pessoa = $this->pessoaRepository->find($documento->doc_pes_id);
+        $Anexo = $this->anexoRepository->find($documento->doc_anx_documento);
+
+
         $tiposdocumentos = $this->tipodocumentoRepository->listsTipoDocumentoByDocumentoId($documentoId);
 
         foreach ($tiposdocumentos as $tipo) {
             $documentotipo = $tipo;
         }
 
-        return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa', 'idAnexo'));
+        return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa', 'Anexo'));
     }
 
     public function putEdit($DocumentoId, DocumentoRequest $request)
