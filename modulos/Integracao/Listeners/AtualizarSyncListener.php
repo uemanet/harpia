@@ -16,6 +16,16 @@ class AtualizarSyncListener
 
     public function handle(AtualizarSyncEvent $event)
     {
-        dd($event);
+        $data = $event->getData();
+
+        try {
+            $this->sincronizacaoRepository->update($data);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+        }
+
+        return true;
     }
 }
