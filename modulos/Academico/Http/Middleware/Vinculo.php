@@ -67,9 +67,6 @@ class Vinculo
             case "matrizescurriculares":
                 return $this->handleMatrizesCurriculares($request, $next);
                 break;
-            case "ofertascursos":
-                return $this->handleOfertasCursos($request, $next);
-                break;
             case "turmas":
                 return $this->handleTurmas($request, $next);
                 break;
@@ -192,27 +189,6 @@ class Vinculo
         return redirect()->route('academico.cursos.index');
     }
 
-    /**
-     * Verifica e filtra os vinculos da rota Ofertas Cursos
-     * @param $request
-     * @param Closure $next
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function handleOfertasCursos($request, Closure $next)
-    {
-        $id = $request->ofc_crs_id;
-
-        if (is_null($id)) {
-            return $next($request);
-        }
-
-        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $id)) {
-            return $next($request);
-        }
-
-        flash()->error($this->defaultResponse);
-        return redirect()->route('academico.ofertascursos.index');
-    }
 
     /**
      * Verifica e filtra os vinculos da rota Turmas
