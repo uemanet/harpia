@@ -143,7 +143,7 @@
 
                 $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
                     if(!$.isEmptyObject(response)) {
-                        turmaSelect.append('<option value="">Selecione a Turma</option>');
+                        turmaSelect.append('<option value="">Selecione a turma</option>');
                         $.each(response, function (key, obj) {
                             turmaSelect.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
                         });

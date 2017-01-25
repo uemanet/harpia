@@ -11,7 +11,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     protected $moduloDisciplinaRepository;
     protected $ofertaDisciplinaRepository;
 
-    public function __construct(MatriculaOfertaDisciplina $matricula,ModuloDisciplinaRepository $modulo,OfertaDisciplinaRepository $oferta)
+    public function __construct(MatriculaOfertaDisciplina $matricula, ModuloDisciplinaRepository $modulo, OfertaDisciplinaRepository $oferta)
     {
         $this->model = $matricula;
         $this->moduloDisciplinaRepository = $modulo;
@@ -305,7 +305,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                     ->whereNotIn('mof_situacao_matricula', ['cancelado', 'reprovado_media', 'reprovado_final'])
                     ->orderBy('mof_id', 'desc')
                     ->first();
-
     }
 
     public function getAlunosMatriculasLote($turmaId, $ofertaId)
@@ -318,18 +317,18 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                     ->orderBy('pes_nome', 'asc')
                     ->get();
 
-        if($alunos->count()) {
+        if ($alunos->count()) {
             foreach ($alunos as $key => $aluno) {
                 $matricula = $this->getMatriculaByAlunoDisciplina($aluno->mat_id, $ofertaId);
 
                 $alunos[$key]->mof_situacao_matricula = null;
 
-                if(!is_null($matricula)) {
+                if (!is_null($matricula)) {
                     $alunos[$key]->mof_situacao_matricula = $matricula->mof_situacao_matricula;
                     continue;
                 }
 
-                if(!$this->verifyIfAlunoAprovadoPreRequisitos($aluno->mat_id, $ofertaId)) {
+                if (!$this->verifyIfAlunoAprovadoPreRequisitos($aluno->mat_id, $ofertaId)) {
                     $alunos[$key]->mof_situacao_matricula = 'no_pre_requisitos';
                 }
             }

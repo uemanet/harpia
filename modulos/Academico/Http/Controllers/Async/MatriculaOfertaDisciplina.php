@@ -45,8 +45,8 @@ class MatriculaOfertaDisciplina extends BaseController
         return new JsonResponse($alunos, 200);
     }
 
-    public function postMatriculasLote(Request $request) {
-
+    public function postMatriculasLote(Request $request)
+    {
         $matriculas = $request->input('matriculas');
         $ofertaId = $request->input('ofd_id');
 
