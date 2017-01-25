@@ -13,7 +13,12 @@
  */
 
 return [
-    'Modulos\Integracao\Events\HelloIntegracao' => [
-        'Modulos\Integracao\Listeners\IntegracaoListener' => 10,
-    ],
+
+    /*
+     * Evento de updates em sincronizacao
+     * */
+
+    'Modulos\Integracao\Events\AtualizarSyncEvent' => [
+        'Modulos\Integracao\Listeners\AtualizarSyncListener'
+    ]
 ];
