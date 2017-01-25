@@ -302,6 +302,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $this->model
                     ->where('mof_mat_id', $matriculaId)
                     ->where('mof_ofd_id', $ofertaId)
+                    ->whereNotIn('mof_situacao_matricula', ['cancelado', 'reprovado_media', 'reprovado_final'])
                     ->orderBy('mof_id', 'desc')
                     ->first();
 
@@ -325,6 +326,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
                 if(!is_null($matricula)) {
                     $alunos[$key]->mof_situacao_matricula = $matricula->mof_situacao_matricula;
+                    continue;
+                }
+
+                if(!$this->verifyIfAlunoAprovadoPreRequisitos($aluno->mat_id, $ofertaId)) {
+                    $alunos[$key]->mof_situacao_matricula = 'no_pre_requisitos';
                 }
             }
         }

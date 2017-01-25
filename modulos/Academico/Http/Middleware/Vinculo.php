@@ -479,6 +479,12 @@ class Vinculo
      */
     public function handleAsyncMatriculaDisciplina($request, $next)
     {
+        $routeName = $request->route()->getName();
+
+        if($routeName == 'academico.async.matriculasofertasdisciplinas.getmatriculaslote') {
+            return $next($request);
+        }
+        
         if ($request->getMethod() == "GET") {
             // Pega os parametros via rota
             // id Aluno + id Curso + id Periodo
@@ -502,8 +508,13 @@ class Vinculo
 
         if ($request->getMethod() == "POST") {
             $parameters = $request->all();
-            $ofertas    = $parameters["ofertas"];
-            $matriculaId  = $parameters["mof_mat_id"];
+            $ofertas    = isset($parameters["ofertas"]) ? $parameters['ofertas'] : null;
+            $matriculaId  = isset($parameters["mof_mat_id"]) ? $parameters['mof_mat_id'] : null;
+
+            if($routeName == 'academico.async.matriculasofertasdisciplinas.postmatriculaslote') {
+                $matriculaId = $parameters['matriculas'][0];
+                $ofertas[] = $parameters['ofd_id'];
+            }
 
             // Verifica o vinculo na matricula
             $matricula = $this->matriculaCursoRepository->find($matriculaId);

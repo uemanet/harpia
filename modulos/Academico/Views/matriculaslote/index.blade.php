@@ -66,6 +66,19 @@
         </div>
         <!-- /.box-body -->
     </div>
+
+    <div class="box box-primary hidden" id="boxAlunos">
+        <div class="box-header with-border">
+            <h3 class="box-title">Lista de Alunos</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body"></div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -81,6 +94,9 @@
             var periodosLetivosSelect = $('#per_id');
             var disciplinasOfertadasSelect = $('#ofd_id');
             var btnBuscar = $('#btnBuscar');
+
+            // token
+            var token = "{{csrf_token()}}";
 
             // evento change select de cursos
             $('#crs_id').change(function () {
@@ -196,18 +212,163 @@
                 event.preventDefault();
 
                 var turmaId = turmaSelect.val();
-                var disciplinaOfertadaId = disciplinasOfertadasSelect.val();
-                var cursoId = $('#crs_id').val();
+                var ofertaDisciplinaId = disciplinasOfertadasSelect.val();
 
-                if((!turmaId || turmaId == '') || (!disciplinaOfertadaId || disciplinaOfertadaId == '') || (!cursoId || cursoId == '')) {
+                if((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
                     return false;
                 }
 
-                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/getalunosmatriculaslote/"+cursoId+"/"+turmaId+"/" + disciplinaOfertadaId).done(function (response) {
-                    console.log(response);
-                });
+                renderTable(turmaId, ofertaDisciplinaId);
 
             });
+
+            var renderTable = function(turmaId, ofertaDisciplinaId) {
+                $.harpia.httpget("{{url('/')}}/academico/async/matriculasofertasdisciplinas/getalunosmatriculaslote/"+turmaId+"/" + ofertaDisciplinaId).done(function (response) {
+                    if(!$.isEmptyObject(response)) {
+                        var html = '<div class="row"><div class="col-md-12">';
+
+                        var table = '<table class="table table-bordered table-striped">';
+
+                        // cabeçalho da tabela
+                        table += '<tr>';
+                        table += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
+                        table += '<th>Nome</th>';
+                        table += '<th width="20%">Situacao de Matricula</th>';
+                        table += '</tr>';
+
+                        // corpo da tabela
+                        $.each(response, function (key, obj) {
+                            table += '<tr>';
+                            if(obj.mof_situacao_matricula == null) {
+                                table += '<td><label><input class="matriculas" type="checkbox" value="'+obj.mat_id+'"></label></td>';
+                            } else {
+                                table += '<td></td>';
+                            }
+                            table += '<td>'+obj.pes_nome+'</td>';
+                            switch(obj.mof_situacao_matricula) {
+                                case null:
+                                    table += '<td><span class="label label-success">Apto para Matricula</span></td>';
+                                    break;
+                                case 'no_pre_requisitos':
+                                    table += '<td><span class="label label-warning">Pendencia em Pré-Requisitos</span></td>';
+                                    break;
+                                case 'cursando':
+                                    table += '<td><span class="label label-info">Cursando</span></td>';
+                                    break;
+                                case 'aprovado_media':
+                                    table += '<td><span class="label label-success">Aprovado por Media</span></td>';
+                                    break;
+                                case 'aprovado_final':
+                                    table += '<td><span class="label label-success">Aprovado por Final</span></td>';
+                                    break;
+                            }
+                            table += '</tr>';
+                        });
+
+                        table += '</table>';
+
+                        html += table;
+                        html += '</div></div>';
+                        html += '<div class="row"><div class="col-md-12">';
+
+                        var button = "<button class='btn btn-success hidden btnMatricular'>Matricular alunos</button>";
+
+                        html += button;
+                        html += '</div></div>';
+
+
+                        $('#boxAlunos').removeClass('hidden');
+                        $('#boxAlunos .box-body').empty().append(html);
+
+                    } else {
+                        $('#boxAlunos').removeClass('hidden');
+                        $('#boxAlunos .box-body').empty().append('<p>Sem alunos matriculados na turma</p>');
+                    }
+                });
+            };
+
+            // evento para selecionar todos os checkboxes
+            $(document).on('click', '#select_all',function(event) {
+                if(this.checked) {
+                    $(':checkbox').each(function() {
+                        this.checked = true;
+                    });
+                }
+                else {
+                    $(':checkbox').each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            var hiddenButton = function () {
+                var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
+
+                if(checkboxes.is(':checked')){
+                    $(document).find('.btnMatricular').removeClass('hidden');
+                }else{
+                    $(document).find('.btnMatricular').addClass('hidden');
+                }
+            };
+
+            $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButton);
+
+            $(document).on('click', '.btnMatricular', function () {
+
+                var quant = $('.matriculas:checked').length;
+
+                var ofertaId = $('#ofd_id').val();
+
+                if((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
+                    return false;
+                }
+
+                var matriculasIds = new Array();
+
+                $('.matriculas:checked').each(function () {
+                    matriculasIds.push($(this).val());
+                });
+
+                sendMatriculas(matriculasIds, ofertaId);
+            });
+
+            var sendMatriculas = function(matriculasIds, ofertaId) {
+
+                var dados = {
+                    matriculas: matriculasIds,
+                    ofd_id: ofertaId,
+                    _token: token
+                };
+
+                $.harpia.showloading();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/academico/async/matriculasofertasdisciplinas/matriculaslote',
+                    data: dados,
+                    success: function (data) {
+                        $.harpia.hideloading();
+
+                        toastr.success('Alunos matriculados com sucesso!', null, {progressBar: true});
+
+                        var turma = turmaSelect.val();
+                        var ofertaDisciplina = disciplinasOfertadasSelect.val();
+
+                        renderTable(turma, ofertaDisciplina);
+                    },
+                    error: function (xhr, textStatus, error) {
+                        $.harpia.hideloading();
+
+                        switch (xhr.status) {
+                            case 400:
+                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
+                                break;
+                            default:
+                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
+                        }
+                    }
+                });
+            };
         });
     </script>
 @stop
