@@ -227,55 +227,134 @@
                     if(!$.isEmptyObject(response)) {
                         var html = '<div class="row"><div class="col-md-12">';
 
-                        var table = '<table class="table table-bordered table-striped">';
+                        // criando a estrutura das tabs
+                        var tabs = '<div class="nav-tabs-custom">';
+                        tabs += '<ul class="nav nav-tabs">';
+                        tabs += '<li class="active"><a href="#tab_1" data-toggle="tab">Aptos Para Matrícula</a></li>';
+                        tabs += '<li><a href="#tab_2" data-toggle="tab">Cursando</a></li>';
+                        tabs += '<li><a href="#tab_3" data-toggle="tab">Aprovados</a></li>';
+                        tabs += '</ul>';
+                        tabs += '<div class="tab-content">';
 
-                        // cabeçalho da tabela
-                        table += '<tr>';
-                        table += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
-                        table += '<th>Nome</th>';
-                        table += '<th width="20%">Situacao de Matricula</th>';
-                        table += '</tr>';
+                        var aptos = new Array();
+                        var cursandos = new Array();
+                        var aprovados = new Array();
 
-                        // corpo da tabela
                         $.each(response, function (key, obj) {
-                            table += '<tr>';
                             if(obj.mof_situacao_matricula == null) {
-                                table += '<td><label><input class="matriculas" type="checkbox" value="'+obj.mat_id+'"></label></td>';
-                            } else {
-                                table += '<td></td>';
+                                aptos.push(obj);
+                            } else if (obj.mof_situacao_matricula == 'cursando') {
+                                cursandos.push(obj);
+                            } else if(['aprovado_media', 'aprovado_final'].indexOf(obj.mof_situacao_matricula) > -1) {
+                                aprovados.push(obj);
                             }
-                            table += '<td>'+obj.pes_nome+'</td>';
-                            switch(obj.mof_situacao_matricula) {
-                                case null:
-                                    table += '<td><span class="label label-success">Apto para Matricula</span></td>';
-                                    break;
-                                case 'no_pre_requisitos':
-                                    table += '<td><span class="label label-warning">Pendencia em Pré-Requisitos</span></td>';
-                                    break;
-                                case 'cursando':
-                                    table += '<td><span class="label label-info">Cursando</span></td>';
-                                    break;
-                                case 'aprovado_media':
-                                    table += '<td><span class="label label-success">Aprovado por Media</span></td>';
-                                    break;
-                                case 'aprovado_final':
-                                    table += '<td><span class="label label-success">Aprovado por Final</span></td>';
-                                    break;
-                            }
-                            table += '</tr>';
                         });
 
-                        table += '</table>';
 
-                        html += table;
+                        // Criacao da Tab de Alunos aptos para matricula
+                        var tab1 = '<div class="tab-pane active" id="tab_1">';
+
+                        if(!$.isEmptyObject(aptos)) {
+                            var div = '<div class="row"><div class="col-md-12">';
+                            var table1 = '<table class="table table-bordered table-striped">';
+
+                            // cabeçalho da tabela
+                            table1 += '<tr>';
+                            table1 += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
+                            table1 += '<th>Nome</th>';
+                            table1 += '<th width="20%">Situacao de Matricula</th>';
+                            table1 += '</tr>';
+
+                            // corpo da tabela
+                            $.each(aptos, function (key, obj) {
+                                table1 += '<tr>';
+                                table1 += '<td><label><input class="matriculas" type="checkbox" value="'+obj.mat_id+'"></label></td>';
+
+                                table1 += '<td>'+obj.pes_nome+'</td>';
+                                table1 += '<td><span class="label label-success">Apto para Matricula</span></td>';
+                                table1 += '</tr>';
+                            });
+
+                            table1 += '</table>';
+                            div += table1;
+                            div += '</div></div>';
+
+                            // criacao do botao de matricular alunos
+                            div += '<div class="row"><div class="col-md-12">';
+                            div += '<button class="btn btn-success hidden btnMatricular">Matricular Alunos</button>';
+                            div += '</div></div>';
+
+                            tab1 += div;
+                        } else {
+                            tab1 += '<p>Sem alunos aptos para matricula</p>';
+                        }
+
+                        tab1 += '</div>';
+
+                        // Criacao da Tab de Alunos cursando a disciplina
+                        var tab2 = '<div class="tab-pane" id="tab_2">';
+
+                        if(!$.isEmptyObject(cursandos)) {
+                            var table2 = '<table class="table table-bordered table-striped">';
+
+                            // cabeçalho da tabela
+                            table2 += '<tr>';
+                            table2 += '<th>Nome</th>';
+                            table2 += '<th width="20%">Situacao de Matricula</th>';
+                            table2 += '</tr>';
+
+                            // corpo da tabela
+                            $.each(cursandos, function (key, obj) {
+                                table2 += '<tr>';
+                                table2 += '<td>'+obj.pes_nome+'</td>';
+                                table2 += '<td><span class="label label-info">Cursando</span></td>';
+                                table2 += '</tr>';
+                            });
+
+                            table2 += '</table>';
+                            tab2 += table2;
+                        } else {
+                            tab2 += '<p>Sem alunos cursando a disciplina</p>';
+                        }
+
+                        tab2 += '</div>';
+
+                        // Criacao da Tab de Alunos aprovados na disciplina
+                        var tab3 = '<div class="tab-pane" id="tab_3">';
+
+                        if(!$.isEmptyObject(aprovados)) {
+                            var table3 = '<table class="table table-bordered table-striped">';
+
+                            // cabeçalho da tabela
+                            table3 += '<tr>';
+                            table3 += '<th>Nome</th>';
+                            table3 += '<th width="20%">Situacao de Matricula</th>';
+                            table3 += '</tr>';
+
+                            // corpo da tabela
+                            $.each(aprovados, function (key, obj) {
+                                table3 += '<tr>';
+                                table3 += '<td>'+obj.pes_nome+'</td>';
+                                table3 += '<td><span class="label label-success">Aprovado</span></td>';
+                                table3 += '</tr>';
+                            });
+
+                            table3 += '</table>';
+                            tab3 += table3;
+                        } else {
+                            tab3 += '<p>Sem alunos aprovados na disciplina</p>';
+                        }
+
+                        tab3 += '</div>';
+
+                        tabs += tab1;
+                        tabs += tab2;
+                        tabs += tab3;
+
+                        tabs += '</div></div>';
+
+                        html += tabs;
                         html += '</div></div>';
-                        html += '<div class="row"><div class="col-md-12">';
-
-                        var button = "<button class='btn btn-success hidden btnMatricular'>Matricular alunos</button>";
-
-                        html += button;
-                        html += '</div></div>';
-
 
                         $('#boxAlunos').removeClass('hidden');
                         $('#boxAlunos .box-body').empty().append(html);
