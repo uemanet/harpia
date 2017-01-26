@@ -26,6 +26,10 @@ class AmbienteVirtualRepository extends BaseRepository
         return false;
     }
 
+    public function getAmbienteByTurma($turmaId)
+    {
+    }
+
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')

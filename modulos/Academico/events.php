@@ -13,8 +13,7 @@
  */
 
 return [
-    'Modulos\Academico\Events\NovaTurmaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\NovaTurmaListener',
+    'Modulos\Academico\Events\AcademicoEvent' => [
+        'Modulos\Academico\Listeners\AcademicoListener',
     ],
 ];
