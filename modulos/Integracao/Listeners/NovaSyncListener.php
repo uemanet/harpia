@@ -18,8 +18,6 @@ class NovaSyncListener
     {
         $entry = $event->getData();
 
-        $date = new \DateTime('NOW');
-
         $data = [
             'sym_table' => $entry->getTable(),
             'sym_table_id' => $entry->getKey(),
