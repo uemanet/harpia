@@ -33,13 +33,13 @@ class Moodle
     {
         $response = $this->client->request('GET', $url, ['query' => $data]);
 
-        return json_decode($response->getBody());
+        return (array) json_decode($response->getBody());
     }
 
     private function post($url, $data)
     {
-        $response = $this->client->request('POST', $url, ['body' => $data]);
+        $response = $this->client->request('POST', $url, ['form_params' => $data]);
 
-        return json_decode($response->getBody());
+        return (array) json_decode($response->getBody());
     }
 }
