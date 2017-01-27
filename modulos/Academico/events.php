@@ -19,6 +19,6 @@ return [
 
     'Modulos\Academico\Events\NovoGrupoEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        //'Modulos\Academico\Listeners\MigrarGrupoListener',
+        'Modulos\Academico\Listeners\MigrarGrupoListener',
     ],
 ];

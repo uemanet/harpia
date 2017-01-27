@@ -19,4 +19,21 @@ class SincronizacaoRepository extends BaseRepository
             ->where('sym_table_id', '=', $data['sym_table_id'])
             ->update($data);
     }
+
+    public function findBy($options)
+    {
+        $query = $this->model;
+
+        if(!empty($options))
+        {
+            foreach ($options as $key => $value)
+            {
+                $query = $query->where($key, '=',$value);
+            }
+
+            return $query->get();
+        }
+
+        return $query->all();
+    }
 }
