@@ -2,24 +2,31 @@
 
 namespace Modulos\Integracao\Listeners;
 
+use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Moodle;
 
 class MigrarTurmaListener
 {
     private $turmaRepository;
     private $cursoRepository;
     private $periodoLetivoRepository;
+    private $ambienteVirtualRepository;
 
     public function __construct(TurmaRepository $turmaRepository,
                                 CursoRepository $cursoRepository,
-                                PeriodoLetivoRepository $periodoLetivoRepository)
+                                PeriodoLetivoRepository $periodoLetivoRepository,
+                                AmbienteVirtualRepository $ambienteVirtualRepository)
     {
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
     public function handle(TurmaMapeadaEvent $event)
@@ -30,9 +37,32 @@ class MigrarTurmaListener
         $data['course']['category'] = 1;
         $data['course']['shortname'] = $this->turmaShortName($turma); // CC_TURMA_A_2017.1
         $data['course']['fullname'] = $this->turmaFullName($turma); // Ciência da Computação - Turma A - 2017.1
-        $data['course']['summaryformats'] = 1;
+        $data['course']['summaryformat'] = 1;
         $data['course']['format'] = 'topics';
         $data['course']['numsections'] = 0;
+
+        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
+
+        $param['url'] = $ambiente->url;
+        $param['token'] = $ambiente->token;
+        $param['action'] = 'post';
+        $param['functioname'] = 'local_integracao_create_course';
+        $param['data'] = $data;
+
+        $response = Moodle::send($param);
+
+        dd($response);
+
+        if (array_key_exists('status', $response)) {
+            if ($response['status'] == 'success') {
+                // Migracao bem-sucedida
+                event(new AtualizarSyncEvent($turma, null, 2, $response['message']));
+                return true;
+            }
+        }
+
+        // Migracao mal-sucedida
+        event(new AtualizarSyncEvent($turma, null, 3, $response['message']));
     }
 
     /**
