@@ -35,8 +35,8 @@ class MigrarTurmaListener
 
         $data['course']['trm_id'] = $turma->trm_id;
         $data['course']['category'] = 1;
-        $data['course']['shortname'] = $this->turmaShortName($turma); // CC_TURMA_A_2017.1
-        $data['course']['fullname'] = $this->turmaFullName($turma); // Ciência da Computação - Turma A - 2017.1
+        $data['course']['shortname'] = $this->turmaShortName($turma);
+        $data['course']['fullname'] = $this->turmaFullName($turma);
         $data['course']['summaryformat'] = 1;
         $data['course']['format'] = 'topics';
         $data['course']['numsections'] = 0;
@@ -51,14 +51,10 @@ class MigrarTurmaListener
 
         $response = Moodle::send($param);
 
-        dd($response);
-
-        if (array_key_exists('status', $response)) {
-            if ($response['status'] == 'success') {
-                // Migracao bem-sucedida
-                event(new AtualizarSyncEvent($turma, null, 2, $response['message']));
-                return true;
-            }
+        if (array_key_exists('status', $response) && $response['status'] == 'success') {
+            // Migracao bem-sucedida
+            event(new AtualizarSyncEvent($turma, null, 2, $response['message']));
+            return true;
         }
 
         // Migracao mal-sucedida
