@@ -341,7 +341,11 @@ class AmbientesVirtuaisController extends BaseController
                 flash()->success('Turma vinculada com sucesso');
 
                 # Evento de nova turma mapeada passando o objeto da turma
-                event(new TurmaMapeadaEvent($this->turmaRepository->find($dados['atr_trm_id'])));
+                $turma = $this->turmaRepository->find($dados['atr_trm_id']);
+
+                if ($turma->trm_integrada == 1) {
+                    event(new TurmaMapeadaEvent($turma));
+                }
 
                 return redirect()->back();
             }
