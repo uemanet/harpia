@@ -11,11 +11,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     protected $moduloDisciplinaRepository;
     protected $ofertaDisciplinaRepository;
 
-    public function __construct(
-        MatriculaOfertaDisciplina $matricula,
-        ModuloDisciplinaRepository $modulo,
-        OfertaDisciplinaRepository $oferta
-    ) {
+    public function __construct(MatriculaOfertaDisciplina $matricula, ModuloDisciplinaRepository $modulo, OfertaDisciplinaRepository $oferta)
+    {
         $this->model = $matricula;
         $this->moduloDisciplinaRepository = $modulo;
         $this->ofertaDisciplinaRepository = $oferta;
@@ -300,5 +297,45 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         ]);
 
         return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!');
+    }
+
+    private function getMatriculaByAlunoDisciplina($matriculaId, $ofertaId)
+    {
+        return $this->model
+                    ->where('mof_mat_id', $matriculaId)
+                    ->where('mof_ofd_id', $ofertaId)
+                    ->whereNotIn('mof_situacao_matricula', ['cancelado', 'reprovado_media', 'reprovado_final'])
+                    ->orderBy('mof_id', 'desc')
+                    ->first();
+    }
+
+    public function getAlunosMatriculasLote($turmaId, $ofertaId)
+    {
+        $alunos = DB::table('acd_matriculas')
+                    ->join('acd_alunos', 'mat_alu_id', 'alu_id')
+                    ->join('gra_pessoas', 'alu_pes_id', 'pes_id')
+                    ->select('mat_id', 'pes_id', 'pes_nome')
+                    ->where('mat_trm_id', $turmaId)
+                    ->orderBy('pes_nome', 'asc')
+                    ->get();
+
+        if ($alunos->count()) {
+            foreach ($alunos as $key => $aluno) {
+                $matricula = $this->getMatriculaByAlunoDisciplina($aluno->mat_id, $ofertaId);
+
+                $alunos[$key]->mof_situacao_matricula = null;
+
+                if (!is_null($matricula)) {
+                    $alunos[$key]->mof_situacao_matricula = $matricula->mof_situacao_matricula;
+                    continue;
+                }
+
+                if (!$this->verifyIfAlunoAprovadoPreRequisitos($aluno->mat_id, $ofertaId)) {
+                    $alunos[$key]->mof_situacao_matricula = 'no_pre_requisitos';
+                }
+            }
+        }
+
+        return $alunos;
     }
 }
