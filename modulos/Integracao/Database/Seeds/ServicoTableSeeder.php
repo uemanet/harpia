@@ -8,17 +8,14 @@ class ServicoTableSeeder extends Seeder
 {
     public function run()
     {
-        $Servico = new Servico();
-        $Servico->ser_nome = 'MonitoramentoTempo';
-        $Servico->ser_slug = 'get_tutor_online_time';
-        $Servico->save();
+        $servico = new Servico();
+        $servico->ser_nome = 'Monitor';
+        $servico->ser_slug = 'get_tutor_online_time';
+        $servico->save();
 
-        $Servico = new Servico();
-        $Servico->ser_nome = 'MonitoramentoForuns';
-        $Servico->save();
-
-        $Servico = new Servico();
-        $Servico->ser_nome = 'MonitoramentoNotas';
-        $Servico->save();
+        $servico = new Servico();
+        $servico->ser_nome = 'Integracao';
+        $servico->ser_slug = 'local_integracao';
+        $servico->save();
     }
 }

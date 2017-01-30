@@ -187,6 +187,11 @@ return [
          * Configuracao Service Provider
          */
         Harpia\Configuracao\ConfiguracaoServiceProvider::class,
+
+        /*
+         * Moodle Service Provider
+         */
+        Harpia\Moodle\MoodleServiceProvider::class,
     ],
 
     /*
@@ -251,6 +256,7 @@ return [
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,
         'Format' => Harpia\Format\Facades\Format::class,
-        'Configuracao' => Harpia\Configuracao\Facades\Configuracao::class
+        'Configuracao' => Harpia\Configuracao\Facades\Configuracao::class,
+        'Moodle' => Harpia\Moodle\Facades\Moodle::class
     ],
 ];
