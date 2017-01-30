@@ -116,6 +116,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         if (!is_null($options)) {
             foreach ($options as $key => $value) {
+                if ($key == 'mof_situacao_matricula') {
+                    $query = $query->whereIn($key, $value);
+                    continue;
+                }
+
                 $query = $query->where($key, '=', $value);
             }
         }
@@ -142,7 +147,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
             'ofd_trm_id' => $turmaId,
-            'mof_situacao_matricula' => 'cursando'
+            'mof_situacao_matricula' => ['cursando', 'aprovado_media', 'aprovado_final'],
         ])->pluck('mof_ofd_id')->toArray();
 
         // pega as disciplinas ofertadas no periodo e turma correspondentes, e verifica se o aluno
@@ -177,6 +182,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $query = $query->whereNotIn('ofd_id', [0]);
         }
 
+
         $disciplinasOfertadas =  $query->get();
 
 
@@ -203,7 +209,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     {
         $query = $this->model->where('mof_ofd_id', '=', $ofertaId)
                              ->where('mof_mat_id', '=', $matriculaId)
-                            ->where('mof_situacao_matricula', '=', 'cursando');
+                             ->whereNotIn('mof_situacao_matricula', ['cancelado', 'reprovado_media', 'reprovado_final']);
 
         return $query->first();
     }
@@ -278,8 +284,12 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         // verifica se já existe uma matricula ativa nessa oferta de disciplina
         $matriculaExists = $this->verifyMatriculaDisciplina($data['mat_id'], $data['ofd_id']);
 
-        if ($matriculaExists) {
-            return array("type" => "error", "message" => "Aluno já matriculado nessa disciplina para esse periodo e turma");
+        if (!is_null($matriculaExists)) {
+            if ($matriculaExists['mof_situacao_matricula'] == 'aprovado_media' || 'aprovado_final') {
+                return array("type" => "error", "message" => "Aluno já aprovado nessa disciplina.");
+            } elseif ($matriculaExists['mof_situacao_matricula'] == 'cursando') {
+                return array("type" => "error", "message" => "Aluno já matriculado nessa disciplina para esse periodo e turma");
+            }
         }
 
         // verifica se o aluno está aprovado nas disciplinas pre-requisitos, caso existam
