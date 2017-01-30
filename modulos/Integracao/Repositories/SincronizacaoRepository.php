@@ -24,11 +24,9 @@ class SincronizacaoRepository extends BaseRepository
     {
         $query = $this->model;
 
-        if(!empty($options))
-        {
-            foreach ($options as $key => $value)
-            {
-                $query = $query->where($key, '=',$value);
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $query = $query->where($key, '=', $value);
             }
 
             return $query->get();

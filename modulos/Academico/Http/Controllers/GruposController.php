@@ -140,7 +140,7 @@ class GruposController extends BaseController
             // busca a turma vinculado ao grupo
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
-            if($turma->trm_integrada) {
+            if ($turma->trm_integrada) {
                 event(new NovoGrupoEvent($grupo));
             }
 

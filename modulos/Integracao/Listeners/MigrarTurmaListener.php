@@ -53,12 +53,12 @@ class MigrarTurmaListener
 
         if (array_key_exists('status', $response) && $response['status'] == 'success') {
             // Migracao bem-sucedida
-            event(new AtualizarSyncEvent($turma, null, 2, $response['message']));
+            event(new AtualizarSyncEvent($turma, 2, $response['message']));
             return true;
         }
 
         // Migracao mal-sucedida
-        event(new AtualizarSyncEvent($turma, null, 3, $response['message']));
+        event(new AtualizarSyncEvent($turma, 3, $response['message']));
     }
 
     /**
