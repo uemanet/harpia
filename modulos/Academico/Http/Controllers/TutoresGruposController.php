@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Events\TutorVinculadoEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -21,7 +22,11 @@ class TutoresGruposController extends BaseController
     protected $turmaRepository;
     protected $ofertacursoRepository;
 
-    public function __construct(TutorGrupoRepository $tutorgrupoRepository, GrupoRepository $grupoRepository, TutorRepository $tutorRepository, TurmaRepository $turmaRepository, OfertaCursoRepository $ofertacursoRepository)
+    public function __construct(TutorGrupoRepository $tutorgrupoRepository,
+                                GrupoRepository $grupoRepository,
+                                TutorRepository $tutorRepository,
+                                TurmaRepository $turmaRepository,
+                                OfertaCursoRepository $ofertacursoRepository)
     {
         $this->tutorgrupoRepository = $tutorgrupoRepository;
         $this->grupoRepository = $grupoRepository;
@@ -41,7 +46,7 @@ class TutoresGruposController extends BaseController
 
         $btnNovo = new TButton();
         if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
-            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/'. $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
+            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/' . $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
@@ -107,7 +112,7 @@ class TutoresGruposController extends BaseController
 
         $presencial = $this->tutorgrupoRepository->verifyTutorPresencial("presencial", $grupoId);
 
-        $distancia  = $this->tutorgrupoRepository->verifyTutorDistancia("distancia", $grupoId);
+        $distancia = $this->tutorgrupoRepository->verifyTutorDistancia("distancia", $grupoId);
 
         if (!is_null($presencial) && !is_null($distancia)) {
             flash()->error('O grupo já tem um tutor presencial e um tutor à distância!');
@@ -131,7 +136,7 @@ class TutoresGruposController extends BaseController
     {
         try {
             $tipoTutoria = $request->input('ttg_tipo_tutoria');
-            $idTutorGrupo = $request->input('ttg_id');
+            $tutorId = $request->input('ttg_tut_id');
             $grupoTutor = $request->input('ttg_grp_id');
 
             if ($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria, $grupoTutor)) {
@@ -152,8 +157,17 @@ class TutoresGruposController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
+            $grupo = $this->grupoRepository->find($grupoTutor);
+            $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+            if ($turma->trm_integrada == 1) {
+                // Event tutor vinculado
+                $tutor = $this->tutorRepository->find($tutorId);
+                event(new TutorVinculadoEvent($tutor, $grupo));
+            }
+
             flash()->success('Vínculo criado com sucesso.');
-            return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
+            return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -207,8 +221,8 @@ class TutoresGruposController extends BaseController
 
             $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
 
-          //Atualiza o fim do vículo do tutor antigo
-          $date = date('Y-m-d');
+            //Atualiza o fim do vículo do tutor antigo
+            $date = date('Y-m-d');
             $dados['ttg_data_fim'] = $date;
             $this->tutorgrupoRepository->update($dados, $tutorgrupo->ttg_id, 'ttg_id');
 
@@ -221,7 +235,7 @@ class TutoresGruposController extends BaseController
             }
 
             flash()->success('Tutor alterado com sucesso.');
-            return redirect('/academico/tutoresgrupos/index/'.$tutorgrupo->ttg_grp_id);
+            return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

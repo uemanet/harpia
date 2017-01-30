@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Listeners;
 
-
 use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Repositories\GrupoRepository;
@@ -20,8 +19,7 @@ class MigrarGrupoListener
         SincronizacaoRepository $sincronizacaoRepository,
         GrupoRepository $grupoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
-    )
-    {
+    ) {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->grupoRepository = $grupoRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
@@ -34,22 +32,20 @@ class MigrarGrupoListener
             'sym_status' => 1
         ]);
 
-        if($gruposMigrar->count())
-        {
+        if ($gruposMigrar->count()) {
             foreach ($gruposMigrar as $reg) {
-
                 $grupo = $this->grupoRepository->find($reg->sym_table_id);
 
                 // ambiente virtual vinculado à turma do grupo
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
 
-                if($ambiente) {
+                if ($ambiente) {
                     $param = [];
                     
                     // url do ambiente
                     $param['url'] = $ambiente->url;
                     $param['token'] = $ambiente->token;
-                    $param['functioname'] = 'create_group';
+                    $param['functioname'] = 'local_integracao_create_group';
                     $param['action'] = 'CREATE';
 
                     $param['data']['group']['trm_id'] = $grupo->grp_trm_id;
@@ -63,8 +59,8 @@ class MigrarGrupoListener
 
                     $status = 3;
 
-                    if(array_key_exists('status', $retorno)) {
-                        if($retorno['status'] == 'success') {
+                    if (array_key_exists('status', $retorno)) {
+                        if ($retorno['status'] == 'success') {
                             $status = 2;
                         }
                     }

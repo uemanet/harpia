@@ -9,6 +9,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 class ModulosEventServiceProvider extends ServiceProvider
 {
     protected $listen = [];
+
     protected $subscribe = [];
 
     private $path;
@@ -37,20 +38,7 @@ class ModulosEventServiceProvider extends ServiceProvider
 
         foreach ($directories as $directory) {
             if ($this->hasListenFile($directory)) {
-                foreach ($this->listeners($directory) as $event => $listeners) {
-                    foreach ($listeners as $listener => $priority) {
-
-                        /* Se o evento nao tem prioridade definida,
-                         * o valor default = 0
-                         */
-                        if (is_int($listener)) {
-                            $listener = $priority;
-                            $priority = 0;
-                        }
-
-                        Event::listen($event, $listener, $priority);
-                    }
-                }
+                $this->registerListeners($directory);
             }
         }
 
@@ -77,5 +65,23 @@ class ModulosEventServiceProvider extends ServiceProvider
     public function hasListenFile($directory)
     {
         return file_exists($directory . DIRECTORY_SEPARATOR . 'events.php');
+    }
+
+    /**
+     * Registra os listeners por diretorio
+     * @param $directory
+     */
+    public function registerListeners($directory)
+    {
+        foreach ($this->listeners($directory) as $event => $listeners) {
+            foreach ($listeners as $listener => $priority) {
+                if (is_int($listener)) {
+                    $listener = $priority;
+                    $priority = 0;
+                }
+
+                Event::listen($event, $listener, $priority);
+            }
+        }
     }
 }
