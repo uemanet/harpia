@@ -58,6 +58,6 @@ class MigrarTutorVinculadoListener
             }
         }
 
-        event(new AtualizarSyncEvent($tutor, null, $status, $response['message']));
+        event(new AtualizarSyncEvent($tutor, $status, $response['message']));
     }
 }

@@ -5,19 +5,25 @@ namespace Modulos\Academico\Http\Controllers\Async;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modulos\Academico\Events\OfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 
 class OfertaDisciplina extends BaseController
 {
     protected $ofertaDisciplinaRepository;
     protected $matriculaOfertaDisciplinaRepository;
+    protected $turmaRepository;
 
-    public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository, MatriculaOfertaDisciplinaRepository $matricula)
+    public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository,
+                                MatriculaOfertaDisciplinaRepository $matricula,
+                                TurmaRepository $turmaRepository)
     {
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matricula;
+        $this->turmaRepository = $turmaRepository;
     }
 
     public function getFindallbycurso($cursoId)
@@ -58,6 +64,13 @@ class OfertaDisciplina extends BaseController
                 if (!$ofertadisciplina) {
                     return new JsonResponse('Erro ao tentar salvar', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
+
+                $turma = $this->turmaRepository->find($ofertadisciplina->ofd_trm_id);
+
+                if ($turma->trm_integrada) {
+                    event(new OfertaDisciplinaEvent($ofertadisciplina));
+                }
+
                 return new JsonResponse($ofertadisciplina, Response::HTTP_OK);
             }
 

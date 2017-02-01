@@ -59,7 +59,7 @@ class MigrarTurmaListener
             }
         }
 
-        event(new AtualizarSyncEvent($turma, null, $status, $response['message']));
+        event(new AtualizarSyncEvent($turma, $status, $response['message']));
     }
 
     /**
