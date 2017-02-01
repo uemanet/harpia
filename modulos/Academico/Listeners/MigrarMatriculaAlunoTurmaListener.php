@@ -67,7 +67,9 @@ class MigrarMatriculaAlunoTurmaListener
 
                     $param['data']['student']['trm_id'] = $matriculaTurma->mat_trm_id;
                     $param['data']['student']['mat_id'] = $matriculaTurma->mat_id;
-                    $param['data']['student']['grp_id'] = $matriculaTurma->mat_grp_id;
+                    if ($matriculaTurma->mat_grp_id) {
+                        $param['data']['student']['grp_id'] = $matriculaTurma->mat_grp_id;
+                    }
                     $param['data']['student']['pes_id'] = $pessoa->pes_id;
                     $param['data']['student']['firstname'] = $firstName;
                     $param['data']['student']['lastname'] = $lastName;
