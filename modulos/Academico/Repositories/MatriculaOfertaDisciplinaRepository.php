@@ -299,14 +299,14 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             return array("type" => "error", "message" => "Aluno possui pre-requisitos não satisfeitos");
         }
 
-        $this->create([
+        $obj = $this->create([
             'mof_mat_id' => $data['mat_id'],
             'mof_ofd_id' => $data['ofd_id'],
             'mof_tipo_matricula' => 'matriculacomum',
             'mof_situacao_matricula' => 'cursando'
         ]);
 
-        return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!');
+        return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!', 'obj' => $obj);
     }
 
     private function getMatriculaByAlunoDisciplina($matriculaId, $ofertaId)
