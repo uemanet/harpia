@@ -38,6 +38,41 @@ class MatriculaOfertaDisciplina extends BaseController
         return new JsonResponse($disciplinas, 200);
     }
 
+    public function getFindAllAlunosMatriculasLote($turmaId, $ofertaId)
+    {
+        $alunos = $this->matriculaOfertaDisciplinaRepository->getAlunosMatriculasLote($turmaId, $ofertaId);
+
+        return new JsonResponse($alunos, 200);
+    }
+
+    public function postMatriculasLote(Request $request)
+    {
+        $matriculas = $request->input('matriculas');
+        $ofertaId = $request->input('ofd_id');
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($matriculas as $matricula) {
+                $result = $this->matriculaOfertaDisciplinaRepository->createMatricula(['mat_id' => $matricula, 'ofd_id' => $ofertaId]);
+
+                if ($result['type'] == 'error') {
+                    DB::rollback();
+                    return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+                }
+            }
+
+            DB::commit();
+            return new JsonResponse("Alunos matriculados com sucesso!", 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if (config('app.debug')) {
+                throw $e;
+            }
+            return new JsonResponse('Erro ao tentar matricular. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
     public function postMatricularAlunoDisciplinas(Request $request)
     {
         $ofertas = $request->input('ofertas');

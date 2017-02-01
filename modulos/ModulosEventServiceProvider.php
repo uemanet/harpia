@@ -2,6 +2,7 @@
 
 namespace Modulos;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,7 +19,7 @@ class ModulosEventServiceProvider extends ServiceProvider
      * ModulosEventServiceProvider constructor.
      * @param \Illuminate\Contracts\Foundation\Application $app
      */
-    public function __construct(\Illuminate\Contracts\Foundation\Application $app)
+    public function __construct(Application $app)
     {
         $this->path = base_path() . DIRECTORY_SEPARATOR . 'modulos';
         parent::__construct($app);
