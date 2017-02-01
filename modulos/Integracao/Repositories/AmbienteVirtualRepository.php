@@ -26,6 +26,17 @@ class AmbienteVirtualRepository extends BaseRepository
         return false;
     }
 
+    public function getAmbienteByTurma($turmaId)
+    {
+        return DB::table('int_ambientes_virtuais')
+            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
+            ->join('int_ambientes_turmas', 'amb_id', '=', 'atr_amb_id')
+            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
+            ->where('atr_trm_id', '=', $turmaId)
+            ->where('asr_ser_id', '=', 2)
+            ->first();
+    }
+
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')
