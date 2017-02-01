@@ -2,6 +2,8 @@
 
 namespace Modulos\Integracao\Http\Controllers;
 
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -22,14 +24,21 @@ class AmbientesVirtuaisController extends BaseController
     protected $ambienteservicoRepository;
     protected $cursoRepository;
     protected $ambienteturmaRepository;
+    protected $turmaRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository, ServicoRepository $servicoRepository, AmbienteServicoRepository $ambienteservicoRepository, CursoRepository $cursoRepository,  AmbienteTurmaRepository $ambienteturmaRepository)
+    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository,
+                                ServicoRepository $servicoRepository,
+                                AmbienteServicoRepository $ambienteservicoRepository,
+                                CursoRepository $cursoRepository,
+                                AmbienteTurmaRepository $ambienteturmaRepository,
+                                TurmaRepository $turmaRepository)
     {
         $this->ambientevirtualRepository = $ambientevirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteservicoRepository = $ambienteservicoRepository;
         $this->cursoRepository = $cursoRepository;
         $this->ambienteturmaRepository = $ambienteturmaRepository;
+        $this->turmaRepository = $turmaRepository;
     }
 
     public function getIndex(Request $request)
@@ -328,7 +337,16 @@ class AmbientesVirtuaisController extends BaseController
                     flash()->error('Erro ao tentar salvar.');
                     return redirect()->back()->withInput($request->all());
                 }
+
                 flash()->success('Turma vinculada com sucesso');
+
+                # Evento de nova turma mapeada passando o objeto da turma
+                $turma = $this->turmaRepository->find($dados['atr_trm_id']);
+
+                if ($turma->trm_integrada == 1) {
+                    event(new TurmaMapeadaEvent($turma));
+                }
+
                 return redirect()->back();
             }
             flash()->error('Essa turma já está vinculada em um ambiente!');
