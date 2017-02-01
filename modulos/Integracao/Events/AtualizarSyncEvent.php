@@ -28,9 +28,9 @@ class AtualizarSyncEvent extends Event
      * @param null $extraInformation
      */
     public function __construct(BaseModel $entry,
-                                $action = null,
                                 $status = 2,
                                 $message = null,
+                                $action = null,
                                 $sendingDate = null,
                                 $extraInformation = null)
     {

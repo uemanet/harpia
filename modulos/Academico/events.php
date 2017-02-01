@@ -21,4 +21,9 @@ return [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarMatriculaAlunoTurmaListener'
     ],
+
+    'Modulos\Academico\Events\NovoGrupoEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarGrupoListener',
+    ],
 ];
