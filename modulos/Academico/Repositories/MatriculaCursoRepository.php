@@ -293,12 +293,9 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         $dados = DB::table('acd_matriculas')
-            ->join('acd_alunos', function ($join) {
-                $join->on('mat_alu_id', '=', 'alu_id');
-            })
-            ->join('gra_pessoas', function ($join) {
-                $join->on('alu_pes_id', '=', 'pes_id');
-            })
+            ->leftJoin('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->leftJoin('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->leftJoin('acd_lancamentos_tccs', 'mat_ltc_id', '=', 'ltc_id')
             ->where('mat_trm_id', '=', $turmaId)
             ->whereIn('mat_id', $matriculasId)
             ->orderBy('pes_nome', 'asc')

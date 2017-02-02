@@ -37,7 +37,7 @@
                                       <span class="label label-success">Tcc lançado</span>
                                   @endif</td>
                                 <td>
-                                  @if($dado->mat_ltc_id == null)
+                                  @if($dado->mat_ltc_id == null and $dado->ltc_anx_tcc == null )
                                     {!! ActionButton::grid([
                                         'type' => 'LINE',
                                         'buttons' => [
@@ -50,7 +50,9 @@
                                             ]
                                         ]
                                     ]) !!}
-                                  @else
+                                  @endif
+
+                                  @if($dado->mat_ltc_id != null and $dado->ltc_anx_tcc == null )
                                     {!! ActionButton::grid([
                                         'type' => 'LINE',
                                         'buttons' => [
@@ -64,10 +66,31 @@
                                         ]
                                     ]) !!}
                                   @endif
+
+                                  @if($dado->mat_ltc_id != null and $dado->ltc_anx_tcc !== null )
+                                    {!! ActionButton::grid([
+                                        'type' => 'LINE',
+                                        'buttons' => [
+                                            [
+                                                'classButton' => 'btn btn-primary',
+                                                'icon' => 'fa fa-edit',
+                                                'action' => '/academico/lancamentostccs/edit/'.$dado->mat_ltc_id,
+                                                'label' => '',
+                                                'method' => 'get'
+                                            ],
+                                            [
+                                                'classButton' => 'btn btn-warning docAnexo',
+                                                'icon' => 'fa fa-download',
+                                                'action' => '/academico/lancamentostccs/anexo/' . $dado->ltc_id,
+                                                'label' => '',
+                                                'method' => 'get'
+                                            ]
+                                        ]
+                                    ]) !!}
+                                  @endif
                                 </td>
                             </tr>
                           @endforeach
-
                     </tbody>
                 </table>
             @else
