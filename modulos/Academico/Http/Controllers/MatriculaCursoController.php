@@ -3,10 +3,12 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modulos\Academico\Events\MatriculaAlunoTurmaEvent;
 use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
@@ -15,12 +17,14 @@ class MatriculaCursoController extends BaseController
     protected $matriculaCursoRepository;
     protected $alunoRepository;
     protected $cursoRepository;
+    protected $turmaRepository;
 
-    public function __construct(MatriculaCursoRepository $matricula, AlunoRepository $aluno, CursoRepository $curso)
+    public function __construct(MatriculaCursoRepository $matricula, AlunoRepository $aluno, CursoRepository $curso, TurmaRepository $turmaRepository)
     {
         $this->matriculaCursoRepository = $matricula;
         $this->alunoRepository = $aluno;
         $this->cursoRepository = $curso;
+        $this->turmaRepository = $turmaRepository;
     }
 
     public function getIndex(Request $request)
@@ -89,6 +93,14 @@ class MatriculaCursoController extends BaseController
             $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
             
             flash()->{$result['type']}($result['message']);
+
+            if ($result['type'] == 'success') {
+                $matricula = $result['matricula'];
+                $turma = $this->turmaRepository->find($matricula->mat_trm_id);
+                if ($turma->trm_integrada) {
+                    event(new MatriculaAlunoTurmaEvent($matricula));
+                }
+            }
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
