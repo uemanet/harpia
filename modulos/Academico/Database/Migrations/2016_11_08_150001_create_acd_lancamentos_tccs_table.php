@@ -16,6 +16,7 @@ class CreateAcdLancamentosTccsTable extends Migration
         Schema::create('acd_lancamentos_tccs', function (Blueprint $table) {
             $table->increments('ltc_id');
             $table->integer('ltc_prf_id')->unsigned();
+            $table->integer('ltc_anx_tcc')->unsigned()->nullable();
             $table->string('ltc_titulo', 45);
             $table->enum('ltc_tipo', [
                 'artigo',
@@ -32,6 +33,7 @@ class CreateAcdLancamentosTccsTable extends Migration
             $table->timestamps();
 
             $table->foreign('ltc_prf_id')->references('prf_id')->on('acd_professores');
+            $table->foreign('ltc_anx_tcc')->references('anx_id')->on('gra_anexos');
         });
     }
 

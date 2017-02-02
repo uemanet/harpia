@@ -35,6 +35,15 @@
     </div>
 </div>
 <div class="row">
+  <div class="form-group col-md-4 @if ($errors->has('ltc_file')) has-error @endif">
+    {!! Form::label('ltc_file', 'Documento', ['class' => 'control-label']) !!}
+    <div class="controls">
+      {!! Form::file('ltc_file', ['class' => 'form-control file']) !!}
+      @if ($errors->has('ltc_file')) <p class="help-block">{{ $errors->first('ltc_file') }}</p> @endif
+    </div>
+  </div>
+</div>
+<div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ltc_observacao')) has-error @endif">
         {!! Form::label('ltc_observacao', 'Observação', ['class' => 'control-label']) !!}
         <div class="controls">

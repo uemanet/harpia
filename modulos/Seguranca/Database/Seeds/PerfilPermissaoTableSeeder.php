@@ -77,34 +77,34 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([96]); // Permissoes do recurso Matriculas em Lote
 
-        $perfil->permissoes()->attach([97, 98, 99, 100]); // Permissoes do recurso Lançamento de TCC
+        $perfil->permissoes()->attach([97, 98, 99, 100, 101]); // Permissoes do recurso Lançamento de TCC
 
-        $perfil->permissoes()->attach([101, 102]); // Permissoes do recurso Conclusão de Curso
+        $perfil->permissoes()->attach([102, 103]); // Permissoes do recurso Conclusão de Curso
 
-        $perfil->permissoes()->attach([103, 104, 105]); // Permissoes do recurso Tutores Grupos
+        $perfil->permissoes()->attach([104, 105, 106]); // Permissoes do recurso Tutores Grupos
 
-        $perfil->permissoes()->attach([106, 107, 108, 109, 110]); // Permissoes do recurso Matrizes Curriculares
+        $perfil->permissoes()->attach([107, 108, 109, 110, 111]); // Permissoes do recurso Matrizes Curriculares
 
-        $perfil->permissoes()->attach([111, 112, 113, 114]); // Permissoes do recurso Grupos
+        $perfil->permissoes()->attach([112, 113, 114, 115]); // Permissoes do recurso Grupos
 
-        $perfil->permissoes()->attach([115, 116, 117, 118]); // Permissoes do recurso Turmas
+        $perfil->permissoes()->attach([116, 117, 118, 119]); // Permissoes do recurso Turmas
 
-        $perfil->permissoes()->attach([119, 120, 121, 122, 123]); // Permissoes do recurso Módulos Matrizes
+        $perfil->permissoes()->attach([120, 121, 122, 123, 124]); // Permissoes do recurso Módulos Matrizes
 
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
 
-        $perfil->permissoes()->attach([124]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([125]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([125, 126, 127, 128, 129, 130]); // Permissoes do recurso Ambientes
+        $perfil->permissoes()->attach([126, 127, 128, 129, 130, 131]); // Permissoes do recurso Ambientes
 
         /** Perfil Administrador do Módulo de Monitoramento */
 
         $perfil = Perfil::find(5);
 
-        $perfil->permissoes()->attach([131]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([132]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([132, 133]); // Permissoes do recurso Tempo Online
+        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Tempo Online
     }
 }

@@ -24,9 +24,10 @@ class LancamentoTccRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            
+
             'ltc_prf_id' => 'required',
             'ltc_titulo' => 'required|max:45',
+            'ltc_file' => 'mimes:pdf',
             'ltc_tipo' => 'required',
             'ltc_data_apresentacao'=>'required|date_format:"d/m/Y"',
             'ltc_observacao' => 'max:255'
