@@ -161,7 +161,6 @@ class LancamentosTccsController extends BaseController
     public function postCreate($turmaId, LancamentoTccRequest $request)
     {
         try {
-
             $dados = $request->all();
 
             if ($request->file('ltc_file') != null) {
