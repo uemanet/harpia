@@ -5,5 +5,4 @@ use Harpia\Event\Event;
 
 class NovaMatriculaDisciplinaEvent extends Event
 {
-
 }

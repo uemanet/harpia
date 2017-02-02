@@ -1,7 +1,6 @@
 <?php
 namespace Modulos\Academico\Listeners;
 
-
 use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Repositories\AlunoRepository;
@@ -23,8 +22,7 @@ class MigrarMatriculaDisciplinaListener
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository,
         AlunoRepository $alunoRepository
-    )
-    {
+    ) {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
@@ -38,9 +36,8 @@ class MigrarMatriculaDisciplinaListener
             'sym_status' => 1
         ]);
 
-        if($matriculasMigrar->count())
-        {
-            foreach($matriculasMigrar as $reg) {
+        if ($matriculasMigrar->count()) {
+            foreach ($matriculasMigrar as $reg) {
                 // busca a matricula na oferta de disciplina
                 $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($reg->sym_table_id);
 
@@ -50,8 +47,7 @@ class MigrarMatriculaDisciplinaListener
                 // ambiente virtual vinculado à turma do aluno
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matriculaCurso->mat_trm_id);
 
-                if($ambiente)
-                {
+                if ($ambiente) {
                     $param = [];
 
                     // url do ambiente

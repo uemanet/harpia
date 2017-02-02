@@ -73,9 +73,9 @@ class MatriculaOfertaDisciplina extends BaseController
             $matriculaCurso = $this->matriculaCursoRepository->find($matriculas[0]);
             $turma = $matriculaCurso->turma;
 
-            if($turma->trm_integrada) {
-                if(!empty($matriculasCollection)) {
-                    foreach($matriculasCollection as $obj) {
+            if ($turma->trm_integrada) {
+                if (!empty($matriculasCollection)) {
+                    foreach ($matriculasCollection as $obj) {
                         event(new NovaMatriculaDisciplinaEvent($obj));
                     }
                 }
@@ -118,9 +118,9 @@ class MatriculaOfertaDisciplina extends BaseController
             $matriculaCurso = $this->matriculaCursoRepository->find($matriculaId);
             $turma = $matriculaCurso->turma;
 
-            if($turma->trm_integrada) {
-                if(!empty($matriculas)) {
-                    foreach($matriculas as $obj) {
+            if ($turma->trm_integrada) {
+                if (!empty($matriculas)) {
+                    foreach ($matriculas as $obj) {
                         event(new NovaMatriculaDisciplinaEvent($obj));
                     }
                 }

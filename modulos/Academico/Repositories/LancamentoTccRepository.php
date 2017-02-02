@@ -44,19 +44,19 @@ class LancamentoTccRepository extends BaseRepository
     }
 
     public function deleteTcc($lancamentotccId)
-     {
-         try {
-             $anexoId = DB::table('acd_lancamentos_tccs')->where('ltc_id', '=', $lancamentotccId)->pluck('ltc_anx_tcc')->toArray();
+    {
+        try {
+            $anexoId = DB::table('acd_lancamentos_tccs')->where('ltc_id', '=', $lancamentotccId)->pluck('ltc_anx_tcc')->toArray();
 
-             $this->model->where('ltc_id', '=', $lancamentotccId)->update(['ltc_anx_tcc' => null]);
+            $this->model->where('ltc_id', '=', $lancamentotccId)->update(['ltc_anx_tcc' => null]);
 
-             if ($anexoId) {
-                 $anexoRepository = new AnexoRepository(new Anexo());
-                 $result = $anexoRepository->deletarAnexo(array_pop($anexoId));
-                 return $result;
-             }
-         } catch (\Exception $e) {
-             throw $e;
-         }
-     }
+            if ($anexoId) {
+                $anexoRepository = new AnexoRepository(new Anexo());
+                $result = $anexoRepository->deletarAnexo(array_pop($anexoId));
+                return $result;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 }
