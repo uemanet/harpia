@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Listeners;
 
 use Modulos\Academico\Events\TutorVinculadoEvent;
+use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
@@ -12,12 +13,15 @@ class MigrarTutorVinculadoListener
 {
     protected $pessoaRepository;
     protected $ambientVirtualRepository;
+    protected $tutorGrupoRepository;
 
     public function __construct(PessoaRepository $pessoaRepository,
-                                AmbienteVirtualRepository $ambienteVirtualRepository)
+                                AmbienteVirtualRepository $ambienteVirtualRepository,
+                                TutorGrupoRepository $tutorGrupoRepository)
     {
         $this->pessoaRepository = $pessoaRepository;
         $this->ambientVirtualRepository = $ambienteVirtualRepository;
+        $this->tutorGrupoRepository = $tutorGrupoRepository;
     }
 
     public function handle(TutorVinculadoEvent $event)
@@ -31,6 +35,7 @@ class MigrarTutorVinculadoListener
         $firstName = array_shift($name);
         $lastName = implode(" ", $name);
 
+        $data['tutor']['ttg_tipo_tutoria'] = $this->tutorGrupoRepository->getTipoTutoria($tutor->tut_id, $grupo->grp_id);
         $data['tutor']['grp_id'] = $grupo->grp_id;
         $data['tutor']['pes_id'] = $tutor->tut_pes_id;
         $data['tutor']['firstname'] = $firstName;

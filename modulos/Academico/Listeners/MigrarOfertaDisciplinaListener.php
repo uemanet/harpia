@@ -51,15 +51,15 @@ class MigrarOfertaDisciplinaListener
         $teacher['password'] = "changeme";
         $teacher['city'] = $pessoa->pes_cidade;
 
-        $data['trm_id'] = $oferta->ofd_trm_id;
-        $data['ofd_id'] = $oferta->ofd_id;
-        $data['pes_id'] = $pessoa->pes_id;
-        $data['teacher'] = $teacher;
+        $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
+        $data['discipline']['ofd_id'] = $oferta->ofd_id;
+        $data['discipline']['pes_id'] = $pessoa->pes_id;
+        $data['discipline']['teacher'] = $teacher;
 
         $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);
         $disciplina = $this->disciplinaRepository->find($moduloDisciplina->mdc_dis_id);
 
-        $data['name'] = $disciplina->dis_nome;
+        $data['discipline']['name'] = $disciplina->dis_nome;
 
         $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($oferta->ofd_trm_id);
 
@@ -73,7 +73,6 @@ class MigrarOfertaDisciplinaListener
         $status = 3;
 
         if (array_key_exists('status', $response)) {
-            // Migracao bem-sucedida
             if ($response['status'] == 'success') {
                 $status = 2;
             }
