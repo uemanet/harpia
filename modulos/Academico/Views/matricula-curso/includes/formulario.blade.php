@@ -33,18 +33,18 @@
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-md-3 @if($errors->has('mat_grp_id')) has-error @endif">
-        {!! Form::label('mat_grp_id', 'Grupo', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('mat_grp_id', [], null , ['class' => 'form-control']) !!}
-            @if ($errors->has('mat_grp_id')) <p class="help-block">{{ $errors->first('mat_grp_id') }}</p> @endif
-        </div>
-    </div>
     <div class="form-group col-md-3 @if($errors->has('mat_modo_entrada')) has-error @endif">
         {!! Form::label('mat_modo_entrada', 'Modo de Entrada*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('mat_modo_entrada', $modosEntrada, null , ['class' => 'form-control', 'placeholder' => 'Selecione o modo']) !!}
             @if ($errors->has('mat_modo_entrada')) <p class="help-block">{{ $errors->first('mat_modo_entrada') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-3 @if($errors->has('mat_grp_id')) has-error @endif">
+        {!! Form::label('mat_grp_id', 'Grupo', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('mat_grp_id', [], null , ['class' => 'form-control']) !!}
+            @if ($errors->has('mat_grp_id')) <p class="help-block">{{ $errors->first('mat_grp_id') }}</p> @endif
         </div>
     </div>
 </div>
@@ -101,7 +101,11 @@
                                     selectTurmas.append("<option value=''>Selecione a turma</option>");
 
                                     $.each(data, function (key, obj) {
-                                        selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
+                                        if (obj.trm_qtd_vagas == obj.qtd_matriculas){
+                                            selectTurmas.append('<option disabled="disabled" value="'+obj.trm_id+'">'+obj.trm_nome+' (Vagas Esgotadas)</option>');
+                                        }else {
+                                            selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
+                                        }
                                     });
                                 }else {
                                     selectTurmas.append("<option value=''>Sem turmas cadastradas</option>");

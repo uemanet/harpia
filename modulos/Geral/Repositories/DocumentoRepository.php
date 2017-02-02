@@ -2,7 +2,9 @@
 
 namespace Modulos\Geral\Repositories;
 
+use Illuminate\Support\Facades\DB;
 use Modulos\Core\Repository\BaseRepository;
+use Modulos\Geral\Models\Anexo;
 use Modulos\Geral\Models\Documento;
 use Carbon\Carbon;
 
@@ -50,6 +52,23 @@ class DocumentoRepository extends BaseRepository
         }
 
         return $query->update($data);
+    }
+
+    public function deleteDocumento($documentoId)
+    {
+        try {
+            $anexoId = DB::table('gra_documentos')->where('doc_id', '=', $documentoId)->pluck('doc_anx_documento')->toArray();
+
+            $this->model->where('doc_id', '=', $documentoId)->update(['doc_anx_documento' => null]);
+
+            if ($anexoId) {
+                $anexoRepository = new AnexoRepository(new Anexo());
+                $result = $anexoRepository->deletarAnexo(array_pop($anexoId));
+                return $result;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     public function updateOrCreate(array $attributes, array $data)

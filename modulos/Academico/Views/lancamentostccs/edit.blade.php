@@ -30,8 +30,7 @@
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-
-    <script type="text/javascript">
+        <script type="text/javascript">
             $(document).ready(function() {
                 $("select").select2();
             });

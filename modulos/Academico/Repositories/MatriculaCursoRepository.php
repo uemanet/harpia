@@ -235,10 +235,12 @@ class MatriculaCursoRepository extends BaseRepository
             'mat_situacao' => 'cursando'
         ];
 
-        if ($this->create($dataMatricula)) {
+        $matricula = $this->create($dataMatricula);
+        if ($matricula) {
             return array(
                 'type' => 'success',
-                'message' => 'Matricula efetuada com sucesso!'
+                'message' => 'Matricula efetuada com sucesso!',
+                'matricula' => $matricula
             );
         }
 

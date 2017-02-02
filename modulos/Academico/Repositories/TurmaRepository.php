@@ -32,9 +32,7 @@ class TurmaRepository extends BaseRepository
                         ->select('acd_turmas.*', DB::raw('COUNT(mat_trm_id) as qtd_matriculas'))
                         ->where('trm_ofc_id', '=', $ofertaCursoId)
                         ->groupBy('trm_id')
-                        ->havingRaw('qtd_matriculas < trm_qtd_vagas')
                         ->get();
-
         return $entries;
     }
 
