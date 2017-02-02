@@ -18,9 +18,7 @@ class Moodle
      */
     public function send(array $param)
     {
-        $url = trim($param['url'], '/');
-
-        $url = $url.'/webservice/rest/server.php?wstoken='.$param['token'].'&wsfunction='.$param['functioname'].'&moodlewsrestformat=json';
+        $url = $param['url'].'/webservice/rest/server.php?wstoken='.$param['token'].'&wsfunction='.$param['functioname'].'&moodlewsrestformat=json';
 
         $method = 'post';
 
