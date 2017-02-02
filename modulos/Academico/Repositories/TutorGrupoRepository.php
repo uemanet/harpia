@@ -67,4 +67,14 @@ class TutorGrupoRepository extends BaseRepository
             return true;
         }
     }
+
+    public function getTipoTutoria($tutorId, $grupoId)
+    {
+        $result = $this->model
+            ->where('ttg_grp_id', '=', $grupoId)
+            ->where('ttg_tut_id', '=', $tutorId)
+            ->pluck('ttg_tipo_tutoria')->toArray();
+
+        return array_pop($result);
+    }
 }

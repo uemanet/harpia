@@ -14,6 +14,7 @@ use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Geral\Repositories\AnexoRepository;
 
 class LancamentosTccsController extends BaseController
 {
@@ -23,13 +24,15 @@ class LancamentosTccsController extends BaseController
     protected $professorRepository;
     protected $alunoRepository;
     protected $matriculacursoRepository;
+    protected $anexoRepository;
 
     public function __construct(LancamentoTccRepository $lancamentotccRepository,
                                 TurmaRepository $turmaRepository,
                                 ModuloDisciplinaRepository $modulodisciplinaRepository,
                                 ProfessorRepository $professorRepository,
                                 AlunoRepository $alunoRepository,
-                                MatriculaCursoRepository $matriculacursoRepository)
+                                MatriculaCursoRepository $matriculacursoRepository,
+                                AnexoRepository $anexoRepository)
     {
         $this->lancamentotccRepository = $lancamentotccRepository;
         $this->turmaRepository = $turmaRepository;
@@ -37,6 +40,7 @@ class LancamentosTccsController extends BaseController
         $this->professorRepository = $professorRepository;
         $this->alunoRepository = $alunoRepository;
         $this->matriculacursoRepository = $matriculacursoRepository;
+        $this->anexoRepository = $anexoRepository;
     }
 
     public function getIndex(Request $request)
@@ -86,7 +90,7 @@ class LancamentosTccsController extends BaseController
         $turma = $this->turmaRepository->find($turmaId);
 
         $dados = $this->matriculacursoRepository->findDadosByTurmaId($turmaId);
-
+        //dd($dados);
         if (!$turma) {
             flash()->error('Turma não existe!');
             return redirect()->back();
@@ -142,19 +146,42 @@ class LancamentosTccsController extends BaseController
         return view('Academico::lancamentostccs.create', compact('turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula'));
     }
 
+    public function getTccAnexo($lancamentotccId)
+    {
+        $lancamentotcc = $this->lancamentotccRepository->find($lancamentotccId);
+
+        if (!$lancamentotcc) {
+            flash()->error('Lançamento de Tcc não existe.');
+            return redirect()->back();
+        }
+
+        return $this->anexoRepository->recuperarAnexo($lancamentotcc->ltc_anx_tcc);
+    }
+
     public function postCreate($turmaId, LancamentoTccRequest $request)
     {
         try {
-            $lancamentotcc = $this->lancamentotccRepository->create($request->all());
+            $dados = $request->all();
 
-            $matricula = Matricula::find($request->mat_id);
-            $matricula->mat_ltc_id = $lancamentotcc->ltc_id;
-            $matricula->save();
+            if ($request->file('ltc_file') != null) {
+                $anexoDocumento = $request->file('ltc_file');
+                $anexoCriado = $this->anexoRepository->salvarAnexo($anexoDocumento);
+                $dados['ltc_anx_tcc'] = $anexoCriado->anx_id;
+            }
+
+            unset($dados['ltc_file']);
+            unset($dados['mat_id']);
+
+            $lancamentotcc = $this->lancamentotccRepository->create($dados);
 
             if (!$lancamentotcc) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
+
+            $matricula = Matricula::find($request->mat_id);
+            $matricula->mat_ltc_id = $lancamentotcc->ltc_id;
+            $matricula->save();
 
             flash()->success('Lançamento de TCC criado com sucesso.');
             return redirect('/academico/lancamentostccs/alunosturma/'.$turmaId);
@@ -189,9 +216,11 @@ class LancamentosTccsController extends BaseController
             'plano_de_negocio' => 'Plano de Negócio'
         ];
 
+        $anexo = $this->anexoRepository->find($lancamentoTcc->ltc_anx_tcc);
+
         $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($lancamentoTcc->matriculaCurso->turma->trm_id);
 
-        return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula'));
+        return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula', 'anexo'));
     }
 
     public function putEdit($lancamentotccId, LancamentoTccRequest $request)
@@ -204,9 +233,26 @@ class LancamentosTccsController extends BaseController
                 return redirect('academico/lancamentotccs/index');
             }
 
-            $requestData = $request->only($this->lancamentotccRepository->getFillableModelFields());
+            $dados = $request->only($this->lancamentotccRepository->getFillableModelFields());
+            $dados['ltc_anx_tcc'] = $lancamentotcc->ltc_anx_tcc;
 
-            if (!$this->lancamentotccRepository->update($requestData, $lancamentotcc->ltc_id, 'ltc_id')) {
+
+            if ($request->file('ltc_file') != null) {
+                // Novo Anexo
+                $anexoTcc = $request->file('ltc_file');
+
+                if ($lancamentotcc->ltc_anx_tcc != null) {
+                    // Atualiza anexo
+                    $this->anexoRepository->atualizarAnexo($lancamentotcc->ltc_anx_tcc, $anexoTcc);
+                } else {
+                    // Cria um novo anexo caso o documento nao tenha anteriormente
+                    $anexo = $this->anexoRepository->salvarAnexo($anexoTcc);
+                    $dados['ltc_anx_tcc'] = $anexo->anx_id;
+                }
+            }
+
+
+            if (!$this->lancamentotccRepository->update($dados, $lancamentotcc->ltc_id, 'ltc_id')) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }

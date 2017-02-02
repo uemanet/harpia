@@ -13,6 +13,7 @@ class LancamentoTcc extends BaseModel
 
     protected $fillable = [
         'ltc_prf_id',
+        'ltc_anx_tcc',
         'ltc_titulo',
         'ltc_tipo',
         'ltc_data_apresentacao',

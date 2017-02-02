@@ -6,6 +6,8 @@ use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\LancamentoTcc;
 use DB;
 use Carbon\Carbon;
+use Modulos\Geral\Models\Anexo;
+use Modulos\Geral\Repositories\AnexoRepository;
 
 class LancamentoTccRepository extends BaseRepository
 {
@@ -39,5 +41,22 @@ class LancamentoTccRepository extends BaseRepository
         $data['ltc_data_apresentacao'] = Carbon::createFromFormat('d/m/Y', $data['ltc_data_apresentacao'])->toDateString();
 
         return $this->model->where($attribute, '=', $id)->update($data);
+    }
+
+    public function deleteTcc($lancamentotccId)
+    {
+        try {
+            $anexoId = DB::table('acd_lancamentos_tccs')->where('ltc_id', '=', $lancamentotccId)->pluck('ltc_anx_tcc')->toArray();
+
+            $this->model->where('ltc_id', '=', $lancamentotccId)->update(['ltc_anx_tcc' => null]);
+
+            if ($anexoId) {
+                $anexoRepository = new AnexoRepository(new Anexo());
+                $result = $anexoRepository->deletarAnexo(array_pop($anexoId));
+                return $result;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }
