@@ -31,9 +31,8 @@ class NovaSyncListener
         try {
             $this->sincronizacaoRepository->create($data);
         } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
+            // Interrompe a propagacao do evento
+            return false;
         }
 
         return true;
