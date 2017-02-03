@@ -47,6 +47,11 @@ class MigrarTutorVinculadoListener
 
         $ambiente = $this->ambientVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
 
+        if (!$ambiente) {
+            // Encerra a function sem interromper a propagacao do evento
+            return true;
+        }
+
         $param['url'] = $ambiente->url;
         $param['token'] = $ambiente->token;
         $param['action'] = 'post';
