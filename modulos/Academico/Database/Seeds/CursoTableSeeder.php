@@ -59,7 +59,7 @@ class CursoTableSeeder extends Seeder
         $curso->crs_nvc_id = 3;
         $curso->crs_prf_diretor = 4;
         $curso->crs_nome = 'Engenharia de Software';
-        $curso->crs_sigla = 'CC';
+        $curso->crs_sigla = 'ENGSOFT';
         $curso->crs_descricao = 'Curso Superior em Engenharia de Software';
         $curso->crs_resolucao = 'MEC 15/2010';
         $curso->crs_autorizacao = 'MEC 95/2012';
