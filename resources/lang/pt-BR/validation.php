@@ -81,6 +81,7 @@ return [
     'unique'               => 'O valor indicado para o campo já se encontra utilizado.',
     'url'                  => 'O formato do URL indicado para o campo é inválido.',
     'cpf'                  => 'CPF Inválido',
+    'uploaded'             => 'Upload Inválido',
 
     /*
     |--------------------------------------------------------------------------
