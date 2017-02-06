@@ -56,7 +56,12 @@ class DocumentosController extends BaseController
             return redirect()->back();
         }
 
-        return $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
+        $anexo =  $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
+
+        if($anexo['type'] == 'error_non_existent'){
+            flash()->error($anexo['message']);
+            return redirect()->back();
+        }
     }
 
     public function postCreate(DocumentoRequest $request)
@@ -72,6 +77,17 @@ class DocumentosController extends BaseController
             if ($request->file('doc_file') != null) {
                 $anexoDocumento = $request->file('doc_file');
                 $anexoCriado = $this->anexoRepository->salvarAnexo($anexoDocumento);
+
+                if ($anexoCriado['type'] == 'error_exists') {
+                    flash()->error($anexoCriado['message']);
+                    return redirect()->back()->withInput($request->all());
+                }
+
+                if (!$anexoCriado) {
+                    flash()->error('ocorreu um problema ao salvar o arquivo');
+                    return redirect()->back()->withInput($request->all());
+                }
+
                 $dados['doc_anx_documento'] = $anexoCriado->anx_id;
             }
 
@@ -156,10 +172,36 @@ class DocumentosController extends BaseController
 
                 if ($documento->doc_anx_documento != null) {
                     // Atualiza anexo
-                    $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
+                    $atualizaAnexo = $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
+                    
+                    if($atualizaAnexo['type'] == 'error_non_existent'){
+                        flash()->error($anexo['message']);
+                        return redirect()->back();
+                    }
+
+                    if ($atualizaAnexo['type'] == 'error_exists') {
+                        flash()->error($atualizaAnexo['message']);
+                        return redirect()->back()->withInput($request->all());
+                    }
+
+                    if (!$atualizaAnexo) {
+                        flash()->error('ocorreu um problema ao salvar o arquivo');
+                        return redirect()->back()->withInput($request->all());
+                    }
                 } else {
                     // Cria um novo anexo caso o documento nao tenha anteriormente
                     $anexo = $this->anexoRepository->salvarAnexo($anexoDocumento);
+
+                    if ($anexo['type'] == 'error_exists') {
+                        flash()->error($anexoCriado['message']);
+                        return redirect()->back()->withInput($request->all());
+                    }
+
+                    if (!$anexo) {
+                        flash()->error('ocorreu um problema ao salvar o arquivo');
+                        return redirect()->back()->withInput($request->all());
+                    }
+
                     $dados['doc_anx_documento'] = $anexo->anx_id;
                 }
             }
@@ -191,7 +233,17 @@ class DocumentosController extends BaseController
             $documento = $this->documentoRepository->find($documentoId);
 
             if ($this->documentoRepository->delete($documentoId) && $documento->doc_anx_documento != null) {
-                $this->anexoRepository->deletarAnexo($documento->doc_anx_documento);
+                $excluiAnexo = $this->anexoRepository->deletarAnexo($documento->doc_anx_documento);
+
+                if ($excluiAnexo['type'] == 'error_exists') {
+                    flash()->error($anexoCriado['message']);
+                    return redirect()->back()->withInput($request->all());
+                }
+
+                if (!$excluiAnexo) {
+                    flash()->error('ocorreu um problema ao excluir o arquivo');
+                    return redirect()->back()->withInput($request->all());
+                }
             }
 
             flash()->success('Documento excluído com sucesso.');
