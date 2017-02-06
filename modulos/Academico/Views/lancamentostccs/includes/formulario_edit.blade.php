@@ -46,24 +46,29 @@
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ltc_anx_nome')) has-error @endif">
          {!! Form::label('ltc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
-         <div class="control">
-             @if($anexo != null)
-             <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
-             @else
-             <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
-             @endif
-         </div>
+
+        <div class="input-group-button">
+            @if($anexo != null)
+                <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
+                @if($anexo != null)
+                    <div class="input-group-btn botaoDelete">
+                        <button type="button" class="btn btn-danger btn-delete">Action</button>
+                    </div>
+                @endif
+            @else
+                <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
+                @if($anexo != null)
+                    <div class="input-group-btn botaoDelete">
+                        <button type="button" class="btn btn-danger btn-delete">Action</button>
+                    </div>
+                @endif
+            @endif
+        </div>
      </div>
 </div>
 
 <div class="row">
-     @if($anexo != null)
-     {!! Form::label('', '', ['class' => 'control-label visivel']) !!}
-     <div class="form-group col-md-2 control visivel">
-         <button type="button" class="btn-delete btn btn-danger visivel"><i class="fa fa-trash"></i> Excluir Anexo</button>
-     </div>
-     @endif
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-4">
         {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
     </div>
 </div>
@@ -107,7 +112,7 @@
 
                                  toastr.success('Anexo excluído com sucesso!', null, {progressBar: true});
                                  $(".first").attr("placeholder", "Sem anexo").val("").focus().blur();
-                                 $(".visivel").hide();
+                                 $(".botaoDelete").remove();
                              },
                              error: function (xhr, textStatus, error) {
                                  $.harpia.hideloading();
