@@ -6086,6 +6086,13 @@ tbody.collapse.in {
   display: table;
   border-collapse: separate;
 }
+
+.input-group-button {
+  position: relative;
+  display: -webkit-box;
+  border-collapse: separate;
+}
+
 .input-group[class*="col-"] {
   float: none;
   padding-left: 0;
