@@ -53,7 +53,6 @@ class MigrarOfertaDisciplinaListener
 
         $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
         $data['discipline']['ofd_id'] = $oferta->ofd_id;
-        $data['discipline']['pes_id'] = $pessoa->pes_id;
         $data['discipline']['teacher'] = $teacher;
 
         $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);
