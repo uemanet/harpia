@@ -164,11 +164,13 @@
 
         $('#ofd_mdo_id').change(function (e) {
             var moduloId = $(this).val();
+            var turmaId = $('#ofd_trm_id').val();
+            var periodoId = $('#ofd_per_id').val();
 
             if (moduloId) {
                 selectDisciplinas.empty();
 
-                $.harpia.httpget('{{url("/")}}/academico/async/modulosdisciplinas/getalldisciplinasbymodulo/' + moduloId)
+                $.harpia.httpget('{{url("/")}}/academico/async/modulosdisciplinas/getdisciplinasnotofertadasbymodulo/'+moduloId+'/'+turmaId+'/'+periodoId)
                         .done(function (data) {
                             if (!$.isEmptyObject(data)){
                                 selectDisciplinas.append('<option value="">Selecione a disciplina</option>');
@@ -176,7 +178,7 @@
                                     selectDisciplinas.append('<option value="'+obj.mdc_id+'">'+obj.dis_nome+'</option>')
                                 });
                             }else {
-                                selectDisciplinas.append('<option value="">Sem disciplinas cadastradas</option>')
+                                selectDisciplinas.append('<option value="">Sem disciplinas para ofertar</option>')
                             }
                         });
             }

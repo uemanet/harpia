@@ -228,6 +228,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'modulosdisciplinas'], function () {
             Route::get('/getalldisciplinasbymodulo/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@getAllDisciplinasByModulo');
+            Route::get('/getdisciplinasnotofertadasbymodulo/{modulo}/{turma}/{periodo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@getDisciplinasNotOfertadasByModulo');
             Route::get('/verifydisciplina/{modulo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@verifyDisciplinas');
             Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina');
             Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina');
