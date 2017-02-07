@@ -5,10 +5,12 @@ namespace Modulos\Academico\Listeners;
 use Modulos\Academico\Events\OfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\DisciplinaRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
 
 class MigrarOfertaDisciplinaListener
@@ -18,71 +20,84 @@ class MigrarOfertaDisciplinaListener
     protected $pessoaRepository;
     protected $moduloDisciplinaRepository;
     protected $disciplinaRepository;
+    protected $sincronizacaoRepository;
+    protected $ofertaCursoRepository;
 
     public function __construct(PessoaRepository $pessoaRepository,
                                 ProfessorRepository $professorRepository,
                                 AmbienteVirtualRepository $ambienteVirtualRepository,
                                 ModuloDisciplinaRepository $moduloDisciplinaRepository,
-                                DisciplinaRepository $disciplinaRepository)
+                                DisciplinaRepository $disciplinaRepository,
+                                SincronizacaoRepository $sincronizacaoRepository,
+                                OfertaCursoRepository $ofertaCursoRepository)
     {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->professorRepository = $professorRepository;
         $this->pessoaRepository = $pessoaRepository;
         $this->moduloDisciplinaRepository = $moduloDisciplinaRepository;
         $this->disciplinaRepository = $disciplinaRepository;
+        $this->sincronizacaoRepository = $sincronizacaoRepository;
+        $this->ofertaCursoRepository = $ofertaCursoRepository;
     }
 
     public function handle(OfertaDisciplinaEvent $event)
     {
-        $oferta = $event->getData();
+        $ofertasMigrar = $this->sincronizacaoRepository->findBy([
+            'sym_table' => 'acd_ofertas_cursos',
+            'sym_status' => 1
+        ]);
 
-        $professor = $this->professorRepository->find($oferta->ofd_prf_id);
-        $pessoa = $this->pessoaRepository->find($professor->prf_pes_id);
+        if ($ofertasMigrar->count()) {
+            foreach ($ofertasMigrar as $item) {
+                $oferta = $this->ofertaCursoRepository->find($item->sym_table_id);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($item->ofd_trm_id);
 
-        $name = explode(" ", $pessoa->pes_nome);
-        $firstName = array_shift($name);
-        $lastName = implode(" ", $name);
+                if (!$ambiente) {
+                    continue;
+                }
 
-        $teacher['pes_id'] = $pessoa->pes_id;
-        $teacher['firstname'] = $firstName;
-        $teacher['lastname'] = $lastName;
-        $teacher['email'] = $pessoa->pes_email;
-        $teacher['username'] = $pessoa->pes_email;
-        $teacher['password'] = "changeme";
-        $teacher['city'] = $pessoa->pes_cidade;
+                $professor = $this->professorRepository->find($oferta->ofd_prf_id);
+                $pessoa = $this->pessoaRepository->find($professor->prf_pes_id);
 
-        $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
-        $data['discipline']['ofd_id'] = $oferta->ofd_id;
-        $data['discipline']['pes_id'] = $pessoa->pes_id;
-        $data['discipline']['teacher'] = $teacher;
+                $name = explode(" ", $pessoa->pes_nome);
+                $firstName = array_shift($name);
+                $lastName = implode(" ", $name);
 
-        $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);
-        $disciplina = $this->disciplinaRepository->find($moduloDisciplina->mdc_dis_id);
+                $teacher['pes_id'] = $pessoa->pes_id;
+                $teacher['firstname'] = $firstName;
+                $teacher['lastname'] = $lastName;
+                $teacher['email'] = $pessoa->pes_email;
+                $teacher['username'] = $pessoa->pes_email;
+                $teacher['password'] = "changeme";
+                $teacher['city'] = $pessoa->pes_cidade;
 
-        $data['discipline']['name'] = $disciplina->dis_nome;
+                $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
+                $data['discipline']['ofd_id'] = $oferta->ofd_id;
+                $data['discipline']['pes_id'] = $pessoa->pes_id;
+                $data['discipline']['teacher'] = $teacher;
 
-        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($oferta->ofd_trm_id);
+                $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);
+                $disciplina = $this->disciplinaRepository->find($moduloDisciplina->mdc_dis_id);
 
-        if (!$ambiente) {
-            // Encerra a function sem interromper a propagacao do evento
-            return true;
-        }
+                $data['discipline']['name'] = $disciplina->dis_nome;
 
-        $param['url'] = $ambiente->url;
-        $param['token'] = $ambiente->token;
-        $param['action'] = 'post';
-        $param['functioname'] = 'local_integracao_create_discipline';
-        $param['data'] = $data;
+                $param['url'] = $ambiente->url;
+                $param['token'] = $ambiente->token;
+                $param['action'] = 'post';
+                $param['functioname'] = 'local_integracao_create_discipline';
+                $param['data'] = $data;
 
-        $response = Moodle::send($param);
-        $status = 3;
+                $response = Moodle::send($param);
+                $status = 3;
 
-        if (array_key_exists('status', $response)) {
-            if ($response['status'] == 'success') {
-                $status = 2;
+                if (array_key_exists('status', $response)) {
+                    if ($response['status'] == 'success') {
+                        $status = 2;
+                    }
+                }
+
+                event(new AtualizarSyncEvent($oferta, $status, $response['message']));
             }
         }
-
-        event(new AtualizarSyncEvent($oferta, $status, $response['message']));
     }
 }
