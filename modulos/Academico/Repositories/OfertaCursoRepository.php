@@ -51,7 +51,10 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function findAllByCurso($cursoid)
     {
-        return $this->model->where('ofc_crs_id', $cursoid)->get(['ofc_id', 'ofc_ano']);
+        return $this->model
+                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                    ->where('ofc_crs_id', $cursoid)
+                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
     }
 
     /**
@@ -61,7 +64,13 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function findAllByCursowithoutpresencial($cursoid)
     {
-        return $this->model->where('ofc_crs_id', $cursoid)->where('ofc_mdl_id', '<>', 1)->get(['ofc_id', 'ofc_ano']);
+        return $this->model
+                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                    ->where([
+                        ['ofc_crs_id', '=', $cursoid],
+                        ['ofc_mdl_id', '<>', 1]
+                    ])
+                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
     }
 
     /**

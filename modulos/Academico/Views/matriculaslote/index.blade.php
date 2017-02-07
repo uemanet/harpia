@@ -118,7 +118,7 @@
                     if(!$.isEmptyObject(response)) {
                         ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
                         $.each(response, function (key, obj) {
-                            ofertasCursoSelect.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+'</option>');
+                            ofertasCursoSelect.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+' ('+obj.mdl_nome+')</option>');
                         });
                     } else {
                         ofertasCursoSelect.append("<option>Sem ofertas disponiveis</option>");
