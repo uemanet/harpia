@@ -130,6 +130,14 @@ class GruposController extends BaseController
     public function postCreate(GrupoRequest $request)
     {
         try {
+            $grupoNome = $request->input('grp_nome');
+            $idTurma = $request->input('grp_trm_id');
+
+            if ($this->grupoRepository->verifyNameGrupo($grupoNome, $idTurma)) {
+                $errors = array('grp_nome' => 'Nome do Grupo já existe para essa turma');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
             $grupo = $this->grupoRepository->create($request->all());
 
             if (!$grupo) {
