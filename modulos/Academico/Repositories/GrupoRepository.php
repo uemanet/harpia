@@ -61,4 +61,15 @@ class GrupoRepository extends BaseRepository
 
         return $entries;
     }
+
+    public function verifyNameGrupo($grupoName, $idTurma)
+    {
+        $result = $this->model->where('grp_nome', $grupoName)->where('grp_trm_id', $idTurma)->get();
+
+        if (!$result->isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
 }
