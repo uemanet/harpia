@@ -24,9 +24,9 @@
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('dis_nvc_id')) has-error @endif">
-        {!! Form::label('dis_nvc_id', 'Nivel*', ['class' => 'control-label']) !!}
+        {!! Form::label('dis_nvc_id', 'Nível*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('dis_nvc_id', $niveis, old('dis_nvc_id'), ['class' => 'form-control']) !!}
+            {!! Form::select('dis_nvc_id', $niveis, old('dis_nvc_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o nível']) !!}
             @if ($errors->has('dis_nvc_id')) <p class="help-block">{{ $errors->first('dis_nvc_id') }}</p> @endif
         </div>
     </div>
