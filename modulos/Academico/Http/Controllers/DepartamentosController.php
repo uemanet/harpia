@@ -119,7 +119,7 @@ class DepartamentosController extends BaseController
     {
         $departamento = $this->departamentoRepository->find($departamentoId);
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
 
         if (!$departamento) {
             flash()->error('Departamento não existe.');
