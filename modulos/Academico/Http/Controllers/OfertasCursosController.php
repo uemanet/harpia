@@ -12,6 +12,7 @@ use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\ModalidadeRepository;
 use Modulos\Academico\Repositories\PoloRepository;
+use DB;
 
 class OfertasCursosController extends BaseController
 {
@@ -103,25 +104,29 @@ class OfertasCursosController extends BaseController
     public function postCreate(OfertaCursoRequest $request)
     {
         try {
+
+            DB::beginTransaction();
+
             $ofertacurso = $this->ofertacursoRepository->create($request->all());
 
-            $oferta = $this->ofertacursoRepository->find($ofertacurso->ofc_id);
+            if (!$ofertacurso) {
+                DB::rollback();
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+            }
 
             if (!is_null($request->polos)) {
                 foreach ($request->polos as $key => $polo) {
-                    $oferta->polos()->attach($polo);
+                    $ofertacurso->polos()->attach($polo);
                 }
             }
-
-            if (!$ofertacurso) {
-                flash()->error('Erro ao tentar salvar.');
-
-                return redirect()->back()->withInput($request->all());
-            }
+            
+            DB::commit();
 
             flash()->success('Oferta de curso criada com sucesso.');
             return redirect('/academico/ofertascursos/index');
         } catch (\Exception $e) {
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }
