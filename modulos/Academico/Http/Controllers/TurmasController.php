@@ -114,13 +114,9 @@ class TurmasController extends BaseController
             return redirect()->back();
         }
 
-        $ano = $oferta->ofc_ano;
-
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
-
-        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($ano);
+        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano);
         if (empty($periodosletivos)) {
             $periodosletivos['0'] = 'Sem períodos letivos disponíveis';
         }
@@ -161,17 +157,13 @@ class TurmasController extends BaseController
 
         $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
 
-        $ano = $oferta->ofc_ano;
-
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
-
-        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($ano);
+        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano);
         if (empty($periodosletivos)) {
             $periodosletivos['0'] = 'Sem períodos letivos disponíveis';
         }
-        
+
         return view('Academico::turmas.edit', compact('turma', 'curso', 'oferta', 'periodosletivos'));
     }
 
