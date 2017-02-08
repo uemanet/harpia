@@ -148,7 +148,7 @@ class MatrizesCurricularesController extends BaseController
         $anexo =  $this->anexoRepository->recuperarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
 
         if($anexo == 'error_non_existent'){
-            flash()->error('anexo não existe']);
+            flash()->error('anexo não existe');
             return redirect()->back();
         }
 

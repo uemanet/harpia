@@ -158,7 +158,7 @@ class LancamentosTccsController extends BaseController
         $anexo =  $this->anexoRepository->recuperarAnexo($lancamentotcc->ltc_anx_tcc);
 
         if($anexo == 'error_non_existent'){
-            flash()->error('anexo não existe']);
+            flash()->error('anexo não existe');
             return redirect()->back();
         }
 
