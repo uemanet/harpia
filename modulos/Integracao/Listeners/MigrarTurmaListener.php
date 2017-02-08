@@ -67,10 +67,8 @@ class MigrarTurmaListener
                 $response = Moodle::send($param);
                 $status = 3;
 
-                if (array_key_exists('status', $response)) {
-                    if ($response['status'] == 'success') {
-                        $status = 2;
-                    }
+                if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                    $status = 2;
                 }
 
                 event(new AtualizarSyncEvent($turma, $status, $response['message']));

@@ -4,6 +4,7 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\TutorGrupo;
+use DB;
 
 class TutorGrupoRepository extends BaseRepository
 {

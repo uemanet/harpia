@@ -90,10 +90,8 @@ class MigrarOfertaDisciplinaListener
                 $response = Moodle::send($param);
                 $status = 3;
 
-                if (array_key_exists('status', $response)) {
-                    if ($response['status'] == 'success') {
-                        $status = 2;
-                    }
+                if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                    $status = 2;
                 }
 
                 event(new AtualizarSyncEvent($oferta, $status, $response['message']));
