@@ -59,7 +59,7 @@ class DocumentosController extends BaseController
         $anexo =  $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
 
         if($anexo == 'error_non_existent'){
-            flash()->error('anexo não existe']);
+            flash()->error('anexo não existe');
             return redirect()->back();
         }
 
