@@ -223,7 +223,6 @@
                 var localizarDisciplinasOfertadas = function (turmaId, periodoId) {
                     $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId)
                             .done(function (data) {
-                                console.log(data);
                                 boxDisciplinas.removeClass('hidden');
                                 boxFormDisciplinas.show();
 
