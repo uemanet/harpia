@@ -157,7 +157,7 @@ class LancamentosTccsController extends BaseController
 
         $anexo =  $this->anexoRepository->recuperarAnexo($lancamentotcc->ltc_anx_tcc);
         
-        if($anexo['type'] == 'error_non_existent'){
+        if ($anexo['type'] == 'error_non_existent') {
             flash()->error($anexo['message']);
             return redirect()->back();
         }
@@ -261,7 +261,7 @@ class LancamentosTccsController extends BaseController
                     // Atualiza anexo
                     $atualizaAnexo = $this->anexoRepository->atualizarAnexo($lancamentotcc->ltc_anx_tcc, $anexoTcc);
 
-                    if($atualizaAnexo['type'] == 'error_non_existent'){
+                    if ($atualizaAnexo['type'] == 'error_non_existent') {
                         flash()->error($anexo['message']);
                         return redirect()->back();
                     }
@@ -275,7 +275,6 @@ class LancamentosTccsController extends BaseController
                         flash()->error('ocorreu um problema ao salvar o arquivo');
                         return redirect()->back()->withInput($request->all());
                     }
-
                 } else {
                     // Cria um novo anexo caso o documento nao tenha anteriormente
                     $anexo = $this->anexoRepository->salvarAnexo($anexoTcc);

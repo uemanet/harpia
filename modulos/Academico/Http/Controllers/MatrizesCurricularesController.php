@@ -147,11 +147,10 @@ class MatrizesCurricularesController extends BaseController
 
         $anexo =  $this->anexoRepository->recuperarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
 
-        if($anexo['type'] == 'error_non_existent'){
+        if ($anexo['type'] == 'error_non_existent') {
             flash()->error($anexo['message']);
             return redirect()->back();
         }
-        
     }
 
     public function postCreate(MatrizCurricularRequest $request)
@@ -229,7 +228,7 @@ class MatrizesCurricularesController extends BaseController
                 // Atualiza anexo
                 $atualizaAnexo = $this->anexoRepository->atualizarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico, $projetoPedagogico);
 
-                if($atualizaAnexo['type'] == 'error_non_existent'){
+                if ($atualizaAnexo['type'] == 'error_non_existent') {
                     flash()->error($anexo['message']);
                     return redirect()->back();
                 }
