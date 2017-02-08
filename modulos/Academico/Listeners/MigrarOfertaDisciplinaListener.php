@@ -53,7 +53,6 @@ class MigrarOfertaDisciplinaListener
 
         $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
         $data['discipline']['ofd_id'] = $oferta->ofd_id;
-        $data['discipline']['pes_id'] = $pessoa->pes_id;
         $data['discipline']['teacher'] = $teacher;
 
         $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);
@@ -62,6 +61,11 @@ class MigrarOfertaDisciplinaListener
         $data['discipline']['name'] = $disciplina->dis_nome;
 
         $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($oferta->ofd_trm_id);
+
+        if (!$ambiente) {
+            // Encerra a function sem interromper a propagacao do evento
+            return true;
+        }
 
         $param['url'] = $ambiente->url;
         $param['token'] = $ambiente->token;

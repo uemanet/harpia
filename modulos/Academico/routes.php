@@ -33,7 +33,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\PeriodosLetivosController@postDelete')->name('academico.periodosletivos.delete');
     });
 
-    Route::group(['prefix' => 'cursos', 'middleware' => ['vinculo']], function () {
+    Route::group(['prefix' => 'cursos'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\CursosController@getIndex')->name('academico.cursos.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\CursosController@getCreate')->name('academico.cursos.getCreate');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\CursosController@postCreate')->name('academico.cursos.postCreate');
@@ -42,7 +42,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\CursosController@postDelete')->name('academico.cursos.delete');
     });
 
-    Route::group(['prefix' => 'matrizescurriculares', 'middleware' => ['vinculo']], function () {
+    Route::group(['prefix' => 'matrizescurriculares'], function () {
         Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\MatrizesCurricularesController@getIndex')->name('academico.matrizescurriculares.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\MatrizesCurricularesController@getCreate')->name('academico.matrizescurriculares.getCreate');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\MatrizesCurricularesController@postCreate')->name('academico.matrizescurriculares.postCreate');
@@ -105,7 +105,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     });
 
 
-    Route::group(['prefix' => 'modulosmatrizes', 'middleware' => ['vinculo']], function () {
+    Route::group(['prefix' => 'modulosmatrizes'], function () {
         Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getIndex')->name('academico.modulosmatrizes.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getCreate')->name('academico.modulosmatrizes.getCreate');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@postCreate')->name('academico.modulosmatrizes.postCreate');

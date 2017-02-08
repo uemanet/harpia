@@ -51,7 +51,10 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function findAllByCurso($cursoid)
     {
-        return $this->model->where('ofc_crs_id', $cursoid)->get(['ofc_id', 'ofc_ano']);
+        return $this->model
+                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                    ->where('ofc_crs_id', $cursoid)
+                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
     }
 
     /**
@@ -61,7 +64,13 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function findAllByCursowithoutpresencial($cursoid)
     {
-        return $this->model->where('ofc_crs_id', $cursoid)->where('ofc_mdl_id', '<>', 1)->get(['ofc_id', 'ofc_ano']);
+        return $this->model
+                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                    ->where([
+                        ['ofc_crs_id', '=', $cursoid],
+                        ['ofc_mdl_id', '<>', 1]
+                    ])
+                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
     }
 
     /**
@@ -93,5 +102,36 @@ class OfertaCursoRepository extends BaseRepository
     public function listsOfertaByTurma($turmadaofertaid)
     {
         return $this->model->where('ofc_id', $turmadaofertaid)->pluck('ofc_ano', 'ofc_id');
+    }
+
+    /**
+     * Cria uma nova oferta de curso, de acordo com regras de validação
+     * @param array $ofertaCurso
+     * @return mixed
+     */
+
+    public function create(array $data)
+    {
+        // verifica se existe um registro com mesmo ano e modalidade
+        $entry = $this->model
+                        ->where([
+                            ['ofc_ano', '=', $data['ofc_ano']],
+                            ['ofc_mdl_id', '=', $data['ofc_mdl_id']]
+                        ])->first();
+
+        if (!$entry) {
+            $oferta = new OfertaCurso();
+
+            $oferta->ofc_crs_id = $data['ofc_crs_id'];
+            $oferta->ofc_mtc_id = $data['ofc_mtc_id'];
+            $oferta->ofc_mdl_id = $data['ofc_mdl_id'];
+            $oferta->ofc_ano = $data['ofc_ano'];
+
+            $oferta->save();
+
+            return $oferta;
+        }
+
+        return null;
     }
 }

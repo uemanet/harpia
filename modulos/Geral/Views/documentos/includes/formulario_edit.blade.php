@@ -38,20 +38,24 @@
     </div>
     <div class="form-group col-md-4 @if ($errors->has('doc_anx_nome')) has-error @endif">
         {!! Form::label('doc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
-        <div class="control">
-            @if($Anexo != null)
-            <input type="text" class="form-control first" placeholder="{{$Anexo->anx_nome}}" disabled="">
+        <div class="input-group-button">
+            @if($anexo != null)
+            <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
+                @if($anexo != null)
+                <div class="input-group-btn botaoDelete">
+                    <button type="button" class="btn btn-danger btn-delete">Action</button>
+                </div>
+                @endif
             @else
             <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
+                @if($anexo != null)
+                    <div class="input-group-btn botaoDelete">
+                        <button type="button" class="btn btn-danger btn-delete">Action</button>
+                    </div>
+                @endif
             @endif
         </div>
     </div>
-    @if($Anexo != null)
-    {!! Form::label('', 'Ação', ['class' => 'control-label']) !!}
-    <div class="control botaoDelete">
-        <button type="button" class="btn-delete btn btn-danger"><i class="fa fa-trash"></i> Excluir Anexo</button>
-    </div>
-    @endif
 </div>
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('doc_observacao')) has-error @endif">
