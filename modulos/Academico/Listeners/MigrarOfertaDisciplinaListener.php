@@ -6,6 +6,7 @@ use Modulos\Academico\Events\OfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\DisciplinaRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
@@ -21,7 +22,7 @@ class MigrarOfertaDisciplinaListener
     protected $moduloDisciplinaRepository;
     protected $disciplinaRepository;
     protected $sincronizacaoRepository;
-    protected $ofertaCursoRepository;
+    protected $ofertaDisciplinaRepository;
 
     public function __construct(PessoaRepository $pessoaRepository,
                                 ProfessorRepository $professorRepository,
@@ -29,7 +30,7 @@ class MigrarOfertaDisciplinaListener
                                 ModuloDisciplinaRepository $moduloDisciplinaRepository,
                                 DisciplinaRepository $disciplinaRepository,
                                 SincronizacaoRepository $sincronizacaoRepository,
-                                OfertaCursoRepository $ofertaCursoRepository)
+                                OfertaDisciplinaRepository $ofertaDisciplinaRepository)
     {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->professorRepository = $professorRepository;
@@ -37,20 +38,20 @@ class MigrarOfertaDisciplinaListener
         $this->moduloDisciplinaRepository = $moduloDisciplinaRepository;
         $this->disciplinaRepository = $disciplinaRepository;
         $this->sincronizacaoRepository = $sincronizacaoRepository;
-        $this->ofertaCursoRepository = $ofertaCursoRepository;
+        $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
     }
 
     public function handle(OfertaDisciplinaEvent $event)
     {
         $ofertasMigrar = $this->sincronizacaoRepository->findBy([
-            'sym_table' => 'acd_ofertas_cursos',
+            'sym_table' => 'acd_ofertas_disciplinas',
             'sym_status' => 1
         ]);
 
         if ($ofertasMigrar->count()) {
             foreach ($ofertasMigrar as $item) {
-                $oferta = $this->ofertaCursoRepository->find($item->sym_table_id);
-                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($item->ofd_trm_id);
+                $oferta = $this->ofertaDisciplinaRepository->find($item->sym_table_id);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($oferta->ofd_trm_id);
 
                 if (!$ambiente) {
                     continue;
@@ -73,7 +74,6 @@ class MigrarOfertaDisciplinaListener
 
                 $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
                 $data['discipline']['ofd_id'] = $oferta->ofd_id;
-                $data['discipline']['pes_id'] = $pessoa->pes_id;
                 $data['discipline']['teacher'] = $teacher;
 
                 $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);

@@ -48,8 +48,11 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
-            flash()->error('Arquivo já existe !');
-            return redirect()->back();
+
+            return array(
+                'type' => 'error_exists',
+                'message' => 'Arquivo enviado já existe'
+            );
         }
 
         try {
@@ -67,7 +70,6 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw $e;
             }
-            flash()->error('Ocorreu um problema ao salvar o arquivo!');
         }
     }
 
@@ -80,8 +82,10 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            flash()->error('Arquivo não existe!');
-            return redirect()->back();
+            return array(
+                'type' => 'error_non_existent',
+                'message' => 'Arquivo não existe!'
+            );
         }
 
         list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
@@ -106,8 +110,10 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            flash()->error('Arquivo não existe!');
-            return redirect()->back();
+            return array(
+                'type' => 'error_non_existent',
+                'message' => 'Arquivo não existe!'
+            );
         }
 
         $hash = sha1_file($uploadedFile);
@@ -119,8 +125,10 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
-            flash()->error('Arquivo já existe !');
-            return redirect()->back();
+            return array(
+                'type' => 'error_exists',
+                'message' => 'Arquivo enviado já existe'
+            );
         }
 
         try {
@@ -143,8 +151,6 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw $e;
             }
-
-            flash()->error('Ocorreu um problema ao atualizar o arquivo!');
         }
     }
 
@@ -159,8 +165,10 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            flash()->error('Arquivo não existe!');
-            return redirect()->back();
+            return array(
+                'type' => 'error_non_existent',
+                'message' => 'Arquivo não existe!'
+            );
         }
 
         try {
@@ -172,8 +180,6 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw $e;
             }
-
-            flash()->error('Ocorreu um problema ao excluir o arquivo!');
         }
     }
 }
