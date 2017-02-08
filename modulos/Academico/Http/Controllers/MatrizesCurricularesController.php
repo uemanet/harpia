@@ -75,7 +75,7 @@ class MatrizesCurricularesController extends BaseController
                     $button = new TButton();
                     $button->setName('Download do projeto')
                         ->setAction('/academico/matrizescurriculares/anexo/'. $id)
-                        ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
+                        ->setIcon('fa fa-download')->setStyle('btn bg-blue btn-xs');
 
                     return ActionButton::render(array($button));
                 })
@@ -151,7 +151,7 @@ class MatrizesCurricularesController extends BaseController
             flash()->error($anexo['message']);
             return redirect()->back();
         }
-        
+
     }
 
     public function postCreate(MatrizCurricularRequest $request)
@@ -171,7 +171,7 @@ class MatrizesCurricularesController extends BaseController
                 flash()->error('ocorreu um problema ao salvar o arquivo');
                 return redirect()->back()->withInput($request->all());
             }
-            
+
             $dados = $request->all();
             unset($dados['mtc_file']);
 
