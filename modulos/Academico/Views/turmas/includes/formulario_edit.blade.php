@@ -12,7 +12,9 @@
   <div class="form-group col-md-4 @if ($errors->has('trm_ofc_id')) has-error @endif">
       {!! Form::label('trm_ofc_id', 'Oferta de Curso*', ['class' => 'control-label']) !!}
       <div class="controls">
-          {!! Form::select('trm_ofc_id', $oferta, $oferta, ['class' => 'form-control', 'id' => 'trm_ofc_id']) !!}
+          <select class="form-control" name="trm_ofc_id" id="trm_ofc_id">
+              <option value="{{$oferta->ofc_id}}">{{$oferta->ofc_ano}} ({{$oferta->modalidade->mdl_nome}})</option>
+          </select>
           @if ($errors->has('trm_ofc_id')) <p class="help-block">{{ $errors->first('trm_ofc_id') }}</p> @endif
       </div>
   </div>

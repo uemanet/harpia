@@ -58,10 +58,12 @@ class DocumentosController extends BaseController
 
         $anexo =  $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
 
-        if ($anexo['type'] == 'error_non_existent') {
-            flash()->error($anexo['message']);
+        if($anexo == 'error_non_existent'){
+            flash()->error('anexo não existe');
             return redirect()->back();
         }
+
+        return $anexo;
     }
 
     public function postCreate(DocumentoRequest $request)
@@ -173,9 +175,8 @@ class DocumentosController extends BaseController
                 if ($documento->doc_anx_documento != null) {
                     // Atualiza anexo
                     $atualizaAnexo = $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
-                    
-                    if ($atualizaAnexo['type'] == 'error_non_existent') {
-                        flash()->error($anexo['message']);
+                    if($atualizaAnexo['type'] == 'error_non_existent'){
+                        flash()->error($atualizaAnexo['message']);
                         return redirect()->back();
                     }
 
@@ -236,7 +237,7 @@ class DocumentosController extends BaseController
                 $excluiAnexo = $this->anexoRepository->deletarAnexo($documento->doc_anx_documento);
 
                 if ($excluiAnexo['type'] == 'error_exists') {
-                    flash()->error($anexoCriado['message']);
+                    flash()->error($excluiAnexo['message']);
                     return redirect()->back()->withInput($request->all());
                 }
 
