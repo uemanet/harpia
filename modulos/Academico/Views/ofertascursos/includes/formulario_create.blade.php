@@ -16,7 +16,7 @@
     <div class="form-group col-md-4 @if ($errors->has('ofc_mdl_id')) has-error @endif">
         {!! Form::label('ofc_mdl_id', 'Modalidade*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('ofc_mdl_id', $modalidades, old('ofc_mdl_id'), ['class' => 'form-control']) !!}
+            {!! Form::select('ofc_mdl_id', $modalidades, old('ofc_mdl_id'), ['class' => 'form-control', 'placeholder' => 'Selecione a modalidade']) !!}
             @if ($errors->has('ofc_mdl_id')) <p class="help-block">{{ $errors->first('ofc_mdl_id') }}</p> @endif
         </div>
     </div>
