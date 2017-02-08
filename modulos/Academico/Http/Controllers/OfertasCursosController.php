@@ -104,7 +104,6 @@ class OfertasCursosController extends BaseController
     public function postCreate(OfertaCursoRequest $request)
     {
         try {
-
             DB::beginTransaction();
 
             $ofertacurso = $this->ofertacursoRepository->create($request->all());

@@ -58,7 +58,7 @@ class DocumentosController extends BaseController
 
         $anexo =  $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
 
-        if($anexo['type'] == 'error_non_existent'){
+        if ($anexo['type'] == 'error_non_existent') {
             flash()->error($anexo['message']);
             return redirect()->back();
         }
@@ -174,7 +174,7 @@ class DocumentosController extends BaseController
                     // Atualiza anexo
                     $atualizaAnexo = $this->anexoRepository->atualizarAnexo($documento->doc_anx_documento, $anexoDocumento);
                     
-                    if($atualizaAnexo['type'] == 'error_non_existent'){
+                    if ($atualizaAnexo['type'] == 'error_non_existent') {
                         flash()->error($anexo['message']);
                         return redirect()->back();
                     }

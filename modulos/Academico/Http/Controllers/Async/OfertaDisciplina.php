@@ -59,6 +59,10 @@ class OfertaDisciplina extends BaseController
     {
         try {
             if (!$this->ofertaDisciplinaRepository->verifyDisciplinaTurmaPeriodo($request->ofd_trm_id, $request->ofd_per_id, $request->ofd_mdc_id)) {
+                if ($request->input('ofd_qtd_vagas') < 1) {
+                    return new JsonResponse('Quantidade de vagas insuficiente', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+                }
+
                 $ofertadisciplina = $this->ofertaDisciplinaRepository->create($request->except('_token'));
 
                 if (!$ofertadisciplina) {
