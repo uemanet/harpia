@@ -51,6 +51,7 @@ class AmbienteVirtualRepository extends BaseRepository
         $turmas = DB::table('acd_turmas')
            ->whereNotIn('trm_id', $turmasvinculadasId)
            ->where('trm_ofc_id', '=', $ofertaId)
+           ->where('trm_integrada', '=', 1)
            ->get();
 
         return $turmas;

@@ -820,7 +820,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
 
         $permissao = new Permissao(); // id = 101
-        $permissao->prm_rcs_id = 28; // Recurso Lançamento de Tcc
+        $permissao->prm_rcs_id = 29; // Recurso Lançamento de Tcc
         $permissao->prm_nome = 'anexo';
         $permissao->prm_descricao = 'Permissão anexo do recurso Lançamento de Tcc da Categoria de Processos do módulo de Acadêmico';
         $permissao->save();
