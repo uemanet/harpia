@@ -53,7 +53,7 @@ class AnexoRepository extends BaseRepository
                 'type' => 'error_exists',
                 'message' => 'Arquivo enviado já existe'
             );
-            
+
         }
 
         try {
@@ -71,7 +71,7 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw $e;
             }
-            
+
         }
     }
 
@@ -84,11 +84,8 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-            return array(
-                'type' => 'error_non_existent',
-                'message' => 'Arquivo não existe!'
-            );
-            
+          $anexo = 'error_non_existent';
+          return $anexo;
         }
 
         list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
@@ -154,7 +151,7 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw $e;
             }
-            
+
         }
     }
 
