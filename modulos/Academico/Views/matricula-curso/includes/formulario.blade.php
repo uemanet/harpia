@@ -74,7 +74,7 @@
                            selectOfertas.append("<option value=''>Selecione a oferta</option>");
 
                            $.each(data, function (key, obj) {
-                              selectOfertas.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+'</option>');
+                              selectOfertas.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+' ('+obj.mdl_nome+')</option>');
                            });
                        }else {
                            selectOfertas.append("<option>Sem ofertas cadastradas</option>");

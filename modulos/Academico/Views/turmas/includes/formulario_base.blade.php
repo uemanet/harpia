@@ -26,7 +26,3 @@
         {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
     </div>
 </div>
-
-@section('scripts')
-
-@stop

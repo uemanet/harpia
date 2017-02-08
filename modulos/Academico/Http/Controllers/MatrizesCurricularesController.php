@@ -147,11 +147,13 @@ class MatrizesCurricularesController extends BaseController
 
         $anexo =  $this->anexoRepository->recuperarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
 
-        if($anexo['type'] == 'error_non_existent'){
-            flash()->error($anexo['message']);
+        if($anexo == 'error_non_existent'){
+            flash()->error('anexo não existe']);
             return redirect()->back();
         }
-        
+
+        return $anexo;
+
     }
 
     public function postCreate(MatrizCurricularRequest $request)
@@ -171,7 +173,7 @@ class MatrizesCurricularesController extends BaseController
                 flash()->error('ocorreu um problema ao salvar o arquivo');
                 return redirect()->back()->withInput($request->all());
             }
-            
+
             $dados = $request->all();
             unset($dados['mtc_file']);
 

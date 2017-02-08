@@ -116,7 +116,7 @@
                             if(!$.isEmptyObject(data)) {
                                 selectOfertas.append("<option>Selecione a oferta</option>");
                                 $.each(data, function (key, value) {
-                                    selectOfertas.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+'</option>');
+                                    selectOfertas.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+' ('+value.mdl_nome+')</option>');
                                 });
                             } else {
                                 selectOfertas.append("<option>Sem ofertas cadastradas</option>");
