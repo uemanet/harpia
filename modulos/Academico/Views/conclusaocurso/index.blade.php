@@ -114,7 +114,7 @@
                          ofertasCursoSelect.append("<option value=''>Selecione uma oferta</option>");
 
                          $.each(response, function (key, obj) {
-                             ofertasCursoSelect.append("<option value='"+obj.ofc_id+"'>"+obj.ofc_ano+"</option>");
+                             ofertasCursoSelect.append("<option value='"+obj.ofc_id+"'>"+obj.ofc_ano+" ("+obj.mdl_nome+")</option>");
                          });
                      } else {
                          ofertasCursoSelect.append("<option value=''>Sem ofertas cadastradas</option>");

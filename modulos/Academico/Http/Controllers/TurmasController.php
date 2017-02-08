@@ -113,7 +113,6 @@ class TurmasController extends BaseController
             return redirect()->back();
         }
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
         return view('Academico::turmas.create', compact('curso', 'periodosletivos', 'oferta'));
@@ -152,7 +151,7 @@ class TurmasController extends BaseController
 
         $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
+        //$oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
         $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
         return view('Academico::turmas.edit', compact('turma', 'curso', 'oferta', 'periodosletivos'));

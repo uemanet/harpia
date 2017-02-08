@@ -156,11 +156,13 @@ class LancamentosTccsController extends BaseController
         }
 
         $anexo =  $this->anexoRepository->recuperarAnexo($lancamentotcc->ltc_anx_tcc);
-        
-        if($anexo['type'] == 'error_non_existent'){
-            flash()->error($anexo['message']);
+
+        if($anexo == 'error_non_existent'){
+            flash()->error('anexo não existe');
             return redirect()->back();
         }
+
+        return $anexo;
     }
 
     public function postCreate($turmaId, LancamentoTccRequest $request)
@@ -171,7 +173,7 @@ class LancamentosTccsController extends BaseController
             if ($request->file('ltc_file') != null) {
                 $anexoDocumento = $request->file('ltc_file');
                 $anexoCriado = $this->anexoRepository->salvarAnexo($anexoDocumento);
-                
+
                 if ($anexoCriado['type'] == 'error_exists') {
                     flash()->error($anexoCriado['message']);
                     return redirect()->back()->withInput($request->all());
@@ -181,7 +183,7 @@ class LancamentosTccsController extends BaseController
                     flash()->error('ocorreu um problema ao salvar o arquivo');
                     return redirect()->back()->withInput($request->all());
                 }
-                
+
                 $dados['ltc_anx_tcc'] = $anexoCriado->anx_id;
             }
 
@@ -289,7 +291,7 @@ class LancamentosTccsController extends BaseController
                         flash()->error('ocorreu um problema ao salvar o arquivo');
                         return redirect()->back()->withInput($request->all());
                     }
-                    
+
                     $dados['ltc_anx_tcc'] = $anexo->anx_id;
                 }
             }
