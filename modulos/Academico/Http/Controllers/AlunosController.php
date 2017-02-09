@@ -38,7 +38,7 @@ class AlunosController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->alunoRepository->paginateRequest($request->all(), true);
+        $tableData = $this->alunoRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(

@@ -15,37 +15,6 @@ class CursoRepository extends BaseRepository
     }
 
     /**
-     * Paginate
-     * @param null $sort
-     * @param null $search
-     * @return mixed
-     */
-    public function paginate($sort = null, $search = null)
-    {
-        $result = $this->model
-            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
-            ->where('ucr_usr_id', '=', Auth::user()->usr_id);
-
-        if (!empty($search)) {
-            foreach ($search as $key => $value) {
-                switch ($value['type']) {
-                    case 'like':
-                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
-                        break;
-                    default:
-                        $result = $result->where($value['field'], $value['type'], $value['term']);
-                }
-            }
-        }
-
-        if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
-        }
-
-        return $result->paginate(15);
-    }
-
-    /**
      * @param $identifier
      * @param $field
      * @return mixed
@@ -65,8 +34,6 @@ class CursoRepository extends BaseRepository
     public function listsByCursoId($cursoId)
     {
         return $this->model
-            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
-            ->where('ucr_usr_id', '=', Auth::user()->usr_id)
             ->where('crs_id', $cursoId)
             ->pluck('crs_nome', 'crs_id');
     }

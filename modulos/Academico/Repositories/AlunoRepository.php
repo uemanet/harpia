@@ -97,30 +97,33 @@ class AlunoRepository extends BaseRepository
                 $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
             })->where('mat_alu_id', '=', null);
 
-        $result = $vinculados->union($result);
-
         if (!empty($search)) {
             foreach ($search as $value) {
                 if ($value['field'] == 'pes_cpf') {
+                    $vinculados = $vinculados->where('doc_conteudo', '=', $value['term']);
                     $result = $result->where('doc_conteudo', '=', $value['term']);
                     continue;
                 }
 
                 switch ($value['type']) {
                     case 'like':
+                        $vinculados = $vinculados->where($value['field'], $value['type'], "%{$value['term']}%");
                         $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
                         break;
                     default:
+                        $vinculados = $vinculados->where($value['field'], $value['type'], $value['term']);
                         $result = $result->where($value['field'], $value['type'], $value['term']);
                 }
             }
         }
 
         if (!empty($sort)) {
+            $vinculados = $vinculados->orderBy($sort['field'], $sort['sort']);
             $result = $result->orderBy($sort['field'], $sort['sort']);
         }
 
-        return $this->model->paginateWithBonds($result->get(), 15);
+        $finalResult = $vinculados->union($result);
+        return $this->model->paginateWithBonds($finalResult->get(), 15);
     }
 
     /**

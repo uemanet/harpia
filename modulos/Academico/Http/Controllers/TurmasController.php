@@ -107,14 +107,19 @@ class TurmasController extends BaseController
     public function getCreate($ofertaId)
     {
         $oferta = $this->ofertacursoRepository->find($ofertaId);
+
         if (!$oferta) {
             flash()->error('Oferta não existe');
 
             return redirect()->back();
         }
+
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $oferta = $this->ofertacursoRepository->listsAllById($ofertaId);
-        $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
+
+        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano);
+        if (empty($periodosletivos)) {
+            $periodosletivos['0'] = 'Sem períodos letivos disponíveis';
+        }
 
         return view('Academico::turmas.create', compact('curso', 'periodosletivos', 'oferta'));
     }
@@ -136,7 +141,7 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -151,9 +156,13 @@ class TurmasController extends BaseController
         }
 
         $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
+
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $oferta = $this->ofertacursoRepository->listsAllById($turma->trm_ofc_id);
-        $periodosletivos = $this->periodoletivoRepository->lists('per_id', 'per_nome');
+
+        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano);
+        if (empty($periodosletivos)) {
+            $periodosletivos['0'] = 'Sem períodos letivos disponíveis';
+        }
 
         return view('Academico::turmas.edit', compact('turma', 'curso', 'oferta', 'periodosletivos'));
     }

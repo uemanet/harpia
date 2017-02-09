@@ -1,5 +1,9 @@
 @extends('layouts.modulos.academico')
 
+@section('stylesheets')
+  <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+@endsection
+
 @section('title')
     Centros
 @stop
@@ -20,3 +24,14 @@
         </div>
     </div>
 @stop
+
+@section('scripts')
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("select").select2();
+            });
+        </script>
+
+@endsection

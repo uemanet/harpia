@@ -86,4 +86,11 @@ class ModulosDisciplinas extends BaseController
 
         return new JsonResponse($disciplina, 200);
     }
+
+    public function getDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId)
+    {
+        $disciplina = $this->moduloDisciplinaRepository->getAllDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId);
+
+        return new JsonResponse($disciplina, 200);
+    }
 }

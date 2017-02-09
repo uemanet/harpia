@@ -25,7 +25,7 @@
     <div class="form-group col-md-4 @if ($errors->has('grp_pol_id')) has-error @endif">
         {!! Form::label('grp_pol_id', 'Polo*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('grp_pol_id', $polos, old('grp_pol_id'), ['class' => 'form-control']) !!}
+            {!! Form::select('grp_pol_id', $polos, old('grp_pol_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o polo']) !!}
             @if ($errors->has('grp_pol_id')) <p class="help-block">{{ $errors->first('grp_pol_id') }}</p> @endif
         </div>
     </div>

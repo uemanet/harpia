@@ -52,14 +52,14 @@
                 <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
                 @if($anexo != null)
                     <div class="input-group-btn botaoDelete">
-                        <button type="button" class="btn btn-danger btn-delete">Action</button>
+                        <button type="button" class="btn btn-danger btn-delete">Excluir</button>
                     </div>
                 @endif
             @else
                 <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
                 @if($anexo != null)
                     <div class="input-group-btn botaoDelete">
-                        <button type="button" class="btn btn-danger btn-delete">Action</button>
+                        <button type="button" class="btn btn-danger btn-delete">Excluir</button>
                     </div>
                 @endif
             @endif

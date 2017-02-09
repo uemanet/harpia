@@ -33,13 +33,25 @@ class PeriodoLetivoRepository extends BaseRepository
     public function getAllByTurma($turmaId)
     {
         $result = $this->model
-                        ->where('per_id', '>=', function ($query) use ($turmaId) {
-                            $query->select('trm_per_id')
+                        ->where('per_fim', '>=', function ($query) use ($turmaId) {
+                            $query->select('per_fim')
                                     ->from('acd_turmas')
+                                    ->join('acd_periodos_letivos', 'trm_per_id', '=', 'per_id')
                                     ->where('trm_id', '=', $turmaId);
                         })
+                        ->orderBy('per_inicio', 'ASC')
                         ->get();
         
         return $result;
+    }
+
+    public function getPeriodosValidos($ofc_ano)
+    {
+        return $this->model
+                    ->whereYear('per_inicio', $ofc_ano)
+                    ->where('per_fim', '>=', date('Y-m-d'))
+                    ->orderBy('per_inicio', 'ASC')
+                    ->pluck('per_nome', 'per_id')
+                    ->toArray();
     }
 }

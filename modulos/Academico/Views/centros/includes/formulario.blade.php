@@ -2,7 +2,7 @@
     <div class="form-group col-md-4 @if ($errors->has('cen_prf_diretor')) has-error @endif">
         {!! Form::label('cen_prf_diretor', 'Diretor*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('cen_prf_diretor', $professores, old('cen_prf_diretor'), ['class' => 'form-control']) !!}
+            {!! Form::select('cen_prf_diretor', $professores, old('cen_prf_diretor'), ['class' => 'form-control', 'placeholder' => 'Selecione o diretor']) !!}
             @if ($errors->has('cen_prf_diretor')) <p class="help-block">{{ $errors->first('cen_prf_diretor') }}</p> @endif
         </div>
     </div>
