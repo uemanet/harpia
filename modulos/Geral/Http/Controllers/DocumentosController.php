@@ -126,7 +126,7 @@ class DocumentosController extends BaseController
         }
 
         $pessoa = $this->pessoaRepository->find($documento->doc_pes_id);
-        $Anexo = $this->anexoRepository->find($documento->doc_anx_documento);
+        $anexo = $this->anexoRepository->find($documento->doc_anx_documento);
 
 
         $tiposdocumentos = $this->tipodocumentoRepository->listsTipoDocumentoByDocumentoId($documentoId);
@@ -135,7 +135,7 @@ class DocumentosController extends BaseController
             $documentotipo = $tipo;
         }
 
-        return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa', 'Anexo'));
+        return view('Geral::documentos.edit', compact('documento', 'documentotipo', 'tiposdocumentos', 'pessoa', 'anexo'));
     }
 
     public function putEdit($DocumentoId, DocumentoRequest $request)
