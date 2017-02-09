@@ -68,15 +68,15 @@ class LancamentosTccsController extends BaseController
                     return  ActionButton::grid([
                         'type' => 'LINE',
                         'buttons' => [
-                        [
-                            'classButton' => 'btn btn-primary',
-                            'icon' => 'fa fa-user',
-                            'action' => '/academico/lancamentostccs/alunosturma/'.$id,
-                            'label' => 'Alunos',
-                            'method' => 'get'
+                            [
+                                'classButton' => 'btn btn-primary',
+                                'icon' => 'fa fa-user',
+                                'action' => '/academico/lancamentostccs/alunosturma/'.$id,
+                                'label' => 'Alunos',
+                                'method' => 'get'
+                            ]
                         ]
-                    ]
-                  ]);
+                    ]);
                 })
                 ->sortable(array('trm_id', 'trm_nome'));
 
@@ -157,7 +157,7 @@ class LancamentosTccsController extends BaseController
 
         $anexo =  $this->anexoRepository->recuperarAnexo($lancamentotcc->ltc_anx_tcc);
 
-        if($anexo == 'error_non_existent'){
+        if ($anexo == 'error_non_existent') {
             flash()->error('anexo não existe');
             return redirect()->back();
         }

@@ -82,8 +82,8 @@ class AnexoRepository extends BaseRepository
         $anexo = $this->find($anexoId);
 
         if (!$anexo) {
-          $anexo = 'error_non_existent';
-          return $anexo;
+            $anexo = 'error_non_existent';
+            return $anexo;
         }
 
         list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
