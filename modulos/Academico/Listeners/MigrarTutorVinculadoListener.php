@@ -3,71 +3,89 @@
 namespace Modulos\Academico\Listeners;
 
 use Modulos\Academico\Events\TutorVinculadoEvent;
+use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
+use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
 
 class MigrarTutorVinculadoListener
 {
     protected $pessoaRepository;
-    protected $ambientVirtualRepository;
+    protected $ambienteVirtualRepository;
     protected $tutorGrupoRepository;
+    protected $sincronizacaoRepository;
+    protected $tutorRepository;
+    protected $grupoRepository;
 
     public function __construct(PessoaRepository $pessoaRepository,
                                 AmbienteVirtualRepository $ambienteVirtualRepository,
-                                TutorGrupoRepository $tutorGrupoRepository)
+                                TutorGrupoRepository $tutorGrupoRepository,
+                                SincronizacaoRepository $sincronizacaoRepository,
+                                GrupoRepository $grupoRepository,
+                                TutorRepository $tutorRepository)
     {
         $this->pessoaRepository = $pessoaRepository;
-        $this->ambientVirtualRepository = $ambienteVirtualRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->tutorGrupoRepository = $tutorGrupoRepository;
+        $this->sincronizacaoRepository = $sincronizacaoRepository;
+        $this->tutorRepository = $tutorRepository;
+        $this->grupoRepository = $grupoRepository;
     }
 
     public function handle(TutorVinculadoEvent $event)
     {
-        $tutor = $event->getData();
-        $grupo = $event->getGroup();
+        $tutoresMigrar = $this->sincronizacaoRepository->findBy([
+            'sym_table' => 'acd_tutores_grupos',
+            'sym_status' => 1
+        ]);
 
-        $pessoa = $this->pessoaRepository->find($tutor->tut_pes_id);
+        if ($tutoresMigrar->count()) {
+            foreach ($tutoresMigrar as $item) {
+                $tutorGrupo = $this->tutorGrupoRepository->find($item->sym_table_id);
+                $tutor = $this->tutorRepository->find($tutorGrupo->ttg_tut_id);
+                $grupo = $this->grupoRepository->find($tutorGrupo->ttg_grp_id);
 
-        $name = explode(" ", $pessoa->pes_nome);
-        $firstName = array_shift($name);
-        $lastName = implode(" ", $name);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
 
-        $data['tutor']['ttg_tipo_tutoria'] = $this->tutorGrupoRepository->getTipoTutoria($tutor->tut_id, $grupo->grp_id);
-        $data['tutor']['grp_id'] = $grupo->grp_id;
-        $data['tutor']['pes_id'] = $tutor->tut_pes_id;
-        $data['tutor']['firstname'] = $firstName;
-        $data['tutor']['lastname'] = $lastName;
-        $data['tutor']['email'] = $pessoa->pes_email;
-        $data['tutor']['username'] = $pessoa->pes_email;
-        $data['tutor']['password'] = "changeme";
-        $data['tutor']['city'] = "São Luís";
+                if (!$ambiente) {
+                    continue;
+                }
 
-        $ambiente = $this->ambientVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
+                $pessoa = $this->pessoaRepository->find($tutor->tut_pes_id);
 
-        if (!$ambiente) {
-            // Encerra a function sem interromper a propagacao do evento
-            return true;
-        }
+                $name = explode(" ", $pessoa->pes_nome);
+                $firstName = array_shift($name);
+                $lastName = implode(" ", $name);
 
-        $param['url'] = $ambiente->url;
-        $param['token'] = $ambiente->token;
-        $param['action'] = 'post';
-        $param['functioname'] = 'local_integracao_enrol_tutor';
-        $param['data'] = $data;
+                $data['tutor']['ttg_tipo_tutoria'] = $this->tutorGrupoRepository->getTipoTutoria($tutor->tut_id, $grupo->grp_id);
+                $data['tutor']['grp_id'] = $grupo->grp_id;
+                $data['tutor']['pes_id'] = $tutor->tut_pes_id;
+                $data['tutor']['firstname'] = $firstName;
+                $data['tutor']['lastname'] = $lastName;
+                $data['tutor']['email'] = $pessoa->pes_email;
+                $data['tutor']['username'] = $pessoa->pes_email;
+                $data['tutor']['password'] = "changeme";
+                $data['tutor']['city'] = "São Luís";
 
-        $response = Moodle::send($param);
-        $status = 3;
+                $param['url'] = $ambiente->url;
+                $param['token'] = $ambiente->token;
+                $param['action'] = 'post';
+                $param['functioname'] = 'local_integracao_enrol_tutor';
+                $param['data'] = $data;
 
-        if (array_key_exists('status', $response)) {
-            // Migracao bem-sucedida
-            if ($response['status'] == 'success') {
-                $status = 2;
+                $response = Moodle::send($param);
+                $status = 3;
+
+                if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                    $status = 2;
+                }
+
+                event(new AtualizarSyncEvent($tutorGrupo, $status, $response['message']));
             }
         }
-
-        event(new AtualizarSyncEvent($tutor, $status, $response['message']));
     }
 }

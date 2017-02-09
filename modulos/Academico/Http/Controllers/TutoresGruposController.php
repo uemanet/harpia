@@ -160,10 +160,9 @@ class TutoresGruposController extends BaseController
             $grupo = $this->grupoRepository->find($grupoTutor);
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
-            if ($turma->trm_integrada == 1) {
+            if ($turma->trm_integrada) {
                 // Event tutor vinculado
-                $tutor = $this->tutorRepository->find($tutorId);
-                event(new TutorVinculadoEvent($tutor, $grupo));
+                event(new TutorVinculadoEvent($tutorgrupo));
             }
 
             flash()->success('Vínculo criado com sucesso.');
