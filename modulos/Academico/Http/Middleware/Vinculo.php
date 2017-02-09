@@ -61,12 +61,6 @@ class Vinculo
         $rota = $this->routeName($request);
 
         switch ($rota) {
-            case "cursos":
-                return $this->handleCursos($request, $next);
-                break;
-            case "matrizescurriculares":
-                return $this->handleMatrizesCurriculares($request, $next);
-                break;
             case "turmas":
                 return $this->handleTurmas($request, $next);
                 break;
@@ -75,9 +69,6 @@ class Vinculo
                 break;
             case "tutoresgrupos":
                 return $this->handleTutoresGrupos($request, $next);
-                break;
-            case "modulosmatrizes":
-                return $this->handleModulosMatrizes($request, $next);
                 break;
             case "alunos":
                 return $this->handleAlunos($request, $next);
@@ -125,68 +116,6 @@ class Vinculo
         }
 
         return array_slice($url, 4);
-    }
-
-    /**
-     * Verifica e filtra os vinculos da rota cursos
-     * @param $request
-     * @param Closure $next
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function handleCursos($request, Closure $next)
-    {
-        $cursoId = $request->id;
-
-        if (is_null($cursoId)) {
-            return $next($request);
-        }
-
-        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $cursoId)) {
-            return $next($request);
-        }
-
-        flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
-    }
-
-    /**
-     * Verifica e filtra os vinculos da rota Matrizes Curriculares
-     * @param $request
-     * @param Closure $next
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function handleMatrizesCurriculares($request, Closure $next)
-    {
-        $id = $request->id;
-        $action = $this->actionName($request);
-
-        if (is_null($id)) {
-            return $next($request);
-        }
-
-        if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
-            if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $id)) {
-                return $next($request);
-            }
-
-            flash()->error($this->defaultResponse);
-            return redirect()->route('academico.cursos.index');
-        }
-
-        $matriz = $this->matrizCurricularRepository->find($id);
-
-        if (!$matriz) {
-            flash()->error($this->defaultResponse);
-
-            return redirect()->route('academico.cursos.index');
-        }
-
-        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)) {
-            return $next($request);
-        }
-
-        flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
     }
 
 
@@ -282,48 +211,6 @@ class Vinculo
         return redirect()->route('academico.cursos.index');
     }
 
-
-    /**
-     * Verifica e filtra os vinculos da rota Turmas
-     * @param $request
-     * @param Closure $next
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function handleModulosMatrizes($request, Closure $next)
-    {
-        $id = $request->id;
-        $action = $this->actionName($request);
-
-        if (is_null($id)) {
-            return $next($request);
-        }
-
-        if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
-            $matriz = $this->matrizCurricularRepository->find($id);
-
-            if (!$matriz) {
-                flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
-            }
-
-            if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)) {
-                return $next($request);
-            }
-
-            flash()->error($this->defaultResponse);
-            return redirect()->route('academico.cursos.index');
-        }
-
-        $modulo = $this->moduloMatrizRepository->find($id);
-        $matriz = $this->matrizCurricularRepository->find($modulo->mdo_mtc_id);
-
-        if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $matriz->mtc_crs_id)) {
-            return $next($request);
-        }
-
-        flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
-    }
 
     /**
      * Verifica e filtra os vinculos da rota Tutores Grupos
@@ -460,7 +347,7 @@ class Vinculo
         if ($routeName == 'academico.async.matriculasofertasdisciplinas.getmatriculaslote') {
             return $next($request);
         }
-        
+
         if ($request->getMethod() == "GET") {
             // Pega os parametros via rota
             // id Aluno + id Curso + id Periodo

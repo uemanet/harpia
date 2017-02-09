@@ -119,7 +119,7 @@ class DepartamentosController extends BaseController
     {
         $departamento = $this->departamentoRepository->find($departamentoId);
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
 
         if (!$departamento) {
             flash()->error('Departamento não existe.');
@@ -153,7 +153,7 @@ class DepartamentosController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -175,7 +175,12 @@ class DepartamentosController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            if ($e->getCode() == 23000) {
+                flash()->error('Este departamento ainda contém dependências no sistema e não pode ser excluído.');
+                return redirect()->back();
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

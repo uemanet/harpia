@@ -170,7 +170,7 @@ class GruposController extends BaseController
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_crs_id)->pluck('pol_nome', 'pol_id');
+        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 

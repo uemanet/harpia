@@ -72,6 +72,54 @@ class ModuloDisciplinaRepository extends BaseRepository
         return $result;
     }
 
+    public function getAllDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId)
+    {
+        // busca todas as disciplinas ofertadas do modulo, de acordo com a turma e periodo letivo
+        $disciplinasOfertadas = DB::table('acd_ofertas_disciplinas')
+            ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
+            ->where([
+                ['mdc_mdo_id', '=', $moduloId],
+                ['ofd_trm_id', '=', $turmaId],
+                ['ofd_per_id', '=', $periodoId]
+            ])
+            ->pluck('mdc_id');
+
+
+        $query = $this->model->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+            ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
+            ->where('mdc_mdo_id', '=', $moduloId);
+
+        if ($disciplinasOfertadas) {
+            $query = $query->whereNotIn('mdc_id', $disciplinasOfertadas);
+        }
+
+        $result = $query->get();
+
+        if ($result->count()) {
+            // busca as disciplinas que são pré-requisitos
+            for ($i = 0; $i < $result->count(); $i++) {
+                $disciplinas = [];
+                if (!is_null($result[$i]->mdc_pre_requisitos)) {
+                    $ids = json_decode($result[$i]->mdc_pre_requisitos);
+
+                    foreach ($ids as $id) {
+                        $disciplina = $this->model
+                            ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+                            ->where('mdc_id', $id)
+                            ->first();
+                        if ($disciplina) {
+                            $disciplinas[] = $disciplina;
+                        }
+                    }
+                }
+
+                $result[$i]->pre_requisitos = $disciplinas;
+            }
+        }
+
+        return $result;
+    }
+
     public function getAllTurmasWithTcc($id)
     {
         $result = $this->model

@@ -99,7 +99,7 @@ class PeriodosLetivosController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -162,7 +162,12 @@ class PeriodosLetivosController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            if ($e->getCode() == 23000) {
+                flash()->error('Este período letivo ainda contém dependências no sistema e não pode ser excluído.');
+                return redirect()->back();
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

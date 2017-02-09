@@ -135,7 +135,7 @@ class CursosController extends BaseController
         $curso = $this->cursoRepository->find($cursoId);
         $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->listsEditCurso('prf_id', 'pes_nome', $cursoId);
 
         if (!$curso) {
             flash()->error('Curso não existe.');
@@ -169,7 +169,7 @@ class CursosController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -191,7 +191,12 @@ class CursosController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            if ($e->getCode() == 23000) {
+                flash()->error('Este curso ainda contém dependências no sistema e não pode ser excluído.');
+                return redirect()->back();
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
