@@ -32,7 +32,7 @@
     <div class="form-group col-md-2 @if ($errors->has('ofd_qtd_vagas')) has-error @endif">
         {!! Form::label('ofd_qtd_vagas', 'Vagas*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::number('ofd_qtd_vagas', old('ofd_qtd_vagas'), ['class' => 'form-control']) !!}
+            {!! Form::number('ofd_qtd_vagas', old('ofd_qtd_vagas'), ['class' => 'form-control', 'min' => 1]) !!}
             @if ($errors->has('ofd_qtd_vagas')) <p class="help-block">{{ $errors->first('ofd_qtd_vagas') }}</p> @endif
         </div>
     </div>
