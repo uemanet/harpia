@@ -163,6 +163,16 @@ class MatrizesCurricularesController extends BaseController
             $projetoPegagogico = $request->file('mtc_file');
             $anexoCriado = $this->anexoRepository->salvarAnexo($projetoPegagogico);
 
+            if ($anexoCriado['type'] == 'error_exists') {
+                flash()->error($anexoCriado['message']);
+                return redirect()->back()->withInput($request->all());
+            }
+
+            if (!$anexoCriado) {
+                flash()->error('ocorreu um problema ao salvar o arquivo');
+                return redirect()->back()->withInput($request->all());
+            }
+
             $dados = $request->all();
             unset($dados['mtc_file']);
 
