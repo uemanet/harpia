@@ -75,7 +75,7 @@ class MatrizesCurricularesController extends BaseController
                     $button = new TButton();
                     $button->setName('Download do projeto')
                         ->setAction('/academico/matrizescurriculares/anexo/'. $id)
-                        ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
+                        ->setIcon('fa fa-download')->setStyle('btn bg-blue btn-xs');
 
                     return ActionButton::render(array($button));
                 })
