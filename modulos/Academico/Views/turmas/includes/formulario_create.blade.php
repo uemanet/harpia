@@ -21,7 +21,10 @@
     <div class="form-group col-md-4 @if ($errors->has('trm_per_id')) has-error @endif">
       {!! Form::label('trm_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
       <div class="controls">
-        {!! Form::select('trm_per_id', $periodosletivos, old('trm_per_id'), ['class' => 'form-control','placeholder' => 'Selecione o período' ]) !!}
+
+          @if ($periodosletivos)
+              {!! Form::select('trm_per_id', $periodosletivos, old('trm_per_id'), ['class' => 'form-control','placeholder' => 'Selecione o período' ]) !!}
+              @else {!! Form::select('trm_per_id', $periodosletivos, old('trm_per_id'), ['class' => 'form-control','placeholder' => 'Sem Períodos Letivos Disponíveis' ]) !!}@endif
         @if ($errors->has('trm_per_id')) <p class="help-block">{{ $errors->first('trm_per_id') }}</p> @endif
       </div>
     </div>
