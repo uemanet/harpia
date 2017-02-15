@@ -15,7 +15,7 @@ class PessoaTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $format = new Format();
 
-        for ($i=0;$i<50;$i++) {
+        for ($i=0;$i<200;$i++) {
             $pessoa = new Pessoa();
 
             $pessoa->pes_nome = $faker->name;
