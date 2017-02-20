@@ -60,8 +60,10 @@ class Matricula extends BaseModel
     // Accessors
     public function getMatDataConclusaoAttribute($value)
     {
-        setlocale(LC_ALL, 'pt_BR');
-        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        if ($value) {
+            setlocale(LC_ALL, 'pt_BR');
+            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        }
     }
 
     // Mutators

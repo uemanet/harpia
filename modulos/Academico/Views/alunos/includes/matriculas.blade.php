@@ -35,20 +35,29 @@
                                 </div>
                                 <div class="panel-collapse collapse" id="collapse{{ $loop->index }}">
                                     <div class="box-body">
-                                        <div class="col-md-4">
-                                            <p><strong>Nível do Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}</p>
-                                            <p><strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}</p>
-                                            <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}</p>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p><strong>Nível do Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}</p>
+                                                <p><strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}</p>
+                                                <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p><strong>Oferta de Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
+                                                <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
+                                                <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p><strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else Sem Grupo @endif</p>
+                                                @if($matricula->mat_situacao == 'concluido')
+                                                    <p><strong>Data de Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Oferta de Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
-                                            <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
-                                            <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else Sem Grupo @endif</p>
-                                            @if($matricula->mat_situacao == 'concluido')
-                                                <p><strong>Data de Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
+                                        <div class="row">
+                                            @if($matricula->mat_situacao != 'concluido')
+                                                <div class="btn-group col-md-4">
+                                                    <button type="button" class="btn btn-primary" id="modalButton">Matrícula</button>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
@@ -79,3 +88,40 @@
         </div>
     </div>
 </div>
+<!--        Modal       -->
+<div class="modal" id="matricula-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Alterar situação da matrícula</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-4">
+                    {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
+                    <div class="controls">
+                        {!! Form::select('situacao', $situacao, old('situacao'), ['placeholder' => 'Selecione uma opção','class' => 'form-control']) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Salvar alterações</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section('scripts')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#modalButton').on("click", function () {
+                $('#matricula-modal').modal();
+            })
+            
+        });
+
+
+
+    </script>
+@endsection

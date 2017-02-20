@@ -116,11 +116,23 @@ class MatriculaCursoController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
+        $situacao = [
+            'cursando' => 'Cursando',
+            'reprovado' => 'Reprovado',
+            'evadido' => 'Evadido',
+            'trancado' => 'Trancado',
+            'desistente' => 'Desistente'
+        ];
+
         if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->route('academico.matricularalunocurso.index');
         }
 
-        return view('Academico::matricula-curso.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
+        return view('Academico::matricula-curso.show', [
+            'pessoa' => $aluno->pessoa,
+            'aluno' => $aluno,
+            'situacao' => $situacao
+        ]);
     }
 }
