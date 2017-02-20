@@ -9,18 +9,21 @@ class DisciplinasTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create('pt_BR');
 
-        // criar 30 disciplinas
-        for ($i=0;$i<30;$i++) {
-            $disciplina = new Disciplina();
+        // criar 30 disciplinas de xada modalidade de curso
 
-            $disciplina->dis_nome = $faker->sentence(2);
-            $disciplina->dis_carga_horaria = $faker->randomNumber(2);
-            $disciplina->dis_creditos = $faker->randomNumber(2);
-            $disciplina->dis_nvc_id = $faker->randomElement([1, 2, 3, 4, 5]);
+        for ($j=1;$j<=5;$j++) {
+            for ($i=0;$i<30;$i++) {
+                $disciplina = new Disciplina();
 
-            $disciplina->save();
+                $disciplina->dis_nome = $faker->sentence(2);
+                $disciplina->dis_carga_horaria = $faker->randomNumber(2);
+                $disciplina->dis_creditos = $faker->randomNumber(2);
+                $disciplina->dis_nvc_id = $j;
+
+                $disciplina->save();
+            }
         }
     }
 }
