@@ -47,4 +47,15 @@ class Turma extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\Matricula', 'mat_trm_id');
     }
+
+    // Accessors
+    public function getTrmIntegradaAttribute($value)
+    {
+
+      if($value == 0){
+        return 'Não';
+      }
+      return 'Sim';
+
+    }
 }
