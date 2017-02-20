@@ -23,14 +23,29 @@ class TurmaRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
-            'trm_ofc_id' => 'required',
-            'trm_per_id' => 'required',
-            'trm_nome' => 'required|min:3|max:45',
-            'trm_qtd_vagas' => 'integer|min:1|max:9999',
-            'trm_integrada' => 'integer|required'
-        ];
+        switch ($this->method()) {
+            case 'POST':
+            {
+                return [
+                    'trm_ofc_id' => 'required',
+                    'trm_per_id' => 'required',
+                    'trm_nome' => 'required|min:3|max:45',
+                    'trm_qtd_vagas' => 'integer|min:1|max:9999',
+                    'trm_integrada' => 'integer|required'
+                ];
 
-        return $rules;
+            }
+            case 'PATCH':
+            case 'PUT':
+            {
+                return [
+                    'trm_ofc_id' => 'required',
+                    'trm_per_id' => 'required',
+                    'trm_nome' => 'required|min:3|max:45',
+                    'trm_qtd_vagas' => 'integer|min:1|max:9999',
+                ];
+            }
+            default: return [];
+        }
     }
 }

@@ -25,8 +25,8 @@ class ModuloDisciplinaRequest extends BaseRequest
     {
         $rules = [
             'mdc_mdo_id' => 'required',
-            'mdc_dis_id' => 'required'
-            'mdc_tipo_avaliacao'= 'min:3'
+            'mdc_dis_id' => 'required',
+            'mdc_tipo_avaliacao' => 'min:3'
         ];
 
 
