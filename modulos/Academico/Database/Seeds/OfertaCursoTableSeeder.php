@@ -3,36 +3,33 @@
 namespace Modulos\Academico\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+use Modulos\Academico\Models\MatrizCurricular;
 use Modulos\Academico\Models\OfertaCurso;
+use Modulos\Academico\Models\Polo;
 
 class OfertaCursoTableSeeder extends Seeder
 {
     public function run()
     {
-        $oferta = new OfertaCurso();
+        $matrizes = MatrizCurricular::all();
 
-        $oferta->ofc_crs_id = 1;
-        $oferta->ofc_mtc_id = 1;
-        $oferta->ofc_mdl_id = 3;
-        $oferta->ofc_ano = 2017;
+        foreach ($matrizes as $matriz) {
+            $oferta = new OfertaCurso();
 
-        $oferta->save();
+            $oferta->ofc_crs_id = $matriz->mtc_crs_id;
+            $oferta->ofc_mtc_id = $matriz->mtc_id;
+            $oferta->ofc_mdl_id = 3;
+            $oferta->ofc_ano = 2017;
 
-        for ($i=1;$i<6;$i++) {
-            $oferta->polos()->attach($i);
-        }
+            $oferta->save();
+            
+            // cadastra 5 polos por oferta
+            $polos = Polo::all();
+            $polos = $polos->random(5);
 
-        $oferta = new OfertaCurso();
-
-        $oferta->ofc_crs_id = 1;
-        $oferta->ofc_mtc_id = 1;
-        $oferta->ofc_mdl_id = 2;
-        $oferta->ofc_ano = 2018;
-
-        $oferta->save();
-
-        for ($i=6;$i<11;$i++) {
-            $oferta->polos()->attach($i);
+            foreach ($polos as $polo) {
+                $oferta->polos()->attach($polo->pol_id);
+            }
         }
     }
 }

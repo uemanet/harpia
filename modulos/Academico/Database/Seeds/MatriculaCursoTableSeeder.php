@@ -4,48 +4,39 @@ namespace Modulos\Academico\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use Modulos\Academico\Models\Matricula;
+use Modulos\Academico\Models\Turma;
+use DB;
 
 class MatriculaCursoTableSeeder extends Seeder
 {
     public function run()
     {
-        for ($i = 1; $i <= 50; $i++) {
-            $matricula = new Matricula();
+        $turmas = Turma::all();
 
-            $matricula->mat_alu_id = $i;
-            $matricula->mat_trm_id = 1;
-            $matricula->mat_pol_id = 1;
-            $matricula->mat_grp_id = null;
-            $matricula->mat_situacao = 'cursando';
-            $matricula->mat_modo_entrada = 'vestibular';
+        // matricula 50 alunos por turma
+        $skip = 0;
 
-            $matricula->save();
-        }
+        foreach ($turmas as $turma) {
+            $alunos = DB::table('acd_alunos')->skip($skip)->take(50)->get();
+            $polos = $turma->ofertacurso->polos;
 
-        for ($i = 51; $i <= 100; $i++) {
-            $matricula = new Matricula();
+            foreach ($alunos as $aluno) {
+                $matricula = new Matricula();
 
-            $matricula->mat_alu_id = $i;
-            $matricula->mat_trm_id = 2;
-            $matricula->mat_pol_id = 1;
-            $matricula->mat_grp_id = null;
-            $matricula->mat_situacao = 'cursando';
-            $matricula->mat_modo_entrada = 'vestibular';
+                $matricula->mat_alu_id = $aluno->alu_id;
+                $matricula->mat_trm_id = $turma->trm_id;
 
-            $matricula->save();
-        }
+                $polo = $polos->random();
 
-        for ($i = 101; $i <= 150; $i++) {
-            $matricula = new Matricula();
+                $matricula->mat_pol_id = $polo->pol_id;
+                $matricula->mat_grp_id = null;
+                $matricula->mat_situacao = 'cursando';
+                $matricula->mat_modo_entrada = 'vestibular';
 
-            $matricula->mat_alu_id = $i;
-            $matricula->mat_trm_id = 3;
-            $matricula->mat_pol_id = 4;
-            $matricula->mat_grp_id = null;
-            $matricula->mat_situacao = 'cursando';
-            $matricula->mat_modo_entrada = 'vestibular';
+                $matricula->save();
+            }
 
-            $matricula->save();
+            $skip += 50;
         }
     }
 }
