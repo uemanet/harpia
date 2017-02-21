@@ -22,6 +22,11 @@ return [
         'Modulos\Academico\Listeners\MigrarMatriculaAlunoTurmaListener'
     ],
 
+    'Modulos\Academico\Events\AtualizarTurmaEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarAtualizaTurmaListener'
+    ],
+
     'Modulos\Academico\Events\NovoGrupoEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarGrupoListener',

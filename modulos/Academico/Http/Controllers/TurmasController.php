@@ -2,11 +2,12 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Modulos\Academico\Events\AtualizarTurmaEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\TurmaRequest;
-use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
@@ -182,6 +183,9 @@ class TurmasController extends BaseController
             }
 
             flash()->success('Turma atualizada com sucesso.');
+            if ($turma->trm_integrada) {
+                    event(new AtualizarTurmaEvent($turma));
+            }
             return redirect('/academico/turmas/index/' . $turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
