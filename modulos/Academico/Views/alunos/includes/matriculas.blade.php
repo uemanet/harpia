@@ -1,3 +1,7 @@
+@section('stylesheets')
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+@stop
+
 <!-- Matriculas -->
 <div class="row">
     <div class="col-md-12">
@@ -35,22 +39,45 @@
                                 </div>
                                 <div class="panel-collapse collapse" id="collapse{{ $loop->index }}">
                                     <div class="box-body">
-                                        <div class="col-md-4">
-                                            <p><strong>Nível do Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}</p>
-                                            <p><strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}</p>
-                                            <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}</p>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p><strong>Nível do Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}</p>
+                                                <p><strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}</p>
+                                                <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p><strong>Oferta de Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
+                                                <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
+                                                <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p><strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else Sem Grupo @endif</p>
+                                                @if($matricula->mat_situacao == 'concluido')
+                                                    <p><strong>Data de Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Oferta de Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
-                                            <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
-                                            <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
+                                        @if ($matricula->mat_situacao != 'concluido')
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                {!! ActionButton::grid([
+                                                    'type' => 'LINE',
+                                                    'buttons' => [
+                                                        [
+                                                            'classButton' => 'btn btn-primary modalUpdate',
+                                                            'icon' => 'fa fa-pencil',
+                                                            'action' => '/academico/matricularalunocurso/update/' . $matricula->mat_id,
+                                                            'label' => ' Atualizar Polo/Grupo',
+                                                            'method' => 'get',
+                                                            'attributes' => [
+                                                                'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id
+                                                            ],
+                                                        ],
+                                                    ]
+                                                ]) !!}
+                                            </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <p><strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else Sem Grupo @endif</p>
-                                            @if($matricula->mat_situacao == 'concluido')
-                                                <p><strong>Data de Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
-                                            @endif
-                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +97,7 @@
                             'icon' => 'fa fa-plus-square',
                             'action' => '/academico/matricularalunocurso/create/' . $aluno->alu_id,
                             'label' => ' Nova Matrícula',
-                            'method' => 'get'
+                            'method' => 'get',
                         ],
                     ]
                 ]) !!}
@@ -79,3 +106,60 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+                <h4 class="modal-title">
+                    Atualizar Polo/Grupo
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="formUpdate" action="" method="POST">
+                    {{csrf_field()}}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('pol_id', 'Polo*') !!}
+                                {!! Form::select('pol_id', [], null, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('grp_id', 'Grupo') !!}
+                                {!! Form::select('grp_id', [], null, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section('scripts')
+    <script src="{{url('/')}}/js/plugins/select2.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // select2
+            $('select').select2();
+
+            $('.modalUpdate').click(function (event) {
+                event.preventDefault();
+
+                var action = $(this).attr('href');
+                var ofertaCursoId = $(this).attr('data-ofc-id');
+
+                $('.formUpdate').attr('action', action);
+
+                $('.modal').modal();
+            });
+        });
+    </script>
+@endsection

@@ -112,6 +112,11 @@ class MatriculaCursoController extends BaseController
         }
     }
 
+    public function putUpdate($matriculaId, Request $request)
+    {
+        
+    }
+
     public function getShow($alunoId)
     {
         $aluno = $this->alunoRepository->find($alunoId);
