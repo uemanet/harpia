@@ -56,7 +56,7 @@
                                         <div class="row">
                                             @if($matricula->mat_situacao != 'concluido')
                                                 <div class="btn-group col-md-4">
-                                                    <button type="button" class="btn btn-primary" id="modalButton">Matrícula</button>
+                                                    <button type="button" class="btn btn-primary" value="{{ $matricula->mat_id }}" id="modalButton">Matrícula</button>
                                                 </div>
                                             @endif
                                         </div>
@@ -98,16 +98,22 @@
                 <h4 class="modal-title">Alterar situação da matrícula</h4>
             </div>
             <div class="modal-body">
-                <div class="form-group col-md-4">
-                    {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
-                    <div class="controls">
-                        {!! Form::select('situacao', $situacao, old('situacao'), ['placeholder' => 'Selecione uma opção','class' => 'form-control']) !!}
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
+                        <div class="controls">
+                            {!! Form::select('situacao', $situacao, old('situacao'), ['placeholder' => 'Selecione uma opção','class' => 'form-control']) !!}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Salvar alterações</button>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                    </div>
+                    <div class="form-group col-md-6 text-right">
+                        <button type="button" class="btn btn-primary" id="save">Salvar alterações</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -116,12 +122,18 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#modalButton').on("click", function () {
+                window.buttonGroup = $(this);
+
                 $('#matricula-modal').modal();
+
+                $('#save').on("click", function (e) {
+                    var matricula = window.buttonGroup.val();
+                    var token = "{{ csrf_token() }}";
+
+
+                    console.log(window.buttonGroup.val());
+                })
             })
-            
         });
-
-
-
     </script>
 @endsection
