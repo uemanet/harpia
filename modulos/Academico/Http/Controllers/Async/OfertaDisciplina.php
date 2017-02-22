@@ -43,10 +43,10 @@ class OfertaDisciplina extends BaseController
             'ofd_qtd_vagas',
             'ofd_id',
             'prf_id',
-            'pes_nome'
+            'pes_nome',
         ]);
 
-        for ($i = 0;$i < $retorno->count(); $i++) {
+        for ($i = 0; $i < $retorno->count(); ++$i) {
             $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
 
             $retorno[$i]->qtdMatriculas = $qtdMatriculas;
@@ -83,6 +83,7 @@ class OfertaDisciplina extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
+
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
     }

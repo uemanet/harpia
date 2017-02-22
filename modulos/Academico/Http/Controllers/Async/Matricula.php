@@ -17,9 +17,12 @@ class Matricula extends BaseController
     }
 
     /**
-     * Altera a situacao da matricula de um aluno
+     * Altera a situacao da matricula de um aluno.
+     *
      * @param Request $request
+     *
      * @return static
+     *
      * @throws \Exception
      */
     public function postUpdateSituacao(Request $request)
@@ -29,10 +32,11 @@ class Matricula extends BaseController
             $situacao = $request->input('situacao');
 
             $update = [
-                'mat_situacao' => $situacao
+                'mat_situacao' => $situacao,
             ];
 
             $result = $this->matriculaRepository->update($update, $id, 'mat_id');
+
             return JsonResponse::create($result, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
