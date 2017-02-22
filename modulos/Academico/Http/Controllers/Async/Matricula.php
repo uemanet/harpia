@@ -16,9 +16,14 @@ class Matricula extends BaseController
         $this->matriculaRepository = $matriculaCursoRepository;
     }
 
+    /**
+     * Altera a situacao da matricula de um aluno
+     * @param Request $request
+     * @return static
+     * @throws \Exception
+     */
     public function postUpdateSituacao(Request $request)
     {
-        return JsonResponse::create(null, 200);
         try {
             $id = $request->input('id');
             $situacao = $request->input('situacao');

@@ -285,7 +285,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::post('/deletaranexolancamentotcc', '\Modulos\Academico\Http\Controllers\Async\LancamentosTccs@postDeletarAnexo');
         });
 
-        Route::group(['prefix' => 'matriculas'], function () {
+        Route::group(['prefix' => 'matricula'], function () {
             Route::post('/alterarsituacao', '\Modulos\Academico\Http\Controllers\Async\Matricula@postUpdateSituacao');
         });
     });

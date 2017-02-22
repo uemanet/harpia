@@ -16,6 +16,10 @@
                 @if(!$aluno->matriculas->isEmpty())
                     <div class="box-group" id="accordion">
                         @foreach($aluno->matriculas as $matricula)
+                            @php
+                                $situacaoArray = $situacao;
+                                unset($situacaoArray[$matricula->mat_situacao]);
+                            @endphp
                             <div class="panel box box-success">
                                 <div class="box-header with-border">
                                     <h4 class="box-title">
@@ -56,9 +60,41 @@
                                         <div class="row">
                                             @if($matricula->mat_situacao != 'concluido')
                                                 <div class="btn-group col-md-4">
-                                                    <button type="button" class="btn btn-primary" value="{{ $matricula->mat_id }}" id="modalButton">Matrícula</button>
+                                                    <button type="button" class="btn btn-primary modalButton" value="{{ $matricula->mat_id }}" data-content="{{$loop->index}}">
+                                                        Matrícula
+                                                    </button>
                                                 </div>
                                             @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--        Modal       -->
+                            <div class="modal" id="matricula-modal{{$loop->index}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">Alterar situação da matrícula</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="form-group col-md-12">
+                                                    {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
+                                                    <div class="controls">
+                                                        {!! Form::select('situacao', $situacaoArray, old('situacao'), ['placeholder' => 'Selecione uma opção', 'class' => 'form-control', 'id' => 'situacao-select'.$loop->index ]) !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+                                                </div>
+                                                <div class="form-group col-md-6 text-right">
+                                                    <button type="button" class="btn btn-primary modalSave">Salvar alterações</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -88,50 +124,41 @@
         </div>
     </div>
 </div>
-<!--        Modal       -->
-<div class="modal" id="matricula-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Alterar situação da matrícula</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="form-group col-md-12">
-                        {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
-                        <div class="controls">
-                            {!! Form::select('situacao', $situacao, old('situacao'), ['placeholder' => 'Selecione uma opção','class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
-                    </div>
-                    <div class="form-group col-md-6 text-right">
-                        <button type="button" class="btn btn-primary" id="save">Salvar alterações</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#modalButton').on("click", function () {
+            $('.modalButton').on("click", function () {
                 window.buttonGroup = $(this);
+                var modal = $(this).attr("data-content");
 
-                $('#matricula-modal').modal();
+                $('#matricula-modal' + modal).modal();
 
-                $('#save').on("click", function (e) {
+                $('.modalSave').on("click", function () {
+
                     var matricula = window.buttonGroup.val();
+                    var situacao = $('#situacao-select' + modal).val();
                     var token = "{{ csrf_token() }}";
 
 
-                    console.log(window.buttonGroup.val());
+                    data = {
+                        id: matricula,
+                        situacao: situacao,
+                        _token: token
+                    };
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/academico/async/matricula/alterarsituacao',
+                        data: data,
+                        success: function (data) {
+                            $.harpia.hideloading();
+                            toastr.success('Situação da matrícula alterada com sucesso', null, {progressBar: true});
+                            location.reload(true);
+                        },
+                        error: function (data) {
+                            toastr.error('Não foi possível alterar a situação da matrícula', null);
+                        }
+                    });
                 })
             })
         });
