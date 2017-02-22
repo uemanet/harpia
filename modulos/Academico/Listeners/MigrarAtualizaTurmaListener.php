@@ -36,29 +36,30 @@ class MigrarAtualizaTurmaListener
 
     public function handle(AtualizarTurmaEvent $event)
     {
-        //$ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($event->trm_id);
-
         $turma = $event->getData();
 
-        $data['course']['trm_id'] = $turma->trm_id;
-        $data['course']['shortname'] = $this->turmaShortName($turma);
-        $data['course']['fullname'] = $this->turmaFullName($turma);
+        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
-        $param['url'] = $ambiente->url;
-        $param['token'] = $ambiente->token;
-        $param['action'] = 'post';
-        $param['functioname'] = 'local_integracao_update_course';
-        $param['data'] = $data;
+        if ($ambiente) {
+            $data['course']['trm_id'] = $turma->trm_id;
+            $data['course']['shortname'] = $this->turmaShortName($turma);
+            $data['course']['fullname'] = $this->turmaFullName($turma);
 
-        $response = Moodle::send($param);
-        $status = 3;
+            $param['url'] = $ambiente->url;
+            $param['token'] = $ambiente->token;
+            $param['action'] = 'post';
+            $param['functioname'] = 'local_integracao_update_course';
+            $param['data'] = $data;
 
-        if (array_key_exists('status', $response) && $response['status'] == 'success') {
-            $status = 2;
+            $response = Moodle::send($param);
+            $status = 3;
+
+            if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                $status = 2;
+            }
+
+            event(new AtualizarSyncEvent($turma, $status, $response['message']));
         }
-
-        event(new AtualizarSyncEvent($turma, $status, $response['message']));
-
     }
 
     /**

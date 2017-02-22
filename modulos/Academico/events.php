@@ -23,7 +23,7 @@ return [
     ],
 
     'Modulos\Academico\Events\AtualizarTurmaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Integracao\Listeners\UpdateSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarAtualizaTurmaListener'
     ],
 

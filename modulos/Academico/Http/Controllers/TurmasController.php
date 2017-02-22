@@ -184,7 +184,8 @@ class TurmasController extends BaseController
 
             flash()->success('Turma atualizada com sucesso.');
             if ($turma->trm_integrada) {
-                    event(new AtualizarTurmaEvent($turma));
+                $turmaUpdated = $this->turmaRepository->find($id);
+                event(new AtualizarTurmaEvent($turmaUpdated));
             }
             return redirect('/academico/turmas/index/' . $turma->trm_ofc_id);
         } catch (\Exception $e) {
