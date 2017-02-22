@@ -36,29 +36,42 @@ class MigrarAtualizaTurmaListener
 
     public function handle(AtualizarTurmaEvent $event)
     {
-        $turma = $event->getData();
+        $turmasMigrar = $this->sincronizacaoRepository->findBy([
+            'sym_table' => 'acd_turmas',
+            'sym_status' => 1,
+            'sym_action' => 'UPDATE'
+        ]);
 
-        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
+        if ($turmasMigrar->count()) {
+            foreach ($turmasMigrar as $item) {
+                $turma = $this->turmaRepository->find($item->sym_table_id);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
-        if ($ambiente) {
-            $data['course']['trm_id'] = $turma->trm_id;
-            $data['course']['shortname'] = $this->turmaShortName($turma);
-            $data['course']['fullname'] = $this->turmaFullName($turma);
+                if (!$ambiente) {
+                    continue;
+                }
 
-            $param['url'] = $ambiente->url;
-            $param['token'] = $ambiente->token;
-            $param['action'] = 'post';
-            $param['functioname'] = 'local_integracao_update_course';
-            $param['data'] = $data;
+                if ($ambiente) {
+                    $data['course']['trm_id'] = $turma->trm_id;
+                    $data['course']['shortname'] = $this->turmaShortName($turma);
+                    $data['course']['fullname'] = $this->turmaFullName($turma);
 
-            $response = Moodle::send($param);
-            $status = 3;
+                    $param['url'] = $ambiente->url;
+                    $param['token'] = $ambiente->token;
+                    $param['action'] = 'post';
+                    $param['functioname'] = 'local_integracao_update_course';
+                    $param['data'] = $data;
 
-            if (array_key_exists('status', $response) && $response['status'] == 'success') {
-                $status = 2;
+                    $response = Moodle::send($param);
+                    $status = 3;
+
+                    if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                        $status = 2;
+                    }
+
+                    event(new AtualizarSyncEvent($turma, $status, $response['message']));
+                }
             }
-
-            event(new AtualizarSyncEvent($turma, $status, $response['message']));
         }
     }
 
