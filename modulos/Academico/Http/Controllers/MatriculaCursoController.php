@@ -112,9 +112,31 @@ class MatriculaCursoController extends BaseController
         }
     }
 
-    public function putUpdate($matriculaId, Request $request)
+    public function putEdit($matriculaId, MatriculaCursoRequest $request)
     {
-        
+        try {
+            $matricula = $this->matriculaCursoRepository->find($matriculaId);
+            
+            if (!$matricula) {
+                flash()->error('Matricula não existe!');
+                return redirect()->route('academico.matricularalunocurso.index');
+            }
+
+            $matricula->mat_pol_id = $request->input('mat_pol_id');
+            $matricula->mat_grp_id = ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id');
+
+            $matricula->save();
+
+            flash()->success('Matrícula atualizada com sucesso.');
+            return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
     }
 
     public function getShow($alunoId)

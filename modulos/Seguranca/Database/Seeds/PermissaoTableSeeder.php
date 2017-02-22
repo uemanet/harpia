@@ -751,8 +751,8 @@ class PermissaoTableSeeder extends Seeder
 
         $permissao = new Permissao(); // id = 92
         $permissao->prm_rcs_id = 25;
-        $permissao->prm_nome = 'update';
-        $permissao->prm_descricao = 'Permissão update do recurso Matricular aluno no curso';
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Matricular aluno no curso';
         $permissao->save();
     }
 

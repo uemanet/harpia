@@ -1,7 +1,3 @@
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@stop
-
 <!-- Matriculas -->
 <div class="row">
     <div class="col-md-12">
@@ -66,11 +62,12 @@
                                                         [
                                                             'classButton' => 'btn btn-primary modalUpdate',
                                                             'icon' => 'fa fa-pencil',
-                                                            'action' => '/academico/matricularalunocurso/update/' . $matricula->mat_id,
+                                                            'action' => '/academico/matricularalunocurso/edit/' . $matricula->mat_id,
                                                             'label' => ' Atualizar Polo/Grupo',
                                                             'method' => 'get',
                                                             'attributes' => [
-                                                                'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id
+                                                                'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
+                                                                'data-trm-id' => $matricula->mat_trm_id
                                                             ],
                                                         ],
                                                     ]
@@ -120,20 +117,29 @@
             </div>
             <div class="modal-body">
                 <form class="formUpdate" action="" method="POST">
+                    <input name="_method" type="hidden" value="PUT">
                     {{csrf_field()}}
+                    {!! Form::hidden('trm_id', '') !!}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('pol_id', 'Polo*') !!}
-                                {!! Form::select('pol_id', [], null, ['class' => 'form-control']) !!}
+                                {!! Form::label('mat_pol_id', 'Polo*') !!}
+                                {!! Form::select('mat_pol_id', [], null, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('grp_id', 'Grupo') !!}
-                                {!! Form::select('grp_id', [], null, ['class' => 'form-control']) !!}
+                                {!! Form::label('mat_grp_id', 'Grupo') !!}
+                                {!! Form::select('mat_grp_id', [], null, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Atualizar</button>
                             </div>
                         </div>
                     </div>
@@ -144,21 +150,55 @@
 </div>
 
 @section('scripts')
-    <script src="{{url('/')}}/js/plugins/select2.js"></script>
     <script type="text/javascript">
         $(function () {
-            // select2
-            $('select').select2();
 
             $('.modalUpdate').click(function (event) {
                 event.preventDefault();
 
                 var action = $(this).attr('href');
                 var ofertaCursoId = $(this).attr('data-ofc-id');
+                var turmaId = $(this).attr('data-trm-id');
+
+                $('input[name="trm_id"]').val(turmaId);
 
                 $('.formUpdate').attr('action', action);
 
+                $('#mat_pol_id').empty();
+                $('#mat_grp_id').empty();
+
+                $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+                    if(!$.isEmptyObject(response)) {
+                        $('#mat_pol_id').append("<option value=''>Selecione um polo</option>");
+
+                        $.each(response, function (key, obj) {
+                            $('#mat_pol_id').append("<option value='"+obj.pol_id+"'>"+obj.pol_nome+"</option>");
+                        });
+                    } else {
+                        $('#mat_pol_id').append("<option value=''>Sem polos cadastrados</option>");
+                    }
+                });
+
                 $('.modal').modal();
+            });
+
+            $('#mat_pol_id').change(function() {
+
+                var turmaId = $('input[name="trm_id"]').val();
+                var poloId = $(this).val();
+                $('#mat_grp_id').empty();
+
+                $.harpia.httpget("{{url('/')}}/academico/async/grupos/findallbyturmapolo/"+turmaId+"/"+poloId).done(function (response) {
+                    if(!$.isEmptyObject(response)) {
+                        $('#mat_grp_id').append("<option value=''>Selecione um grupo</option>");
+
+                        $.each(response, function (key, obj) {
+                            $('#mat_grp_id').append("<option value='"+obj.grp_id+"'>"+obj.grp_nome+"</option>");
+                        });
+                    } else {
+                        $('#mat_grp_id').append("<option value=''>Sem grupos cadastrados</option>");
+                    }
+                });
             });
         });
     </script>
