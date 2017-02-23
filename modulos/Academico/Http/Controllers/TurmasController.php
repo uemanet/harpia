@@ -174,7 +174,7 @@ class TurmasController extends BaseController
                 return redirect('/academico/turmas/index/' . $id);
             }
 
-            $requestData = $request->except('_token', '_method');
+            $requestData = $request->except('_token', '_method', 'trm_integrada');
 
             if (!$this->turmaRepository->update($requestData, $turma->trm_id, 'trm_id')) {
                 flash()->error('Erro ao tentar salvar.');
