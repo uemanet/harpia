@@ -21,7 +21,7 @@ class NovaSyncListener
         $data = [
             'sym_table' => $entry->getTable(),
             'sym_table_id' => $entry->getKey(),
-            'sym_action' => 'CREATE',
+            'sym_action' => $event->getAction(),
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
