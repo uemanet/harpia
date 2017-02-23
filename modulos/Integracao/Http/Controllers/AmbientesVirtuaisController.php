@@ -344,7 +344,7 @@ class AmbientesVirtuaisController extends BaseController
                 $turma = $this->turmaRepository->find($dados['atr_trm_id']);
 
                 if ($turma->trm_integrada == 1) {
-                    event(new TurmaMapeadaEvent($turma));
+                    event(new TurmaMapeadaEvent($turma, "CREATE"));
                 }
 
                 return redirect()->back();
