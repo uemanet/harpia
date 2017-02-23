@@ -37,7 +37,8 @@ class MigrarTurmaListener
     {
         $turmasMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_turmas',
-            'sym_status' => 1
+            'sym_status' => 1,
+            'sym_action' => 'CREATE'
         ]);
 
         if ($turmasMigrar->count()) {
