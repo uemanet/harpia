@@ -5,6 +5,7 @@ namespace Modulos\Academico\Http\Controllers\Async;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Academico\Events\OfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
@@ -97,10 +98,38 @@ class OfertaDisciplina extends BaseController
             return new JsonResponse('Não foi possivel deletar oferta. A mesma já possui alunos matriculados', Response::HTTP_BAD_GATEWAY, [], JSON_UNESCAPED_UNICODE);
         }
 
-        if ($this->ofertaDisciplinaRepository->delete($ofertaId)) {
-            return new JsonResponse(Response::HTTP_OK);
-        }
+        try {
+            DB::beginTransaction();
 
-        return new JsonResponse(Response::HTTP_BAD_REQUEST);
+            $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
+
+            $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
+
+            if ($turma->trm_integrada) {
+                event(new DeleteOfertaDisciplinaEvent($oferta));
+
+                if ($this->ofertaDisciplinaRepository->excludedFromMoodle($ofertaId)) {
+                    $this->ofertaDisciplinaRepository->delete($ofertaId);
+
+                    DB::commit();
+                    return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+                }
+
+                DB::rollback();
+                return new JsonResponse('Não foi possível excluir a turma. Falha ao excluir do ambiente virtual', JsonResponse::HTTP_CONFLICT,  [], JSON_UNESCAPED_UNICODE);
+            }
+
+            $this->ofertaDisciplinaRepository->delete($ofertaId);
+            DB::commit();
+            return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            return new JsonResponse('Não foi possível excluir a turma', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
+        }
     }
 }

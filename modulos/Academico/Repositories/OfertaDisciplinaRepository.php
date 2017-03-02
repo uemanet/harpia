@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Academico\Models\OfertaDisciplina;
 use Modulos\Core\Repository\BaseRepository;
 use Auth;
+use DB;
 
 class OfertaDisciplinaRepository extends BaseRepository
 {
@@ -50,6 +51,27 @@ class OfertaDisciplinaRepository extends BaseRepository
                               ->first();
 
         if ($exists) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Verifica se dada oferta foi excluida do Moodle
+     * @param $ofertaid
+     * @return bool
+     */
+    public function excludedFromMoodle($ofertaid)
+    {
+        $result = DB::table('int_sync_moodle')
+            ->where('sym_table', '=', $this->model->getTable())
+            ->where('sym_table_id', '=', $ofertaid)
+            ->where('sym_action', '=', 'DELETE')
+            ->where('sym_status', '=', 2)
+            ->first();
+
+        if ($result) {
             return true;
         }
 
