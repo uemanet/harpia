@@ -39,7 +39,6 @@ class MigrarAtualizaGrupoListener
 
                 // ambiente virtual vinculado à turma do grupo
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
-                dd($grupo);
 
                 if ($ambiente) {
                     $param = [];
@@ -51,15 +50,11 @@ class MigrarAtualizaGrupoListener
                     $param['action'] = 'UPDATE';
 
                     $param['data']['group']['grp_id'] = $grupo->grp_id;
-                    $param['data']['group']['name'] = $grupo->grp_nome;
-                    $param['data']['group']['description'] = '';
+                    $param['data']['group']['grp_nome'] = $grupo->grp_nome;
 
-                    dd($param);
                     $moodleSync = new Moodle();
 
                     $retorno = $moodleSync->send($param);
-
-
 
                     $status = 3;
 
