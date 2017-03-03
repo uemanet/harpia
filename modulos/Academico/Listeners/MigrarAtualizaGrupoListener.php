@@ -64,7 +64,7 @@ class MigrarAtualizaGrupoListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message']));
+                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message'], 'UPDATE'));
                 }
             }
         }
