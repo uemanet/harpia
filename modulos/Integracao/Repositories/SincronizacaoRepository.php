@@ -18,6 +18,7 @@ class SincronizacaoRepository extends BaseRepository
         return $this->model
             ->where('sym_table', '=', $data['sym_table'])
             ->where('sym_table_id', '=', $data['sym_table_id'])
+            ->where('sym_action', '=', $data['sym_action'])
             ->update($data);
     }
 

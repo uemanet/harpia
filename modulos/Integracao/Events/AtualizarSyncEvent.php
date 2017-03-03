@@ -12,7 +12,6 @@ use Modulos\Core\Model\BaseModel;
  */
 class AtualizarSyncEvent extends Event
 {
-    private $action;
     private $status;
     private $sendingDate;
     private $message;
@@ -30,7 +29,7 @@ class AtualizarSyncEvent extends Event
     public function __construct(BaseModel $entry,
                                 $status = 2,
                                 $message = null,
-                                $action = null,
+                                $action = "CREATE",
                                 $sendingDate = null,
                                 $extraInformation = null)
     {
