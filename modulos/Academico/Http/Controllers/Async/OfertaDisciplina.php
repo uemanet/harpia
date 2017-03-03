@@ -11,6 +11,7 @@ use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
 class OfertaDisciplina extends BaseController
 {
@@ -108,7 +109,7 @@ class OfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 event(new DeleteOfertaDisciplinaEvent($oferta));
 
-                if ($this->ofertaDisciplinaRepository->excludedFromMoodle($ofertaId)) {
+                if (SincronizacaoRepository::excludedFromMoodle($oferta->getTable(), $ofertaId)) {
                     $this->ofertaDisciplinaRepository->delete($ofertaId);
 
                     DB::commit();

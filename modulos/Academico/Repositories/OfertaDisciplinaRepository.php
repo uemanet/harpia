@@ -56,25 +56,4 @@ class OfertaDisciplinaRepository extends BaseRepository
 
         return false;
     }
-
-    /**
-     * Verifica se dada oferta foi excluida do Moodle
-     * @param $ofertaid
-     * @return bool
-     */
-    public function excludedFromMoodle($ofertaid)
-    {
-        $result = DB::table('int_sync_moodle')
-            ->where('sym_table', '=', $this->model->getTable())
-            ->where('sym_table_id', '=', $ofertaid)
-            ->where('sym_action', '=', 'DELETE')
-            ->where('sym_status', '=', 2)
-            ->first();
-
-        if ($result) {
-            return true;
-        }
-
-        return false;
-    }
 }

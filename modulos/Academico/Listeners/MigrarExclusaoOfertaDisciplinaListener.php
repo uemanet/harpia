@@ -41,11 +41,12 @@ class MigrarExclusaoOfertaDisciplinaListener
                 }
 
                 $data['ofd_id'] = $oferta->ofd_id;
+                $data['trm_id'] = $oferta->ofd_trm_id;
 
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
                 $param['action'] = 'post';
-                $param['functioname'] = 'local_integracao_create_discipline';
+                $param['functioname'] = 'local_integracao_delete_discipline';
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
