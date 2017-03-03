@@ -40,5 +40,10 @@ return [
     'Modulos\Academico\Events\DeleteGrupoEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarExclusaoGrupoListener',
+    ],
+
+    'Modulos\Academico\Events\DeleteOfertaDisciplinaEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarExclusaoOfertaDisciplinaListener',
     ]
 ];
