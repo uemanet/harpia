@@ -4,23 +4,33 @@ namespace Modulos\Academico\Listeners;
 
 use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Academico\Repositories\ProfessorRepository;
+use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use Moodle;
 
 class MigrarExclusaoOfertaDisciplinaListener
 {
     protected $sincronizacaoRepository;
     protected $ofertaDisciplinaRepository;
     protected $ambienteVirtualRepository;
+    protected $professorRepository;
+    protected $pessoaRepository;
+
 
     public function __construct(SincronizacaoRepository $sincronizacaoRepository,
                                 OfertaDisciplinaRepository $ofertaDisciplinaRepository,
-                                AmbienteVirtualRepository $ambienteVirtualRepository)
+                                AmbienteVirtualRepository $ambienteVirtualRepository,
+                                ProfessorRepository $professorRepository,
+                                PessoaRepository $pessoaRepository)
     {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
+        $this->professorRepository = $professorRepository;
+        $this->pessoaRepository = $pessoaRepository;
     }
 
     public function handle(DeleteOfertaDisciplinaEvent $event)
@@ -40,8 +50,9 @@ class MigrarExclusaoOfertaDisciplinaListener
                     continue;
                 }
 
-                $data['ofd_id'] = $oferta->ofd_id;
-                $data['trm_id'] = $oferta->ofd_trm_id;
+
+                $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
+                $data['discipline']['ofd_id'] = $oferta->ofd_id;
 
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
@@ -56,7 +67,7 @@ class MigrarExclusaoOfertaDisciplinaListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncEvent($oferta, $status, $response['message']));
+                event(new AtualizarSyncEvent($oferta, $status, $response['message'], "DELETE"));
             }
         }
     }

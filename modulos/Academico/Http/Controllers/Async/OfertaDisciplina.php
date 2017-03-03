@@ -12,6 +12,7 @@ use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use DB;
 
 class OfertaDisciplina extends BaseController
 {
@@ -103,7 +104,6 @@ class OfertaDisciplina extends BaseController
             DB::beginTransaction();
 
             $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
-
             $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
 
             if ($turma->trm_integrada) {
@@ -122,7 +122,7 @@ class OfertaDisciplina extends BaseController
 
             $this->ofertaDisciplinaRepository->delete($ofertaId);
             DB::commit();
-            return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+            //return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             DB::rollback();
 
