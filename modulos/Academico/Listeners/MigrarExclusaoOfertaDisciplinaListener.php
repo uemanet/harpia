@@ -67,7 +67,7 @@ class MigrarExclusaoOfertaDisciplinaListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncEvent($oferta, $status, $response['message'], "DELETE"));
+                event(new AtualizarSyncEvent($oferta, $status, $response['message'], $event->getAction()));
             }
         }
     }

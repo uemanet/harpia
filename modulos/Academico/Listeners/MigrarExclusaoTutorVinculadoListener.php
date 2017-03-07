@@ -72,7 +72,7 @@ class MigrarExclusaoTutorVinculadoListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncEvent($tutorGrupo, $status, $response['message']));
+                event(new AtualizarSyncEvent($tutorGrupo, $status, $response['message'], $event->getAction()));
             }
         }
     }
