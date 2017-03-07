@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Modulos\Academico\Events\DeleteTutorVinculadoEvent;
 use Modulos\Academico\Events\TutorVinculadoEvent;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -215,9 +216,9 @@ class TutoresGruposController extends BaseController
         try {
             DB::beginTransaction();
 
-            $tutorgrupo = $this->tutorgrupoRepository->find($idTutorGrupo);
+            $tutorGrupoOld = $this->tutorgrupoRepository->find($idTutorGrupo);
 
-            if (!$tutorgrupo) {
+            if (!$tutorGrupoOld) {
                 flash()->error('Turma não existe.');
                 return redirect()->back();
             }
@@ -227,7 +228,7 @@ class TutoresGruposController extends BaseController
             //Atualiza o fim do vículo do tutor antigo
             $date = date('Y-m-d');
             $dados['ttg_data_fim'] = $date;
-            $this->tutorgrupoRepository->update($dados, $tutorgrupo->ttg_id, 'ttg_id');
+            $this->tutorgrupoRepository->update($dados, $tutorGrupoOld->ttg_id, 'ttg_id');
 
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
@@ -244,7 +245,22 @@ class TutoresGruposController extends BaseController
             }
 
             if ($turma->trm_integrada) {
-                event(new DeleteTutorVinculadoEvent($tutorgrupo));
+                // Event tutor antigo desvinculado
+                event(new DeleteTutorVinculadoEvent($tutorGrupoOld));
+
+                if (SincronizacaoRepository::excludedFromMoodle($tutorGrupoOld->getTable(), $idTutorGrupo)) {
+                    // Se o ambiente respondeu OK, vincular novo tutor
+                    event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
+
+                    DB::commit();
+
+                    flash()->success('Tutor alterado com sucesso.');
+                    return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+                }
+
+                DB::rollback();
+                flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+                return redirect()->back();
             }
 
 
