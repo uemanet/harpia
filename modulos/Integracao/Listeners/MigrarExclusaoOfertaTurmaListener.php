@@ -45,7 +45,7 @@ class MigrarExclusaoOfertaTurmaListener
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
                 $param['action'] = 'post';
-                $param['functioname'] = 'local_integracao_create_course';
+                $param['functioname'] = 'local_integracao_delete_course';
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
