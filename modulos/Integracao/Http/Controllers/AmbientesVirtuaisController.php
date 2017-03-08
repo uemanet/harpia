@@ -3,7 +3,9 @@
 namespace Modulos\Integracao\Http\Controllers;
 
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Events\DeleteOfertaTurmaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -16,28 +18,29 @@ use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 use Modulos\Integracao\Repositories\ServicoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Validator;
+use DB;
 
 class AmbientesVirtuaisController extends BaseController
 {
-    protected $ambientevirtualRepository;
+    protected $ambienteVirtualRepository;
     protected $servicoRepository;
-    protected $ambienteservicoRepository;
+    protected $ambienteServicoRepository;
     protected $cursoRepository;
-    protected $ambienteturmaRepository;
+    protected $ambienteTurmaRepository;
     protected $turmaRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambientevirtualRepository,
+    public function __construct(AmbienteVirtualRepository $ambienteVirtualRepository,
                                 ServicoRepository $servicoRepository,
-                                AmbienteServicoRepository $ambienteservicoRepository,
+                                AmbienteServicoRepository $ambienteServicoRepository,
                                 CursoRepository $cursoRepository,
-                                AmbienteTurmaRepository $ambienteturmaRepository,
+                                AmbienteTurmaRepository $ambienteTurmaRepository,
                                 TurmaRepository $turmaRepository)
     {
-        $this->ambientevirtualRepository = $ambientevirtualRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->servicoRepository = $servicoRepository;
-        $this->ambienteservicoRepository = $ambienteservicoRepository;
+        $this->ambienteServicoRepository = $ambienteServicoRepository;
         $this->cursoRepository = $cursoRepository;
-        $this->ambienteturmaRepository = $ambienteturmaRepository;
+        $this->ambienteTurmaRepository = $ambienteTurmaRepository;
         $this->turmaRepository = $turmaRepository;
     }
 
@@ -51,7 +54,7 @@ class AmbientesVirtuaisController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->ambientevirtualRepository->paginateRequest($request->all());
+        $tableData = $this->ambienteVirtualRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -120,7 +123,7 @@ class AmbientesVirtuaisController extends BaseController
     public function postCreate(AmbienteVirtualRequest $request)
     {
         try {
-            $ambientevirtual = $this->ambientevirtualRepository->create($request->all());
+            $ambientevirtual = $this->ambienteVirtualRepository->create($request->all());
 
             if (!$ambientevirtual) {
                 flash()->error('Erro ao tentar salvar.');
@@ -142,7 +145,7 @@ class AmbientesVirtuaisController extends BaseController
 
     public function getEdit($ambientevirtualId)
     {
-        $ambientevirtual = $this->ambientevirtualRepository->find($ambientevirtualId);
+        $ambientevirtual = $this->ambienteVirtualRepository->find($ambientevirtualId);
 
         if (!$ambientevirtual) {
             flash()->error('Ambiente Virtual não existe.');
@@ -155,16 +158,16 @@ class AmbientesVirtuaisController extends BaseController
     public function putEdit($ambientevirtualId, AmbienteVirtualRequest $request)
     {
         try {
-            $ambientevirtual = $this->ambientevirtualRepository->find($ambientevirtualId);
+            $ambientevirtual = $this->ambienteVirtualRepository->find($ambientevirtualId);
 
             if (!$ambientevirtual) {
                 flash()->error('Ambiente Virtual não existe.');
                 return redirect('integracao/ambientesvirtuais/index');
             }
 
-            $requestData = $request->only($this->ambientevirtualRepository->getFillableModelFields());
+            $requestData = $request->only($this->ambienteVirtualRepository->getFillableModelFields());
 
-            if (!$this->ambientevirtualRepository->update($requestData, $ambientevirtual->amb_id, 'amb_id')) {
+            if (!$this->ambienteVirtualRepository->update($requestData, $ambientevirtual->amb_id, 'amb_id')) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
@@ -186,7 +189,7 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambientevirtualId = $request->get('id');
 
-            if ($this->ambientevirtualRepository->delete($ambientevirtualId)) {
+            if ($this->ambienteVirtualRepository->delete($ambientevirtualId)) {
                 flash()->success('Ambiente Virtual excluído com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir o ambiente virtual');
@@ -205,7 +208,7 @@ class AmbientesVirtuaisController extends BaseController
 
     public function getAdicionarServico($ambienteId)
     {
-        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+        $ambiente = $this->ambienteVirtualRepository->find($ambienteId);
 
         if (!$ambiente) {
             flash()->error('Ambiente não existe!');
@@ -221,7 +224,7 @@ class AmbientesVirtuaisController extends BaseController
 
     public function postAdicionarServico($ambienteId, Request $request)
     {
-        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+        $ambiente = $this->ambienteVirtualRepository->find($ambienteId);
 
         if (!$ambiente) {
             flash()->error('Ambiente não existe!');
@@ -244,7 +247,7 @@ class AmbientesVirtuaisController extends BaseController
 
         try {
             if (!$this->servicoRepository->verifyIfExistsAmbienteServico($dados['asr_amb_id'], $dados['asr_ser_id'])) {
-                $ambienteservico = $this->ambienteservicoRepository->create($dados);
+                $ambienteservico = $this->ambienteServicoRepository->create($dados);
 
                 if (!$ambienteservico) {
                     flash()->error('Erro ao tentar salvar.');
@@ -271,7 +274,7 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambienteservicoId = $request->get('id');
 
-            if ($this->ambienteservicoRepository->delete($ambienteservicoId)) {
+            if ($this->ambienteServicoRepository->delete($ambienteservicoId)) {
                 flash()->success('Serviço excluído com sucesso.');
             } else {
                 flash()->error('Erro ao tentar excluir o serviço');
@@ -290,7 +293,7 @@ class AmbientesVirtuaisController extends BaseController
 
     public function getAdicionarTurma($ambienteId)
     {
-        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+        $ambiente = $this->ambienteVirtualRepository->find($ambienteId);
 
         if (!$ambiente) {
             flash()->error('Ambiente não existe!');
@@ -304,7 +307,7 @@ class AmbientesVirtuaisController extends BaseController
 
     public function postAdicionarTurma($ambienteId, Request $request)
     {
-        $ambiente = $this->ambientevirtualRepository->find($ambienteId);
+        $ambiente = $this->ambienteVirtualRepository->find($ambienteId);
 
         if (!$ambiente) {
             flash()->error('Ambiente não existe!');
@@ -329,9 +332,10 @@ class AmbientesVirtuaisController extends BaseController
 
         $dados['atr_trm_id'] = $validate['atr_trm_id'];
         $dados['atr_amb_id'] = $validate['atr_amb_id'];
+
         try {
-            if (!$this->ambientevirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'], $dados['atr_trm_id'])) {
-                $ambienteturma = $this->ambienteturmaRepository->create($dados);
+            if (!$this->ambienteVirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'], $dados['atr_trm_id'])) {
+                $ambienteturma = $this->ambienteTurmaRepository->create($dados);
 
                 if (!$ambienteturma) {
                     flash()->error('Erro ao tentar salvar.');
@@ -343,7 +347,7 @@ class AmbientesVirtuaisController extends BaseController
                 # Evento de nova turma mapeada passando o objeto da turma
                 $turma = $this->turmaRepository->find($dados['atr_trm_id']);
 
-                if ($turma->trm_integrada == 1) {
+                if ($turma->trm_integrada) {
                     event(new TurmaMapeadaEvent($turma, "CREATE"));
                 }
 
@@ -365,14 +369,33 @@ class AmbientesVirtuaisController extends BaseController
     public function postDeletarTurma(Request $request)
     {
         try {
-            $ambienteturmaId = $request->get('id');
+            DB::beginTransaction();
 
-            if ($this->ambienteturmaRepository->delete($ambienteturmaId)) {
-                flash()->success('Turma excluída com sucesso.');
-            } else {
+            $ambienteTurmaId = $request->get('id');
+
+            $ambienteTurma = $this->ambienteTurmaRepository->find($ambienteTurmaId);
+            $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
+
+
+            if ($turma->trm_integrada) {
+                event(new DeleteOfertaTurmaEvent($turma));
+
+                if (SincronizacaoRepository::excludedFromMoodle($turma->getTable(), $turma->trm_id)) {
+                    $this->ambienteTurmaRepository->delete($ambienteTurmaId);
+
+                    DB::commit();
+                    flash()->success('Turma excluída com sucesso.');
+                    return redirect()->back();
+                }
+
+                DB::rollback();
                 flash()->error('Erro ao tentar excluir a turma');
+                return redirect()->back();
             }
 
+            $this->ambienteTurmaRepository->delete($ambienteTurmaId);
+
+            DB::commit();
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

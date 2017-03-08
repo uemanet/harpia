@@ -122,7 +122,7 @@ class OfertaDisciplina extends BaseController
 
             $this->ofertaDisciplinaRepository->delete($ofertaId);
             DB::commit();
-            //return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             DB::rollback();
 

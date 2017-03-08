@@ -2,6 +2,12 @@
 
 namespace Modulos\Integracao\Events;
 
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
+
 class MigrarExclusaoOfertaTurmaListener
 {
     private $turmaRepository;
