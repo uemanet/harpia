@@ -12,6 +12,7 @@ use Modulos\Core\Model\BaseModel;
  */
 class AtualizarSyncEvent extends Event
 {
+
     private $status;
     private $sendingDate;
     private $message;
