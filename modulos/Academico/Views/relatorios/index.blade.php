@@ -5,7 +5,7 @@
 @endsection
 
 @section('title')
-    Relatórios
+    Emissão de Relatórios
 @endsection
 
 @section('content')

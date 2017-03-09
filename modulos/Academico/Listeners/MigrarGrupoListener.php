@@ -4,6 +4,7 @@ namespace Modulos\Academico\Listeners;
 
 use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
+use Modulos\Academico\Events\NovoGrupoEvent;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -25,11 +26,12 @@ class MigrarGrupoListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
     
-    public function handle(Event $event)
+    public function handle(NovoGrupoEvent $event)
     {
         $gruposMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_grupos',
-            'sym_status' => 1
+            'sym_status' => 1,
+            'sym_action' => "CREATE"
         ]);
 
         if ($gruposMigrar->count()) {

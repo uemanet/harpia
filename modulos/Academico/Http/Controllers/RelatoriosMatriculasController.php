@@ -51,7 +51,7 @@ class RelatoriosMatriculasController extends BaseController
 
         $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
 
-        $mpdf->mirrorMargins = 1;    // Use different Odd/Even headers and footers and mirror margins
+        $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Relatório de alunos do Curso ' . $nomecurso->crs_nome);
         $mpdf->SetHeader('{PAGENO} / {nb}');
         $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));

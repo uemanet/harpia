@@ -5,6 +5,7 @@
         border: 0.5mm solid;
         border-collapse: collapse;
         width: 100%;
+        table-layout: fixed;
 
     }
 
@@ -17,6 +18,34 @@
         padding: 1px;
     }
 
+    td{
+        text-align: justify;
+    }
+
+    .matricula {
+        width: 8% ;
+    }
+
+    .nome {
+        width: 26%;
+    }
+
+    .email{
+        width: 25%;
+    }
+
+    .turma{
+        width: 10%;
+    }
+
+    .polo{
+        width: 22%;
+    }
+
+    .situacao{
+        width: 9%;
+    }
+
 </style>
 
 <div align="center" style="font-size:140%"><img src="{{public_path('/img/logo_oficial.png')}}"></div>
@@ -24,7 +53,7 @@
 <div align="center" style="font-size:110%">Emitido em: {{date("d/m/y")}}</div>
 <br>
 
-<table align="center">
+<table>
     <thead>
     <tr>
         <th>Matrícula</th>
@@ -41,12 +70,12 @@
     @foreach ($matriculas as $matricula)
 
         <tr>
-            <td align="center">{{$matricula->mat_id}}</td>
-            <td>{{$matricula->aluno->pessoa->pes_nome}}</td>
-            <td>{{$matricula->aluno->pessoa->pes_email}}</td>
-            <td>{{$matricula->turma->trm_nome}}</td>
-            <td>{{$matricula->polo->pol_nome}}</td>
-            <td>{{$matricula->mat_situacao}}</td>
+            <td align="center" class="matricula">{{$matricula->mat_id}}</td>
+            <td class="nome">{{$matricula->aluno->pessoa->pes_nome}}</td>
+            <td class="email">{{$matricula->aluno->pessoa->pes_email}}</td>
+            <td class="turma">{{$matricula->turma->trm_nome}}</td>
+            <td class="polo">{{$matricula->polo->pol_nome}}</td>
+            <td class="situacao">{{$matricula->mat_situacao}}</td>
         </tr>
     @endforeach
 

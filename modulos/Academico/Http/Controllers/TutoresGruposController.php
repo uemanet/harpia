@@ -162,7 +162,7 @@ class TutoresGruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 // Event tutor vinculado
-                event(new TutorVinculadoEvent($tutorgrupo));
+                event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
             }
 
             flash()->success('Vínculo criado com sucesso.');
