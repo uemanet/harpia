@@ -237,7 +237,7 @@ class GruposController extends BaseController
                     return redirect()->back();
                 }
 
-                DB::rollback();
+                DB::commit();
                 flash()->error('Erro ao tentar excluir o grupo');
                 return redirect()->back();
             }
