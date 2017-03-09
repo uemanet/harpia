@@ -63,13 +63,11 @@ class AmbientesVirtuaisController extends BaseController
                 'amb_url' => 'Url',
                 'amb_versao' => 'Versão',
                 'amb_action' => 'Ações'
-            ))
-                ->modifyCell('amb_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('amb_action', 'amb_id')
-                ->modify('amb_action', function ($id) {
-                    return ActionButton::grid([
+            ))->modifyCell('amb_action', function () {
+                return array('style' => 'width: 140px;');
+            })->means('amb_action', 'amb_id')
+              ->modify('amb_action', function ($id) {
+                  return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
                             'classButton' => 'btn-default',
@@ -107,7 +105,7 @@ class AmbientesVirtuaisController extends BaseController
                             ]
                         ]
                     ]);
-                })
+              })
                 ->sortable(array('amb_id', 'amb_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
@@ -374,6 +372,7 @@ class AmbientesVirtuaisController extends BaseController
             $ambienteTurmaId = $request->get('id');
 
             $ambienteTurma = $this->ambienteTurmaRepository->find($ambienteTurmaId);
+
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
 
 
@@ -388,7 +387,7 @@ class AmbientesVirtuaisController extends BaseController
                     return redirect()->back();
                 }
 
-                DB::rollback();
+                DB::commit();
                 flash()->error('Erro ao tentar excluir a turma');
                 return redirect()->back();
             }
@@ -398,6 +397,8 @@ class AmbientesVirtuaisController extends BaseController
             DB::commit();
             return redirect()->back();
         } catch (\Exception $e) {
+            DB::rollback();
+
             if (config('app.debug')) {
                 throw $e;
             }

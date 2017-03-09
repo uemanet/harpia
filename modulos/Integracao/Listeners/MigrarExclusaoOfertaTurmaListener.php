@@ -1,12 +1,15 @@
 <?php
 
-namespace Modulos\Integracao\Events;
+namespace Modulos\Integracao\Listeners;
 
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use Modulos\Integracao\Events\DeleteOfertaTurmaEvent;
+use Moodle;
 
 class MigrarExclusaoOfertaTurmaListener
 {
