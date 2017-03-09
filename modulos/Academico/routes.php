@@ -172,6 +172,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getShow')->name('academico.matricularalunocurso.show');
     });
 
+    Route::group(['prefix' => 'relatoriosmatriculas'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasController@getIndex')->name('academico.relatoriosmatriculas.index');
+        Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasController@postPdf')->name('academico.relatoriosmatriculas.pdf');
+    });
+
+    Route::group(['prefix' => 'relatorios'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosController@getIndex')->name('academico.relatorios.index');
+    });
+
     Route::group(['prefix' => 'matricularalunodisciplina', 'middleware' => ['vinculo']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getIndex')->name('academico.matriculasofertasdisciplinas.index');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getShow')->name('academico.matriculasofertasdisciplinas.show');

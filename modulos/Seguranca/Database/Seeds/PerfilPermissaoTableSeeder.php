@@ -91,20 +91,24 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([120, 121, 122, 123, 124]); // Permissoes do recurso Módulos Matrizes
 
+        $perfil->permissoes()->attach([125]); // Permissoes do recurso Relatórios
+
+        $perfil->permissoes()->attach([126, 127]); // Permissoes do recurso Relatórios Matriculas
+
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
 
-        $perfil->permissoes()->attach([125]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([128]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([126, 127, 128, 129, 130, 131, 132]); // Permissoes do recurso Ambientes
+        $perfil->permissoes()->attach([129, 130, 131, 132, 133, 134, 135]); // Permissoes do recurso Ambientes
 
         /** Perfil Administrador do Módulo de Monitoramento */
 
         $perfil = Perfil::find(5);
 
-        $perfil->permissoes()->attach([133]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([136]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([134, 135]); // Permissoes do recurso Tempo Online
+        $perfil->permissoes()->attach([137, 138]); // Permissoes do recurso Tempo Online
     }
 }

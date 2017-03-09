@@ -10,7 +10,8 @@
         "filp/whoops": "^2.1",
         "laravelcollective/html": "5.3.*",
         "stevebauman/eloquenttable": "1.1.*",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "mpdf/mpdf": "^6.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
