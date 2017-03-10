@@ -61,8 +61,7 @@ class MigrarExclusaoTutorVinculadoListener
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
                 $param['action'] = 'post';
-                // TODO adicionar end point correto (Ainda nao implementado no plugin de integracao)
-                $param['functioname'] = 'local_integracao_enrol_tutor';
+                $param['functioname'] = 'local_integracao_unenrol_tutor_group';
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
