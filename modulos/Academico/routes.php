@@ -186,6 +186,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getShow')->name('academico.matriculasofertasdisciplinas.show');
     });
 
+    Route::group(['prefix' => 'relatoriosmatriculasdisciplina'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasDisciplinaController@getIndex')->name('academico.relatoriosmatriculasdisciplinas.index');
+        Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasDisciplinaController@postPdf')->name('academico.relatoriosmatriculasdisciplinas.pdf');
+    });
+
     Route::group(['prefix' => 'matriculaslote'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\MatriculasLoteController@getIndex')->name('academico.matriculaslote.index');
     });
@@ -263,6 +268,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::post('/matricular', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postMatricularAlunoDisciplinas');
             Route::get('/getalunosmatriculaslote/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllAlunosMatriculasLote')->name('academico.async.matriculasofertasdisciplinas.getmatriculaslote');
             Route::post('/matriculaslote', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postMatriculasLote')->name('academico.async.matriculasofertasdisciplinas.postmatriculaslote');
+            Route::get('/gettallalunosbysituacao/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getRelatorio');
+        });
+
+        Route::group(['prefix' => 'relatoriosmatriculasdisciplina'], function () {
+            Route::get('/gettallalunosbysituacao/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getRelatorio');
         });
 
         Route::group(['prefix' => 'grupos'], function () {

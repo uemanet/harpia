@@ -135,4 +135,11 @@ class MatriculaOfertaDisciplina extends BaseController
             return new JsonResponse('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
     }
+
+    public function getRelatorio($turmaId, $ofertaId, $situacao = null)
+    {
+        $alunos = $this->matriculaOfertaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
+
+        return new JsonResponse($alunos, 200);
+    }
 }

@@ -35,6 +35,21 @@
                 <!-- /.info-box -->
             </div>
             </a>
+
+            <a href="{{route('academico.relatoriosmatriculasdisciplinas.index')}}">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="fa fa-file-text-o"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text"></span>
+                            <span class="info-box-number">Relatório Alunos por disciplina</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+            </a>
         </div>
         <!-- /.box-body -->
     </div>

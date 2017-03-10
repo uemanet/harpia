@@ -348,4 +348,29 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         return $alunos;
     }
+
+    public function getAllAlunosBySituacao($turmaId, $ofertaId, $situacao = null)
+    {
+        $query = $this->model
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_alunos', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            })
+            ->select('mat_id', 'pes_id', 'pes_nome', 'mof_situacao_matricula')
+            ->where('mof_ofd_id', '=', $ofertaId)
+            ->where('mat_trm_id', $turmaId)
+            ->orderBy('pes_nome', 'asc')
+            ->get();
+
+        if ($situacao != null) {
+            $query = $query->where('mof_situacao_matricula', $situacao);
+        }
+
+        return $query;
+    }
 }
