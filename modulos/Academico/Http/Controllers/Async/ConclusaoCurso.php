@@ -45,6 +45,7 @@ class ConclusaoCurso extends BaseController
                 }
 
                 event(new ConclusaoCursoEvent($result, 'UPDATE_STATUS_CONCLUSAO'));
+                
                 DB::commit();
                 return new JsonResponse("Matriculas concluidas com sucesso", 200);
             }

@@ -26,12 +26,12 @@ class ConclusaoCursoListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
-    public function handler(ConclusaoCursoEvent $event)
+    public function handle(ConclusaoCursoEvent $event)
     {
         $matriculasMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_matriculas',
             'sym_status' => 1,
-            'sym_action' => $event->getAction()
+            'sym_action' => 'UPDATE_STATUS_CONCLUSAO'
         ]);
 
         if ($matriculasMigrar->count()) {
@@ -47,10 +47,19 @@ class ConclusaoCursoListener
                     // url do ambiente
                     $param['url'] = $ambiente->url;
                     $param['token'] = $ambiente->token;
-                    $param['functioname'] = '';
-                    $param['action'] = $event->getAction();
+                    $param['functioname'] = 'local_integracao_change_role_student_course';
+                    $param['action'] = 'UPDATE_STATUS_CONCLUSAO';
 
-                    $retorno = Moodle::send($param);
+                    $student = [];
+                    $student['trm_id'] = $matricula->mat_trm_id;
+                    $student['pes_id'] = $matricula->aluno->alu_pes_id;
+                    $student['new_status'] = $matricula->mat_situacao;
+
+                    $param['data']['student'] = $student;
+
+                    $moodle = new \Harpia\Moodle\Moodle();
+
+                    $retorno = $moodle->send($param);
 
                     $status = 3;
 
