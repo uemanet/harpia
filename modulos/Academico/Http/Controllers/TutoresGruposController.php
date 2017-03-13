@@ -233,7 +233,7 @@ class TutoresGruposController extends BaseController
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
-            $grupo = $this->grupoRepository->find($tutorgrupo->ttg_tut_id);
+            $grupo = $this->grupoRepository->find($tutorgrupo->ttg_grp_id);
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
 
@@ -258,7 +258,7 @@ class TutoresGruposController extends BaseController
                     return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
                 }
 
-                DB::rollback();
+                DB::commit();
                 flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
                 return redirect()->back();
             }

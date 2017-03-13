@@ -5,6 +5,7 @@ namespace Modulos\Academico\Listeners;
 use Modulos\Academico\Events\DeleteTutorVinculadoEvent;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
+use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -24,13 +25,15 @@ class MigrarExclusaoTutorVinculadoListener
                                 AmbienteVirtualRepository $ambienteVirtualRepository,
                                 TutorGrupoRepository $tutorGrupoRepository,
                                 GrupoRepository $grupoRepository,
-                                PessoaRepository $pessoaRepository)
+                                PessoaRepository $pessoaRepository,
+                                TutorRepository $tutorRepository)
     {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->tutorGrupoRepository = $tutorGrupoRepository;
         $this->grupoRepository = $grupoRepository;
         $this->pessoaRepository = $pessoaRepository;
+        $this->tutorRepository = $tutorRepository;
     }
 
     public function handle(DeleteTutorVinculadoEvent $event)
@@ -55,8 +58,8 @@ class MigrarExclusaoTutorVinculadoListener
 
                 $pessoa = $this->pessoaRepository->find($tutor->tut_pes_id);
 
-                $data['data']['pes_id'] = $pessoa->pes_id;
-                $data['data']['grp_id'] = $pessoa->pes_id;
+                $data['tutor']['pes_id'] = $pessoa->pes_id;
+                $data['tutor']['grp_id'] = $grupo->grp_id;
 
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
