@@ -361,7 +361,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->join('gra_pessoas', function ($join) {
                 $join->on('alu_pes_id', '=', 'pes_id');
             })
-            ->select('mat_id', 'pes_id', 'pes_nome', 'mof_situacao_matricula')
+//            ->select('mat_id', 'pes_id', 'pes_nome', 'mof_situacao_matricula')
             ->where('mof_ofd_id', '=', $ofertaId)
             ->where('mat_trm_id', $turmaId)
             ->orderBy('pes_nome', 'asc')

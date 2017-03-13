@@ -22,7 +22,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="box-body">
-                <form method="GET" action="">
+                <form method="POST" action="{{ route('academico.relatoriosmatriculasdisciplinas.pdf') }}">
                     <div class="row">
                         <div class="col-md-4">
                             {!! Form::label('crs_id', 'Curso*') !!}
@@ -63,15 +63,18 @@
                                 "aprovado_media" => "Aprovado por Média",
                                   "aprovado_final" => "Aprovado por Final",
                                   "reprovado_media" => "Reprovado por Média",
+                                  "reprovado_final" => "Reprovado por Final",
                                   "cancelado" => "Cancelado",
-                                  "todos" => "Todos"
+                                  "Todos"
                                 ], null, ['class' => 'form-control', 'placeholder' => 'Selecione o status']) !!}
                             </div>
                         </div>
                         <div class="col-md-1">
                             <label for="">&nbsp;</label>
                             <div class="form-group">
+                                {{csrf_field()}}
                                 <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
+                                <input type="submit" id="Buscar" class="form-control btn-primary"  value="Gerar">
                             </div>
                         </div>
                     </div>
@@ -91,7 +94,8 @@
         <!-- /.box-tools -->
     </div>
     <!-- /.box-header -->
-    <div class="box-body"></div>
+    <div class="box-body">
+    </div>
 </div>
 @endsection
 
@@ -243,15 +247,14 @@
                     if(!$.isEmptyObject(response)) {
                         var html = '<div class="row"><div class="col-md-12">';
 
-                        var naoMatriculados = new Array();
                         var cursandos = new Array();
                         var aprovados = new Array();
-
-                        console.log(response);
+                        var reprovados = new Array();
+                        var cancelados = new Array();
 
                         $.each(response, function (key, obj) {
-                            if(obj.mof_situacao_matricula == null || obj.mof_situacao_matricula == 'no_pre_requisitos') {
-                                naoMatriculados.push(obj);
+                            if(obj.mof_situacao_matricula == 'reprovado_media' || obj.mof_situacao_matricula == 'reprovado_final') {
+                                reprovados.push(obj);
                             } else if (obj.mof_situacao_matricula == 'cursando') {
                                 cursandos.push(obj);
                             } else if(['aprovado_media', 'aprovado_final'].indexOf(obj.mof_situacao_matricula) > -1) {
@@ -264,50 +267,44 @@
                         tabs += '<ul class="nav nav-tabs">';
                         tabs += '<li class="active">' +
                             '<a href="#tab_1" data-toggle="tab">' +
-                            'Não Matriculados '+
-                            '<span data-toggle="tooltip" class="badge bg-blue">'+naoMatriculados.length+'</span>'+
+                            'Cursando '+
+                            '<span data-toggle="tooltip" class="badge bg-blue">'+cursandos.length+'</span>'+
                             '</a></li>';
                         tabs += '<li>' +
                             '<a href="#tab_2" data-toggle="tab">' +
-                            'Cursando <span data-toggle="tooltip" class="badge bg-blue">'+cursandos.length+'</span>' +
+                            'Aprovados <span data-toggle="tooltip" class="badge bg-blue">'+aprovados.length+'</span>' +
                             '</a></li>';
                         tabs += '<li>' +
                             '<a href="#tab_3" data-toggle="tab">' +
-                            'Aprovados <span data-toggle="tooltip" class="badge bg-blue">'+aprovados.length+'</span>' +
+                            'Reprovados <span data-toggle="tooltip" class="badge bg-blue">'+reprovados.length+'</span>' +
+                            '</a></li>';
+                        tabs += '<li>' +
+                            '<a href="#tab_4" data-toggle="tab">' +
+                            'Cancelados <span data-toggle="tooltip" class="badge bg-blue">'+cancelados.length+'</span>' +
                             '</a></li>';
                         tabs += '</ul>';
                         tabs += '<div class="tab-content">';
 
 
-                        // Criacao da Tab de Alunos nao matriculados para matricula
+                        // Criacao da Tab de Alunos cursando a disciplina
                         var tab1 = '<div class="tab-pane active" id="tab_1">';
 
-                        if(!$.isEmptyObject(naoMatriculados)) {
+                        if(!$.isEmptyObject(cursandos)) {
                             var div = '<div class="row"><div class="col-md-12">';
                             var table1 = '<table class="table table-bordered table-striped">';
 
                             // cabeçalho da tabela
                             table1 += '<tr>';
-                            table1 += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
                             table1 += '<th>Nome</th>';
                             table1 += '<th width="20%">Situacao de Matricula</th>';
                             table1 += '</tr>';
 
                             // corpo da tabela
-                            $.each(naoMatriculados, function (key, obj) {
+                            $.each(cursandos, function (key, obj) {
                                 table1 += '<tr>';
-                                if(obj.mof_situacao_matricula == 'no_pre_requisitos') {
-                                    table1 += '<td></td>';
-                                } else {
-                                    table1 += '<td><label><input class="matriculas" type="checkbox" value="'+obj.mat_id+'"></label></td>';
-                                }
-
                                 table1 += '<td>'+obj.pes_nome+'</td>';
-                                if(obj.mof_situacao_matricula == 'no_pre_requisitos') {
-                                    table1 += '<td><span class="label label-warning">Pré-requisitos não satisfeitos</span></td>';
-                                } else {
-                                    table1 += '<td><span class="label label-success">Apto para Matricula</span></td>';
-                                }
+                                table1 += '<td><span class="label label-info">Cursando</span></td>';
+                                table1 += '</tr>';
 
                                 table1 += '</tr>';
                             });
@@ -318,20 +315,20 @@
 
                             // criacao do botao de matricular alunos
                             div += '<div class="row"><div class="col-md-12">';
-                            div += '<button class="btn btn-success hidden btnMatricular">Matricular Alunos</button>';
+                            div += '<button type="submit" formtarget="_blank" class="btn btn-success btnMatricular">Imprimir</button>';
                             div += '</div></div>';
 
                             tab1 += div;
                         } else {
-                            tab1 += '<p>Sem alunos para matricular</p>';
+                            tab1 += '<p>Sem alunos cursando a disciplina</p>';
                         }
 
                         tab1 += '</div>';
 
-                        // Criacao da Tab de Alunos cursando a disciplina
-                        var tab2 = '<div class="tab-pane" id="tab_2">';
+                        // Criacao da Tab de Alunos aprovados na disciplina
+                        var tab2 = '<div class="tab-pane " id="tab_2">';
 
-                        if(!$.isEmptyObject(cursandos)) {
+                        if(!$.isEmptyObject(aprovados)) {
                             var table2 = '<table class="table table-bordered table-striped">';
 
                             // cabeçalho da tabela
@@ -341,25 +338,30 @@
                             table2 += '</tr>';
 
                             // corpo da tabela
-                            $.each(cursandos, function (key, obj) {
+                            $.each(aprovados, function (key, obj) {
                                 table2 += '<tr>';
                                 table2 += '<td>'+obj.pes_nome+'</td>';
-                                table2 += '<td><span class="label label-info">Cursando</span></td>';
+                                if (obj.mof_situacao_matricula == 'aprovado_media'){
+                                    table2 += '<td><span class="label label-info">Aprovado por Média</span></td>';
+                                }else {
+                                    table2 += '<td><span class="label label-info">Aprovado por Final</span></td>';
+                                }
+
                                 table2 += '</tr>';
                             });
 
                             table2 += '</table>';
                             tab2 += table2;
                         } else {
-                            tab2 += '<p>Sem alunos cursando a disciplina</p>';
+                            tab2 += '<p>Sem alunos aprovados na disciplina</p>';
                         }
 
                         tab2 += '</div>';
 
-                        // Criacao da Tab de Alunos aprovados na disciplina
-                        var tab3 = '<div class="tab-pane" id="tab_3">';
+                        // Criacao da Tab de Alunos reprovado na disciplina
+                        var tab3 = '<div class="tab-pane " id="tab_3">';
 
-                        if(!$.isEmptyObject(aprovados)) {
+                        if(!$.isEmptyObject(reprovados)) {
                             var table3 = '<table class="table table-bordered table-striped">';
 
                             // cabeçalho da tabela
@@ -369,24 +371,58 @@
                             table3 += '</tr>';
 
                             // corpo da tabela
-                            $.each(aprovados, function (key, obj) {
+                            $.each(reprovados, function (key, obj) {
                                 table3 += '<tr>';
                                 table3 += '<td>'+obj.pes_nome+'</td>';
-                                table3 += '<td><span class="label label-success">Aprovado</span></td>';
+                                if (obj.mof_situacao_matricula == 'reprovado_media'){
+                                    table3 += '<td><span class="label label-warning">Reprovado por Média</span></td>';
+                                }else {
+                                    table3 += '<td><span class="label label-warning">Reprovado por Final</span></td>';
+                                }
+
                                 table3 += '</tr>';
                             });
 
                             table3 += '</table>';
                             tab3 += table3;
                         } else {
-                            tab3 += '<p>Sem alunos aprovados na disciplina</p>';
+                            tab3 += '<p>Sem alunos reprovados na disciplina</p>';
                         }
 
                         tab3 += '</div>';
 
+                        // Criacao da Tab de Alunos cancelados na disciplina
+                        var tab4 = '<div class="tab-pane " id="tab_4">';
+
+                        if(!$.isEmptyObject(cancelados)) {
+                            var table4 = '<table class="table table-bordered table-striped">';
+
+                            // cabeçalho da tabela
+                            table4 += '<tr>';
+                            table4 += '<th>Nome</th>';
+                            table4 += '<th width="20%">Situacao de Matricula</th>';
+                            table4 += '</tr>';
+
+                            // corpo da tabela
+                            $.each(reprovados, function (key, obj) {
+                                table4 += '<tr>';
+                                table4 += '<td>'+obj.pes_nome+'</td>';
+                                table4 += '<td><span class="label label-warning">Cancelado</span></td>';
+                                table4 += '</tr>';
+                            });
+
+                            table4 += '</table>';
+                            tab4 += table4;
+                        } else {
+                            tab4 += '<p>Sem alunos cancelados na disciplina</p>';
+                        }
+
+                        tab4 += '</div>';
+
                         tabs += tab1;
                         tabs += tab2;
                         tabs += tab3;
+                        tabs += tab4;
 
                         tabs += '</div></div>';
 
@@ -403,19 +439,6 @@
                 });
             };
 
-            // evento para selecionar todos os checkboxes
-            $(document).on('click', '#select_all',function(event) {
-                if(this.checked) {
-                    $(':checkbox').each(function() {
-                        this.checked = true;
-                    });
-                }
-                else {
-                    $(':checkbox').each(function() {
-                        this.checked = false;
-                    });
-                }
-            });
 
             var hiddenButton = function () {
                 var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
@@ -431,28 +454,25 @@
 
             $(document).on('click', '.btnMatricular', function () {
 
-                var quant = $('.matriculas:checked').length;
+//                event.preventDefault();
 
-                var ofertaId = $('#ofd_id').val();
+                var turmaId = turmaSelect.val();
+                var ofertaDisciplinaId = disciplinasOfertadasSelect.val();
+                var situacao = situacaoSelect.val();
 
-                if((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
+                if((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
                     return false;
                 }
 
-                var matriculasIds = new Array();
-
-                $('.matriculas:checked').each(function () {
-                    matriculasIds.push($(this).val());
-                });
-
-                sendMatriculas(matriculasIds, ofertaId);
+                sendMatriculas(turmaId, ofertaDisciplinaId, situacao);
             });
 
-            var sendMatriculas = function(matriculasIds, ofertaId) {
+            var sendMatriculas = function(turmaId, ofertaDisciplinaId, situacao) {
 
                 var dados = {
-                    matriculas: matriculasIds,
-                    ofd_id: ofertaId,
+                    trm_id: turmaId,
+                    ofd_id: ofertaDisciplinaId,
+                    mof_situacao_matricula: situacao,
                     _token: token
                 };
 
@@ -460,17 +480,11 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/academico/async/matriculasofertasdisciplinas/matriculaslote',
+                    url: '/academico/async/relatoriosmatriculasdisciplina/postgerarrelatorio',
                     data: dados,
-                    success: function (data) {
+                    success: function () {
                         $.harpia.hideloading();
-
-                        toastr.success('Alunos matriculados com sucesso!', null, {progressBar: true});
-
-                        var turma = turmaSelect.val();
-                        var ofertaDisciplina = disciplinasOfertadasSelect.val();
-
-                        renderTable(turma, ofertaDisciplina);
+                        toastr.success('Relatório gerado com sucesso!', null, {progressBar: true});
                     },
                     error: function (xhr, textStatus, error) {
                         $.harpia.hideloading();

@@ -273,6 +273,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'relatoriosmatriculasdisciplina'], function () {
             Route::get('/gettallalunosbysituacao/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getRelatorio');
+            Route::post('/postgerarrelatorio', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postGerarRelatorio');
         });
 
         Route::group(['prefix' => 'grupos'], function () {

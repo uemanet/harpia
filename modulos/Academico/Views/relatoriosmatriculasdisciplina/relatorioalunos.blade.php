@@ -49,7 +49,7 @@
 </style>
 
 <div align="center" style="font-size:140%"><img src="{{public_path('/img/logo_oficial.png')}}"></div>
-<div align="center" style="font-size:140%">Relatório de alunos do Curso: {{$nomecurso->crs_nome}}</div>
+<div align="center" style="font-size:140%">Relatório de alunos do Curso:</div>
 <div align="center" style="font-size:110%">Emitido em: {{date("d/m/y")}}</div>
 <br>
 
@@ -67,15 +67,15 @@
     <tbody>
 
 
-    @foreach ($matriculas as $matricula)
+    @foreach ($alunos as $aluno)
 
         <tr>
-            <td align="center" class="matricula">{{$matricula->mat_id}}</td>
-            <td class="nome">{{$matricula->aluno->pessoa->pes_nome}}</td>
-            <td class="email">{{$matricula->aluno->pessoa->pes_email}}</td>
-            <td class="turma">{{$matricula->turma->trm_nome}}</td>
-            <td class="polo">{{$matricula->polo->pol_nome}}</td>
-            <td class="situacao">{{$matricula->mat_situacao}}</td>
+            <td align="center" class="matricula">{{$aluno->mat_id}}</td>
+            <td class="nome">{{$aluno->pes_nome}}</td>
+            <td class="email">{{$aluno->pes_email}}</td>
+            <td class="turma">{{$aluno->turma->trm_nome}}</td>
+            <td class="polo">{{$aluno->polo->pol_nome}}</td>
+            <td class="situacao">{{$aluno->mat_situacao}}</td>
         </tr>
     @endforeach
 

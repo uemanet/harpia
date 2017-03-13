@@ -33,39 +33,31 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
     public function postPdf(Request $request)
     {
-        $rules = [
-            'crs_id' => 'required',
-            'ofc_id' => 'required',
-            'trm_id' => 'required'
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
-        }
         $turmaId = $request->input('trm_id');
-        $matriculas = $this->matriculaCursoRepository->findAll(
-            ['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
-        $nomecurso = $this->turmaRepository->findCursoByTurma($turmaId);
+        $ofertaId = $request->input('ofd_id');
+        $situacao = $request->input('mof_situacao_matricula');
 
+        $alunos = $this->matriculaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
 
-        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+        try {
+            $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
 
-        $mpdf->mirrorMargins = 1;
-        $mpdf->SetTitle('Relatório de alunos do Curso ' . $nomecurso->crs_nome);
-        $mpdf->SetHeader('{PAGENO} / {nb}');
-        $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
-        $mpdf->defaultheaderfontsize = 10;
-        $mpdf->defaultheaderfontstyle = 'B';
-        $mpdf->defaultheaderline = 0;
-        $mpdf->defaultfooterfontsize = 10;
-        $mpdf->defaultfooterfontstyle = 'BI';
-        $mpdf->defaultfooterline = 0;
-        $mpdf->addPage('L');
+            $mpdf->mirrorMargins = 1;
+            $mpdf->SetTitle('Relatório de alunos do Curso ');
+            $mpdf->SetHeader('{PAGENO} / {nb}');
+            $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
+            $mpdf->defaultheaderfontsize = 10;
+            $mpdf->defaultheaderfontstyle = 'B';
+            $mpdf->defaultheaderline = 0;
+            $mpdf->defaultfooterfontsize = 10;
+            $mpdf->defaultfooterfontstyle = 'BI';
+            $mpdf->defaultfooterline = 0;
+            $mpdf->addPage('L');
 
-
-        $mpdf->WriteHTML(view('Academico::relatoriosmatriculas.relatorioalunos', compact('matriculas', 'nomecurso'))->render());
-        $mpdf->Output();
-        exit;
+            $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos'))->render());
+            $mpdf->Output();
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }
