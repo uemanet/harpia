@@ -10,12 +10,18 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 {
     protected $moduloDisciplinaRepository;
     protected $ofertaDisciplinaRepository;
+    private $alunoRepository;
 
-    public function __construct(MatriculaOfertaDisciplina $matricula, ModuloDisciplinaRepository $modulo, OfertaDisciplinaRepository $oferta)
+    public function __construct(
+        MatriculaOfertaDisciplina $matricula,
+        ModuloDisciplinaRepository $modulo,
+        OfertaDisciplinaRepository $oferta,
+        AlunoRepository $aluno)
     {
         $this->model = $matricula;
         $this->moduloDisciplinaRepository = $modulo;
         $this->ofertaDisciplinaRepository = $oferta;
+        $this->alunoRepository = $aluno;
     }
 
     public function findBy(array $options)
@@ -114,6 +120,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             })
             ->where('mat_alu_id', '=', $alunoId);
 
+
         if (!is_null($options)) {
             foreach ($options as $key => $value) {
                 if ($key == 'mof_situacao_matricula') {
@@ -136,7 +143,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
             }
         }
-
         return $disciplinas;
     }
 
@@ -182,9 +188,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $query = $query->whereNotIn('ofd_id', [0]);
         }
 
-
         $disciplinasOfertadas =  $query->get();
 
+        // pega a matricula do aluno
+        $aluno = $this->alunoRepository->find($alunoId);
+        $matriculaAluno = $aluno->matriculas()->where('mat_trm_id', $turmaId)->first();
 
         if ($disciplinasOfertadas->count()) {
             for ($i=0;$i<$disciplinasOfertadas->count();$i++) {
@@ -194,10 +202,16 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                                         ->count();
 
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
-                $disciplinasOfertadas[$i]->disponivel = 1;
+
+                //Status 1 vagas disponiveis, status 2 sem pré requisitos satisfeitos, status 0 sem vagas disponiveis
+                $disciplinasOfertadas[$i]->status = 1;
+
+                if (!$this->verifyIfAlunoAprovadoPreRequisitos($matriculaAluno->mat_id, $disciplinasOfertadas[$i]->ofd_id)) {
+                    $disciplinasOfertadas[$i]->status = 2;
+                }
 
                 if ($quantMatriculas >= $disciplinasOfertadas[$i]->ofd_qtd_vagas) {
-                    $disciplinasOfertadas[$i]->disponivel = 0;
+                    $disciplinasOfertadas[$i]->status = 0;
                 }
             }
         }
@@ -246,6 +260,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaDisciplinaId);
 
         $preRequisitos = $this->moduloDisciplinaRepository->getDisciplinasPreRequisitos($ofertaDisciplina->ofd_mdc_id);
+
 
         if (!empty($preRequisitos)) {
             $quantAprovadas = 0;

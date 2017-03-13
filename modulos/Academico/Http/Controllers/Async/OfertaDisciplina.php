@@ -72,7 +72,7 @@ class OfertaDisciplina extends BaseController
                 $turma = $this->turmaRepository->find($ofertadisciplina->ofd_trm_id);
 
                 if ($turma->trm_integrada) {
-                    event(new OfertaDisciplinaEvent($ofertadisciplina));
+                    event(new OfertaDisciplinaEvent($ofertadisciplina, "CREATE"));
                 }
 
                 return new JsonResponse($ofertadisciplina, Response::HTTP_OK);
