@@ -7,7 +7,6 @@ use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
-use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\AtualizarTurmaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;

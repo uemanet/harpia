@@ -183,9 +183,10 @@ class TurmasController extends BaseController
             }
 
             flash()->success('Turma atualizada com sucesso.');
-            if ($turma->trm_integrada) {
-                $turmaUpdated = $this->turmaRepository->find($id);
-                event(new AtualizarTurmaEvent($turmaUpdated));
+
+            $turmaUpdated = $this->turmaRepository->find($id);
+            if ($turmaUpdated->trm_integrada) {
+                event(new AtualizarTurmaEvent($turmaUpdated, 'UPDATE'));
             }
             return redirect('/academico/turmas/index/' . $turma->trm_ofc_id);
         } catch (\Exception $e) {
@@ -206,7 +207,7 @@ class TurmasController extends BaseController
             if ($this->turmaRepository->delete($turmaId)) {
                 flash()->success('Turma excluída com sucesso.');
             } else {
-                flash()->error('Erro ao tentar excluir o turma');
+                flash()->error('Erro ao tentar excluir a turma');
             }
 
             return redirect()->back();
