@@ -3,6 +3,7 @@ namespace Modulos\Academico\Listeners;
 
 use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
+use Modulos\Academico\Events\NovaMatriculaDisciplinaEvent;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
@@ -29,11 +30,12 @@ class MigrarMatriculaDisciplinaListener
         $this->alunoRepository = $alunoRepository;
     }
 
-    public function handle(Event $event)
+    public function handle(NovaMatriculaDisciplinaEvent $event)
     {
         $matriculasMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_matriculas_ofertas_disciplinas',
-            'sym_status' => 1
+            'sym_status' => 1,
+            'sym_action' => "CREATE"
         ]);
 
         if ($matriculasMigrar->count()) {

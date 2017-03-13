@@ -40,7 +40,8 @@ class MigrarTutorVinculadoListener
     {
         $tutoresMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_tutores_grupos',
-            'sym_status' => 1
+            'sym_status' => 1,
+            'sym_action' => "CREATE"
         ]);
 
         if ($tutoresMigrar->count()) {
