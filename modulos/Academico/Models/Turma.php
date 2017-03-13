@@ -49,13 +49,17 @@ class Turma extends BaseModel
     }
 
     // Accessors
-    public function getTrmIntegradaAttribute($value)
-    {
+    /**
+       * @param $value
+       * @return string
+       */
+      public function getTrmIntegradaStringAttribute()
+      {
 
-      if($value == 0){
-        return 'Não';
+        if($this->trm_integrada == 0){
+          return 'Não';
+        }
+        return 'Sim';
+
       }
-      return 'Sim';
-
-    }
 }

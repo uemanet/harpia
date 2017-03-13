@@ -53,7 +53,7 @@ class TurmasController extends BaseController
                 'trm_per_id' => 'Periodo Letivo',
                 'trm_nome' => 'Turma',
                 'trm_qtd_vagas' => 'Quantidade de Vagas',
-                'trm_integrada' => 'Integrada',
+                'trm_integrada_string' => 'Integrada',
                 'trm_action' => 'Ações'
             ))
                 ->modifyCell('trm_action', function () {
