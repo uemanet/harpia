@@ -195,6 +195,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\ConclusaoCursoController@getIndex')->name('academico.conclusaocurso.index');
     });
 
+    Route::group(['prefix' => 'certificacao'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
+    });
+
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {

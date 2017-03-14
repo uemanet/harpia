@@ -418,11 +418,22 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 3;
         $recurso->save();
+
+        // Recurso Módulos das Matrizes - id: 36
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Processos - Módulo Acadêmico
+        $recurso->rcs_nome = 'Certificação';
+        $recurso->rcs_rota = 'certificacao';
+        $recurso->rcs_descricao = 'Recurso Certificação do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-certificate';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
     }
 
     private function recursosModuloIntegracao()
     {
-        // Recurso Dashboard - id: 36
+        // Recurso Dashboard - id: 37
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 7; // Categoria Cadastros - Módulo Integração
         $recurso->rcs_nome = 'Dashboard';
@@ -433,7 +444,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso AmbientesVirtuais - id: 37
+        // Recurso AmbientesVirtuais - id: 38
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 7; // Categoria Cadastros - Módulo Integracao
         $recurso->rcs_nome = 'Ambientes Virtuais';
@@ -447,7 +458,7 @@ class RecursoTableSeeder extends Seeder
 
     private function recursosModuloMonitoramento()
     {
-        // Recurso Dashboard - id: 38
+        // Recurso Dashboard - id: 39
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 8; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Dashboard';
@@ -458,7 +469,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Tempo Online - id: 39
+        // Recurso Tempo Online - id: 40
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 8; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Tempo Online';
