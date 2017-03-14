@@ -111,15 +111,17 @@ class HistoricoParcialController extends BaseController
 
         $gradeCurricular = $this->getGradeCurricular($matricula->mat_id);
 
+//        dd($gradeCurricular);
+
         $aluno = $matricula->aluno;
         
         $mpdf = new \mPDF();
-        $mpdf->mirrorMargins = 1;
+//        $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
         $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
         $mpdf->addPage('P');
 
-        $mpdf->WriteHTML(view('Academico::historicoparcial.print', compact('aluno'))->render());
+        $mpdf->WriteHTML(view('Academico::historicoparcial.print', compact('aluno', 'curso', 'gradeCurricular', 'matricula'))->render());
         $mpdf->Output();
         exit;
     }
@@ -197,6 +199,7 @@ class HistoricoParcialController extends BaseController
                 }
 
                 $cell['mof_situacao_matricula'] = $oferta->mof_situacao_matricula;
+                $cell['dis_carga_horaria'] = $oferta->dis_carga_horaria;
 
                 $disciplinasPeriodo[] = (object)$cell;
             }
