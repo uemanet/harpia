@@ -163,8 +163,6 @@ class PessoasController extends BaseController
             $pessoaAtt = $this->pessoaRepository->find($id);
             $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            // dd($ambientesvinculadosId);
-
             foreach ($ambientesvinculadosId as $id) {
               event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id ));
             }
