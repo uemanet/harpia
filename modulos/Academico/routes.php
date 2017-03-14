@@ -197,6 +197,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'historicoparcial'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getIndex')->name('academico.historicoparcial.index');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getShow')->name('academico.historicoparcial.show');
+        Route::get('/print/{id}', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getPrint')->name('academico.historicoparcial.print');
     });
 
     //Rotas de funções assíncronas

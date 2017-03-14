@@ -24,12 +24,40 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $this->alunoRepository = $aluno;
     }
 
-    public function findBy(array $options)
+    public function findBy(array $options, array $select = null, array $order = null)
     {
-        $query = $this->model;
+        $query = $this->model
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->join('acd_modulos_matrizes', function ($join) {
+                $join->on('mdc_mdo_id', '=', 'mdo_id');
+            })
+            ->join('acd_disciplinas', function ($join) {
+                $join->on('mdc_dis_id', '=', 'dis_id');
+            })
+            ->join('acd_professores', function ($join) {
+                $join->on('ofd_prf_id', '=', 'prf_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('prf_pes_id', '=', 'pes_id');
+            });
 
         foreach ($options as $key => $value) {
             $query = $query->where($key, '=', $value);
+        }
+
+        if (!is_null($select)) {
+            $query = $query->select($select);
+        }
+
+        if (!is_null($order)) {
+            foreach ($order as $key => $value) {
+                $query = $query->orderBy($key, $value);
+            }
         }
 
         return $query->get();

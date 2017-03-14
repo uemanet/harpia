@@ -4,9 +4,9 @@
         <h3>Cursos Matriculados</h3>
 
         @if ($aluno->matriculas->count())
-
+            <?php $j = 1; ?>
             @foreach ($aluno->matriculas as $matricula)
-                <div class="box box-primary collapsed-box">
+                <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">{{$matricula->turma->ofertacurso->curso->crs_nome}}</h3>
                         @if($matricula->mat_situacao == 'cursando')
@@ -25,25 +25,26 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        @if (!empty($gradesCurriculares[$matricula->mat_id]['modulos']))
+                        @if (!empty($gradesCurriculares[$matricula->mat_id]['periodos_letivos']))
                             <div class="box-group" id="accordion">
-                                @foreach ($gradesCurriculares[$matricula->mat_id]['modulos'] as $modulo)
-                                    <div class="panel box box-default">
+                                @foreach ($gradesCurriculares[$matricula->mat_id]['periodos_letivos'] as $periodo)
+                                    <div class="panel box box-danger">
                                         <div class="box-header with-border">
                                             <h4 class="box-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$modulo['mdo_id']}}">
-                                                    {{$modulo['mdo_nome']}}
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$j}}">
+                                                    {{$periodo['per_nome']}}
                                                 </a>
                                             </h4>
                                         </div>
-                                        <div id="collapse{{$modulo['mdo_id']}}" class="panel-collapse collapse">
+                                        <div id="collapse{{$j}}" class="panel-collapse collapse in">
                                             <div class="box-body">
-                                                @if (!empty($modulo['ofertas_disciplinas']))
+                                                @if (!empty($periodo['ofertas_disciplinas']))
                                                     <table class="table table-bordered">
                                                         <tr>
                                                             <th width="1%">#</th>
                                                             <th>Disciplina</th>
                                                             <th>Tipo</th>
+                                                            <th>Módulo</th>
                                                             <th>Nota 1</th>
                                                             <th>Nota 2</th>
                                                             <th>Nota 3</th>
@@ -53,11 +54,12 @@
                                                             <th>Média Final</th>
                                                             <th>Situação de Matrícula</th>
                                                         </tr>
-                                                        @foreach ($modulo['ofertas_disciplinas'] as $disciplina)
+                                                        @foreach ($periodo['ofertas_disciplinas'] as $disciplina)
                                                             <tr>
-                                                                <td>{{$disciplina->mdc_id}}</td>
+                                                                <td>{{$disciplina->mof_id}}</td>
                                                                 <td>{{$disciplina->dis_nome}}</td>
                                                                 <td>{{ucfirst($disciplina->mdc_tipo_avaliacao)}}</td>
+                                                                <td>{{$disciplina->mdo_nome}}</td>
                                                                 <td>{{$disciplina->mof_nota1}}</td>
                                                                 <td>{{$disciplina->mof_nota2}}</td>
                                                                 <td>{{$disciplina->mof_nota3}}</td>
@@ -91,15 +93,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <?php $j++; ?>
                                 @endforeach
                             </div>
                             <div class="box-footer">
-                                <a href="#" class="btn btn-primary pull-right">
+                                <a href="{{route('academico.historicoparcial.print', $matricula->mat_id)}}" class="btn btn-primary pull-right">
                                     <i class="fa fa-file-pdf-o"></i> Imprimir Histórico
                                 </a>
                             </div>
                         @else
-                            <p>Curso não possui módulos cadastrados</p>
+                            <p>Aluno não possui matrículas em disciplinas</p>
                         @endif
                     </div>
                 </div>

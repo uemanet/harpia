@@ -4,8 +4,10 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\AlunoRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use ActionButton;
 
@@ -14,16 +16,22 @@ class HistoricoParcialController extends BaseController
     private $alunoRepository;
     private $ofertaDisciplinaRepository;
     private $matriculaOfertaDisciplinaRepository;
+    private $matriculaCursoRepository;
+    private $periodoLetivoRepository;
 
     public function __construct(
         AlunoRepository $alunoRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
-        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
+        MatriculaCursoRepository $matriculaCursoRepository,
+        PeriodoLetivoRepository $periodoLetivoRepository
     )
     {
         $this->alunoRepository = $alunoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
+        $this->matriculaCursoRepository = $matriculaCursoRepository;
+        $this->periodoLetivoRepository = $periodoLetivoRepository;
     }
 
     public function getIndex(Request $request)
@@ -84,90 +92,120 @@ class HistoricoParcialController extends BaseController
         $gradesCurriculares = array();
         
         foreach ($aluno->matriculas as $matricula) {
-            //$curso = $matricula->turma->ofertacurso->curso;
-            
-            $matrizCurricular = $matricula->turma->ofertacurso->matriz;
-
-            $modulos = $matrizCurricular->modulos;
-
-            foreach ($modulos as $modulo) {
-                $reg = array();
-
-                $reg['mdo_id'] = $modulo->mdo_id;
-                $reg['mdo_nome'] = $modulo->mdo_nome;
-
-                $disciplinasOfertadas = $this->ofertaDisciplinaRepository->findAll([
-                    'mdc_mdo_id' => $modulo->mdo_id,
-                    'ofd_trm_id' => $matricula->mat_trm_id
-                ], ['ofd_id','mdc_id', 'dis_nome', 'mdc_tipo_avaliacao']);
-
-                $disciplinasModulo = array();
-
-                // pegar as matriculas do aluno para as disciplinas desse modulo
-
-                foreach ($disciplinasOfertadas as $oferta) {
-
-                    $cell = array();
-
-                    $cell['mdc_id'] = $oferta->mdc_id;
-                    $cell['dis_nome'] = $oferta->dis_nome;
-                    $cell['mdc_tipo_avaliacao'] = $oferta->mdc_tipo_avaliacao;
-                    $cell['mof_nota1'] = '---';
-                    $cell['mof_nota2'] = '---';
-                    $cell['mof_nota3'] = '---';
-                    $cell['mof_conceito'] = '---';
-                    $cell['mof_recuperacao'] = '---';
-                    $cell['mof_final'] = '---';
-                    $cell['mof_mediafinal'] = '---';
-                    $cell['mof_situacao_matricula'] = '---';
-
-                    $result = $this->matriculaOfertaDisciplinaRepository->findBy([
-                        'mof_mat_id' => $matricula->mat_id,
-                        'mof_ofd_id' => $oferta->ofd_id
-                    ])->last();
-
-                    if ($result) {
-                        if (!is_null($result->mof_nota1)) {
-                           $cell['mof_nota1'] = $result->mof_nota1;
-                        }
-
-                        if (!is_null($result->mof_nota2)) {
-                            $cell['mof_nota2'] = $result->mof_nota2;
-                        }
-
-                        if (!is_null($result->mof_nota3)) {
-                            $cell['mof_nota3'] = $result->mof_nota3;
-                        }
-
-                        if (!is_null($result->mof_conceito)) {
-                            $cell['mof_conceito'] = $result->mof_conceito;
-                        }
-
-                        if (!is_null($result->mof_recuperacao)) {
-                            $cell['mof_recuperacao'] = $result->mof_recuperacao;
-                        }
-
-                        if (!is_null($result->mof_final)) {
-                            $cell['mof_final'] = $result->mof_final;
-                        }
-
-                        if (!is_null($result->mof_mediafinal)) {
-                            $cell['mof_mediafinal'] = $result->mof_mediafinal;
-                        }
-
-                        $cell['mof_situacao_matricula'] = $result->mof_situacao_matricula;
-                    }
-
-                    $disciplinasModulo[] = (object)$cell;
-                }
-
-                $reg['ofertas_disciplinas'] = $disciplinasModulo;
-
-                $gradesCurriculares[$matricula->mat_id]['modulos'][] = $reg;
-            }
+            $gradesCurriculares[$matricula->mat_id]['periodos_letivos'] = $this->getGradeCurricular($matricula->mat_id);
         }
-//        dd($gradesCurriculares);
 
         return view('Academico::historicoparcial.show', compact('aluno', 'pessoa', 'gradesCurriculares'));
+    }
+
+    public function getPrint($matriculaId)
+    {
+        $matricula = $this->matriculaCursoRepository->find($matriculaId);
+
+        if (!$matricula) {
+            flash()->error('Aluno não encontrado');
+            return redirect()->back();
+        }
+
+        $curso = $matricula->turma->ofertacurso->curso;
+
+        $gradeCurricular = $this->getGradeCurricular($matricula->mat_id);
+
+        $aluno = $matricula->aluno;
+        
+        $mpdf = new \mPDF();
+        $mpdf->mirrorMargins = 1;
+        $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
+        $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
+        $mpdf->addPage('P');
+
+        $mpdf->WriteHTML(view('Academico::historicoparcial.print', compact('aluno'))->render());
+        $mpdf->Output();
+        exit;
+    }
+
+    private function getGradeCurricular($matriculaId)
+    {
+        $matricula = $this->matriculaCursoRepository->find($matriculaId);
+
+        $periodos = $this->periodoLetivoRepository->getAllByTurma($matricula->mat_trm_id);
+
+        $returndata = array();
+
+        foreach ($periodos as $periodo) {
+            $reg = array();
+
+            $reg['per_id'] = $periodo->per_id;
+            $reg['per_nome'] = $periodo->per_nome;
+
+            $disciplinasCursadas = $this->matriculaOfertaDisciplinaRepository->findBy([
+                'mof_mat_id' => $matricula->mat_id,
+                'ofd_per_id' => $periodo->per_id
+            ], null, ['dis_nome' => 'asc']);
+
+            if (!$disciplinasCursadas->count()) {
+                continue;
+            }
+
+            $disciplinasPeriodo = array();
+
+            // pegar as matriculas do aluno para as disciplinas desse modulo
+
+            foreach ($disciplinasCursadas as $oferta) {
+
+                $cell = array();
+
+                $cell['mof_id'] = $oferta->mof_id;
+                $cell['dis_nome'] = $oferta->dis_nome;
+                $cell['mdc_tipo_avaliacao'] = $oferta->mdc_tipo_avaliacao;
+                $cell['mdo_nome'] = $oferta->mdo_nome;
+                $cell['mof_nota1'] = '---';
+                $cell['mof_nota2'] = '---';
+                $cell['mof_nota3'] = '---';
+                $cell['mof_conceito'] = '---';
+                $cell['mof_recuperacao'] = '---';
+                $cell['mof_final'] = '---';
+                $cell['mof_mediafinal'] = '---';
+                $cell['mof_situacao_matricula'] = '---';
+
+                if (!is_null($oferta->mof_nota1)) {
+                    $cell['mof_nota1'] = $oferta->mof_nota1;
+                }
+
+                if (!is_null($oferta->mof_nota2)) {
+                    $cell['mof_nota2'] = $oferta->mof_nota2;
+                }
+
+                if (!is_null($oferta->mof_nota3)) {
+                    $cell['mof_nota3'] = $oferta->mof_nota3;
+                }
+
+                if (!is_null($oferta->mof_conceito)) {
+                    $cell['mof_conceito'] = $oferta->mof_conceito;
+                }
+
+                if (!is_null($oferta->mof_recuperacao)) {
+                    $cell['mof_recuperacao'] = $oferta->mof_recuperacao;
+                }
+
+                if (!is_null($oferta->mof_final)) {
+                    $cell['mof_final'] = $oferta->mof_final;
+                }
+
+                if (!is_null($oferta->mof_mediafinal)) {
+                    $cell['mof_mediafinal'] = $oferta->mof_mediafinal;
+                }
+
+                $cell['mof_situacao_matricula'] = $oferta->mof_situacao_matricula;
+
+                $disciplinasPeriodo[] = (object)$cell;
+            }
+
+            $reg['ofertas_disciplinas'] = $disciplinasPeriodo;
+
+            $returndata[] = $reg;
+        }
+
+        return $returndata;
     }
 }
