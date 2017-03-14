@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\AlunoRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use ActionButton;
@@ -12,14 +13,17 @@ class HistoricoParcialController extends BaseController
 {
     private $alunoRepository;
     private $ofertaDisciplinaRepository;
+    private $matriculaOfertaDisciplinaRepository;
 
     public function __construct(
         AlunoRepository $alunoRepository,
-        OfertaDisciplinaRepository $ofertaDisciplinaRepository
+        OfertaDisciplinaRepository $ofertaDisciplinaRepository,
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     )
     {
         $this->alunoRepository = $alunoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
     }
 
     public function getIndex(Request $request)
@@ -95,13 +99,74 @@ class HistoricoParcialController extends BaseController
                 $disciplinasOfertadas = $this->ofertaDisciplinaRepository->findAll([
                     'mdc_mdo_id' => $modulo->mdo_id,
                     'ofd_trm_id' => $matricula->mat_trm_id
-                ], ['mdc_id', 'dis_nome']);
+                ], ['ofd_id','mdc_id', 'dis_nome', 'mdc_tipo_avaliacao']);
 
-                $reg['ofertas_disciplinas'] = $disciplinasOfertadas;
+                $disciplinasModulo = array();
+
+                // pegar as matriculas do aluno para as disciplinas desse modulo
+
+                foreach ($disciplinasOfertadas as $oferta) {
+
+                    $cell = array();
+
+                    $cell['mdc_id'] = $oferta->mdc_id;
+                    $cell['dis_nome'] = $oferta->dis_nome;
+                    $cell['mdc_tipo_avaliacao'] = $oferta->mdc_tipo_avaliacao;
+                    $cell['mof_nota1'] = '---';
+                    $cell['mof_nota2'] = '---';
+                    $cell['mof_nota3'] = '---';
+                    $cell['mof_conceito'] = '---';
+                    $cell['mof_recuperacao'] = '---';
+                    $cell['mof_final'] = '---';
+                    $cell['mof_mediafinal'] = '---';
+                    $cell['mof_situacao_matricula'] = '---';
+
+                    $result = $this->matriculaOfertaDisciplinaRepository->findBy([
+                        'mof_mat_id' => $matricula->mat_id,
+                        'mof_ofd_id' => $oferta->ofd_id
+                    ])->last();
+
+                    if ($result) {
+                        if (!is_null($result->mof_nota1)) {
+                           $cell['mof_nota1'] = $result->mof_nota1;
+                        }
+
+                        if (!is_null($result->mof_nota2)) {
+                            $cell['mof_nota2'] = $result->mof_nota2;
+                        }
+
+                        if (!is_null($result->mof_nota3)) {
+                            $cell['mof_nota3'] = $result->mof_nota3;
+                        }
+
+                        if (!is_null($result->mof_conceito)) {
+                            $cell['mof_conceito'] = $result->mof_conceito;
+                        }
+
+                        if (!is_null($result->mof_recuperacao)) {
+                            $cell['mof_recuperacao'] = $result->mof_recuperacao;
+                        }
+
+                        if (!is_null($result->mof_final)) {
+                            $cell['mof_final'] = $result->mof_final;
+                        }
+
+                        if (!is_null($result->mof_mediafinal)) {
+                            $cell['mof_mediafinal'] = $result->mof_mediafinal;
+                        }
+
+                        $cell['mof_situacao_matricula'] = $result->mof_situacao_matricula;
+                    }
+
+                    $disciplinasModulo[] = (object)$cell;
+                }
+
+                $reg['ofertas_disciplinas'] = $disciplinasModulo;
 
                 $gradesCurriculares[$matricula->mat_id]['modulos'][] = $reg;
             }
         }
+//        dd($gradesCurriculares);
 
         return view('Academico::historicoparcial.show', compact('aluno', 'pessoa', 'gradesCurriculares'));
     }
