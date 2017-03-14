@@ -215,7 +215,7 @@
                     $.each(disciplinas, function (key, obj) {
                         table += '<tr>';
 
-                        if(obj.disponivel) {
+                        if(obj.status == 1) {
                             table += "<td><label><input type='checkbox' class='icheckbox_minimal-blue ofertas' value='"+obj.ofd_id+"'></label></td>";
                         } else {
                             table += "<td></td>";
@@ -225,10 +225,12 @@
                         table += "<td>"+obj.dis_creditos+"</td>";
                         table += "<td>"+obj.quant_matriculas+"/"+"<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                         table += "<td>"+obj.pes_nome+"</td>";
-                        if(obj.disponivel) {
+                        if(obj.status == 1) {
                             table += "<td><span class='label label-success'>Disponível</span></td>";
+                        } else if(obj.status == 2) {
+                            table += "<td><span class='label label-warning'>Pré-requisitos não satisfeitos</span></td>";
                         } else {
-                            table += "<td><span class='label label-danger'>Não Disponível</span></td>";
+                            table += "<td><span class='label label-danger'>Sem vagas disponíveis</span></td>";
                         }
                         table += '</tr>';
                     });
