@@ -98,6 +98,8 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesMonitoramentoTempoOnline();
 
         $this->createPermissoesAcademicoCertificacao();
+
+        $this->createPermissoesAcademicoControleRegistro();
     }
 
     /** Permissões do Módulo Segurança */
@@ -1018,13 +1020,41 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
+    // 4 permissoes
+    private function createPermissoesAcademicoControleRegistro()
+    {
+        $permissao = new Permissao(); // id = 140
+        $permissao->prm_rcs_id = 37;
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Controle de Registro';
+        $permissao->save();
+
+        $permissao = new Permissao(); // id = 141
+        $permissao->prm_rcs_id = 37;
+        $permissao->prm_nome = 'create';
+        $permissao->prm_descricao = 'Permissão create do recurso Controle de Registro';
+        $permissao->save();
+
+        $permissao = new Permissao(); // id = 142
+        $permissao->prm_rcs_id = 37;
+        $permissao->prm_nome = 'edit';
+        $permissao->prm_descricao = 'Permissão edit do recurso Controle de Registro';
+        $permissao->save();
+
+        $permissao = new Permissao(); // id = 143
+        $permissao->prm_rcs_id = 37;
+        $permissao->prm_nome = 'delete';
+        $permissao->prm_descricao = 'Permissão delete do recurso Controle de Registro';
+        $permissao->save();
+    }
+
     /** Permissões do Módulo Integração */
 
     // 1 permissao
     private function createPermissoesIntegracaoDashboard()
     {
         $permissao = new Permissao(); // id = 125
-        $permissao->prm_rcs_id = 37; // Recurso Dashboard
+        $permissao->prm_rcs_id = 38; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria Cadastros do módulo geral';
         $permissao->save();
@@ -1034,43 +1064,43 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesIntegracaoAmbientes()
     {
         $permissao = new Permissao(); // id = 126
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 127
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'create';
         $permissao->prm_descricao = 'Permissão create do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 128
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'edit';
         $permissao->prm_descricao = 'Permissão edit do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 129
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'delete';
         $permissao->prm_descricao = 'Permissão delete do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 130
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'adicionarservico';
         $permissao->prm_descricao = 'Permissão de adicionar serviços do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 131
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'deletarservico';
         $permissao->prm_descricao = 'Permissão de deletar serviços do recurso Ambientes';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 132
-        $permissao->prm_rcs_id = 38;
+        $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'adicionarturma';
         $permissao->prm_descricao = 'Permissão turmas do recurso Ambientes';
         $permissao->save();
@@ -1082,7 +1112,7 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesMonitoramentoDashboard()
     {
         $permissao = new Permissao(); // id = 133
-        $permissao->prm_rcs_id = 39; // Recurso Dashboard
+        $permissao->prm_rcs_id = 40; // Recurso Dashboard
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Dashboard da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
@@ -1092,13 +1122,13 @@ class PermissaoTableSeeder extends Seeder
     private function createPermissoesMonitoramentoTempoOnline()
     {
         $permissao = new Permissao(); // id = 134
-        $permissao->prm_rcs_id = 40; // Recurso Tempo Online
+        $permissao->prm_rcs_id = 41; // Recurso Tempo Online
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
 
         $permissao = new Permissao(); // id = 135
-        $permissao->prm_rcs_id = 40; // Recurso Tempo Online
+        $permissao->prm_rcs_id = 41; // Recurso Tempo Online
         $permissao->prm_nome = 'monitorar';
         $permissao->prm_descricao = 'Permissão monitorar do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();

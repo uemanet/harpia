@@ -73,4 +73,14 @@ class CursoRepository extends BaseRepository
     {
         return $this->model->where('crs_id', $matrizId)->pluck('crs_nome', 'crs_id');
     }
+
+    /**
+     * Traz somente os cursos tecnicos
+     * @param int $nivelTecnicoId
+     * @return mixed
+     */
+    public function listsCursosTecnicos($nivelTecnicoId = 1)
+    {
+        return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
+    }
 }

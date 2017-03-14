@@ -11,7 +11,7 @@ class DisciplinasTableSeeder extends Seeder
     {
         $faker = \Faker\Factory::create('pt_BR');
 
-        // criar 30 disciplinas de xada modalidade de curso
+        // criar 30 disciplinas de cada modalidade de curso
 
         for ($j=1;$j<=5;$j++) {
             for ($i=0;$i<30;$i++) {

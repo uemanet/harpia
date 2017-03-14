@@ -3,22 +3,24 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\LivroRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\RegistroRepository;
+use ActionButton;
 
-class CertificacaoController
+class ControleRegistroController
 {
     protected $livroRepository;
     protected $registroRepository;
-    protected $cursoRepository;
+    protected $matriculaCursoRepository;
 
     public function __construct(LivroRepository $livroRepository,
-                                RegistroRepository $registroRepository, CursoRepository $cursoRepository)
+                                RegistroRepository $registroRepository,
+                                MatriculaCursoRepository $matriculaCursoRepository)
     {
         $this->livroRepository = $livroRepository;
         $this->registroRepository = $registroRepository;
-        $this->cursoRepository = $cursoRepository;
+        $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
     public function getIndex(Request $request)
@@ -27,8 +29,6 @@ class CertificacaoController
 
         $paginacao = null;
         $tabela = null;
-
-        $cursosTecnicos = $this->cursoRepository->listsCursosTecnicos();
 
         $tableData = $this->registroRepository->paginateRequest($request->all());
 
@@ -66,11 +66,6 @@ class CertificacaoController
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Academico::certificacao.index', [
-            'tabela' => $tabela,
-            'paginacao' => $paginacao,
-            'actionButton' => $actionButtons,
-            'cursos' => $cursosTecnicos
-        ]);
+        return view('Academico::controlederegistro.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 }

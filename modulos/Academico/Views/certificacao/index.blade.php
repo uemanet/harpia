@@ -8,8 +8,8 @@
     Gerenciamento de registros
 @stop
 
-@section('actionButton')
-    {!!ActionButton::render($actionButton)!!}
+@section('stylesheets')
+    <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
 @stop
 
 @section('content')
@@ -26,35 +26,32 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/certificacao/index') }}">
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Input::get('pes_cpf')}}" placeholder="CPF">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Input::get('pes_nome')}}" placeholder="Nome">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Input::get('pes_email')}}" placeholder="Email">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
-                    </div>
-                </form>
+                <div class="form-group col-md-4">
+                    {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
+                    {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha um curso']) !!}
+                </div>
+                <div class="form-group col-md-4">
+                    {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
+                    {{ Form::select('trm_id', ['A', 'B'], null, ['class' => 'form-control', 'id' => 'trm_id', 'value' => Input::get('trm_id'), 'placeholder' => 'Turma']) }}
+                </div>
+                <div class="form-group col-md-4">
+                    {!! Form::label('crs_id', 'Módulo*', ['class' => 'control-label']) !!}
+                    {{ Form::select('pes_email', ['A', 'B'], null, ['class' => 'form-control', 'id' => 'pes_email', 'value' => Input::get('pes_email'), 'placeholder' => 'Módulo']) }}
+                </div>
             </div>
         </div>
         <!-- /.box-body -->
     </div>
-    @if(!is_null($tabela))
-        <div class="box box-primary">
-            <div class="box-header">
-                {!! $tabela->render() !!}
-            </div>
-        </div>
+@stop
 
-        <div class="text-center">{!! $paginacao->links() !!}</div>
-    @else
-        <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
-        </div>
-    @endif
+@section('scripts')
+    <script src="{{url('/')}}/js/plugins/select2.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('select').select2();
+
+
+        });
+    </script>
 @stop

@@ -93,6 +93,8 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([136, 137, 138, 139]); // Permissoes do recurso Certificação
 
+        $perfil->permissoes()->attach([140, 141, 142, 143]); // Permissoes do recurso Controle de Registro
+
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
