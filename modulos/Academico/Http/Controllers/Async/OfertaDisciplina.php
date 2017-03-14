@@ -116,13 +116,13 @@ class OfertaDisciplina extends BaseController
                     return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
                 }
 
-                DB::rollback();
+                DB::commit();
                 return new JsonResponse('Não foi possível excluir a turma. Falha ao excluir do ambiente virtual', JsonResponse::HTTP_CONFLICT,  [], JSON_UNESCAPED_UNICODE);
             }
 
             $this->ofertaDisciplinaRepository->delete($ofertaId);
             DB::commit();
-            //return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             DB::rollback();
 
