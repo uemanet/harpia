@@ -292,5 +292,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'anexos'], function () {
             Route::post('/deletaranexolancamentotcc', '\Modulos\Academico\Http\Controllers\Async\LancamentosTccs@postDeletarAnexo');
         });
+
+        Route::group(['prefix' => 'cursos'], function () {
+            Route::get('/findcursostecnicos', '\Modulos\Academico\Http\Controllers\Async\Cursos@getCursosTecnicos');
+            Route::get('/findmodulosbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByCurso');
+        });
     });
 });
