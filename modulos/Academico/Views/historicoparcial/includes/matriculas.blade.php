@@ -97,7 +97,7 @@
                                 @endforeach
                             </div>
                             <div class="box-footer">
-                                <a href="{{route('academico.historicoparcial.print', $matricula->mat_id)}}" class="btn btn-primary pull-right">
+                                <a href="{{route('academico.historicoparcial.print', $matricula->mat_id)}}" class="btn btn-primary pull-right" target="_blank">
                                     <i class="fa fa-file-pdf-o"></i> Imprimir Histórico
                                 </a>
                             </div>

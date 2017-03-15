@@ -111,19 +111,21 @@ class HistoricoParcialController extends BaseController
 
         $gradeCurricular = $this->getGradeCurricular($matricula->mat_id);
 
-//        dd($gradeCurricular);
-
         $aluno = $matricula->aluno;
+        $cpf = $aluno->pessoa->documentos()->where('doc_tpd_id', 2)->first();
+        $cpf = $cpf->doc_conteudo;
+
+        $aluno->cpf = $cpf;
+
+        $nome = explode(' ',$aluno->pessoa->pes_nome);
         
         $mpdf = new \mPDF();
-//        $mpdf->mirrorMargins = 1;
+        $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
-        $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
         $mpdf->addPage('P');
 
         $mpdf->WriteHTML(view('Academico::historicoparcial.print', compact('aluno', 'curso', 'gradeCurricular', 'matricula'))->render());
-        $mpdf->Output();
-        exit;
+        $mpdf->Output('Historico_Parcial_'.$nome[0].'_'.end($nome).'.pdf', 'I');
     }
 
     private function getGradeCurricular($matriculaId)
@@ -171,15 +173,15 @@ class HistoricoParcialController extends BaseController
                 $cell['mof_situacao_matricula'] = '---';
 
                 if (!is_null($oferta->mof_nota1)) {
-                    $cell['mof_nota1'] = $oferta->mof_nota1;
+                    $cell['mof_nota1'] = number_format((float)$oferta->mof_nota1, 1);
                 }
 
                 if (!is_null($oferta->mof_nota2)) {
-                    $cell['mof_nota2'] = $oferta->mof_nota2;
+                    $cell['mof_nota2'] = number_format((float)$oferta->mof_nota2, 1);
                 }
 
                 if (!is_null($oferta->mof_nota3)) {
-                    $cell['mof_nota3'] = $oferta->mof_nota3;
+                    $cell['mof_nota3'] = number_format((float)$oferta->mof_nota3, 1);
                 }
 
                 if (!is_null($oferta->mof_conceito)) {
@@ -187,15 +189,15 @@ class HistoricoParcialController extends BaseController
                 }
 
                 if (!is_null($oferta->mof_recuperacao)) {
-                    $cell['mof_recuperacao'] = $oferta->mof_recuperacao;
+                    $cell['mof_recuperacao'] = number_format((float)$oferta->mof_recuperacao, 1);
                 }
 
                 if (!is_null($oferta->mof_final)) {
-                    $cell['mof_final'] = $oferta->mof_final;
+                    $cell['mof_final'] = number_format((float)$oferta->mof_final, 1);
                 }
 
                 if (!is_null($oferta->mof_mediafinal)) {
-                    $cell['mof_mediafinal'] = $oferta->mof_mediafinal;
+                    $cell['mof_mediafinal'] = number_format((float)$oferta->mof_mediafinal, 1);
                 }
 
                 $cell['mof_situacao_matricula'] = $oferta->mof_situacao_matricula;
