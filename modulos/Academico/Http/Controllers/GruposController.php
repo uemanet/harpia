@@ -150,7 +150,7 @@ class GruposController extends BaseController
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
             if ($turma->trm_integrada) {
-                event(new NovoGrupoEvent($grupo));
+                event(new NovoGrupoEvent($grupo, "CREATE"));
             }
 
             flash()->success('Grupo criado com sucesso.');
