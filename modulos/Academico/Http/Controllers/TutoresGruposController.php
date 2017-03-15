@@ -2,7 +2,9 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Events\DeleteTutorVinculadoEvent;
 use Modulos\Academico\Events\TutorVinculadoEvent;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -13,6 +15,7 @@ use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use DB;
 
 class TutoresGruposController extends BaseController
 {
@@ -211,11 +214,13 @@ class TutoresGruposController extends BaseController
     public function putAlterarTutor($idTutorGrupo, TutorGrupoRequest $request)
     {
         try {
-            $tutorgrupo = $this->tutorgrupoRepository->find($idTutorGrupo);
+            DB::beginTransaction();
 
-            if (!$tutorgrupo) {
+            $tutorGrupoOld = $this->tutorgrupoRepository->find($idTutorGrupo);
+
+            if (!$tutorGrupoOld) {
                 flash()->error('Turma não existe.');
-                return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+                return redirect()->back();
             }
 
             $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
@@ -223,19 +228,49 @@ class TutoresGruposController extends BaseController
             //Atualiza o fim do vículo do tutor antigo
             $date = date('Y-m-d');
             $dados['ttg_data_fim'] = $date;
-            $this->tutorgrupoRepository->update($dados, $tutorgrupo->ttg_id, 'ttg_id');
+            $this->tutorgrupoRepository->update($dados, $tutorGrupoOld->ttg_id, 'ttg_id');
 
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
+            $grupo = $this->grupoRepository->find($tutorgrupo->ttg_grp_id);
+            $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+
             if (!$tutorgrupo) {
+                DB::rollback();
+
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
 
+            if ($turma->trm_integrada) {
+                // Event tutor antigo desvinculado
+                event(new DeleteTutorVinculadoEvent($tutorGrupoOld));
+
+                if (SincronizacaoRepository::excludedFromMoodle($tutorGrupoOld->getTable(), $idTutorGrupo)) {
+                    // Se o ambiente respondeu OK, vincular novo tutor
+                    event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
+
+                    DB::commit();
+
+                    flash()->success('Tutor alterado com sucesso.');
+                    return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+                }
+
+                DB::commit();
+                flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+                return redirect()->back();
+            }
+
+
+            DB::commit();
+
             flash()->success('Tutor alterado com sucesso.');
             return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
         } catch (\Exception $e) {
+            DB::rollback();
+
             if (config('app.debug')) {
                 throw $e;
             }
