@@ -22,6 +22,7 @@ return [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarGrupoListener',
     ],
+    
     'Modulos\Academico\Events\NovaMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarMatriculaDisciplinaListener',
@@ -35,6 +36,11 @@ return [
     'Modulos\Academico\Events\OfertaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarOfertaDisciplinaListener',
+    ],
+
+    'Modulos\Academico\Events\ConclusaoCursoEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\ConclusaoCursoListener',
     ],
 
     'Modulos\Academico\Events\DeleteGrupoEvent' => [
