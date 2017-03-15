@@ -38,7 +38,7 @@ return [
     ],
 
     'Modulos\Academico\Events\AtualizarGrupoEvent' => [
-    'Modulos\Integracao\Listeners\UpdateSyncListener' => 10,
+    'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
     'Modulos\Academico\Listeners\MigrarAtualizaGrupoListener'
     ],
 ];
