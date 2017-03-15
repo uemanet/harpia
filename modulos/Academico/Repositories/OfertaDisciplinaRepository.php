@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Academico\Models\OfertaDisciplina;
 use Modulos\Core\Repository\BaseRepository;
 use Auth;
+use DB;
 
 class OfertaDisciplinaRepository extends BaseRepository
 {
