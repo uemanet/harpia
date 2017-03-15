@@ -24,11 +24,33 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $this->turmaRepository = $turmaRepository;
     }
 
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        return view('Academico::relatoriosmatriculasdisciplina.index', compact('cursos'));
+
+        $paginacao = null;
+        $tabela = null;
+
+        $tableData = $this->matriculaDisciplinaRepository->paginateRequestByParametros($request->all());
+
+
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'mat_id' => '#',
+                'pes_nome' => 'Nome',
+                'mof_situacao_matricula' => 'Turma'
+            ))
+                ->modifyCell('trm_action', function () {
+                    return array('style' => 'width: 140px;');
+                })
+                ->sortable(array('pes_nome'));
+
+            $paginacao = $tableData->appends($request->except('page'));
+        }
+
+
+        return view('Academico::relatoriosmatriculasdisciplina.index', compact('tabela', 'paginacao', 'cursos'));
     }
 
     public function postPdf(Request $request)

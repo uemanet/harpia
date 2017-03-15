@@ -22,7 +22,8 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="box-body">
-                <form method="POST" action="{{ route('academico.relatoriosmatriculasdisciplinas.pdf') }}">
+                <form method="GET" action="{{ route('academico.relatoriosmatriculasdisciplinas.index') }}">
+
                     <div class="row">
                         <div class="col-md-4">
                             {!! Form::label('crs_id', 'Curso*') !!}
@@ -44,7 +45,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             {!! Form::label('per_id', 'Período Letivo*') !!}
                             <div class="form-group">
                                 {!! Form::select('per_id', [], null, ['class' => 'form-control']) !!}
@@ -56,27 +57,33 @@
                                 {!! Form::select('ofd_id', [], null, ['class' => 'form-control']) !!}
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             {!! Form::label('mof_situacao_matricula', 'Situação da matricula') !!}
                             <div class="form-group">
-                                {!! Form::select('mof_situacao_matricula', ["cursando" => "Cursando",
-                                "aprovado_media" => "Aprovado por Média",
-                                  "aprovado_final" => "Aprovado por Final",
-                                  "reprovado_media" => "Reprovado por Média",
-                                  "reprovado_final" => "Reprovado por Final",
-                                  "cancelado" => "Cancelado",
-                                  "Todos"
+                                {!! Form::select('mof_situacao_matricula', ["todos" => "Todos",
+                                    "cursando" => "Cursando",
+                                    "aprovado_media" => "Aprovado por Média",
+                                    "aprovado_final" => "Aprovado por Final",
+                                    "reprovado_media" => "Reprovado por Média",
+                                    "reprovado_final" => "Reprovado por Final",
+                                    "cancelado" => "Cancelado"
                                 ], null, ['class' => 'form-control', 'placeholder' => 'Selecione o status']) !!}
                             </div>
                         </div>
                         <div class="col-md-1">
                             <label for="">&nbsp;</label>
                             <div class="form-group">
-                                {{csrf_field()}}
                                 <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
-                                <input type="submit" id="Buscar" class="form-control btn-primary"  value="Gerar">
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <label for="">&nbsp;</label>
+                            <div class="form-group">
+                                <input type="submit" formtarget="_blank" id="Buscar" class="form-control btn-primary"
+                                       value="Gerar Relatório">
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>
@@ -84,26 +91,43 @@
         <!-- /.box-body -->
     </div>
 
-<div class="box box-primary hidden" id="boxAlunos">
-    <div class="box-header with-border">
-        <h3 class="box-title">Lista de Alunos</h3>
+    <div class="box box-primary hidden" id="boxAlunos">
+        <div class="box-header with-border">
+            <h3 class="box-title">Lista de Alunos</h3>
 
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
         </div>
-        <!-- /.box-tools -->
+        <!-- /.box-header -->
+        <div class="box-body">
+        </div>
     </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-    </div>
-</div>
+
+    @if(!is_null($tabela))
+        <div class="box box-primary">
+            <div class="box-header">
+                {!! $tabela->render() !!}
+            </div>
+        </div>
+
+        <div class="text-center">{!! $paginacao->links() !!}</div>
+
+    @else
+        <div class="box box-primary">
+            <div class="box-body">Sem registros para apresentar</div>
+        </div>
+    @endif
 @endsection
 
 @section('scripts')
     <script src="{{url('/')}}/js/plugins/select2.js"></script>
 
     <script type="text/javascript">
-        $(function() {
+
+        $(function () {
             // select2
             $('select').select2();
 
@@ -129,15 +153,15 @@
                 // buscar as ofertas de curso de acordo com o curso escolhido
                 var cursoId = $(this).val();
 
-                if(!cursoId || cursoId == '') {
+                if (!cursoId || cursoId == '') {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
                         $.each(response, function (key, obj) {
-                            ofertasCursoSelect.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+' ('+obj.mdl_nome+')</option>');
+                            ofertasCursoSelect.append('<option value="' + obj.ofc_id + '">' + obj.ofc_ano + ' (' + obj.mdl_nome + ')</option>');
                         });
                     } else {
                         ofertasCursoSelect.append("<option>Sem ofertas disponiveis</option>");
@@ -156,15 +180,15 @@
                 // buscar as turmas de acordo com a oferta de curso
                 var ofertaCursoId = $(this).val();
 
-                if(!ofertaCursoId || ofertaCursoId == '') {
+                if (!ofertaCursoId || ofertaCursoId == '') {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         turmaSelect.append('<option value="">Selecione a turma</option>');
                         $.each(response, function (key, obj) {
-                            turmaSelect.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
+                            turmaSelect.append('<option value="' + obj.trm_id + '">' + obj.trm_nome + '</option>');
                         });
                     } else {
                         turmaSelect.append('<option>Sem turmas disponíveis</option>');
@@ -182,15 +206,15 @@
                 // buscar os periodos letivos de acordo com a turma escolhida
                 var turmaId = $(this).val();
 
-                if(!turmaId || turmaId == '') {
+                if (!turmaId || turmaId == '') {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/" + turmaId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         periodosLetivosSelect.append('<option value="">Selecione o periodo letivo</option>');
                         $.each(response, function (key, obj) {
-                            periodosLetivosSelect.append('<option value="'+obj.per_id+'">'+obj.per_nome+'</option>');
+                            periodosLetivosSelect.append('<option value="' + obj.per_id + '">' + obj.per_nome + '</option>');
                         });
                     } else {
                         periodosLetivosSelect.append('<option>Sem periodos letivos disponiveis</option>');
@@ -208,15 +232,15 @@
                 var turmaId = turmaSelect.val();
                 var periodoLetivoId = $(this).val();
 
-                if((!turmaId || turmaId == '') || (!periodoLetivoId || periodoLetivoId == '')) {
+                if ((!turmaId || turmaId == '') || (!periodoLetivoId || periodoLetivoId == '')) {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoLetivoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         disciplinasOfertadasSelect.append('<option value="">Selecione a disciplina ofertada</option>');
                         $.each(response, function (key, obj) {
-                            disciplinasOfertadasSelect.append('<option value="'+obj.ofd_id+'">'+obj.dis_nome+'</option>');
+                            disciplinasOfertadasSelect.append('<option value="' + obj.ofd_id + '">' + obj.dis_nome + '</option>');
                         });
                     } else {
                         disciplinasOfertadasSelect.append('<option>Sem disciplinas ofertadas disponíveis</option>');
@@ -225,26 +249,26 @@
             });
 
             // evento do botao Buscar
-            btnBuscar.click(function (event) {
+//            btnBuscar.click(function (event) {
+//
+//                // parar o evento de submissao do formaulario
+//                event.preventDefault();
+//
+//                var turmaId = turmaSelect.val();
+//                var ofertaDisciplinaId = disciplinasOfertadasSelect.val();
+//                var situacao = situacaoSelect.val();
+//
+//                if ((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
+//                    return false;
+//                }
+//
+//                renderTable(turmaId, ofertaDisciplinaId, situacao);
+//
+//            });
 
-                // parar o evento de submissao do formaulario
-                event.preventDefault();
-
-                var turmaId = turmaSelect.val();
-                var ofertaDisciplinaId = disciplinasOfertadasSelect.val();
-                var situacao = situacaoSelect.val();
-
-                if((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
-                    return false;
-                }
-
-                renderTable(turmaId, ofertaDisciplinaId, situacao);
-
-            });
-
-            var renderTable = function(turmaId, ofertaDisciplinaId, situacao) {
-                $.harpia.httpget("{{url('/')}}/academico/async/relatoriosmatriculasdisciplina/gettallalunosbysituacao/"+turmaId+"/" + ofertaDisciplinaId+"/"+ situacao).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+            var renderTable = function (turmaId, ofertaDisciplinaId, situacao) {
+                $.harpia.httpget("{{url('/')}}/academico/async/relatoriosmatriculasdisciplina/gettallalunosbysituacao/" + turmaId + "/" + ofertaDisciplinaId + "/" + situacao).done(function (response) {
+                    if (!$.isEmptyObject(response)) {
                         var html = '<div class="row"><div class="col-md-12">';
 
                         var cursandos = new Array();
@@ -253,11 +277,13 @@
                         var cancelados = new Array();
 
                         $.each(response, function (key, obj) {
-                            if(obj.mof_situacao_matricula == 'reprovado_media' || obj.mof_situacao_matricula == 'reprovado_final') {
+                            if (obj.mof_situacao_matricula == 'reprovado_media' || obj.mof_situacao_matricula == 'reprovado_final') {
                                 reprovados.push(obj);
                             } else if (obj.mof_situacao_matricula == 'cursando') {
                                 cursandos.push(obj);
-                            } else if(['aprovado_media', 'aprovado_final'].indexOf(obj.mof_situacao_matricula) > -1) {
+                            } else if (obj.mof_situacao_matricula == 'cancelado') {
+                                cancelados.push(obj);
+                            } else if (['aprovado_media', 'aprovado_final'].indexOf(obj.mof_situacao_matricula) > -1) {
                                 aprovados.push(obj);
                             }
                         });
@@ -267,20 +293,20 @@
                         tabs += '<ul class="nav nav-tabs">';
                         tabs += '<li class="active">' +
                             '<a href="#tab_1" data-toggle="tab">' +
-                            'Cursando '+
-                            '<span data-toggle="tooltip" class="badge bg-blue">'+cursandos.length+'</span>'+
+                            'Cursando ' +
+                            '<span data-toggle="tooltip" class="badge bg-blue">' + cursandos.length + '</span>' +
                             '</a></li>';
                         tabs += '<li>' +
                             '<a href="#tab_2" data-toggle="tab">' +
-                            'Aprovados <span data-toggle="tooltip" class="badge bg-blue">'+aprovados.length+'</span>' +
+                            'Aprovados <span data-toggle="tooltip" class="badge bg-blue">' + aprovados.length + '</span>' +
                             '</a></li>';
                         tabs += '<li>' +
                             '<a href="#tab_3" data-toggle="tab">' +
-                            'Reprovados <span data-toggle="tooltip" class="badge bg-blue">'+reprovados.length+'</span>' +
+                            'Reprovados <span data-toggle="tooltip" class="badge bg-blue">' + reprovados.length + '</span>' +
                             '</a></li>';
                         tabs += '<li>' +
                             '<a href="#tab_4" data-toggle="tab">' +
-                            'Cancelados <span data-toggle="tooltip" class="badge bg-blue">'+cancelados.length+'</span>' +
+                            'Cancelados <span data-toggle="tooltip" class="badge bg-blue">' + cancelados.length + '</span>' +
                             '</a></li>';
                         tabs += '</ul>';
                         tabs += '<div class="tab-content">';
@@ -289,7 +315,7 @@
                         // Criacao da Tab de Alunos cursando a disciplina
                         var tab1 = '<div class="tab-pane active" id="tab_1">';
 
-                        if(!$.isEmptyObject(cursandos)) {
+                        if (!$.isEmptyObject(cursandos)) {
                             var div = '<div class="row"><div class="col-md-12">';
                             var table1 = '<table class="table table-bordered table-striped">';
 
@@ -302,7 +328,7 @@
                             // corpo da tabela
                             $.each(cursandos, function (key, obj) {
                                 table1 += '<tr>';
-                                table1 += '<td>'+obj.pes_nome+'</td>';
+                                table1 += '<td>' + obj.pes_nome + '</td>';
                                 table1 += '<td><span class="label label-info">Cursando</span></td>';
                                 table1 += '</tr>';
 
@@ -313,10 +339,10 @@
                             div += table1;
                             div += '</div></div>';
 
-                            // criacao do botao de matricular alunos
-                            div += '<div class="row"><div class="col-md-12">';
-                            div += '<button type="submit" formtarget="_blank" class="btn btn-success btnMatricular">Imprimir</button>';
-                            div += '</div></div>';
+//                            // criacao do botao de matricular alunos
+//                            div += '<div class="row"><div class="col-md-12">';
+//                            div += '<button type="submit" formtarget="_blank" class="btn btn-success btnMatricular">Imprimir</button>';
+//                            div += '</div></div>';
 
                             tab1 += div;
                         } else {
@@ -328,7 +354,7 @@
                         // Criacao da Tab de Alunos aprovados na disciplina
                         var tab2 = '<div class="tab-pane " id="tab_2">';
 
-                        if(!$.isEmptyObject(aprovados)) {
+                        if (!$.isEmptyObject(aprovados)) {
                             var table2 = '<table class="table table-bordered table-striped">';
 
                             // cabeçalho da tabela
@@ -340,11 +366,11 @@
                             // corpo da tabela
                             $.each(aprovados, function (key, obj) {
                                 table2 += '<tr>';
-                                table2 += '<td>'+obj.pes_nome+'</td>';
-                                if (obj.mof_situacao_matricula == 'aprovado_media'){
-                                    table2 += '<td><span class="label label-info">Aprovado por Média</span></td>';
-                                }else {
-                                    table2 += '<td><span class="label label-info">Aprovado por Final</span></td>';
+                                table2 += '<td>' + obj.pes_nome + '</td>';
+                                if (obj.mof_situacao_matricula == 'aprovado_media') {
+                                    table2 += '<td><span class="label label-success">Aprovado por Média</span></td>';
+                                } else {
+                                    table2 += '<td><span class="label label-success">Aprovado por Final</span></td>';
                                 }
 
                                 table2 += '</tr>';
@@ -361,7 +387,7 @@
                         // Criacao da Tab de Alunos reprovado na disciplina
                         var tab3 = '<div class="tab-pane " id="tab_3">';
 
-                        if(!$.isEmptyObject(reprovados)) {
+                        if (!$.isEmptyObject(reprovados)) {
                             var table3 = '<table class="table table-bordered table-striped">';
 
                             // cabeçalho da tabela
@@ -373,10 +399,10 @@
                             // corpo da tabela
                             $.each(reprovados, function (key, obj) {
                                 table3 += '<tr>';
-                                table3 += '<td>'+obj.pes_nome+'</td>';
-                                if (obj.mof_situacao_matricula == 'reprovado_media'){
+                                table3 += '<td>' + obj.pes_nome + '</td>';
+                                if (obj.mof_situacao_matricula == 'reprovado_media') {
                                     table3 += '<td><span class="label label-warning">Reprovado por Média</span></td>';
-                                }else {
+                                } else {
                                     table3 += '<td><span class="label label-warning">Reprovado por Final</span></td>';
                                 }
 
@@ -394,7 +420,7 @@
                         // Criacao da Tab de Alunos cancelados na disciplina
                         var tab4 = '<div class="tab-pane " id="tab_4">';
 
-                        if(!$.isEmptyObject(cancelados)) {
+                        if (!$.isEmptyObject(cancelados)) {
                             var table4 = '<table class="table table-bordered table-striped">';
 
                             // cabeçalho da tabela
@@ -404,9 +430,9 @@
                             table4 += '</tr>';
 
                             // corpo da tabela
-                            $.each(reprovados, function (key, obj) {
+                            $.each(cancelados, function (key, obj) {
                                 table4 += '<tr>';
-                                table4 += '<td>'+obj.pes_nome+'</td>';
+                                table4 += '<td>' + obj.pes_nome + '</td>';
                                 table4 += '<td><span class="label label-warning">Cancelado</span></td>';
                                 table4 += '</tr>';
                             });
@@ -443,9 +469,9 @@
             var hiddenButton = function () {
                 var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
 
-                if(checkboxes.is(':checked')){
+                if (checkboxes.is(':checked')) {
                     $(document).find('.btnMatricular').removeClass('hidden');
-                }else{
+                } else {
                     $(document).find('.btnMatricular').addClass('hidden');
                 }
             };
@@ -460,14 +486,14 @@
                 var ofertaDisciplinaId = disciplinasOfertadasSelect.val();
                 var situacao = situacaoSelect.val();
 
-                if((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
+                if ((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
                     return false;
                 }
 
                 sendMatriculas(turmaId, ofertaDisciplinaId, situacao);
             });
 
-            var sendMatriculas = function(turmaId, ofertaDisciplinaId, situacao) {
+            var sendMatriculas = function (turmaId, ofertaDisciplinaId, situacao) {
 
                 var dados = {
                     trm_id: turmaId,

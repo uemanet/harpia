@@ -73,9 +73,9 @@
             <td align="center" class="matricula">{{$aluno->mat_id}}</td>
             <td class="nome">{{$aluno->pes_nome}}</td>
             <td class="email">{{$aluno->pes_email}}</td>
-            <td class="turma">{{$aluno->turma->trm_nome}}</td>
-            <td class="polo">{{$aluno->polo->pol_nome}}</td>
-            <td class="situacao">{{$aluno->mat_situacao}}</td>
+            <td class="turma">{{$aluno->trm_nome}}</td>
+            <td class="polo">{{$aluno->pol_nome}}</td>
+            <td class="situacao">{{str_replace("_", "-", $aluno->mof_situacao_matricula)}}</td>
         </tr>
     @endforeach
 
