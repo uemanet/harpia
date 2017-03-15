@@ -80,18 +80,6 @@
                                 selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
                             }
                         });
-
-                    $.harpia.httpget("{{url('/')}}/academico/async/cursos/findmodulosbycurso/" + curso)
-                        .done(function (data) {
-                            if (!$.isEmptyObject(data)) {
-                                selectModulos.append('<option value="">Selecione um módulo</option>');
-                                $.each(data, function (key, obj) {
-                                    selectModulos.append("<option value='" + obj.mdo_id + "'>" + obj.mdo_nome + "</option>");
-                                });
-                            } else {
-                                selectModulos.append('<option value="">Sem módulos cadastrados</option>');
-                            }
-                        });
                 }
             });
 
@@ -100,6 +88,7 @@
 
                 if (oferta) {
                     selectTurmas.empty();
+                    selectModulos.empty();
 
                     $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + oferta)
                         .done(function (data) {
@@ -110,6 +99,20 @@
                                 });
                             } else {
                                 selectTurmas.append('<option value="">Sem turmas cadastradas</option>');
+                            }
+                        });
+
+
+                    $.harpia.httpget("{{url('/')}}/academico/async/cursos/findmodulosbyoferta/" + oferta)
+                        .done(function (data) {
+                            console.log(data);
+                            if (!$.isEmptyObject(data)) {
+                                selectModulos.append('<option value="">Selecione um módulo</option>');
+                                $.each(data, function (key, obj) {
+                                    selectModulos.append("<option value='" + obj.mdo_id + "'>" + obj.mdo_nome + "</option>");
+                                });
+                            } else {
+                                selectModulos.append('<option value="">Sem módulos cadastrados</option>');
                             }
                         });
                 }

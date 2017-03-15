@@ -295,7 +295,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'cursos'], function () {
             Route::get('/findcursostecnicos', '\Modulos\Academico\Http\Controllers\Async\Cursos@getCursosTecnicos');
-            Route::get('/findmodulosbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByCurso');
+            Route::get('/findmodulosbyoferta/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByOferta');
         });
     });
 });

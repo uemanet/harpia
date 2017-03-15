@@ -6,18 +6,22 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\ModuloMatrizRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
 
 class Cursos
 {
     protected $defaultHeaders;
     protected $cursoRepository;
     protected $moduloMatrizRepository;
+    protected $ofertaCursoRepository;
 
     public function __construct(CursoRepository $cursoRepository,
-                                ModuloMatrizRepository $moduloMatrizRepository)
+                                ModuloMatrizRepository $moduloMatrizRepository,
+                                OfertaCursoRepository $ofertaCursoRepository)
     {
         $this->cursoRepository = $cursoRepository;
         $this->moduloMatrizRepository = $moduloMatrizRepository;
+        $this->ofertaCursoRepository = $ofertaCursoRepository;
         $this->defaultHeaders = ['Content-Type: application/json'];
     }
 
@@ -35,10 +39,11 @@ class Cursos
         }
     }
 
-    public function getModulosByCurso($matrizId)
+    public function getModulosByOferta($ofertaId)
     {
         try {
-            $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($matrizId);
+            $oferta = $this->ofertaCursoRepository->find($ofertaId);
+            $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($oferta->ofc_mtc_id);
             return new JsonResponse($modulos, JsonResponse::HTTP_OK, $this->defaultHeaders);
         } catch (\Exception $e) {
             if (config('app.debug')) {
