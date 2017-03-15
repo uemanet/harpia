@@ -21,9 +21,7 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function paginate($sort = null, $search = null)
     {
-        $result = $this->model
-            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'ofc_crs_id')
-            ->where('ucr_usr_id', '=', Auth::user()->usr_id);
+        $result = $this->model;
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {

@@ -227,15 +227,6 @@
                     if(!$.isEmptyObject(response)) {
                         var html = '<div class="row"><div class="col-md-12">';
 
-                        // criando a estrutura das tabs
-                        var tabs = '<div class="nav-tabs-custom">';
-                        tabs += '<ul class="nav nav-tabs">';
-                        tabs += '<li class="active"><a href="#tab_1" data-toggle="tab">Não Matriculados</a></li>';
-                        tabs += '<li><a href="#tab_2" data-toggle="tab">Cursando</a></li>';
-                        tabs += '<li><a href="#tab_3" data-toggle="tab">Aprovados</a></li>';
-                        tabs += '</ul>';
-                        tabs += '<div class="tab-content">';
-
                         var naoMatriculados = new Array();
                         var cursandos = new Array();
                         var aprovados = new Array();
@@ -249,6 +240,25 @@
                                 aprovados.push(obj);
                             }
                         });
+
+                        // criando a estrutura das tabs
+                        var tabs = '<div class="nav-tabs-custom">';
+                        tabs += '<ul class="nav nav-tabs">';
+                        tabs += '<li class="active">' +
+                                '<a href="#tab_1" data-toggle="tab">' +
+                                'Não Matriculados '+
+                                '<span data-toggle="tooltip" class="badge bg-blue">'+naoMatriculados.length+'</span>'+
+                                '</a></li>';
+                        tabs += '<li>' +
+                                '<a href="#tab_2" data-toggle="tab">' +
+                                'Cursando <span data-toggle="tooltip" class="badge bg-blue">'+cursandos.length+'</span>' +
+                                '</a></li>';
+                        tabs += '<li>' +
+                                '<a href="#tab_3" data-toggle="tab">' +
+                                'Aprovados <span data-toggle="tooltip" class="badge bg-blue">'+aprovados.length+'</span>' +
+                                '</a></li>';
+                        tabs += '</ul>';
+                        tabs += '<div class="tab-content">';
 
 
                         // Criacao da Tab de Alunos nao matriculados para matricula
