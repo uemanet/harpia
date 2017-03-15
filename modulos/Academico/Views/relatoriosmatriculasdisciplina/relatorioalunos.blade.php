@@ -49,7 +49,7 @@
 </style>
 
 <div align="center" style="font-size:140%"><img src="{{public_path('/img/logo_oficial.png')}}"></div>
-<div align="center" style="font-size:140%">Relatório de alunos do Curso:</div>
+<div align="center" style="font-size:140%">Relatório de alunos da Disciplina: {{ $disciplina[0] }}</div>
 <div align="center" style="font-size:110%">Emitido em: {{date("d/m/y")}}</div>
 <br>
 
@@ -75,7 +75,7 @@
             <td class="email">{{$aluno->pes_email}}</td>
             <td class="turma">{{$aluno->trm_nome}}</td>
             <td class="polo">{{$aluno->pol_nome}}</td>
-            <td class="situacao">{{str_replace("_", "-", $aluno->mof_situacao_matricula)}}</td>
+            <td class="situacao">{{$aluno->mof_situacao_matricula}}</td>
         </tr>
     @endforeach
 

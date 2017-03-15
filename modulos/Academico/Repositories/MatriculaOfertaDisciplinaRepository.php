@@ -389,8 +389,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function paginateRequestByParametros(array $requestParameters = null)
     {
         $sort = array();
-        //dd($requestParameters);
-
         if (empty($requestParameters)) {
             return new Collection();
         }
@@ -419,17 +417,16 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email')
                 ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
                 ->where('mat_trm_id', $requestParameters['trm_id'])
-                ->orderBy($sort['field'], $sort['sort'])
-                ->paginate(15);
+                ->orderBy($sort['field'], $sort['sort']);
 
             if ($requestParameters['mof_situacao_matricula'] != 'todos') {
                 $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
             }
 
-            return $query;
+            return $query->paginate(15);
         }
 
-        $variavel =  $this->model
+        $dados =  $this->model
             ->join('acd_matriculas', function ($join) {
                 $join->on('mof_mat_id', '=', 'mat_id');
             })
@@ -447,13 +444,13 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             })
             ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email')
             ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
-            ->where('mat_trm_id', $requestParameters['trm_id'])->paginate(15);
+            ->where('mat_trm_id', $requestParameters['trm_id']);
 
         if ($requestParameters['mof_situacao_matricula'] != 'todos') {
-            $variavel = $variavel->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
+            $dados = $dados->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
         }
 
 
-        return $variavel;
+        return $dados->paginate(15);
     }
 }

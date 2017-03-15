@@ -362,20 +362,31 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 7;
         $recurso->save();
 
-        // Recurso Relatórios - id: 31
+        // Recurso Relatório Matricula por Curso - id: 31
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
-        $recurso->rcs_nome = 'Relatórios';
-        $recurso->rcs_rota = 'relatorios';
-        $recurso->rcs_descricao = 'Recurso de Geração de Relatórios do Módulo Acadêmico';
+        $recurso->rcs_nome = 'Relatório Matricula por Curso';
+        $recurso->rcs_rota = 'relatoriosmatriculascurso';
+        $recurso->rcs_descricao = 'Recurso Relatório Matricula Curso do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-file-text-o';
         $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 7;
+        $recurso->rcs_ordem = 8;
+        $recurso->save();
+
+        // Recurso Relatório Matricula por Disciplina - id: 32
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
+        $recurso->rcs_nome = 'Relatório Matricula por Disciplina';
+        $recurso->rcs_rota = 'relatoriosmatriculasdisciplina';
+        $recurso->rcs_descricao = 'Recurso Relatório Matricula Disciplina do módulo acadêmico';
+        $recurso->rcs_icone = 'fa fa-file-text-o';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 9;
         $recurso->save();
 
         /* Categoria Oculto */
 
-        // Recurso Tutor do Grupo - id: 32
+        // Recurso Tutor do Grupo - id: 33
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Tutor do Grupo';
@@ -386,7 +397,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Matrizes Curriculares - id: 33
+        // Recurso Matrizes Curriculares - id: 34
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Matrizes Curriculares';
@@ -397,7 +408,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 5;
         $recurso->save();
 
-        // Recurso Grupos - id: 34
+        // Recurso Grupos - id: 35
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Grupos';
@@ -408,7 +419,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Recurso Turmas - id: 35
+        // Recurso Turmas - id: 36
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Turmas';
@@ -419,23 +430,12 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 8;
         $recurso->save();
 
-        // Recurso Módulos das Matrizes - id: 36
+        // Recurso Módulos das Matrizes - id: 37
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
         $recurso->rcs_nome = 'Módulos das Matrizes';
         $recurso->rcs_rota = 'modulosmatrizes';
         $recurso->rcs_descricao = 'Recurso Módulos Matriz do módulo acadêmico';
-        $recurso->rcs_icone = 'fa fa-book';
-        $recurso->rcs_ativo = 1;
-        $recurso->rcs_ordem = 3;
-        $recurso->save();
-
-        // Recurso Relatório Matricula por Curso - id: 37
-        $recurso = new Recurso();
-        $recurso->rcs_ctr_id = 6; // Categoria Oculto - Módulo Acadêmico
-        $recurso->rcs_nome = 'Relatório Matricula por Curso';
-        $recurso->rcs_rota = 'relatoriosmatriculas';
-        $recurso->rcs_descricao = 'Recurso Relatório Matricula do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-book';
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 3;
