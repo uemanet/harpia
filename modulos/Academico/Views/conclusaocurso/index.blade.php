@@ -135,6 +135,7 @@
                     return false;
                 }
 
+                // buscar turmas
                 $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
                     if(!$.isEmptyObject(response)) {
                         turmaSelect.append("<option value=''>Selecione uma turma</option>");
@@ -146,20 +147,9 @@
                         turmaSelect.append("<option value=''>Sem turmas cadastradas</option>");
                     }
                 });
-            });
 
-            // evento change do select de turmas
-            turmaSelect.change(function () {
-                // limpando selects
-                polosSelect.empty();
-
-                var turmaId = $(this).val();
-
-                if(!turmaId) {
-                    return false;
-                }
-
-                $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + turmaId).done(function (response) {
+                // buscar polos
+                $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
                     if(!$.isEmptyObject(response)) {
                         polosSelect.append("<option value=''>Selecione um polo</option>");
 
@@ -202,7 +192,9 @@
             });
 
             // evento do botão de confirmar a matricula na(s) disciplina(s)
-            $(document).on('click', '#confirmConclusao', function (e) {
+            $(document).on('click', '.confirmConclusao', function (e) {
+
+                e.preventDefault();
 
                 var quant = $('.matriculas:checked').length;
 
@@ -267,7 +259,7 @@
                         table += "<div class='row'>";
                         table += "<div class='col-md-12'>"
                         table += "<div class='form-group'>";
-                        table += "<button class='btn btn-primary' id='confirmConclusao'>Confirmar Conclusão</button>";
+                        table += "<button class='btn btn-primary confirmConclusao hidden'>Confirmar Conclusão</button>";
                         table += "</div></div></div>";
 
                         boxAlunos.append(table);
@@ -279,12 +271,16 @@
             };
 
             var hiddenButton = function() {
-                var quant = $(document).find('.matriculas').length;
+                var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
 
-                if(quant == 0) {
-                    $(document).find('#confirmConclusao').addClass('hidden');
+                if(checkboxes.is(':checked')){
+                    $(document).find('.confirmConclusao').removeClass('hidden');
+                }else{
+                    $(document).find('.confirmConclusao').addClass('hidden');
                 }
             };
+
+            $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButton);
 
             var sendMatriculas = function (ofertaCursoId, matriculasIds) {
 

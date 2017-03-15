@@ -2,36 +2,34 @@
 
 namespace Modulos\Academico\Listeners;
 
-use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
-use Modulos\Academico\Events\NovoGrupoEvent;
+use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
-class MigrarGrupoListener
+class MigrarExclusaoGrupoListener
 {
     protected $sincronizacaoRepository;
     protected $grupoRepository;
     protected $ambienteVirtualRepository;
 
-    public function __construct(
-        SincronizacaoRepository $sincronizacaoRepository,
-        GrupoRepository $grupoRepository,
-        AmbienteVirtualRepository $ambienteVirtualRepository
-    ) {
+    public function __construct(SincronizacaoRepository $sincronizacaoRepository,
+                                GrupoRepository $grupoRepository,
+                                AmbienteVirtualRepository $ambienteVirtualRepository)
+    {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->grupoRepository = $grupoRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
-    
-    public function handle(NovoGrupoEvent $event)
+
+    public function handle(DeleteGrupoEvent $event)
     {
         $gruposMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_grupos',
             'sym_status' => 1,
-            'sym_action' => "CREATE"
+            'sym_action' => 'DELETE'
         ]);
 
         if ($gruposMigrar->count()) {
@@ -43,17 +41,14 @@ class MigrarGrupoListener
 
                 if ($ambiente) {
                     $param = [];
-                    
+
                     // url do ambiente
                     $param['url'] = $ambiente->url;
                     $param['token'] = $ambiente->token;
-                    $param['functioname'] = 'local_integracao_create_group';
-                    $param['action'] = 'CREATE';
+                    $param['functioname'] = 'local_integracao_delete_group';
+                    $param['action'] = 'DELETE';
 
-                    $param['data']['group']['trm_id'] = $grupo->grp_trm_id;
                     $param['data']['group']['grp_id'] = $grupo->grp_id;
-                    $param['data']['group']['name'] = $grupo->grp_nome;
-                    $param['data']['group']['description'] = '';
 
                     $moodleSync = new Moodle();
 
@@ -67,7 +62,7 @@ class MigrarGrupoListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message']));
+                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message'], $event->getAction()));
                 }
             }
         }

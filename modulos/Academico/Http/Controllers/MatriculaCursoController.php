@@ -98,7 +98,7 @@ class MatriculaCursoController extends BaseController
                 $matricula = $result['matricula'];
                 $turma = $this->turmaRepository->find($matricula->mat_trm_id);
                 if ($turma->trm_integrada) {
-                    event(new MatriculaAlunoTurmaEvent($matricula));
+                    event(new MatriculaAlunoTurmaEvent($matricula, "CREATE"));
                 }
             }
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
