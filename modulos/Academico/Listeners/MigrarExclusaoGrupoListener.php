@@ -62,7 +62,7 @@ class MigrarExclusaoGrupoListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message'], 'DELETE'));
+                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message'], $event->getAction()));
                 }
             }
         }

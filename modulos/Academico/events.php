@@ -45,5 +45,10 @@ return [
     'Modulos\Academico\Events\DeleteOfertaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarExclusaoOfertaDisciplinaListener',
+    ],
+
+    'Modulos\Academico\Events\DeleteTutorVinculadoEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarExclusaoTutorVinculadoListener',
     ]
 ];
