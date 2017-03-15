@@ -40,8 +40,8 @@ class OfertaDisciplinaRepository extends BaseRepository
             $query = $query->select($select);
         }
 
-        if(!is_null($order)) {
-            foreach($order as $key => $value) {
+        if (!is_null($order)) {
+            foreach ($order as $key => $value) {
                 $query = $query->orderBy($key, $value);
             }
         }

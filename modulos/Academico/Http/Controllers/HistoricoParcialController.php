@@ -25,8 +25,7 @@ class HistoricoParcialController extends BaseController
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
         MatriculaCursoRepository $matriculaCursoRepository,
         PeriodoLetivoRepository $periodoLetivoRepository
-    )
-    {
+    ) {
         $this->alunoRepository = $alunoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
@@ -78,7 +77,7 @@ class HistoricoParcialController extends BaseController
         }
     }
     
-    public function getShow($alunoId) 
+    public function getShow($alunoId)
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
@@ -117,7 +116,7 @@ class HistoricoParcialController extends BaseController
 
         $aluno->cpf = $cpf;
 
-        $nome = explode(' ',$aluno->pessoa->pes_nome);
+        $nome = explode(' ', $aluno->pessoa->pes_nome);
         
         $mpdf = new \mPDF();
         $mpdf->mirrorMargins = 1;
@@ -156,7 +155,6 @@ class HistoricoParcialController extends BaseController
             // pegar as matriculas do aluno para as disciplinas desse modulo
 
             foreach ($disciplinasCursadas as $oferta) {
-
                 $cell = array();
 
                 $cell['mof_id'] = $oferta->mof_id;

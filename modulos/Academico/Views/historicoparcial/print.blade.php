@@ -92,7 +92,7 @@
                             <td>{{$disciplina->dis_carga_horaria}}</td>
                             <td>{{$disciplina->mof_mediafinal}}</td>
                             <?php
-                                if($disciplina->mof_mediafinal != '---'):
+                                if ($disciplina->mof_mediafinal != '---'):
                                     $coeficienteParcial += ($disciplina->dis_carga_horaria * $disciplina->mof_mediafinal);
                                 endif;
                             ?>
