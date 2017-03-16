@@ -282,7 +282,7 @@ class AlunosController extends BaseController
             $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
             foreach ($ambientesvinculadosId as $id) {
-              event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id ));
+                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
             }
 
             flash()->success('Aluno editado com sucesso!');

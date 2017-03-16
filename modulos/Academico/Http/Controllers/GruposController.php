@@ -2,6 +2,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modulos\Academico\Events\AtualizarGrupoEvent;
 use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Events\NovoGrupoEvent;
 use Modulos\Academico\Http\Requests\GrupoRequest;
@@ -202,6 +203,16 @@ class GruposController extends BaseController
                 flash()->error('Erro ao tentar editar.');
                 return redirect()->back()->withInput($request->all());
             }
+
+            // busca a turma vinculado ao grupo
+            $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+            if ($turma->trm_integrada) {
+                $grupoAtt = $this->grupoRepository->find($id);
+                event(new AtualizarGrupoEvent($grupoAtt));
+            }
+
+
 
             flash()->success('Grupo atualizado com sucesso.');
             return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);

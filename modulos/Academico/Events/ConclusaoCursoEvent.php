@@ -6,5 +6,4 @@ use Harpia\Event\Event;
 
 class ConclusaoCursoEvent extends Event
 {
-
 }

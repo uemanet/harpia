@@ -43,6 +43,11 @@ return [
         'Modulos\Academico\Listeners\MigrarOfertaDisciplinaListener',
     ],
 
+    'Modulos\Academico\Events\AtualizarGrupoEvent' => [
+    'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+    'Modulos\Academico\Listeners\MigrarAtualizaGrupoListener'
+    ],
+
     'Modulos\Academico\Events\ConclusaoCursoEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\ConclusaoCursoListener',

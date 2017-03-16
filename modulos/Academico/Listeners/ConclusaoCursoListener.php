@@ -19,8 +19,7 @@ class ConclusaoCursoListener
         SincronizacaoRepository $sincronizacaoRepository,
         MatriculaCursoRepository $matriculaCursoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
-    )
-    {
+    ) {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->matriculaCursoRepository = $matriculaCursoRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
