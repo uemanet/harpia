@@ -30,6 +30,12 @@ class MatriculaCursoRequest extends BaseRequest
             'mat_pol_id' => 'required',
             'mat_modo_entrada' => 'required'
         ];
+        
+        if ($this->method() == 'PUT') {
+            $rules = [
+                'mat_pol_id' => 'required'
+            ];
+        }
 
         return $rules;
     }
