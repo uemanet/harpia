@@ -13,7 +13,7 @@ class NovaSyncListener
     {
         $this->sincronizacaoRepository = $repository;
     }
-    
+
     public function handle(Event $event)
     {
         $entry = $event->getData();

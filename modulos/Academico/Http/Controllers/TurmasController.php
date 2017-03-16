@@ -2,11 +2,12 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Modulos\Academico\Events\AtualizarTurmaEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\TurmaRequest;
-use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
@@ -182,6 +183,11 @@ class TurmasController extends BaseController
             }
 
             flash()->success('Turma atualizada com sucesso.');
+
+            $turmaUpdated = $this->turmaRepository->find($id);
+            if ($turmaUpdated->trm_integrada) {
+                event(new AtualizarTurmaEvent($turmaUpdated, 'UPDATE'));
+            }
             return redirect('/academico/turmas/index/' . $turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -201,7 +207,7 @@ class TurmasController extends BaseController
             if ($this->turmaRepository->delete($turmaId)) {
                 flash()->success('Turma excluída com sucesso.');
             } else {
-                flash()->error('Erro ao tentar excluir o turma');
+                flash()->error('Erro ao tentar excluir a turma');
             }
 
             return redirect()->back();
