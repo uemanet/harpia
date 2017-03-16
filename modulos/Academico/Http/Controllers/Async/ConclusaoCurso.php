@@ -5,6 +5,7 @@ namespace Modulos\Academico\Http\Controllers\Async;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modulos\Academico\Events\ConclusaoCursoEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use DB;
@@ -44,6 +45,8 @@ class ConclusaoCurso extends BaseController
                     return new JsonResponse('Matricula(s) não está apta para conclusão de curso', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
+                event(new ConclusaoCursoEvent($result, 'UPDATE_STATUS_CONCLUSAO'));
+                
                 DB::commit();
 
                 return new JsonResponse('Matriculas concluidas com sucesso', 200);

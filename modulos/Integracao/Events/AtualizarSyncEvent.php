@@ -12,7 +12,7 @@ use Modulos\Core\Model\BaseModel;
  */
 class AtualizarSyncEvent extends Event
 {
-    private $action;
+
     private $status;
     private $sendingDate;
     private $message;
@@ -30,7 +30,7 @@ class AtualizarSyncEvent extends Event
     public function __construct(BaseModel $entry,
                                 $status = 2,
                                 $message = null,
-                                $action = null,
+                                $action = "CREATE",
                                 $sendingDate = null,
                                 $extraInformation = null)
     {
@@ -50,17 +50,6 @@ class AtualizarSyncEvent extends Event
      */
     public function getData()
     {
-        if ($this->action == null) {
-            return [
-                'sym_table' => $this->entry->getTable(),
-                'sym_table_id' => $this->entry->getKey(),
-                'sym_status' => $this->status,
-                'sym_mensagem' => $this->message,
-                'sym_data_envio' => $this->sendingDate,
-                'sym_extra' => $this->extraInformation
-            ];
-        }
-
         return [
             'sym_table' => $this->entry->getTable(),
             'sym_table_id' => $this->entry->getKey(),

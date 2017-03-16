@@ -77,7 +77,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculasCollection)) {
                     foreach ($matriculasCollection as $obj) {
-                        event(new NovaMatriculaDisciplinaEvent($obj));
+                        event(new NovaMatriculaDisciplinaEvent($obj, "CREATE"));
                     }
                 }
             }
@@ -124,7 +124,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculas)) {
                     foreach ($matriculas as $obj) {
-                        event(new NovaMatriculaDisciplinaEvent($obj));
+                        event(new NovaMatriculaDisciplinaEvent($obj, "CREATE"));
                     }
                 }
             }

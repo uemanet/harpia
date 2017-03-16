@@ -1,18 +1,18 @@
 <?php
 
-namespace Modulos\Integracao\Listeners;
+namespace Modulos\Academico\Listeners;
 
 use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
-use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Academico\Events\AtualizarTurmaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
 
-class MigrarTurmaListener
+class MigrarAtualizaTurmaListener
 {
     private $turmaRepository;
     private $cursoRepository;
@@ -33,12 +33,12 @@ class MigrarTurmaListener
         $this->sincronizacaoRepository = $sincronizacaoRepository;
     }
 
-    public function handle(TurmaMapeadaEvent $event)
+    public function handle(AtualizarTurmaEvent $event)
     {
         $turmasMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_turmas',
             'sym_status' => 1,
-            'sym_action' => 'CREATE'
+            'sym_action' => 'UPDATE'
         ]);
 
         if ($turmasMigrar->count()) {
@@ -50,29 +50,26 @@ class MigrarTurmaListener
                     continue;
                 }
 
-                $data['course']['trm_id'] = $turma->trm_id;
-                $data['course']['category'] = 1;
-                $data['course']['shortname'] = $this->turmaShortName($turma);
-                $data['course']['fullname'] = $this->turmaFullName($turma);
-                $data['course']['summaryformat'] = 1;
-                $data['course']['format'] = 'topics';
-                $data['course']['numsections'] = 0;
+                if ($ambiente) {
+                    $data['course']['trm_id'] = $turma->trm_id;
+                    $data['course']['shortname'] = $this->turmaShortName($turma);
+                    $data['course']['fullname'] = $this->turmaFullName($turma);
 
+                    $param['url'] = $ambiente->url;
+                    $param['token'] = $ambiente->token;
+                    $param['action'] = 'post';
+                    $param['functioname'] = 'local_integracao_update_course';
+                    $param['data'] = $data;
 
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
-                $param['action'] = 'post';
-                $param['functioname'] = 'local_integracao_create_course';
-                $param['data'] = $data;
+                    $response = Moodle::send($param);
+                    $status = 3;
 
-                $response = Moodle::send($param);
-                $status = 3;
+                    if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                        $status = 2;
+                    }
 
-                if (array_key_exists('status', $response) && $response['status'] == 'success') {
-                    $status = 2;
+                    event(new AtualizarSyncEvent($turma, $status, $response['message'],$param['action']));
                 }
-
-                event(new AtualizarSyncEvent($turma, $status, $response['message']));
             }
         }
     }

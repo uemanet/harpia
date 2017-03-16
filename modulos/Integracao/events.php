@@ -26,4 +26,9 @@ return [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Integracao\Listeners\MigrarTurmaListener'
     ],
+
+    'Modulos\Integracao\Events\DeleteOfertaTurmaEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Integracao\Listeners\MigrarExclusaoOfertaTurmaListener'
+    ]
 ];
