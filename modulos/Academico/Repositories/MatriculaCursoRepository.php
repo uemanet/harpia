@@ -458,7 +458,7 @@ class MatriculaCursoRepository extends BaseRepository
                 $matricula->mat_data_conclusao = date('d/m/Y');
                 $matricula->save();
 
-                return true;
+                return $matricula;
             }
         }
 

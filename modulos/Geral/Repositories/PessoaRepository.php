@@ -4,6 +4,7 @@ namespace Modulos\Geral\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Pessoa;
+use DB;
 
 class PessoaRepository extends BaseRepository
 {
@@ -92,5 +93,78 @@ class PessoaRepository extends BaseRepository
                         ->first();
 
         return $result;
+    }
+
+    public function findAmbientesPessoa($pessoaAtt)
+    {
+
+        //verifica em quais turmas a pessoa está vinculada como professor
+        $professorturmas = $this->model
+                        ->join('acd_professores', 'prf_pes_id', '=', 'pes_id')
+                        ->join('acd_ofertas_disciplinas', 'ofd_prf_id', '=', 'prf_id')
+                        ->where('pes_id', '=', $pessoaAtt->pes_id)
+                        ->groupby('ofd_trm_id')->distinct()
+                        ->get();
+
+        //verifica em quais turmas a pessoa está vinculada como tutor
+        $tutorgrupos = $this->model
+                        ->join('acd_tutores', 'tut_pes_id', '=', 'pes_id')
+                        ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
+                        ->where('pes_id', '=', $pessoaAtt->pes_id)
+                        ->groupby('ttg_grp_id')->distinct()
+                        ->get();
+
+        $gruposdotutorId = [];
+
+        foreach ($tutorgrupos as $key => $value) {
+            $gruposdotutorId[] = $value->ttg_grp_id;
+        }
+
+        $tutorturmas = DB::table('acd_grupos')
+                        ->whereIn('grp_id', $gruposdotutorId)
+                        ->groupby('grp_trm_id')->distinct()
+                        ->get();
+
+        //verifica em quais turmas a pessoa está vinculada como aluno
+        $alunoturmas = $this->model
+                        ->join('acd_alunos', 'alu_pes_id', '=', 'pes_id')
+                        ->join('acd_matriculas', 'mat_alu_id', '=', 'alu_id')
+                        ->where('pes_id', '=', $pessoaAtt->pes_id)
+                        ->groupby('mat_trm_id')->distinct()
+                        ->get();
+
+        //coloca todos os IDs de turmas que a pessoa está vinculada em um array
+        $turmasdoprofessorId = [];
+        $turmasdotutorId = [];
+        $turmasdoalunoId = [];
+
+        foreach ($professorturmas as $key => $value) {
+            $turmasdoprofessorId[] = $value->ofd_trm_id;
+        }
+
+        foreach ($tutorturmas as $key => $value) {
+            $turmasdotutorId[] = $value->grp_trm_id;
+        }
+
+        foreach ($alunoturmas as $key => $value) {
+            $turmasdoalunoId[] = $value->mat_trm_id;
+        }
+
+        $turmasdapessoaId = array_merge($turmasdoprofessorId, $turmasdotutorId, $turmasdoalunoId);
+
+        $pessoaturmas = DB::table('acd_turmas')
+                        ->whereIn('trm_id', $turmasdapessoaId)
+                        ->join('int_ambientes_turmas', 'atr_trm_id', '=', 'trm_id')
+                        ->get();
+
+        $ambientesdapessoaId = [];
+
+        foreach ($pessoaturmas as $key => $value) {
+            $ambientesdapessoaId[] = $value->atr_amb_id;
+        }
+
+        $ambientesId = array_unique($ambientesdapessoaId);
+
+        return $ambientesId;
     }
 }

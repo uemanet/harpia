@@ -37,6 +37,17 @@ class AmbienteVirtualRepository extends BaseRepository
             ->first();
     }
 
+    public function getAmbienteWithToken($ambienteId)
+    {
+        return DB::table('int_ambientes_virtuais')
+            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
+            ->join('int_ambientes_turmas', 'amb_id', '=', 'atr_amb_id')
+            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
+            ->where('amb_id', '=', $ambienteId)
+            ->where('asr_ser_id', '=', 2)
+            ->first();
+    }
+
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')
