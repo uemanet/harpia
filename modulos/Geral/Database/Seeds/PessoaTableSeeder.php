@@ -20,7 +20,8 @@ class PessoaTableSeeder extends Seeder
 
             $pessoa->pes_nome = $faker->firstName.' '.$faker->lastName;
             $pessoa->pes_sexo = $faker->randomElement(array('M', 'F'));
-            $pessoa->pes_email = $faker->email;
+            $nome = explode(' ', $pessoa->pes_nome);
+            $pessoa->pes_email = $nome[0].'.'.end($nome).$faker->randomNumber(2).'@gmail.com';
             $pessoa->pes_telefone = $faker->areaCode.$faker->cellphone(false, true);
             $pessoa->pes_nascimento = $faker->date('d/m/Y');
             $pessoa->pes_mae = $faker->firstNameFemale.' '.$faker->lastName;
