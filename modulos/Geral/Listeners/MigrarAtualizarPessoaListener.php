@@ -75,7 +75,7 @@ class MigrarAtualizarPessoaListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($pessoa, $status, $retorno['message'],$param['action'],null,$reg->sym_extra));
+                    event(new AtualizarSyncEvent($pessoa, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
                 }
             }
         }

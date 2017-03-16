@@ -55,11 +55,9 @@ class Turma extends BaseModel
        */
       public function getTrmIntegradaStringAttribute()
       {
-
-        if($this->trm_integrada == 0){
-          return 'Não';
-        }
-        return 'Sim';
-
+          if ($this->trm_integrada == 0) {
+              return 'Não';
+          }
+          return 'Sim';
       }
 }
