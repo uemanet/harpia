@@ -67,7 +67,9 @@
                                                             'method' => 'get',
                                                             'attributes' => [
                                                                 'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
-                                                                'data-trm-id' => $matricula->mat_trm_id
+                                                                'data-trm-id' => $matricula->mat_trm_id,
+                                                                'data-pol-id' => $matricula->mat_pol_id,
+                                                                'data-grp-id' => $matricula->mat_grp_id
                                                             ],
                                                         ],
                                                     ]
@@ -159,6 +161,12 @@
                 var action = $(this).attr('href');
                 var ofertaCursoId = $(this).attr('data-ofc-id');
                 var turmaId = $(this).attr('data-trm-id');
+                var poloId = $(this).attr('data-pol-id');
+                var grupoId = 0;
+
+                if($(this).attr('data-grp-id')) {
+                    grupoId = $(this).attr('data-grp-id');
+                }
 
                 $('input[name="trm_id"]').val(turmaId);
 
@@ -172,12 +180,21 @@
                         $('#mat_pol_id').append("<option value=''>Selecione um polo</option>");
 
                         $.each(response, function (key, obj) {
-                            $('#mat_pol_id').append("<option value='"+obj.pol_id+"'>"+obj.pol_nome+"</option>");
+                            var option = "<option value='"+obj.pol_id+"'";
+                            if (poloId && obj.pol_id == poloId) {
+                                option += " selected";
+                            }
+                            option += ">"+obj.pol_nome+"</option>";
+                            $('#mat_pol_id').append(option);
                         });
                     } else {
                         $('#mat_pol_id').append("<option value=''>Sem polos cadastrados</option>");
                     }
                 });
+
+                if(poloId) {
+                    loadingSelectGrupos(turmaId, poloId, grupoId);
+                }
 
                 $('.modal').modal();
             });
@@ -186,20 +203,29 @@
 
                 var turmaId = $('input[name="trm_id"]').val();
                 var poloId = $(this).val();
-                $('#mat_grp_id').empty();
 
+                loadingSelectGrupos(turmaId, poloId, 0);
+            });
+
+            function loadingSelectGrupos(turmaId, poloId, grupoId) {
                 $.harpia.httpget("{{url('/')}}/academico/async/grupos/findallbyturmapolo/"+turmaId+"/"+poloId).done(function (response) {
+                    $('#mat_grp_id').empty();
                     if(!$.isEmptyObject(response)) {
                         $('#mat_grp_id').append("<option value=''>Selecione um grupo</option>");
 
                         $.each(response, function (key, obj) {
-                            $('#mat_grp_id').append("<option value='"+obj.grp_id+"'>"+obj.grp_nome+"</option>");
+                            var option = "<option value='"+obj.grp_id+"'";
+                            if ((grupoId > 0) && (obj.grp_id == grupoId)) {
+                                option += " selected";
+                            }
+                            option += ">"+obj.grp_nome+"</option>";
+                            $('#mat_grp_id').append(option);
                         });
                     } else {
                         $('#mat_grp_id').append("<option value=''>Sem grupos cadastrados</option>");
                     }
                 });
-            });
+            }
         });
     </script>
 @endsection
