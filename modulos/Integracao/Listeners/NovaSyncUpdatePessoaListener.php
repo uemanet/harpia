@@ -5,7 +5,7 @@ namespace Modulos\Integracao\Listeners;
 use Harpia\Event\Event;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
-class NovaSyncListener
+class NovaSyncUpdatePessoaListener
 {
     protected $sincronizacaoRepository;
 
@@ -17,7 +17,7 @@ class NovaSyncListener
     public function handle(Event $event)
     {
         $entry = $event->getData();
-
+        // dd($event->getExtra());
         $data = [
             'sym_table' => $entry->getTable(),
             'sym_table_id' => $entry->getKey(),
@@ -25,7 +25,7 @@ class NovaSyncListener
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => null
+            'sym_extra' => $event->getExtra()
         ];
 
         try {
