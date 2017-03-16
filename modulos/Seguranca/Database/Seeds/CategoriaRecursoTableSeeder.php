@@ -93,11 +93,22 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_ativo = 0;
         $categoria->ctr_visivel = 0;
         $categoria->save();
+
+        // Categoria Historicos - id: 7
+        $categoria = new CategoriaRecurso();
+        $categoria->ctr_mod_id = 3; //Modulo Acadêmico
+        $categoria->ctr_nome = 'Históricos';
+        $categoria->ctr_descricao = 'Categoria Históricos do Módulo Acadêmico';
+        $categoria->ctr_icone = 'fa fa-clipboard';
+        $categoria->ctr_ordem = 3;
+        $categoria->ctr_ativo = 1;
+        $categoria->ctr_visivel = 1;
+        $categoria->save();
     }
 
     private function categoriasModuloIntegracao()
     {
-        // Categoria Cadastros - id: 7
+        // Categoria Cadastros - id: 8
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 4; // Modulo Integração
         $categoria->ctr_nome = 'Cadastros';
@@ -111,7 +122,7 @@ class CategoriaRecursoTableSeeder extends Seeder
 
     private function categoriasModuloMonitoramento()
     {
-        // Categoria Monitoramento - id: 8
+        // Categoria Monitoramento - id: 9
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 5; // Modulo Monitoramento
         $categoria->ctr_nome = 'Monitoramento';

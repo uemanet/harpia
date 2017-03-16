@@ -72,7 +72,7 @@ class TurmaRepository extends BaseRepository
     {
         $turma = $this->find($turmaId);
 
-        $curso = $turma->oferta->curso;
+        $curso = $turma->ofertacurso->curso;
 
         return $curso;
     }
