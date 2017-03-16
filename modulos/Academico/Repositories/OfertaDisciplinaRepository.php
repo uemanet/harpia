@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Academico\Models\OfertaDisciplina;
 use Modulos\Core\Repository\BaseRepository;
 use Auth;
+use DB;
 
 class OfertaDisciplinaRepository extends BaseRepository
 {
@@ -13,7 +14,7 @@ class OfertaDisciplinaRepository extends BaseRepository
         $this->model = $ofertaDisciplina;
     }
 
-    public function findAll(array $options, array $select = null)
+    public function findAll(array $options, array $select = null, array $order = null)
     {
         $query = $this->model
                         ->join('acd_modulos_disciplinas', function ($join) {
@@ -37,6 +38,12 @@ class OfertaDisciplinaRepository extends BaseRepository
 
         if (!is_null($select)) {
             $query = $query->select($select);
+        }
+
+        if (!is_null($order)) {
+            foreach ($order as $key => $value) {
+                $query = $query->orderBy($key, $value);
+            }
         }
 
         return $query->get();
