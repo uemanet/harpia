@@ -133,7 +133,13 @@ class ActionButton
                     if ($button['method'] == 'get') {
                         $render .= '<td style="padding-right: 5px">';
                         $render .= '<div class="btn-group">';
-                        $render .= '<a href="'.$button['action'].'" class="'.$button['classButton'].'">';
+                        $render .= '<a href="'.$button['action'].'" class="'.$button['classButton'].'" ';
+                        if (array_key_exists('attributes', $button)) {
+                            foreach ($button['attributes'] as $attr => $value) {
+                                $render .= $attr.'="'.$value.'" ';
+                            }
+                        }
+                        $render .= '>';
                         $render .= '<i class="'.$button['icon'].'"></i> '.$button['label'];
                       //$render .= '</a>';
                       $render .= '</a></div>';
