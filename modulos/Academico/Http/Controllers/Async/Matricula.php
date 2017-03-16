@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers\Async;
 
+use Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modulos\Academico\Events\AlterarStatusMatriculaEvent;
@@ -37,7 +38,7 @@ class Matricula extends BaseController
             $matricula->mat_situacao = $situacao;
             $matricula->save();
 
-            event(new AlterarStatusMatriculaEvent($matricula, 'UPDATE_STATUS_MATRICULA'));
+            event(new AtualizarSituacaoMatriculaEvent($matricula));
 
             return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {

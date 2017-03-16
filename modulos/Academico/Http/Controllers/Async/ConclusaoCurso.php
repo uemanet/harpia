@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modulos\Academico\Events\AlterarStatusMatriculaEvent;
+use Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent;
 use Modulos\Academico\Events\ConclusaoCursoEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
@@ -46,7 +47,7 @@ class ConclusaoCurso extends BaseController
                     return new JsonResponse('Matricula(s) não está apta para conclusão de curso', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
-                event(new AlterarStatusMatriculaEvent($result, 'UPDATE_STATUS_MATRICULA'));
+                event(new AtualizarSituacaoMatriculaEvent($result, 'UPDATE_STATUS_MATRICULA'));
                 
                 DB::commit();
 

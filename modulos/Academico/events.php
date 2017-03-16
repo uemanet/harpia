@@ -73,8 +73,8 @@ return [
         'Modulos\Academico\Listeners\MigrarDeletarGrupoAlunoListener',
     ],
 
-    'Modulos\Academico\Events\AlterarStatusMatriculaEvent' => [
+    'Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAlteracaoStatusMatriculaListener',
+        'Modulos\Academico\Listeners\MigrarAtualizarSituacaoMatriculaListener',
     ]
 ];
