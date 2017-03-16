@@ -457,10 +457,12 @@ class MatriculaCursoRepository extends BaseRepository
         if ($matriculas->count()) {
             foreach ($matriculas as $matricula) {
                 if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
-                    // Add aluno
+                    $aptos->push($matricula);
                 }
             }
         }
+
+        // TODO checar se o aluno ja tem certificado
     }
 
     public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
