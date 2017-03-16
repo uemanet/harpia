@@ -4,14 +4,12 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Validator;
 
 class RelatoriosMatriculasDisciplinaController extends BaseController
@@ -82,12 +80,24 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-
         return view('Academico::relatoriosmatriculasdisciplina.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'periodos', 'disciplinas'));
     }
 
     public function postPdf(Request $request)
     {
+        $rules = [
+            'crs_id' => 'required',
+            'ofc_id' => 'required',
+            'per_id' => 'required',
+            'ofd_id' => 'required',
+            'trm_id' => 'required'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
         $turmaId = $request->input('trm_id');
         $ofertaId = $request->input('ofd_id');
         $situacao = $request->input('mof_situacao_matricula');
@@ -103,7 +113,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $mpdf->mirrorMargins = 1;
             $mpdf->SetTitle('Relatório de alunos da Disciplina: '. $disciplina[0]);
             $mpdf->SetHeader('{PAGENO} / {nb}');
-            $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
+            $mpdf->SetFooter('Emitido em : ' . date("d/m/Y H:i:s"));
             $mpdf->defaultheaderfontsize = 10;
             $mpdf->defaultheaderfontstyle = 'B';
             $mpdf->defaultheaderline = 0;
@@ -114,6 +124,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
             $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina'))->render());
             $mpdf->Output();
+            exit;
         } catch (\Exception $e) {
             throw $e;
         }

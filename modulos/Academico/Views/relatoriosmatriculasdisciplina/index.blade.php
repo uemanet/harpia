@@ -61,8 +61,7 @@
                         <div class="col-md-2 @if ($errors->has('mof_situacao_matricula')) has-error @endif">
                             {!! Form::label('mof_situacao_matricula', 'Situação da matricula') !!}
                             <div class="form-group">
-                                {!! Form::select('mof_situacao_matricula', ["todos" => "Todos",
-                                    "cursando" => "Cursando",
+                                {!! Form::select('mof_situacao_matricula', ["cursando" => "Cursando",
                                     "aprovado_media" => "Aprovado por Média",
                                     "aprovado_final" => "Aprovado por Final",
                                     "reprovado_media" => "Reprovado por Média",

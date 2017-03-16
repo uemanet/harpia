@@ -374,7 +374,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->orderBy('pes_nome', 'asc')
             ->get();
 
-        if ($situacao != 'todos') {
+        if ($situacao != null) {
             $query = $query->where('mof_situacao_matricula', $situacao);
         }
 
@@ -390,6 +390,10 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     {
         $sort = array();
         if (empty($requestParameters)) {
+            return new Collection();
+        }
+
+        if (empty($requestParameters['ofd_id']) || empty($requestParameters['trm_id'])) {
             return new Collection();
         }
 
@@ -419,7 +423,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 ->where('mat_trm_id', $requestParameters['trm_id'])
                 ->orderBy($sort['field'], $sort['sort']);
 
-            if ($requestParameters['mof_situacao_matricula'] != 'todos') {
+            if ($requestParameters['mof_situacao_matricula'] != null) {
                 $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
             }
 
@@ -446,7 +450,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
             ->where('mat_trm_id', $requestParameters['trm_id']);
 
-        if ($requestParameters['mof_situacao_matricula'] != 'todos') {
+        if ($requestParameters['mof_situacao_matricula'] != null) {
             $dados = $dados->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
         }
 

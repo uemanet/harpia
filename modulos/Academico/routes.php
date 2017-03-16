@@ -173,8 +173,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     });
 
     Route::group(['prefix' => 'relatoriosmatriculascurso'], function () {
-        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasController@getIndex')->name('academico.relatoriosmatriculas.index');
-        Route::get('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasController@postPdf')->name('academico.relatoriosmatriculas.pdf');
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasCursoController@getIndex')->name('academico.relatoriosmatriculascurso.index');
+        Route::get('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasCursoController@postPdf')->name('academico.relatoriosmatriculascurso.pdf');
     });
 
     Route::group(['prefix' => 'matricularalunodisciplina', 'middleware' => ['vinculo']], function () {

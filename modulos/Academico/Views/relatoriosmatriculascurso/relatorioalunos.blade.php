@@ -50,7 +50,7 @@
 
 <div align="center" style="font-size:140%"><img src="{{public_path('/img/logo_oficial.png')}}"></div>
 <div align="center" style="font-size:140%">Relatório de alunos do Curso: {{$nomecurso->crs_nome}}</div>
-<div align="center" style="font-size:110%">Emitido em: {{date("d/m/y")}}</div>
+<div align="center" style="font-size:110%">Emitido em: {{ date("d/m/Y H:i:s") }} </div>
 <br>
 
 <table>
@@ -71,10 +71,10 @@
 
         <tr>
             <td align="center" class="matricula">{{$matricula->mat_id}}</td>
-            <td class="nome">{{$matricula->aluno->pessoa->pes_nome}}</td>
-            <td class="email">{{$matricula->aluno->pessoa->pes_email}}</td>
-            <td class="turma">{{$matricula->turma->trm_nome}}</td>
-            <td class="polo">{{$matricula->polo->pol_nome}}</td>
+            <td class="nome">{{$matricula->pes_nome}}</td>
+            <td class="email">{{$matricula->pes_email}}</td>
+            <td class="turma">{{$matricula->trm_nome}}</td>
+            <td class="polo">{{$matricula->pol_nome}}</td>
             <td class="situacao">{{$matricula->mat_situacao}}</td>
         </tr>
     @endforeach

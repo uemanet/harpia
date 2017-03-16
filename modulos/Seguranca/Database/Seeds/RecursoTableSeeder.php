@@ -365,7 +365,7 @@ class RecursoTableSeeder extends Seeder
         // Recurso Relatório Matricula por Curso - id: 31
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
-        $recurso->rcs_nome = 'Relatório Matricula por Curso';
+        $recurso->rcs_nome = 'Relatório Matricula Curso';
         $recurso->rcs_rota = 'relatoriosmatriculascurso';
         $recurso->rcs_descricao = 'Recurso Relatório Matricula Curso do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-file-text-o';
@@ -376,7 +376,7 @@ class RecursoTableSeeder extends Seeder
         // Recurso Relatório Matricula por Disciplina - id: 32
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 5; // Categoria Processos do Módulo Acadêmico
-        $recurso->rcs_nome = 'Relatório Matricula por Disciplina';
+        $recurso->rcs_nome = 'Relatório Matricula Disciplina';
         $recurso->rcs_rota = 'relatoriosmatriculasdisciplina';
         $recurso->rcs_descricao = 'Recurso Relatório Matricula Disciplina do módulo acadêmico';
         $recurso->rcs_icone = 'fa fa-file-text-o';
