@@ -3,6 +3,8 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modulos\Academico\Events\AlterarGrupoAlunoEvent;
+use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
 use Modulos\Academico\Events\MatriculaAlunoTurmaEvent;
 use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
 use Modulos\Academico\Repositories\AlunoRepository;
@@ -91,14 +93,14 @@ class MatriculaCursoController extends BaseController
     {
         try {
             $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
-            
+
             flash()->{$result['type']}($result['message']);
 
             if ($result['type'] == 'success') {
                 $matricula = $result['matricula'];
                 $turma = $this->turmaRepository->find($matricula->mat_trm_id);
                 if ($turma->trm_integrada) {
-                    event(new MatriculaAlunoTurmaEvent($matricula, "CREATE"));
+                    event(new MatriculaAlunoTurmaEvent($matricula));
                 }
             }
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
@@ -115,8 +117,9 @@ class MatriculaCursoController extends BaseController
     public function putEdit($matriculaId, MatriculaCursoRequest $request)
     {
         try {
+            $Oldmatricula = $this->matriculaCursoRepository->find($matriculaId);
             $matricula = $this->matriculaCursoRepository->find($matriculaId);
-            
+
             if (!$matricula) {
                 flash()->error('Matricula não existe!');
                 return redirect()->route('academico.matricularalunocurso.index');
@@ -126,6 +129,18 @@ class MatriculaCursoController extends BaseController
             $matricula->mat_grp_id = ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id');
 
             $matricula->save();
+
+            $matriculaAtualizada = $this->matriculaCursoRepository->find($matriculaId);
+
+            $turma = $this->turmaRepository->find($matricula->mat_trm_id);
+
+            if ($turma->trm_integrada && $Oldmatricula->mat_grp_id != $matriculaAtualizada->mat_grp_id && $matriculaAtualizada->mat_grp_id) {
+                event(new AlterarGrupoAlunoEvent($matriculaAtualizada, 'UPDATE_GRUPO_ALUNO', $Oldmatricula->mat_grp_id ));
+            }
+
+            if ($turma->trm_integrada && $Oldmatricula->mat_grp_id && !$matriculaAtualizada->mat_grp_id) {
+                event(new DeletarGrupoAlunoEvent($matriculaAtualizada, 'DELETE_GRUPO_ALUNO', $Oldmatricula->mat_grp_id));
+            }
 
             flash()->success('Matrícula atualizada com sucesso.');
             return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
