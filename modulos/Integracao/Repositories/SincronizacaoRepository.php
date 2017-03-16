@@ -15,7 +15,7 @@ class SincronizacaoRepository extends BaseRepository
 
     public function update(array $data, $id = null, $attribute = "id")
     {
-
+  
         if($data['sym_extra']){
           return $this->model
               ->where('sym_table', '=', $data['sym_table'])
@@ -24,7 +24,7 @@ class SincronizacaoRepository extends BaseRepository
               ->where('sym_extra', '=', $data['sym_extra'])
               ->update($data);
         }
-        
+
         return $this->model
             ->where('sym_table', '=', $data['sym_table'])
             ->where('sym_table_id', '=', $data['sym_table_id'])
