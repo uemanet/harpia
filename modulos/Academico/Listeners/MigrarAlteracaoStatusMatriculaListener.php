@@ -2,14 +2,13 @@
 
 namespace Modulos\Academico\Listeners;
 
-use Modulos\Academico\Events\ConclusaoCursoEvent;
+use Modulos\Academico\Events\AlterarStatusMatriculaEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Moodle;
 
-class ConclusaoCursoListener
+class MigrarAlteracaoStatusMatriculaListener
 {
     private $sincronizacaoRepository;
     private $matriculaCursoRepository;
@@ -26,12 +25,12 @@ class ConclusaoCursoListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
-    public function handle(ConclusaoCursoEvent $event)
+    public function handle(AlterarStatusMatriculaEvent $event)
     {
         $matriculasMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_matriculas',
             'sym_status' => 1,
-            'sym_action' => 'UPDATE_STATUS_CONCLUSAO'
+            'sym_action' => $event->getAction()
         ]);
 
         if ($matriculasMigrar->count()) {
@@ -48,7 +47,7 @@ class ConclusaoCursoListener
                     $param['url'] = $ambiente->url;
                     $param['token'] = $ambiente->token;
                     $param['functioname'] = 'local_integracao_change_role_student_course';
-                    $param['action'] = 'UPDATE_STATUS_CONCLUSAO';
+                    $param['action'] = $event->getAction();
 
                     $student = [];
                     $student['trm_id'] = $matricula->mat_trm_id;
@@ -72,4 +71,5 @@ class ConclusaoCursoListener
             }
         }
     }
+    
 }

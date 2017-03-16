@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modulos\Academico\Events\AlterarStatusMatriculaEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 
@@ -31,13 +32,14 @@ class Matricula extends BaseController
             $id = $request->input('id');
             $situacao = $request->input('situacao');
 
-            $update = [
-                'mat_situacao' => $situacao,
-            ];
+            $matricula = $this->matriculaRepository->find($id);
 
-            $result = $this->matriculaRepository->update($update, $id, 'mat_id');
+            $matricula->mat_situacao = $situacao;
+            $matricula->save();
 
-            return JsonResponse::create($result, JsonResponse::HTTP_OK);
+            event(new AlterarStatusMatriculaEvent($matricula, 'UPDATE_STATUS_MATRICULA'));
+
+            return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

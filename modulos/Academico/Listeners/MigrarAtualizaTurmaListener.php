@@ -57,7 +57,7 @@ class MigrarAtualizaTurmaListener
 
                     $param['url'] = $ambiente->url;
                     $param['token'] = $ambiente->token;
-                    $param['action'] = 'post';
+                    $param['action'] = 'UPDATE';
                     $param['functioname'] = 'local_integracao_update_course';
                     $param['data'] = $data;
 
