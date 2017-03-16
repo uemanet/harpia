@@ -22,7 +22,7 @@ return [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarGrupoListener',
     ],
-    
+
     'Modulos\Academico\Events\NovaMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarMatriculaDisciplinaListener',
@@ -56,5 +56,15 @@ return [
     'Modulos\Academico\Events\DeleteTutorVinculadoEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarExclusaoTutorVinculadoListener',
+    ],
+
+    'Modulos\Academico\Events\AlterarGrupoAlunoEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarAlterarGrupoAlunoListener',
+    ],
+
+    'Modulos\Academico\Events\DeletarGrupoAlunoEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarDeletarGrupoAlunoListener',
     ]
 ];
