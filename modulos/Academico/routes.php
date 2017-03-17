@@ -158,6 +158,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getIndex')->name('academico.matricularalunocurso.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getCreate')->name('academico.matricularalunocurso.getCreate');
         Route::post('/create/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@postCreate')->name('academico.matricularalunocurso.postCreate');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@putEdit')->name('academico.matricularalunocurso.putEdit');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getShow')->name('academico.matricularalunocurso.show');
     });
 
@@ -261,11 +262,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'grupos'], function () {
-            Route::get('/findallbyturmapolo/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturmapolo');
-        });
-
-        Route::group(['prefix' => 'grupos'], function () {
             Route::get('/findallbyturma/{id}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturma');
+            Route::get('/findallbyturmapolo/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\Grupos@getFindallbyturmapolo');
         });
 
         Route::group(['prefix' => 'tutores'], function () {
@@ -287,6 +285,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'anexos'], function () {
             Route::post('/deletaranexolancamentotcc', '\Modulos\Academico\Http\Controllers\Async\LancamentosTccs@postDeletarAnexo');
+        });
+
+        Route::group(['prefix' => 'matricula'], function () {
+            Route::post('/alterarsituacao', '\Modulos\Academico\Http\Controllers\Async\Matricula@postUpdateSituacao');
         });
     });
 });

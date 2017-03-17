@@ -4,7 +4,6 @@ namespace Modulos\Academico\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use League\Flysystem\Exception;
 use Modulos\Academico\Repositories\DisciplinaRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
@@ -39,7 +38,7 @@ class ModulosDisciplinas extends BaseController
             return new JsonResponse(['mdc_id' => $response['data']['mdc_id']], Response::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
-                return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse('CODE: '.$e->getCode().' - Message: '.$e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -51,7 +50,7 @@ class ModulosDisciplinas extends BaseController
         $dados = $request->all();
 
         DB::beginTransaction();
-        
+
         try {
             $moduloDisciplina = $this->moduloDisciplinaRepository->find($dados['mdc_id']);
 
@@ -65,15 +64,17 @@ class ModulosDisciplinas extends BaseController
             if ($this->moduloDisciplinaRepository->delete($dados['mdc_id'])) {
                 $this->moduloDisciplinaRepository->updatePreRequisitos($dados['mtc_id'], $dados['mdc_id']);
                 DB::commit();
+
                 return new JsonResponse(Response::HTTP_OK);
             }
 
             DB::rollback();
+
             return new JsonResponse(Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
-                return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse('CODE: '.$e->getCode().' - Message: '.$e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_INTERNAL_SERVER_ERROR);
