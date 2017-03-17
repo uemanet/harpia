@@ -26,12 +26,12 @@ class MatriculaOfertaDisciplina extends BaseController
     {
         $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
-            'ofd_trm_id' => $turmaId
+            'ofd_trm_id' => $turmaId,
         ]);
 
         return new JsonResponse($disciplinas, 200);
     }
-    
+
     public function getFindAllDisciplinasNotCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
     {
         $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId);
@@ -61,6 +61,7 @@ class MatriculaOfertaDisciplina extends BaseController
 
                 if ($result['type'] == 'error') {
                     DB::rollback();
+
                     return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
@@ -81,12 +82,13 @@ class MatriculaOfertaDisciplina extends BaseController
                 }
             }
 
-            return new JsonResponse("Alunos matriculados com sucesso!", 200);
+            return new JsonResponse('Alunos matriculados com sucesso!', 200);
         } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {
                 throw $e;
             }
+
             return new JsonResponse('Erro ao tentar matricular. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
     }
@@ -106,6 +108,7 @@ class MatriculaOfertaDisciplina extends BaseController
 
                 if ($result['type'] == 'error') {
                     DB::rollback();
+
                     return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
@@ -126,12 +129,13 @@ class MatriculaOfertaDisciplina extends BaseController
                 }
             }
 
-            return new JsonResponse("Aluno matriculado com sucesso!", 200);
+            return new JsonResponse('Aluno matriculado com sucesso!', 200);
         } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {
                 throw $e;
             }
+
             return new JsonResponse('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
     }

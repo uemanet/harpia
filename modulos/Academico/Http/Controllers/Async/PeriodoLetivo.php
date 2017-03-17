@@ -9,7 +9,6 @@ use Modulos\Core\Http\Controller\BaseController;
 class PeriodoLetivo extends BaseController
 {
     protected $periodoLetivoRepository;
-    
 
     public function __construct(PeriodoLetivoRepository $periodo)
     {

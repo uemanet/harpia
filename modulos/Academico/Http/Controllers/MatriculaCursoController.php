@@ -117,7 +117,6 @@ class MatriculaCursoController extends BaseController
     public function putEdit($matriculaId, MatriculaCursoRequest $request)
     {
         try {
-            $Oldmatricula = $this->matriculaCursoRepository->find($matriculaId);
             $matricula = $this->matriculaCursoRepository->find($matriculaId);
 
             if (!$matricula) {
@@ -125,21 +124,23 @@ class MatriculaCursoController extends BaseController
                 return redirect()->route('academico.matricularalunocurso.index');
             }
 
+            $oldMatricula = $matricula;
+
             $matricula->mat_pol_id = $request->input('mat_pol_id');
             $matricula->mat_grp_id = ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id');
 
             $matricula->save();
 
-            $matriculaAtualizada = $this->matriculaCursoRepository->find($matriculaId);
+            $matriculaAtualizada = $matricula;
 
-            $turma = $this->turmaRepository->find($matricula->mat_trm_id);
+            $turma = $matricula->turma;
 
-            if ($turma->trm_integrada && $Oldmatricula->mat_grp_id != $matriculaAtualizada->mat_grp_id && $matriculaAtualizada->mat_grp_id) {
-                event(new AlterarGrupoAlunoEvent($matriculaAtualizada, 'UPDATE_GRUPO_ALUNO', $Oldmatricula->mat_grp_id ));
+            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id != $matriculaAtualizada->mat_grp_id) && ($matriculaAtualizada->mat_grp_id)) {
+                event(new AlterarGrupoAlunoEvent($matriculaAtualizada, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id ));
             }
 
-            if ($turma->trm_integrada && $Oldmatricula->mat_grp_id && !$matriculaAtualizada->mat_grp_id) {
-                event(new DeletarGrupoAlunoEvent($matriculaAtualizada, 'DELETE_GRUPO_ALUNO', $Oldmatricula->mat_grp_id));
+            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id) && (!$matriculaAtualizada->mat_grp_id)) {
+                event(new DeletarGrupoAlunoEvent($matriculaAtualizada, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
             }
 
             flash()->success('Matrícula atualizada com sucesso.');
@@ -158,11 +159,23 @@ class MatriculaCursoController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
+        $situacao = [
+            'cursando' => 'Cursando',
+            'reprovado' => 'Reprovado',
+            'evadido' => 'Evadido',
+            'trancado' => 'Trancado',
+            'desistente' => 'Desistente'
+        ];
+
         if (!$aluno) {
             flash()->error('Aluno não existe!');
             return redirect()->route('academico.matricularalunocurso.index');
         }
 
-        return view('Academico::matricula-curso.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
+        return view('Academico::matricula-curso.show', [
+            'pessoa' => $aluno->pessoa,
+            'aluno' => $aluno,
+            'situacao' => $situacao
+        ]);
     }
 }
