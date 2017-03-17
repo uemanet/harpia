@@ -306,6 +306,13 @@ class AlunosController extends BaseController
         $aluno = $this->alunoRepository->find($alunoId);
         session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
 
-        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
+        $situacao = ['cursando'=> 'cursando',
+                     'concluido' => 'concluido',
+                     'reprovado'=> 'reprovado',
+                     'evadido'=> 'evadido',
+                     'trancado'=> 'trancado',
+                     'desistente'=> 'desistente'];
+
+        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'situacao' => $situacao]);
     }
 }
