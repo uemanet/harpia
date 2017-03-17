@@ -26,4 +26,27 @@ class MatriculaOfertaDisciplina extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'mof_ofd_id', 'ofd_id');
     }
+
+
+    public function getSituacaoMatriculaAttribute($value)
+    {
+        if ($this->mof_situacao_matricula == 'aprovado_media') {
+            return 'Aprovado por média';
+        }
+        if ($this->mof_situacao_matricula == 'aprovado_final') {
+            return 'Aprovado por final';
+        }
+        if ($this->mof_situacao_matricula == 'reprovado_media') {
+            return 'Reprovado por média';
+        }
+        if ($this->mof_situacao_matricula == 'reprovado_final') {
+            return 'Reprovado por final';
+        }
+        if ($this->mof_situacao_matricula == 'cursando') {
+            return 'Cursando';
+        }
+        if ($this->mof_situacao_matricula == 'cancelado') {
+            return 'Cancelado';
+        }
+    }
 }

@@ -49,8 +49,8 @@
 </style>
 
 <div align="center" style="font-size:140%"><img src="{{public_path('/img/logo_oficial.png')}}"></div>
-<div align="center" style="font-size:140%">Relatório de alunos do Curso: {{$nomecurso->crs_nome}}</div>
-<div align="center" style="font-size:110%">Emitido em: {{date("d/m/y")}}</div>
+<div align="center" style="font-size:140%">Relatório de alunos da Disciplina: {{ $disciplina[0] }}</div>
+<div align="center" style="font-size:110%">Emitido em: {{date("d/m/Y H:i:s")}}</div>
 <br>
 
 <table>
@@ -67,15 +67,15 @@
     <tbody>
 
 
-    @foreach ($matriculas as $matricula)
+    @foreach ($alunos as $aluno)
 
         <tr>
-            <td align="center" class="matricula">{{$matricula->mat_id}}</td>
-            <td class="nome">{{$matricula->aluno->pessoa->pes_nome}}</td>
-            <td class="email">{{$matricula->aluno->pessoa->pes_email}}</td>
-            <td class="turma">{{$matricula->turma->trm_nome}}</td>
-            <td class="polo">{{$matricula->polo->pol_nome}}</td>
-            <td class="situacao">{{$matricula->mat_situacao}}</td>
+            <td align="center" class="matricula">{{$aluno->mat_id}}</td>
+            <td class="nome">{{$aluno->pes_nome}}</td>
+            <td class="email">{{$aluno->pes_email}}</td>
+            <td class="turma">{{$aluno->trm_nome}}</td>
+            <td class="polo">{{$aluno->pol_nome}}</td>
+            <td class="situacao">{{$aluno->mof_situacao_matricula}}</td>
         </tr>
     @endforeach
 
