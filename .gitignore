@@ -9,3 +9,4 @@ Homestead.json
 /bin
 .DS_STORE
 *_reports
+composer.lock

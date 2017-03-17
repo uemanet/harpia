@@ -139,4 +139,43 @@ class MatriculaOfertaDisciplina extends BaseController
             return new JsonResponse('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         }
     }
+
+    public function getRelatorio($turmaId, $ofertaId, $situacao = null)
+    {
+        $alunos = $this->matriculaOfertaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
+
+        return new JsonResponse($alunos, 200);
+    }
+
+    public function postGerarRelatorio(Request $request)
+    {
+        $turmaId = $request->input('trm_id');
+        $ofertaId = $request->input('ofd_id');
+        $situacao = $request->input('mof_situacao_matricula');
+
+        $alunos = $this->matriculaOfertaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
+
+        try {
+            $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+
+            $mpdf->mirrorMargins = 1;
+            $mpdf->SetTitle('Relatório de alunos do Curso ');
+            $mpdf->SetHeader('{PAGENO} / {nb}');
+            $mpdf->SetFooter('São Luís-MA, ' . date("d/m/y"));
+            $mpdf->defaultheaderfontsize = 10;
+            $mpdf->defaultheaderfontstyle = 'B';
+            $mpdf->defaultheaderline = 0;
+            $mpdf->defaultfooterfontsize = 10;
+            $mpdf->defaultfooterfontstyle = 'BI';
+            $mpdf->defaultfooterline = 0;
+            $mpdf->addPage('L');
+
+            $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos'))->render());
+            $mpdf->Output('Report.pdf', 'D');
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+//        return new JsonResponse(200);
+    }
 }

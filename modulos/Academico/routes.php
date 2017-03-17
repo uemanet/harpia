@@ -85,7 +85,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\TurmasController@postDelete')->name('academico.turmas.delete');
     });
 
-
     Route::group(['prefix' => 'tutoresgrupos', 'middleware' => ['vinculo']], function () {
         Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getIndex')->name('academico.tutoresgrupos.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\TutoresGruposController@getCreate')->name('academico.tutoresgrupos.getCreate');
@@ -104,7 +103,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\DisciplinasController@postDelete')->name('academico.disciplinas.delete');
     });
 
-
     Route::group(['prefix' => 'modulosmatrizes'], function () {
         Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getIndex')->name('academico.modulosmatrizes.index');
         Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getCreate')->name('academico.modulosmatrizes.getCreate');
@@ -115,15 +113,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/gerenciardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@getGerenciarDisciplinas')->name('academico.modulosmatrizes.gerenciardisciplinas');
         Route::post('/adicionardisciplinas/{id}', '\Modulos\Academico\Http\Controllers\ModulosMatrizesController@postAdicionarDisciplinas')->name('academico.modulosmatrizes.postAdicionardisciplinas');
     });
-
-//    Route::group(['prefix' => 'modulosdisciplinas'], function () {
-//        Route::get('/index/{id}', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@getIndex')->name('academico.modulosdisciplinas.index');
-//        Route::get('/create/{id}', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@getCreate')->name('academico.modulosdisciplinas.getCreate');
-//        Route::post('/create', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@postCreate')->name('academico.modulosdisciplinas.postCreate');
-//        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@getEdit')->name('academico.modulosdisciplinas.getEdit');
-//        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@putEdit')->name('academico.modulosdisciplinas.putEdit');
-//        Route::post('/delete', '\Modulos\Academico\Http\Controllers\ModulosDisciplinasController@postDelete')->name('academico.modulosdisciplinas.delete');
-//    });
 
     Route::group(['prefix' => 'usuarioscursos'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\VinculosController@getIndex')->name('academico.vinculos.index');
@@ -173,9 +162,19 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculaCursoController@getShow')->name('academico.matricularalunocurso.show');
     });
 
+    Route::group(['prefix' => 'relatoriosmatriculascurso'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasCursoController@getIndex')->name('academico.relatoriosmatriculascurso.index');
+        Route::get('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasCursoController@postPdf')->name('academico.relatoriosmatriculascurso.pdf');
+    });
+
     Route::group(['prefix' => 'matricularalunodisciplina', 'middleware' => ['vinculo']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getIndex')->name('academico.matriculasofertasdisciplinas.index');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\MatriculasOfertasDisciplinasController@getShow')->name('academico.matriculasofertasdisciplinas.show');
+    });
+
+    Route::group(['prefix' => 'relatoriosmatriculasdisciplina'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasDisciplinaController@getIndex')->name('academico.relatoriosmatriculasdisciplinas.index');
+        Route::get('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasDisciplinaController@postPdf')->name('academico.relatoriosmatriculasdisciplinas.pdf');
     });
 
     Route::group(['prefix' => 'matriculaslote'], function () {
@@ -194,6 +193,12 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'conclusaocurso'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\ConclusaoCursoController@getIndex')->name('academico.conclusaocurso.index');
+    });
+
+    Route::group(['prefix' => 'historicoparcial'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getIndex')->name('academico.historicoparcial.index');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getShow')->name('academico.historicoparcial.show');
+        Route::get('/print/{id}', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getPrint')->name('academico.historicoparcial.print');
     });
 
     //Rotas de funções assíncronas
@@ -255,6 +260,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::post('/matricular', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postMatricularAlunoDisciplinas');
             Route::get('/getalunosmatriculaslote/{one}/{two}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getFindAllAlunosMatriculasLote')->name('academico.async.matriculasofertasdisciplinas.getmatriculaslote');
             Route::post('/matriculaslote', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@postMatriculasLote')->name('academico.async.matriculasofertasdisciplinas.postmatriculaslote');
+            Route::get('/gettallalunosbysituacao/{one}/{two}/{three}', '\Modulos\Academico\Http\Controllers\Async\MatriculaOfertaDisciplina@getRelatorio');
         });
 
         Route::group(['prefix' => 'grupos'], function () {
