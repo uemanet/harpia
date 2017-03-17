@@ -15,13 +15,15 @@ class MatriculaCursoRepository extends BaseRepository
     protected $matriculaOfertaDisciplinaRepository;
     protected $moduloMatrizRepository;
     protected $turmaRepository;
+    protected $registroRepository;
 
     public function __construct(
         Matricula $matricula,
         OfertaCursoRepository $oferta,
         MatrizCurricularRepository $matriz,
         MatriculaOfertaDisciplinaRepository $matriculaOferta,
-        ModuloMatrizRepository $modulo, TurmaRepository $turmaRepository
+        ModuloMatrizRepository $modulo, TurmaRepository $turmaRepository,
+        RegistroRepository $registroRepository
     ) {
         $this->model = $matricula;
         $this->turmaRepository = $turmaRepository;
@@ -29,6 +31,7 @@ class MatriculaCursoRepository extends BaseRepository
         $this->matrizCurricularRepository = $matriz;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOferta;
         $this->moduloMatrizRepository = $modulo;
+        $this->registroRepository = $registroRepository;
     }
 
     public function verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $ofertaCursoId, $turmaId)
@@ -452,17 +455,25 @@ class MatriculaCursoRepository extends BaseRepository
         // busca todas as matriculas da turma
         $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
 
-        $aptos = new Collection();
+        $aptos = [];
+        $certificados = [];
 
         if ($matriculas->count()) {
             foreach ($matriculas as $matricula) {
                 if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
-                    $aptos->push($matricula);
+                    $aptos[] = $matricula;
                 }
             }
         }
 
         // TODO checar se o aluno ja tem certificado
+        foreach ($aptos as $apto) {
+            if ($this->registroRepository->matriculaTemRegistro($apto->mat_id)) {
+                $certificados[] = $apto;
+            }
+        }
+
+        return $aptos;
     }
 
     public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)

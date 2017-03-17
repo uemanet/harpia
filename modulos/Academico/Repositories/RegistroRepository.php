@@ -11,4 +11,15 @@ class RegistroRepository extends BaseRepository
     {
         $this->model = $registro;
     }
+
+    public function matriculaTemRegistro($matriculaId)
+    {
+        $result = $this->model->where('reg_mat_id', '=', $matriculaId)->get();
+
+        if ($result->count()) {
+            return true;
+        }
+
+        return false;
+    }
 }
