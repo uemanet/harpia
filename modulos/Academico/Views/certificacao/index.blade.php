@@ -141,6 +141,20 @@
                 }
             });
 
+            // evento para selecionar todos os checkboxes
+            $(document).on('click', '#select_all',function(event) {
+                if(this.checked) {
+                    $(':checkbox').each(function() {
+                        this.checked = true;
+                    });
+                }
+                else {
+                    $(':checkbox').each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+
             var renderTable = function(aptos, certificados){
               var html = '<div class="row"><div class="col-md-12">';
               // criando a estrutura das tabs
@@ -148,12 +162,12 @@
               tabs += '<ul class="nav nav-tabs">';
               tabs += '<li class="active">' +
                       '<a href="#tab_1" data-toggle="tab">' +
-                      'Não Matriculados '+
+                      'Aptos '+
                       '<span data-toggle="tooltip" class="badge bg-blue">'+aptos.length+'</span>'+
                       '</a></li>';
               tabs += '<li>' +
                       '<a href="#tab_2" data-toggle="tab">' +
-                      'Cursando <span data-toggle="tooltip" class="badge bg-blue">'+certificados.length+'</span>' +
+                      'Certificados <span data-toggle="tooltip" class="badge bg-blue">'+certificados.length+'</span>' +
                       '</a></li>';
               tabs += '</ul>';
               tabs += '<div class="tab-content">';
@@ -170,7 +184,7 @@
                   table1 += '<tr>';
                   table1 += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
                   table1 += '<th>Nome</th>';
-                  table1 += '<th width="20%">Situacao de Matricula</th>';
+                  table1 += '<th width="20%">Situacao </th>';
                   table1 += '</tr>';
 
                   // corpo da tabela
@@ -179,7 +193,7 @@
                       if(obj.mof_situacao_matricula == 'no_pre_requisitos') {
                           table1 += '<td></td>';
                       } else {
-                          table1 += '<td><label><input class="matriculas" type="checkbox" value="'+obj.mat_id+'"></label></td>';
+                          table1 += '<td><label><input class="aptos" type="checkbox" value="'+obj.mat_id+'"></label></td>';
                       }
 
                       table1 += '<td>'+obj.pes_nome+'</td>';
@@ -198,7 +212,7 @@
 
                   // criacao do botao de matricular alunos
                   div += '<div class="row"><div class="col-md-12">';
-                  div += '<button class="btn btn-success hidden btnMatricular">Certificar Alunos</button>';
+                  div += '<button class="btn btn-success btnCertificar">Certificar Alunos</button>';
                   div += '</div></div>';
 
                   tab1 += div;
@@ -208,7 +222,7 @@
 
               tab1 += '</div>';
 
-              // Criacao da Tab de Alunos cursando a disciplina
+              // Criacao da Tab de Alunos certificados
               var tab2 = '<div class="tab-pane" id="tab_2">';
 
               if(!$.isEmptyObject(certificados)) {
@@ -247,6 +261,8 @@
               $('#boxAlunos').removeClass('hidden');
               $('#boxAlunos .box-body').empty().append(html);
             }
+
+
         });
     </script>
 @stop
