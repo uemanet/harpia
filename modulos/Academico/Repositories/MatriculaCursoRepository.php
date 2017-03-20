@@ -466,14 +466,13 @@ class MatriculaCursoRepository extends BaseRepository
             }
         }
 
-        // TODO checar se o aluno ja tem certificado
         foreach ($aptos as $apto) {
             if ($this->registroRepository->matriculaTemRegistro($apto->mat_id)) {
                 $certificados[] = $apto;
             }
         }
 
-        return $aptos;
+        return array('aptos' => $aptos, 'certificados' => $certificados);
     }
 
     public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
