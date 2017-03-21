@@ -229,34 +229,24 @@ class GruposController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-            DB::beginTransaction();
 
             $grupoId = $request->get('id');
 
             $grupo = $this->grupoRepository->find($grupoId);
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
+            DB::beginTransaction();
 
             if ($turma->trm_integrada) {
                 event(new DeleteGrupoEvent($grupo));
-
-                if (SincronizacaoRepository::excludedFromMoodle($grupo->getTable(), $grupoId)) {
-                    $this->grupoRepository->delete($grupoId);
-
-                    DB::commit();
-                    flash()->success('Grupo excluído com sucesso.');
-                    return redirect()->back();
-                }
-
-                DB::commit();
-                flash()->error('Erro ao tentar excluir o grupo');
-                return redirect()->back();
             }
 
-
             $this->grupoRepository->delete($grupoId);
+
             flash()->success('Grupo excluído com sucesso.');
+
             DB::commit();
+
             return redirect()->back();
         } catch (\Exception $e) {
             DB::rollback();
