@@ -124,23 +124,21 @@ class MatriculaCursoController extends BaseController
                 return redirect()->route('academico.matricularalunocurso.index');
             }
 
-            $oldMatricula = $matricula;
+            $oldMatricula = clone $matricula;
 
             $matricula->mat_pol_id = $request->input('mat_pol_id');
             $matricula->mat_grp_id = ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id');
 
             $matricula->save();
 
-            $matriculaAtualizada = $matricula;
-
             $turma = $matricula->turma;
 
-            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id != $matriculaAtualizada->mat_grp_id) && ($matriculaAtualizada->mat_grp_id)) {
-                event(new AlterarGrupoAlunoEvent($matriculaAtualizada, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id ));
+            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
+                event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id ));
             }
 
-            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id) && (!$matriculaAtualizada->mat_grp_id)) {
-                event(new DeletarGrupoAlunoEvent($matriculaAtualizada, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
+                event(new DeletarGrupoAlunoEvent($matricula, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
             }
 
             flash()->success('Matrícula atualizada com sucesso.');

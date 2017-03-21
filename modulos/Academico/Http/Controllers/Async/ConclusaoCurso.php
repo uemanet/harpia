@@ -47,8 +47,8 @@ class ConclusaoCurso extends BaseController
                     return new JsonResponse('Matricula(s) não está apta para conclusão de curso', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
-                event(new AtualizarSituacaoMatriculaEvent($result, 'UPDATE_STATUS_MATRICULA'));
-                
+                event(new AtualizarSituacaoMatriculaEvent($result));
+
                 DB::commit();
 
                 return new JsonResponse('Matriculas concluidas com sucesso', 200);

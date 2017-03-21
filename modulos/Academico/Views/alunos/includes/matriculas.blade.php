@@ -228,7 +228,7 @@
                     url: '/academico/async/matricula/alterarsituacao',
                     data: dados,
                     success: function (response) {
-                        $.harpia.hideloading();
+                        // $.harpia.hideloading();
                         toastr.success('Situação da matrícula alterada com sucesso', null, {progressBar: true});
                         location.reload(true);
                     },
