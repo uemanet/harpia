@@ -1,8 +1,10 @@
 <?php
 namespace Modulos\Integracao\Repositories;
+
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\Sincronizacao;
 use DB;
+
 class SincronizacaoRepository extends BaseRepository
 {
     public function __construct(Sincronizacao $sincronizacao)
@@ -11,9 +13,8 @@ class SincronizacaoRepository extends BaseRepository
     }
     public function update(array $data, $id = null, $attribute = "id")
     {
-
-        if($data['sym_extra']){
-          return $this->model
+        if ($data['sym_extra']) {
+            return $this->model
               ->where('sym_table', '=', $data['sym_table'])
               ->where('sym_table_id', '=', $data['sym_table_id'])
               ->where('sym_action', '=', $data['sym_action'])
