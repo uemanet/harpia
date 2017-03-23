@@ -15,9 +15,9 @@ class TurmaRepository extends BaseRepository
 
     public function findAllByOfertaCurso($ofertaCursoId)
     {
-        $entries = DB::table('acd_turmas')
+        $entries = $this->model
+                        ->where('trm_ofc_id', $ofertaCursoId)
                         ->select('trm_id', 'trm_nome')
-                        ->where('trm_ofc_id', '=', $ofertaCursoId)
                         ->get();
 
         return $entries;
@@ -72,7 +72,7 @@ class TurmaRepository extends BaseRepository
     {
         $turma = $this->find($turmaId);
 
-        $curso = $turma->oferta->curso;
+        $curso = $turma->ofertacurso->curso;
 
         return $curso;
     }

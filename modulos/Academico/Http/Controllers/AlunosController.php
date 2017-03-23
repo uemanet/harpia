@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\AlunoRequest;
@@ -277,6 +278,13 @@ class AlunosController extends BaseController
 
             $pessoa = $this->pessoaRepository->find($pessoaId);
 
+            $pessoaAtt = $this->pessoaRepository->find($pessoaId);
+            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
+
+            foreach ($ambientesvinculadosId as $id) {
+                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
+            }
+
             flash()->success('Aluno editado com sucesso!');
             return redirect()->route('academico.alunos.show', $pessoa->aluno->alu_id);
         } catch (\Exception $e) {
@@ -298,6 +306,13 @@ class AlunosController extends BaseController
         $aluno = $this->alunoRepository->find($alunoId);
         session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
 
-        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno]);
+        $situacao = ['cursando'=> 'cursando',
+                     'concluido' => 'concluido',
+                     'reprovado'=> 'reprovado',
+                     'evadido'=> 'evadido',
+                     'trancado'=> 'trancado',
+                     'desistente'=> 'desistente'];
+
+        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'situacao' => $situacao]);
     }
 }

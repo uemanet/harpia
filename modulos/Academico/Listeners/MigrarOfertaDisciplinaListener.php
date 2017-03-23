@@ -45,7 +45,8 @@ class MigrarOfertaDisciplinaListener
     {
         $ofertasMigrar = $this->sincronizacaoRepository->findBy([
             'sym_table' => 'acd_ofertas_disciplinas',
-            'sym_status' => 1
+            'sym_status' => 1,
+            'sym_action' => "CREATE"
         ]);
 
         if ($ofertasMigrar->count()) {

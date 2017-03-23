@@ -94,7 +94,7 @@ class OfertasCursosController extends BaseController
 
     public function getCreate()
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome', true);
         $modalidades = $this->modalidadeRepository->lists('mdl_id', 'mdl_nome');
         $polos = $this->poloRepository->lists('pol_id', 'pol_nome');
 

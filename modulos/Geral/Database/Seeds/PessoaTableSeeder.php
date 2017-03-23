@@ -12,32 +12,32 @@ class PessoaTableSeeder extends Seeder
     {
         // Cadastrar 50 pessoas na base
 
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create('pt_BR');
         $format = new Format();
 
-        for ($i=0;$i<50;$i++) {
+        for ($i=0;$i<500;$i++) {
             $pessoa = new Pessoa();
 
-            $pessoa->pes_nome = $faker->name;
+            $pessoa->pes_nome = $faker->firstName.' '.$faker->lastName;
             $pessoa->pes_sexo = $faker->randomElement(array('M', 'F'));
             $pessoa->pes_email = $faker->email;
-            $pessoa->pes_telefone = '98988992233';
+            $pessoa->pes_telefone = $faker->areaCode.$faker->cellphone(false, true);
             $pessoa->pes_nascimento = $faker->date('d/m/Y');
-            $pessoa->pes_mae = $faker->name;
-            $pessoa->pes_pai = $faker->name;
+            $pessoa->pes_mae = $faker->firstNameFemale.' '.$faker->lastName;
+            $pessoa->pes_pai = $faker->firstNameMale.' '.$faker->lastName;
             $pessoa->pes_estado_civil = $faker->randomElement(array('solteiro', 'casado'));
-            $pessoa->pes_naturalidade = $faker->randomElement(array('Maranhao', 'Sao Paulo', 'Ceará', 'Piauí'));
+            $pessoa->pes_naturalidade = $faker->state;
             $pessoa->pes_nacionalidade = 'Brasileira';
             $pessoa->pes_raca = $faker->randomElement(array('branca', 'preta', 'parda', 'amarela', 'indigena'));
-            $pessoa->pes_necessidade_especial = 'Não';
+            $pessoa->pes_necessidade_especial = 'N';
             $pessoa->pes_estrangeiro = 0;
             $pessoa->pes_endereco = $faker->streetAddress;
             $pessoa->pes_complemento = $faker->streetName;
             $pessoa->pes_numero = $faker->randomNumber(4);
             $pessoa->pes_cep = $faker->postcode;
             $pessoa->pes_cidade = $faker->city;
-            $pessoa->pes_bairro = $faker->randomElement(array('João Paulo', 'Cohab', 'Cohama', 'Coroadinho', 'Barreto'));
-            $pessoa->pes_estado = $faker->randomElement(array('MA', 'SP', 'CE', 'PI'));
+            $pessoa->pes_bairro = $faker->streetSuffix;
+            $pessoa->pes_estado = $faker->stateAbbr;
 
 
             $pessoa->save();
