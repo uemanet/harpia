@@ -49,6 +49,10 @@ class Cursos
         try {
             $oferta = $this->ofertaCursoRepository->find($ofertaId);
             $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($oferta->ofc_mtc_id);
+
+            $modulos->pop();
+            $modulos->shift();
+
             return new JsonResponse($modulos, JsonResponse::HTTP_OK, $this->defaultHeaders);
         } catch (\Exception $e) {
             if (config('app.debug')) {

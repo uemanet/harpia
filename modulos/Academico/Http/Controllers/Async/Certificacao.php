@@ -17,8 +17,4 @@ class Certificacao
     {
         $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
-
-    public function getAlunosAptos($turma, $modulo)
-    {
-    }
 }

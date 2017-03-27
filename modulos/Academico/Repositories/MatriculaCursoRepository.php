@@ -511,6 +511,10 @@ class MatriculaCursoRepository extends BaseRepository
 
                 $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAlunoModuloMatriz($matricula->mat_alu_id, $modulo->mdo_id);
 
+                if (!$disciplinasAluno->count()) {
+                    return false;
+                }
+
                 $cargaHorariaEletivas = 0;
                 $creditosEletivas = 0;
 
