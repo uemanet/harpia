@@ -203,6 +203,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'historicodefinitivo'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\HistoricoDefinitivoController@getIndex')->name('academico.historicodefinitivo.index');
+        Route::post('/print', '\Modulos\Academico\Http\Controllers\HistoricoDefinitivoController@postPrint')->name('academico.historicodefinitivo.print');
     });
 
     //Rotas de funções assíncronas

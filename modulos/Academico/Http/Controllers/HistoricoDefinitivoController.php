@@ -2,7 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use App\Http\Requests\Request;
+use Modulos\Academico\Http\Requests\HistoricoDefinitivoRequest;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
@@ -27,20 +27,24 @@ class HistoricoDefinitivoController extends BaseController
         return view('Academico::historicodefinitivo.index', compact('cursos'));
     }
 
-    public function getPrint(Request $request)
+    public function postPrint(HistoricoDefinitivoRequest $request)
     {
-        $matriculaId = $request->input('mat_id');
+        $matriculas = $request->all();
 
-        $matricula = $this->matriculaCursoRepository->find($matriculaId);
+        if (!empty($matriculas)) {
+            foreach ($matriculas as $id) {
+                $matricula = $this->matriculaCursoRepository->find($id);
 
-        if (!$matricula) {
-            flash()->error('Matricula não encontrada');
-            return redirect()->route('academico.historicodefinitivo.index');
-        }
+                if (!$matricula) {
+                    flash()->error('Matricula não encontrada');
+                    return redirect()->route('academico.historicodefinitivo.index');
+                }
 
-        if ($matricula->mat_situacao != 'concluido') {
-            flash()->error('Aluno não concluiu o curso!');
-            return redirect()->route('academico.historicodefinitivo.index');
+                if ($matricula->mat_situacao != 'concluido') {
+                    flash()->error('Aluno não concluiu o curso!');
+                    return redirect()->route('academico.historicodefinitivo.index');
+                }
+            }
         }
     }
 }

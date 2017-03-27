@@ -191,27 +191,6 @@
                 renderTableAlunos(ofertaCursoId, turmaId, poloId);
             });
 
-            // evento do botão de confirmar a matricula na(s) disciplina(s)
-            $(document).on('click', '.confirmConclusao', function (e) {
-
-                e.preventDefault();
-
-                var quant = $('.matriculas:checked').length;
-
-                if(!(quant > 0)) {
-                    return false;
-                }
-
-                var matriculasIds = new Array();
-                var ofertaCursoId = ofertasCursoSelect.val();
-
-                $('.matriculas:checked').each(function () {
-                    matriculasIds.push($(this).val());
-                });
-
-                sendMatriculas(ofertaCursoId, matriculasIds);
-            });
-
             var renderTableAlunos = function (ofertaCursoId, turmaId, poloId) {
 
                 var data = 'trm_ofc_id=' + ofertaCursoId + '&mat_trm_id=' + turmaId + '&mat_pol_id=' + poloId;
@@ -224,8 +203,11 @@
                     boxAlunos.empty();
 
                     if(!$.isEmptyObject(response)) {
-                        var table = '<div class="row">';
+                        var table = '';
+                        table = '<div class="row">';
+                        table += '<form action="{{route('academico.historicodefinitivo.print')}}" method="POST">';
                         table += '<div class="col-md-12">';
+                        table += '{{csrf_field()}}';
                         table += '<table class="table table-bordered table-hover">';
 
                         table += '<tr>';
@@ -233,12 +215,12 @@
                         table += '<th width="1%">#</th>';
                         table += '<th>Aluno</th>';
                         table += '<th width="20%">Situação</th>';
-                        table += '<th>Data de Conclusão</th>';
+                        table += '<th width="20%">Data de Conclusão</th>';
                         table += '</tr>';
 
                         $.each(response, function (key, obj) {
                             table += '<tr>';
-                            table += '<td><label><input type="checkbox" class="matriculas" value="'+obj.mat_id+'"></label></td>';
+                            table += '<td><label><input type="checkbox" name="matriculas[]" class="matriculas" value="'+obj.mat_id+'"></label></td>';
                             table += '<td>'+obj.mat_id+'</td>';
                             table += '<td>'+obj.pes_nome+'</td>';
                             table += '<td><span class="label label-success">Concluído</span></td>';
@@ -246,13 +228,14 @@
                             table += '</tr>';
                         });
 
-                        table += '</table></div></div>';
+                        table += '</table>';
 
-                        table += "<div class='row'>";
-                        table += "<div class='col-md-12'>"
                         table += "<div class='form-group'>";
-                        table += "<button class='btn btn-primary confirmConclusao hidden'>Confirmar Conclusão</button>";
-                        table += "</div></div></div>";
+                        table += "<button type='submit' class='btn btn-primary impHistoricos hidden'><i class='fa fa-file-pdf-o'></i> Imprimir Históricos</button>";
+                        table += "</div>";
+                        table += "</div>";
+                        table += "</form>";
+                        table += "</div>";
 
                         boxAlunos.append(table);
                         hiddenButton();
@@ -266,53 +249,13 @@
                 var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
 
                 if(checkboxes.is(':checked')){
-                    $(document).find('.confirmConclusao').removeClass('hidden');
+                    $(document).find('.impHistoricos').removeClass('hidden');
                 }else{
-                    $(document).find('.confirmConclusao').addClass('hidden');
+                    $(document).find('.impHistoricos').addClass('hidden');
                 }
             };
 
             $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButton);
-
-            var sendMatriculas = function (ofertaCursoId, matriculasIds) {
-
-                var dados = {
-                    matriculas: matriculasIds,
-                    ofc_id: ofertaCursoId,
-                    _token: token
-                };
-
-                $.harpia.showloading();
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/academico/async/conclusaocurso/concluirmatriculas',
-                    data: dados,
-                    success: function(response) {
-
-                        $.harpia.hideloading();
-
-                        toastr.success('Conclusão de Curso efetuada com sucesso!', null, {progressBar: true});
-
-                        var ofertaCursoId = $('#ofc_id').val();
-                        var turmaId = $('#trm_id').val();
-                        var poloId = $('#pol_id').val();
-
-                        renderTableAlunos(ofertaCursoId, turmaId, poloId);
-                    },
-                    error: function(xhr, textStatus, error) {
-                        $.harpia.hideloading();
-
-                        switch (xhr.status) {
-                            case 400:
-                                toastr.error(xhr.responseText, null, {progressBar: true});
-                                break;
-                            default:
-                                toastr.error(xhr.responseText, null, {progressBar: true});
-                        }
-                    }
-                });
-            };
         });
     </script>
 @stop
