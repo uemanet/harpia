@@ -16,8 +16,8 @@ class ModuloMatrizTableSeeder extends Seeder
 
         foreach ($matrizes as $matriz) {
 
-            // cria 2 módulos pra cada matriz
-            for ($i=1;$i<=2;$i++) {
+            // cria 3 módulos pra cada matriz
+            for ($i=1;$i<=3;$i++) {
                 $modulo = new ModuloMatriz();
 
                 $modulo->mdo_mtc_id = $matriz->mtc_id;
