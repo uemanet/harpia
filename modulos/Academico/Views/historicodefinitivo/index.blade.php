@@ -214,9 +214,9 @@
 
             var renderTableAlunos = function (ofertaCursoId, turmaId, poloId) {
 
-                var data = 'ofc_id=' + ofertaCursoId + '&trm_id=' + turmaId + '&pol_id=' + poloId;
+                var data = 'trm_ofc_id=' + ofertaCursoId + '&mat_trm_id=' + turmaId + '&mat_pol_id=' + poloId;
 
-                $.harpia.httpget("{{url('/')}}/academico/async/conclusaocurso/findallalunosaptosounao?" + data).done(function (response) {
+                $.harpia.httpget("{{url('/')}}/academico/async/matricula/getmatriculasconcluidas?" + data).done(function (response) {
 
                     $('#boxAlunos').removeClass('hidden');
 
@@ -233,24 +233,16 @@
                         table += '<th width="1%">#</th>';
                         table += '<th>Aluno</th>';
                         table += '<th width="20%">Situação</th>';
+                        table += '<th>Data de Conclusão</th>';
                         table += '</tr>';
 
                         $.each(response, function (key, obj) {
                             table += '<tr>';
-                            if(obj.status == 1) {
-                                table += '<td><label><input type="checkbox" class="matriculas" value="'+obj.mat_id+'"></label></td>';
-                            } else {
-                                table += '<td></td>';
-                            }
+                            table += '<td><label><input type="checkbox" class="matriculas" value="'+obj.mat_id+'"></label></td>';
                             table += '<td>'+obj.mat_id+'</td>';
                             table += '<td>'+obj.pes_nome+'</td>';
-                            if(obj.status == 0) {
-                                table += '<td><span class="label label-danger">Não Apto</span></td>';
-                            } else if(obj.status == 1) {
-                                table += '<td><span class="label label-success">Apto</span></td>';
-                            } else {
-                                table += '<td><p><span class="label label-info">Concluído</span></p><p><strong>Data de Conclusão:</strong> '+obj.data_conclusao+'</p></td>';
-                            }
+                            table += '<td><span class="label label-success">Concluído</span></td>';
+                            table += '<td>'+obj.mat_data_conclusao+'</td>';
                             table += '</tr>';
                         });
 
