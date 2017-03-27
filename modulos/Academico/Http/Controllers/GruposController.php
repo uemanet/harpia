@@ -229,7 +229,6 @@ class GruposController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-
             $grupoId = $request->get('id');
 
             $grupo = $this->grupoRepository->find($grupoId);
