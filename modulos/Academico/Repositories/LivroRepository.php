@@ -11,4 +11,19 @@ class LivroRepository extends BaseRepository
     {
         $this->model = $livro;
     }
+
+    public function findBy($options)
+    {
+        $query = $this->model;
+
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $query = $query->where($key, '=', $value);
+            }
+
+            return $query->get();
+        }
+
+        return $query->all();
+    }
 }

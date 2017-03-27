@@ -23,13 +23,6 @@ class CertificacaoController
 
     public function getIndex(Request $request)
     {
-        $data['reg_liv_id'] = 1;
-        $data['reg_mat_id'] = 1;
-
-        $result = $this->registroRepository->create($data);
-
-        dd($result);
-
         $actionButtons[] = null;
 
         $paginacao = null;
