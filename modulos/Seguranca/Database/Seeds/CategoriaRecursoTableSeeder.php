@@ -94,12 +94,12 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 0;
         $categoria->save();
 
-        // Categoria Oculto - id: 7
+        // Categoria Historicos - id: 7
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
-        $categoria->ctr_nome = 'Certificação';
-        $categoria->ctr_descricao = 'Categoria certificação do módulo acadêmico';
-        $categoria->ctr_icone = 'fa fa-id-card';
+        $categoria->ctr_nome = 'Documentos';
+        $categoria->ctr_descricao = 'Categoria Documentos do Módulo Acadêmico';
+        $categoria->ctr_icone = 'fa fa-clipboard';
         $categoria->ctr_ordem = 3;
         $categoria->ctr_ativo = 1;
         $categoria->ctr_visivel = 1;

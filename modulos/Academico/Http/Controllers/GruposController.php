@@ -2,6 +2,8 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modulos\Academico\Events\AtualizarGrupoEvent;
+use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Events\NovoGrupoEvent;
 use Modulos\Academico\Http\Requests\GrupoRequest;
 use Modulos\Academico\Repositories\CursoRepository;
@@ -10,8 +12,10 @@ use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
+use DB;
 
 class GruposController extends BaseController
 {
@@ -200,6 +204,16 @@ class GruposController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
+            // busca a turma vinculado ao grupo
+            $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+            if ($turma->trm_integrada) {
+                $grupoAtt = $this->grupoRepository->find($id);
+                event(new AtualizarGrupoEvent($grupoAtt));
+            }
+
+
+
             flash()->success('Grupo atualizado com sucesso.');
             return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
@@ -217,19 +231,30 @@ class GruposController extends BaseController
         try {
             $grupoId = $request->get('id');
 
-            if ($this->grupoRepository->delete($grupoId)) {
-                flash()->success('Grupo excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o módulo');
+            $grupo = $this->grupoRepository->find($grupoId);
+            $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
+            DB::beginTransaction();
+
+            if ($turma->trm_integrada) {
+                event(new DeleteGrupoEvent($grupo));
             }
+
+            $this->grupoRepository->delete($grupoId);
+
+            flash()->success('Grupo excluído com sucesso.');
+
+            DB::commit();
 
             return redirect()->back();
         } catch (\Exception $e) {
+            DB::rollback();
+
             if (config('app.debug')) {
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

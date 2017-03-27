@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Modulos\Integracao\Listeners;
 
 use Modulos\Integracao\Events\AtualizarSyncEvent;
