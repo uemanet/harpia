@@ -2,7 +2,6 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -161,11 +160,8 @@ class PessoasController extends BaseController
             DB::commit();
 
             $pessoaAtt = $this->pessoaRepository->find($id);
-            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            foreach ($ambientesvinculadosId as $id) {
-                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-            }
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Pessoa editada com sucesso!');
             return redirect()->route('geral.pessoas.show', ['id' =>$id ]);
