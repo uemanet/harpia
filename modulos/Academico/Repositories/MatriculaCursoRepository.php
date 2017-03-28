@@ -462,14 +462,12 @@ class MatriculaCursoRepository extends BaseRepository
             foreach ($matriculas as $matricula) {
                 if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
                     $aptos[] = $matricula;
+                    continue;
                 }
-            }
-        }
 
-        foreach ($aptos as $key => $apto) {
-            if ($this->registroRepository->matriculaTemRegistro($apto->mat_id)) {
-                $certificados[] = $apto;
-                unset($aptos[$key]);
+                if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id)) {
+                    $certificados[] = $matricula;
+                }
             }
         }
 
