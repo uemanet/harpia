@@ -370,29 +370,17 @@ class AmbientesVirtuaisController extends BaseController
             DB::beginTransaction();
 
             $ambienteTurmaId = $request->get('id');
-
             $ambienteTurma = $this->ambienteTurmaRepository->find($ambienteTurmaId);
-
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
-
-
-            if ($turma->trm_integrada) {
-                event(new DeleteOfertaTurmaEvent($turma));
-
-                if (SincronizacaoRepository::excludedFromMoodle($turma->getTable(), $turma->trm_id)) {
-                    $this->ambienteTurmaRepository->delete($ambienteTurmaId);
-
-                    DB::commit();
-                    flash()->success('Turma excluída com sucesso.');
-                    return redirect()->back();
-                }
-
-                DB::commit();
-                flash()->error('Erro ao tentar excluir a turma');
-                return redirect()->back();
-            }
+            $ambiente = $turma->ambientes->first()->amb_id;
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
+
+            if ($turma->trm_integrada) {
+                event(new DeleteOfertaTurmaEvent($turma, "DELETE", $ambiente));
+            }
+
+            flash()->success('Turma excluída com sucesso.');
 
             DB::commit();
             return redirect()->back();

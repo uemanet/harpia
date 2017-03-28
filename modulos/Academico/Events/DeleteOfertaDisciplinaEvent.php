@@ -7,8 +7,8 @@ use Modulos\Core\Model\BaseModel;
 
 class DeleteOfertaDisciplinaEvent extends Event
 {
-    public function __construct(BaseModel $entry, $action = "DELETE")
+    public function __construct(BaseModel $entry, $action = "DELETE", $extra)
     {
-        parent::__construct($entry, $action);
+        parent::__construct($entry, $action, $extra);
     }
 }

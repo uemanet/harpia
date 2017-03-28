@@ -245,24 +245,12 @@ class TutoresGruposController extends BaseController
             }
 
             if ($turma->trm_integrada) {
-                // Event tutor antigo desvinculado
+                //Dispara evento para deletar o antigo tutor do grupo
                 event(new DeleteTutorVinculadoEvent($tutorGrupoOld));
+                //Dispara evento para vincular novo tutor no grupo
+                event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
 
-                if (SincronizacaoRepository::excludedFromMoodle($tutorGrupoOld->getTable(), $idTutorGrupo)) {
-                    // Se o ambiente respondeu OK, vincular novo tutor
-                    event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
-
-                    DB::commit();
-
-                    flash()->success('Tutor alterado com sucesso.');
-                    return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
-                }
-
-                DB::commit();
-                flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-                return redirect()->back();
             }
-
 
             DB::commit();
 

@@ -178,7 +178,6 @@ class GruposController extends BaseController
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
-
         if (!$grupo) {
             flash()->error('Grupo não existe.');
             return redirect()->back();
@@ -212,8 +211,6 @@ class GruposController extends BaseController
                 event(new AtualizarGrupoEvent($grupoAtt));
             }
 
-
-
             flash()->success('Grupo atualizado com sucesso.');
             return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
         } catch (\Exception $e) {
@@ -232,15 +229,16 @@ class GruposController extends BaseController
             $grupoId = $request->get('id');
 
             $grupo = $this->grupoRepository->find($grupoId);
-            $turma = $this->turmaRepository->find($grupo->grp_trm_id);
+
 
             DB::beginTransaction();
 
-            if ($turma->trm_integrada) {
-                event(new DeleteGrupoEvent($grupo));
-            }
-
             $this->grupoRepository->delete($grupoId);
+            $ambiente = $grupo->turma->ambientes->first()->amb_id;
+
+            if ($grupo->turma->trm_integrada) {
+              event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente));
+            }
 
             flash()->success('Grupo excluído com sucesso.');
 
