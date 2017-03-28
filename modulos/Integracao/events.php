@@ -22,6 +22,10 @@ return [
         'Modulos\Integracao\Listeners\AtualizarSyncListener'
     ],
 
+    'Modulos\Integracao\Events\AtualizarSyncDeleteEvent' => [
+        'Modulos\Integracao\Listeners\AtualizarSyncDeleteListener'
+    ],
+
     'Modulos\Integracao\Events\TurmaMapeadaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Integracao\Listeners\MigrarTurmaListener'
