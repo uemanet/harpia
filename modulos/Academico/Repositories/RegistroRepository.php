@@ -12,8 +12,8 @@ class RegistroRepository extends BaseRepository
 {
     protected $livroRepository;
 
-    private $folhasLivro = 200;
-    private $registrosFolha = 3;
+    const FOLHAS_LIVRO = 200;
+    const REGISTROS_FOLHA = 3;
 
     public function __construct(Registro $registro, LivroRepository $livroRepository)
     {
@@ -43,14 +43,14 @@ class RegistroRepository extends BaseRepository
             $registro = $last->reg_registro;
             $folha = $last->reg_folha;
 
-            $registro < $this->registrosFolha ? $registro++ : $registro = 1;
+            $registro < self::REGISTROS_FOLHA ? $registro++ : $registro = 1;
 
-            if ($this->registrosFolha($last) == $this->registrosFolha) {
+            if ($this->registrosFolha($last) == self::REGISTROS_FOLHA) {
                 $folha++;
             }
 
             // O livro atual esta sem espaco para registros
-            if ($folha > $this->folhasLivro) {
+            if ($folha > self::FOLHAS_LIVRO) {
                 $livroAtual = $this->livroRepository->find($data['reg_liv_id']);
 
                 /* Verificar se ha um livro do mesmo tipo com espaco para registros sobrando
@@ -61,7 +61,7 @@ class RegistroRepository extends BaseRepository
                 ]);
 
                 foreach ($livros as $livro) {
-                    if ($this->folhasLivro($livro) < $this->folhasLivro) {
+                    if ($this->folhasLivro($livro) < self::FOLHAS_LIVRO) {
                         // Pega o ultimo registro do livro em que se esta inserindo esse registro
                         $last = $this->findBy([
                             'reg_liv_id' => $livro->liv_id
@@ -78,9 +78,9 @@ class RegistroRepository extends BaseRepository
                         $registro = $last->reg_registro;
                         $folha = $last->reg_folha;
 
-                        $registro < $this->registrosFolha ? $registro++ : $registro = 1;
+                        $registro < self::REGISTROS_FOLHA ? $registro++ : $registro = 1;
 
-                        if ($this->registrosFolha($last) == $this->registrosFolha) {
+                        if ($this->registrosFolha($last) == self::REGISTROS_FOLHA) {
                             $folha++;
                         }
 
@@ -95,8 +95,8 @@ class RegistroRepository extends BaseRepository
                 $folha = 1;
                 $registro = 1;
 
-                $novoLivroData['liv_numero'] = $livro->liv_numero + 1;
-                $novoLivroData['liv_tipo_livro'] = $livro->liv_tipo_livro;
+                $novoLivroData['liv_numero'] = $livroAtual->liv_numero + 1;
+                $novoLivroData['liv_tipo_livro'] = $livroAtual->liv_tipo_livro;
 
                 $novoLivro = $this->livroRepository->create($novoLivroData);
 

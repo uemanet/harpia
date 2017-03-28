@@ -301,6 +301,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/findcursostecnicos', '\Modulos\Academico\Http\Controllers\Async\Cursos@getCursosTecnicos');
             Route::get('/findmodulosbyoferta/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByOferta');
             Route::get('/getalunosaptos/{turma}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos');
+            Route::post('/certificaralunos', '\Modulos\Academico\Http\Controllers\Async\Cursos@postCertificarAlunos');
         });
 
         Route::group(['prefix' => 'matricula'], function () {
