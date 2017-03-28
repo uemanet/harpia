@@ -14,8 +14,8 @@ class ModuloDisciplinasTableSeeder extends Seeder
     {
         $matrizesCurriculares = MatrizCurricular::all();
 
-        $skip = 0;
         foreach ($matrizesCurriculares as $matriz) {
+            $skip = 0;
             $nivelCurso = $matriz->curso->crs_nvc_id;
 
             $modulos = $matriz->modulos;

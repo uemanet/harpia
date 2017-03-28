@@ -34,11 +34,15 @@ class HistoricoDefinitivoController extends BaseController
     public function postPrint(HistoricoDefinitivoRequest $request)
     {
         $matriculas = $request->only('matriculas');
-//        dd($matriculas);
 
         if (!empty($matriculas)) {
-            foreach ($matriculas as $id) {
-                $matricula = $this->matriculaCursoRepository->find($id)->first();
+            $matr = $this->matriculaCursoRepository->find($matriculas['matriculas'][0])->first();
+
+            $mpdf = new \mPDF();
+            $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $matr->turma->ofertacurso->curso->crs_nome);
+
+            foreach ($matriculas['matriculas'] as $id) {
+                $matricula = $this->matriculaCursoRepository->find($id);
 
                 if (!$matricula) {
                     flash()->error('Matricula não encontrada');
@@ -50,10 +54,20 @@ class HistoricoDefinitivoController extends BaseController
                     return redirect()->route('academico.historicodefinitivo.index');
                 }
 
+                $mpdf->AddPage('P');
+
                 $dados = $this->historicoDefinitivoRepository->getGradeCurricularByMatricula($matricula->mat_id);
 
-                dd($dados);
+                $blade = 'graduacao';
+
+                if ($matricula->turma->ofertacurso->curso->crs_nvc_id == 1) {
+                    $blade = 'tecnico';
+                }
+
+                $mpdf->WriteHTML(view('Academico::historicodefinitivo.'.$blade, compact('dados'))->render());
             }
+
+            $mpdf->Output('Historico_Defintivo.pdf', 'I');
         }
     }
 }
