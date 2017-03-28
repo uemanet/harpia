@@ -52,8 +52,8 @@ class MigrarAlterarGrupoAlunoListener
 
                     $param['data']['student']['mat_id'] = $matricula->mat_id;
                     $param['data']['student']['pes_id'] = $matricula->aluno->alu_pes_id;
-                    if($reg->sym_extra){
-                      $param['data']['student']['old_grp_id'] = $reg->sym_extra;
+                    if ($reg->sym_extra) {
+                        $param['data']['student']['old_grp_id'] = $reg->sym_extra;
                     }
                     $param['data']['student']['new_grp_id'] = $matricula->mat_grp_id;
 
@@ -68,7 +68,7 @@ class MigrarAlterarGrupoAlunoListener
                             $status = 2;
                         }
                     }
-                    event(new AtualizarSyncEvent($matricula, $status, $retorno['message'],$param['action'],null,$reg->sym_extra));
+                    event(new AtualizarSyncEvent($matricula, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
                 }
             }
         }

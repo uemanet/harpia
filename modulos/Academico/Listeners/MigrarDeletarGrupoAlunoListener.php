@@ -65,7 +65,7 @@ class MigrarDeletarGrupoAlunoListener
                             $status = 2;
                         }
                     }
-                    event(new AtualizarSyncEvent($matricula, $status, $retorno['message'],$param['action'],null,$reg->sym_extra));
+                    event(new AtualizarSyncEvent($matricula, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
                 }
             }
         }
