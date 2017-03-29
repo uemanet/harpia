@@ -57,6 +57,8 @@ class RelatoriosMatriculasCursoController extends BaseController
             $tabela = $tableData->columns(array(
                 'mat_id' => '#',
                 'pes_nome' => 'Nome',
+                'pes_email' => 'Email',
+                'pol_nome' => 'Polo',
                 'mat_situacao' => 'Situação Matricula'
             ))
                 ->sortable(array('pes_nome', 'mat_id'));
@@ -84,6 +86,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $matriculas = $this->matriculaCursoRepository->findAllBySitucao(
             ['trm_id' => $turmaId, 'mat_situacao' => $situacao]);
         $nomecurso = $this->turmaRepository->findCursoByTurma($turmaId);
+        $turma = $this->turmaRepository->find($turmaId);
 
         $date = new Carbon();
 
@@ -102,7 +105,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $mpdf->addPage('L');
 
 
-        $mpdf->WriteHTML(view('Academico::relatoriosmatriculascurso.relatorioalunos', compact('matriculas', 'nomecurso', 'date'))->render());
+        $mpdf->WriteHTML(view('Academico::relatoriosmatriculascurso.relatorioalunos', compact('matriculas', 'nomecurso', 'date', 'turma'))->render());
         $mpdf->Output();
         exit;
     }

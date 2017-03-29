@@ -97,8 +97,8 @@ class CategoriaRecursoTableSeeder extends Seeder
         // Categoria Historicos - id: 7
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
-        $categoria->ctr_nome = 'Históricos';
-        $categoria->ctr_descricao = 'Categoria Históricos do Módulo Acadêmico';
+        $categoria->ctr_nome = 'Documentos';
+        $categoria->ctr_descricao = 'Categoria Documentos do Módulo Acadêmico';
         $categoria->ctr_icone = 'fa fa-clipboard';
         $categoria->ctr_ordem = 3;
         $categoria->ctr_ativo = 1;
