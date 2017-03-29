@@ -5,7 +5,7 @@ namespace Modulos\Academico\Listeners;
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Repositories\GrupoRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -34,10 +34,10 @@ class MigrarExclusaoGrupoListener
 
         if ($gruposMigrar->count()) {
             foreach ($gruposMigrar as $reg) {
-                $grupo = $this->grupoRepository->find($reg->sym_table_id);
+                
 
                 // ambiente virtual vinculado à turma do grupo
-                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($reg->sym_extra);
 
                 if ($ambiente) {
                     $param = [];
@@ -48,7 +48,7 @@ class MigrarExclusaoGrupoListener
                     $param['functioname'] = 'local_integracao_delete_group';
                     $param['action'] = 'DELETE';
 
-                    $param['data']['group']['grp_id'] = $grupo->grp_id;
+                    $param['data']['group']['grp_id'] = $reg->sym_table_id;
 
                     $moodleSync = new Moodle();
 
@@ -62,7 +62,14 @@ class MigrarExclusaoGrupoListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message'], $event->getAction()));
+                    event(new AtualizarSyncDeleteEvent($reg->sym_table,
+                                                       $reg->sym_table_id,
+                                                       $status,
+                                                       $retorno['message'],
+                                                       $event->getAction(),
+                                                       null,
+                                                       $reg->sym_extra
+                                                       ));
                 }
             }
         }

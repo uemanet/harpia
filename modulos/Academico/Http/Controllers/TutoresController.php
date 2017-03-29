@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\TutorRequest;
@@ -277,11 +276,8 @@ class TutoresController extends BaseController
             DB::commit();
 
             $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            foreach ($ambientesvinculadosId as $id) {
-                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-            }
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Tutor editado com sucesso!');
             return redirect()->route('academico.tutores.index');

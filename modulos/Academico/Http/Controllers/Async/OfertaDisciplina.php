@@ -106,24 +106,16 @@ class OfertaDisciplina extends BaseController
 
             $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
             $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
-
-            if ($turma->trm_integrada) {
-                event(new DeleteOfertaDisciplinaEvent($oferta));
-
-                if (SincronizacaoRepository::excludedFromMoodle($oferta->getTable(), $ofertaId)) {
-                    $this->ofertaDisciplinaRepository->delete($ofertaId);
-
-                    DB::commit();
-                    return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
-                }
-
-                DB::commit();
-                return new JsonResponse('Não foi possível excluir a turma. Falha ao excluir do ambiente virtual', JsonResponse::HTTP_CONFLICT,  [], JSON_UNESCAPED_UNICODE);
-            }
+            $ambiente = $turma->ambientes->first()->amb_id;
 
             $this->ofertaDisciplinaRepository->delete($ofertaId);
+
+            if ($turma->trm_integrada) {
+                event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente));
+            }
+
             DB::commit();
-            return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Disciplina excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -131,7 +123,7 @@ class OfertaDisciplina extends BaseController
                 throw $e;
             }
 
-            return new JsonResponse('Não foi possível excluir a turma', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Não foi possível excluir a disciplina', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
         }
     }
 }
