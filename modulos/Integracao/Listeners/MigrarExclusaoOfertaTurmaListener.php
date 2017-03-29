@@ -5,7 +5,7 @@ namespace Modulos\Integracao\Listeners;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Events\DeleteOfertaTurmaEvent;
@@ -42,29 +42,33 @@ class MigrarExclusaoOfertaTurmaListener
 
         if ($turmasMigrar->count()) {
             foreach ($turmasMigrar as $item) {
-                $turma = $this->turmaRepository->find($item->sym_table_id);
-                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($item->sym_extra);
 
-                if (!$ambiente) {
-                    continue;
+                if ($ambiente) {
+                    $data['course']['trm_id'] = $item->sym_table_id;
+
+                    $param['url'] = $ambiente->url;
+                    $param['token'] = $ambiente->token;
+                    $param['action'] = 'post';
+                    $param['functioname'] = 'local_integracao_delete_course';
+                    $param['data'] = $data;
+
+                    $response = Moodle::send($param);
+                    $status = 3;
+
+                    if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                        $status = 2;
+                    }
+
+                    event(new AtualizarSyncDeleteEvent($item->sym_table,
+                                                     $item->sym_table_id,
+                                                     $status,
+                                                     $response['message'],
+                                                     $event->getAction(),
+                                                     null,
+                                                     $item->sym_extra
+                                                     ));
                 }
-
-                $data['course']['trm_id'] = $turma->trm_id;
-
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
-                $param['action'] = 'post';
-                $param['functioname'] = 'local_integracao_delete_course';
-                $param['data'] = $data;
-
-                $response = Moodle::send($param);
-                $status = 3;
-
-                if (array_key_exists('status', $response) && $response['status'] == 'success') {
-                    $status = 2;
-                }
-
-                event(new AtualizarSyncEvent($turma, $status, $response['message'], $event->getAction()));
             }
         }
     }

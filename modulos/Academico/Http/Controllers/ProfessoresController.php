@@ -280,6 +280,9 @@ class ProfessoresController extends BaseController
 
             $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pessoaId, 'doc_tpd_id' => 2], $dataDocumento);
 
+            $pessoaAtt = $this->pessoaRepository->find($pessoaId);
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
+
             DB::commit();
 
             flash()->success('Professor editado com sucesso!');
@@ -301,7 +304,7 @@ class ProfessoresController extends BaseController
     public function getShow($professorId)
     {
         $professor = $this->professorRepository->find($professorId);
-        
+
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);

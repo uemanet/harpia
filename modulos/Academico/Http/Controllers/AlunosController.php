@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\AlunoRequest;
@@ -276,17 +275,13 @@ class AlunosController extends BaseController
 
             DB::commit();
 
-            $pessoa = $this->pessoaRepository->find($pessoaId);
 
             $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            foreach ($ambientesvinculadosId as $id) {
-                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-            }
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Aluno editado com sucesso!');
-            return redirect()->route('academico.alunos.show', $pessoa->aluno->alu_id);
+            return redirect()->route('academico.alunos.show', $pessoaAtt->aluno->alu_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
