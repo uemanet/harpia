@@ -237,7 +237,7 @@ class GruposController extends BaseController
             $ambiente = $grupo->turma->ambientes->first()->amb_id;
 
             if ($grupo->turma->trm_integrada) {
-              event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente));
+                event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente));
             }
 
             flash()->success('Grupo excluído com sucesso.');

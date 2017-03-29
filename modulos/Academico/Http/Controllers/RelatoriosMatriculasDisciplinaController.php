@@ -73,6 +73,8 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $tabela = $tableData->columns(array(
                 'mat_id' => '#',
                 'pes_nome' => 'Nome',
+                'pes_email' => 'Email',
+                'pol_nome' => 'Polo',
                 'situacao_matricula' => 'Situação Matricula'
             ))
               ->sortable(array('pes_nome', 'mat_id'));
@@ -106,6 +108,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $alunos = $this->matriculaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
 
         $disciplina = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome');
+        $turma = $this->turmaRepository->find($turmaId);
 
         try {
             $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
@@ -122,7 +125,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $mpdf->defaultfooterline = 0;
             $mpdf->addPage('L');
 
-            $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina'))->render());
+            $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina', 'turma'))->render());
             $mpdf->Output();
             exit;
         } catch (\Exception $e) {

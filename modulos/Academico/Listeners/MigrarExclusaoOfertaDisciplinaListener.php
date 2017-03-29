@@ -46,23 +46,22 @@ class MigrarExclusaoOfertaDisciplinaListener
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($item->sym_extra);
 
                 if ($ambiente) {
+                    $data['discipline']['ofd_id'] = $item->sym_table_id;
 
-                  $data['discipline']['ofd_id'] = $item->sym_table_id;
+                    $param['url'] = $ambiente->url;
+                    $param['token'] = $ambiente->token;
+                    $param['action'] = 'post';
+                    $param['functioname'] = 'local_integracao_delete_discipline';
+                    $param['data'] = $data;
 
-                  $param['url'] = $ambiente->url;
-                  $param['token'] = $ambiente->token;
-                  $param['action'] = 'post';
-                  $param['functioname'] = 'local_integracao_delete_discipline';
-                  $param['data'] = $data;
+                    $response = Moodle::send($param);
+                    $status = 3;
 
-                  $response = Moodle::send($param);
-                  $status = 3;
+                    if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                        $status = 2;
+                    }
 
-                  if (array_key_exists('status', $response) && $response['status'] == 'success') {
-                    $status = 2;
-                  }
-
-                  event(new AtualizarSyncDeleteEvent($item->sym_table,
+                    event(new AtualizarSyncDeleteEvent($item->sym_table,
                                                      $item->sym_table_id,
                                                      $status,
                                                      $response['message'],
@@ -71,7 +70,6 @@ class MigrarExclusaoOfertaDisciplinaListener
                                                      $item->sym_extra
                                                      ));
                 }
-
             }
         }
     }

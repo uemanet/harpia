@@ -249,7 +249,6 @@ class TutoresGruposController extends BaseController
                 event(new DeleteTutorVinculadoEvent($tutorGrupoOld));
                 //Dispara evento para vincular novo tutor no grupo
                 event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
-
             }
 
             DB::commit();

@@ -169,6 +169,5 @@ class PessoaRepository extends BaseRepository
         foreach ($ambientesId as $id) {
             event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
         }
-
     }
 }
