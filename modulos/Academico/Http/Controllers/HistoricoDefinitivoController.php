@@ -40,6 +40,7 @@ class HistoricoDefinitivoController extends BaseController
 
             $mpdf = new \mPDF();
             $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $matr->turma->ofertacurso->curso->crs_nome);
+            $mpdf->SetMargins(2, 2, 5);
 
             foreach ($matriculas['matriculas'] as $id) {
                 $matricula = $this->matriculaCursoRepository->find($id);

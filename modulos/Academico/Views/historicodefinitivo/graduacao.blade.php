@@ -6,7 +6,7 @@
     <style>
 
         body {
-            font-size: 8pt;
+            font-size: 10pt;
         }
         table {
             width: 100%;
@@ -19,7 +19,21 @@
             border: 0.2mm solid #000000;
             padding: 0.5em;
         }
+
+        .heightMin td{
+            height: 8em;
+            vertical-align: top;
+        }
+
+        .heightAssinatura td {
+            height: 5em;
+        }
+
         .center {
+            text-align: center;
+        }
+
+        .centerAssinatura {
             text-align: center;
         }
     </style>
@@ -29,9 +43,9 @@
         <tbody>
             <tr>
                 <td width="50%" class="center">
-                    <p>UEMA</p>
-                    <p>Pró-Reitoria de Pesquisa e Pós-Graduação</p>
-                    <p>Coordenadoria de Pós-Graduação</p>
+                    UEMA<br>
+                    Pró-Reitoria de Pesquisa e Pós-Graduação<br>
+                    Coordenadoria de Pós-Graduação
                 </td>
                 <td width="50%" class="center">
                     <strong>HISTÓRICO ESCOLAR</strong>
@@ -127,6 +141,14 @@
                     $creditosTotal += $disciplina->dis_creditos;
                 @endphp
             @endforeach
+            <tr class="heightMin">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </tbody>
     </table>
     <table>
@@ -152,10 +174,7 @@
                 <td width="100%" class="center"><strong>REGULAMENTAÇÃO</strong></td>
             </tr>
             <tr>
-                <td>
-                    "O curso está em conformidade com a Resolução no 01 do CNE/CES, de 08 de junho de 2007 e Normas dos cursos de Pós-Graduação "Lato Sensu" da
-                    Universidade Estadual do Maranhão aprovada pela Resolução 909/2009-CEPE/UEMA de 15 de dezembro de 2009".
-                </td>
+                <td></td>
             </tr>
         </tbody>
     </table>
@@ -165,8 +184,10 @@
             <td width="50%" class="center"><strong>LOCAL/DATA</strong></td>
             <td width="50%" class="center"><strong>ASSINATURA DO COORDENADOR(A)</strong></td>
         </tr>
-        <tr>
-            <td class="center">SÃO LUÍS, 28 DE MARÇO DE 2017</td>
+        <tr class="heightAssinatura">
+            <td class="center">
+                <p>{{mb_strtoupper($dados['data'], 'UTF-8')}}</p>
+            </td>
             <td></td>
         </tr>
         </tbody>

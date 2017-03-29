@@ -231,7 +231,7 @@
                         table += '</table>';
 
                         table += "<div class='form-group'>";
-                        table += "<button type='submit' class='btn btn-primary impHistoricos hidden'><i class='fa fa-file-pdf-o'></i> Imprimir Históricos</button>";
+                        table += "<button type='submit' class='btn btn-primary impHistoricos hidden' formtarget='_blank'><i class='fa fa-file-pdf-o'></i> Imprimir Históricos</button>";
                         table += "</div>";
                         table += "</div>";
                         table += "</form>";
