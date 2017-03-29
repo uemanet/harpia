@@ -50,6 +50,16 @@ class PessoaTableSeeder extends Seeder
             $documento->doc_conteudo = $format->generateCpf();
 
             $documento->save();
+
+            $documento = new Documento();
+
+            $documento->doc_pes_id = $pessoa->pes_id;
+            $documento->doc_tpd_id = 1;
+            $documento->doc_conteudo = $faker->rg;
+            $documento->doc_orgao = 'SSP/BR';
+            $documento->doc_data_expedicao = date('d/m/Y');
+
+            $documento->save();
         }
     }
 }
