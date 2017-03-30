@@ -23,8 +23,8 @@
             border-radius: 0.5em;
         }
 
-        #cabecario table td {
-            padding: 0.1em;
+        .cabecario td {
+            padding: 0.2em;
         }
 
         .padding td {
@@ -36,15 +36,24 @@
         }
 
         .table-bordered {
-            border: 0.5mm solid #9d9d9d;
+            border: 0.5mm solid black;
+            border-collapse: collapse;
         }
 
         .center {
             text-align: center;
         }
 
-        .right {
-            text-align: right;
+        .thead-left th {
+            text-align: left;
+        }
+
+        .thead-config th {
+            padding: 0.5em;
+        }
+
+        .thead-border th {
+            border-top: 0.1mm solid #000000;
         }
 
         .margin-top {
@@ -52,24 +61,29 @@
         }
 
         .border-td td {
-            border-bottom: 0.1mm solid #000000;
+            border-top: 0.1mm solid #000000;
+        }
+
+        .background-thead th {
+            background-color: #007bb6;
+            color: white;
         }
 
     </style>
 </head>
 <body>
-<table class="table-bordered" id="cabecario">
+<table class="table-bordered">
     <tbody>
     <tr>
         <td rowspan="2" width="10%" style="padding: 0.3em;">
             <img height="10%" src="{{public_path('/img/logo_uema.png')}}">
         </td>
-        <td width="50%">Universidade Estadual do Maranhão - <strong>UEMA</strong></td>
-        <td width="40%">Polo: <strong>{{mb_strtoupper($matricula->polo->pol_nome, 'UTF-8')}}</strong></td>
+        <td width="55%" style="padding-top: 0.8em;">Universidade Estadual do Maranhão - <strong>UEMA</strong></td>
+        <td width="35%" style="padding-top: 0.8em;padding-left: 0.8em;">Polo: <b>{{mb_strtoupper($matricula->polo->pol_nome, 'UTF-8')}}</b></td>
     </tr>
     <tr>
-        <td>Sistema Acadêmico de Educação à Distância - <strong>SAED/UEMA</strong></td>
-        <td>Período: <strong>{{$matricula->turma->periodo->per_nome}}</strong></td>
+        <td style="padding-bottom: 0.8em;">Sistema Acadêmico de Educação à Distância - <b>SAED/UEMA</b></td>
+        <td style="padding-bottom: 0.8em;padding-left: 0.8em;">Período: <b>{{$matricula->turma->periodo->per_nome}}</b></td>
     </tr>
     </tbody>
 </table>
@@ -85,14 +99,12 @@
     </tbody>
 </table>
 
-<table class="margin-top">
-    <tbody>
-    <tr>
-        <td><strong>DADOS PESSOAIS</strong></td>
-    </tr>
-    </tbody>
-</table>
-<table class="table-bordered" style="margin-top: 0.3em;">
+<table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
+    <thead>
+        <tr class="thead-left thead-config background-thead">
+            <th colspan="2" style="border-bottom: 0.1mm solid #000000;">DADOS PESSOAIS</th>
+        </tr>
+    </thead>
     <tbody>
     <tr class="padding">
         <td width="60%">
@@ -143,24 +155,21 @@
 
 @php $cargaHorariaTotal = 0; $coeficienteParcial = 0; @endphp
 @foreach($gradeCurricular as $periodo)
-    <table class="margin-top" style="page-break-inside: avoid;">
+    <table class="table-bordered" style="margin-top: 0.8em; page-break-inside: avoid;">
+        <thead>
+            <tr class="thead-left thead-config background-thead">
+                <th colspan="6">Período: {{mb_strtoupper($periodo['per_nome'], 'UTF-8')}}</th>
+            </tr>
+            <tr class="thead-left thead-config thead-border">
+                <th width="10%">MD.</th>
+                <th>Disciplina</th>
+                <th>Módulo</th>
+                <th width="8%">CH</th>
+                <th width="15%">Média Final</th>
+                <th width="25%">Situação</th>
+            </tr>
+        </thead>
         <tbody>
-        <tr>
-            <td><strong>{{mb_strtoupper($periodo['per_nome'], 'UTF-8')}}</strong></td>
-        </tr>
-        </tbody>
-    </table>
-    <table class="table-bordered" style="margin-top: 0.3em;">
-        <tbody>
-        <tr class="padding border-td">
-            <td width="10%"><strong>MD.</strong></td>
-            <td><strong>Disciplina</strong></td>
-            <td><strong>Módulo</strong></td>
-            <td width="10%"><strong>CH</strong></td>
-            <td width="10%"><strong>Média Final</strong></td>
-            <td width="25%"><strong>Situação</strong></td>
-        </tr>
-
         @foreach($periodo['ofertas_disciplinas'] as $disciplina)
             <tr class="padding border-td">
                 <td>{{$disciplina->mof_id}}</td>
@@ -208,7 +217,7 @@
         <td width="50%">
             <strong>Carga Horária Total: </strong>{{$cargaHorariaTotal}} h
         </td>
-        <td width="50%">
+        <td width="50%" align="right">
             @php
                 $coeficienteGeral = 0;
                 if ($cargaHorariaTotal>0) {
