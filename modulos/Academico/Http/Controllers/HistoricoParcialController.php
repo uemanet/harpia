@@ -108,14 +108,26 @@ class HistoricoParcialController extends BaseController
 
         $aluno->cpf = $cpf;
 
+        $rg = $aluno->pessoa->documentos()->where('doc_tpd_id', 1)->first();
+        $aluno->rg = [
+            'conteudo' => $rg->doc_conteudo,
+            'orgao' => $rg->doc_orgao,
+            'data_expedicao' => $rg->doc_data_expedicao
+        ];
+
         $nome = explode(' ', $aluno->pessoa->pes_nome);
+
+        setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+        date_default_timezone_set('America/Sao_Paulo');
+
+        $data = 'São Luís, '.strftime('%d de %B de %Y', strtotime('today'));
         
         $mpdf = new \mPDF();
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
         $mpdf->addPage('P');
 
-        $mpdf->WriteHTML(view('Academico::historicoparcial.print', compact('aluno', 'curso', 'gradeCurricular', 'matricula'))->render());
+        $mpdf->WriteHTML(view('Academico::historicoparcial.historico', compact('aluno', 'curso', 'gradeCurricular', 'matricula', 'data'))->render());
         $mpdf->Output('Historico_Parcial_'.$nome[0].'_'.end($nome).'.pdf', 'I');
     }
 }
