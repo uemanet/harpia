@@ -28,9 +28,11 @@ class CreateAcdRegistrosTable extends Migration
             $table->string('reg_usuario');
             $table->date('reg_data');
             $table->integer('reg_id_interno')->nullable();
+            $table->integer('reg_mdo_id')->unsigned()->nullable();
 
             $table->foreign('reg_liv_id')->references('liv_id')->on('acd_livros');
             $table->foreign('reg_mat_id')->references('mat_id')->on('acd_matriculas');
+            $table->foreign('reg_mdo_id')->references('mdo_id')->on('acd_modulos_matrizes');
 
             $table->timestamps();
         });

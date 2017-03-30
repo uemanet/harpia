@@ -266,9 +266,9 @@
         var hiddenButton = function () {
             var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
 
-            if(checkboxes.is(':checked')){
+            if (checkboxes.is(':checked')) {
                 $(document).find('.btnCertificar').removeClass('hidden');
-            }else{
+            } else {
                 $(document).find('.btnCertificar').addClass('hidden');
             }
         };
@@ -279,7 +279,7 @@
             var quant = $('.aptos:checked').length;
             var ofertaId = $('#ofc_id').val();
 
-            if((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
+            if ((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
                 return false;
             }
 
@@ -293,12 +293,14 @@
             sendMatriculas(aptosIds, ofertaId);
         });
 
-        var sendMatriculas = function(matriculasIds, ofertaId) {
+        var sendMatriculas = function (matriculasIds, ofertaId) {
             var token = "{{csrf_token()}}";
+            modulo = selectModulos.val();
 
             var dados = {
                 matriculas: matriculasIds,
                 ofd_id: ofertaId,
+                modulo: modulo,
                 _token: token
             };
 
@@ -314,9 +316,11 @@
                     toastr.success('Alunos certificados com sucesso!', null, {progressBar: true});
 
                     var turma = selectTurmas.val();
-                    var modulos = selectModulos.val();
 
-                    renderTable(turma, ofertaDisciplina);
+                    $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
+                        .done(function (data) {
+                            renderTable(data.aptos, data.certificados);
+                        });
                 },
                 error: function (xhr, textStatus, error) {
                     $.harpia.hideloading();

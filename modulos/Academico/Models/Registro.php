@@ -21,7 +21,8 @@ class Registro extends BaseModel
         'reg_observacao',
         'reg_usuario',
         'reg_data',
-        'reg_id_interno'
+        'reg_id_interno',
+        'reg_mdo_id'
     ];
 
     public function livro()
