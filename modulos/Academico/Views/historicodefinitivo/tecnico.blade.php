@@ -147,7 +147,7 @@
 
     @php $cargaHorariaTotal = 0; @endphp
     @foreach($dados['modulos'] as $modulo)
-        <table class="margin-top">
+        <table class="margin-top" style="page-break-inside: avoid;">
             <tbody>
             <tr>
                 <td><strong>{{mb_strtoupper($modulo['nome'], 'UTF-8')}}</strong></td>

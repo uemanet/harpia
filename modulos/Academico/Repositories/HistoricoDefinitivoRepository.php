@@ -119,7 +119,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
             );
 
             if ($result) {
-                $titulacao = $result->first();
+                $titulacao = $result->where('tin_anofim', '<>', null)->first();
 
                 if ($titulacao->tit_id == 2) {
                     $arrDisciplinas[$i]->professor_titulacao = 'Graduado';
@@ -184,7 +184,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
                 );
 
                 if ($result) {
-                    $titulacao = $result->first();
+                    $titulacao = $result->where('tin_anofim', '<>', null)->first();
 
                     if ($titulacao->tit_id == 2) {
                         $arrDisciplinas[$i]->professor_titulacao = 'Graduado';

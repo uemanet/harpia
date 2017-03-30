@@ -39,7 +39,9 @@ class HistoricoDefinitivoController extends BaseController
             $matr = $this->matriculaCursoRepository->find($matriculas['matriculas'][0])->first();
 
             $mpdf = new \mPDF();
-            $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $matr->turma->ofertacurso->curso->crs_nome);
+
+            $cursoNome = $matr->turma->ofertacurso->curso->crs_nome;
+            $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $cursoNome);
             $mpdf->SetMargins(2, 2, 5);
 
             foreach ($matriculas['matriculas'] as $id) {
@@ -68,7 +70,10 @@ class HistoricoDefinitivoController extends BaseController
                 $mpdf->WriteHTML(view('Academico::historicodefinitivo.'.$blade, compact('dados'))->render());
             }
 
-            $mpdf->Output('Historico_Defintivo.pdf', 'I');
+            $mpdf->Output('Historico_Definitivo_'.str_replace(' ', '_', $cursoNome).'.pdf', 'I');
         }
+
+        flash()->error('Erro ao processar os dados. Entre em contato com o suporte');
+        return redirect()->route('academico.historicodefinitivo.index');
     }
 }
