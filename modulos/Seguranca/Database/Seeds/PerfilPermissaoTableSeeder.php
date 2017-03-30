@@ -81,23 +81,23 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([103, 104]); // Permissoes do recurso Conclusão de Curso
 
-        $perfil->permissoes()->attach([105, 106]); // Permissoes do recurso Relatórios Matriculas Curso
+        $perfil->permissoes()->attach([105, 106, 107]); // Permissoes do recurso Tutores Grupos
 
-        $perfil->permissoes()->attach([107, 108]); // Permissoes do recurso Relatórios Matriculas Disciplina
+        $perfil->permissoes()->attach([108, 109, 110, 111, 112]); // Permissoes do recurso Matrizes Curriculares
 
-        $perfil->permissoes()->attach([109, 110, 111]); // Permissoes do recurso Tutores Grupos
+        $perfil->permissoes()->attach([113, 114, 115, 116]); // Permissoes do recurso Grupos
 
-        $perfil->permissoes()->attach([112, 113, 114, 115, 116]); // Permissoes do recurso Matrizes Curriculares
+        $perfil->permissoes()->attach([117, 118, 119, 120]); // Permissoes do recurso Turmas
 
-        $perfil->permissoes()->attach([117, 118, 119, 120]); // Permissoes do recurso Grupos
+        $perfil->permissoes()->attach([121, 122, 123, 124, 125]); // Permissoes do recurso Módulos Matrizes
 
-        $perfil->permissoes()->attach([121, 122, 123, 124]); // Permissoes do recurso Turmas
+        $perfil->permissoes()->attach([126, 127, 128]); // Permissoes do recurso Historico Parcial
 
-        $perfil->permissoes()->attach([125, 126, 127, 128, 129]); // Permissoes do recurso Módulos Matrizes
+        $perfil->permissoes()->attach([129, 130]); // Permissoes do recurso Historico Definitivo
 
-        $perfil->permissoes()->attach([130, 131, 132]); // Permissoes do recurso Historico Parcial
+        $perfil->permissoes()->attach([131, 132]); // Permissoes do recurso Relatórios Matriculas Curso
 
-        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Historico Definitivo
+        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Relatórios Matriculas Disciplina
 
         /** Perfil Administrador do Módulo Integração */
 

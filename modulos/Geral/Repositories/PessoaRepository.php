@@ -2,6 +2,7 @@
 
 namespace Modulos\Geral\Repositories;
 
+use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Pessoa;
 use DB;
@@ -95,7 +96,7 @@ class PessoaRepository extends BaseRepository
         return $result;
     }
 
-    public function findAmbientesPessoa($pessoaAtt)
+    public function updatePessoaAmbientes($pessoaAtt)
     {
 
         //verifica em quais turmas a pessoa está vinculada como professor
@@ -165,6 +166,8 @@ class PessoaRepository extends BaseRepository
 
         $ambientesId = array_unique($ambientesdapessoaId);
 
-        return $ambientesId;
+        foreach ($ambientesId as $id) {
+            event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
+        }
     }
 }

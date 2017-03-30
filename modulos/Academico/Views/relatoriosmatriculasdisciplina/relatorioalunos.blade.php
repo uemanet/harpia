@@ -50,6 +50,7 @@
 
 <div align="center" style="font-size:140%"><img src="{{public_path('/img/logo_oficial.png')}}"></div>
 <div align="center" style="font-size:140%">Relatório de alunos da Disciplina: {{ $disciplina[0] }}</div>
+<div align="center" style="font-size:140%">Turma: {{ $turma->trm_nome }}</div>
 <div align="center" style="font-size:110%">Emitido em: {{date("d/m/Y H:i:s")}}</div>
 <br>
 
@@ -59,7 +60,6 @@
         <th>Matrícula</th>
         <th>Aluno</th>
         <th>Email</th>
-        <th>Turma</th>
         <th>Polo</th>
         <th>Situação</th>
     </tr>
@@ -73,7 +73,6 @@
             <td align="center" class="matricula">{{$aluno->mat_id}}</td>
             <td class="nome">{{$aluno->pes_nome}}</td>
             <td class="email">{{$aluno->pes_email}}</td>
-            <td class="turma">{{$aluno->trm_nome}}</td>
             <td class="polo">{{$aluno->pol_nome}}</td>
             <td class="situacao">{{$aluno->mof_situacao_matricula}}</td>
         </tr>
