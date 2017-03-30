@@ -462,12 +462,14 @@ class MatriculaCursoRepository extends BaseRepository
             foreach ($matriculas as $matricula) {
                 if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
                     $aptos[] = $matricula;
-                    continue;
                 }
+            }
+        }
 
-                if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id)) {
-                    $certificados[] = $matricula;
-                }
+        foreach ($aptos as $key => $apto) {
+            if ($this->registroRepository->matriculaTemRegistro($apto->mat_id)) {
+                $certificados[] = $apto;
+                unset($aptos[$key]);
             }
         }
 
@@ -499,10 +501,7 @@ class MatriculaCursoRepository extends BaseRepository
             return false;
         }
 
-        // Checar se aluno concluiu todas as disciplinas
-        if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
-            return false;
-        }
+        // TODO Checar se aluno concluiu todas as disciplinas
 
         if ($matricula->mat_situacao == 'cursando') {
             $quantDisciplinasObrigatorias = 0;
