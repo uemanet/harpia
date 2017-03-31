@@ -458,27 +458,28 @@ class MatriculaCursoRepository extends BaseRepository
         $aptos = [];
         $certificados = [];
 
-        if ($matriculas->count()) {
-            foreach ($matriculas as $matricula) {
-                if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
-                    $aptos[] = $matricula;
-                }
-            }
+        if (!$matriculas->count()) {
+            return array('aptos' => $aptos, 'certificados' => $certificados);
         }
 
-        foreach ($aptos as $key => $apto) {
-            // Verifica se o aluno ja esta certificado
-            if ($this->registroRepository->matriculaTemRegistro($apto->mat_id)) {
-                $certificados[] = $apto;
-                unset($aptos[$key]);
-            }
+        foreach ($matriculas as $matricula) {
 
             // Checar se aluno concluiu todas as disciplinas
             $turma = $this->turmaRepository->find($turmaId);
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
-            if (!$this->verifyIfAlunoIsAptoOrNot($apto->mat_id, $ofertaCurso->ofc_id)) {
-                unset($aptos[$key]);
+            if (!$this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+                continue;
+            }
+
+            // Verifica se o aluno esta apto para certificacao
+            if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
+                if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
+                    $certificados[] = $matricula;
+                    continue;
+                }
+
+                $aptos[] = $matricula;
             }
         }
 

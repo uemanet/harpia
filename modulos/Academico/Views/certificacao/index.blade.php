@@ -319,6 +319,7 @@
 
                     $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
                         .done(function (data) {
+                            console.log(data);
                             renderTable(data.aptos, data.certificados);
                         });
                 },
