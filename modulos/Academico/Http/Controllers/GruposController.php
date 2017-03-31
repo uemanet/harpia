@@ -234,10 +234,10 @@ class GruposController extends BaseController
             DB::beginTransaction();
 
             $this->grupoRepository->delete($grupoId);
-            $ambiente = $grupo->turma->ambientes->first()->amb_id;
 
             if ($grupo->turma->trm_integrada) {
-                event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente));
+              $ambiente = $grupo->turma->ambientes->first()->amb_id;
+              event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente));
             }
 
             flash()->success('Grupo excluído com sucesso.');

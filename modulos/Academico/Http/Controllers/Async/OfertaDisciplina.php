@@ -106,12 +106,12 @@ class OfertaDisciplina extends BaseController
 
             $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
             $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
-            $ambiente = $turma->ambientes->first()->amb_id;
 
             $this->ofertaDisciplinaRepository->delete($ofertaId);
 
             if ($turma->trm_integrada) {
-                event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente));
+              $ambiente = $turma->ambientes->first()->amb_id;
+              event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente));
             }
 
             DB::commit();
