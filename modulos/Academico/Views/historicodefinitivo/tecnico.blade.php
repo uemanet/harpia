@@ -23,8 +23,8 @@
             border-radius: 0.5em;
         }
 
-        #cabecario table td {
-            padding: 0.1em;
+        .cabecario td {
+            padding: 0.2em;
         }
 
         .padding td {
@@ -36,15 +36,24 @@
         }
 
         .table-bordered {
-            border: 0.5mm solid #9d9d9d;
+            border: 0.5mm solid black;
+            border-collapse: collapse;
         }
 
         .center {
             text-align: center;
         }
 
-        .right {
-            text-align: right;
+        .thead-left th {
+            text-align: left;
+        }
+
+        .thead-config th {
+            padding: 0.5em;
+        }
+
+        .thead-border th {
+            border-top: 0.1mm solid #000000;
         }
 
         .margin-top {
@@ -52,9 +61,14 @@
         }
 
         .border-td td {
-            border-bottom: 0.1mm solid #000000;
+            border-top: 0.1mm solid #000000;
         }
 
+        .thead-background th {
+            background-color: #007bb6;
+            color: white;
+
+        }
     </style>
 </head>
 <body>
@@ -64,16 +78,16 @@
                 <td rowspan="3" width="10%" style="padding: 0.3em;">
                     <img height="10%" src="{{public_path('/img/logo_uema.png')}}">
                 </td>
-                <td width="50%">Universidade Estadual do Maranhão - <strong>UEMA</strong></td>
-                <td width="40%">Polo: <strong>{{mb_strtoupper($dados['polo']->pol_nome, 'UTF-8')}}</strong></td>
+                <td width="55%" style="padding-top: 0.8em;">Universidade Estadual do Maranhão - <strong>UEMA</strong></td>
+                <td width="35%" style="padding-top: 0.8em;padding-left: 0.5em;">Polo: <strong>{{mb_strtoupper($dados['polo']->pol_nome, 'UTF-8')}}</strong></td>
             </tr>
             <tr>
                 <td>Sistema Acadêmico de Educação à Distância - <strong>SAED/UEMA</strong></td>
-                <td>Período: <strong>{{$dados['turma']->periodo_letivo}}</strong></td>
+                <td style="padding-left: 0.5em;">Período: <strong>{{$dados['turma']->periodo_letivo}}</strong></td>
             </tr>
             <tr>
-                <td>Educação Profissional Técnica de Nível Médio</td>
-                <td>Resolução de Reconhecimento No: <strong>231/2014 - CEE</strong></td>
+                <td style="padding-bottom: 0.8em;">Educação Profissional Técnica de Nível Médio</td>
+                <td style="padding-bottom: 0.8em;padding-left: 0.5em;">Resolução de Reconhecimento No:</td>
             </tr>
         </tbody>
     </table>
@@ -89,14 +103,12 @@
         </tbody>
     </table>
 
-    <table class="margin-top">
-        <tbody>
-            <tr>
-                <td><strong>DADOS PESSOAIS</strong></td>
+    <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
+        <thead>
+            <tr class="thead-left thead-config thead-background">
+                <th colspan="2" style="border-bottom: 0.1mm solid #000000;">DADOS PESSOAIS</th>
             </tr>
-        </tbody>
-    </table>
-    <table class="table-bordered" style="margin-top: 0.3em;">
+        </thead>
         <tbody>
             <tr class="padding">
                 <td width="60%">
@@ -147,23 +159,20 @@
 
     @php $cargaHorariaTotal = 0; @endphp
     @foreach($dados['modulos'] as $modulo)
-        <table class="margin-top" style="page-break-inside: avoid;">
-            <tbody>
-            <tr>
-                <td><strong>{{mb_strtoupper($modulo['nome'], 'UTF-8')}}</strong></td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table-bordered" style="margin-top: 0.3em;">
-            <tbody>
-                <tr class="padding border-td">
-                    <td width="10%"><strong>MD.</strong></td>
-                    <td><strong>Disciplina</strong></td>
-                    <td width="10%"><strong>CH</strong></td>
-                    <td width="10%"><strong>Média Final</strong></td>
-                    <td width="25%"><strong>Situação</strong></td>
+        <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
+            <thead>
+                <tr class="thead-left thead-config thead-background">
+                    <th colspan="5">{{mb_strtoupper($modulo['nome'], 'UTF-8')}}</th>
                 </tr>
-
+                <tr class="thead-left thead-config thead-border">
+                    <th width="10%">MD.</th>
+                    <th>Disciplina</th>
+                    <th width="10%">CH</th>
+                    <th width="10%">Média Final</th>
+                    <th width="25%">Situação</th>
+                </tr>
+            </thead>
+            <tbody>
                 @php $cargaHorariaModulo = 0; @endphp
                 @foreach($modulo['disciplinas'] as $key => $obj)
                     <tr class="padding border-td">
@@ -202,7 +211,7 @@
                     <td><strong>Carga Horária:</strong> {{$cargaHorariaModulo}} h</td>
                 </tr>
                 <tr class="padding-0_3">
-                    <td colspan="5">
+                    <td colspan="5" style="border-top: 0.1mm solid #000000;">
                         <strong>QUALIFICAÇÃO:</strong> {{$modulo['qualificacao']}}
                     </td>
                 </tr>
@@ -215,17 +224,17 @@
         </table>
     @endforeach
 
-    <table class="table-bordered margin-top">
+    <table class="table-bordered margin-top" style="page-break-inside: avoid;">
         <tbody>
             <tr>
-                <td class="right">
+                <td class="right" style="font-size: 10pt;">
                     <strong>Carga Horária Total: </strong>{{$cargaHorariaTotal}} h
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <table class="margin-top">
+    <table class="margin-top" style="page-break-inside: avoid;">
         <tbody>
         <tr>
             <td class="center data">
