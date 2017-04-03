@@ -23,7 +23,7 @@ class Matricula extends BaseController
      *
      * @param Request $request
      *
-     * @return static
+     * @return JsonResponse
      *
      * @throws \Exception
      */

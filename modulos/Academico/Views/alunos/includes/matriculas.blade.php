@@ -95,7 +95,7 @@
                                                 <div class="form-group col-md-12">
                                                     {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
                                                     <div class="controls">
-                                                        {!! Form::select('situacao', $situacaoArray, old('situacao'), ['placeholder' => 'Selecione uma opção', 'class' => 'form-control', 'id' => 'situacao-select'.$loop->index ]) !!}
+                                                        {!! Form::select('situacao', $situacaoArray, array_shift($situacaoArray), ['placeholder' => 'Selecione uma opção', 'class' => 'form-control', 'id' => 'situacao-select'.$loop->index ]) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -152,6 +152,13 @@
                 $('.modalSave').on("click", function (event) {
                     event.preventDefault();
                     var button = $(this);
+                    var situacao = $('#situacao-select' + modal).val();
+
+                    if (situacao.length === 0) {
+                        sweetAlert("Oops...", "Selecione uma opção", "error");
+                        return;
+                    }
+
                     swal({
                         title: "Tem certeza que deseja alterar o status do aluno ?",
                         type: "warning",
@@ -163,7 +170,6 @@
                     }, function (isConfirm) {
                         if (isConfirm) {
                             var matricula = window.buttonGroup.val();
-                            var situacao = $('#situacao-select' + modal).val();
                             var token = "{{ csrf_token() }}";
 
                             data = {
@@ -173,8 +179,7 @@
                             };
 
                             result = $.harpia.httppost('/academico/async/matricula/alterarsituacao', data);
-                            console.log(result);
-                            //location.reload(true);
+                            location.reload(true);
                         }
                     });
                 })
