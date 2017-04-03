@@ -69,19 +69,45 @@
                                         </div>
                                         <div class="row">
                                             @if($matricula->mat_situacao != 'concluido')
-                                                <div class="btn-group col-md-4">
-                                                    <button type="button" class="btn btn-primary modalButton"
-                                                            value="{{ $matricula->mat_id }}"
-                                                            data-content="{{$loop->index}}">
-                                                        Alterar status da matrícula
-                                                    </button>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        {!! ActionButton::grid([
+                                                            'type' => 'LINE',
+                                                            'buttons' => [
+                                                                [
+                                                                    'classButton' => 'btn btn-primary modal-update-polo',
+                                                                    'icon' => 'fa fa-pencil',
+                                                                    'action' => '/academico/matricularalunocurso/edit/' . $matricula->mat_id,
+                                                                    'label' => ' Atualizar Polo/Grupo',
+                                                                    'method' => 'get',
+                                                                    'attributes' => [
+                                                                        'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
+                                                                        'data-trm-id' => $matricula->mat_trm_id,
+                                                                        'data-pol-id' => $matricula->mat_pol_id,
+                                                                        'data-grp-id' => $matricula->mat_grp_id
+                                                                    ],
+                                                                ],
+                                                                [
+                                                                    'classButton' => 'btn btn-primary modalButton',
+                                                                    'icon' => 'fa fa-pencil',
+                                                                    'action' => '/academico/matricularalunocurso/edit/' . $matricula->mat_id,
+                                                                    'label' => 'Alterar Situação de Matricula',
+                                                                    'method' => 'get',
+                                                                    'attributes' => [
+                                                                        'data-content' => $loop->index,
+                                                                        'value' => $matricula->mat_id
+                                                                    ],
+                                                                ]
+                                                            ]
+                                                        ]) !!}
+                                                    </div>
                                                 </div>
                                             @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!--        Modal       -->
+                            <!-- Modal Alterar Situacao Matricula  -->
                             <div class="modal" id="matricula-modal{{$loop->index}}">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -115,6 +141,54 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Modal Mudança Polo/Grupo -->
+                            <div class="modal fade modalUpdatePolo">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">x</span>
+                                            </button>
+                                            <h4 class="modal-title">
+                                                Atualizar Polo/Grupo
+                                            </h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="formUpdate" action="" method="POST">
+                                                <input name="_method" type="hidden" value="PUT">
+                                                {{csrf_field()}}
+                                                {!! Form::hidden('trm_id', '') !!}
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            {!! Form::label('mat_pol_id', 'Polo*') !!}
+                                                            {!! Form::select('mat_pol_id', [], null, ['class' => 'form-control']) !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            {!! Form::label('mat_grp_id', 'Grupo') !!}
+                                                            {!! Form::select('mat_grp_id', [], null, ['class' => 'form-control']) !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <button type="submit" class="btn btn-primary">Atualizar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         @endforeach
                     </div>
                 @else
@@ -142,8 +216,12 @@
 </div>
 @section('scripts')
     <script type="text/javascript">
+
+        // Alteracao de situacao de matricula
         $(document).ready(function () {
-            $('.modalButton').on("click", function () {
+            $('.modalButton').on("click", function (event) {
+                event.preventDefault();
+
                 window.buttonGroup = $(this);
                 var modal = $(this).attr("data-content");
 
@@ -151,7 +229,7 @@
 
                 $('.modalSave').on("click", function (event) {
                     event.preventDefault();
-                    var button = $(this);
+
                     var situacao = $('#situacao-select' + modal).val();
 
                     if (situacao.length === 0) {
@@ -169,7 +247,7 @@
                         closeOnConfirm: true
                     }, function (isConfirm) {
                         if (isConfirm) {
-                            var matricula = window.buttonGroup.val();
+                            var matricula = window.buttonGroup.attr("value");
                             var token = "{{ csrf_token() }}";
 
                             data = {
@@ -184,6 +262,124 @@
                     });
                 })
             })
+        });
+
+        // Alteracao de polo e grupo
+        $(function () {
+
+            $('.modal-update-situacao').on("click", function (event) {
+                event.preventDefault();
+
+                var matricula = $(this).attr('data-mat-id');
+
+                $('.modalUpdateSituacao').find('#mat_id').val(matricula);
+
+                $('.modalUpdateSituacao').modal();
+            });
+
+            $('.btnSituacao').on("click", function () {
+
+                var matricula = $('#mat_id').val();
+                var situacao = $('#situacao-select' + matricula).val();
+                var token = "{{ csrf_token() }}";
+
+                dados = {
+                    id: matricula,
+                    situacao: situacao,
+                    _token: token
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/academico/async/matricula/alterarsituacao',
+                    data: dados,
+                    success: function (response) {
+                        // $.harpia.hideloading();
+                        toastr.success('Situação da matrícula alterada com sucesso', null, {progressBar: true});
+                        location.reload(true);
+                    },
+                    error: function (response) {
+                        toastr.error('Não foi possível alterar a situação da matrícula', null);
+                    }
+                });
+            });
+
+            $('.modal-update-polo').click(function (event) {
+                event.preventDefault();
+
+                var action = $(this).attr('href');
+                var ofertaCursoId = $(this).attr('data-ofc-id');
+                var turmaId = $(this).attr('data-trm-id');
+                var poloId = $(this).attr('data-pol-id');
+                var grupoId = 0;
+
+                if ($(this).attr('data-grp-id')) {
+                    grupoId = $(this).attr('data-grp-id');
+                }
+
+                $('input[name="trm_id"]').val(turmaId);
+
+                $('.formUpdate').attr('action', action);
+
+                $('#mat_pol_id').empty();
+                $('#mat_grp_id').empty();
+
+                $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+                    if (!$.isEmptyObject(response)) {
+                        $('#mat_pol_id').append("<option value=''>Selecione um polo</option>");
+
+                        $.each(response, function (key, obj) {
+                            var option = "<option value='" + obj.pol_id + "'";
+                            if (poloId && obj.pol_id == poloId) {
+                                option += " selected";
+                            }
+                            option += ">" + obj.pol_nome + "</option>";
+                            $('#mat_pol_id').append(option);
+                        });
+                    } else {
+                        $('#mat_pol_id').append("<option value=''>Sem polos cadastrados</option>");
+                    }
+                });
+
+                if (poloId) {
+                    loadingSelectGrupos(turmaId, poloId, grupoId);
+                }
+
+                $('.modalUpdatePolo').modal();
+            });
+
+            $('#mat_pol_id').change(function () {
+
+                var turmaId = $('input[name="trm_id"]').val();
+                var poloId = $(this).val();
+
+                if (poloId) {
+                    loadingSelectGrupos(turmaId, poloId, 0);
+                }
+                if (!poloId) {
+                    $('#mat_grp_id').empty();
+                }
+            });
+
+            function loadingSelectGrupos(turmaId, poloId, grupoId) {
+                $.harpia.httpget("{{url('/')}}/academico/async/grupos/findallbyturmapolo/" + turmaId + "/" + poloId).done(function (response) {
+                    $('#mat_grp_id').empty();
+                    if (!$.isEmptyObject(response)) {
+                        $('#mat_grp_id').append("<option value=''>Selecione um grupo</option>");
+
+                        $.each(response, function (key, obj) {
+                            var option = "<option value='" + obj.grp_id + "'";
+                            if ((grupoId > 0) && (obj.grp_id == grupoId)) {
+                                option += " selected";
+                            }
+                            option += ">" + obj.grp_nome + "</option>";
+                            $('#mat_grp_id').append(option);
+                        });
+                    } else {
+                        $('#mat_grp_id').append("<option value=''>Sem grupos cadastrados</option>");
+                    }
+                });
+            }
         });
     </script>
 @endsection
