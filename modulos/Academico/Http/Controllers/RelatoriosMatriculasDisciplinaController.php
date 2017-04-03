@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
@@ -52,7 +53,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $ofc_id = $request->input('ofc_id');
             $trm_id = $request->input('trm_id');
             $per_id = $request->input('per_id');
-            $dis = ['ofd_trm_id'=> $trm_id, 'ofd_per_id' => $per_id];
+            $dis = ['ofd_trm_id' => $trm_id, 'ofd_per_id' => $per_id];
 
             // dados do async de oferta de curso
             $sqlOfertas = $this->ofertaCursoRepository->findAllByCurso($crs_id);
@@ -60,7 +61,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $periodos = $this->periodoLetivoRepository->getAllByTurma($trm_id)->pluck('per_nome', 'per_id');
             $disciplinas = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome', 'ofd_id');
             foreach ($sqlOfertas as $oferta) {
-                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '('.$oferta->mdl_nome.')';
+                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
             }
         }
 
@@ -77,7 +78,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
                 'pol_nome' => 'Polo',
                 'situacao_matricula' => 'Situação Matricula'
             ))
-              ->sortable(array('pes_nome', 'mat_id'));
+                ->sortable(array('pes_nome', 'mat_id'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -110,26 +111,24 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $disciplina = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome');
         $turma = $this->turmaRepository->find($turmaId);
 
-        try {
-            $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+        $date = new Carbon();
 
-            $mpdf->mirrorMargins = 1;
-            $mpdf->SetTitle('Relatório de alunos da Disciplina: '. $disciplina[0]);
-            $mpdf->SetHeader('{PAGENO} / {nb}');
-            $mpdf->SetFooter('Emitido em : ' . date("d/m/Y H:i:s"));
-            $mpdf->defaultheaderfontsize = 10;
-            $mpdf->defaultheaderfontstyle = 'B';
-            $mpdf->defaultheaderline = 0;
-            $mpdf->defaultfooterfontsize = 10;
-            $mpdf->defaultfooterfontstyle = 'BI';
-            $mpdf->defaultfooterline = 0;
-            $mpdf->addPage('L');
+        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
 
-            $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina', 'turma'))->render());
-            $mpdf->Output();
-            exit;
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $mpdf->mirrorMargins = 1;
+        $mpdf->SetTitle('Relatório de alunos da Disciplina: ' . $disciplina[0]);
+        $mpdf->SetHeader('{PAGENO} / {nb}');
+        $mpdf->SetFooter('Emitido em : ' . $date->format('d/m/Y H:i:s'));
+        $mpdf->defaultheaderfontsize = 10;
+        $mpdf->defaultheaderfontstyle = 'B';
+        $mpdf->defaultheaderline = 0;
+        $mpdf->defaultfooterfontsize = 10;
+        $mpdf->defaultfooterfontstyle = 'BI';
+        $mpdf->defaultfooterline = 0;
+        $mpdf->addPage('L');
+
+        $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina', 'date', 'turma'))->render());
+        $mpdf->Output();
+        exit;
     }
 }
