@@ -83,8 +83,6 @@ class CertificacaoController
     {
         $dados = $this->matriculacursoRepository->getPrintData($idMatricula, $idModulo);
 
-        // dd($dados);
-
         $mpdf = new \mPDF();
         $mpdf->addPage('L');
         $mpdf->WriteHTML(view('Academico::certificacao.print', compact('dados'))->render());

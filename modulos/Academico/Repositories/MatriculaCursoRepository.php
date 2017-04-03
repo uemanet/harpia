@@ -730,8 +730,10 @@ class MatriculaCursoRepository extends BaseRepository
 
         }
 
+        //formata o coeficiente do módulo
         $coeficiente = $numerador/$cargahoraria;
         $coeficiente = number_format($coeficiente, 2, '.', '');
+
         $descricaomodulo = $modulo->mdo_descricao;
         $qualificacaomodulo = $modulo->mdo_qualificacao;
 
@@ -740,21 +742,23 @@ class MatriculaCursoRepository extends BaseRepository
                   ->where('doc_tpd_id', 2)
                   ->first();
         $nomepessoa = $pessoa->pes_nome;
-        $cpfpessoa = $query->doc_conteudo;
 
+        //formatação do CPF de pessoa
+        $cpfpessoa = $query->doc_conteudo;
         $parte_um     = substr($cpfpessoa, 0, 3);
         $parte_dois   = substr($cpfpessoa, 3, 3);
         $parte_tres   = substr($cpfpessoa, 6, 3);
         $parte_quatro = substr($cpfpessoa, 9, 2);
-
         $cpfpessoaformatado = "$parte_um.$parte_dois.$parte_tres-$parte_quatro";
 
-
+        //recebe livro, folha e registro da certificação
         $livfolreg = DB::table('acd_registros')
                   ->where('reg_mat_id', $IdMatricula)
+                  ->where('reg_mdo_id', $IdModulo)
                   ->join('acd_livros', 'reg_liv_id', 'liv_id')
                   ->first();
 
+        //prepara o array de retorno
         $returnData = [
                         'DESCRICAOMODULO' => mb_strtoupper($descricaomodulo, "UTF-8"),
                         'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
