@@ -137,11 +137,11 @@
                 if (modulo) {
                     $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
                         .done(function (data) {
+
                             renderTable(data.aptos, data.certificados);
                         });
                 }
             });
-
             renderTable = function (aptos, certificados) {
                 var html = '<div class="row"><div class="col-md-12">';
                 // criando a estrutura das tabs
@@ -219,13 +219,17 @@
                     table2 += '<tr>';
                     table2 += '<th>Nome</th>';
                     table2 += '<th width="20%">Situacao de Matricula</th>';
+                    table2 += '<th width="20%">Impressão de certificado</th>';
                     table2 += '</tr>';
 
                     // corpo da tabela
                     $.each(certificados, function (key, obj) {
+                      console.log(obj);
+                      console.log();
                         table2 += '<tr>';
                         table2 += '<td>' + obj.pes_nome + '</td>';
                         table2 += '<td><span class="label label-info">Certificados</span></td>';
+                        table2 += '<td><a type="button" href= "{{url('/')}}/academico/certificacao/print/'+obj.mat_id+'/'+$('#mdo_id').val()+'" class="btn btn-primary"><i class="glyphicon glyphicon-print"></i></a></td>';
                         table2 += '</tr>';
                     });
 
@@ -319,7 +323,7 @@
 
                     $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
                         .done(function (data) {
-                            console.log(data);
+
                             renderTable(data.aptos, data.certificados);
                         });
                 },

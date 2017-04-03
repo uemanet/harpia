@@ -702,4 +702,73 @@ class MatriculaCursoRepository extends BaseRepository
 
         return $query->get();
     }
+
+    public function getPrintData($IdMatricula, $IdModulo)
+    {
+        $matricula = $this->model->find($IdMatricula);
+        $curso = $matricula->turma->ofertacurso->curso;
+        $pessoa = $matricula->aluno->pessoa;
+
+        $modulo = DB::table('acd_modulos_matrizes')
+                  ->where('mdo_id', $IdModulo)->first();
+
+        $ofertasdisciplinas = DB::table('acd_ofertas_disciplinas')
+        ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
+        ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
+        ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+        ->where('mdc_mdo_id', $IdModulo)
+        ->get();;
+
+        $cargahoraria = 0;
+        $disciplinas = [];
+        $numerador = 0;
+
+        foreach ($ofertasdisciplinas as $modulodisciplina) {
+          $disciplinas[] = $modulodisciplina->dis_nome;
+          $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
+          $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
+
+        }
+
+        $coeficiente = $numerador/$cargahoraria;
+        $coeficiente = number_format($coeficiente, 2, '.', '');
+        $descricaomodulo = $modulo->mdo_descricao;
+        $qualificacaomodulo = $modulo->mdo_qualificacao;
+
+        $query = DB::table('gra_documentos')
+                  ->where('doc_pes_id', $pessoa->pes_id)
+                  ->where('doc_tpd_id', 2)
+                  ->first();
+        $nomepessoa = $pessoa->pes_nome;
+        $cpfpessoa = $query->doc_conteudo;
+
+        $parte_um     = substr($cpfpessoa, 0, 3);
+        $parte_dois   = substr($cpfpessoa, 3, 3);
+        $parte_tres   = substr($cpfpessoa, 6, 3);
+        $parte_quatro = substr($cpfpessoa, 9, 2);
+
+        $cpfpessoaformatado = "$parte_um.$parte_dois.$parte_tres-$parte_quatro";
+
+
+        $livfolreg = DB::table('acd_registros')
+                  ->where('reg_mat_id', $IdMatricula)
+                  ->join('acd_livros', 'reg_liv_id', 'liv_id')
+                  ->first();
+
+        $returnData = [
+                        'DESCRICAOMODULO' => mb_strtoupper($descricaomodulo, "UTF-8"),
+                        'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
+                        'CARGAHORARIAMODULO' => $cargahoraria,
+                        'DISCIPLINAS' => $disciplinas,
+                        'EIXOCURSO' => $curso->crs_eixo ,
+                        'LIVRO' => $livfolreg->liv_numero,
+                        'FOLHA' => $livfolreg->reg_folha,
+                        'REGISTRO'=> $livfolreg->reg_registro,
+                        'COEFICIENTEDOMODULO'=> $coeficiente,
+                        'PESSOANOME'=> mb_strtoupper($nomepessoa, "UTF-8"),
+                        'PESSOACPF'=> $cpfpessoaformatado
+                        ];
+        return $returnData;
+
+    }
 }
