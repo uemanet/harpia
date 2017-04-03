@@ -287,7 +287,12 @@
                 var turmaId = $('input[name="trm_id"]').val();
                 var poloId = $(this).val();
 
-                loadingSelectGrupos(turmaId, poloId, 0);
+                if(poloId){
+                  loadingSelectGrupos(turmaId, poloId, 0);
+                }
+                if(!poloId){
+                  $('#mat_grp_id').empty();
+                }
             });
 
             function loadingSelectGrupos(turmaId, poloId, grupoId) {
