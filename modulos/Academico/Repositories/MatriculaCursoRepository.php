@@ -468,7 +468,7 @@ class MatriculaCursoRepository extends BaseRepository
             $turma = $this->turmaRepository->find($turmaId);
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
-            if (!$this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
                 continue;
             }
 
