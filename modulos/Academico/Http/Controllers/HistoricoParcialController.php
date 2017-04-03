@@ -103,17 +103,25 @@ class HistoricoParcialController extends BaseController
         $gradeCurricular = $this->historicoParcialRepository->getGradeCurricularByMatricula($matricula->mat_id);
 
         $aluno = $matricula->aluno;
+
+        $aluno->cpf = '';
+
         $cpf = $aluno->pessoa->documentos()->where('doc_tpd_id', 2)->first();
-        $cpf = $cpf->doc_conteudo;
 
-        $aluno->cpf = $cpf;
+        if ($cpf) {
+            $aluno->cpf = $cpf->doc_conteudo;
+        }
 
+        $aluno->rg = [];
         $rg = $aluno->pessoa->documentos()->where('doc_tpd_id', 1)->first();
-        $aluno->rg = [
-            'conteudo' => $rg->doc_conteudo,
-            'orgao' => $rg->doc_orgao,
-            'data_expedicao' => $rg->doc_data_expedicao
-        ];
+
+        if ($rg) {
+            $aluno->rg = [
+                'conteudo' => $rg->doc_conteudo,
+                'orgao' => $rg->doc_orgao,
+                'data_expedicao' => $rg->doc_data_expedicao
+            ];
+        }
 
         $nome = explode(' ', $aluno->pessoa->pes_nome);
 
