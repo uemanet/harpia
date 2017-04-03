@@ -10,6 +10,7 @@ use Modulos\Academico\Events\OfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use DB;
@@ -19,14 +20,17 @@ class OfertaDisciplina extends BaseController
     protected $ofertaDisciplinaRepository;
     protected $matriculaOfertaDisciplinaRepository;
     protected $turmaRepository;
+    protected $ambienteRepository;
 
     public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository,
                                 MatriculaOfertaDisciplinaRepository $matricula,
-                                TurmaRepository $turmaRepository)
+                                TurmaRepository $turmaRepository,
+                                AmbienteVirtualRepository $ambienteRepository)
     {
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matricula;
         $this->turmaRepository = $turmaRepository;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function getFindallbycurso($cursoId)
@@ -81,6 +85,7 @@ class OfertaDisciplina extends BaseController
                 return new JsonResponse($ofertadisciplina, Response::HTTP_OK);
             }
 
+
             return new JsonResponse('Disciplina já existente para esse periodo e turma.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -106,12 +111,13 @@ class OfertaDisciplina extends BaseController
 
             $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
             $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
-            $ambiente = $turma->ambientes->first()->amb_id;
 
             $this->ofertaDisciplinaRepository->delete($ofertaId);
 
-            if ($turma->trm_integrada) {
-                event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente));
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($turma->trm_id);
+
+            if ($ambiente) {
+              event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente->id));
             }
 
             DB::commit();
