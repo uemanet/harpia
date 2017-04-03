@@ -142,9 +142,9 @@
                         data: dados,
                         method: 'POST',
                         success: function (data) {
+                            localizarDisciplinasOfertadas(dados.ofd_trm_id, dados.ofd_per_id);
                             $.harpia.hideloading();
                             toastr.success('Disciplina ofertada com sucesso!', null, {progressBar: true});
-                            localizarDisciplinasOfertadas(dados.ofd_trm_id, dados.ofd_per_id);
                         },
                         error: function (xhr, textStatus, error) {
                             $.harpia.hideloading();
