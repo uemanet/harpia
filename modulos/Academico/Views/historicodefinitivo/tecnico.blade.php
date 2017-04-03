@@ -87,7 +87,7 @@
             </tr>
             <tr>
                 <td style="padding-bottom: 0.8em;">Educação Profissional Técnica de Nível Médio</td>
-                <td style="padding-bottom: 0.8em;padding-left: 0.5em;">Resolução de Reconhecimento No:</td>
+                <td style="padding-bottom: 0.8em;padding-left: 0.5em;">Resolução de Reconhecimento: {{$dados['curso']->crs_resolucao}}</td>
             </tr>
         </tbody>
     </table>
