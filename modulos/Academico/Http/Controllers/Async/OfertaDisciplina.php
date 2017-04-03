@@ -83,7 +83,7 @@ class OfertaDisciplina extends BaseController
                 }
 
                 return new JsonResponse($ofertadisciplina, Response::HTTP_OK);
-            }use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+            }
 
 
             return new JsonResponse('Disciplina já existente para esse periodo e turma.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
