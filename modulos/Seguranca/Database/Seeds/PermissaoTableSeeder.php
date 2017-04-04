@@ -87,6 +87,7 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoHistoricoParcial();
 
+
         $this->createPermissoesAcademicoHistoricoDefinitivo();
 
         $this->createPermissoesAcademicoRelatoriosMatriculasCurso();
@@ -737,7 +738,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-    // 3 permissoes
+    // 4 permissoes
     private function createPermissoesMatricularAlunoCurso()
     {
         $permissao = new Permissao(); // id = 89
@@ -807,7 +808,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->save();
     }
 
-    // 4 permissoes
+    // 5 permissoes
     private function createPermissoesAcademicoLancamentoTcc()
     {
         $permissao = new Permissao(); // id = 98
@@ -1028,17 +1029,17 @@ class PermissaoTableSeeder extends Seeder
     // 2 permissoes
     private function createPermissoesAcademicoHistoricoDefinitivo()
     {
-        $permissao = new Permissao(); // id = 129
-        $permissao->prm_rcs_id = 37;
-        $permissao->prm_nome = 'index';
-        $permissao->prm_descricao = 'Permissão index do recurso Historico Definitivo';
-        $permissao->save();
+      $permissao = new Permissao(); // id = 129
+      $permissao->prm_rcs_id = 37;
+      $permissao->prm_nome = 'index';
+      $permissao->prm_descricao = 'Permissão index do recurso Historico Definitivo';
+      $permissao->save();
 
-        $permissao = new Permissao(); // id = 130
-        $permissao->prm_rcs_id = 37;
-        $permissao->prm_nome = 'print';
-        $permissao->prm_descricao = 'Permissão print do recurso Historico Definitivo';
-        $permissao->save();
+      $permissao = new Permissao(); // id = 130
+      $permissao->prm_rcs_id = 37;
+      $permissao->prm_nome = 'print';
+      $permissao->prm_descricao = 'Permissão print do recurso Historico Definitivo';
+      $permissao->save();
     }
 
     // 2 permissao
@@ -1052,19 +1053,21 @@ class PermissaoTableSeeder extends Seeder
 
         $permissao = new Permissao(); // id = 132
         $permissao->prm_rcs_id = 38;
-        $permissao->prm_nome = 'pdf';
-        $permissao->prm_descricao = 'Permissão pdf do recurso Relatórios Matriculas Curso';
+        $permissao->prm_nome = 'print';
+        $permissao->prm_descricao = 'Permissão print do recurso Relatórios Matriculas Curso';
         $permissao->save();
     }
 
     // 2 permissoes
     private function createPermissoesAcademicoRelatoriosMatriculasDisciplina()
     {
+
         $permissao = new Permissao(); // id = 133
         $permissao->prm_rcs_id = 39;
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Relatórios Matriculas Disciplina';
         $permissao->save();
+
 
         $permissao = new Permissao(); // id = 134
         $permissao->prm_rcs_id = 39;
