@@ -705,6 +705,17 @@ class MatriculaCursoRepository extends BaseRepository
 
     public function getPrintData($IdMatricula, $IdModulo)
     {
+
+        //recebe livro, folha e registro da certificação
+        $livfolreg = DB::table('acd_registros')
+                  ->where('reg_mat_id', $IdMatricula)
+                  ->where('reg_mdo_id', $IdModulo)
+                  ->join('acd_livros', 'reg_liv_id', 'liv_id')
+                  ->first();
+
+        if(!$livfolreg){
+            return null;
+        }
         $matricula = $this->model->find($IdMatricula);
         $curso = $matricula->turma->ofertacurso->curso;
         $pessoa = $matricula->aluno->pessoa;
@@ -750,13 +761,6 @@ class MatriculaCursoRepository extends BaseRepository
         $parte_tres   = substr($cpfpessoa, 6, 3);
         $parte_quatro = substr($cpfpessoa, 9, 2);
         $cpfpessoaformatado = "$parte_um.$parte_dois.$parte_tres-$parte_quatro";
-
-        //recebe livro, folha e registro da certificação
-        $livfolreg = DB::table('acd_registros')
-                  ->where('reg_mat_id', $IdMatricula)
-                  ->where('reg_mdo_id', $IdModulo)
-                  ->join('acd_livros', 'reg_liv_id', 'liv_id')
-                  ->first();
 
         //prepara o array de retorno
         $returnData = [
