@@ -12,19 +12,19 @@ class TitulacaoTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         $tipos = [
-            'Ensino Médio',
-            'Graduação',
-            'Especialização',
-            'Mestrado',
-            'Doutorado',
-            'Pós-Doutorado',
-            'Pós-Graduação'
+            'Ensino Médio' => 1,
+            'Graduação' => 10,
+            'Especialização' => 30,
+            'Mestrado' => 40,
+            'Doutorado' => 60,
+            'Pós-Doutorado' => 80,
+            'Pós-Graduação' => 20
         ];
 
-        foreach ($tipos as $tipo) {
+        foreach ($tipos as $tipo => $peso) {
             $titulacao = new Titulacao();
             $titulacao->tit_nome = $tipo;
-            $titulacao->tit_peso = $faker->randomNumber(2);
+            $titulacao->tit_peso = $peso;
             $titulacao->tit_descricao = $faker->text(150);
 
             $titulacao->save();
