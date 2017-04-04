@@ -7,6 +7,7 @@ use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Events\NovoGrupoEvent;
 use Modulos\Academico\Http\Requests\GrupoRequest;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
@@ -24,14 +25,21 @@ class GruposController extends BaseController
     protected $turmaRepository;
     protected $poloRepository;
     protected $ofertaCursoRepository;
+    protected $ambienteRepository;
 
-    public function __construct(GrupoRepository $grupo, CursoRepository $curso, TurmaRepository $turma, PoloRepository $polo, OfertaCursoRepository $oferta)
+    public function __construct(GrupoRepository $grupo,
+                                CursoRepository $curso,
+                                TurmaRepository $turma,
+                                PoloRepository $polo,
+                                OfertaCursoRepository $oferta,
+                                AmbienteVirtualRepository $ambienteRepository)
     {
         $this->grupoRepository = $grupo;
         $this->cursoRepository = $curso;
         $this->turmaRepository = $turma;
         $this->poloRepository = $polo;
         $this->ofertaCursoRepository = $oferta;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function getIndex($turmaId, Request $request)
@@ -234,10 +242,11 @@ class GruposController extends BaseController
             DB::beginTransaction();
 
             $this->grupoRepository->delete($grupoId);
-            $ambiente = $grupo->turma->ambientes->first()->amb_id;
 
-            if ($grupo->turma->trm_integrada) {
-                event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente));
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($grupo->turma->trm_id);
+
+            if ($ambiente) {
+                event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente->id));
             }
 
             flash()->success('Grupo excluído com sucesso.');
