@@ -26,5 +26,11 @@ class PeriodoLetivoSeeder extends Seeder
         $periodo->per_inicio = '29/02/2018';
         $periodo->per_fim = '29/06/2018';
         $periodo->save();
+
+        $periodo = new PeriodoLetivo();
+        $periodo->per_nome = '2018.2';
+        $periodo->per_inicio = '06/08/2018';
+        $periodo->per_fim = '07/12/2018';
+        $periodo->save();
     }
 }
