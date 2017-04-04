@@ -463,7 +463,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
 
-        // Recurso Certificacao - id: 39
+        // Recurso Certificacao - id: 40
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 7; // Categoria Documentos - Módulo Acadêmico
         $recurso->rcs_nome = 'Certificação';
@@ -474,7 +474,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
 
-        // Recurso Controle de Registro - id: 40
+        // Recurso Controle de Registro - id: 41
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 7; // Categoria Documentos - Módulo Acadêmico
         $recurso->rcs_nome = 'Controle de Registro';
@@ -488,7 +488,7 @@ class RecursoTableSeeder extends Seeder
 
     private function recursosModuloIntegracao()
     {
-        // Recurso Dashboard - id: 40
+        // Recurso Dashboard - id: 42
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 9; // Categoria Cadastros - Módulo Integração
         $recurso->rcs_nome = 'Dashboard';
@@ -499,7 +499,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso AmbientesVirtuais - id: 41
+        // Recurso AmbientesVirtuais - id: 43
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 9; // Categoria Cadastros - Módulo Integracao
         $recurso->rcs_nome = 'Ambientes Virtuais';
@@ -513,7 +513,7 @@ class RecursoTableSeeder extends Seeder
 
     private function recursosModuloMonitoramento()
     {
-        // Recurso Dashboard - id: 42
+        // Recurso Dashboard - id: 44
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 10; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Dashboard';
@@ -524,7 +524,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Tempo Online - id: 43
+        // Recurso Tempo Online - id: 45
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 10; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Tempo Online';
