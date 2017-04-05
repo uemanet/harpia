@@ -1,8 +1,8 @@
 <?php
-
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+
 use Modulos\Seguranca\Models\Perfil;
 
 class PerfilPermissaoTableSeeder extends Seeder
@@ -27,8 +27,8 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([23, 24, 25, 26, 27, 28]); // Permissoes do recurso Usuários
 
-
         /** Perfil Administrador do Módulo Geral */
+
         $perfil = Perfil::find(2);
 
         $perfil->permissoes()->attach([29]); // Permissões Dashboard
@@ -99,7 +99,6 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Relatórios Matriculas Disciplina
 
-
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
@@ -115,5 +114,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([143]); // Permissoes do recurso Dashboard
 
         $perfil->permissoes()->attach([144, 145]); // Permissoes do recurso Tempo Online
+
     }
+
 }

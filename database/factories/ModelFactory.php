@@ -401,6 +401,31 @@ $factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Genera
     ];
 });
 
+$factory->define(Modulos\Academico\Models\Livro::class, function (Faker\Generator $faker) {
+    return [
+        'liv_numero' => 1,
+        'liv_tipo_livro' => $faker->randomElements(['CERTIFICADO', 'DIPLOMA'])
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Registro::class, function (Faker\Generator $faker) {
+    $livro = factory(Modulos\Academico\Models\Livro::class)->create();
+    $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
+
+    return [
+        'reg_liv_id' => $livro->liv_id,
+        'reg_mat_id' => $matricula->mat_id,
+        'reg_folha' => $faker->randomNumber(),
+        'reg_registro' => $faker->randomNumber(),
+        'reg_registro_externo' => $faker->randomLetter(),
+        'reg_processo' => $faker->word,
+        'reg_data_expedicao' => $faker->date(),
+        'reg_observacao' => $faker->word,
+        'reg_usuario' => $faker->name,
+        'reg_data' => $faker->date(),
+        'reg_id_interno' => $faker->randomNumber()
+    ];
+});
 
 /** Factories Modulo Integracao */
 $factory->define(Modulos\Integracao\Models\AmbienteVirtual::class, function (Faker\Generator $faker) {

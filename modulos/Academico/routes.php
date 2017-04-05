@@ -195,6 +195,14 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\ConclusaoCursoController@getIndex')->name('academico.conclusaocurso.index');
     });
 
+    Route::group(['prefix' => 'certificacao'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
+    });
+
+    Route::group(['prefix' => 'controlederegistro'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\ControleRegistroController@getIndex')->name('academico.certificacao.index');
+    });
+
     Route::group(['prefix' => 'historicoparcial'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getIndex')->name('academico.historicoparcial.index');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getShow')->name('academico.historicoparcial.show');
@@ -292,6 +300,13 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'anexos'], function () {
             Route::post('/deletaranexolancamentotcc', '\Modulos\Academico\Http\Controllers\Async\LancamentosTccs@postDeletarAnexo');
+        });
+
+        Route::group(['prefix' => 'cursos'], function () {
+            Route::get('/findcursostecnicos', '\Modulos\Academico\Http\Controllers\Async\Cursos@getCursosTecnicos');
+            Route::get('/findmodulosbyoferta/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByOferta');
+            Route::get('/getalunosaptos/{turma}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos');
+            Route::post('/certificaralunos', '\Modulos\Academico\Http\Controllers\Async\Cursos@postCertificarAlunos');
         });
 
         Route::group(['prefix' => 'matricula'], function () {

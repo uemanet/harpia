@@ -70,6 +70,9 @@ class AcademicoSeeder extends Seeder
         $this->call(MatriculaOfertaDisciplinaTableSeeder::class);
         $this->command->info('Matricula Oferta Disciplina Table seeded!');
 
+        $this->call(LivrosTableSeeder::class);
+        $this->command->info('Livro Table seeded!');
+
         $this->call(MatriculasConcluidasSeeder::class);
         $this->command->info('Matriculas Concluidas seeded!');
     }

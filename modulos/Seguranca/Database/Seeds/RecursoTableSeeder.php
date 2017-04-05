@@ -1,8 +1,8 @@
 <?php
-
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+
 use Modulos\Seguranca\Models\Recurso;
 
 class RecursoTableSeeder extends Seeder
@@ -19,10 +19,10 @@ class RecursoTableSeeder extends Seeder
 
         $this->recursosModuloMonitoramento();
     }
-
     private function recursosModuloSeguranca()
     {
         // Recurso Dashboard - id: 1
+
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 1; // Categoria Seguranca
         $recurso->rcs_nome = 'Dashboard';
@@ -99,7 +99,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 7;
         $recurso->save();
     }
-
     private function recursosModuloGeral()
     {
         // Recurso Index - id: 8
@@ -157,7 +156,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
     }
-
     private function recursosModuloAcademico()
     {
         /** Categoria Cadastros */
@@ -463,7 +461,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
     }
-
     private function recursosModuloIntegracao()
     {
         // Recurso Dashboard - id: 40
@@ -488,7 +485,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 2;
         $recurso->save();
     }
-
     private function recursosModuloMonitoramento()
     {
         // Recurso Dashboard - id: 42
