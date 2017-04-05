@@ -40,9 +40,11 @@ class MigrarExclusaoOfertaTurmaListener
             'sym_action' => 'DELETE'
         ]);
 
+        // dd($turmasMigrar);
+
         if ($turmasMigrar->count()) {
             foreach ($turmasMigrar as $item) {
-                $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($item->sym_extra);
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteWithTokenWhithoutTurma($item->sym_extra);
 
                 if ($ambiente) {
                     $data['course']['trm_id'] = $item->sym_table_id;

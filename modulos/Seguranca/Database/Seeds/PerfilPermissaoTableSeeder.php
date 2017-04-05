@@ -1,8 +1,8 @@
 <?php
-
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+
 use Modulos\Seguranca\Models\Perfil;
 
 class PerfilPermissaoTableSeeder extends Seeder
@@ -27,8 +27,8 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([23, 24, 25, 26, 27, 28]); // Permissoes do recurso Usuários
 
-
         /** Perfil Administrador do Módulo Geral */
+
         $perfil = Perfil::find(2);
 
         $perfil->permissoes()->attach([29]); // Permissões Dashboard
@@ -93,13 +93,11 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([126, 127, 128]); // Permissoes do recurso Historico Parcial
 
-        $perfil->permissoes()->attach([129, 130]); // Permissoes do recurso Relatórios Matriculas Curso
+        $perfil->permissoes()->attach([129, 130]); // Permissoes do recurso Historico Definitivo
 
-        $perfil->permissoes()->attach([131, 132]); // Permissoes do recurso Relatórios Matriculas Disciplina
+        $perfil->permissoes()->attach([131, 132]); // Permissoes do recurso Relatórios Matriculas Curso
 
-        $perfil->permissoes()->attach([133]); // Permissoes do recurso Certificação
-
-        $perfil->permissoes()->attach([134]); // Permissoes do recurso Controle de Registro
+        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Relatórios Matriculas Disciplina
 
         /** Perfil Administrador do Módulo Integração */
 
@@ -116,5 +114,7 @@ class PerfilPermissaoTableSeeder extends Seeder
         $perfil->permissoes()->attach([143]); // Permissoes do recurso Dashboard
 
         $perfil->permissoes()->attach([144, 145]); // Permissoes do recurso Tempo Online
+
     }
+
 }
