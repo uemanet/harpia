@@ -303,7 +303,6 @@ class AlunosController extends BaseController
 
         $situacao = [
             'cursando' => 'Cursando',
-            'concluido' => 'Concluído',
             'reprovado' => 'Reprovado',
             'evadido' => 'Evadido',
             'trancado' => 'Trancado',

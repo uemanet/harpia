@@ -419,7 +419,6 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 3;
         $recurso->save();
 
-
         // Recurso Historico Parcial - id: 36
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 7; // Categoria Históricos - Módulo Acadêmico
