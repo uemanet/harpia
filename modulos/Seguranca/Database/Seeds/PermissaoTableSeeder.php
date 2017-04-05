@@ -1083,7 +1083,7 @@ class PermissaoTableSeeder extends Seeder
     {
         $permissao = new Permissao(); // id = 135
         $permissao->prm_rcs_id = 40;
-        $permissao->prm_nome = 'certificacao';
+        $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Certificação';
         $permissao->save();
     }
