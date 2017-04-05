@@ -94,7 +94,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 0;
         $categoria->save();
 
-        // Categoria Historicos - id: 7
+        // Categoria Documentos - id: 7
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Documentos';
@@ -105,7 +105,7 @@ class CategoriaRecursoTableSeeder extends Seeder
         $categoria->ctr_visivel = 1;
         $categoria->save();
 
-        // Categoria Historicos - id: 8
+        // Categoria Relatórios - id: 8
         $categoria = new CategoriaRecurso();
         $categoria->ctr_mod_id = 3; //Modulo Acadêmico
         $categoria->ctr_nome = 'Relatórios';

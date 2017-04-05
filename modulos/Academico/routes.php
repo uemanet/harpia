@@ -209,6 +209,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/print/{id}', '\Modulos\Academico\Http\Controllers\HistoricoParcialController@getPrint')->name('academico.historicoparcial.print');
     });
 
+    Route::group(['prefix' => 'historicodefinitivo'], function () {
+        Route::get('/index', '\Modulos\Academico\Http\Controllers\HistoricoDefinitivoController@getIndex')->name('academico.historicodefinitivo.index');
+        Route::post('/print', '\Modulos\Academico\Http\Controllers\HistoricoDefinitivoController@postPrint')->name('academico.historicodefinitivo.print');
+    });
+
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
@@ -306,6 +311,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'matricula'], function () {
             Route::post('/alterarsituacao', '\Modulos\Academico\Http\Controllers\Async\Matricula@postUpdateSituacao');
+            Route::get('/getmatriculasconcluidas', '\Modulos\Academico\Http\Controllers\Async\Matricula@getMatriculasConcluidas');
         });
     });
 });

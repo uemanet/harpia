@@ -58,6 +58,9 @@ class AcademicoSeeder extends Seeder
         $this->call(TurmaTableSeeder::class);
         $this->command->info('Turma Table seeded!');
 
+        $this->call(GrupoTableSeeder::class);
+        $this->command->info('Grupo Table seeded!');
+
         $this->call(MatriculaCursoTableSeeder::class);
         $this->command->info('Matricula Curso Table seeded!');
 
@@ -69,5 +72,8 @@ class AcademicoSeeder extends Seeder
 
         $this->call(LivrosTableSeeder::class);
         $this->command->info('Livro Table seeded!');
+
+        $this->call(MatriculasConcluidasSeeder::class);
+        $this->command->info('Matriculas Concluidas seeded!');
     }
 }
