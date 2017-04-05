@@ -40,6 +40,8 @@ class Matricula extends BaseController
 
             event(new AtualizarSituacaoMatriculaEvent($matricula));
 
+            flash()->success('Status de matrícula alterada com sucesso!');
+
             return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
