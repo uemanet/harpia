@@ -35,8 +35,8 @@ class HistoricoParcialRepository extends BaseRepository
             $reg['per_nome'] = $periodo->per_nome;
 
             $disciplinasCursadas = $this->matriculaOfertaDisciplinaRepository->findBy([
-                'mof_mat_id' => $matricula->mat_id,
-                'ofd_per_id' => $periodo->per_id
+                ['mof_mat_id', '=', $matricula->mat_id],
+                ['ofd_per_id', '=', $periodo->per_id]
             ], null, ['dis_nome' => 'asc', 'mdo_id' => 'asc']);
 
             if (!$disciplinasCursadas->count()) {

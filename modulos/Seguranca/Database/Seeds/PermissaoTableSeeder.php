@@ -1,8 +1,8 @@
 <?php
-
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+
 use Modulos\Seguranca\Models\Permissao;
 
 class PermissaoTableSeeder extends Seeder
@@ -87,7 +87,6 @@ class PermissaoTableSeeder extends Seeder
 
         $this->createPermissoesAcademicoHistoricoParcial();
 
-
         $this->createPermissoesAcademicoHistoricoDefinitivo();
 
         $this->createPermissoesAcademicoRelatoriosMatriculasCurso();
@@ -97,7 +96,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesAcademicoCertificacao();
 
         $this->createPermissoesAcademicoControleRegistro();
-
 
         /** Permissões do Módulo Integração */
 
@@ -110,11 +108,13 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesMonitoramentoDashboard();
 
         $this->createPermissoesMonitoramentoTempoOnline();
+
     }
 
     /** Permissões do Módulo Segurança */
 
     // 1 permissao
+
     private function createPermissoesIndex()
     {
         $permissao = new Permissao(); // id = 1
@@ -151,7 +151,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão delete do recurso módulo da categoria segurança do módulo segurança';
         $permissao->save();
     }
-
     // 4 permissoes
     private function createPermissoesCategoriasRecursos()
     {
@@ -405,7 +404,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão delete do recurso Titulações Informações';
         $permissao->save();
     }
-
     // 4 permissooes
     private function createPermissoesGeralDocumentos()
     {
@@ -437,6 +435,7 @@ class PermissaoTableSeeder extends Seeder
     /** Permissões do Módulo Acadêmico */
 
     // 1 permissao
+
     private function createPermissoesAcademicoIndex()
     {
         $permissao = new Permissao(); // id = 46
@@ -475,6 +474,7 @@ class PermissaoTableSeeder extends Seeder
     }
 
     // 4 permissoes
+
     private function createPermissoesAcademicoCentros()
     {
         $permissao = new Permissao(); // id = 51
@@ -531,6 +531,7 @@ class PermissaoTableSeeder extends Seeder
     }
 
     // 4 permisssoes
+
     private function createPermissoesAcademicoDisciplinas()
     {
         $permissao = new Permissao(); // id = 59
@@ -557,7 +558,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão delete do recurso Disciplinas';
         $permissao->save();
     }
-
     // 4 permissoes
     private function createPermissoesAcademicoCursos()
     {
@@ -1070,7 +1070,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'index';
         $permissao->prm_descricao = 'Permissão index do recurso Relatórios Matriculas Disciplina';
         $permissao->save();
-
 
         $permissao = new Permissao(); // id = 134
         $permissao->prm_rcs_id = 39;

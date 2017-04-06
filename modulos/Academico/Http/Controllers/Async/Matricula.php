@@ -23,7 +23,7 @@ class Matricula extends BaseController
      *
      * @param Request $request
      *
-     * @return static
+     * @return JsonResponse
      *
      * @throws \Exception
      */
@@ -39,6 +39,8 @@ class Matricula extends BaseController
             $matricula->save();
 
             event(new AtualizarSituacaoMatriculaEvent($matricula));
+
+            flash()->success('Status de matrícula alterada com sucesso!');
 
             return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {

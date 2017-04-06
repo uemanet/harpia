@@ -34,7 +34,7 @@ class MigrarExclusaoGrupoListener
 
         if ($gruposMigrar->count()) {
             foreach ($gruposMigrar as $reg) {
-                
+
 
                 // ambiente virtual vinculado à turma do grupo
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($reg->sym_extra);
