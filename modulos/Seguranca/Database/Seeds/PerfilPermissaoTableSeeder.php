@@ -97,7 +97,7 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([130, 131, 132]); // Permissoes do recurso Historico Parcial
 
-        $perfil->permissoes()->attach([133,134]); // Permissoes do recurso Certificação
+        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Certificação
 
         $perfil->permissoes()->attach([135]); // Permissoes do recurso Controle de Registro
 

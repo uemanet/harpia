@@ -108,7 +108,6 @@ class PermissaoTableSeeder extends Seeder
         $this->createPermissoesMonitoramentoDashboard();
 
         $this->createPermissoesMonitoramentoTempoOnline();
-
     }
 
     /** Permissões do Módulo Segurança */
