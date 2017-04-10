@@ -200,10 +200,17 @@ class GruposController extends BaseController
     {
         try {
             $grupo = $this->grupoRepository->find($id);
+            $grupoNome = $request->input('grp_nome');
+            $idTurma = $request->input('grp_trm_id');
 
             if (!$grupo) {
                 flash()->error('Grupo não existe.');
                 return redirect()->back();
+            }
+
+            if ($this->grupoRepository->verifyNameGrupo($grupoNome, $idTurma)) {
+                $errors = array('grp_nome' => 'Nome do Grupo já existe para essa turma');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
             $requestData = $request->only($this->grupoRepository->getFillableModelFields());
