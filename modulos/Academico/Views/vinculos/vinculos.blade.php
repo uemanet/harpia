@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Módulo Acadêmico
+    Módulo Acadêmico :: Usuário : <b>{{$usuario->usr_usuario}}</b>
 @stop
 
 @section('actionButton')
