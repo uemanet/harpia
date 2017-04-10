@@ -21,7 +21,8 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function paginate($sort = null, $search = null)
     {
-        $result = $this->model;
+        $result = $this->model
+                        ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id');
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
