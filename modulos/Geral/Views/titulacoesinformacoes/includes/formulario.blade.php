@@ -23,7 +23,7 @@
 </div>
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('tin_instituicao_sigla')) has-error @endif">
-        {!! Form::label('tin_instituicao_sigla', 'Instituição Sigla', ['class' => 'control-label']) !!}
+        {!! Form::label('tin_instituicao_sigla', 'Instituição Sigla*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('tin_instituicao_sigla', old('tin_instituicao_sigla'), ['class' => 'form-control']) !!}
             @if ($errors->has('tin_instituicao_sigla')) <p class="help-block">{{ $errors->first('tin_instituicao_sigla') }}</p> @endif
