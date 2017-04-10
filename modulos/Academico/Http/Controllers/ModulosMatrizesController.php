@@ -201,8 +201,8 @@ class ModulosMatrizesController extends BaseController
         $modulo = $this->modulomatrizRepository->find($moduloId);
 
         if (!$modulo) {
-          flash()->error('Módulo não existe.');
-          return redirect()->back();
+            flash()->error('Módulo não existe.');
+            return redirect()->back();
         }
 
         $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
