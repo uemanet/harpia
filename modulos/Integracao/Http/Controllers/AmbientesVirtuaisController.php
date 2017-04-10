@@ -320,10 +320,10 @@ class AmbientesVirtuaisController extends BaseController
         $validate['ofc_id'] = $request->ofc_id;
 
         $validator = Validator::make($validate, [
-            'atr_trm_id' => 'required',
-            'atr_amb_id' => 'required',
-            'crs_id' => 'required',
-            'ofc_id' => 'required'
+            'atr_trm_id' => 'required|integer|min:1',
+            'atr_amb_id' => 'required|integer|min:1',
+            'crs_id' => 'required|integer|min:1',
+            'ofc_id' => 'required|integer|min:1'
         ]);
 
         if ($validator->fails()) {
