@@ -206,7 +206,7 @@ class GruposController extends BaseController
                 return redirect()->back();
             }
 
-            if ($this->grupoRepository->verifyNameGrupo($grupoNome, $idTurma)) {
+            if ($this->grupoRepository->verifyNameGrupo($grupoNome, $idTurma, $id)) {
                 $errors = array('grp_nome' => 'Nome do Grupo já existe para essa turma');
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
