@@ -116,6 +116,11 @@ class CentrosController extends BaseController
     {
         $centro = $this->centroRepository->find($centroId);
 
+        if (is_null($centro)) {
+            flash()->error('Centro não existe!');
+            return redirect()->back();
+        }
+
         $professores = $this->professorRepository->listsEditCentro('prf_id', 'pes_nome', $centroId);
 
         if (!$centro) {
