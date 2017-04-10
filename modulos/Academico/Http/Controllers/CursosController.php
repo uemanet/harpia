@@ -135,8 +135,8 @@ class CursosController extends BaseController
         $curso = $this->cursoRepository->find($cursoId);
 
         if (!$curso) {
-          flash()->error('Curso não existe.');
-          return redirect()->back();
+            flash()->error('Curso não existe.');
+            return redirect()->back();
         }
 
         $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');

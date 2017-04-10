@@ -181,8 +181,8 @@ class GruposController extends BaseController
         $grupo = $this->grupoRepository->find($grupoId);
 
         if (!$grupo) {
-          flash()->error('Grupo não existe.');
-          return redirect()->back();
+            flash()->error('Grupo não existe.');
+            return redirect()->back();
         }
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
