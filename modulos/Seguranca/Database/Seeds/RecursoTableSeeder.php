@@ -21,8 +21,8 @@ class RecursoTableSeeder extends Seeder
     }
     private function recursosModuloSeguranca()
     {
-        // Recurso Dashboard - id: 1
 
+        // Recurso Dashboard - id: 1
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 1; // Categoria Seguranca
         $recurso->rcs_nome = 'Dashboard';
@@ -161,6 +161,7 @@ class RecursoTableSeeder extends Seeder
         /** Categoria Cadastros */
 
         // Recurso Dashboard - id: 13
+
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 4; // Categoria Cadastros - Modulo Academico
         $recurso->rcs_nome = 'Dashboard';
@@ -460,10 +461,32 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ativo = 1;
         $recurso->rcs_ordem = 2;
         $recurso->save();
+
+        // Recurso Certificacao - id: 40
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 7; // Categoria Documentos - Módulo Acadêmico
+        $recurso->rcs_nome = 'Certificação';
+        $recurso->rcs_rota = 'certificacao';
+        $recurso->rcs_descricao = 'Recurso Certificação do Módulo Acadêmico';
+        $recurso->rcs_icone = 'fa fa-certificate';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 2;
+        $recurso->save();
+
+        // Recurso Controle de Registro - id: 41
+        $recurso = new Recurso();
+        $recurso->rcs_ctr_id = 7; // Categoria Documentos - Módulo Acadêmico
+        $recurso->rcs_nome = 'Controle de Registro';
+        $recurso->rcs_rota = 'controlederegistro';
+        $recurso->rcs_descricao = 'Recurso Controle de Registro do Módulo Acadêmico';
+        $recurso->rcs_icone = 'fa fa-certificate';
+        $recurso->rcs_ativo = 1;
+        $recurso->rcs_ordem = 3;
+        $recurso->save();
     }
     private function recursosModuloIntegracao()
     {
-        // Recurso Dashboard - id: 40
+        // Recurso Dashboard - id: 42
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 9; // Categoria Cadastros - Módulo Integração
         $recurso->rcs_nome = 'Dashboard';
@@ -474,7 +497,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso AmbientesVirtuais - id: 41
+        // Recurso AmbientesVirtuais - id: 43
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 9; // Categoria Cadastros - Módulo Integracao
         $recurso->rcs_nome = 'Ambientes Virtuais';
@@ -487,7 +510,7 @@ class RecursoTableSeeder extends Seeder
     }
     private function recursosModuloMonitoramento()
     {
-        // Recurso Dashboard - id: 42
+        // Recurso Dashboard - id: 44
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 10; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Dashboard';
@@ -498,7 +521,7 @@ class RecursoTableSeeder extends Seeder
         $recurso->rcs_ordem = 1;
         $recurso->save();
 
-        // Recurso Tempo Online - id: 43
+        // Recurso Tempo Online - id: 45
         $recurso = new Recurso();
         $recurso->rcs_ctr_id = 10; // Categoria Monitoramento - Módulo Monitoramento
         $recurso->rcs_nome = 'Tempo Online';

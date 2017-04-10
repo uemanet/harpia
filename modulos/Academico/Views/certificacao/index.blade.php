@@ -225,7 +225,7 @@
                     $.each(certificados, function (key, obj) {
                         table2 += '<tr>';
                         table2 += '<td>' + obj.pes_nome + '</td>';
-                        table2 += '<td><span class="label label-info">Certificados</span></td>';
+                        table2 += '<td><span class="label label-info">Certificado</span></td>';
                         table2 += '</tr>';
                     });
 
