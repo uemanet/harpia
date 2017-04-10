@@ -3,6 +3,7 @@
 Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'index'], function () {
         Route::get('/', '\Modulos\Geral\Http\Controllers\IndexController@getIndex');
+        Route::get('/index', '\Modulos\Geral\Http\Controllers\IndexController@getIndex');
     });
 
     Route::group(['prefix' => 'pessoas'], function () {
