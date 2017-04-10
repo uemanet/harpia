@@ -217,7 +217,12 @@ class TurmasController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            if ($e->getCode() == 23000) {
+                flash()->error('Esta turma ainda contém dependências no sistema e não pode ser excluída.');
+                return redirect()->back();
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
