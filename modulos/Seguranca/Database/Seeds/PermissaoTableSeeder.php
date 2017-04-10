@@ -1,7 +1,9 @@
 <?php
 namespace Modulos\Seguranca\Database\Seeds;
+
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\Permissao;
+
 class PermissaoTableSeeder extends Seeder
 {
     public function run()
@@ -983,17 +985,17 @@ class PermissaoTableSeeder extends Seeder
     // 2 permissoes
     private function createPermissoesAcademicoHistoricoDefinitivo()
     {
-      $permissao = new Permissao(); // id = 129
+        $permissao = new Permissao(); // id = 129
       $permissao->prm_rcs_id = 37;
-      $permissao->prm_nome = 'index';
-      $permissao->prm_descricao = 'Permissão index do recurso Historico Definitivo';
-      $permissao->save();
+        $permissao->prm_nome = 'index';
+        $permissao->prm_descricao = 'Permissão index do recurso Historico Definitivo';
+        $permissao->save();
 
-      $permissao = new Permissao(); // id = 130
+        $permissao = new Permissao(); // id = 130
       $permissao->prm_rcs_id = 37;
-      $permissao->prm_nome = 'print';
-      $permissao->prm_descricao = 'Permissão print do recurso Historico Definitivo';
-      $permissao->save();
+        $permissao->prm_nome = 'print';
+        $permissao->prm_descricao = 'Permissão print do recurso Historico Definitivo';
+        $permissao->save();
     }
     // 2 permissao
     private function createPermissoesAcademicoRelatoriosMatriculasCurso()
