@@ -120,6 +120,11 @@ class PessoasController extends BaseController
     {
         $pessoa = $this->pessoaRepository->findById($id);
 
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe');
+            return redirect()->back();
+        }
+
         return view('Geral::pessoas.edit', compact('pessoa'));
     }
 
@@ -178,6 +183,12 @@ class PessoasController extends BaseController
     public function getShow($id)
     {
         $pessoa = $this->pessoaRepository->find($id);
+
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe');
+            return redirect()->back();
+        }
+
         session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $pessoa->pes_id]);
 
         session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $id]);

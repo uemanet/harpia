@@ -30,11 +30,8 @@ class DocumentosController extends BaseController
         $this->anexoRepository = $anexoRepository;
     }
 
-    public function getCreate($pessoaId, Request $request)
+    public function getCreate($pessoaId)
     {
-        $url = $request->session()->get('last_acad_route');
-        $id = $request->session()->get('last_id');
-
         $pessoa = $this->pessoaRepository->find($pessoaId);
 
         if (!$pessoa) {
@@ -115,19 +112,15 @@ class DocumentosController extends BaseController
 
     public function getEdit($documentoId, Request $request)
     {
-        $url = $request->session()->get('last_acad_route');
-        $id = $request->session()->get('last_id');
-
         $documento = $this->documentoRepository->find($documentoId);
 
         if (!$documento) {
-            flash()->error('Recurso não existe.');
+            flash()->error('Documento não existe.');
             return redirect()->back();
         }
 
         $pessoa = $this->pessoaRepository->find($documento->doc_pes_id);
         $anexo = $this->anexoRepository->find($documento->doc_anx_documento);
-
 
         $tiposdocumentos = $this->tipodocumentoRepository->listsTipoDocumentoByDocumentoId($documentoId);
 
@@ -228,6 +221,9 @@ class DocumentosController extends BaseController
             }
 
             flash()->success('Documento excluído com sucesso.');
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar excluir. O documento contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
