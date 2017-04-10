@@ -215,7 +215,7 @@
                     'SP' => 'São Paulo',
                     'SE' => 'Sergipe',
                     'TO' => 'Tocantis',
-                ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...', 'required' => 'required']) !!}
+                ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...']) !!}
             @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
         </div>
     </div>
