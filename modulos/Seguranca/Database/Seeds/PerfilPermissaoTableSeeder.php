@@ -9,8 +9,8 @@ class PerfilPermissaoTableSeeder extends Seeder
 {
     public function run()
     {
-        /** Perfil Administrador do Módulo Segurança */
 
+        /** Perfil Administrador do Módulo Segurança */
         $perfil = Perfil::find(1); // Perfil administrador do modulo seguranca
 
         $perfil->permissoes()->attach([1]); // Permissão Index
@@ -81,40 +81,40 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([103, 104]); // Permissoes do recurso Conclusão de Curso
 
-        $perfil->permissoes()->attach([105, 106, 107]); // Permissoes do recurso Tutores Grupos
+        $perfil->permissoes()->attach([105, 106]); // Permissoes do recurso Relatórios Matriculas Curso
 
-        $perfil->permissoes()->attach([108, 109, 110, 111, 112]); // Permissoes do recurso Matrizes Curriculares
+        $perfil->permissoes()->attach([107, 108]); // Permissoes do recurso Relatórios Matriculas Disciplina
 
-        $perfil->permissoes()->attach([113, 114, 115, 116]); // Permissoes do recurso Grupos
+        $perfil->permissoes()->attach([109, 110, 111]); // Permissoes do recurso Tutores Grupos
 
-        $perfil->permissoes()->attach([117, 118, 119, 120]); // Permissoes do recurso Turmas
+        $perfil->permissoes()->attach([112, 113, 114, 115, 116]); // Permissoes do recurso Matrizes Curriculares
 
-        $perfil->permissoes()->attach([121, 122, 123, 124, 125]); // Permissoes do recurso Módulos Matrizes
+        $perfil->permissoes()->attach([117, 118, 119, 120]); // Permissoes do recurso Grupos
 
-        $perfil->permissoes()->attach([126, 127, 128]); // Permissoes do recurso Historico Parcial
+        $perfil->permissoes()->attach([121, 122, 123, 124]); // Permissoes do recurso Turmas
 
-        $perfil->permissoes()->attach([129, 130]); // Permissoes do recurso Historico Definitivo
+        $perfil->permissoes()->attach([125, 126, 127, 128, 129]); // Permissoes do recurso Módulos Matrizes
 
-        $perfil->permissoes()->attach([131, 132]); // Permissoes do recurso Relatórios Matriculas Curso
+        $perfil->permissoes()->attach([130, 131, 132]); // Permissoes do recurso Historico Parcial
 
-        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Relatórios Matriculas Disciplina
+        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Certificação
+
+        $perfil->permissoes()->attach([135]); // Permissoes do recurso Controle de Registro
 
         /** Perfil Administrador do Módulo Integração */
 
         $perfil = Perfil::find(4);
 
-        $perfil->permissoes()->attach([135]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([136]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([136, 137, 138, 139, 140, 141, 142]); // Permissoes do recurso Ambientes
+        $perfil->permissoes()->attach([137, 138, 139, 140, 141, 142, 143]); // Permissoes do recurso Ambientes
 
         /** Perfil Administrador do Módulo de Monitoramento */
 
         $perfil = Perfil::find(5);
 
-        $perfil->permissoes()->attach([143]); // Permissoes do recurso Dashboard
+        $perfil->permissoes()->attach([144]); // Permissoes do recurso Dashboard
 
-        $perfil->permissoes()->attach([144, 145]); // Permissoes do recurso Tempo Online
-
+        $perfil->permissoes()->attach([145, 146]); // Permissoes do recurso Tempo Online
     }
-
 }
