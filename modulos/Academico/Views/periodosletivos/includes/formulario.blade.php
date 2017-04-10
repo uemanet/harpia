@@ -3,7 +3,7 @@
         {!! Form::label('per_nome', 'Nome para o período letivo*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('per_nome', old('per_nome'), ['class' => 'form-control']) !!}
-            @if ($errors->has('per_nome')) <p class="help-block">{{ $errors->first('per_inicio') }}</p> @endif
+            @if ($errors->has('per_nome')) <p class="help-block">{{ $errors->first('per_nome') }}</p> @endif
         </div>
     </div>
 </div>

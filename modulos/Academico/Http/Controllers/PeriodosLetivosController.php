@@ -84,6 +84,13 @@ class PeriodosLetivosController extends BaseController
     public function postCreate(PeriodoLetivoRequest $request)
     {
         try {
+            $periodoNome = $request->input('per_nome');
+
+            if ($this->periodoLetivoRepository->verifyNamePeriodo($periodoNome)) {
+                $errors = array('per_nome' => 'Nome do Período já existe.');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            }
+
             $periodoLetivo = $this->periodoLetivoRepository->create($request->all());
 
             if (!$periodoLetivo) {
@@ -120,10 +127,16 @@ class PeriodosLetivosController extends BaseController
     {
         try {
             $periodoLetivo = $this->periodoLetivoRepository->find($periodoLetivoId);
+            $periodoNome = $request->input('per_nome');
 
             if (!$periodoLetivo) {
                 flash()->error('Período Letivo não existe.');
                 return redirect('academico/periodosletivos/index');
+            }
+
+            if ($this->periodoLetivoRepository->verifyNamePeriodo($periodoNome, $periodoLetivoId)) {
+                $errors = array('per_nome' => 'Nome do Período já existe.');
+                return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
             $requestData = $request->only($this->periodoLetivoRepository->getFillableModelFields());
