@@ -110,7 +110,7 @@ class OfertasCursosController extends BaseController
 
             if (!$ofertacurso) {
                 DB::rollback();
-                flash()->error('Erro ao tentar salvar.');
+                flash()->error('Já existe uma oferta com o mesmo ano e modalidade cadastrada.');
                 return redirect()->back()->withInput($request->all());
             }
 
