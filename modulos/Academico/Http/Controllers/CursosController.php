@@ -133,14 +133,15 @@ class CursosController extends BaseController
     public function getEdit($cursoId)
     {
         $curso = $this->cursoRepository->find($cursoId);
+
+        if (!$curso) {
+          flash()->error('Curso não existe.');
+          return redirect()->back();
+        }
+
         $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
         $professores = $this->professorRepository->listsEditCurso('prf_id', 'pes_nome', $cursoId);
-
-        if (!$curso) {
-            flash()->error('Curso não existe.');
-            return redirect()->back();
-        }
 
         return view('Academico::cursos.edit', ['curso' => $curso, 'departamentos' => $departamentos, 'niveiscursos' => $niveiscursos, 'professores' => $professores]);
     }

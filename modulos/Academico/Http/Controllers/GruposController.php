@@ -179,6 +179,12 @@ class GruposController extends BaseController
     public function getEdit($grupoId)
     {
         $grupo = $this->grupoRepository->find($grupoId);
+
+        if (!$grupo) {
+          flash()->error('Grupo não existe.');
+          return redirect()->back();
+        }
+
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
@@ -186,10 +192,6 @@ class GruposController extends BaseController
         $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
-        if (!$grupo) {
-            flash()->error('Grupo não existe.');
-            return redirect()->back();
-        }
 
         return view('Academico::grupos.edit', ['grupo' => $grupo, 'curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
     }

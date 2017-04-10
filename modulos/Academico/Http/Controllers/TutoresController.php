@@ -213,6 +213,11 @@ class TutoresController extends BaseController
     {
         $tutor = $this->tutorRepository->find($tutorId);
 
+        if (!$tutor) {
+            flash()->error('Tutor não existe.');
+            return redirect()->back();
+        }
+
         $pessoa = $this->pessoaRepository->findById($tutor->tut_pes_id);
 
         return view('Academico::tutores.edit', ['pessoa' => $pessoa]);
@@ -298,6 +303,11 @@ class TutoresController extends BaseController
     public function getShow($tutorId)
     {
         $tutor = $this->tutorRepository->find($tutorId);
+
+        if (!$tutor) {
+            flash()->error('Tutor não existe.');
+            return redirect()->back();
+        }
 
         session(['last_acad_route' => 'academico.tutores.show', 'last_id' => $tutorId]);
 

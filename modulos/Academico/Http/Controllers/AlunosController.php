@@ -213,7 +213,17 @@ class AlunosController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
+        if (!$aluno) {
+          flash()->error('Aluno não existe.');
+          return redirect()->back();
+        }
+
         $pessoa = $this->pessoaRepository->findById($aluno->alu_pes_id);
+
+        if (!$aluno) {
+          flash()->error('Pessoa não existe.');
+          return redirect()->back();
+        }
 
         return view('Academico::alunos.edit', ['pessoa' => $pessoa]);
     }
@@ -300,6 +310,11 @@ class AlunosController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
         session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
+
+        if (!$aluno) {
+          flash()->error('Aluno não existe.');
+          return redirect()->back();
+        }
 
         $situacao = [
             'cursando' => 'Cursando',
