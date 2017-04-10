@@ -26,7 +26,7 @@ class AmbienteVirtualRequest extends BaseRequest
         $rules = [
             'amb_nome' => 'required|min:3|max:45',
             'amb_versao'=>'required|max:20',
-            'amb_url' => 'max:90'
+            'amb_url' => 'required|url|max:90'
         ];
 
         return $rules;

@@ -187,16 +187,18 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambientevirtualId = $request->get('id');
 
-            if ($this->ambienteVirtualRepository->delete($ambientevirtualId)) {
-                flash()->success('Ambiente Virtual excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o ambiente virtual');
-            }
+            $this->ambienteVirtualRepository->delete($ambientevirtualId);
+            flash()->success('Ambiente Virtual excluído com sucesso.');
 
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
+            }
+
+            if ($e->getCode() == 23000) {
+                flash()->error('Este ambiente ainda contém dependências no sistema e não pode ser excluído.');
+                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');

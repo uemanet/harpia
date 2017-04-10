@@ -281,8 +281,6 @@ class MatrizesCurricularesController extends BaseController
                 // Excluir Anexo correspondente
                 $this->anexoRepository->deletarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
                 flash()->success('Matriz curricular excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a matriz curricular');
             }
 
             return redirect()->back();
