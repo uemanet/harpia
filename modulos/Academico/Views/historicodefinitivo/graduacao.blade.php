@@ -56,7 +56,7 @@
                 <td width="50%" class="center"><strong>CÓDIGO</strong></td>
             </tr>
             <tr>
-                <td width="50%" class="center"><strong>{{mb_strtoupper($dados['pessoa']['nome'], 'UTF-8')}}</strong></td>
+                <td width="50%" class="center">{{mb_strtoupper($dados['pessoa']['nome'], 'UTF-8')}}</td>
                 <td width="50%" class="center">{{str_pad($dados['pessoa']['matricula'], 10, '0', STR_PAD_LEFT)}}</td>
             </tr>
             <tr>
