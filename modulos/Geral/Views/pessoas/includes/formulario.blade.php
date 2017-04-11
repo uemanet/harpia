@@ -1,5 +1,6 @@
 @section('stylesheets')
     <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
 @stop
 
 <div class="row">
@@ -228,15 +229,20 @@
     <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
     <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script>
 
         $(function (){
+
+            $("select").select2();
+
             $('.datepicker').datepicker({
                 format: "dd/mm/yyyy",
                 language: 'pt-BR',
                 autoclose: true
             });
+
             $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
             $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
             $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
