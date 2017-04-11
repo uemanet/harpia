@@ -9,7 +9,7 @@
 @stop
 
 @section('subtitle')
-    Adicionar vínculo
+    Adicionar vínculo :: Usuário : <b>{{$user->usr_usuario}}</b>
 @stop
 
 @section('content')
@@ -41,4 +41,3 @@
     </script>
 
 @endsection
-

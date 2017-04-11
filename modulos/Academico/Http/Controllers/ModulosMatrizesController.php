@@ -198,9 +198,14 @@ class ModulosMatrizesController extends BaseController
 
     public function getGerenciarDisciplinas($moduloId)
     {
-        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
-
         $modulo = $this->modulomatrizRepository->find($moduloId);
+
+        if (!$modulo) {
+            flash()->error('Módulo não existe.');
+            return redirect()->back();
+        }
+
+        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
 
         $matriz = $this->matrizcurricularRepository->find($modulo->mdo_mtc_id);
 

@@ -30,7 +30,7 @@ class HistoricoParcialController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->alunoRepository->paginateRequest($request->all(), true, true);
+        $tableData = $this->alunoRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
@@ -68,7 +68,7 @@ class HistoricoParcialController extends BaseController
             return view('Academico::historicoparcial.index', compact('tabela', 'paginacao'));
         }
     }
-    
+
     public function getShow($alunoId)
     {
         $aluno = $this->alunoRepository->find($alunoId);
@@ -81,7 +81,7 @@ class HistoricoParcialController extends BaseController
         $pessoa = $aluno->pessoa;
 
         $gradesCurriculares = array();
-        
+
         foreach ($aluno->matriculas as $matricula) {
             $gradesCurriculares[$matricula->mat_id]['periodos_letivos'] = $this->historicoParcialRepository->getGradeCurricularByMatricula($matricula->mat_id);
         }
@@ -129,7 +129,7 @@ class HistoricoParcialController extends BaseController
         date_default_timezone_set('America/Sao_Paulo');
 
         $data = 'São Luís, '.strftime('%d de %B de %Y', strtotime('today'));
-        
+
         $mpdf = new \mPDF();
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
