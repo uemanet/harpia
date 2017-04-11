@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\TipoDocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
+use Validator;
 
 class DocumentosController extends BaseController
 {
@@ -72,6 +73,19 @@ class DocumentosController extends BaseController
             DB::beginTransaction();
 
             $dados = $request->all();
+
+            $docId = $request->input('doc_tpd_id');
+
+            if ($docId == 2) {
+                $rules = [
+                    'doc_conteudo' => 'cpf',
+                ];
+
+                $validator = Validator::make($request->all(), $rules);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput($request->all())->withErrors($validator);
+                }
+            }
 
             if ($request->file('doc_file') != null) {
                 $anexoDocumento = $request->file('doc_file');
@@ -144,6 +158,19 @@ class DocumentosController extends BaseController
             if (!$documento) {
                 flash()->error('Documento não existe.');
                 return redirect()->back();
+            }
+
+            $docId = $request->input('doc_tpd_id');
+
+            if ($docId == 2) {
+                $rules = [
+                    'doc_conteudo' => 'cpf',
+                ];
+
+                $validator = Validator::make($request->all(), $rules);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput($request->all())->withErrors($validator);
+                }
             }
 
             $dados = $request->only($this->documentoRepository->getFillableModelFields());
