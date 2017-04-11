@@ -87,8 +87,19 @@
         <div class="box box-primary">
             <div class="box-header">
                 <div class="pull-right box-tools">
-                    <button id="formPdf" type="button" class="btn btn-success" >
-                        <i class="fa fa-file-pdf-o"></i> Exportar para PDF</button>
+                    {!! ActionButton::grid([
+                                  'type' => 'LINE',
+                                  'buttons' => [
+                                         [
+                                           'classButton' => 'btn btn-success',
+                                           'icon' => 'fa fa-file-pdf-o',
+                                           'action' => '',
+                                           'label' => 'Exportar para PDF',
+                                           'method' => 'get',
+                                           'attributes' => ['id' => 'formPdf']
+                                         ]
+                                       ]
+                   ]) !!}
                 </div>
             </div>
             <div class="box-body">
@@ -233,7 +244,8 @@
                 $('#form').attr('action', routeIndex).removeAttr('target', '_blank').submit();
             });
 
-            $(document).on('click', '#formPdf', function () {
+            $(document).on('click', '#formPdf', function (event) {
+                event.preventDefault();
                 $('#form').attr('action', routePdf).attr('target', '_blank').submit();
             });
 
