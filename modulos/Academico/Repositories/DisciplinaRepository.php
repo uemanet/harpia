@@ -96,4 +96,27 @@ class DisciplinaRepository extends BaseRepository
 
         return $entries;
     }
+
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->model->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id');
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                    break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        return $result->paginate(15);
+    }
 }

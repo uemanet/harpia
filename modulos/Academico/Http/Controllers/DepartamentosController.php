@@ -118,13 +118,13 @@ class DepartamentosController extends BaseController
     public function getEdit($departamentoId)
     {
         $departamento = $this->departamentoRepository->find($departamentoId);
-        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
 
         if (!$departamento) {
             flash()->error('Departamento não existe.');
             return redirect()->back();
         }
+        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
+        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
 
         return view('Academico::departamentos.edit', ['departamento' => $departamento, 'centros' => $centros, 'professores' => $professores]);
     }
