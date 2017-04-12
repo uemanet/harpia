@@ -71,15 +71,20 @@ class VinculosController extends BaseController
      */
     public function getVinculos($usuarioId, Request $request)
     {
+        $usuario = $this->usuarioRepository->find($usuarioId);
+        if (!$usuario) {
+            flash()->error('Usuário não existe.');
+            return redirect()->back();
+        }
+
+        $data = $this->vinculoRepository->paginateCursosVinculados($usuarioId);
+
         $btnNovo = new TButton();
         $btnNovo->setName('Adicionar vínculo')->setAction('/academico/usuarioscursos/create/' . $usuarioId)->setIcon('fa fa-link')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
         $tabela = null;
         $paginacao = null;
-
-        $data = $this->vinculoRepository->paginateCursosVinculados($usuarioId);
-        $usuario = $this->usuarioRepository->find($usuarioId);
 
         if ($data->count()) {
             $tabela = $data->columns(array(
@@ -122,12 +127,18 @@ class VinculosController extends BaseController
 
     public function getCreate($usuarioId)
     {
+        $usuario = $this->usuarioRepository->find($usuarioId);
+        if (!$usuario) {
+            flash()->error('Usuário não existe.');
+            return redirect()->back();
+        }
         $cursosDisponiveis = $this->vinculoRepository->getCursosDisponiveis($usuarioId);
 
         if (count($cursosDisponiveis)) {
             return view('Academico::vinculos.create', [
                 'usuario' => $usuarioId,
-                'cursos' => $cursosDisponiveis
+                'cursos' => $cursosDisponiveis,
+                'user' => $usuario
             ]);
         }
 

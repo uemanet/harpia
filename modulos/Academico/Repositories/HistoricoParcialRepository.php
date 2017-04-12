@@ -53,6 +53,7 @@ class HistoricoParcialRepository extends BaseRepository
                 $cell['mof_id'] = $oferta->mof_id;
                 $cell['dis_nome'] = $oferta->dis_nome;
                 $cell['mdc_tipo_avaliacao'] = $oferta->mdc_tipo_avaliacao;
+                $cell['mdc_tipo_disciplina'] = $oferta->mdc_tipo_disciplina;
                 $cell['mdo_nome'] = $oferta->mdo_nome;
                 $cell['mof_nota1'] = '---';
                 $cell['mof_nota2'] = '---';

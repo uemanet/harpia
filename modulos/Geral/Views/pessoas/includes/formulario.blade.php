@@ -1,5 +1,6 @@
 @section('stylesheets')
     <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
 @stop
 
 <div class="row">
@@ -215,7 +216,7 @@
                     'SP' => 'São Paulo',
                     'SE' => 'Sergipe',
                     'TO' => 'Tocantis',
-                ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...', 'required' => 'required']) !!}
+                ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...']) !!}
             @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
         </div>
     </div>
@@ -228,15 +229,20 @@
     <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
     <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script>
 
         $(function (){
+
+            $("select").select2();
+
             $('.datepicker').datepicker({
                 format: "dd/mm/yyyy",
                 language: 'pt-BR',
                 autoclose: true
             });
+
             $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
             $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
             $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});

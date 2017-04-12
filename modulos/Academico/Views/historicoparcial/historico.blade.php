@@ -158,11 +158,12 @@
     <table class="table-bordered" style="margin-top: 0.8em; page-break-inside: avoid;">
         <thead>
             <tr class="thead-left thead-config background-thead">
-                <th colspan="6">Período: {{mb_strtoupper($periodo['per_nome'], 'UTF-8')}}</th>
+                <th colspan="12">Período: {{mb_strtoupper($periodo['per_nome'], 'UTF-8')}}</th>
             </tr>
             <tr class="thead-left thead-config thead-border">
                 <th width="10%">MD.</th>
                 <th>Disciplina</th>
+                <th>Tipo</th>
                 <th>Módulo</th>
                 <th width="8%">CH</th>
                 <th width="15%">Média Final</th>
@@ -174,6 +175,7 @@
             <tr class="padding border-td">
                 <td>{{$disciplina->mof_id}}</td>
                 <td>{{$disciplina->dis_nome}}</td>
+                <td>{{$disciplina->mdc_tipo_disciplina}}</td>
                 <td>{{$disciplina->mdo_nome}}</td>
                 <td>{{$disciplina->dis_carga_horaria}}</td>
                 <td>{{$disciplina->mof_mediafinal}}</td>

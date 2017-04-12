@@ -160,6 +160,9 @@ class TitulacoesController extends BaseController
             flash()->success('Titulação excluída com sucesso.');
 
             return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar excluir. A titulação contém dependências no sistema.');
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

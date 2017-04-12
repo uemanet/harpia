@@ -50,7 +50,7 @@ class OfertasCursosController extends BaseController
             $tabela = $tableData->columns(array(
                 'ofc_id' => '#',
                 'ofc_ano' => 'Ano',
-                'ofc_crs_id' => 'Curso',
+                'crs_nome' => 'Curso',
                 'ofc_mdl_id' => 'Modalidade',
                 'ofc_action' => 'Ações'
             ))
@@ -58,8 +58,8 @@ class OfertasCursosController extends BaseController
                     return array('style' => 'width: 140px;');
                 })
                 ->means('ofc_action', 'ofc_id')
-                ->means('ofc_crs_id', 'curso')
-                ->modify('ofc_crs_id', function ($curso) {
+                ->means('crs_nome', 'curso')
+                ->modify('crs_nome', function ($curso) {
                     return $curso->crs_nome;
                 })
                 ->means('ofc_mdl_id', 'modalidade')
@@ -84,7 +84,7 @@ class OfertasCursosController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('ofc_id', 'ofc_ano'));
+                ->sortable(array('ofc_id', 'ofc_ano', 'crs_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -110,7 +110,7 @@ class OfertasCursosController extends BaseController
 
             if (!$ofertacurso) {
                 DB::rollback();
-                flash()->error('Erro ao tentar salvar.');
+                flash()->error('Já existe uma oferta com o mesmo ano e modalidade cadastrada.');
                 return redirect()->back()->withInput($request->all());
             }
 

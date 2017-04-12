@@ -19,7 +19,8 @@ class OfertaCurso extends BaseModel
     ];
 
     protected $searchable = [
-        'ofc_ano' => 'like'
+        'ofc_ano' => 'like',
+        'crs_nome' => 'like'
     ];
 
     public function curso()
