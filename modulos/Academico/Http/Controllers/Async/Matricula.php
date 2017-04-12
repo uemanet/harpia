@@ -23,7 +23,7 @@ class Matricula extends BaseController
      *
      * @param Request $request
      *
-     * @return static
+     * @return JsonResponse
      *
      * @throws \Exception
      */
@@ -40,6 +40,8 @@ class Matricula extends BaseController
 
             event(new AtualizarSituacaoMatriculaEvent($matricula));
 
+            flash()->success('Status de matrícula alterada com sucesso!');
+
             return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -47,6 +49,31 @@ class Matricula extends BaseController
             }
 
             return JsonResponse::create($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Busca todas as matriculas concluidas, de acordo com os parametros enviados na requisição
+     *
+     * @param Request $request
+     * @return static
+     */
+    public function getMatriculasConcluidas(Request $request)
+    {
+        $parameters = $request->all();
+
+        $parameters['mat_situacao'] = 'concluido';
+
+        try {
+            $matriculas = $this->matriculaRepository->findAll($parameters, null, ['pes_nome' => 'asc']);
+
+            return JsonResponse::create($matriculas, 200);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            return JsonResponse::create(['error' => $e->getMessage()], 500);
         }
     }
 }

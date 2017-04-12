@@ -468,7 +468,10 @@ class MatriculaCursoRepository extends BaseRepository
             $turma = $this->turmaRepository->find($turmaId);
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
-            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+            /**
+             * Se aluno concluiu todas as disciplinas, nao estah apto para certificacao
+             */
+            if (!$this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
                 continue;
             }
 
@@ -713,7 +716,7 @@ class MatriculaCursoRepository extends BaseRepository
                   ->join('acd_livros', 'reg_liv_id', 'liv_id')
                   ->first();
 
-        if(!$livfolreg){
+        if (!$livfolreg) {
             return null;
         }
         $matricula = $this->model->find($IdMatricula);
@@ -728,17 +731,17 @@ class MatriculaCursoRepository extends BaseRepository
         ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
         ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
         ->where('mdc_mdo_id', $IdModulo)
-        ->get();;
+        ->get();
+        ;
 
         $cargahoraria = 0;
         $disciplinas = [];
         $numerador = 0;
 
         foreach ($ofertasdisciplinas as $modulodisciplina) {
-          $disciplinas[] = $modulodisciplina->dis_nome;
-          $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
-          $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
-
+            $disciplinas[] = $modulodisciplina->dis_nome;
+            $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
+            $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
         }
 
         //formata o coeficiente do módulo
@@ -777,6 +780,5 @@ class MatriculaCursoRepository extends BaseRepository
                         'PESSOACPF'=> $cpfpessoaformatado
                         ];
         return $returnData;
-
     }
 }

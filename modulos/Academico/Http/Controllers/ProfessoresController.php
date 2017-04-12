@@ -305,6 +305,11 @@ class ProfessoresController extends BaseController
     {
         $professor = $this->professorRepository->find($professorId);
 
+        if (!$professor) {
+            flash()->error('Professor não existe.');
+            return redirect()->back();
+        }
+
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);

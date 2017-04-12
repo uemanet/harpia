@@ -83,15 +83,14 @@ class CertificacaoController
     {
         $dados = $this->matriculacursoRepository->getPrintData($idMatricula, $idModulo);
 
-        if(!$dados){
-          flash()->error('Esse registro não existe.');
-          return redirect()->back();
+        if (!$dados) {
+            flash()->error('Esse registro não existe.');
+            return redirect()->back();
         }
 
         $mpdf = new \mPDF();
         $mpdf->addPage('L');
         $mpdf->WriteHTML(view('Academico::certificacao.print', compact('dados'))->render());
         $mpdf->Output();
-
     }
 }

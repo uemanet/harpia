@@ -32,11 +32,12 @@ class DisciplinasController extends BaseController
         $tabela = null;
 
         $tableData = $this->disciplinaRepository->paginateRequest($request->all());
+        
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'dis_id' => '#',
                 'dis_nome' => 'Nome',
-                'dis_nvc_id' => 'Nível',
+                'nvc_nome' => 'Nível',
                 'dis_carga_horaria' => 'Carga Horária',
                 'dis_creditos' => 'Créditos',
                 'dis_action' => 'Ações'
@@ -76,7 +77,7 @@ class DisciplinasController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('dis_id', 'dis_nome', 'dis_nvc_id'));
+                ->sortable(array('dis_id', 'dis_nome', 'nvc_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }

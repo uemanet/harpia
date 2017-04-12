@@ -58,7 +58,7 @@
                                                             <tr>
                                                                 <td>{{$disciplina->mof_id}}</td>
                                                                 <td>{{$disciplina->dis_nome}}</td>
-                                                                <td>{{ucfirst($disciplina->mdc_tipo_avaliacao)}}</td>
+                                                                <td>{{ucfirst($disciplina->mdc_tipo_disciplina)}}</td>
                                                                 <td>{{$disciplina->mdo_nome}}</td>
                                                                 <td>{{$disciplina->mof_nota1}}</td>
                                                                 <td>{{$disciplina->mof_nota2}}</td>

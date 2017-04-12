@@ -20,7 +20,8 @@ class PessoaTableSeeder extends Seeder
 
             $pessoa->pes_nome = $faker->firstName.' '.$faker->lastName;
             $pessoa->pes_sexo = $faker->randomElement(array('M', 'F'));
-            $pessoa->pes_email = $faker->email;
+            $nome = explode(' ', $pessoa->pes_nome);
+            $pessoa->pes_email = $this->utf8_strtr($nome[0].'.'.end($nome).$faker->randomNumber(2).'@gmail.com');
             $pessoa->pes_telefone = $faker->areaCode.$faker->cellphone(false, true);
             $pessoa->pes_nascimento = $faker->date('d/m/Y');
             $pessoa->pes_mae = $faker->firstNameFemale.' '.$faker->lastName;
@@ -49,6 +50,31 @@ class PessoaTableSeeder extends Seeder
             $documento->doc_conteudo = $format->generateCpf();
 
             $documento->save();
+
+            $documento = new Documento();
+
+            $documento->doc_pes_id = $pessoa->pes_id;
+            $documento->doc_tpd_id = 1;
+            $documento->doc_conteudo = $faker->rg;
+            $documento->doc_orgao = 'SSP/BR';
+            $documento->doc_data_expedicao = date('d/m/Y');
+
+            $documento->save();
         }
+    }
+
+    private function utf8_strtr($string)
+    {
+        $from = "áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ";
+        $to = "aaaaeeiooouucAAAAEEIOOOUUC";
+
+        $keys = array();
+        $values = array();
+
+        preg_match_all('/./u', $from, $keys);
+        preg_match_all('/./u', $to, $values);
+        $mapping = array_combine($keys[0], $values[0]);
+
+        return strtr($string, $mapping);
     }
 }

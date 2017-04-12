@@ -1,16 +1,16 @@
 <?php
-
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
+
 use Modulos\Seguranca\Models\Perfil;
 
 class PerfilPermissaoTableSeeder extends Seeder
 {
     public function run()
     {
-        /** Perfil Administrador do Módulo Segurança */
 
+        /** Perfil Administrador do Módulo Segurança */
         $perfil = Perfil::find(1); // Perfil administrador do modulo seguranca
 
         $perfil->permissoes()->attach([1]); // Permissão Index
@@ -27,8 +27,8 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([23, 24, 25, 26, 27, 28]); // Permissoes do recurso Usuários
 
-
         /** Perfil Administrador do Módulo Geral */
+
         $perfil = Perfil::find(2);
 
         $perfil->permissoes()->attach([29]); // Permissões Dashboard
@@ -97,7 +97,7 @@ class PerfilPermissaoTableSeeder extends Seeder
 
         $perfil->permissoes()->attach([130, 131, 132]); // Permissoes do recurso Historico Parcial
 
-        $perfil->permissoes()->attach([133,134]); // Permissoes do recurso Certificação
+        $perfil->permissoes()->attach([133, 134]); // Permissoes do recurso Certificação
 
         $perfil->permissoes()->attach([135]); // Permissoes do recurso Controle de Registro
 

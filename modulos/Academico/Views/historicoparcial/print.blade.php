@@ -6,7 +6,7 @@
 
         body {
             font-size: 10pt;
-            font-family: sans-serif;
+            /*font-family: sans-serif;*/
             line-height: 0.2;
         }
 
@@ -23,7 +23,6 @@
         }
 
         table {
-            font-family: sans-serif;
             width: 100%;
             table-layout: fixed;
             border: 0.5mm solid #000000;
