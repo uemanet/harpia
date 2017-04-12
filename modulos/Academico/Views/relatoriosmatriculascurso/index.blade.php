@@ -72,19 +72,26 @@
         <div class="box box-primary">
             <div class="box-header">
                 <div class="pull-right box-tools">
-                    {!! ActionButton::grid([
-                                   'type' => 'LINE',
-                                   'buttons' => [
-                                          [
-                                            'classButton' => 'btn btn-success',
-                                            'icon' => 'fa fa-file-pdf-o',
-                                            'action' => '',
-                                            'label' => 'Exportar para PDF',
-                                            'method' => 'get',
-                                            'attributes' => ['id' => 'formPdf']
-                                          ]
-                                        ]
-                    ]) !!}
+                    <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculascurso.pdf') }}">
+                        {!! ActionButton::grid([
+                                'type' => 'LINE',
+                                'buttons' => [
+                                    [
+                                    'classButton' => 'btn btn-success',
+                                    'icon' => 'fa fa-file-pdf-o',
+                                    'action' => '/academico/relatoriosmatriculascurso/pdf',
+                                    'label' => 'Exportar para PDF',
+                                    'method' => 'post',
+                                    'id' => '',
+                                    'attributes' => ['id' => 'formPdf','target' => '_blank']
+                                    ]
+                                ]
+                        ]) !!}
+                        <input type="hidden" name="trm_id" id="turmaId" value="">
+                        <input type="hidden" name="crs_id" id="cursoId" value="">
+                        <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
+                        <input type="hidden" name="mat_situacao" id="situacao" value="">
+                    </form>
                 </div>
             </div>
             <div class="box-body">
@@ -113,6 +120,8 @@
             var turmaSelect = $('#trm_id');
             var routePdf = "{{ route('academico.relatoriosmatriculascurso.pdf') }}";
             var routeIndex = "{{ route('academico.relatoriosmatriculascurso.index') }}";
+            var cursoSelect = $('#crs_id');
+            var situacaoSelect = $('#mat_situacao');
 
             // evento change select de cursos
             $('#crs_id').change(function () {
@@ -169,9 +178,13 @@
                 $('#form').attr('action', routeIndex).removeAttr('target', '_blank').submit();
             });
 
+            $('#turmaId').attr('value', turmaSelect.val());
+            $('#ofertaCursoId').attr('value', ofertasCursoSelect.val());
+            $('#cursoId').attr('value', cursoSelect.val());
+            $('#situacao').attr('value', situacaoSelect.val());
+
             $(document).on('click', '#formPdf', function (event) {
-                event.preventDefault();
-                $('#form').attr('action', routePdf).attr('target', '_blank').submit();
+                $('#exportPdf').submit();
             });
         });
     </script>

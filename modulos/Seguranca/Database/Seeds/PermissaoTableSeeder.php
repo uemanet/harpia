@@ -1056,7 +1056,7 @@ class PermissaoTableSeeder extends Seeder
 
         $permissao = new Permissao(); // id = 132
         $permissao->prm_rcs_id = 38;
-        $permissao->prm_nome = 'print';
+        $permissao->prm_nome = 'pdf';
         $permissao->prm_descricao = 'Permissão print do recurso Relatórios Matriculas Curso';
         $permissao->save();
     }
