@@ -17,6 +17,7 @@ use Modulos\Integracao\Repositories\AmbienteServicoRepository;
 use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 use Modulos\Integracao\Repositories\ServicoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
+use GuzzleHttp\Client;
 use Validator;
 use DB;
 
@@ -236,8 +237,8 @@ class AmbientesVirtuaisController extends BaseController
         $dados['asr_token'] = $request->asr_token;
 
         $validator = Validator::make($dados, [
-            'asr_ser_id' => 'required',
-            'asr_amb_id' => 'required',
+            'asr_ser_id' => 'required|integer|min:1',
+            'asr_amb_id' => 'required|integer|min:1',
             'asr_token' => 'required|max:255'
         ]);
 
@@ -246,6 +247,19 @@ class AmbientesVirtuaisController extends BaseController
         }
 
         try {
+            $ambiente = $this->ambienteVirtualRepository->find($dados['asr_amb_id']);
+            $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
+            $url .= $dados['asr_token'] . '&wsfunction=ping&moodlewsrestformat=json';
+
+            $client = new Client();
+            $response = $client->request('POST', $url, ['query' => null]);
+            $data = (array) json_decode($response->getBody());
+
+            if (!array_key_exists('response', $data)) {
+                // Erro ao verificar token
+                return redirect()->back()->withErrors(['asr_token' => 'Token inválido'])->withInput();
+            }
+
             if (!$this->servicoRepository->verifyIfExistsAmbienteServico($dados['asr_amb_id'], $dados['asr_ser_id'])) {
                 $ambienteservico = $this->ambienteServicoRepository->create($dados);
 
@@ -256,6 +270,7 @@ class AmbientesVirtuaisController extends BaseController
                 flash()->success('Serviço Atribuído com sucesso');
                 return redirect()->back();
             }
+
             flash()->error('Esse ambiente já possui este serviço!');
             return redirect()->back();
         } catch (\Exception $e) {
