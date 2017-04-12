@@ -25,10 +25,10 @@ class CursoRepository extends BaseRepository
             return $this->model
                 ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
                 ->where('ucr_usr_id', '=', Auth::user()->usr_id)
-                ->pluck($field, $identifier);
+                ->pluck($field, $identifier)->toArray();
         }
 
-        return $this->model->pluck($field, $identifier);
+        return $this->model->pluck($field, $identifier)->toArray();
     }
 
     public function listsByCursoId($cursoId)

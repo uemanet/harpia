@@ -48,6 +48,7 @@ class OfertaDisciplina extends BaseController
             'dis_carga_horaria',
             'dis_creditos',
             'ofd_qtd_vagas',
+            'mof_tipo_matricula',
             'ofd_id',
             'prf_id',
             'pes_nome',
@@ -55,8 +56,22 @@ class OfertaDisciplina extends BaseController
 
         for ($i = 0; $i < $retorno->count(); ++$i) {
             $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
-
             $retorno[$i]->qtdMatriculas = $qtdMatriculas;
+
+            if ($retorno[$i]->mof_tipo_matricula == 'matriculacomum') {
+                $retorno[$i]->mof_tipo_matricula = 'Matrícula Comum';
+                continue;
+            }
+
+            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamentointerno') {
+                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento Interno';
+                continue;
+            }
+
+            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamentoexterno') {
+                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento Externo';
+                continue;
+            }
         }
 
         return new JsonResponse($retorno, 200);
