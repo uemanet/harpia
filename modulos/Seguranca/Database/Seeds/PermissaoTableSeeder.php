@@ -1075,12 +1075,6 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_nome = 'pdf';
         $permissao->prm_descricao = 'Permissão pdf do recurso Relatórios Matriculas Disciplina';
         $permissao->save();
-
-        $permissao = new Permissao(); // id = 134
-        $permissao->prm_rcs_id = 39;
-        $permissao->prm_nome = 'print';
-        $permissao->prm_descricao = 'Permissão index do recurso Certificação';
-        $permissao->save();
     }
 
     private function createPermissoesAcademicoCertificacao()

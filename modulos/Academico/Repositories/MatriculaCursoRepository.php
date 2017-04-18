@@ -731,8 +731,8 @@ class MatriculaCursoRepository extends BaseRepository
         ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
         ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
         ->where('mdc_mdo_id', $IdModulo)
+        ->where('mof_mat_id', $IdMatricula)
         ->get();
-        ;
 
         $cargahoraria = 0;
         $disciplinas = [];
