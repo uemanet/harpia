@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\ModulosMigrate::class,
         Commands\ModulosSeed::class,
+        Commands\ModulosSeedDev::class,
     ];
 
     /**
