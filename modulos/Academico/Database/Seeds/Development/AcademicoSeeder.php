@@ -34,12 +34,6 @@ class AcademicoSeeder extends Seeder
         $this->call(AlunosTutoresProfessoresTableSeeder::class);
         $this->command->info('Alunos, Tutores e Professores seeded!');
 
-        $this->call(ModalidadeTableSeeder::class);
-        $this->command->info('Modalidades table seeded!');
-
-        $this->call(NivelCursoTableSeeder::class);
-        $this->command->info('NiveisCursos table seeded!');
-
         $this->call(CentroTableSeeder::class);
         $this->command->info('Centro Table seeded!');
 
@@ -93,11 +87,5 @@ class AcademicoSeeder extends Seeder
 
         $this->call(MatriculasConcluidasSeeder::class);
         $this->command->info('Matriculas Concluidas seeded!');
-
-        $this->call(ModalidadeTableSeeder::class);
-        $this->command->info('Modalidades table seeded!');
-
-        $this->call(NivelCursoTableSeeder::class);
-        $this->command->info('NiveisCursos table seeded!');
     }
 }

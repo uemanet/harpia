@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Seguranca\Database\Seeds\Development;
+namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use Modulos\Seguranca\Models\Modulo;

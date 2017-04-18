@@ -1,5 +1,5 @@
 <?php
-namespace Modulos\Integracao\Database\Seeds\Development;
+namespace Modulos\Integracao\Database\Seeds\Production;
 
 use Illuminate\Database\Seeder;
 

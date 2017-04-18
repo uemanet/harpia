@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Geral\Database\Seeds\Development;
+namespace Modulos\Geral\Database\Seeds\Production;
 
 use Illuminate\Database\Seeder;
 use Modulos\Geral\Models\Titulacao;

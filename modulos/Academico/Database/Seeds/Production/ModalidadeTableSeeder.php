@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulos\Academico\Database\Seeds\Development;
+namespace Modulos\Academico\Database\Seeds\Production;
 
 use Illuminate\Database\Seeder;
 use Modulos\Academico\Models\Modalidade;
