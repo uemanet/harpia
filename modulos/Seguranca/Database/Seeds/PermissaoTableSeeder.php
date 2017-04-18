@@ -1174,6 +1174,7 @@ class PermissaoTableSeeder extends Seeder
         $permissao->prm_descricao = 'Permissão index do recurso Tempo Online da Categoria de Monitoramento do módulo de monitoramento';
         $permissao->save();
 
+
         $permissao = new Permissao(); // id = 147
         $permissao->prm_rcs_id = 45; // Recurso Tempo Online
         $permissao->prm_nome = 'monitorar';
