@@ -15,7 +15,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                {!! Form::open(array('route' => ['seguranca.usuarios.postAtribuirperfil', $usuario->usr_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+                {!! Form::open(array('route' => ['seguranca.usuarios.atribuirperfil', $usuario->usr_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
                     <div class="form-group col-md-3">
                         @if(!empty($modulos))
                             {!! Form::select('mod_id', $modulos, old('mod_id'), ['class' => 'form-control', 'id' => 'mod_id', 'placeholder' => 'Selecione o módulo']) !!}

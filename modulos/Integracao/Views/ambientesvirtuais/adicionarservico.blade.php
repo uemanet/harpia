@@ -16,7 +16,7 @@
 
     <div class="box-body">
         <div class="row">
-          {!! Form::open(array('route' => ['integracao.ambientesvirtuais.postAdicionarServico', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+          {!! Form::open(array('route' => ['integracao.ambientesvirtuais.adicionarservico', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
               <div class="form-group col-md-3">
                       {!! Form::select('asr_ser_id', $servicos, old('asr_ser_id'), ['class' => 'form-control', 'id' => 'asr_ser_id', 'placeholder' => 'Selecione o serviço']) !!}
                       @if ($errors->has('asr_ser_id')) <p class="help-block">{{ $errors->first('asr_ser_id') }}</p> @endif

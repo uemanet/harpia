@@ -21,7 +21,7 @@
 
 <div class="box-body">
     <div class="row">
-      {!! Form::open(array('route' => ['integracao.ambientesvirtuais.postAdicionarTurma', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+      {!! Form::open(array('route' => ['integracao.ambientesvirtuais.adicionarturma', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
 
           <div class="form-group col-md-3">
                   {!! Form::select('crs_id', $cursos, old('crs_id'), ['class' => 'form-control', 'id' => 'crs_id', 'placeholder' => 'Selecione o curso']) !!}
