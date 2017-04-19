@@ -5,7 +5,8 @@ namespace Modulos\Seguranca\Http\Controllers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Providers\Seguranca\Seguranca;
+use Modulos\Seguranca\Repositories\ModuloRepository;
+use Auth;
 
 class SelecionaModulosController extends BaseController
 {
@@ -22,17 +23,21 @@ class SelecionaModulosController extends BaseController
 
     public function getIndex()
     {
-        $modulos = $this->app[Seguranca::class]->getUserModules();
+        $user = $this->auth->user();
+
+        $moduloRepository = new ModuloRepository();
+
+        $modulos = $moduloRepository->getByUser($user->usr_id);
 
         $infoUser = array(
-            'pes_nome' => $this->auth->user()->pessoa->pes_nome,
-            'pes_telefone' => $this->auth->user()->pessoa->pes_telefone,
-            'pes_email' => $this->auth->user()->pessoa->pes_email,
-            'usr_usuario' => $this->auth->user()->usr_usuario
+            'pes_nome' => $user->pessoa->pes_nome,
+            'pes_telefone' => $user->pessoa->pes_telefone,
+            'pes_email' => $user->pessoa->pes_email,
+            'usr_usuario' => $user->usr_usuario
         );
 
-        if (sizeof($modulos) == 1 && env('REDIRECT_MODULE')) {
-            return redirect(current($modulos)->mod_nome.'/index');
+        if ($modulos->count() == 1 && env('REDIRECT_MODULE')) {
+            return redirect()->route(current($modulos)->mod_slug.'.index.index');
         }
 
         return view('Seguranca::selecionamodulos.index')->with(array('modulos'=>$modulos, 'infoUser'=>$infoUser));

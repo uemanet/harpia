@@ -139,6 +139,11 @@ class Seguranca implements SegurancaContract
             return true;
         }
 
+        // verifica se a rota é async
+        if (preg_match("/\basync\b/i", $rota)) {
+            return true;
+        }
+
         // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
         $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $rota);
 
