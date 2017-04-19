@@ -145,7 +145,7 @@ class Seguranca implements SegurancaContract
         }
 
         // Verifica na base de dados se o perfil do usuario tem acesso ao recurso
-        $hasPermission = $this->verifyPermission($this->getUser()->getAuthIdentifier(), $rota);
+        $hasPermission = $this->verifyPermission($this->getUser()->usr_id, $rota);
 
         if ($hasPermission) {
             return true;

@@ -16,7 +16,6 @@ class SegurancaSeeder extends Seeder
     {
         $this->call(UsuarioTableSeeder::class);
 
-
         // Criar o modulo Seguranca
         $modulo = Modulo::create([
             'mod_nome' => 'Acadêmico',
@@ -33,11 +32,6 @@ class SegurancaSeeder extends Seeder
 
         // Criar permissao index do modulo Seguranca
         $permissaoIndex = Permissao::create([
-            'prm_nome' => 'index',
-            'prm_rota' => 'academico.index.index'
-        ]);
-
-        $permissaoModulosIndex = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'academico.index.index'
         ]);
@@ -155,7 +149,6 @@ class SegurancaSeeder extends Seeder
 
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach([$permissaoIndex->prm_id,
-            $permissaoModulosIndex->prm_id,
             $permissaoPolosIndex->prm_id,
             $permissaoCentrosIndex->prm_id,
             $permissaoDepartamentosIndex->prm_id,

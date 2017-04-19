@@ -10,18 +10,18 @@
                 <div class="box-body" style="min-height:702px">
                     <div class="row-fluid">
                         <div class="row">
-                          @if(count($modulos))
+                          @if($modulos->count())
                             @foreach($modulos as $modulo)
                               <div class="col-lg-12 col-xs-12">
-                                  <div class="small-box {{$modulo['mod_class']}}">
+                                  <div class="small-box {{$modulo->mod_classes}}">
                                       <div class="inner">
-                                          <h3 style="margin-bottom:0px;font-weight:200;">{{$modulo['mod_nome']}}</h3>
-                                          <p>{{$modulo['mod_descricao']}}</p>
+                                          <h3 style="margin-bottom:0px;font-weight:200;">{{$modulo->mod_nome}}</h3>
+                                          <p>{{$modulo->mod_descricao}}</p>
                                       </div>
                                       <div class="icon">
-                                          <i class="{{$modulo['mod_icone']}}"></i>
+                                          <i class="{{$modulo->mod_icone}}"></i>
                                       </div>
-                                      <a href="{{url('/').'/'.$modulo['mod_rota']}}/index" style="padding-top:15px;padding-bottom:15px" class="small-box-footer">
+                                      <a href="{{ route($modulo->mod_slug.'.index.index') }}" style="padding-top:15px;padding-bottom:15px" class="small-box-footer">
                                           Acessar <i class="fa fa-arrow-circle-right"></i>
                                       </a>
                                   </div>

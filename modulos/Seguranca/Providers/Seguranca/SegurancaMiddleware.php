@@ -12,10 +12,9 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
 {
 
     /**
-     * @param Request $request
+     * @param $request
      * @param Closure $next
-     *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Http\RedirectResponse|mixed
      */
     public function handle(Request $request, Closure $next)
     {

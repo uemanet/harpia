@@ -3,6 +3,7 @@
 namespace Modulos;
 
 use Illuminate\Support\ServiceProvider;
+use Route;
 
 class ModulosServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,12 @@ class ModulosServiceProvider extends ServiceProvider
 
             // Load the routes for each of the modules
             if (file_exists(__DIR__.'/'.$modulo.'/routes.php')) {
-                include __DIR__.'/'.$modulo.'/routes.php';
+                Route::group([
+                    'middleware' => 'web',
+                    'namespace' => $modulo,
+                ], function ($router) use ($modulo) {
+                    require __DIR__.'/'.$modulo.'/routes.php';
+                });
             }
 
             // Load the views
@@ -22,7 +28,9 @@ class ModulosServiceProvider extends ServiceProvider
                 $this->loadViewsFrom(__DIR__.'/'.$modulo.'/Views', $modulo);
             }
 
-            $this->loadMigrationsFrom(__DIR__.'/'.$modulo.'/Database/Migrations');
+            if (is_dir(__DIR__.'/'.$modulo.'/Database/Migrations')) {
+                $this->loadMigrationsFrom(__DIR__.'/'.$modulo.'/Database/Migrations');
+            }
         }
     }
 

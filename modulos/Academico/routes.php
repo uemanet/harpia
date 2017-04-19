@@ -1,10 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
-    Route::group(['prefix' => 'index'], function () {
-        Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
-        Route::get('/index', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.getIndex');
-    });
+    Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
 
     Route::group(['prefix' => 'polos'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\PolosController@getIndex')->name('academico.polos.index');
