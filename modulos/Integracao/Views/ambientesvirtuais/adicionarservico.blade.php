@@ -16,7 +16,7 @@
 
     <div class="box-body">
         <div class="row">
-          {!! Form::open(array('route' => ['integracao.ambientesvirtuais.postAdicionarServico', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+          {!! Form::open(array('route' => ['integracao.ambientesvirtuais.adicionarservico', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
               <div class="form-group col-md-3">
                   {!! Form::label('asr_ser_id', 'Serviço*', ['class' => 'control-label']) !!}
                   <div class="controls">
