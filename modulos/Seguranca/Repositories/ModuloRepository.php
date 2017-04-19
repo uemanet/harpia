@@ -2,27 +2,27 @@
 
 namespace Modulos\Seguranca\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Seguranca\Models\Modulo;
+use DB;
 
-class ModuloRepository extends BaseRepository
+class ModuloRepository
 {
-    public function __construct(Modulo $modulo)
+    public function getByUser($userId)
     {
-        $this->model = $modulo;
-    }
+        $modulos = DB::table('seg_modulos')
+            ->join('seg_perfis', 'prf_mod_id', '=', 'mod_id')
+            ->join('seg_perfis_usuarios', 'pru_prf_id', '=', 'prf_id')
+            ->select('seg_modulos.*')
+            ->where('pru_usr_id', '=', $userId)
+            ->get();
 
-    public function create(array $data)
-    {
-        $data['mod_rota'] = mb_strtolower(preg_replace('/\s+/', '', $data['mod_rota']));
+        $permissoes = Cache::get('PERMISSOES_'.$userId);
 
-        return $this->model->create($data);
-    }
+        for ($i = 0; $i < $modulos->count(); $i++) {
+            if (!in_array($modulos[$i]->mod_slug.'.index.index', $permissoes)) {
+                unset($modulos[$i]);
+            }
+        }
 
-    public function update(array $data, $id, $attribute = "id")
-    {
-        $data['mod_rota'] = mb_strtolower(preg_replace('/\s+/', '', $data['mod_rota']));
-
-        return $this->model->where($attribute, '=', $id)->update($data);
+        return $modulos;
     }
 }

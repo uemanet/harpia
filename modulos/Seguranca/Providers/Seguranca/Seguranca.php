@@ -7,6 +7,8 @@ use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContra
 use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 use Cache;
 use DB;
+use Modulos\Seguranca\Repositories\MenuItemRepository;
+use Modulos\Seguranca\Repositories\ModuloRepository;
 
 class Seguranca implements SegurancaContract
 {
@@ -39,33 +41,79 @@ class Seguranca implements SegurancaContract
      */
     public function makeCacheMenu()
     {
-        $usrId = $this->getUser()->getAuthIdentifier();
+        $menuItemRepository = new MenuItemRepository();
+        $modulosRepository = new ModuloRepository();
 
-        $arrayMenuCategorias = $this->makeMenuCategoriasModulos($usrId);
+        $user = $this->getUser();
 
-        $arrayMenu = [];
-        if (!empty($arrayMenuCategorias)) {
-            $arrayMenu = $this->makeMenuRecursos($usrId, $arrayMenuCategorias);
+        // busca os modulos no qual o usuario tem permissao
+        $modulos = $modulosRepository->getByUser($user->usr_id);
+
+        $menus = [];
+
+        foreach ($modulos as $modulo) {
+            $tree = new \stdClass();
+            $tree->categorias = [];
+
+            $categorias = $menuItemRepository->getCategorias($modulo->mod_id);
+
+            foreach ($categorias as $categoria) {
+                // busca as subcategorias
+                $subcategorias = $menuItemRepository->getItensFilhos($modulo->mod_id, $categoria->mit_id);
+
+                for ($i = 0; $i < $subcategorias->count(); $i++) {
+                    if ($subcategorias[$i]->mit_rota && !$this->haspermission($subcategorias[$i]->mit_rota)) {
+                        unset($subcategorias[$i]);
+                        continue;
+                    }
+
+                    // caso o item seja uma subcategoria, busca os filhos
+                    if (!$subcategorias[$i]->mit_rota) {
+                        // busca os items da subcategoria
+                        $itens = $menuItemRepository->getItensFilhos($modulo->mod_id, $subcategorias[$i]->mit_id);
+
+                        for ($j = 0; $j < $itens->count(); $j++) {
+                            if (!$this->haspermission($itens[$j]->mit_rota)) {
+                                unset($itens[$j]);
+                            }
+                        }
+
+                        if ($itens->count()) {
+                            $subcategorias[$i]->itens = $itens;
+                            continue;
+                        }
+
+                        unset($subcategorias[$i]);
+                    }
+                }
+
+                if ($subcategorias->count()) {
+                    $categoria->subcategorias = $subcategorias;
+                    $tree->categorias[] = $categoria;
+                }
+            }
+
+            $menus[$modulo->mod_slug] = $tree;
         }
 
-        //Estrutura do menu em cache
-        Cache::forever('MENU_'.$usrId, $arrayMenu);
+        Cache::forever('MENU_'.$user->usr_id, $menus);
     }
+
 
     public function makeCachePermissoes()
     {
         $user = $this->getUser();
 
-        $permissions = DB::table('permissoes AS per')
-            ->join('permissoes_has_perfis AS php', 'per.id', '=', 'php.permissoes_id')
-            ->join('perfis AS perf', 'php.perfis_id', '=', 'perf.id')
-            ->join('perfis_has_users AS phu', 'phu.perfis_id', '=', 'perf.id')
-            ->where('phu.users_id', '=', $user->id)
+        $permissions = DB::table('seg_permissoes')
+            ->join('seg_permissoes_perfis', 'prm_id', '=', 'prp_prm_id')
+            ->join('seg_perfis', 'prp_prf_id', '=', 'prf_id')
+            ->join('seg_perfis_usuarios', 'pru_prf_id', '=', 'prf_id')
+            ->where('pru_usr_id', '=', $user->usr_id)
             ->get();
 
-        $permissions = $permissions->pluck('rota')->toArray();
+        $permissions = $permissions->pluck('prm_rota')->toArray();
 
-        Cache::forever('PERMISSOES_'.$user->id, $permissions);
+        Cache::forever('PERMISSOES_'.$user->usr_id, $permissions);
     }
 
     /**
