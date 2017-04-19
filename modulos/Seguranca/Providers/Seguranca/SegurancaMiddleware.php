@@ -23,7 +23,7 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
             return $next($request);
         }
 
-        $path = $this->getPathInfoArray($request->path());
+        $path = $this->getRouteName($request);
 
         if ($this->seguranca->haspermission($path)) {
             return $next($request);
@@ -31,28 +31,5 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
 
         Flash::error('Você não term permissão para acessar esse recurso.');
         return redirect()->back();
-//        return redirect('/login');
-    }
-
-    /**
-     * Retorna os elementos do path info.
-     *
-     * @param string $pathInfo
-     *
-     * @return array
-     */
-    private function getPathInfoArray($pathInfo)
-    {
-        $path = preg_split('/\//', $pathInfo);
-
-        $pathArray = array_values(array_filter($path, function ($item) {
-            return !empty($item);
-        }));
-
-        $retorno[0] = isset($pathArray[0]) ? $pathArray[0] : 'index';
-        $retorno[1] = isset($pathArray[1]) ? $pathArray[1] : 'index';
-        $retorno[2] = isset($pathArray[2]) ? $pathArray[2] : 'index';
-
-        return $retorno;
     }
 }

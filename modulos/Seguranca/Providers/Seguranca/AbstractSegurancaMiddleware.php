@@ -33,14 +33,13 @@ abstract class AbstractSegurancaMiddleware
 
     /**
      * @param $request
-     *
      * @return mixed
      */
-    protected function getActions($request)
+    protected function getRouteName($request)
     {
-        $routeActions = $request->route()->getAction();
+        $routeName = $request->route()->getName();
 
-        return $routeActions;
+        return $routeName;
     }
 
     /**

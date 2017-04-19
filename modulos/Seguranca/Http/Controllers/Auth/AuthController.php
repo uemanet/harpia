@@ -35,10 +35,6 @@ class AuthController extends Controller
      */
 //    protected $redirectTo = '/';
 
-
-
-//    protected $loginView = 'Seguranca::auth.login';
-
     protected $auth;
 
     protected $app;
@@ -78,7 +74,7 @@ class AuthController extends Controller
             //Gera estrutura do menu em cache
             $seguranca = $this->app[Seguranca::class];
 
-            $seguranca->makeCachePermission();
+            $seguranca->makeCachePermissoes();
 
             $seguranca->makeCacheMenu();
 
@@ -97,7 +93,7 @@ class AuthController extends Controller
         $usrId = $this->app['auth']->user()->usr_pes_id;
 
         Cache::forget('MENU_'.$usrId);
-        Cache::forget('PERMISSAO_'.$usrId);
+        Cache::forget('PERMISSOES_'.$usrId);
 
         $this->auth->logout();
 
