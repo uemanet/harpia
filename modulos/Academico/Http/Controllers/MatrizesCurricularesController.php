@@ -281,8 +281,6 @@ class MatrizesCurricularesController extends BaseController
                 // Excluir Anexo correspondente
                 $this->anexoRepository->deletarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
                 flash()->success('Matriz curricular excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a matriz curricular');
             }
 
             return redirect()->back();
@@ -290,7 +288,13 @@ class MatrizesCurricularesController extends BaseController
             if (config('app.debug')) {
                 throw $e;
             }
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            if ($e->getCode() == 23000) {
+                flash()->error('Esta matriz curricular ainda contém dependências no sistema e não pode ser excluída.');
+                return redirect()->back();
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

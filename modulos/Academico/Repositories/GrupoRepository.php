@@ -47,9 +47,9 @@ class GrupoRepository extends BaseRepository
     public function getAllByTurmaAndPolo($turmaId, $poloId)
     {
         return $this->model
-                    ->where('grp_trm_id', '=', $turmaId)
-                    ->where('grp_pol_id', '=', $poloId)
-                    ->get();
+            ->where('grp_trm_id', '=', $turmaId)
+            ->where('grp_pol_id', '=', $poloId)
+            ->get();
     }
 
     public function findAllByTurma($TurmaId)
@@ -62,11 +62,19 @@ class GrupoRepository extends BaseRepository
         return $entries;
     }
 
-    public function verifyNameGrupo($grupoName, $idTurma)
+    public function verifyNameGrupo($grupoName, $idTurma, $grupoId = null)
     {
         $result = $this->model->where('grp_nome', $grupoName)->where('grp_trm_id', $idTurma)->get();
 
         if (!$result->isEmpty()) {
+            if (!is_null($grupoId)) {
+                $result = $result->where('grp_id', $grupoId);
+
+                if (!$result->isEmpty()) {
+                    return false;
+                }
+            }
+
             return true;
         }
 

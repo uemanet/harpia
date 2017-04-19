@@ -174,6 +174,9 @@ class CategoriasRecursosController extends BaseController
             }
 
             return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. A categoria contém dependências no sistema.');
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

@@ -1,3 +1,6 @@
+@section('stylesheets')
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+@stop
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('prm_nome')) has-error @endif">
         {!! Form::label('prm_nome', 'Nome da permissão*', ['class' => 'control-label']) !!}
@@ -21,30 +24,34 @@
 </div>
 
 @section('scripts')
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
     <script type="application/javascript">
-        $('#mod_id').change(function() {
-            var moduloId = $("#mod_id").val();
+        $(function() {
+            $('select').select2();
 
-            if (!moduloId) {
-                return;
-            }
+            $('#mod_id').change(function() {
+                var moduloId = $("#mod_id").val();
 
-            $.harpia.httpget('{{url('/')}}/seguranca/async/recursos/findallbymodulo/' + moduloId).done(function(result){
-
-                $("#prm_rcs_id").empty();
-
-                if ($.isEmptyObject(result)) {
-                    $('#prm_rcs_id').append('<option value=#>Sem recursos disponíveis</option>');
-                } else {
-                    $("#prm_rcs_id").append("<option value='' selected>Selecione um recurso</option>");
-                    $.each(result, function(key, value) {
-                        $('#prm_rcs_id').append('<option value=' + value.rcs_id + ' >' + value.rcs_nome + '</option>');
-                    });
+                if (!moduloId) {
+                    return;
                 }
 
-                $('#prm_rcs_id').focus();
+                $.harpia.httpget('{{url('/')}}/seguranca/async/recursos/findallbymodulo/' + moduloId).done(function(result){
+
+                    $("#prm_rcs_id").empty();
+
+                    if ($.isEmptyObject(result)) {
+                        $('#prm_rcs_id').append('<option value=#>Sem recursos disponíveis</option>');
+                    } else {
+                        $("#prm_rcs_id").append("<option value='' selected>Selecione um recurso</option>");
+                        $.each(result, function(key, value) {
+                            $('#prm_rcs_id').append('<option value=' + value.rcs_id + ' >' + value.rcs_nome + '</option>');
+                        });
+                    }
+
+                    $('#prm_rcs_id').focus();
+                });
             });
         });
-
     </script>
 @stop

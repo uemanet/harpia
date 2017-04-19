@@ -22,19 +22,16 @@ class TitulacoesInformacoesController extends BaseController
         $this->pessoaRepository = $pessoaRepository;
     }
 
-    public function getCreate($pessoaId, Request $request)
+    public function getCreate($pessoaId)
     {
-        $url = $request->session()->get('last_acad_route');
-        $id = $request->session()->get('last_id');
-
-        $titulacoes = $this->titulacaoRepository->lists('tit_id', 'tit_nome');
         $pessoa = $this->pessoaRepository->find($pessoaId);
-
 
         if (is_null($pessoa)) {
             flash()->error('Pessoa não existe!');
             return redirect()->back();
         }
+
+        $titulacoes = $this->titulacaoRepository->lists('tit_id', 'tit_nome');
 
         return view('Geral::titulacoesinformacoes.create', compact('titulacoes', 'pessoa'));
     }
@@ -70,9 +67,6 @@ class TitulacoesInformacoesController extends BaseController
 
     public function getEdit($titulacaoId, Request $request)
     {
-        $url = $request->session()->get('last_acad_route');
-        $id = $request->session()->get('last_id');
-
         $titulacaoInfo = $this->titulacaoInformacaoRepository->find($titulacaoId);
 
         if (!$titulacaoInfo) {
@@ -83,11 +77,6 @@ class TitulacoesInformacoesController extends BaseController
         $pessoa = $titulacaoInfo->tin_pes_id;
 
         $titulacoes = $this->titulacaoRepository->lists('tit_id', 'tit_nome');
-
-        if (!$titulacaoInfo) {
-            flash()->error('Titulação não existe.');
-            return redirect()->back();
-        }
 
         return view('Geral::titulacoesinformacoes.edit', ['pessoa' => $pessoa, 'titulacaoInfo' => $titulacaoInfo, 'titulacoes' => $titulacoes]);
     }
@@ -135,6 +124,9 @@ class TitulacoesInformacoesController extends BaseController
                 flash()->error('Erro ao tentar excluir a titulação');
             }
 
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar excluir. A titulação contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

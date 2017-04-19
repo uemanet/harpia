@@ -29,7 +29,7 @@ class MatriculaCursoTableSeeder extends Seeder
                 $polo = $polos->random();
 
                 $matricula->mat_pol_id = $polo->pol_id;
-                $matricula->mat_grp_id = null;
+                $matricula->mat_grp_id = $turma->grupos()->where('grp_pol_id', $polo->pol_id)->first()->grp_id;
                 $matricula->mat_situacao = 'cursando';
                 $matricula->mat_modo_entrada = 'vestibular';
 

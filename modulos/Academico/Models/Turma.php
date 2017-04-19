@@ -48,6 +48,11 @@ class Turma extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\Matricula', 'mat_trm_id');
     }
 
+    public function ambientes()
+    {
+        return $this->belongsToMany('Modulos\Integracao\Models\AmbienteVirtual', 'int_ambientes_turmas', 'atr_trm_id', 'atr_amb_id');
+    }
+
     // Accessors
     /**
        * @param $value

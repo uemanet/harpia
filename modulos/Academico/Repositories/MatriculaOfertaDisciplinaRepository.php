@@ -47,8 +47,19 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $join->on('prf_pes_id', '=', 'pes_id');
             });
 
-        foreach ($options as $key => $value) {
-            $query = $query->where($key, '=', $value);
+        foreach ($options as $option) {
+            if (gettype($option[2]) == 'array') {
+                $function = 'whereIn';
+
+                if ($option[1] == '<>') {
+                    $function = 'whereNotIn';
+                }
+
+                $query = $query->$function($option[0], $option[2]);
+                continue;
+            }
+
+            $query = $query->where($option[0], $option[1], $option[2]);
         }
 
         if (!is_null($select)) {
@@ -299,7 +310,10 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id])->first();
 
                 // busca a matricula do aluno nessa disciplina
-                $matriculaOferta = $this->findBy(['mof_mat_id' => $matriculaId, 'mof_ofd_id' => $oferta->ofd_id])->first();
+                $matriculaOferta = $this->findBy([
+                    ['mof_mat_id', '=', $matriculaId],
+                    ['mof_ofd_id', '=', $oferta->ofd_id]
+                ])->first();
 
                 if ($matriculaOferta) {
                     if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {

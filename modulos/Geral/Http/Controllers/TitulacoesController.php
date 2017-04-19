@@ -155,17 +155,24 @@ class TitulacoesController extends BaseController
         try {
             $titulacaoId = $request->get('id');
 
-            if ($this->titulacaoRepository->delete($titulacaoId)) {
-                flash()->success('Titulação excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a titulação');
-            }
+            $this->titulacaoRepository->delete($titulacaoId);
 
+            flash()->success('Titulação excluída com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar excluir. A titulação contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
+
+            if ($e->getCode() == 23000) {
+                flash()->error('Esta titulação ainda contém dependências no sistema e não pode ser excluída.');
+                return redirect()->back();
+            }
+
 
             flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();

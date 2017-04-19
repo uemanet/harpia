@@ -138,9 +138,7 @@ class Vinculo
             $oferta = $this->ofertaCursoRepository->find($id);
 
             if (!$oferta) {
-                flash()->error('Você não tem autorização para acessar este recurso.');
-
-                return redirect()->route('academico.cursos.index');
+                return $next($request);
             }
 
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $oferta->ofc_crs_id)) {
@@ -155,9 +153,7 @@ class Vinculo
         $curso = $this->turmaRepository->getCurso($id);
 
         if (!$curso) {
-            flash()->error($this->defaultResponse);
-
-            return redirect()->route('academico.cursos.index');
+            return $next($request);
         }
 
         if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
@@ -188,8 +184,7 @@ class Vinculo
             $curso = $this->turmaRepository->getCurso($id);
 
             if (!$curso) {
-                flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
+                return $next($request);
             }
 
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
@@ -201,6 +196,11 @@ class Vinculo
         }
 
         $grupo = $this->grupoRepository->find($id);
+
+        if (!$grupo) {
+            return $next($request);
+        }
+
         $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
 
         if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
@@ -231,8 +231,7 @@ class Vinculo
             $grupo = $this->grupoRepository->find($id);
 
             if (!$grupo) {
-                flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
+                return $next($request);
             }
 
             $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
@@ -252,6 +251,9 @@ class Vinculo
         }
 
         $tutorGrupo = $this->tutorGrupoRepository->find($id);
+        if (!$tutorGrupo) {
+            return $next($request);
+        }
         $grupo = $this->grupoRepository->find($tutorGrupo->ttg_grp_id);
         $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
 

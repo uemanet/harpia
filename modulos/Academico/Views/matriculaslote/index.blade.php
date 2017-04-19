@@ -412,7 +412,6 @@
             $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButton);
 
             $(document).on('click', '.btnMatricular', function () {
-
                 var quant = $('.matriculas:checked').length;
 
                 var ofertaId = $('#ofd_id').val();

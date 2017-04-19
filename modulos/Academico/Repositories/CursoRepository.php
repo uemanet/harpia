@@ -25,10 +25,10 @@ class CursoRepository extends BaseRepository
             return $this->model
                 ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
                 ->where('ucr_usr_id', '=', Auth::user()->usr_id)
-                ->pluck($field, $identifier);
+                ->pluck($field, $identifier)->toArray();
         }
 
-        return $this->model->pluck($field, $identifier);
+        return $this->model->pluck($field, $identifier)->toArray();
     }
 
     public function listsByCursoId($cursoId)
@@ -72,5 +72,15 @@ class CursoRepository extends BaseRepository
     public function listsCursoByMatriz($matrizId)
     {
         return $this->model->where('crs_id', $matrizId)->pluck('crs_nome', 'crs_id');
+    }
+
+    /**
+     * Traz somente os cursos tecnicos
+     * @param int $nivelTecnicoId
+     * @return mixed
+     */
+    public function listsCursosTecnicos($nivelTecnicoId = 1)
+    {
+        return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
     }
 }
