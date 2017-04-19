@@ -10,9 +10,19 @@ class Modulo extends BaseModel
 
     protected $primaryKey = 'mod_id';
 
-    protected $fillable = ['mod_nome', 'mod_rota', 'mod_descricao', 'mod_icone', 'mod_class', 'mod_style', 'mod_ativo'];
+    protected $fillable = ['mod_nome', 'mod_slug', 'mod_icone'];
 
     protected $searchable = [
         'mod_nome' => 'like'
     ];
+
+    public function perfis()
+    {
+        return $this->hasMany('Modulos\Seguranca\Models\Perfil', 'prf_mod_id');
+    }
+
+    public function menu_itens()
+    {
+        return $this->hasMany('Modulos\Seguranca\Models\MenuItem', 'mit_mod_id');
+    }
 }
