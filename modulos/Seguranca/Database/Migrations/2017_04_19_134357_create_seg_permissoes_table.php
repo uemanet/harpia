@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CreateSegPermissoesTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -15,12 +15,10 @@ class CreateSegPermissoesTable extends Migration
     {
         Schema::create('seg_permissoes', function (Blueprint $table) {
             $table->increments('prm_id');
-            $table->integer('prm_rcs_id')->unsigned();
-            $table->string('prm_nome', 45);
-            $table->string('prm_descricao', 300);
+            $table->string('prm_nome');
+            $table->string('prm_rota');
+            $table->string('prm_descricao')->nullable();
             $table->timestamps();
-            
-            $table->foreign('prm_rcs_id')->references('rcs_id')->on('seg_recursos');
         });
     }
 
@@ -31,6 +29,6 @@ class CreateSegPermissoesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seg_permissoes');
+        Schema::dropIfExists('seg_permissoes');
     }
 }

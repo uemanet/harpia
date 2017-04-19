@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CreateSegPerfisTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -16,8 +16,8 @@ class CreateSegPerfisTable extends Migration
         Schema::create('seg_perfis', function (Blueprint $table) {
             $table->increments('prf_id');
             $table->integer('prf_mod_id')->unsigned();
-            $table->string('prf_nome', 150);
-            $table->string('prf_descricao', 300);
+            $table->string('prf_nome');
+            $table->string('prf_descricao')->nullable();
             $table->timestamps();
 
             $table->foreign('prf_mod_id')->references('mod_id')->on('seg_modulos');
@@ -31,6 +31,6 @@ class CreateSegPerfisTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seg_perfis');
+        Schema::dropIfExists('seg_perfis');
     }
 }
