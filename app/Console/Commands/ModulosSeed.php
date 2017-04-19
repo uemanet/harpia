@@ -12,7 +12,7 @@ class ModulosSeed extends Command
      *
      * @var string
      */
-    protected $signature = 'modulos:seed';
+    protected $signature = 'modulos:seed {--dev}';
 
     /**
      * The console command description.
@@ -40,14 +40,46 @@ class ModulosSeed extends Command
     {
         $modulos = config('modulos.modulos');
 
-        while (list(, $modulo) = each($modulos)) {
+        if ($this->option('dev')) {
+            while (list(, $modulo) = each($modulos)) {
 
-            // Load the migrations
-            $class = '\Modulos\\'. $modulo .'\Database\Seeds\\'. $modulo .'Seeder';
-            if (class_exists($class)) {
-                Artisan::call('db:seed', ['--class' => $class]);
+              // Load the migrations
+              if ($modulo == 'Seguranca') {
+                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\\'. $modulo .'Seeder';
+              } else {
+                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\Production\\'. $modulo .'Seeder';
+              }
+                if (class_exists($class)) {
+                    Artisan::call('db:seed', ['--class' => $class]);
+                    $this->info($modulo . ' Seed complete!');
+                }
 
-                $this->info($modulo . ' Seed complete!');
+              // Load the migrations
+              if ($modulo == 'Seguranca') {
+                  $class = null;
+              } else {
+                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\Development\\'. $modulo .'Seeder';
+              }
+                if (class_exists($class)) {
+                    Artisan::call('db:seed', ['--class' => $class]);
+                    $this->info($modulo . ' Development Seed complete!');
+                }
+            }
+        } else {
+            while (list(, $modulo) = each($modulos)) {
+
+              // Load the migrations
+              if ($modulo == 'Seguranca') {
+                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\\'. $modulo .'Seeder';
+              } else {
+                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\Production\\'. $modulo .'Seeder';
+              }
+
+                if (class_exists($class)) {
+                    Artisan::call('db:seed', ['--class' => $class]);
+
+                    $this->info($modulo . ' Seed complete!');
+                }
             }
         }
     }
