@@ -90,7 +90,7 @@ class AuthController extends Controller
 
     public function getLogout()
     {
-        $usrId = $this->app['auth']->user()->usr_pes_id;
+        $usrId = $this->app['auth']->user()->usr_id;
 
         Cache::forget('MENU_'.$usrId);
         Cache::forget('PERMISSOES_'.$usrId);
