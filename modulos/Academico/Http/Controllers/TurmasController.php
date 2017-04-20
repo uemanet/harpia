@@ -39,7 +39,7 @@ class TurmasController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/turmas/create/'.$ofertaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
 
         $actionButtons[] = $btnNovo;
@@ -76,21 +76,23 @@ class TurmasController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-group',
-                                'action' => '/academico/grupos/index/' . $id,
+                                'route' => 'academico.ofertascursos.turmas.grupos.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Grupos',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/turmas/edit/'.$id,
+                                'route' => 'academico.ofertascursos.turmas.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/turmas/delete',
+                                'route' => 'academico.ofertascursos.turmas.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'

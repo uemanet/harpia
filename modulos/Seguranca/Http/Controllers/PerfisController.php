@@ -188,6 +188,7 @@ class PerfisController extends BaseController
         }
     }
 
+
 //    public function getAtribuirpermissoes($perfilId)
 //    {
 ////        $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);

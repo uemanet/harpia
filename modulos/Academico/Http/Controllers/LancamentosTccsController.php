@@ -71,7 +71,8 @@ class LancamentosTccsController extends BaseController
                             [
                                 'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-user',
-                                'action' => '/academico/lancamentostccs/alunosturma/'.$id,
+                                'action' => 'academico.lancamentostccs.alunosturma',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Alunos',
                                 'method' => 'get'
                             ]

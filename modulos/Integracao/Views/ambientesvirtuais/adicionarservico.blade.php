@@ -63,7 +63,8 @@
                                             [
                                                 'classButton' => 'btn btn-danger btn-delete',
                                                 'icon' => 'fa fa-trash',
-                                                'action' => '/integracao/ambientesvirtuais/deletarservico/'.$ambiente->amb_id,
+                                                'route' => 'integracao.ambientesvirtuais.deletarservico',
+                                                'parameters' => ['id' => $ambiente->amb_id],
                                                 'id' => $ambienteservico->asr_id,
                                                 'label' => '',
                                                 'method' => 'post'

@@ -39,7 +39,7 @@ class CursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/cursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -76,21 +76,23 @@ class CursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-table',
-                                'action' => '/academico/matrizescurriculares/index/' . $id,
+                                'route' => 'academico.cursos.matrizescurriculares.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Matrizes',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/cursos/edit/' . $id,
+                                'action' => 'academico.cursos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/cursos/delete',
+                                'action' => 'academico.cursos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'

@@ -21,7 +21,7 @@ class PeriodosLetivosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/periodosletivos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.periodosletivos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -53,14 +53,15 @@ class PeriodosLetivosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/periodosletivos/edit/'.$id,
+                                'route' => 'academico.periodosletivos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/periodosletivos/delete',
+                                'route' => 'academico.periodosletivos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'

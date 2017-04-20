@@ -21,7 +21,7 @@ class TitulacoesController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/geral/titulacoes/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('geral.titulacoes.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -52,14 +52,15 @@ class TitulacoesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/geral/titulacoes/edit/' . $id,
+                                'route' => 'geral.titulacoes.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/geral/titulacoes/delete',
+                                'route' => 'geral.titulacoes.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'

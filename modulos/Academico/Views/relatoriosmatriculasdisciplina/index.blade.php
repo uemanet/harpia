@@ -94,7 +94,7 @@
                                     [
                                     'classButton' => 'btn btn-success',
                                     'icon' => 'fa fa-file-pdf-o',
-                                    'action' => '/academico/relatoriosmatriculasdisciplina/pdf',
+                                    'route' => 'academico.relatoriosmatriculasdisciplinas.pdf',
                                     'label' => 'Exportar para PDF',
                                     'method' => 'post',
                                     'id' => '',
