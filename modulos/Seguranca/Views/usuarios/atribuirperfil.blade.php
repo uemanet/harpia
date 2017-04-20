@@ -58,7 +58,8 @@
                                                 [
                                                     'classButton' => 'btn btn-danger btn-delete',
                                                     'icon' => 'fa fa-trash',
-                                                    'action' => '/seguranca/usuarios/deletarperfil/'.$usuario->usr_id,
+                                                    'route' => 'seguranca.usuarios.deletarperfil',
+                                                    'parameters' => ['id' => $usuario->usr_id],
                                                     'id' => $perfil->prf_id,
                                                     'label' => '',
                                                     'method' => 'post'

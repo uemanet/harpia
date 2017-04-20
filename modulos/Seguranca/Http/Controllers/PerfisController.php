@@ -22,7 +22,7 @@ class PerfisController extends BaseController
 //    public function getIndex(Request $request)
 //    {
 //        $btnNovo = new TButton();
-//        $btnNovo->setName('Novo')->setAction('/seguranca/perfis/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+//        $btnNovo->setName('Novo')->setRoute('seguranca.perfis.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 //
 //        $actionButtons[] = $btnNovo;
 //
@@ -53,21 +53,23 @@ class PerfisController extends BaseController
 //                            [
 //                                'classButton' => 'text-blue',
 //                                'icon' => 'fa fa-check-square-o',
-//                                'action' => '/seguranca/perfis/atribuirpermissoes/'. $id,
+//                                'route' => 'seguranca.perfis.atribuirpermissoes',
+//                                'parameters' => ['id' => $id],
 //                                'label' => 'Permissões',
 //                                'method' => 'get'
 //                            ],
 //                            [
 //                                'classButton' => '',
 //                                'icon' => 'fa fa-pencil',
-//                                'action' => '/seguranca/perfis/edit/' . $id,
+//                                'route' => 'seguranca.perfis.edit',
+//                                'parameters' => ['id' => $id],
 //                                'label' => 'Editar',
 //                                'method' => 'get'
 //                            ],
 //                            [
 //                                'classButton' => 'btn-delete text-red',
 //                                'icon' => 'fa fa-trash',
-//                                'action' =>  '/seguranca/perfis/delete',
+//                                'route' =>  'seguranca.perfis.delete',
 //                                'id' => $id,
 //                                'label' => 'Excluir',
 //                                'method' => 'post'

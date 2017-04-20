@@ -39,7 +39,7 @@ class UsuariosController extends BaseController
 //    public function getIndex(Request $request)
 //    {
 //        $btnNovo = new TButton();
-//        $btnNovo->setName('Novo')->setAction('/seguranca/usuarios/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+//        $btnNovo->setName('Novo')->setRoute('seguranca.usuarios.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 //
 //        $actionButtons[] = $btnNovo;
 //
@@ -71,21 +71,23 @@ class UsuariosController extends BaseController
 //                        [
 //                            'classButton' => 'text-blue',
 //                            'icon' => 'fa fa-check-square-o',
-//                            'action' => '/seguranca/usuarios/atribuirperfil/'. $id,
+//                            'route' => 'seguranca.usuarios.atribuirperfil',
+//                            'parameters' => ['id' => $id],
 //                            'label' => 'Atribuir Perfil',
 //                            'method' => 'get'
 //                        ],
 //                        [
 //                            'classButton' => '',
 //                            'icon' => 'fa fa-pencil',
-//                            'action' => '/seguranca/usuarios/edit/' . $id,
+//                            'route' => 'seguranca.usuarios.edit',
+//                            'parameters' => ['id' => $id],
 //                            'label' => 'Editar',
 //                            'method' => 'get'
 //                        ],
 //                        [
 //                            'classButton' => 'btn-delete text-red',
 //                            'icon' => 'fa fa-trash',
-//                            'action' => '/seguranca/usuarios/delete',
+//                            'route' => 'seguranca.usuarios.delete',
 //                            'id' => $id,
 //                            'label' => 'Excluir',
 //                            'method' => 'post'

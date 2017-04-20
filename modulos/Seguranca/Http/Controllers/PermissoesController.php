@@ -24,7 +24,7 @@ class PermissoesController extends BaseController
 //    public function getIndex(Request $request)
 //    {
 //        $btnNovo = new TButton();
-//        $btnNovo->setName('Novo')->setAction('/seguranca/permissoes/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+//        $btnNovo->setName('Novo')->setRoute('seguranca.permissoes.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 //
 //        $actionButtons[] = $btnNovo;
 //
@@ -55,14 +55,15 @@ class PermissoesController extends BaseController
 //                            [
 //                                'classButton' => '',
 //                                'icon' => 'fa fa-pencil',
-//                                'action' => '/seguranca/permissoes/edit/' . $id,
+//                                'route' => 'seguranca.permissoes.edit',
+//                                'parameters' => ['id' => $id],
 //                                'label' => 'Editar',
 //                                'method' => 'get'
 //                            ],
 //                            [
 //                                'classButton' => 'btn-delete text-red',
 //                                'icon' => 'fa fa-trash',
-//                                'action' =>  '/seguranca/permissoes/delete',
+//                                'route' =>  'seguranca.permissoes.delete',
 //                                'id' => $id,
 //                                'label' => 'Excluir',
 //                                'method' => 'post'

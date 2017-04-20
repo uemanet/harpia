@@ -49,7 +49,7 @@ class TutoresGruposController extends BaseController
 
         $btnNovo = new TButton();
         if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
-            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/' . $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
+            $btnNovo->setName('Vincular Tutor')->setRoute('academico.ofertascursos.turmas.grupos.tutoresgrupos.create')->setParameters(['id' => $grupoId])->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
@@ -90,7 +90,8 @@ class TutoresGruposController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-user',
-                                'action' => '/academico/tutoresgrupos/alterartutor/' . $id,
+                                'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.alterartutor',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Substituir tutor',
                                 'method' => 'get'
                             ]
