@@ -38,7 +38,7 @@ class OfertasCursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/ofertascursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -77,7 +77,8 @@ class OfertasCursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => '/academico/turmas/index/'.$id,
+                                'route' => 'academico.ofertascursos.turmas.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ]

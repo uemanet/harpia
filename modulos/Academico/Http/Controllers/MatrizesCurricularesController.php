@@ -42,7 +42,7 @@ class MatrizesCurricularesController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create/'.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.create')->setParameters(['id' => $cursoId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -90,21 +90,23 @@ class MatrizesCurricularesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-object-group',
-                                'action' => '/academico/modulosmatrizes/index/'.$id,
+                                'route' => 'academico.cursos.matrizescurriculares.create',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Módulos',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/matrizescurriculares/edit/'.$id,
+                                'route' => 'academico.cursos.matrizescurriculares.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/matrizescurriculares/delete',
+                                'route' => 'academico.cursos.matrizescurriculares.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
