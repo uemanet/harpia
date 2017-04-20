@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/centros/index') }}">
+                <form method="GET" action="{{ route('academico.centros.index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="cen_nome" id="cen_nome" value="{{Input::get('cen_nome')}}" placeholder="Nome do centro">
                     </div>

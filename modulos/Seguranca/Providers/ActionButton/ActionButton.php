@@ -21,7 +21,7 @@ class ActionButton
 
         foreach ($buttons as $key => $button) {
             if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getRoute())) {
-                $render .= '<a href="'.route($button->getRoute()).'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
+                $render .= '<a href="'.route($button->getRoute(), $button->setParameters()).'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
             }
         }
 

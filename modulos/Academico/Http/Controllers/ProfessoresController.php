@@ -31,7 +31,7 @@ class ProfessoresController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/professores/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.professores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -62,14 +62,16 @@ class ProfessoresController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/professores/edit/' . $id,
+                                'route' => 'academico.professores.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/professores/show/'.$id,
+                                'route' => 'academico.professores.show',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
@@ -86,14 +88,12 @@ class ProfessoresController extends BaseController
 
     public function getCreate($pessoaId = null)
     {
-        if (is_null($pessoaId)) {
-            return view('Academico::professores.create', ['pessoa' => []]);
-        }
+        if (!is_null($pessoaId)) {
+            $pessoa = $this->pessoaRepository->findById($pessoaId);
 
-        $pessoa = $this->pessoaRepository->findById($pessoaId);
-
-        if ($pessoa) {
-            return view('Academico::professores.create', ['pessoa' => $pessoa]);
+            if ($pessoa) {
+                return view('Academico::professores.create', ['pessoa' => $pessoa]);
+            }
         }
 
         return view('Academico::professores.create', ['pessoa' => []]);
@@ -219,8 +219,6 @@ class ProfessoresController extends BaseController
         }
 
         $pessoa = $this->pessoaRepository->findById($professor->prf_pes_id);
-
-
 
         return view('Academico::professores.edit', ['pessoa' => $pessoa]);
     }

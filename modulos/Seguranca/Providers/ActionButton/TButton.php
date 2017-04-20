@@ -8,6 +8,7 @@ class TButton
     protected $route;
     protected $icon;
     protected $style;
+    protected $parameters = [];
     protected $target = '_self';
 
     public function setName($name)
@@ -52,6 +53,17 @@ class TButton
     public function getStyle()
     {
         return $this->style;
+    }
+
+    public function setParameters($parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 
     public function setTarget($target)
