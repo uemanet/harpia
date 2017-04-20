@@ -6,6 +6,11 @@ use Modulos\Seguranca\Models\MenuItem;
 
 class MenuItemRepository
 {
+    public function find($id)
+    {
+        return MenuItem::find($id);
+    }
+
     public function getCategorias($moduloId)
     {
         return MenuItem::where([
@@ -26,5 +31,46 @@ class MenuItemRepository
         ])
             ->orderBy('mit_ordem', 'asc')
             ->get();
+    }
+
+    public function isCategoria($menuItemId)
+    {
+        $menuItem = MenuItem::where('mit_id', '=', $menuItemId)->get()->shift();
+
+        if (isset($menuItem->mit_item_pai)) {
+            return false;
+        }
+
+        if (isset($menuItem->rota)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isSubCategoria($menuItemId)
+    {
+        $menuItem = MenuItem::where('mit_id', '=', $menuItemId)->get()->shift();
+
+        if (!isset($menuItem->mit_item_pai)) {
+            return false;
+        }
+
+        if (isset($menuItem->rota)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isItem($menuItemId)
+    {
+        $menuItem = MenuItem::where('mit_id', '=', $menuItemId)->get()->shift();
+
+        if (isset($menuItem->mit_item_pai) && isset($menuItem->mit_rota)) {
+            return true;
+        }
+
+        return false;
     }
 }
