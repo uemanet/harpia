@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CreateSegPerfisUsuariosTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -19,8 +19,8 @@ class CreateSegPerfisUsuariosTable extends Migration
 
             $table->primary(['pru_prf_id', 'pru_usr_id']);
 
-            $table->foreign('pru_usr_id')->references('usr_id')->on('seg_usuarios');
             $table->foreign('pru_prf_id')->references('prf_id')->on('seg_perfis');
+            $table->foreign('pru_usr_id')->references('usr_id')->on('seg_usuarios');
         });
     }
 
@@ -31,6 +31,6 @@ class CreateSegPerfisUsuariosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seg_perfis_usuarios');
+        Schema::dropIfExists('seg_perfis_usuarios');
     }
 }

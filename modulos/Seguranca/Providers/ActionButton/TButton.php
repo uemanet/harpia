@@ -5,9 +5,10 @@ namespace Modulos\Seguranca\Providers\ActionButton;
 class TButton
 {
     protected $name;
-    protected $action;
+    protected $route;
     protected $icon;
     protected $style;
+    protected $parameters = [];
     protected $target = '_self';
 
     public function setName($name)
@@ -21,15 +22,15 @@ class TButton
         return $this->name;
     }
 
-    public function setAction($action)
+    public function setRoute($route)
     {
-        $this->action = $action;
+        $this->route = $route;
         return $this;
     }
 
-    public function getAction()
+    public function getRoute()
     {
-        return $this->action;
+        return $this->route;
     }
 
     public function setIcon($icon)
@@ -52,6 +53,17 @@ class TButton
     public function getStyle()
     {
         return $this->style;
+    }
+
+    public function setParameters($parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 
     public function setTarget($target)

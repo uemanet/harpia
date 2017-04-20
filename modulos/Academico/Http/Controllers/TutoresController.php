@@ -31,7 +31,7 @@ class TutoresController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/tutores/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('/academico/tutores/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -62,14 +62,16 @@ class TutoresController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/tutores/edit/' . $id,
+                                'route' => 'academico.tutores.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/tutores/show/'.$id,
+                                'route' => 'academico.tutores.show',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
@@ -86,14 +88,12 @@ class TutoresController extends BaseController
 
     public function getCreate($pessoaId = null)
     {
-        if (is_null($pessoaId)) {
-            return view('Academico::tutores.create', ['pessoa' => []]);
-        }
+        if (!is_null($pessoaId)) {
+            $pessoa = $this->pessoaRepository->findById($pessoaId);
 
-        $pessoa = $this->pessoaRepository->findById($pessoaId);
-
-        if ($pessoa) {
-            return view('Academico::tutores.create', ['pessoa' => $pessoa]);
+            if ($pessoa) {
+                return view('Academico::tutores.create', ['pessoa' => $pessoa]);
+            }
         }
 
         return view('Academico::tutores.create', ['pessoa' => []]);

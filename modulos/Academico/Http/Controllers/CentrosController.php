@@ -23,7 +23,7 @@ class CentrosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/centros/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.centros.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -59,14 +59,15 @@ class CentrosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/centros/edit/' . $id,
+                                'route' => 'academico.centros.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/centros/delete',
+                                'route' => 'academico.centros.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -101,7 +102,7 @@ class CentrosController extends BaseController
 
             flash()->success('Centro criado com sucesso.');
 
-            return redirect('/academico/centros/index');
+            return redirect()->route('academico.centros.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -122,11 +123,6 @@ class CentrosController extends BaseController
         }
 
         $professores = $this->professorRepository->listsEditCentro('prf_id', 'pes_nome', $centroId);
-
-        if (!$centro) {
-            flash()->error('Centro não existe.');
-            return redirect()->back();
-        }
 
         return view('Academico::centros.edit', ['centro' => $centro, 'professores' => $professores]);
     }
@@ -149,7 +145,8 @@ class CentrosController extends BaseController
             }
 
             flash()->success('Centro atualizado com sucesso.');
-            return redirect('/academico/centros/index');
+
+            return redirect()->route('academico.centros.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

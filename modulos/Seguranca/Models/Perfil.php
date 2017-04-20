@@ -10,7 +10,7 @@ class Perfil extends BaseModel
 
     protected $primaryKey = 'prf_id';
 
-    protected $fillable = ['prf_mod_id', 'prf_nome', 'prf_descricao'];
+    protected $fillable = ['prf_mod_id', 'prf_nome'];
 
     protected $searchable = [
         'prf_nome' => 'like'
@@ -18,7 +18,7 @@ class Perfil extends BaseModel
     
     public function permissoes()
     {
-        return $this->belongsToMany('Modulos\Seguranca\Models\Permissao', 'seg_perfis_permissoes', 'prp_prf_id', 'prp_prm_id');
+        return $this->belongsToMany('Modulos\Seguranca\Models\Permissao', 'seg_permissoes_perfis', 'prp_prf_id', 'prp_prm_id');
     }
 
     public function usuarios()

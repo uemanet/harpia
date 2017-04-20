@@ -17,9 +17,9 @@ interface Seguranca
     /**
      * Check if the authenticated user has the given permission.
      *
-     * @param string $permission
+     * @param string $rota
      *
      * @return bool
      */
-    public function haspermission($permission);
+    public function haspermission($rota);
 }

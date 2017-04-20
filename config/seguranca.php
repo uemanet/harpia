@@ -1,14 +1,13 @@
 <?php
 
 return [
-    'prelogin_openactions' => array(
-        'login/index/index',
-        'index/index/index'
+    'prelogin_openroutes' => array(
+        'auth.login',
+        'index'
     ),
 
-    'postlogin_openactions' => array(
-        'index/index/index',
-        'logout/index/index',
-        'Index',
+    'postlogin_openroutes' => array(
+        'auth.logout',
+        'index'
     )
 ];

@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSegPerfisPermissoesTable extends Migration
+class CreateSegPermissoesPerfisTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -13,7 +13,7 @@ class CreateSegPerfisPermissoesTable extends Migration
      */
     public function up()
     {
-        Schema::create('seg_perfis_permissoes', function (Blueprint $table) {
+        Schema::create('seg_permissoes_perfis', function (Blueprint $table) {
             $table->integer('prp_prf_id')->unsigned();
             $table->integer('prp_prm_id')->unsigned();
 
@@ -31,6 +31,6 @@ class CreateSegPerfisPermissoesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seg_perfis_permissoes');
+        Schema::dropIfExists('seg_permissoes_perfis');
     }
 }

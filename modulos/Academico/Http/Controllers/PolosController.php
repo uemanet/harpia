@@ -22,7 +22,7 @@ class PolosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/polos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.polos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -52,14 +52,15 @@ class PolosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/polos/edit/' . $id,
+                                'route' => 'academico.polos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/polos/delete',
+                                'route' => 'academico.polos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -91,7 +92,7 @@ class PolosController extends BaseController
             }
 
             flash()->success('Polo criado com sucesso.');
-            return redirect('/academico/polos/index');
+            return redirect()->route('academico.polos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -121,7 +122,7 @@ class PolosController extends BaseController
 
             if (!$polo) {
                 flash()->error('Polo não existe.');
-                return redirect('academico/polos/index');
+                return redirect()->route('academico.polos.index');
             }
 
             $requestData = $request->only($this->poloRepository->getFillableModelFields());
@@ -132,7 +133,7 @@ class PolosController extends BaseController
             }
 
             flash()->success('Polo atualizado com sucesso.');
-            return redirect('/academico/polos/index');
+            return redirect()->route('academico.polos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

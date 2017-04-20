@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -30,6 +31,6 @@ class CreateSegAuditoresTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seg_auditores');
+        Schema::dropIfExists('seg_auditores');
     }
 }

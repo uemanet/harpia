@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CreateSegUsuariosTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -33,6 +33,6 @@ class CreateSegUsuariosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seg_usuarios');
+        Schema::dropIfExists('seg_usuarios');
     }
 }

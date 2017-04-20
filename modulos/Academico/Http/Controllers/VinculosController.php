@@ -50,7 +50,8 @@ class VinculosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-link',
-                                'action' => '/academico/usuarioscursos/vinculos/' . $id,
+                                'route' => 'academico.usuarioscursos.vinculos',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Vínculos',
                                 'method' => 'get',
                             ],
@@ -80,7 +81,7 @@ class VinculosController extends BaseController
         $data = $this->vinculoRepository->paginateCursosVinculados($usuarioId);
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Adicionar vínculo')->setAction('/academico/usuarioscursos/create/' . $usuarioId)->setIcon('fa fa-link')->setStyle('btn bg-olive');
+        $btnNovo->setName('Adicionar vínculo')->setRoute('academico.usuarioscursos.create')->setParameters(['id' =>$usuarioId])->setIcon('fa fa-link')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
         $tabela = null;
@@ -105,7 +106,7 @@ class VinculosController extends BaseController
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-unlink',
-                                'action' => '/academico/usuarioscursos/delete',
+                                'route' => 'academico.usuarioscursos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir vínculo',
                                 'method' => 'post',
@@ -160,7 +161,7 @@ class VinculosController extends BaseController
             }
 
             flash()->success('Vínculos criados com sucesso.');
-            return redirect(route('academico.vinculos.vinculos', ['id' => $usuarioId]));
+            return redirect()->route('academico.vinculos.vinculos', ['id' => $usuarioId]);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
