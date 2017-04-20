@@ -20,7 +20,7 @@ class ActionButton
         $seguranca = $this->app[Seguranca::class];
 
         foreach ($buttons as $key => $button) {
-            if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getRota())) {
+            if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getRoute())) {
                 $render .= '<a href="'.route($button->getRoute()).'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
             }
         }

@@ -32,14 +32,13 @@ class MasterMenu
         $menu = $menu[$moduloSlug];
 
         $render = '<ul class="sidebar-menu">';
-        $render .= '<li class="header">MENU</li>';
 
         foreach ($menu->categorias as $key => $categoria) {
             if (!empty($categoria->subcategorias)) {
                 $categoriaActiveHtml = '<li class="treeview">';
                 $categoriaHtml = '<a href="#">';
-                $categoriaHtml .= '<i class="'.$categoria->icone.'"></i>';
-                $categoriaHtml .= '<span>'.$categoria->nome.'</span>';
+                $categoriaHtml .= '<i class="'.$categoria->mit_icone.'"></i>';
+                $categoriaHtml .= '<span>'.$categoria->mit_nome.'</span>';
                 $categoriaHtml .= '<span class="pull-right-container">';
                 $categoriaHtml .= '<i class="fa fa-angle-left pull-right"></i>';
                 $categoriaHtml .= '</span></a>';
@@ -48,8 +47,8 @@ class MasterMenu
                 foreach ($categoria->subcategorias as $subcategoria) {
                     $subcategoriaHtml = '';
 
-                    if (!$subcategoria->rota && !empty($subcategoria->itens)) {
-                        $subcategoriaActiveHtml = '<li><a href="#"><i class="'.$subcategoria->icone.'"></i> '.$subcategoria->nome;
+                    if (!$subcategoria->mit_rota && !empty($subcategoria->itens)) {
+                        $subcategoriaActiveHtml = '<li><a href="#"><i class="'.$subcategoria->mit_icone.'"></i> '.$subcategoria->mit_nome;
                         $subcategoriaHtml .= '<span class="pull-right-container">';
                         $subcategoriaHtml .= '<i class="fa fa-angle-left pull-right"></i>';
                         $subcategoriaHtml .= '</span></a>';
@@ -59,17 +58,17 @@ class MasterMenu
                         $itensHtml = '';
                         foreach ($subcategoria->itens as $key => $item) {
                             $itensHtml .= '<li';
-                            if ($this->isActive($routeName, $item->rota)) {
+                            if ($this->isActive($routeName, $item->mit_rota)) {
                                 $itensHtml .= ' class="active"';
 
                                 // Active na subcategoria
-                                $subcategoriaActiveHtml = '<li class="active"><a href="#"><i class="'.$subcategoria->icone.'"></i> '.$subcategoria->nome;
+                                $subcategoriaActiveHtml = '<li class="active"><a href="#"><i class="'.$subcategoria->mit_icone.'"></i> '.$subcategoria->mit_nome;
 
                                 // Active na categoria
                                 $categoriaActiveHtml = '<li class="treeview active">';
                             }
                             $itensHtml .= '>';
-                            $itensHtml .= '<a href="'.route($item->rota).'"><i class="'.$item->icone.'"></i> '.$item->nome.'</a></li>';
+                            $itensHtml .= '<a href="'.route($item->mit_rota).'"><i class="'.$item->mit_icone.'"></i> '.$item->mit_nome.'</a></li>';
                         }
 
                         $subcategoriaHtml .= $itensHtml;
@@ -81,12 +80,12 @@ class MasterMenu
                     }
 
                     $subcategoriaHtml .= '<li';
-                    if ($this->isActive($routeName, $subcategoria->rota)) {
+                    if ($this->isActive($routeName, $subcategoria->mit_rota)) {
                         $subcategoriaHtml .= ' class="active"';
                         $categoriaActiveHtml = '<li class="treeview active">';
                     }
                     $subcategoriaHtml .= '>';
-                    $subcategoriaHtml .= '<a href="'.route($subcategoria->rota).'"><i class="'.$subcategoria->icone.'"></i> '.$subcategoria->nome.'</a></li>';
+                    $subcategoriaHtml .= '<a href="'.route($subcategoria->mit_rota).'"><i class="'.$subcategoria->mit_icone.'"></i> '.$subcategoria->mit_nome.'</a></li>';
 
                     $categoriaHtml .= $subcategoriaHtml;
                 }
