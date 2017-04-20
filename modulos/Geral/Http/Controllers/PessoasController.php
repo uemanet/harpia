@@ -196,6 +196,13 @@ class PessoasController extends BaseController
         return view('Geral::pessoas.show', ['pessoa' => $pessoa]);
     }
 
+    public function getVerificapessoa($rota)
+    {
+        $rota = str_replace('-', '.', $rota);
+
+        return view('Geral::pessoas.verificapessoa', ['rota' => $rota]);
+    }
+
     public function postVerificapessoa(Request $request)
     {
         $validator = Validator::make($request->all(), [

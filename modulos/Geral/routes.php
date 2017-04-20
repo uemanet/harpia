@@ -12,7 +12,8 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\Geral\Http\Controllers\PessoasController@getEdit')->name('geral.pessoas.edit');
         Route::put('/edit/{id}', '\Modulos\Geral\Http\Controllers\PessoasController@putEdit')->name('geral.pessoas.edit');
         Route::get('/show/{id}', '\Modulos\Geral\Http\Controllers\PessoasController@getShow')->name('geral.pessoas.show');
-        Route::post('/verificapessoa', '\Modulos\Geral\Http\Controllers\PessoasController@postVerificaPessoa')->name('geral.pessoas.verificapessoa');
+        Route::get('/verificapessoa/{rota}', '\Modulos\Geral\Http\Controllers\PessoasController@getVerificapessoa')->name('geral.pessoas.verificapessoa');
+        Route::post('/verificapessoa', '\Modulos\Geral\Http\Controllers\PessoasController@postVerificapessoa')->name('geral.pessoas.verificapessoa');
     });
 
 

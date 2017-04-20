@@ -4,6 +4,7 @@ namespace Modulos\Seguranca\Repositories;
 
 use DB;
 use Cache;
+use Modulos\Seguranca\Models\Modulo;
 
 class ModuloRepository
 {
@@ -25,5 +26,10 @@ class ModuloRepository
         }
 
         return $modulos;
+    }
+
+    public function lists($identifier, $name)
+    {
+        return DB::table('seg_modulos')->pluck($name, $identifier)->toArray();
     }
 }

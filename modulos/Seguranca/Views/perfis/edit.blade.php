@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de edição de perfil</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($perfil,["url" => url('/') . "/seguranca/perfis/edit/$perfil->prf_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($perfil,["route" => ['seguranca.perfis.edit', $perfil->prf_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Seguranca::perfis.includes.formulario_edit')
             {!! Form::close() !!}
         </div>

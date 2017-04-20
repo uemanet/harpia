@@ -7,24 +7,7 @@ Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@po
 Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogout')->name('auth.logout');
 
 Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
-    Route::group(['prefix' => 'index'], function () {
-        Route::get('/', '\Modulos\Seguranca\Http\Controllers\IndexController@getIndex')->name('seguranca.index.index');
-    });
-
-//    Route::group(['prefix' => 'profile'], function () {
-//        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@getIndex')->name('seguranca.profile.index');
-//        Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
-//        Route::post('/updatepassword', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@postUpdatepassword')->name('seguranca.profile.updatepassword');
-//    });
-
-//    Route::group(['prefix' => 'modulos'], function () {
-//        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\ModulosController@getIndex')->name('seguranca.modulos.index');
-//        Route::get('/create', '\Modulos\Seguranca\Http\Controllers\ModulosController@getCreate')->name('seguranca.modulos.create');
-//        Route::post('/create', '\Modulos\Seguranca\Http\Controllers\ModulosController@postCreate')->name('seguranca.modulos.create');
-//        Route::get('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\ModulosController@getEdit')->name('seguranca.modulos.edit');
-//        Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\ModulosController@putEdit')->name('seguranca.modulos.edit');
-//        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\ModulosController@postDelete')->name('seguranca.modulos.delete');
-//    });
+    Route::get('/', '\Modulos\Seguranca\Http\Controllers\IndexController@getIndex')->name('seguranca.index.index');
 
     Route::group(['prefix' => 'perfis'], function () {
         Route::get('/', '\Modulos\Seguranca\Http\Controllers\PerfisController@getIndex')->name('seguranca.perfis.index');
@@ -37,17 +20,17 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::post('/atribuirpermissoes', '\Modulos\Seguranca\Http\Controllers\PerfisController@postAtribuirpermissoes')->name('seguranca.perfis.atribuirpermissoes');
     });
 
-    Route::group(['prefix' => 'permissoes'], function () {
-        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getIndex')->name('seguranca.permissoes.index');
-        Route::get('/create', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getCreate')->name('seguranca.permissoes.create');
-        Route::post('/create', '\Modulos\Seguranca\Http\Controllers\PermissoesController@postCreate')->name('seguranca.permissoes.create');
-        Route::get('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getEdit')->name('seguranca.permissoes.edit');
-        Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PermissoesController@putEdit')->name('seguranca.permissoes.edit');
-        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\PermissoesController@postDelete')->name('seguranca.permissoes.delete');
-    });
+//    Route::group(['prefix' => 'permissoes'], function () {
+//        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getIndex')->name('seguranca.permissoes.index');
+//        Route::get('/create', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getCreate')->name('seguranca.permissoes.create');
+//        Route::post('/create', '\Modulos\Seguranca\Http\Controllers\PermissoesController@postCreate')->name('seguranca.permissoes.create');
+//        Route::get('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getEdit')->name('seguranca.permissoes.edit');
+//        Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PermissoesController@putEdit')->name('seguranca.permissoes.edit');
+//        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\PermissoesController@postDelete')->name('seguranca.permissoes.delete');
+//    });
 
     Route::group(['prefix' => 'usuarios'], function () {
-        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getIndex')->name('seguranca.usuarios.index');
+        Route::get('/', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getIndex')->name('seguranca.usuarios.index');
         Route::get('/create/{id?}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getCreate')->name('seguranca.usuarios.create')->middleware('verificapessoa');
         Route::post('/create', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postCreate')->name('seguranca.usuarios.create');
         Route::get('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getEdit')->name('seguranca.usuarios.edit');

@@ -15,6 +15,10 @@ class VerificaPessoaMiddleware
             }
         }
 
-        return view('Geral::pessoas.verificapessoa', ['rota' => $request->route()->getName()]);
+        $rota = $request->route()->getName();
+        $rota = str_replace('.', '-', $rota);
+
+        return redirect()->action('\Modulos\Geral\Http\Controllers\PessoasController@getVerificapessoa',
+            ['rota' => $rota]);
     }
 }
