@@ -6,6 +6,7 @@ use Auth;
 use Closure;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Route;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
@@ -87,24 +88,14 @@ class Vinculo
 
     private function routeName($request)
     {
-        $path = explode('/', $request->getPathInfo());
-
-        if ($path[2] == "async") {
-            return $path[3];
-        }
-
-        return $path[2];
+        $route = explode('.', Route::currentRouteName());
+        return $route[count($route) - 2];
     }
 
     private function actionName($request)
     {
-        $path = explode('/', $request->getPathInfo());
-
-        if ($path[2] == "async") {
-            return $path[4];
-        }
-
-        return $path[3];
+        $route = explode('.', Route::currentRouteName());
+        return array_pop($route);
     }
 
     private function routeParameters($request)
@@ -147,7 +138,7 @@ class Vinculo
 
             flash()->error($this->defaultResponse);
 
-            return redirect()->route('academico.cursos.index');
+            return redirect()->route('academico.ofertascursos.index');
         }
 
         $curso = $this->turmaRepository->getCurso($id);
@@ -162,7 +153,7 @@ class Vinculo
 
         flash()->error($this->defaultResponse);
 
-        return redirect()->route('academico.cursos.index');
+        return redirect()->route('academico.ofertascursos.index');
     }
 
     /**
@@ -192,7 +183,7 @@ class Vinculo
             }
 
             flash()->error($this->defaultResponse);
-            return redirect()->route('academico.cursos.index');
+            return redirect()->route('academico.ofertascursos.index');
         }
 
         $grupo = $this->grupoRepository->find($id);
@@ -208,7 +199,7 @@ class Vinculo
         }
 
         flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
+        return redirect()->route('academico.ofertascursos.index');
     }
 
 
@@ -238,7 +229,7 @@ class Vinculo
 
             if (!$curso) {
                 flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
+                return redirect()->route('academico.ofertascursos.index');
             }
 
 
@@ -247,7 +238,7 @@ class Vinculo
             }
 
             flash()->error($this->defaultResponse);
-            return redirect()->route('academico.cursos.index');
+            return redirect()->route('academico.ofertascursos.index');
         }
 
         $tutorGrupo = $this->tutorGrupoRepository->find($id);
@@ -262,7 +253,7 @@ class Vinculo
         }
 
         flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
+        return redirect()->route('academico.ofertascursos.index');
     }
 
     /**
