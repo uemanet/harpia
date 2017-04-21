@@ -527,8 +527,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
-
         //permissões do recurso relatoriosmatriculascurso
         $permissao = Permissao::create([
             'prm_nome' => 'index',

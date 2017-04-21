@@ -63,7 +63,7 @@ class AlunosController extends BaseController
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'route' => 'academico.alunos.edit',
-                                'parameters' => ['id' => '$id'],
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
