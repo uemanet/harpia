@@ -134,7 +134,7 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             flash()->success('Ambiente Virtual criado com sucesso.');
-            return redirect('/integracao/ambientesvirtuais/index');
+            return redirect()->route('integracao.ambientesvirtuais.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -164,7 +164,7 @@ class AmbientesVirtuaisController extends BaseController
 
             if (!$ambientevirtual) {
                 flash()->error('Ambiente Virtual não existe.');
-                return redirect('integracao/ambientesvirtuais/index');
+                return redirect()->route('integracao.ambientesvirtuais.index');
             }
 
             $requestData = $request->only($this->ambienteVirtualRepository->getFillableModelFields());
@@ -175,7 +175,7 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             flash()->success('Ambiente Virtual atualizado com sucesso.');
-            return redirect('/integracao/ambientesvirtuais/index');
+            return redirect()->route('integracao.ambientesvirtuais.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
