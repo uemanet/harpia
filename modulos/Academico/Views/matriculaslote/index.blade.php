@@ -55,10 +55,10 @@
                             {!! Form::select('ofd_id', [], null, ['class' => 'form-control']) !!}
                         </div>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <label for="">&nbsp;</label>
                         <div class="form-group">
-                            <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
+                            <input type="submit" id="btnBuscar" class="form-control btn btn-primary" value="Buscar">
                         </div>
                     </div>
                 </div>

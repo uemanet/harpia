@@ -84,7 +84,7 @@ class CursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => 'academico.cursos.edit',
+                                'route' => 'academico.cursos.edit',
                                 'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
@@ -92,7 +92,7 @@ class CursosController extends BaseController
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => 'academico.cursos.delete',
+                                'route' => 'academico.cursos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -136,7 +136,7 @@ class CursosController extends BaseController
 
 
             flash()->success('Curso criado com sucesso.');
-            return redirect('/academico/cursos/index');
+            return redirect()->route('academico.cursos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -170,7 +170,7 @@ class CursosController extends BaseController
 
             if (!$curso) {
                 flash()->error('Curso não existe.');
-                return redirect('/academico/cursos/index');
+                return redirect()->route('academico.cursos.index');
             }
 
             $requestData = $request->only($this->cursoRepository->getFillableModelFields());
@@ -181,7 +181,7 @@ class CursosController extends BaseController
             }
 
             flash()->success('Curso atualizado com sucesso.');
-            return redirect('/academico/cursos/index');
+            return redirect()->route('academico.cursos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

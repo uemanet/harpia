@@ -97,9 +97,23 @@
                                 @endforeach
                             </div>
                             <div class="box-footer">
-                                <a href="{{route('academico.historicoparcial.print', $matricula->mat_id)}}" class="btn btn-primary pull-right" target="_blank">
-                                    <i class="fa fa-file-pdf-o"></i> Imprimir Histórico
-                                </a>
+                                {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                        [
+                                            'classButton' => 'btn btn-primary pull-right',
+                                            'icon' => 'fa fa-file-pdf-o',
+                                            'route' => 'academico.historicoparcial.print',
+                                            'parameters' => ['id' => $matricula->mat_id],
+                                            'label' => 'Imprimir Histórico',
+                                            'method' => 'get',
+                                            'attributes' => [
+                                                'target' => '_blank',
+                                            ],
+                                        ],
+                                    ]
+                                ])
+                                !!}
                             </div>
                         @else
                             <p>Aluno não possui matrículas em disciplinas</p>

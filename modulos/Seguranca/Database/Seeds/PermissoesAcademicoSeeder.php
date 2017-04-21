@@ -142,6 +142,12 @@ class PermissoesAcademicoSeeder extends Seeder
 
         $permissao = Permissao::create([
             'prm_nome' => 'create',
+            'prm_rota' => 'academico.cursos.matrizescurriculares.get.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
             'prm_rota' => 'academico.cursos.matrizescurriculares.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
@@ -217,6 +223,12 @@ class PermissoesAcademicoSeeder extends Seeder
 
         $permissao = Permissao::create([
             'prm_nome' => 'create',
+            'prm_rota' => 'academico.ofertascursos.turmas.get.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
             'prm_rota' => 'academico.ofertascursos.turmas.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
@@ -237,6 +249,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'academico.ofertascursos.turmas.grupos.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.ofertascursos.turmas.grupos.get.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
@@ -263,6 +281,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.get.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
@@ -315,41 +339,45 @@ class PermissoesAcademicoSeeder extends Seeder
         //permissões do recurso modulosmatrizes
         $permissao = Permissao::create([
             'prm_nome' => 'index',
-            'prm_rota' => 'academico.cursos.matrizescurssiculares.modulosmatrizes.index'
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.index'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'create',
-            'prm_rota' => 'academico.cursos.matrizescurssiculares.modulosmatrizes.create'
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.get.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'edit',
-            'prm_rota' => 'academico.cursos.matrizescurssiculares.modulosmatrizes.edit'
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.edit'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'delete',
-            'prm_rota' => 'academico.cursos.matrizescurssiculares.modulosmatrizes.delete'
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.delete'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'gerenciardisciplinas',
-            'prm_rota' => 'academico.cursos.matrizescurssiculares.modulosmatrizes.gerenciardisciplinas'
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.gerenciardisciplinas'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'adicionardisciplinas',
-            'prm_rota' => 'academico.cursos.matrizescurssiculares.modulosmatrizes.adicionardisciplinas'
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.adicionardisciplinas'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
-
-
 
         //permissões do recurso usuarioscursos
         $permissao = Permissao::create([

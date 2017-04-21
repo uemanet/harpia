@@ -52,7 +52,7 @@ class GruposController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.grupos.create')->setParameters(['id' => $turmaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.grupos.get.create')->setParameters(['id' => $turmaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
@@ -167,7 +167,7 @@ class GruposController extends BaseController
             }
 
             flash()->success('Grupo criado com sucesso.');
-            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
+            return redirect()->route('academico.ofertascursos.turmas.grupos.index', $grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -231,7 +231,7 @@ class GruposController extends BaseController
             }
 
             flash()->success('Grupo atualizado com sucesso.');
-            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
+            return redirect()->route('academico.ofertascursos.turmas.grupos.index', $grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

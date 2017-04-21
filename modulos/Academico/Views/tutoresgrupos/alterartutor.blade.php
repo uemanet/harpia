@@ -19,7 +19,7 @@ Tutor atual: {{$tutor->pessoa->pes_nome}}
             <h3 class="box-title">Formulário de alteração de tutor do grupo. </h3>
         </div>
         <div class="box-body">
-            {!! Form::model($tutorgrupo,["url" => url('/') . "/academico/tutoresgrupos/alterartutor/$tutorgrupo->ttg_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($tutorgrupo,["route" => ['academico.ofertascursos.turmas.grupos.tutoresgrupos.alterartutor',$tutorgrupo->ttg_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                   @include('Academico::tutoresgrupos.includes.formulario_alterar')
             {!! Form::close() !!}
         </div>

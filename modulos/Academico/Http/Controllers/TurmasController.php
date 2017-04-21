@@ -39,7 +39,7 @@ class TurmasController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.get.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
 
         $actionButtons[] = $btnNovo;
@@ -136,7 +136,7 @@ class TurmasController extends BaseController
             }
 
             flash()->success('Turma criada com sucesso.');
-            return redirect('/academico/turmas/index/'.$turma->trm_ofc_id);
+            return redirect()->route('academico.ofertascursos.turmas.index', $turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -175,7 +175,7 @@ class TurmasController extends BaseController
 
             if (!$turma) {
                 flash()->error('Turma não existe.');
-                return redirect('/academico/turmas/index/' . $id);
+                return redirect()->route('academico.ofertascursos.turmas.index', $id);
             }
 
             $requestData = $request->except('_token', '_method', 'trm_integrada');
@@ -191,7 +191,7 @@ class TurmasController extends BaseController
             if ($turmaUpdated->trm_integrada) {
                 event(new AtualizarTurmaEvent($turmaUpdated, 'UPDATE'));
             }
-            return redirect('/academico/turmas/index/' . $turma->trm_ofc_id);
+            return redirect()->route('academico.ofertascursos.turmas.index', $turma->trm_ofc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

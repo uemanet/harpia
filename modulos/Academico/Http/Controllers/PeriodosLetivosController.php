@@ -101,7 +101,7 @@ class PeriodosLetivosController extends BaseController
             }
 
             flash()->success('Período Letivo criado com sucesso.');
-            return redirect('/academico/periodosletivos/index');
+            return redirect()->route('academico.periodosletivos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -132,7 +132,7 @@ class PeriodosLetivosController extends BaseController
 
             if (!$periodoLetivo) {
                 flash()->error('Período Letivo não existe.');
-                return redirect('academico/periodosletivos/index');
+                return redirect()->route('academico.periodosletivos.index');
             }
 
             if ($this->periodoLetivoRepository->verifyNamePeriodo($periodoNome, $periodoLetivoId)) {
@@ -148,7 +148,7 @@ class PeriodosLetivosController extends BaseController
             }
 
             flash()->success('Período Letivo atualizado com sucesso.');
-            return redirect('/academico/periodosletivos/index');
+            return redirect()->route('academico.periodosletivos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

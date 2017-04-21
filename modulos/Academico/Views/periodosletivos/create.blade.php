@@ -18,7 +18,7 @@
             <h3 class="box-title">Formulário de cadastro de períodos letivos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/periodosletivos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'academico.periodosletivos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
               @include('Academico::periodosletivos.includes.formulario')
             {!! Form::close() !!}
         </div>

@@ -1,4 +1,5 @@
 <div class="row">
+    {!! Form::hidden('trm_id', $turma->trm_id) !!}
     <div class="form-group col-md-4 @if ($errors->has('ltc_tipo')) has-error @endif">
         {!! Form::label('ltc_tipo', 'Tipo de TCC*', ['class' => 'control-label']) !!}
         <div class="controls">

@@ -22,7 +22,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/usuarioscursos/index') }}">
+                <form method="GET" action="{{ route('academico.vinculos.index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Input::get('pes_nome')}}" placeholder="Nome do usuário">
                     </div>

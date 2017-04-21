@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de edição de disciplinas</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($disciplina,["url" => url('/') . "/academico/disciplinas/edit/$disciplina->dis_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($disciplina,["route" => ['academico.disciplinas.edit',$disciplina->dis_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
             @include('Academico::disciplinas.includes.formulario')
             {!! Form::close() !!}
         </div>

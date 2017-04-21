@@ -124,7 +124,7 @@ class OfertasCursosController extends BaseController
             DB::commit();
 
             flash()->success('Oferta de curso criada com sucesso.');
-            return redirect('/academico/ofertascursos/index');
+            return redirect()->route('academico.ofertascursos.index');
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {

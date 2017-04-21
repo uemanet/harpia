@@ -108,7 +108,7 @@ class DisciplinasController extends BaseController
             }
 
             flash()->success('Disciplina criada com sucesso.');
-            return redirect('/academico/disciplinas/index');
+            return redirect()->route('academico.disciplinas.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -146,7 +146,7 @@ class DisciplinasController extends BaseController
 
             if (!$disciplina) {
                 flash()->error('Disciplina não existe.');
-                return redirect('academico/disciplinas/index');
+                return redirect()->route('academico.disciplinas.index');
             }
 
             $requestData = $request->only($this->disciplinaRepository->getFillableModelFields());
@@ -157,7 +157,7 @@ class DisciplinasController extends BaseController
             }
 
             flash()->success('Disciplina atualizada com sucesso.');
-            return redirect('/academico/disciplinas/index');
+            return redirect()->route('academico.disciplinas.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
