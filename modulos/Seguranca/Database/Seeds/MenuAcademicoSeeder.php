@@ -16,21 +16,30 @@ class MenuAcademicoSeeder extends Seeder
     {
         // Criando itens no menu
 
+        // Categoria Dashboard
+        $dashboard = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_nome' => 'Dashboard',
+            'mit_icone' => 'fa fa-dashboard',
+            'mit_ordem' => 1
+        ]);
+
+        // Item Inicio
+        $inicio = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_item_pai' => $dashboard->mit_id,
+            'mit_nome' => 'Inicio',
+            'mit_icone' => 'fa fa-home',
+            'mit_rota' => 'academico.index.index',
+            'mit_ordem' => 1
+        ]);
+
       // Categoria Cadastros
       $cadastro = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_nome' => 'Cadastros',
           'mit_icone' => 'fa fa-plus',
-          'mit_ordem' => 1
-      ]);
-
-        $dashboard = MenuItem::create([
-          'mit_mod_id' => 3,
-          'mit_item_pai' => $cadastro->mit_id,
-          'mit_nome' => 'Dashboard',
-          'mit_icone' => 'fa fa-cubes',
-          'mit_rota' => 'academico.index.index',
-          'mit_ordem' => 1
+          'mit_ordem' => 2
       ]);
 
       // Subcategoria Institucional
@@ -40,7 +49,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_nome' => 'Institucional',
           'mit_icone' => 'fa fa-graduation-cap',
           'mit_visivel' => 1,
-          'mit_ordem' => 2
+          'mit_ordem' => 1
       ]);
 
         $polos = MenuItem::create([
@@ -76,7 +85,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_item_pai' => $cadastro->mit_id,
           'mit_nome' => 'Pessoas',
           'mit_icone' => 'fa fa-plus',
-          'mit_ordem' => 3
+          'mit_ordem' => 2
       ]);
 
         $alunos = MenuItem::create([
@@ -114,7 +123,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_item_pai' => $cadastro->mit_id,
           'mit_nome' => 'Educação',
           'mit_icone' => 'fa fa-plus',
-          'mit_ordem' => 4
+          'mit_ordem' => 3
       ]);
 
         $vinculos = MenuItem::create([
@@ -158,8 +167,8 @@ class MenuAcademicoSeeder extends Seeder
       $processos = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_nome' => 'Processos',
-          'mit_icone' => 'fa fa-plus',
-          'mit_ordem' => 2
+          'mit_icone' => 'fa fa-exchange',
+          'mit_ordem' => 3
       ]);
 
       // Subcategoria Ofertas
@@ -258,7 +267,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_nome' => 'Documentos',
           'mit_icone' => 'fa fa-file-text-o',
-          'mit_ordem' => 3
+          'mit_ordem' => 4
       ]);
 
       // Subcategorias Históricos
@@ -266,7 +275,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $documentos->mit_id,
           'mit_nome' => 'Históricos',
-          'mit_icone' => 'fa fa-file-text-o',
+          'mit_icone' => 'fa fa-chevron-right',
           'mit_ordem' => 1
       ]);
 
@@ -293,7 +302,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $documentos->mit_id,
           'mit_nome' => 'Conclusão',
-          'mit_icone' => 'fa fa-plus',
+          'mit_icone' => 'fa fa-chevron-right',
           'mit_ordem' => 2
       ]);
 
@@ -310,8 +319,8 @@ class MenuAcademicoSeeder extends Seeder
       $relatorios = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_nome' => 'Relatórios',
-          'mit_icone' => 'fa fa-file-text-o',
-          'mit_ordem' => 4
+          'mit_icone' => 'fa fa-copy',
+          'mit_ordem' => 5
       ]);
 
       // Subcategoria Matriculas
@@ -319,7 +328,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $relatorios->mit_id,
           'mit_nome' => 'Matrículas',
-          'mit_icone' => 'fa fa-file-text-o',
+          'mit_icone' => 'fa fa-list-alt',
           'mit_ordem' => 1
       ]);
 

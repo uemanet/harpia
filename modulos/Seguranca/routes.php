@@ -20,15 +20,6 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::post('/atribuirpermissoes', '\Modulos\Seguranca\Http\Controllers\PerfisController@postAtribuirpermissoes')->name('seguranca.perfis.atribuirpermissoes');
     });
 
-//    Route::group(['prefix' => 'permissoes'], function () {
-//        Route::get('/index', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getIndex')->name('seguranca.permissoes.index');
-//        Route::get('/create', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getCreate')->name('seguranca.permissoes.create');
-//        Route::post('/create', '\Modulos\Seguranca\Http\Controllers\PermissoesController@postCreate')->name('seguranca.permissoes.create');
-//        Route::get('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PermissoesController@getEdit')->name('seguranca.permissoes.edit');
-//        Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PermissoesController@putEdit')->name('seguranca.permissoes.edit');
-//        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\PermissoesController@postDelete')->name('seguranca.permissoes.delete');
-//    });
-
     Route::group(['prefix' => 'usuarios'], function () {
         Route::get('/', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getIndex')->name('seguranca.usuarios.index');
         Route::get('/create/{id?}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getCreate')->name('seguranca.usuarios.create')->middleware('verificapessoa');
@@ -41,17 +32,9 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::post('/deletarperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postDeletarperfil')->name('seguranca.usuarios.deletarperfil');
     });
 
-//    Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
-//        Route::group(['prefix' => 'categorias'], function () {
-//            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\CategoriasRecursos@getFindallbymodulo')->name('seguranca.async.categorias.findallbymodulo');
-//        });
-//
-//        Route::group(['prefix' => 'recursos'], function () {
-//            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Recursos@getFindallbymodulo')->name('seguranca.async.recursos.findallbymodulo');
-//        });
-//
-//        Route::group(['prefix' => 'perfis'], function () {
-//            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Perfis@getFindallbymodulo')->name('seguranca.async.perfis.findallbymodulo');
-//        });
-//    });
+    Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
+        Route::group(['prefix' => 'perfis'], function () {
+            Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Perfis@getFindallbymodulo')->name('seguranca.async.perfis.findallbymodulo');
+        });
+    });
 });

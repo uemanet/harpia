@@ -16,30 +16,50 @@ class MenuSegurancaSeeder extends Seeder
     {
         // Criando itens no menu
 
-      // Categoria Monitoramento
-      $seguranca = MenuItem::create([
-          'mit_mod_id' => 1,
-          'mit_nome' => 'Segurança',
-          'mit_icone' => 'fa fa-tachometer',
-          'mit_ordem' => 1
-      ]);
+        // Categoria Monitoramento
+        $seguranca = MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_nome' => 'Segurança',
+            'mit_icone' => 'fa fa-lock',
+            'mit_ordem' => 1
+        ]);
 
+        // Item Dashboard
+        $dashboard = MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_nome' => 'Dashboard',
+            'mit_item_pai' => $seguranca->mit_id,
+            'mit_icone' => 'fa fa-tachometer',
+            'mit_rota' => 'seguranca.index.index',
+            'mit_ordem' => 1
+        ]);
+
+        // Subcategoria Cadastros
+        $cadastros = MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_nome' => 'Cadastros',
+            'mit_item_pai' => $seguranca->mit_id,
+            'mit_icone' => 'fa fa-plus',
+            'mit_ordem' => 2
+        ]);
+
+        // Itens de cadastros
         $perfis = MenuItem::create([
-          'mit_mod_id' => 1,
-          'mit_item_pai' => $seguranca->mit_id,
-          'mit_nome' => 'Perfis',
-          'mit_icone' => 'fa fa-user-secret',
-          'mit_rota' => 'seguranca.perfis.index',
-          'mit_ordem' => 1
-      ]);
+        'mit_mod_id' => 1,
+        'mit_item_pai' => $cadastros->mit_id,
+        'mit_nome' => 'Perfis',
+        'mit_icone' => 'fa fa-user-secret',
+        'mit_rota' => 'seguranca.perfis.index',
+        'mit_ordem' => 1
+        ]);
 
         $usuarios = MenuItem::create([
-          'mit_mod_id' => 1,
-          'mit_item_pai' => $seguranca->mit_id,
-          'mit_nome' => 'Usuarios',
-          'mit_icone' => 'fa fa-users',
-          'mit_rota' => 'seguranca.usuarios.index',
-          'mit_ordem' => 2
-      ]);
+        'mit_mod_id' => 1,
+        'mit_item_pai' => $cadastros->mit_id,
+        'mit_nome' => 'Usuarios',
+        'mit_icone' => 'fa fa-users',
+        'mit_rota' => 'seguranca.usuarios.index',
+        'mit_ordem' => 2
+        ]);
     }
 }
