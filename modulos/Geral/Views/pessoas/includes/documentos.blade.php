@@ -40,7 +40,7 @@
                                           [
                                             'classButton' => 'btn btn-primary btn-sm',
                                             'icon' => 'fa fa-pencil',
-                                            'route' => 'geral.documentos.edit',
+                                            'route' => 'geral.pessoas.documentos.edit',
                                             'parameters' => ['id' => $documento->doc_id],
                                             'label' => '',
                                             'method' => 'get'
@@ -48,7 +48,7 @@
                                           [
                                               'classButton' => 'btn-delete btn btn-danger btn-sm',
                                               'icon' => 'fa fa-trash',
-                                              'route' => 'geral.documentos.delete',
+                                              'route' => 'geral.pessoas.documentos.delete',
                                               'id' => $documento->doc_id,
                                               'label' => '',
                                               'method' => 'post'
@@ -59,7 +59,7 @@
                                     <?php $botoes[] =  [
                                               'classButton' => 'btn btn-success btn-sm docAnexo',
                                               'icon' => 'fa fa-download',
-                                              'route' => 'geral.documentos.anexo',
+                                              'route' => 'geral.pessoas.documentos.anexo',
                                               'parameters' => ['id' => $documento->doc_id],
                                               'label' => '',
                                               'method' => 'get'
@@ -85,7 +85,7 @@
                   [
                     'classButton' => 'btn btn-primary',
                     'icon' => 'fa fa-plus-square',
-                    'route' => 'geral.documentos.create',
+                    'route' => 'geral.pessoas.documentos.create',
                     'parameters' => ['id' => $pessoa->pes_id],
                     'label' => ' Novo Documento',
                     'method' => 'get'

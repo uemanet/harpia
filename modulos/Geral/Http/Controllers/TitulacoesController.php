@@ -99,7 +99,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação criada com sucesso.');
-            return redirect('/geral/titulacoes/index');
+            return redirect()->route('geral.titulacoes.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -129,7 +129,7 @@ class TitulacoesController extends BaseController
 
             if (!$titulacao) {
                 flash()->error('Titulação não existe.');
-                return redirect('geral/titulacoes/index');
+                return redirect()->route('geral.titulacoes.index');
             }
 
             $requestData = $request->only($this->titulacaoRepository->getFillableModelFields());
@@ -140,7 +140,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação atualizada com sucesso.');
-            return redirect('/geral/titulacoes/index');
+            return redirect()->route('geral.titulacoes.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

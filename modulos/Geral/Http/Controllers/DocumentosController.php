@@ -124,7 +124,7 @@ class DocumentosController extends BaseController
         }
     }
 
-    public function getEdit($documentoId, Request $request)
+    public function getEdit($documentoId)
     {
         $documento = $this->documentoRepository->find($documentoId);
 

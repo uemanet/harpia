@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de edição de pessoa</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($pessoa,["url" => url('/') . "/geral/pessoas/edit/$pessoa->pes_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($pessoa,["route" => ['geral.pessoas.edit',$pessoa->pes_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Geral::pessoas.includes.formulario')
 
                 <div class="row">

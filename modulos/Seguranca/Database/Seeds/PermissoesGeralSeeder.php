@@ -64,31 +64,31 @@ class PermissoesGeralSeeder extends Seeder
         //permissões do recurso documentos
         $permissao = Permissao::create([
             'prm_nome' => 'create',
-            'prm_rota' => 'geral.documentos.create'
+            'prm_rota' => 'geral.pessoas.documentos.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'edit',
-            'prm_rota' => 'geral.documentos.edit'
+            'prm_rota' => 'geral.pessoas.documentos.edit'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'delete',
-            'prm_rota' => 'geral.documentos.delete'
+            'prm_rota' => 'geral.pessoas.documentos.delete'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'deleteanexo',
-            'prm_rota' => 'geral.documentos.deleteanexo'
+            'prm_rota' => 'geral.pessoas.documentos.deleteanexo'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'anexo',
-            'prm_rota' => 'geral.documentos.anexo'
+            'prm_rota' => 'geral.pessoas.documentos.anexo'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
@@ -98,7 +98,6 @@ class PermissoesGeralSeeder extends Seeder
             'prm_rota' => 'geral.titulacoes.index'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
-
 
         $permissao = Permissao::create([
             'prm_nome' => 'create',
@@ -121,19 +120,19 @@ class PermissoesGeralSeeder extends Seeder
         //permissões do recurso titulacoesinformacoes
         $permissao = Permissao::create([
             'prm_nome' => 'create',
-            'prm_rota' => 'geral.titulacoesinformacoes.create'
+            'prm_rota' => 'geral.pessoas.titulacoesinformacoes.create'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'edit',
-            'prm_rota' => 'geral.titulacoesinformacoes.edit'
+            'prm_rota' => 'geral.pessoas.titulacoesinformacoes.edit'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
             'prm_nome' => 'delete',
-            'prm_rota' => 'geral.titulacoesinformacoes.delete'
+            'prm_rota' => 'geral.pessoas.titulacoesinformacoes.delete'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
