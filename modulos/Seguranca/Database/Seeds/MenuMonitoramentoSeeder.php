@@ -16,21 +16,30 @@ class MenuMonitoramentoSeeder extends Seeder
     {
         // Criando itens no menu
 
-      // Categoria Monitoramento
-      $cadastro = MenuItem::create([
-          'mit_mod_id' => 5,
-          'mit_nome' => 'Monitoramento',
-          'mit_icone' => 'fa fa-tachometer',
-          'mit_ordem' => 1
-      ]);
+        // Categoria Monitoramento
+        $monitoramento = MenuItem::create([
+            'mit_mod_id' => 5,
+            'mit_nome' => 'Monitoramento',
+            'mit_icone' => 'fa fa-tachometer',
+            'mit_ordem' => 1
+        ]);
 
         $dashboard = MenuItem::create([
-          'mit_mod_id' => 5,
-          'mit_item_pai' => $cadastro->mit_id,
-          'mit_nome' => 'Tempo Online',
-          'mit_icone' => 'fa fa-bar-chart',
-          'mit_rota' => 'monitoramento.tempoonline.index',
-          'mit_ordem' => 1
-      ]);
+            'mit_mod_id' => 5,
+            'mit_item_pai' => $monitoramento->mit_id,
+            'mit_nome' => 'Dashboard',
+            'mit_icone' => 'fa fa-dashboard',
+            'mit_rota' => 'monitoramento.index.index',
+            'mit_ordem' => 1
+        ]);
+
+        $tempoOnline = MenuItem::create([
+            'mit_mod_id' => 5,
+            'mit_item_pai' => $monitoramento->mit_id,
+            'mit_nome' => 'Tempo Online',
+            'mit_icone' => 'fa fa-bar-chart',
+            'mit_rota' => 'monitoramento.tempoonline.index',
+            'mit_ordem' => 2
+        ]);
     }
 }
