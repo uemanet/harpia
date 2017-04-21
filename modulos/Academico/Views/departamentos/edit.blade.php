@@ -18,7 +18,7 @@
             <h3 class="box-title">Formulário de edição de departamento</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($departamento,["url" => url('/') . "/academico/departamentos/edit/$departamento->dep_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($departamento,["route" => ['academico.departamentos.edit',$departamento->dep_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                  @include('Academico::departamentos.includes.formulario')
             {!! Form::close() !!}
         </div>

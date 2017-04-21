@@ -47,7 +47,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $cadastro->mit_id,
           'mit_nome' => 'Institucional',
-          'mit_icone' => 'fa fa-graduation-cap',
+          'mit_icone' => 'fa fa-university',
           'mit_visivel' => 1,
           'mit_ordem' => 1
       ]);
@@ -84,7 +84,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $cadastro->mit_id,
           'mit_nome' => 'Pessoas',
-          'mit_icone' => 'fa fa-plus',
+          'mit_icone' => 'fa fa-group',
           'mit_ordem' => 2
       ]);
 
@@ -122,7 +122,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $cadastro->mit_id,
           'mit_nome' => 'Educação',
-          'mit_icone' => 'fa fa-plus',
+          'mit_icone' => 'fa fa-graduation-cap',
           'mit_ordem' => 3
       ]);
 
@@ -176,7 +176,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $processos->mit_id,
           'mit_nome' => 'Ofertas',
-          'mit_icone' => 'fa fa-plus',
+          'mit_icone' => 'fa fa-chevron-right',
           'mit_ordem' => 1
       ]);
 
@@ -185,7 +185,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_item_pai' => $ofertas->mit_id,
           'mit_nome' => 'Cursos',
           'mit_rota' => 'academico.ofertascursos.index',
-          'mit_icone' => 'fa fa-circle-o',
+          'mit_icone' => 'fa fa-university',
           'mit_ordem' => 1
       ]);
 
@@ -194,7 +194,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_item_pai' => $ofertas->mit_id,
           'mit_nome' => 'Disciplinas',
           'mit_rota' => 'academico.ofertasdisciplinas.index',
-          'mit_icone' => 'fa fa-circle-o',
+          'mit_icone' => 'fa fa-address-book',
           'mit_visivel' => 1,
           'mit_ordem' => 2
       ]);
@@ -204,7 +204,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $processos->mit_id,
           'mit_nome' => 'Matrículas',
-          'mit_icone' => 'fa fa-plus',
+          'mit_icone' => 'fa fa-chevron-right',
           'mit_ordem' => 2
       ]);
 
@@ -240,7 +240,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_mod_id' => 3,
           'mit_item_pai' => $processos->mit_id,
           'mit_nome' => 'Conclusão',
-          'mit_icone' => 'fa fa-plus',
+          'mit_icone' => 'fa fa-chevron-right',
           'mit_ordem' => 3
       ]);
 
