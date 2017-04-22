@@ -541,6 +541,20 @@ class PermissoesAcademicoSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
 
+        //permissões do recurso matriculasofertasdisciplinas
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.matriculasofertasdisciplinas.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'pdf',
+            'prm_rota' => 'academico.matriculasofertasdisciplinas.show'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
 
         //permissões do recurso relatoriosmatriculasdisciplinas
         $permissao = Permissao::create([
