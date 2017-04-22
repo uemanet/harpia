@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/geral/titulacoes/index') }}">
+                <form method="GET" action="{{ route('geral.titulacoes.index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="tit_nome" id="tit_nome" value="{{Input::get('tit_nome')}}" placeholder="Nome da titulação">
                     </div>
