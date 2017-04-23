@@ -52,7 +52,7 @@ class GruposController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.grupos.get.create')->setParameters(['id' => $turmaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.grupos.create')->setParameters(['id' => $turmaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
@@ -118,8 +118,10 @@ class GruposController extends BaseController
         return view('Academico::grupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'turma' => $turma, 'oferta' => $oferta]);
     }
 
-    public function getCreate($turmaId)
+    public function getCreate(Request $request)
     {
+        $turmaId = $request->get('id');
+
         $turma = $this->turmaRepository->find($turmaId);
 
         if (!$turma) {

@@ -118,7 +118,7 @@ class Vinculo
      */
     private function handleTurmas($request, Closure $next)
     {
-        $id = $request->id;
+        $id = $request->get('id');
         $action = $this->actionName($request);
 
         if (is_null($id)) {
@@ -164,7 +164,7 @@ class Vinculo
      */
     private function handleGrupos($request, Closure $next)
     {
-        $id = $request->id;
+        $id = $request->get('id');
         $action = $this->actionName($request);
 
         if (is_null($id)) {
@@ -211,7 +211,7 @@ class Vinculo
      */
     private function handleTutoresGrupos($request, Closure $next)
     {
-        $id = $request->id;
+        $id = $request->get('id');
         $action = $this->actionName($request);
 
         if (is_null($id)) {

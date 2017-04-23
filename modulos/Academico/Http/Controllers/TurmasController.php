@@ -39,7 +39,7 @@ class TurmasController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.get.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
 
         $actionButtons[] = $btnNovo;
@@ -108,8 +108,10 @@ class TurmasController extends BaseController
         return view('Academico::turmas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'ofertacurso' => $ofertacurso]);
     }
 
-    public function getCreate($ofertaId)
+    public function getCreate(Request $request)
     {
+        $ofertaId = $request->get('id');
+
         $oferta = $this->ofertacursoRepository->find($ofertaId);
 
         if (!$oferta) {
