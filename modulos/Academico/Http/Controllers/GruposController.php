@@ -52,7 +52,7 @@ class GruposController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/grupos/create/'.$turmaId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.grupos.get.create')->setParameters(['id' => $turmaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
@@ -86,21 +86,23 @@ class GruposController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-user',
-                                'action' => '/academico/tutoresgrupos/index/'.$id,
+                                'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Tutores',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/grupos/edit/'.$id,
+                                'route' => 'academico.ofertascursos.turmas.grupos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/grupos/delete',
+                                'route' => 'academico.ofertascursos.turmas.grupos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -165,7 +167,7 @@ class GruposController extends BaseController
             }
 
             flash()->success('Grupo criado com sucesso.');
-            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
+            return redirect()->route('academico.ofertascursos.turmas.grupos.index', $grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -229,7 +231,7 @@ class GruposController extends BaseController
             }
 
             flash()->success('Grupo atualizado com sucesso.');
-            return redirect('/academico/grupos/index/'.$grupo->grp_trm_id);
+            return redirect()->route('academico.ofertascursos.turmas.grupos.index', $grupo->grp_trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

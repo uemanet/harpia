@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/ofertascursos/index') }}">
+                <form method="GET" action="{{ route('academico.ofertascursos.index') }}">
                     <div class="col-md-4">
                         <input type="text" class="form-control" name="ofc_ano" id="ofc_ano" value="{{Input::get('ofc_ano')}}" placeholder="Ano da Oferta">
                     </div>

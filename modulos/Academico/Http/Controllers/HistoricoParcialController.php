@@ -54,7 +54,8 @@ class HistoricoParcialController extends BaseController
                         [
                             'classButton' => '',
                             'icon' => 'fa fa-eye',
-                            'action' => '/academico/historicoparcial/show/'.$id,
+                            'route' => 'academico.historicoparcial.show',
+                            'parameters' => ['id' => $id],
                             'label' => 'Visualizar',
                             'method' => 'get'
                         ]

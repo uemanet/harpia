@@ -79,7 +79,7 @@
                                     [
                                     'classButton' => 'btn btn-success',
                                     'icon' => 'fa fa-file-pdf-o',
-                                    'action' => '/academico/relatoriosmatriculascurso/pdf',
+                                    'route' => 'academico.relatoriosmatriculascurso.pdf',
                                     'label' => 'Exportar para PDF',
                                     'method' => 'post',
                                     'id' => '',

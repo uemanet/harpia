@@ -77,7 +77,8 @@
                                                                 [
                                                                     'classButton' => 'btn btn-primary modal-update-polo',
                                                                     'icon' => 'fa fa-pencil',
-                                                                    'action' => '/academico/matricularalunocurso/edit/' . $matricula->mat_id,
+                                                                    'route' => 'academico.matricularalunocurso.edit',
+                                                                    'parameters' => $matricula->mat_id,
                                                                     'label' => ' Atualizar Polo/Grupo',
                                                                     'method' => 'get',
                                                                     'attributes' => [
@@ -92,7 +93,8 @@
                                                                 [
                                                                     'classButton' => 'btn btn-primary modalButton',
                                                                     'icon' => 'fa fa-pencil',
-                                                                    'action' => '/academico/matricularalunocurso/edit/' . $matricula->mat_id,
+                                                                    'route' => 'academico.matricularalunocurso.edit',
+                                                                    'parameters' => $matricula->mat_id,
                                                                     'label' => 'Atualizar situação de Matricula',
                                                                     'method' => 'get',
                                                                     'attributes' => [
@@ -206,7 +208,8 @@
                         [
                             'classButton' => 'btn btn-primary',
                             'icon' => 'fa fa-plus-square',
-                            'action' => '/academico/matricularalunocurso/create/' . $aluno->alu_id,
+                            'route' => 'academico.matricularalunocurso.create',
+                            'parameters' => $aluno->alu_id,
                             'label' => ' Nova Matrícula',
                             'method' => 'get'
                         ],

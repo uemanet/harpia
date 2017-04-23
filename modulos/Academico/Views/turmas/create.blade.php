@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de cadastro de turmas</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/turmas/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'academico.ofertascursos.turmas.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::turmas.includes.formulario_create')
             {!! Form::close() !!}
         </div>

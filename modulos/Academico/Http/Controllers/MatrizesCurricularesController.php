@@ -42,7 +42,8 @@ class MatrizesCurricularesController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/matrizescurriculares/create/'.$cursoId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.get.create')
+                ->setParameters(['id' => $cursoId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -74,7 +75,8 @@ class MatrizesCurricularesController extends BaseController
                 ->modify('mtc_anx_projeto_pedagogico', function ($id) {
                     $button = new TButton();
                     $button->setName('Download do projeto')
-                        ->setAction('/academico/matrizescurriculares/anexo/'. $id)
+                        ->setRoute('academico.cursos.matrizescurriculares.anexo')
+                        ->setParameters(['id' => $id])
                         ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
 
                     return ActionButton::render(array($button));
@@ -90,21 +92,23 @@ class MatrizesCurricularesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-object-group',
-                                'action' => '/academico/modulosmatrizes/index/'.$id,
+                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Módulos',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/matrizescurriculares/edit/'.$id,
+                                'route' => 'academico.cursos.matrizescurriculares.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/matrizescurriculares/delete',
+                                'route' => 'academico.cursos.matrizescurriculares.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -189,7 +193,7 @@ class MatrizesCurricularesController extends BaseController
 
             flash()->success('Matriz Curricular criada com sucesso.');
             //Redireciona para o index de matrizes curriculares do curso
-            return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
+            return redirect()->route('academico.cursos.matrizescurriculares.index', $matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -257,7 +261,7 @@ class MatrizesCurricularesController extends BaseController
             DB::commit();
 
             flash()->success('Matriz Curricular atualizada com sucesso.');
-            return redirect('/academico/matrizescurriculares/index/'.$matrizCurricular->mtc_crs_id);
+            return redirect()->route('academico.cursos.matrizescurriculares.index', $matrizCurricular->mtc_crs_id);
         } catch (\Exception $e) {
             DB::rollBack();
             if (config('app.debug')) {
@@ -268,7 +272,6 @@ class MatrizesCurricularesController extends BaseController
             return redirect()->back();
         }
     }
-
 
     public function postDelete(Request $request)
     {

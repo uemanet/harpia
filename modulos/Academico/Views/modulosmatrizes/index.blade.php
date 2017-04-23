@@ -31,14 +31,15 @@
                         [
                             'classButton' => 'btn btn-box-tool',
                             'icon' => 'fa fa-pencil',
-                            'action' => '/academico/modulosmatrizes/edit/'.$modulo->mdo_id,
+                            'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.edit',
+                            'parameters' => ['id' => $modulo->mdo_id],
                             'label' => 'Editar',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => 'btn btn-box-tool btn-delete',
                             'icon' => 'fa fa-trash',
-                            'action' => '/academico/modulosmatrizes/delete',
+                            'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.delete',
                             'id' => $modulo->mdo_id,
                             'label' => 'Excluir',
                             'method' => 'post'
@@ -91,7 +92,8 @@
                         [
                             'classButton' => 'btn btn-success',
                             'icon' => 'fa fa-cogs',
-                            'action' => '/academico/modulosmatrizes/gerenciardisciplinas/'.$modulo->mdo_id,
+                            'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.gerenciardisciplinas',
+                            'parameters' => ['id' => $modulo->mdo_id],
                             'label' => 'Gerenciar disciplinas do módulo',
                             'method' => 'get'
                         ],

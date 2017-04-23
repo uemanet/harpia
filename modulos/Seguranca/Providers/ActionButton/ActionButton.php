@@ -21,7 +21,7 @@ class ActionButton
 
         foreach ($buttons as $key => $button) {
             if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getRoute())) {
-                $render .= '<a href="'.route($button->getRoute(), $button->setParameters()).'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
+                $render .= '<a href="'.route($button->getRoute(), $button->getParameters()).'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
             }
         }
 
@@ -61,13 +61,12 @@ class ActionButton
 
             foreach ($buttons as $key => $button) {
                 $rota = $button['route'];
+                $parameters = isset($button['parameters']) ? $button['parameters'] : [];
 
                 if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
                     $flag += 1;
 
                     if ($button['method'] == 'get') {
-                        $parameters = $button['parameters'];
-
                         $render.= '<li>';
                         $render .= '<a href="'.route($rota, $parameters).'" class="'.$button['classButton'].'">';
                         $render .= '<i class="'.$button['icon'].'"></i> '.$button['label'];
@@ -77,7 +76,7 @@ class ActionButton
                     }
 
                     $render.= '<li>';
-                    $render .= '<form action="'.route($rota).'" method="'.strtoupper($button['method']).'" class="form-singlebutton">';
+                    $render .= '<form action="'.route($rota, $parameters).'" method="'.strtoupper($button['method']).'" class="form-singlebutton">';
                     $render .= '<input type="hidden" name="id" value="'.$button['id'].'">';
                     $render .= '<input type="hidden" name="_token" value="'.csrf_token().'">';
                     $render .= '<input type="hidden" name="_method" value="'.strtoupper($button['method']).'">';
@@ -103,7 +102,7 @@ class ActionButton
 
         foreach ($buttons as $key => $button) {
             $rota = $button['route'];
-            $parameters = $button['parameters'];
+            $parameters = isset($button['parameters']) ? $button['parameters'] : [];
 
             if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
                 if ($config['showLabel']) {
@@ -136,13 +135,12 @@ class ActionButton
 
             foreach ($buttons as $key => $button) {
                 $rota = $button['route'];
+                $parameters = isset($button['parameters']) ? $button['parameters'] : [];
 
                 if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
                     $flag += 1;
 
                     if ($button['method'] == 'get') {
-                        $parameters = $button['parameters'];
-
                         $render .= '<td style="padding-right: 5px">';
                         $render .= '<div class="btn-group">';
                         $render .= '<a href="'.route($rota, $parameters).'" class="'.$button['classButton'].'" ';
@@ -163,7 +161,7 @@ class ActionButton
 
                     $render .= '<td style="padding-right: 5px">';
                     $render .= '<div class="btn-group">';
-                    $render .= '<form action="'.route($rota).'" method="'.strtoupper($button['method']).'" class="form-linebutton">';
+                    $render .= '<form action="'.route($rota, $parameters).'" method="'.strtoupper($button['method']).'" class="form-linebutton">';
                     $render .= '<input type="hidden" name="id" value="'.$button['id'].'">';
                     $render .= '<input type="hidden" name="_token" value="'.csrf_token().'">';
                     $render .= '<input type="hidden" name="_method" value="'.strtoupper($button['method']).'">';

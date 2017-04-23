@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de edição de polos</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($polo, ["url" => url('/') . "/academico/polos/edit/$polo->pol_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($polo, ["route" => ['academico.polos.edit',$polo->pol_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::polos.includes.formulario')
             {!! Form::close() !!}
 

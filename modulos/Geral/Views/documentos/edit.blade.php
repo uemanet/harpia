@@ -19,7 +19,7 @@
             <h3 class="box-title">Formulário de edição de documento</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($documento,["url" => url('/') . "/geral/documentos/edit/$documento->doc_id", "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            {!! Form::model($documento,["route" => ['geral.pessoas.documentos.edit',$documento->doc_id], "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
                  @include('Geral::documentos.includes.formulario_edit')
             {!! Form::close() !!}
         </div>

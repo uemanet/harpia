@@ -48,7 +48,7 @@ class AmbientesVirtuaisController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/integracao/ambientesvirtuais/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('integracao.ambientesvirtuais.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -78,28 +78,31 @@ class AmbientesVirtuaisController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => '/integracao/ambientesvirtuais/adicionarturma/'. $id,
+                                'route' => 'integracao.ambientesvirtuais.adicionarturma',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-server',
-                                'action' => '/integracao/ambientesvirtuais/adicionarservico/'. $id,
+                                'route' => 'integracao.ambientesvirtuais.adicionarservico',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Web Services',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/integracao/ambientesvirtuais/edit/' . $id,
+                                'route' => 'integracao.ambientesvirtuais.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/integracao/ambientesvirtuais/delete',
+                                'route' => 'integracao.ambientesvirtuais.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -131,7 +134,7 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             flash()->success('Ambiente Virtual criado com sucesso.');
-            return redirect('/integracao/ambientesvirtuais/index');
+            return redirect()->route('integracao.ambientesvirtuais.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -161,7 +164,7 @@ class AmbientesVirtuaisController extends BaseController
 
             if (!$ambientevirtual) {
                 flash()->error('Ambiente Virtual não existe.');
-                return redirect('integracao/ambientesvirtuais/index');
+                return redirect()->route('integracao.ambientesvirtuais.index');
             }
 
             $requestData = $request->only($this->ambienteVirtualRepository->getFillableModelFields());
@@ -172,7 +175,7 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             flash()->success('Ambiente Virtual atualizado com sucesso.');
-            return redirect('/integracao/ambientesvirtuais/index');
+            return redirect()->route('integracao.ambientesvirtuais.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

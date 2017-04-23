@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de cadastro de módulos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/modulosmatrizes/create", "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            {!! Form::open(["route" => 'academico.cursos.matrizescurriculares.modulosmatrizes.create', "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
                  @include('Academico::modulosmatrizes.includes.formulario')
             {!! Form::close() !!}
         </div>

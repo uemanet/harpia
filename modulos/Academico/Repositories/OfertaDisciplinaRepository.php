@@ -23,9 +23,6 @@ class OfertaDisciplinaRepository extends BaseRepository
                         ->join('acd_disciplinas', function ($join) {
                             $join->on('mdc_dis_id', '=', 'dis_id');
                         })
-                        ->join('acd_matriculas_ofertas_disciplinas', function ($join) {
-                            $join->on('ofd_id', '=', 'mof_ofd_id');
-                        })
                         ->join('acd_professores', function ($join) {
                             $join->on('ofd_prf_id', '=', 'prf_id');
                         })

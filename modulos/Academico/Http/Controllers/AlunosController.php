@@ -63,7 +63,7 @@ class AlunosController extends BaseController
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'route' => 'academico.alunos.edit',
-                                'parameters' => ['id' => '$id'],
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
@@ -86,8 +86,10 @@ class AlunosController extends BaseController
         return view('Academico::alunos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate($pessoaId = null)
+    public function getCreate(Request $request)
     {
+        $pessoaId = $request->get('id');
+        
         if (!is_null($pessoaId)) {
             $pessoa = $this->pessoaRepository->findById($pessoaId);
 

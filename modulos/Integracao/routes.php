@@ -1,12 +1,10 @@
 <?php
 
 Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
-    Route::group(['prefix' => 'index'], function () {
-        Route::get('/', '\Modulos\Integracao\Http\Controllers\IndexController@getIndex')->name('integracao.index.index');
-    });
+    Route::get('/', '\Modulos\Integracao\Http\Controllers\IndexController@getIndex')->name('integracao.index.index');
 
     Route::group(['prefix' => 'ambientesvirtuais'], function () {
-        Route::get('/index', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getIndex')->name('integracao.ambientesvirtuais.index');
+        Route::get('/', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getIndex')->name('integracao.ambientesvirtuais.index');
         Route::get('/create', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getCreate')->name('integracao.ambientesvirtuais.create');
         Route::post('/create', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postCreate')->name('integracao.ambientesvirtuais.create');
         Route::get('/edit/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getEdit')->name('integracao.ambientesvirtuais.edit');

@@ -37,35 +37,11 @@ class ControleRegistroController
                 'reg_id' => '#',
                 'reg_mat_id' => 'Matrícula',
                 'reg_liv_id' => 'Livro',
-                'reg_action' => 'Ações'
-            ))
-                ->modifyCell('reg_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('reg_action', 'reg_id')
-                ->modify('reg_action', function ($id) {
-                    return ActionButton::grid([
-                        'type' => 'SELECT',
-                        'config' => [
-                            'classButton' => 'btn-default',
-                            'label' => 'Selecione'
-                        ],
-                        'buttons' => [
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-eye',
-                                'action' => '/academico/certificacao/show/'.$id,
-                                'label' => 'Visualizar',
-                                'method' => 'get'
-                            ]
-                        ]
-                    ]);
-                })
-                ->sortable(array('reg_id', 'reg_mat_id'));
+            ))->sortable(array('reg_id', 'reg_mat_id'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Academico::controlederegistro.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('Academico::controlederegistro.index', ['tabela' => $tabela, 'paginacao' => $paginacao]);
     }
 }

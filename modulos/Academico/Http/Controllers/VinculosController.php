@@ -50,7 +50,7 @@ class VinculosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-link',
-                                'route' => 'academico.usuarioscursos.vinculos',
+                                'route' => 'academico.vinculos.vinculos',
                                 'parameters' => ['id' => $id],
                                 'label' => 'Vínculos',
                                 'method' => 'get',
@@ -81,7 +81,7 @@ class VinculosController extends BaseController
         $data = $this->vinculoRepository->paginateCursosVinculados($usuarioId);
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Adicionar vínculo')->setRoute('academico.usuarioscursos.create')->setParameters(['id' =>$usuarioId])->setIcon('fa fa-link')->setStyle('btn bg-olive');
+        $btnNovo->setName('Adicionar vínculo')->setRoute('academico.vinculos.create')->setParameters(['id' =>$usuarioId])->setIcon('fa fa-link')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
         $tabela = null;
@@ -106,7 +106,7 @@ class VinculosController extends BaseController
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-unlink',
-                                'route' => 'academico.usuarioscursos.delete',
+                                'route' => 'academico.vinculos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir vínculo',
                                 'method' => 'post',

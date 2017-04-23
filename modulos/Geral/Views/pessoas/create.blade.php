@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de cadastro de pessoas</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/geral/pessoas/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'geral.pessoas.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
                 @include('Geral::pessoas.includes.formulario')
 
                 <div class="row">

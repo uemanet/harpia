@@ -67,7 +67,7 @@
                                         [
                                             'classButton' => 'btn btn-danger btn-delete',
                                             'icon' => 'fa fa-trash',
-                                            'action' => '/integracao/ambientesvirtuais/deletarturma/'.$ambienteturma->atr_id,
+                                            'route' => 'integracao.ambientesvirtuais.deletarturma',
                                             'id' => $ambienteturma->atr_id,
                                             'label' => '',
                                             'method' => 'post'

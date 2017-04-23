@@ -21,7 +21,7 @@ class TitulacoesController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/geral/titulacoes/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('geral.titulacoes.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -52,14 +52,15 @@ class TitulacoesController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/geral/titulacoes/edit/' . $id,
+                                'route' => 'geral.titulacoes.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/geral/titulacoes/delete',
+                                'route' => 'geral.titulacoes.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -98,7 +99,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação criada com sucesso.');
-            return redirect('/geral/titulacoes/index');
+            return redirect()->route('geral.titulacoes.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -128,7 +129,7 @@ class TitulacoesController extends BaseController
 
             if (!$titulacao) {
                 flash()->error('Titulação não existe.');
-                return redirect('geral/titulacoes/index');
+                return redirect()->route('geral.titulacoes.index');
             }
 
             $requestData = $request->only($this->titulacaoRepository->getFillableModelFields());
@@ -139,7 +140,7 @@ class TitulacoesController extends BaseController
             }
 
             flash()->success('Titulação atualizada com sucesso.');
-            return redirect('/geral/titulacoes/index');
+            return redirect()->route('geral.titulacoes.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

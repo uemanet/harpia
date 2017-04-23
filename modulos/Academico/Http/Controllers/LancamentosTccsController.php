@@ -71,7 +71,8 @@ class LancamentosTccsController extends BaseController
                             [
                                 'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-user',
-                                'action' => '/academico/lancamentostccs/alunosturma/'.$id,
+                                'route' => 'academico.lancamentostccs.alunosturma',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Alunos',
                                 'method' => 'get'
                             ]
@@ -107,8 +108,11 @@ class LancamentosTccsController extends BaseController
         return view('Academico::lancamentostccs.alunosturma', compact('turma', 'dados', 'disciplina'));
     }
 
-    public function getCreate($alunoId, $turmaId)
+    public function getCreate(Request $request)
     {
+        $turmaId = $request->get('turma');
+        $alunoId = $request->get('aluno');
+
         $turma = $this->turmaRepository->find($turmaId);
 
         if (!$turma) {
@@ -165,10 +169,12 @@ class LancamentosTccsController extends BaseController
         return $anexo;
     }
 
-    public function postCreate($turmaId, LancamentoTccRequest $request)
+    public function postCreate(LancamentoTccRequest $request)
     {
         try {
-            $dados = $request->all();
+            $dados = $request->except('trm_id');
+
+            $turmaId = $request->input('trm_id');
 
             if ($request->file('ltc_file') != null) {
                 $anexoDocumento = $request->file('ltc_file');
@@ -202,7 +208,7 @@ class LancamentosTccsController extends BaseController
             $matricula->save();
 
             flash()->success('Lançamento de TCC criado com sucesso.');
-            return redirect('/academico/lancamentostccs/alunosturma/'.$turmaId);
+            return redirect()->route('academico.lancamentostccs.alunosturma', $turmaId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -248,7 +254,7 @@ class LancamentosTccsController extends BaseController
 
             if (!$lancamentotcc) {
                 flash()->error('Lançamento de TCC não existe.');
-                return redirect('academico/lancamentotccs/index');
+                return redirect()->route('academico.lancamentostccs.index');
             }
 
             $dados = $request->only($this->lancamentotccRepository->getFillableModelFields());
@@ -302,7 +308,7 @@ class LancamentosTccsController extends BaseController
             }
 
             flash()->success('Lançamento de TCC atualizado com sucesso.');
-            return redirect('/academico/lancamentostccs/alunosturma/'.$lancamentotcc->matriculaCurso->turma->trm_id);
+            return redirect()->route('academico.lancamentostccs.alunosturma', $lancamentotcc->matriculaCurso->turma->trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

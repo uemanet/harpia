@@ -19,7 +19,7 @@
             <h3 class="box-title">Formulário de cadastro de cursos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/cursos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'academico.cursos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::cursos.includes.formulario')
             {!! Form::close() !!}
         </div>

@@ -15,7 +15,7 @@
             <span class="label label-primary pull-right">Professor</span>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/professores/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'academico.professores.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
 
             <h4 class="box-title">
                 Dados de Pessoa

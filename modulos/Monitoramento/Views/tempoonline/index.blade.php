@@ -38,7 +38,8 @@
                                             [
                                                 'classButton' => 'text-blue',
                                                 'icon' => 'fa fa-eye',
-                                                'action' => '/monitoramento/tempoonline/monitorar/'.$ambiente->amb_id,
+                                                'action' => 'monitoramento.tempoonline.monitorar',
+                                                'parameters' => ['id' => $ambiente->amb_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ]

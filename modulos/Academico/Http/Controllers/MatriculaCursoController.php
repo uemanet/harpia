@@ -54,7 +54,8 @@ class MatriculaCursoController extends BaseController
                             [
                                 'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/matricularalunocurso/show/' . $id,
+                                'route' => 'academico.matricularalunocurso.show',
+                                'parameters' => ['id' => $id],
                                 'label' => '',
                                 'method' => 'get'
                             ],

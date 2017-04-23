@@ -19,7 +19,7 @@
             <h3 class="box-title">Formulário de edição de curso</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($curso,["url" => url('/') . "/academico/cursos/edit/$curso->crs_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($curso,["route" => ['academico.cursos.edit',$curso->crs_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                  @include('Academico::cursos.includes.formulario')
             {!! Form::close() !!}
         </div>

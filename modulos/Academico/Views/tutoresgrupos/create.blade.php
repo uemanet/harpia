@@ -19,7 +19,7 @@
             <h3 class="box-title">Formulário de vínculo de tutores</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/tutoresgrupos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::tutoresgrupos.includes.formulario')
             {!! Form::close() !!}
         </div>

@@ -44,7 +44,8 @@
                                             [
                                                 'classButton' => 'btn btn-success',
                                                 'icon' => 'fa fa-plus',
-                                                'action' => '/academico/lancamentostccs/create/'.$dado->alu_id.'/'.$turma->trm_id,
+                                                'route' => 'academico.lancamentostccs.create',
+                                                'parameters' => ['aluno' => $dado->alu_id,'turma' => $turma->trm_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ]
@@ -59,7 +60,8 @@
                                             [
                                                 'classButton' => 'btn btn-primary',
                                                 'icon' => 'fa fa-edit',
-                                                'action' => '/academico/lancamentostccs/edit/'.$dado->mat_ltc_id,
+                                                'route' => 'academico.lancamentostccs.edit',
+                                                'parameters' => ['id' => $dado->mat_ltc_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ]
@@ -74,14 +76,16 @@
                                             [
                                                 'classButton' => 'btn btn-primary',
                                                 'icon' => 'fa fa-edit',
-                                                'action' => '/academico/lancamentostccs/edit/'.$dado->mat_ltc_id,
+                                                'route' => 'academico.lancamentostccs.edit',
+                                                'parameters' => ['id' => $dado->mat_ltc_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ],
                                             [
                                                 'classButton' => 'btn btn-warning docAnexo',
                                                 'icon' => 'fa fa-download',
-                                                'action' => '/academico/lancamentostccs/anexo/' . $dado->ltc_id,
+                                                'route' => 'academico.lancamentostccs.anexo',
+                                                'parameters' => ['id' => $dado->ltc_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ]
