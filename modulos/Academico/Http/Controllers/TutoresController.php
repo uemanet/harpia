@@ -86,8 +86,10 @@ class TutoresController extends BaseController
         return view('Academico::tutores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate($pessoaId = null)
+    public function getCreate(Request $request)
     {
+        $pessoaId = $request->get('id');
+
         if (!is_null($pessoaId)) {
             $pessoa = $this->pessoaRepository->findById($pessoaId);
 

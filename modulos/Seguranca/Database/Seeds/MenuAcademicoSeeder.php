@@ -262,6 +262,15 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 2
       ]);
 
+        $controleregistro = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_item_pai' => $processoconclusao->mit_id,
+            'mit_nome' => 'Controle de Registro',
+            'mit_rota' => 'academico.controlederegistro.index',
+            'mit_icone' => 'fa fa-book',
+            'mit_ordem' => 3
+        ]);
+
       // Categoria Documentos
       $documentos = MenuItem::create([
           'mit_mod_id' => 3,
