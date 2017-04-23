@@ -42,7 +42,7 @@ class MatrizesCurricularesController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.get.create')
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.create')
                 ->setParameters(['id' => $cursoId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
@@ -123,8 +123,9 @@ class MatrizesCurricularesController extends BaseController
         return view('Academico::matrizescurriculares.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'curso' => $curso]);
     }
 
-    public function getCreate($cursoId, Request $request = null)
+    public function getCreate(Request $request)
     {
+        $cursoId = $request->get('id');
         $curso = $this->cursoRepository->listsByCursoId($cursoId);
 
         if (is_null($curso)) {

@@ -50,7 +50,7 @@ class TutoresGruposController extends BaseController
         $btnNovo = new TButton();
         if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
             $btnNovo->setName('Vincular Tutor')
-                ->setRoute('academico.ofertascursos.turmas.grupos.tutoresgrupos.get.create')
+                ->setRoute('academico.ofertascursos.turmas.grupos.tutoresgrupos.create')
                 ->setParameters(['id' => $grupoId])->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
         }
 
@@ -107,8 +107,9 @@ class TutoresGruposController extends BaseController
         return view('Academico::tutoresgrupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'grupo' => $grupo, 'turma' => $turma, 'oferta' => $oferta]);
     }
 
-    public function getCreate($grupoId)
+    public function getCreate(Request $request)
     {
+        $grupoId = $request->get('id');
         $grupo = $this->grupoRepository->find($grupoId);
 
         if (is_null($grupo)) {

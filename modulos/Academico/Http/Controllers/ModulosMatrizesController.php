@@ -40,7 +40,7 @@ class ModulosMatrizesController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.modulosmatrizes.get.create')
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.modulosmatrizes.create')
                 ->setParameters(['id' => $matrizId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $curso = $this->cursoRepository->find($matrizcurricular->mtc_crs_id);
@@ -63,8 +63,10 @@ class ModulosMatrizesController extends BaseController
             'disciplinas' => $disciplinas]);
     }
 
-    public function getCreate($matrizId)
+    public function getCreate(Request $request)
     {
+        $matrizId = $request->get('id');
+
         $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
 
         if ($matriz->isEmpty()) {
