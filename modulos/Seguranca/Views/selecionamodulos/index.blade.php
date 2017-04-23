@@ -40,47 +40,13 @@
                 <div class="box-body" style="min-height:702px">
                     <ul class="timeline">
                         <li>
-                          <i class="fa fa-envelope bg-blue"></i>
+                          <i class="fa fa-arrow-right bg-blue"></i>
 
                           <div class="timeline-item">
-                            <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+                            <h3 class="timeline-header">Bem-Vindo ao <a href="{{ route('index') }}">Harpia</a></h3>
 
                             <div class="timeline-body">
-                              Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                              weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                              weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                              weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <i class="fa fa-user bg-aqua"></i>
-                          <div class="timeline-item">
-                            <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-                          </div>
-                        </li>
-                        <li>
-                          <i class="fa fa-comments bg-yellow"></i>
-                          <div class="timeline-item">
-                            <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-                            <div class="timeline-body">
-                              Take me to your leader!
-                              Switzerland is small and neutral!
-                              We are more like Germany, ambitious and misunderstood!
-                              We are more like Germany, ambitious and misunderstood!
-                              We are more like Germany, ambitious and misunderstood!
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <i class="fa fa-book bg-purple"></i>
-                          <div class="timeline-item">
-                            <h3 class="timeline-header"><a href="#">Manuais</a> disponíveis para download</h3>
-                            <div class="timeline-body">
-                              <img src="http://placehold.it/150x100" alt="..." class="margin">
-                              <img src="http://placehold.it/150x100" alt="..." class="margin">
-                              <img src="http://placehold.it/150x100" alt="..." class="margin">
-                              <img src="http://placehold.it/150x100" alt="..." class="margin">
+                              Escolha um dos módulos para começar!
                             </div>
                           </div>
                         </li>

@@ -48,7 +48,7 @@
             </div>
         </div>
         <footer class="main-footer" style="margin-left:0px;padding:5px;text-align:center;">
-            <strong style="font-size:12px">Copyright © 2016-2016 <a href="http://www.uemanet.uema.br">UemaNet</a>.</strong> All rights
+            <strong style="font-size:12px">Copyright © 2016-{{ date('Y') }} <a href="http://www.uemanet.uema.br">UemaNet</a>.</strong> All rights
             reserved.
         </footer>
     </div>
