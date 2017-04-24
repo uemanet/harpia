@@ -238,6 +238,7 @@ class AmbientesVirtuaisController extends BaseController
         $dados['asr_ser_id'] = $request->asr_ser_id;
         $dados['asr_amb_id'] = $ambienteId;
         $dados['asr_token'] = $request->asr_token;
+        $servico = $this->servicoRepository->find($dados['asr_ser_id']);
 
         $validator = Validator::make($dados, [
             'asr_ser_id' => 'required|integer|min:1',
@@ -252,10 +253,13 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambiente = $this->ambienteVirtualRepository->find($dados['asr_amb_id']);
             $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
-            $url .= $dados['asr_token'] . '&wsfunction=ping&moodlewsrestformat=json';
-
+            $url .= $dados['asr_token'] . '&wsfunction='.strtolower($servico->ser_nome).'_ping&moodlewsrestformat=json';
+            
             $client = new Client();
             $response = $client->request('POST', $url, ['query' => null]);
+
+            //dd($response);
+
             $data = (array) json_decode($response->getBody());
 
             if (!array_key_exists('response', $data)) {
