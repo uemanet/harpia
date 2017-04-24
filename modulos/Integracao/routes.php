@@ -15,6 +15,6 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
         Route::post('/deletarservico/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postDeletarServico')->name('integracao.ambientesvirtuais.deletarservico');
         Route::get('/adicionarturma/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getAdicionarTurma')->name('integracao.ambientesvirtuais.adicionarturma');
         Route::post('/adicionarturma/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postAdicionarTurma')->name('integracao.ambientesvirtuais.adicionarturma');
-        Route::post('/deletarturma/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postDeletarTurma')->name('integracao.ambientesvirtuais.deletarturma');
+        Route::post('/deletarturma', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postDeletarTurma')->name('integracao.ambientesvirtuais.deletarturma');
     });
 });
