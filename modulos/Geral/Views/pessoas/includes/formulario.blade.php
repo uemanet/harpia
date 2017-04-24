@@ -275,7 +275,7 @@
                         $.harpia.httpget('https://viacep.com.br/ws/' + cep + '/json/').done(function (data) {
                             if (!data.erro) {
                                 $("#pes_cidade").val(data.localidade);
-                                $("#pes_estado").val(data.uf);
+                                $("#pes_estado").val(data.uf).change();
                                 $("#pes_bairro").val(data.bairro);
                                 $("#pes_endereco").val(data.logradouro);
                             } else {
