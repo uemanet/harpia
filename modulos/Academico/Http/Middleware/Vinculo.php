@@ -367,7 +367,7 @@ class Vinculo
             $ofertas    = isset($parameters["ofertas"]) ? $parameters['ofertas'] : null;
             $matriculaId  = isset($parameters["mof_mat_id"]) ? $parameters['mof_mat_id'] : null;
 
-            if ($routeName == 'academico.async.matriculasofertasdisciplinas.postmatriculaslote') {
+            if ($routeName == 'academico.async.matriculasofertasdisciplinas.matriculaslote') {
                 $matriculaId = $parameters['matriculas'][0];
                 $ofertas[] = $parameters['ofd_id'];
             }
