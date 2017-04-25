@@ -44,7 +44,7 @@ class TempoOnlineController extends Controller
 
         $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
 
-        $timeclicks = Configuracao::get('time_between_clicks');
+        $timeclicks = 60;
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
         $wsfunction = $ambiente->ser_slug;

@@ -219,6 +219,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'turmas'], function () {
             Route::get('/findallbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacurso')->name('academico.async.turmas.findallbyofertacurso');
+            Route::get('/findallbyofertacursointegrada/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoIntegrada')->name('academico.async.turmas.findallbyofertacursointegrada');
             Route::get('/findallwithvagasdisponiveis/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallwithvagasdisponiveis')->name('academico.async.turmas.findallwithvagasdisponiveis');
             Route::get('/findallbyofertacursowithoutambiente/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoWithoutAmbiente')->name('academico.async.turmas.findallbyofertacursowithoutambiente');
         });
@@ -274,6 +275,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'tutores'], function () {
             Route::get('/findallbygrupo/{id}', '\Modulos\Academico\Http\Controllers\Async\Tutores@getFindallbygrupo')->name('academico.async.tutores.findallbygrupo');
+            Route::get('/findallbyturmatipotutoria/{idTurma}/{tipoTutoria}', '\Modulos\Academico\Http\Controllers\Async\Tutores@getFindallbyTurmaTipoTutoria')->name('academico.async.tutores.findallbyturmatipotutoria');
         });
 
         Route::group(['prefix' => 'periodosletivos'], function () {

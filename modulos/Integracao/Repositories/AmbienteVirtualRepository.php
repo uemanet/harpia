@@ -83,8 +83,9 @@ class AmbienteVirtualRepository extends BaseRepository
         $entries = DB::table('int_ambientes_virtuais')
                   ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
                   ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-                  ->where('ser_nome', '=', 'MonitoramentoTempo')
+                  ->where('ser_id', '=', 1)
                   ->get();
+
 
         return $entries;
     }
@@ -94,7 +95,7 @@ class AmbienteVirtualRepository extends BaseRepository
         $entries = DB::table('int_ambientes_virtuais')
                   ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
                   ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-                  ->where('ser_nome', '=', 'MonitoramentoTempo')
+                  ->where('ser_id', '=', 1)
                   ->where('amb_id', '=', $ambienteId)
                   ->first();
 
