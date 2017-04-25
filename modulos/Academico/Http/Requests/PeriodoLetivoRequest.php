@@ -26,9 +26,16 @@ class PeriodoLetivoRequest extends BaseRequest
         $rules = [
             'per_nome' => 'required',
             'per_inicio' => 'required|date_format:"d/m/Y"',
-            'per_fim' => 'required|date_format:"d/m/Y"'
+            'per_fim' => 'required|date_format:"d/m/Y"|after:per_inicio'
         ];
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'per_fim.after' => 'O campo deverá conter uma data posterior a data de início.'
+        ];
     }
 }
