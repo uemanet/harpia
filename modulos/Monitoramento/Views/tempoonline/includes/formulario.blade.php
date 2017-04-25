@@ -276,22 +276,22 @@ $(document).on('click', '.btn-primary', function (event) {
                 bodyFontStyle: "bold",
                 bodyFontFamily: "'Helvetica', 'Arial', sans-serif",
                 footerFontSize: 15,
-                callbacks: {
-                    label: function (tooltipItem, data) {
-
-                        for(var i = 0; i < data.datasets.lenght; i++){
-                            var moodle = dadosgrafico[i];
-                            var seconds = moodle.items[tooltipItem.index].onlinetime;
-
-                            var h = Math.floor(seconds / 3600);
-                            var m = Math.floor(seconds % 3600 / 60);
-                            var s = Math.floor(seconds % 3600 % 60);
-                            var humanFormat = h + 'h:' + m + 'm:' + s + 's';
-
-                            return humanFormat;
-                        }
-                    },
-                },
+                // callbacks: {
+                //     label: function (tooltipItem, data) {
+                //
+                //         for(var i = 0; i < data.datasets.lenght; i++){
+                //             var moodle = dadosgrafico[i];
+                //             var seconds = moodle.items[tooltipItem.index].onlinetime;
+                //
+                //             var h = Math.floor(seconds / 3600);
+                //             var m = Math.floor(seconds % 3600 / 60);
+                //             var s = Math.floor(seconds % 3600 % 60);
+                //             var humanFormat = h + 'h:' + m + 'm:' + s + 's';
+                //
+                //             return humanFormat;
+                //         }
+                //     },
+                // },
             }
         }
     };
