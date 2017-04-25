@@ -68,6 +68,16 @@
 </div>
 
 <div class="row">
+    <div class="form-group col-md-4 @if ($errors->has('ltc_observacao')) has-error @endif">
+        {!! Form::label('ltc_observacao', 'Observação', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::textarea('ltc_observacao', old('ltc_observacao'), ['class' => 'form-control', 'rows' => '4']) !!}
+            @if ($errors->has('ltc_observacao')) <p class="help-block">{{ $errors->first('ltc_observacao') }}</p> @endif
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="form-group col-md-4">
         {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
     </div>
