@@ -174,18 +174,17 @@
                             table += "<th>Disciplina</th>";
                             table += "<th>Carga Horária</th>";
                             table += "<th>Créditos</th>";
-                            table += "<th>Tipo de Matrícula</th>";
+                            table += "<th>Tipo de Oferta</th>";
                             table += "<th>Vagas</th>";
                             table += "<th>Professor</th>";
                             table += '</tr>';
 
                             $.each(data, function (key, obj) {
-                                console.log(obj);
                                 table += '<tr>';
                                 table += "<td>" + obj.dis_nome + "</td>";
                                 table += "<td>" + obj.dis_carga_horaria + "</td>";
                                 table += "<td>" + obj.dis_creditos + "</td>";
-                                table += "<td>" + obj.mof_tipo_matricula + "</td>";
+                                table += "<td>" + obj.mdc_tipo_disciplina + "</td>";
                                 table += "<td>" + obj.qtdMatriculas + "/<strong>" + obj.ofd_qtd_vagas + "</strong></td>";
                                 table += "<td>" + obj.pes_nome + "</td>";
                                 table += '</tr>';
