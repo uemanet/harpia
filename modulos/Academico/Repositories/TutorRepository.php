@@ -79,4 +79,19 @@ class TutorRepository extends BaseRepository
 
         return $entries;
     }
+
+    public function FindallbyTurmaTipoTutoria($idTurma, $tipoTutoria)
+    {
+        $entries = DB::table('acd_tutores_grupos')
+            ->join('acd_grupos', 'ttg_grp_id', '=', 'grp_id')
+            ->join('acd_turmas', 'grp_trm_id', '=', 'trm_id')
+            ->join('acd_tutores', 'ttg_tut_id', '=', 'tut_id')
+            ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
+            ->select('pes_id', 'pes_nome')
+            ->where('trm_id', '=', $idTurma)
+            ->where('ttg_tipo_tutoria', '=', $tipoTutoria)
+            ->get();
+
+        return $entries;
+    }
 }
