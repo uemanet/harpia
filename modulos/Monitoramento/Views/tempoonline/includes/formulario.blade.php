@@ -218,8 +218,8 @@ $(document).on('click', '.btn-primary', function (event) {
         dataset = {
             label:dadosgrafico[i].fullname,
             data:tempos,
-            fill:true,
-            backgroundColor: 'rgba(255, '+i*80+', 0, 100)'
+            fill: true,
+            backgroundColor: 'rgba(255, '+Math.floor((Math.random() * 255) + 1)+', '+Math.floor((Math.random() * 255) + 1)+', .6)'
         }
         tempos =[];
 
