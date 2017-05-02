@@ -574,7 +574,7 @@ class PermissoesAcademicoSeeder extends Seeder
 
         $permissao = Permissao::create([
             'prm_nome' => 'tccanexo',
-            'prm_rota' => 'academico.lancamentostccs.tccanexo'
+            'prm_rota' => 'academico.lancamentostccs.anexo'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
