@@ -10,6 +10,7 @@ use Modulos\Academico\Events\OfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use DB;
@@ -19,14 +20,17 @@ class OfertaDisciplina extends BaseController
     protected $ofertaDisciplinaRepository;
     protected $matriculaOfertaDisciplinaRepository;
     protected $turmaRepository;
+    protected $ambienteRepository;
 
     public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository,
                                 MatriculaOfertaDisciplinaRepository $matricula,
-                                TurmaRepository $turmaRepository)
+                                TurmaRepository $turmaRepository,
+                                AmbienteVirtualRepository $ambienteRepository)
     {
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matricula;
         $this->turmaRepository = $turmaRepository;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function getFindallbycurso($cursoId)
@@ -44,6 +48,7 @@ class OfertaDisciplina extends BaseController
             'dis_carga_horaria',
             'dis_creditos',
             'ofd_qtd_vagas',
+            'mdc_tipo_disciplina',
             'ofd_id',
             'prf_id',
             'pes_nome',
@@ -51,8 +56,22 @@ class OfertaDisciplina extends BaseController
 
         for ($i = 0; $i < $retorno->count(); ++$i) {
             $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
-
             $retorno[$i]->qtdMatriculas = $qtdMatriculas;
+
+            if ($retorno[$i]->mof_tipo_matricula == 'matriculacomum') {
+                $retorno[$i]->mof_tipo_matricula = 'Matrícula Comum';
+                continue;
+            }
+
+            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamentointerno') {
+                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento Interno';
+                continue;
+            }
+
+            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamentoexterno') {
+                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento Externo';
+                continue;
+            }
         }
 
         return new JsonResponse($retorno, 200);
@@ -81,6 +100,7 @@ class OfertaDisciplina extends BaseController
                 return new JsonResponse($ofertadisciplina, Response::HTTP_OK);
             }
 
+
             return new JsonResponse('Disciplina já existente para esse periodo e turma.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -107,23 +127,16 @@ class OfertaDisciplina extends BaseController
             $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
             $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
 
-            if ($turma->trm_integrada) {
-                event(new DeleteOfertaDisciplinaEvent($oferta));
+            $this->ofertaDisciplinaRepository->delete($ofertaId);
 
-                if (SincronizacaoRepository::excludedFromMoodle($oferta->getTable(), $ofertaId)) {
-                    $this->ofertaDisciplinaRepository->delete($ofertaId);
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($turma->trm_id);
 
-                    DB::commit();
-                    return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
-                }
-
-                DB::commit();
-                return new JsonResponse('Não foi possível excluir a turma. Falha ao excluir do ambiente virtual', JsonResponse::HTTP_CONFLICT,  [], JSON_UNESCAPED_UNICODE);
+            if ($ambiente) {
+                event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente->id));
             }
 
-            $this->ofertaDisciplinaRepository->delete($ofertaId);
             DB::commit();
-            return new JsonResponse('Turma excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Disciplina excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -131,7 +144,7 @@ class OfertaDisciplina extends BaseController
                 throw $e;
             }
 
-            return new JsonResponse('Não foi possível excluir a turma', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Não foi possível excluir a disciplina', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
         }
     }
 }

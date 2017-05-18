@@ -2,30 +2,29 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Modulos\Seguranca\Http\Requests\PerfilRequest;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Http\Requests\PerfilRequest;
+use Illuminate\Http\Request;
 use Modulos\Seguranca\Repositories\ModuloRepository;
 use Modulos\Seguranca\Repositories\PerfilRepository;
-use Modulos\Seguranca\Http\Requests\StoreModuloRequest;
-use Illuminate\Http\Request;
 
 class PerfisController extends BaseController
 {
     protected $perfilRepository;
     protected $moduloRepository;
 
-    public function __construct(PerfilRepository $perfilRepository, ModuloRepository $moduloRepository)
+    public function __construct(PerfilRepository $perfilRepository)
     {
         $this->perfilRepository = $perfilRepository;
-        $this->moduloRepository = $moduloRepository;
+        $this->moduloRepository = new ModuloRepository();
     }
 
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/perfis/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('seguranca.perfis.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -56,21 +55,23 @@ class PerfisController extends BaseController
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-check-square-o',
-                                'action' => '/seguranca/perfis/atribuirpermissoes/'. $id,
+                                'route' => 'seguranca.perfis.atribuirpermissoes',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Permissões',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/seguranca/perfis/edit/' . $id,
+                                'route' => 'seguranca.perfis.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' =>  '/seguranca/perfis/delete',
+                                'route' =>  'seguranca.perfis.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -105,7 +106,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil criado com sucesso.');
 
-            return redirect('/seguranca/perfis/index');
+            return redirect()->route('seguranca.perfis.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -140,7 +141,7 @@ class PerfisController extends BaseController
             if (!$perfil) {
                 flash()->error('Perfil não existe.');
 
-                return redirect('/seguranca/perfis/index');
+                return redirect()->route('seguranca.perfis.index');
             }
 
             $requestData = $request->only('prf_nome', 'prf_descricao');
@@ -153,7 +154,7 @@ class PerfisController extends BaseController
 
             flash()->success('Perfil atualizado com sucesso.');
 
-            return redirect('/seguranca/perfis/index');
+            return redirect()->route('seguranca.perfis.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -170,21 +171,16 @@ class PerfisController extends BaseController
         try {
             $perfilId = $request->get('id');
 
-            if ($this->perfilRepository->delete($perfilId)) {
-                flash()->success('Perfil excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o perfil');
-            }
+            $this->perfilRepository->delete($perfilId);
 
+            flash()->success('Perfil excluído com sucesso.');
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O perfil contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este perfil ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
@@ -192,46 +188,47 @@ class PerfisController extends BaseController
         }
     }
 
-    public function getAtribuirpermissoes($perfilId)
-    {
-        $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
 
-        if (!sizeof($perfil)) {
-            return redirect('/seguranca/perfis/index');
-        }
-
-        $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
-
-        return view('Seguranca::perfis.atribuirpermissoes', compact('perfil', 'permissoes'));
-    }
-
-    public function postAtribuirpermissoes(Request $request)
-    {
-        try {
-            $perfilId = $request->prf_id;
-
-            if ($request->input('permissao') == "") {
-                flash()->success('Permissões atribuídas com sucesso.');
-                $permissoes = [];
-                $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-
-                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-            }
-
-            $permissoes = explode(',', $request->input('permissao'));
-
-            $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-
-            flash()->success('Permissões atribuídas com sucesso.');
-
-            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-
-            return redirect()->back();
-        }
-    }
+//    public function getAtribuirpermissoes($perfilId)
+//    {
+////        $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
+////
+////        if (!sizeof($perfil)) {
+////            return redirect()->route('seguranca.perfis.index');
+////        }
+////
+////        $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
+////
+////        return view('Seguranca::perfis.atribuirpermissoes', compact('perfil', 'permissoes'));
+//    }
+//
+//    public function postAtribuirpermissoes(Request $request)
+//    {
+//        try {
+//            $perfilId = $request->prf_id;
+//
+//            if ($request->input('permissao') == "") {
+//                flash()->success('Permissões atribuídas com sucesso.');
+//                $permissoes = [];
+//                $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
+//
+//                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+//            }
+//
+//            $permissoes = explode(',', $request->input('permissao'));
+//
+//            $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
+//
+//            flash()->success('Permissões atribuídas com sucesso.');
+//
+//            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+//        } catch (\Exception $e) {
+//            if (config('app.debug')) {
+//                throw $e;
+//            }
+//            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+//
+//            return redirect()->back();
+//        }
+//    }
 }

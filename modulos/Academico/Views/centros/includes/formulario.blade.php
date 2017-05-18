@@ -13,7 +13,7 @@
             @if ($errors->has('cen_nome')) <p class="help-block">{{ $errors->first('cen_nome') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-2 @if ($errors->has('cen_nome')) has-error @endif">
+    <div class="form-group col-md-2 @if ($errors->has('cen_sigla')) has-error @endif">
         {!! Form::label('cen_sigla', 'Sigla', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('cen_sigla', old('cen_sigla'), ['class' => 'form-control']) !!}

@@ -48,6 +48,16 @@ class AmbienteVirtualRepository extends BaseRepository
             ->first();
     }
 
+    public function getAmbienteWithTokenWhithoutTurma($ambienteId)
+    {
+        return DB::table('int_ambientes_virtuais')
+            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
+            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
+            ->where('amb_id', '=', $ambienteId)
+            ->where('asr_ser_id', '=', 2)
+            ->first();
+    }
+
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')
@@ -73,8 +83,9 @@ class AmbienteVirtualRepository extends BaseRepository
         $entries = DB::table('int_ambientes_virtuais')
                   ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
                   ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-                  ->where('ser_nome', '=', 'MonitoramentoTempo')
+                  ->where('ser_id', '=', 1)
                   ->get();
+
 
         return $entries;
     }
@@ -84,7 +95,7 @@ class AmbienteVirtualRepository extends BaseRepository
         $entries = DB::table('int_ambientes_virtuais')
                   ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
                   ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-                  ->where('ser_nome', '=', 'MonitoramentoTempo')
+                  ->where('ser_id', '=', 1)
                   ->where('amb_id', '=', $ambienteId)
                   ->first();
 

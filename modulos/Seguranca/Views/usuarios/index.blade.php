@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/seguranca/usuarios/index') }}">
+                <form method="GET" action="{{ route('seguranca.usuarios.index') }}">
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Input::get('pes_cpf')}}" placeholder="CPF">
                     </div>

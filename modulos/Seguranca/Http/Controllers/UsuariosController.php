@@ -9,7 +9,6 @@ use Modulos\Seguranca\Repositories\PerfilRepository;
 use Validator;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Geral\Repositories\TipoDocumentoRepository;
 use Modulos\Seguranca\Http\Requests\UsuarioRequest;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -39,7 +38,7 @@ class UsuariosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/seguranca/usuarios/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('seguranca.usuarios.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -47,7 +46,7 @@ class UsuariosController extends BaseController
         $tabela = null;
 
         $tableData = $this->usuarioRepository->paginateRequest($request->all());
-        
+
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'usr_id' => '#',
@@ -71,21 +70,23 @@ class UsuariosController extends BaseController
                         [
                             'classButton' => 'text-blue',
                             'icon' => 'fa fa-check-square-o',
-                            'action' => '/seguranca/usuarios/atribuirperfil/'. $id,
+                            'route' => 'seguranca.usuarios.atribuirperfil',
+                            'parameters' => ['id' => $id],
                             'label' => 'Atribuir Perfil',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => '',
                             'icon' => 'fa fa-pencil',
-                            'action' => '/seguranca/usuarios/edit/' . $id,
+                            'route' => 'seguranca.usuarios.edit',
+                            'parameters' => ['id' => $id],
                             'label' => 'Editar',
                             'method' => 'get'
                         ],
                         [
                             'classButton' => 'btn-delete text-red',
                             'icon' => 'fa fa-trash',
-                            'action' => '/seguranca/usuarios/delete',
+                            'route' => 'seguranca.usuarios.delete',
                             'id' => $id,
                             'label' => 'Excluir',
                             'method' => 'post'
@@ -103,14 +104,12 @@ class UsuariosController extends BaseController
 
     public function getCreate($pesId = null)
     {
-        if (is_null($pesId)) {
-            return view('Seguranca::usuarios.create', ['pessoa' => []]);
-        }
+        if (!is_null($pesId)) {
+            $pessoa = $this->pessoaRepository->findById($pesId);
 
-        $pessoa = $this->pessoaRepository->findById($pesId);
-
-        if ($pessoa) {
-            return view('Seguranca::usuarios.create', ['pessoa' => $pessoa]);
+            if ($pessoa) {
+                return view('Seguranca::usuarios.create', ['pessoa' => $pessoa]);
+            }
         }
 
         return view('Seguranca::usuarios.create', ['pessoa' => []]);
@@ -125,7 +124,7 @@ class UsuariosController extends BaseController
 
         try {
             $validator = Validator::make($request->all(), array_merge($usuarioRequest->rules(), $pessoaRequest->rules()));
-            
+
             if ($validator->fails()) {
                 return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validator);
             }
@@ -214,7 +213,7 @@ class UsuariosController extends BaseController
 
             flash()->success('Usuário criado com sucesso!');
 
-            return redirect('/seguranca/usuarios/index');
+            return redirect()->route('seguranca.usuarios.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -292,7 +291,7 @@ class UsuariosController extends BaseController
             );
 
             $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
-            
+
             $dataDocumento = [
                 'doc_pes_id' => $pes_id,
                 'doc_conteudo' => $request->input('doc_conteudo'),
@@ -324,12 +323,12 @@ class UsuariosController extends BaseController
         try {
             $id = $request->get('id');
 
-            if ($this->usuarioRepository->delete($id)) {
-                flash()->success('Usuario excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o usuario');
-            }
+            $this->usuarioRepository->delete($id);
 
+            flash()->success('Usuario excluído com sucesso.');
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O usuario contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

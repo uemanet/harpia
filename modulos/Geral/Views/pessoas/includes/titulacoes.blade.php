@@ -39,14 +39,15 @@
                             [
                                 'classButton' => 'btn btn-primary btn-sm',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/geral/titulacoesinformacoes/edit/' . $titulacao->tin_id,
+                                'route' => 'geral.pessoas.titulacoesinformacoes.edit',
+                                'parameters' => ['id' => $titulacao->tin_id],
                                 'label' => '',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete btn btn-danger btn-sm',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/geral/titulacoesinformacoes/delete',
+                                'route' => 'geral.pessoas.titulacoesinformacoes.delete',
                                 'id' => $titulacao->tin_id,
                                 'label' => '',
                                 'method' => 'post'
@@ -69,7 +70,8 @@
                         [
                             'classButton' => 'btn btn-primary',
                             'icon' => 'fa fa-plus-square',
-                            'action' => '/geral/titulacoesinformacoes/create/' . $pessoa->pes_id,
+                            'route' => 'geral.pessoas.titulacoesinformacoes.create',
+                            'parameters' => ['id' => $pessoa->pes_id],
                             'label' => ' Nova Titulação',
                             'method' => 'get'
                         ],

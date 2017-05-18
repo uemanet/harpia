@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\TipoDocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
+use Validator;
 
 class DocumentosController extends BaseController
 {
@@ -30,11 +31,8 @@ class DocumentosController extends BaseController
         $this->anexoRepository = $anexoRepository;
     }
 
-    public function getCreate($pessoaId, Request $request)
+    public function getCreate($pessoaId)
     {
-        $url = $request->session()->get('last_acad_route');
-        $id = $request->session()->get('last_id');
-
         $pessoa = $this->pessoaRepository->find($pessoaId);
 
         if (!$pessoa) {
@@ -76,6 +74,19 @@ class DocumentosController extends BaseController
 
             $dados = $request->all();
 
+            $docId = $request->input('doc_tpd_id');
+
+            if ($docId == 2) {
+                $rules = [
+                    'doc_conteudo' => 'cpf',
+                ];
+
+                $validator = Validator::make($request->all(), $rules);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput($request->all())->withErrors($validator);
+                }
+            }
+
             if ($request->file('doc_file') != null) {
                 $anexoDocumento = $request->file('doc_file');
                 $anexoCriado = $this->anexoRepository->salvarAnexo($anexoDocumento);
@@ -113,21 +124,17 @@ class DocumentosController extends BaseController
         }
     }
 
-    public function getEdit($documentoId, Request $request)
+    public function getEdit($documentoId)
     {
-        $url = $request->session()->get('last_acad_route');
-        $id = $request->session()->get('last_id');
-
         $documento = $this->documentoRepository->find($documentoId);
 
         if (!$documento) {
-            flash()->error('Recurso não existe.');
+            flash()->error('Documento não existe.');
             return redirect()->back();
         }
 
         $pessoa = $this->pessoaRepository->find($documento->doc_pes_id);
         $anexo = $this->anexoRepository->find($documento->doc_anx_documento);
-
 
         $tiposdocumentos = $this->tipodocumentoRepository->listsTipoDocumentoByDocumentoId($documentoId);
 
@@ -151,6 +158,19 @@ class DocumentosController extends BaseController
             if (!$documento) {
                 flash()->error('Documento não existe.');
                 return redirect()->back();
+            }
+
+            $docId = $request->input('doc_tpd_id');
+
+            if ($docId == 2) {
+                $rules = [
+                    'doc_conteudo' => 'cpf',
+                ];
+
+                $validator = Validator::make($request->all(), $rules);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput($request->all())->withErrors($validator);
+                }
             }
 
             $dados = $request->only($this->documentoRepository->getFillableModelFields());
@@ -228,6 +248,9 @@ class DocumentosController extends BaseController
             }
 
             flash()->success('Documento excluído com sucesso.');
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar excluir. O documento contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

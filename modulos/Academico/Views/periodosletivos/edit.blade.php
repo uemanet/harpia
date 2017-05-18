@@ -18,7 +18,7 @@
             <h3 class="box-title">Formulário de edição de períodos letivos</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($periodoLetivo, ["url" => url('/') . "/academico/periodosletivos/edit/$periodoLetivo->per_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($periodoLetivo, ["route" => ['academico.periodosletivos.edit',$periodoLetivo->per_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::periodosletivos.includes.formulario')
             {!! Form::close() !!}
         </div>

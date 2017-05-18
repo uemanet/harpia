@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de Cadastro de Usuários</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/seguranca/usuarios/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'seguranca.usuarios.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
             <h4 class="box-title">
                 Dados de Usuário
             </h4>

@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\TutorRequest;
@@ -32,7 +31,7 @@ class TutoresController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/tutores/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.tutores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -63,14 +62,16 @@ class TutoresController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/tutores/edit/' . $id,
+                                'route' => 'academico.tutores.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/tutores/show/'.$id,
+                                'route' => 'academico.tutores.show',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
@@ -85,16 +86,16 @@ class TutoresController extends BaseController
         return view('Academico::tutores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate($pessoaId = null)
+    public function getCreate(Request $request)
     {
-        if (is_null($pessoaId)) {
-            return view('Academico::tutores.create', ['pessoa' => []]);
-        }
+        $pessoaId = $request->get('id');
 
-        $pessoa = $this->pessoaRepository->findById($pessoaId);
+        if (!is_null($pessoaId)) {
+            $pessoa = $this->pessoaRepository->findById($pessoaId);
 
-        if ($pessoa) {
-            return view('Academico::tutores.create', ['pessoa' => $pessoa]);
+            if ($pessoa) {
+                return view('Academico::tutores.create', ['pessoa' => $pessoa]);
+            }
         }
 
         return view('Academico::tutores.create', ['pessoa' => []]);
@@ -214,6 +215,11 @@ class TutoresController extends BaseController
     {
         $tutor = $this->tutorRepository->find($tutorId);
 
+        if (!$tutor) {
+            flash()->error('Tutor não existe.');
+            return redirect()->back();
+        }
+
         $pessoa = $this->pessoaRepository->findById($tutor->tut_pes_id);
 
         return view('Academico::tutores.edit', ['pessoa' => $pessoa]);
@@ -277,11 +283,8 @@ class TutoresController extends BaseController
             DB::commit();
 
             $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            foreach ($ambientesvinculadosId as $id) {
-                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-            }
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Tutor editado com sucesso!');
             return redirect()->route('academico.tutores.index');
@@ -302,6 +305,11 @@ class TutoresController extends BaseController
     public function getShow($tutorId)
     {
         $tutor = $this->tutorRepository->find($tutorId);
+
+        if (!$tutor) {
+            flash()->error('Tutor não existe.');
+            return redirect()->back();
+        }
 
         session(['last_acad_route' => 'academico.tutores.show', 'last_id' => $tutorId]);
 

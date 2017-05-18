@@ -14,7 +14,9 @@
             <h3 class="box-title">Formulário de edição de módulo</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($modulo, ["url" => url('/') . "/academico/modulosmatrizes/edit/$modulo->mdo_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($modulo, ["route" =>
+                            ['academico.cursos.matrizescurriculares.modulosmatrizes.edit',$modulo->mdo_id],
+                            "method" => "PUT", "id" => "form", "role" => "form"]) !!}
             @include('Academico::modulosmatrizes.includes.formulario')
             {!! Form::close() !!}
 

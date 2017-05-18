@@ -54,4 +54,23 @@ class PeriodoLetivoRepository extends BaseRepository
                     ->pluck('per_nome', 'per_id')
                     ->toArray();
     }
+
+    public function verifyNamePeriodo($periodoName, $periodoId = null)
+    {
+        $result = $this->model->where('per_nome', $periodoName)->get();
+
+        if (!$result->isEmpty()) {
+            if (!is_null($periodoId)) {
+                $result = $result->where('per_id', $periodoId);
+
+                if (!$result->isEmpty()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -45,6 +45,21 @@ class TutorGrupoRepository extends BaseRepository
         }
     }
 
+    public function howManyTutors($grupoId)
+    {
+        $count = 0;
+
+        if ($this->verifyTutorPresencial('presencial', $grupoId)) {
+            $count++;
+        }
+
+        if ($this->verifyTutorDistancia('distancia', $grupoId)) {
+            $count++;
+        }
+
+        return $count;
+    }
+
     public function verifyTutorPresencial($tipoTutoria, $grupoTutor)
     {
         $result_presencial = $this->model

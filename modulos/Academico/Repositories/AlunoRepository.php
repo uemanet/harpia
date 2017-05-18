@@ -23,6 +23,7 @@ class AlunoRepository extends BaseRepository
     public function paginateOnlyWithBonds($sort = null, $search = null)
     {
         $result = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')
+            ->distinct()
             ->join('acd_matriculas', function ($join) {
                 $join->on('mat_alu_id', '=', 'alu_id');
             })->join('gra_pessoas', function ($join) {

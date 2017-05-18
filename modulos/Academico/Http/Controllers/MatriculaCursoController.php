@@ -54,7 +54,8 @@ class MatriculaCursoController extends BaseController
                             [
                                 'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/matricularalunocurso/show/' . $id,
+                                'route' => 'academico.matricularalunocurso.show',
+                                'parameters' => ['id' => $id],
                                 'label' => '',
                                 'method' => 'get'
                             ],
@@ -134,7 +135,7 @@ class MatriculaCursoController extends BaseController
             $turma = $matricula->turma;
 
             if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
-                event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id ));
+                event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
             }
 
             if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {

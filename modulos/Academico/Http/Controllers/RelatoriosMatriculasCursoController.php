@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
@@ -56,6 +57,8 @@ class RelatoriosMatriculasCursoController extends BaseController
             $tabela = $tableData->columns(array(
                 'mat_id' => '#',
                 'pes_nome' => 'Nome',
+                'pes_email' => 'Email',
+                'pol_nome' => 'Polo',
                 'mat_situacao' => 'Situação Matricula'
             ))
                 ->sortable(array('pes_nome', 'mat_id'));
@@ -83,13 +86,16 @@ class RelatoriosMatriculasCursoController extends BaseController
         $matriculas = $this->matriculaCursoRepository->findAllBySitucao(
             ['trm_id' => $turmaId, 'mat_situacao' => $situacao]);
         $nomecurso = $this->turmaRepository->findCursoByTurma($turmaId);
+        $turma = $this->turmaRepository->find($turmaId);
+
+        $date = new Carbon();
 
         $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
 
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Relatório de alunos do Curso ' . $nomecurso->crs_nome);
         $mpdf->SetHeader('{PAGENO} / {nb}');
-        $mpdf->SetFooter('Emitdo em : '. date("d/m/Y H:i:s"));
+        $mpdf->SetFooter('Emitdo em : '. $date->format('d/m/Y H:i:s'));
         $mpdf->defaultheaderfontsize = 10;
         $mpdf->defaultheaderfontstyle = 'B';
         $mpdf->defaultheaderline = 0;
@@ -99,7 +105,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $mpdf->addPage('L');
 
 
-        $mpdf->WriteHTML(view('Academico::relatoriosmatriculascurso.relatorioalunos', compact('matriculas', 'nomecurso'))->render());
+        $mpdf->WriteHTML(view('Academico::relatoriosmatriculascurso.relatorioalunos', compact('matriculas', 'nomecurso', 'date', 'turma'))->render());
         $mpdf->Output();
         exit;
     }

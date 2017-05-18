@@ -24,7 +24,7 @@ class DisciplinasController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/disciplinas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.disciplinas.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -32,11 +32,12 @@ class DisciplinasController extends BaseController
         $tabela = null;
 
         $tableData = $this->disciplinaRepository->paginateRequest($request->all());
+        
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'dis_id' => '#',
                 'dis_nome' => 'Nome',
-                'dis_nvc_id' => 'Nível',
+                'nvc_nome' => 'Nível',
                 'dis_carga_horaria' => 'Carga Horária',
                 'dis_creditos' => 'Créditos',
                 'dis_action' => 'Ações'
@@ -61,14 +62,15 @@ class DisciplinasController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/disciplinas/edit/' . $id,
+                                'route' => 'academico.disciplinas.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/disciplinas/delete',
+                                'route' => 'academico.disciplinas.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -76,7 +78,7 @@ class DisciplinasController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('dis_id', 'dis_nome', 'dis_nvc_id'));
+                ->sortable(array('dis_id', 'dis_nome', 'nvc_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -106,7 +108,7 @@ class DisciplinasController extends BaseController
             }
 
             flash()->success('Disciplina criada com sucesso.');
-            return redirect('/academico/disciplinas/index');
+            return redirect()->route('academico.disciplinas.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -144,7 +146,7 @@ class DisciplinasController extends BaseController
 
             if (!$disciplina) {
                 flash()->error('Disciplina não existe.');
-                return redirect('academico/disciplinas/index');
+                return redirect()->route('academico.disciplinas.index');
             }
 
             $requestData = $request->only($this->disciplinaRepository->getFillableModelFields());
@@ -155,7 +157,7 @@ class DisciplinasController extends BaseController
             }
 
             flash()->success('Disciplina atualizada com sucesso.');
-            return redirect('/academico/disciplinas/index');
+            return redirect()->route('academico.disciplinas.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

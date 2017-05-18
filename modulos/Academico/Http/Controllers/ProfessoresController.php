@@ -31,7 +31,7 @@ class ProfessoresController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/professores/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.professores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -62,14 +62,16 @@ class ProfessoresController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/professores/edit/' . $id,
+                                'route' => 'academico.professores.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/professores/show/'.$id,
+                                'route' => 'academico.professores.show',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
@@ -84,16 +86,16 @@ class ProfessoresController extends BaseController
         return view('Academico::professores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate($pessoaId = null)
+    public function getCreate(Request $request)
     {
-        if (is_null($pessoaId)) {
-            return view('Academico::professores.create', ['pessoa' => []]);
-        }
+        $pessoaId = $request->get('id');
 
-        $pessoa = $this->pessoaRepository->findById($pessoaId);
+        if (!is_null($pessoaId)) {
+            $pessoa = $this->pessoaRepository->findById($pessoaId);
 
-        if ($pessoa) {
-            return view('Academico::professores.create', ['pessoa' => $pessoa]);
+            if ($pessoa) {
+                return view('Academico::professores.create', ['pessoa' => $pessoa]);
+            }
         }
 
         return view('Academico::professores.create', ['pessoa' => []]);
@@ -220,8 +222,6 @@ class ProfessoresController extends BaseController
 
         $pessoa = $this->pessoaRepository->findById($professor->prf_pes_id);
 
-
-
         return view('Academico::professores.edit', ['pessoa' => $pessoa]);
     }
 
@@ -280,6 +280,9 @@ class ProfessoresController extends BaseController
 
             $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pessoaId, 'doc_tpd_id' => 2], $dataDocumento);
 
+            $pessoaAtt = $this->pessoaRepository->find($pessoaId);
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
+
             DB::commit();
 
             flash()->success('Professor editado com sucesso!');
@@ -301,7 +304,12 @@ class ProfessoresController extends BaseController
     public function getShow($professorId)
     {
         $professor = $this->professorRepository->find($professorId);
-        
+
+        if (!$professor) {
+            flash()->error('Professor não existe.');
+            return redirect()->back();
+        }
+
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);

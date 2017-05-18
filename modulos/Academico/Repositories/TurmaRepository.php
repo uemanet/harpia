@@ -23,6 +23,17 @@ class TurmaRepository extends BaseRepository
         return $entries;
     }
 
+    public function findAllByOfertaCursoIntegrada($ofertaCursoId)
+    {
+        $entries = DB::table('int_ambientes_virtuais')
+                  ->join('int_ambientes_turmas', 'atr_amb_id', '=', 'amb_id')
+                  ->join('acd_turmas', 'atr_trm_id', '=', 'trm_id')
+                  ->where('trm_ofc_id', '=', $ofertaCursoId)
+                  ->get();
+
+        return $entries;
+    }
+
     public function findAllWithVagasDisponiveisByOfertaCurso($ofertaCursoId)
     {
         $entries = $this->model

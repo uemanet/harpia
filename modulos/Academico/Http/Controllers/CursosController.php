@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -11,6 +12,8 @@ use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\DepartamentoRepository;
 use Modulos\Academico\Repositories\NivelCursoRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
+use Auth;
+use DB;
 
 class CursosController extends BaseController
 {
@@ -18,22 +21,25 @@ class CursosController extends BaseController
     protected $departamentoRepository;
     protected $nivelcursoRepository;
     protected $professorRepository;
+    protected $vinculoRepository;
 
     public function __construct(CursoRepository $curso,
                                 DepartamentoRepository $departamento,
                                 NivelCursoRepository $nivelcurso,
-                                ProfessorRepository $professor)
+                                ProfessorRepository $professor,
+                                VinculoRepository $vinculoRepository)
     {
         $this->cursoRepository = $curso;
         $this->departamentoRepository = $departamento;
         $this->nivelcursoRepository = $nivelcurso;
         $this->professorRepository = $professor;
+        $this->vinculoRepository = $vinculoRepository;
     }
 
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/cursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -70,21 +76,23 @@ class CursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-table',
-                                'action' => '/academico/matrizescurriculares/index/' . $id,
+                                'route' => 'academico.cursos.matrizescurriculares.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Matrizes',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/cursos/edit/' . $id,
+                                'route' => 'academico.cursos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/cursos/delete',
+                                'route' => 'academico.cursos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -118,8 +126,17 @@ class CursosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
+            // Cria vinculo com o curso para o usuario que esta criando o curso
+            $vinculo = [
+                'ucr_usr_id' => Auth::user()->usr_id,
+                'ucr_crs_id' => $curso->crs_id,
+            ];
+
+            $this->vinculoRepository->create($vinculo);
+
+
             flash()->success('Curso criado com sucesso.');
-            return redirect('/academico/cursos/index');
+            return redirect()->route('academico.cursos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -133,14 +150,15 @@ class CursosController extends BaseController
     public function getEdit($cursoId)
     {
         $curso = $this->cursoRepository->find($cursoId);
-        $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
-        $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
-        $professores = $this->professorRepository->listsEditCurso('prf_id', 'pes_nome', $cursoId);
 
         if (!$curso) {
             flash()->error('Curso não existe.');
             return redirect()->back();
         }
+
+        $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
+        $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
+        $professores = $this->professorRepository->listsEditCurso('prf_id', 'pes_nome', $cursoId);
 
         return view('Academico::cursos.edit', ['curso' => $curso, 'departamentos' => $departamentos, 'niveiscursos' => $niveiscursos, 'professores' => $professores]);
     }
@@ -152,7 +170,7 @@ class CursosController extends BaseController
 
             if (!$curso) {
                 flash()->error('Curso não existe.');
-                return redirect('/academico/cursos/index');
+                return redirect()->route('academico.cursos.index');
             }
 
             $requestData = $request->only($this->cursoRepository->getFillableModelFields());
@@ -163,7 +181,7 @@ class CursosController extends BaseController
             }
 
             flash()->success('Curso atualizado com sucesso.');
-            return redirect('/academico/cursos/index');
+            return redirect()->route('academico.cursos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -177,16 +195,21 @@ class CursosController extends BaseController
     public function postDelete(Request $request)
     {
         try {
+            DB::beginTransaction();
+
             $cursoId = $request->get('id');
 
-            if ($this->cursoRepository->delete($cursoId)) {
-                flash()->success('Curso excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o módulo');
-            }
+            $this->vinculoRepository->deleteAllVinculosByCurso($cursoId);
 
+            $this->cursoRepository->delete($cursoId);
+
+            flash()->success('Curso excluído com sucesso.');
             return redirect()->back();
+
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollback();
+
             if (config('app.debug')) {
                 throw $e;
             }
@@ -196,7 +219,7 @@ class CursosController extends BaseController
                 return redirect()->back();
             }
 
-            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error('Erro ao tentar excluir o módulo');
             return redirect()->back();
         }
     }

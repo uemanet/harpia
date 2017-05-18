@@ -3,42 +3,39 @@
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Configuracao;
+
+use Modulos\Seguranca\Models\MenuItem;
+use Modulos\Seguranca\Models\Modulo;
+use Modulos\Seguranca\Models\Perfil;
+use Modulos\Seguranca\Models\Permissao;
+use Modulos\Seguranca\Models\Usuario;
 
 class SegurancaSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        $this->call(ModuloTableSeeder::class);
-        $this->command->info('Modulos table seeded!');
-
         $this->call(UsuarioTableSeeder::class);
-        $this->command->info('Pessoa / usuario table seeded!');
 
-        $this->call(CategoriaRecursoTableSeeder::class);
-        $this->command->info('Categoria recurso table seeded!');
+        $this->call(ModulosTableSeeder::class);
 
-        $this->call(RecursoTableSeeder::class);
-        $this->command->info('Recurso table seeded!');
+        $this->call(MenuSegurancaSeeder::class);
 
-        $this->call(PermissaoTableSeeder::class);
-        $this->command->info('Permissao table seeded!');
+        $this->call(MenuGeralSeeder::class);
 
-        $this->call(PerfilTableSeeder::class);
-        $this->command->info('Perfil table seeded!');
+        $this->call(MenuAcademicoSeeder::class);
 
-        $this->call(PerfilPermissaoTableSeeder::class);
-        $this->command->info('Perfil permissao table seeded!');
+        $this->call(MenuIntegracaoSeeder::class);
 
-        $this->call(PerfilUsuarioTableSeeder::class);
-        $this->command->info('Perfil usuario table seeded!');
+        $this->call(MenuMonitoramentoSeeder::class);
 
-        Configuracao::set('time_between_clicks', 1200, 5);
-        $this->command->info('Configuracao table seeded!');
+        $this->call(PermissoesSegurancaSeeder::class);
+
+        $this->call(PermissoesGeralSeeder::class);
+
+        $this->call(PermissoesAcademicoSeeder::class);
+
+        $this->call(PermissoesIntegracaoSeeder::class);
+
+        $this->call(PermissoesMonitoramentoSeeder::class);
     }
 }

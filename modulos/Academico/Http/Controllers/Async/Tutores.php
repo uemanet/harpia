@@ -21,4 +21,11 @@ class Tutores extends BaseController
 
         return new JsonResponse($tutores, 200);
     }
+
+    public function getFindallbyTurmaTipoTutoria($idTurma, $tipoTutoria)
+    {
+        $tutores = $this->tutorRepository->FindallbyTurmaTipoTutoria($idTurma, $tipoTutoria);
+
+        return new JsonResponse($tutores, 200);
+    }
 }

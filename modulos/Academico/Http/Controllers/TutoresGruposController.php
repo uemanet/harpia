@@ -48,15 +48,19 @@ class TutoresGruposController extends BaseController
         }
 
         $btnNovo = new TButton();
-        if ($this->tutorgrupoRepository->verifyTutorExists($grupoId)) {
-            $btnNovo->setName('Vincular Tutor')->setAction('/academico/tutoresgrupos/create/' . $grupoId)->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
+        $actionButtons = [];
+
+        if ($this->tutorgrupoRepository->howManyTutors($grupoId) < 2) {
+            $btnNovo->setName('Vincular Tutor')
+                ->setRoute('academico.ofertascursos.turmas.grupos.tutoresgrupos.create')
+                ->setParameters(['id' => $grupoId])->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
+
+            $actionButtons[] = $btnNovo;
         }
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
         $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
-
-        $actionButtons[] = $btnNovo;
 
         $tabela = null;
         $paginacao = null;
@@ -90,7 +94,8 @@ class TutoresGruposController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-user',
-                                'action' => '/academico/tutoresgrupos/alterartutor/' . $id,
+                                'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.alterartutor',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Substituir tutor',
                                 'method' => 'get'
                             ]
@@ -104,8 +109,9 @@ class TutoresGruposController extends BaseController
         return view('Academico::tutoresgrupos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'grupo' => $grupo, 'turma' => $turma, 'oferta' => $oferta]);
     }
 
-    public function getCreate($grupoId)
+    public function getCreate(Request $request)
     {
+        $grupoId = $request->get('id');
         $grupo = $this->grupoRepository->find($grupoId);
 
         if (is_null($grupo)) {
@@ -152,7 +158,6 @@ class TutoresGruposController extends BaseController
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
             if (!$tutorgrupo) {
@@ -169,7 +174,7 @@ class TutoresGruposController extends BaseController
             }
 
             flash()->success('Vínculo criado com sucesso.');
-            return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+            return redirect()->route('academico.ofertascursos.turmas.grupos.tutoresgrupos.index', $tutorgrupo->ttg_grp_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -245,29 +250,16 @@ class TutoresGruposController extends BaseController
             }
 
             if ($turma->trm_integrada) {
-                // Event tutor antigo desvinculado
+                //Dispara evento para deletar o antigo tutor do grupo
                 event(new DeleteTutorVinculadoEvent($tutorGrupoOld));
-
-                if (SincronizacaoRepository::excludedFromMoodle($tutorGrupoOld->getTable(), $idTutorGrupo)) {
-                    // Se o ambiente respondeu OK, vincular novo tutor
-                    event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
-
-                    DB::commit();
-
-                    flash()->success('Tutor alterado com sucesso.');
-                    return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
-                }
-
-                DB::commit();
-                flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-                return redirect()->back();
+                //Dispara evento para vincular novo tutor no grupo
+                event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
             }
-
 
             DB::commit();
 
             flash()->success('Tutor alterado com sucesso.');
-            return redirect('/academico/tutoresgrupos/index/' . $tutorgrupo->ttg_grp_id);
+            return redirect()->route('academico.ofertascursos.turmas.grupos.tutoresgrupos.index', $tutorgrupo->ttg_grp_id);
         } catch (\Exception $e) {
             DB::rollback();
 

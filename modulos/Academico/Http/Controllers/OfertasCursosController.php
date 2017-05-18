@@ -38,7 +38,7 @@ class OfertasCursosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/ofertascursos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -50,7 +50,7 @@ class OfertasCursosController extends BaseController
             $tabela = $tableData->columns(array(
                 'ofc_id' => '#',
                 'ofc_ano' => 'Ano',
-                'ofc_crs_id' => 'Curso',
+                'crs_nome' => 'Curso',
                 'ofc_mdl_id' => 'Modalidade',
                 'ofc_action' => 'Ações'
             ))
@@ -58,8 +58,8 @@ class OfertasCursosController extends BaseController
                     return array('style' => 'width: 140px;');
                 })
                 ->means('ofc_action', 'ofc_id')
-                ->means('ofc_crs_id', 'curso')
-                ->modify('ofc_crs_id', function ($curso) {
+                ->means('crs_nome', 'curso')
+                ->modify('crs_nome', function ($curso) {
                     return $curso->crs_nome;
                 })
                 ->means('ofc_mdl_id', 'modalidade')
@@ -77,14 +77,15 @@ class OfertasCursosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => '/academico/turmas/index/'.$id,
+                                'route' => 'academico.ofertascursos.turmas.index',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ]
                         ]
                     ]);
                 })
-                ->sortable(array('ofc_id', 'ofc_ano'));
+                ->sortable(array('ofc_id', 'ofc_ano', 'crs_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -110,7 +111,7 @@ class OfertasCursosController extends BaseController
 
             if (!$ofertacurso) {
                 DB::rollback();
-                flash()->error('Erro ao tentar salvar.');
+                flash()->error('Já existe uma oferta com o mesmo ano e modalidade cadastrada.');
                 return redirect()->back()->withInput($request->all());
             }
 
@@ -123,7 +124,7 @@ class OfertasCursosController extends BaseController
             DB::commit();
 
             flash()->success('Oferta de curso criada com sucesso.');
-            return redirect('/academico/ofertascursos/index');
+            return redirect()->route('academico.ofertascursos.index');
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {

@@ -72,19 +72,8 @@
 <script src="{{ asset('/js/plugins/toastr.min.js')}}"></script>
 <script src="{{ asset('/js/harpia.js')}}"></script>
 
-<script type="text/javascript">
-
-    url = '{{url()->getRequest()->getPathInfo()}}';
-    control = url.split('/')[2];
-
-    var option = $('#'+control);
-
-    option.parent('ul').parent('li').addClass('active');
-    option.addClass('active');
-
-</script>
-
 {!! Flash::render() !!}
+
 @yield('scripts')
 </body>
 </html>

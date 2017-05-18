@@ -29,7 +29,7 @@ class DepartamentosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/departamentos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.departamentos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -63,14 +63,15 @@ class DepartamentosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/departamentos/edit/' . $id,
+                                'route' => 'academico.departamentos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/academico/departamentos/delete',
+                                'route' => 'academico.departamentos.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -104,7 +105,8 @@ class DepartamentosController extends BaseController
             }
 
             flash()->success('Departamento criado com sucesso.');
-            return redirect('/academico/departamentos/index');
+
+            return redirect()->route('academico.departamentos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -118,13 +120,13 @@ class DepartamentosController extends BaseController
     public function getEdit($departamentoId)
     {
         $departamento = $this->departamentoRepository->find($departamentoId);
-        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
 
         if (!$departamento) {
             flash()->error('Departamento não existe.');
             return redirect()->back();
         }
+        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
+        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
 
         return view('Academico::departamentos.edit', ['departamento' => $departamento, 'centros' => $centros, 'professores' => $professores]);
     }
@@ -136,7 +138,7 @@ class DepartamentosController extends BaseController
 
             if (!$departamento) {
                 flash()->error('Departamento não existe.');
-                return redirect('academico/departamentos/index');
+                return redirect()->route('academico.departamentos.index');
             }
 
             $requestData = $request->only($this->departamentoRepository->getFillableModelFields());
@@ -147,7 +149,7 @@ class DepartamentosController extends BaseController
             }
 
             flash()->success('Departamento atualizado com sucesso.');
-            return redirect('/academico/departamentos/index');
+            return redirect()->route('academico.departamentos.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

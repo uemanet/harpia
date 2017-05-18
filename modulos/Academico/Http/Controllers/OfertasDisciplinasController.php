@@ -42,7 +42,7 @@ class OfertasDisciplinasController extends BaseController
     public function getIndex()
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Oferecer Disciplinas')->setAction('/academico/ofertasdisciplinas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Oferecer Disciplinas')->setRoute('academico.ofertasdisciplinas.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButton[] = $btnNovo;
 

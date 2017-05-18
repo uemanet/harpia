@@ -18,7 +18,7 @@
             <h3 class="box-title">Formulário de cadastro de departamentos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/departamentos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => 'academico.departamentos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::departamentos.includes.formulario')
             {!! Form::close() !!}
         </div>

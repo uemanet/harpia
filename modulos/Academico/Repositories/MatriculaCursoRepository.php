@@ -14,19 +14,24 @@ class MatriculaCursoRepository extends BaseRepository
     protected $matrizCurricularRepository;
     protected $matriculaOfertaDisciplinaRepository;
     protected $moduloMatrizRepository;
+    protected $turmaRepository;
+    protected $registroRepository;
 
     public function __construct(
         Matricula $matricula,
         OfertaCursoRepository $oferta,
         MatrizCurricularRepository $matriz,
         MatriculaOfertaDisciplinaRepository $matriculaOferta,
-        ModuloMatrizRepository $modulo
+        ModuloMatrizRepository $modulo, TurmaRepository $turmaRepository,
+        RegistroRepository $registroRepository
     ) {
         $this->model = $matricula;
+        $this->turmaRepository = $turmaRepository;
         $this->ofertaCursoRepository = $oferta;
         $this->matrizCurricularRepository = $matriz;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOferta;
         $this->moduloMatrizRepository = $modulo;
+        $this->registroRepository = $registroRepository;
     }
 
     public function verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $ofertaCursoId, $turmaId)
@@ -445,6 +450,128 @@ class MatriculaCursoRepository extends BaseRepository
         return $result;
     }
 
+    public function getAlunosAptosCertificacao($turmaId, $moduloId)
+    {
+        // busca todas as matriculas da turma
+        $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
+
+        $aptos = [];
+        $certificados = [];
+
+        if (!$matriculas->count()) {
+            return array('aptos' => $aptos, 'certificados' => $certificados);
+        }
+
+        foreach ($matriculas as $matricula) {
+
+            // Checar se aluno concluiu todas as disciplinas
+            $turma = $this->turmaRepository->find($turmaId);
+            $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
+
+            /**
+             * Se aluno concluiu todas as disciplinas, nao estah apto para certificacao
+             */
+            if (!$this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+                continue;
+            }
+
+            // Verifica se o aluno esta apto para certificacao
+            if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
+                if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
+                    $certificados[] = $matricula;
+                    continue;
+                }
+
+                $aptos[] = $matricula;
+            }
+        }
+
+        return array('aptos' => $aptos, 'certificados' => $certificados);
+    }
+
+    public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
+    {
+        $apto = false;
+
+        // busca as informacoes da oferta de curso
+        $turma = $this->turmaRepository->find($turmaId);
+        $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
+
+        // busca as informacoes da matriz curricular do curso
+        $matrizCurricular = $this->matrizCurricularRepository->find($ofertaCurso->ofc_mtc_id);
+
+        // busca os modulos da matriz
+        $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($matrizCurricular->mtc_id);
+
+        // busca todas as disciplinas da matriz do curso
+        $disciplinasMatriz = $this->matrizCurricularRepository->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
+            ->pluck('mdc_id')->toArray();
+
+        // busca as informações da matricula
+        $matricula = $this->find($matriculaId);
+
+        if ($matricula->mat_situacao == 'concluido') {
+            return false;
+        }
+
+        if ($matricula->mat_situacao == 'cursando') {
+            $quantDisciplinasObrigatorias = 0;
+            $quantDisciplinasObrigatoriasAprovadas = 0;
+
+            foreach ($modulos as $modulo) {
+                if ($modulo->mdo_id > $moduloId) {
+                    break;
+                }
+
+                $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAlunoModuloMatriz($matricula->mat_alu_id, $modulo->mdo_id);
+
+                if (!$disciplinasAluno->count()) {
+                    return false;
+                }
+
+                $cargaHorariaEletivas = 0;
+                $creditosEletivas = 0;
+
+                foreach ($disciplinasAluno as $disciplina) {
+                    if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                        $quantDisciplinasObrigatorias++;
+                    }
+                    // Verifica se a oferta de disciplina está na matriz do curso
+                    if (in_array($disciplina->mdc_id, $disciplinasMatriz)) {
+                        // Caso o aluno foi aprovado na disciplina, incrementa a variavel
+                        if (in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                            if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                                $quantDisciplinasObrigatoriasAprovadas++;
+                            }
+
+                            if ($disciplina->mdc_tipo_disciplina == 'eletiva') {
+                                $cargaHorariaEletivas += $disciplina->dis_carga_horaria;
+                                $creditosEletivas += $disciplina->dis_creditos;
+                            }
+                        }
+                    }
+                }
+
+                // se o aluno não atingir a carga horaria minima de disciplinas eletivas do módulo, não está apto para conclusão
+                if ((!is_null($modulo->mdo_cargahoraria_min_eletivas)) && ($cargaHorariaEletivas < $modulo->mdo_cargahoraria_min_eletivas)) {
+                    return false;
+                }
+
+                // se o aluno não atingir os creditos minimos de disciplinas eletivas do módulo, não está apto para conclusão
+                if ((!is_null($modulo->mdo_creditos_min_eletivas)) && ($creditosEletivas < $modulo->mdo_creditos_min_eletivas)) {
+                    return false;
+                }
+            }
+
+            // Casos de situações
+            if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function concluirMatricula($matriculaId, $ofertaCursoId)
     {
         // verifica se matricula existe
@@ -577,5 +704,81 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         return $query->get();
+    }
+
+    public function getPrintData($IdMatricula, $IdModulo)
+    {
+
+        //recebe livro, folha e registro da certificação
+        $livfolreg = DB::table('acd_registros')
+                  ->where('reg_mat_id', $IdMatricula)
+                  ->where('reg_mdo_id', $IdModulo)
+                  ->join('acd_livros', 'reg_liv_id', 'liv_id')
+                  ->first();
+
+        if (!$livfolreg) {
+            return null;
+        }
+        $matricula = $this->model->find($IdMatricula);
+        $curso = $matricula->turma->ofertacurso->curso;
+        $pessoa = $matricula->aluno->pessoa;
+
+        $modulo = DB::table('acd_modulos_matrizes')
+                  ->where('mdo_id', $IdModulo)->first();
+
+        $ofertasdisciplinas = DB::table('acd_ofertas_disciplinas')
+        ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
+        ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
+        ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+        ->where('mdc_mdo_id', $IdModulo)
+        ->where('mof_mat_id', $IdMatricula)
+        ->get();
+
+        $cargahoraria = 0;
+        $disciplinas = [];
+        $numerador = 0;
+
+        foreach ($ofertasdisciplinas as $modulodisciplina) {
+            $disciplinas[] = $modulodisciplina->dis_nome;
+            $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
+            $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
+        }
+
+        //formata o coeficiente do módulo
+        $coeficiente = $numerador/$cargahoraria;
+        $coeficiente = number_format($coeficiente, 2, '.', '');
+
+        $descricaomodulo = $modulo->mdo_descricao;
+        $qualificacaomodulo = $modulo->mdo_qualificacao;
+
+        $query = DB::table('gra_documentos')
+                  ->where('doc_pes_id', $pessoa->pes_id)
+                  ->where('doc_tpd_id', 2)
+                  ->first();
+        $nomepessoa = $pessoa->pes_nome;
+
+        //formatação do CPF de pessoa
+        $cpfpessoa = $query->doc_conteudo;
+        $parte_um     = substr($cpfpessoa, 0, 3);
+        $parte_dois   = substr($cpfpessoa, 3, 3);
+        $parte_tres   = substr($cpfpessoa, 6, 3);
+        $parte_quatro = substr($cpfpessoa, 9, 2);
+        $cpfpessoaformatado = "$parte_um.$parte_dois.$parte_tres-$parte_quatro";
+
+        //prepara o array de retorno
+        $returnData = [
+                        'DESCRICAOMODULO' => mb_strtoupper($descricaomodulo, "UTF-8"),
+                        'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
+                        'CARGAHORARIAMODULO' => $cargahoraria,
+                        'DISCIPLINAS' => $disciplinas,
+                        'EIXOCURSO' => $curso->crs_eixo ,
+                        'LIVRO' => $livfolreg->liv_numero,
+                        'FOLHA' => $livfolreg->reg_folha,
+                        'REGISTRO'=> $livfolreg->reg_registro,
+                        'COEFICIENTEDOMODULO'=> $coeficiente,
+                        'PESSOANOME'=> mb_strtoupper($nomepessoa, "UTF-8"),
+                        'PESSOACPF'=> $cpfpessoaformatado
+                        ];
+        return $returnData;
     }
 }

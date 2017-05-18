@@ -72,8 +72,26 @@
         <div class="box box-primary">
             <div class="box-header">
                 <div class="pull-right box-tools">
-                    <button id="formPdf" type="button" class="btn btn-success" >
-                        <i class="fa fa-file-pdf-o"></i> Exportar para PDF</button>
+                    <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculascurso.pdf') }}">
+                        {!! ActionButton::grid([
+                                'type' => 'LINE',
+                                'buttons' => [
+                                    [
+                                    'classButton' => 'btn btn-success',
+                                    'icon' => 'fa fa-file-pdf-o',
+                                    'route' => 'academico.relatoriosmatriculascurso.pdf',
+                                    'label' => 'Exportar para PDF',
+                                    'method' => 'post',
+                                    'id' => '',
+                                    'attributes' => ['id' => 'formPdf','target' => '_blank']
+                                    ]
+                                ]
+                        ]) !!}
+                        <input type="hidden" name="trm_id" id="turmaId" value="">
+                        <input type="hidden" name="crs_id" id="cursoId" value="">
+                        <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
+                        <input type="hidden" name="mat_situacao" id="situacao" value="">
+                    </form>
                 </div>
             </div>
             <div class="box-body">
@@ -94,7 +112,7 @@
     <script src="{{url('/')}}/js/plugins/select2.js"></script>
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             // select2
             $('select').select2();
 
@@ -102,6 +120,8 @@
             var turmaSelect = $('#trm_id');
             var routePdf = "{{ route('academico.relatoriosmatriculascurso.pdf') }}";
             var routeIndex = "{{ route('academico.relatoriosmatriculascurso.index') }}";
+            var cursoSelect = $('#crs_id');
+            var situacaoSelect = $('#mat_situacao');
 
             // evento change select de cursos
             $('#crs_id').change(function () {
@@ -113,15 +133,15 @@
                 // buscar as ofertas de curso de acordo com o curso escolhido
                 var cursoId = $(this).val();
 
-                if(!cursoId || cursoId == '') {
+                if (!cursoId || cursoId == '') {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
                         $.each(response, function (key, obj) {
-                            ofertasCursoSelect.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+' ('+obj.mdl_nome+')</option>');
+                            ofertasCursoSelect.append('<option value="' + obj.ofc_id + '">' + obj.ofc_ano + ' (' + obj.mdl_nome + ')</option>');
                         });
                     } else {
                         ofertasCursoSelect.append("<option>Sem ofertas disponiveis</option>");
@@ -138,15 +158,15 @@
                 // buscar as turmas de acordo com a oferta de curso
                 var ofertaCursoId = $(this).val();
 
-                if(!ofertaCursoId || ofertaCursoId == '') {
+                if (!ofertaCursoId || ofertaCursoId == '') {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         turmaSelect.append('<option value="">Selecione a turma</option>');
                         $.each(response, function (key, obj) {
-                            turmaSelect.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
+                            turmaSelect.append('<option value="' + obj.trm_id + '">' + obj.trm_nome + '</option>');
                         });
                     } else {
                         turmaSelect.append('<option>Sem turmas disponíveis</option>');
@@ -158,8 +178,13 @@
                 $('#form').attr('action', routeIndex).removeAttr('target', '_blank').submit();
             });
 
-            $(document).on('click', '#formPdf', function () {
-                $('#form').attr('action', routePdf).attr('target', '_blank').submit();
+            $('#turmaId').attr('value', turmaSelect.val());
+            $('#ofertaCursoId').attr('value', ofertasCursoSelect.val());
+            $('#cursoId').attr('value', cursoSelect.val());
+            $('#situacao').attr('value', situacaoSelect.val());
+
+            $(document).on('click', '#formPdf', function (event) {
+                $('#exportPdf').submit();
             });
         });
     </script>

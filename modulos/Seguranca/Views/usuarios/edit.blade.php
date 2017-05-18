@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de edição de usuário</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($usuario,['route' => ['seguranca.usuarios.putEdit', $usuario->usr_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($usuario,['route' => ['seguranca.usuarios.edit', $usuario->usr_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
             <h4 class="box-title">
                 Dados de Usuário
             </h4>

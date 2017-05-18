@@ -65,4 +65,9 @@ class VinculoRepository extends BaseRepository
 
         return !$result->isEmpty();
     }
+
+    public function deleteAllVinculosByCurso($cursoId)
+    {
+        DB::table('acd_usuarios_cursos')->where('ucr_crs_id', '=', $cursoId)->delete();
+    }
 }

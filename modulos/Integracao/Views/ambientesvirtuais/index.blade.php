@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/integracao/ambientesvirtuais/index') }}">
+                <form method="GET" action="{{ route('integracao.ambientesvirtuais.index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="amb_nome" id="amb_nome" value="{{Input::get('amb_nome')}}" placeholder="Nome do ambiente">
                     </div>

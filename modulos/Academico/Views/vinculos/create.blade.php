@@ -9,7 +9,7 @@
 @stop
 
 @section('subtitle')
-    Adicionar vínculo
+    Adicionar vínculo :: Usuário : <b>{{$user->usr_usuario}}</b>
 @stop
 
 @section('content')
@@ -18,7 +18,7 @@
             <h3 class="box-title">Formulário de cadastro de vínculos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/usuarioscursos/create/" . $usuario, "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            {!! Form::open(["route" => ['academico.vinculos.create',$usuario], "method" => "POST", "id" => "form", "role" => "form"]) !!}
             @include('Academico::vinculos.includes.formulario')
             {!! Form::close() !!}
         </div>
@@ -41,4 +41,3 @@
     </script>
 
 @endsection
-

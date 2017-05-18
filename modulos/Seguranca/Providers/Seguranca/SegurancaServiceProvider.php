@@ -48,7 +48,7 @@ class SegurancaServiceProvider extends ServiceProvider
              * add @haspermission and @haspermission to blade compiler
              */
             $bladeCompiler->directive('haspermission', function ($expression) {
-                return "<?php if(app('seguranca')->haspermission($expression)): ?>";
+                return "<?php if(app('Modulos\Seguranca\Providers\Seguranca\Seguranca')->haspermission($expression)): ?>";
             });
 
             $bladeCompiler->directive('endhaspermission', function ($expression) {

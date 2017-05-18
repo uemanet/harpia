@@ -70,7 +70,8 @@ class MatriculasOfertasDisciplinasController extends BaseController
                             [
                                 'classButton' => 'btn btn-primary',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/matricularalunodisciplina/show/' . $id,
+                                'route' => 'academico.matriculasofertasdisciplinas.show',
+                                'parameters' => ['id' => $id],
                                 'label' => '',
                                 'method' => 'get'
                             ],

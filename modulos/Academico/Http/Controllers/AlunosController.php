@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\AlunoRequest;
@@ -32,7 +31,7 @@ class AlunosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/alunos/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.alunos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -63,14 +62,16 @@ class AlunosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/academico/alunos/edit/' . $id,
+                                'route' => 'academico.alunos.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/academico/alunos/show/'.$id,
+                                'route' => 'academico.alunos.show',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
@@ -85,16 +86,16 @@ class AlunosController extends BaseController
         return view('Academico::alunos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate($pessoaId = null)
+    public function getCreate(Request $request)
     {
-        if (is_null($pessoaId)) {
-            return view('Academico::alunos.create', ['pessoa' => []]);
-        }
+        $pessoaId = $request->get('id');
+        
+        if (!is_null($pessoaId)) {
+            $pessoa = $this->pessoaRepository->findById($pessoaId);
 
-        $pessoa = $this->pessoaRepository->findById($pessoaId);
-
-        if ($pessoa) {
-            return view('Academico::alunos.create', ['pessoa' => $pessoa]);
+            if ($pessoa) {
+                return view('Academico::alunos.create', ['pessoa' => $pessoa]);
+            }
         }
 
         return view('Academico::alunos.create', ['pessoa' => []]);
@@ -214,6 +215,11 @@ class AlunosController extends BaseController
     {
         $aluno = $this->alunoRepository->find($alunoId);
 
+        if (!$aluno) {
+            flash()->error('Aluno não existe.');
+            return redirect()->back();
+        }
+
         $pessoa = $this->pessoaRepository->findById($aluno->alu_pes_id);
 
         return view('Academico::alunos.edit', ['pessoa' => $pessoa]);
@@ -276,17 +282,13 @@ class AlunosController extends BaseController
 
             DB::commit();
 
-            $pessoa = $this->pessoaRepository->find($pessoaId);
 
             $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            foreach ($ambientesvinculadosId as $id) {
-                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-            }
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Aluno editado com sucesso!');
-            return redirect()->route('academico.alunos.show', $pessoa->aluno->alu_id);
+            return redirect()->route('academico.alunos.show', $pessoaAtt->aluno->alu_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -306,12 +308,18 @@ class AlunosController extends BaseController
         $aluno = $this->alunoRepository->find($alunoId);
         session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
 
-        $situacao = ['cursando'=> 'cursando',
-                     'concluido' => 'concluido',
-                     'reprovado'=> 'reprovado',
-                     'evadido'=> 'evadido',
-                     'trancado'=> 'trancado',
-                     'desistente'=> 'desistente'];
+        if (!$aluno) {
+            flash()->error('Aluno não existe.');
+            return redirect()->back();
+        }
+
+        $situacao = [
+            'cursando' => 'Cursando',
+            'reprovado' => 'Reprovado',
+            'evadido' => 'Evadido',
+            'trancado' => 'Trancado',
+            'desistente' => 'Desistente'
+        ];
 
         return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'situacao' => $situacao]);
     }

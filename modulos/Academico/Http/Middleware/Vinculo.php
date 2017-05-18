@@ -6,6 +6,7 @@ use Auth;
 use Closure;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Route;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
@@ -87,24 +88,14 @@ class Vinculo
 
     private function routeName($request)
     {
-        $path = explode('/', $request->getPathInfo());
-
-        if ($path[2] == "async") {
-            return $path[3];
-        }
-
-        return $path[2];
+        $route = explode('.', Route::currentRouteName());
+        return $route[count($route) - 2];
     }
 
     private function actionName($request)
     {
-        $path = explode('/', $request->getPathInfo());
-
-        if ($path[2] == "async") {
-            return $path[4];
-        }
-
-        return $path[3];
+        $route = explode('.', Route::currentRouteName());
+        return array_pop($route);
     }
 
     private function routeParameters($request)
@@ -127,7 +118,7 @@ class Vinculo
      */
     private function handleTurmas($request, Closure $next)
     {
-        $id = $request->id;
+        $id = $request->get('id');
         $action = $this->actionName($request);
 
         if (is_null($id)) {
@@ -138,9 +129,7 @@ class Vinculo
             $oferta = $this->ofertaCursoRepository->find($id);
 
             if (!$oferta) {
-                flash()->error('Você não tem autorização para acessar este recurso.');
-
-                return redirect()->route('academico.cursos.index');
+                return $next($request);
             }
 
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $oferta->ofc_crs_id)) {
@@ -149,15 +138,13 @@ class Vinculo
 
             flash()->error($this->defaultResponse);
 
-            return redirect()->route('academico.cursos.index');
+            return redirect()->route('academico.ofertascursos.index');
         }
 
         $curso = $this->turmaRepository->getCurso($id);
 
         if (!$curso) {
-            flash()->error($this->defaultResponse);
-
-            return redirect()->route('academico.cursos.index');
+            return $next($request);
         }
 
         if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
@@ -166,7 +153,7 @@ class Vinculo
 
         flash()->error($this->defaultResponse);
 
-        return redirect()->route('academico.cursos.index');
+        return redirect()->route('academico.ofertascursos.index');
     }
 
     /**
@@ -177,7 +164,7 @@ class Vinculo
      */
     private function handleGrupos($request, Closure $next)
     {
-        $id = $request->id;
+        $id = $request->get('id');
         $action = $this->actionName($request);
 
         if (is_null($id)) {
@@ -188,8 +175,7 @@ class Vinculo
             $curso = $this->turmaRepository->getCurso($id);
 
             if (!$curso) {
-                flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
+                return $next($request);
             }
 
             if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
@@ -197,10 +183,15 @@ class Vinculo
             }
 
             flash()->error($this->defaultResponse);
-            return redirect()->route('academico.cursos.index');
+            return redirect()->route('academico.ofertascursos.index');
         }
 
         $grupo = $this->grupoRepository->find($id);
+
+        if (!$grupo) {
+            return $next($request);
+        }
+
         $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
 
         if ($this->vinculoRepository->userHasVinculo(Auth::user()->usr_id, $curso)) {
@@ -208,7 +199,7 @@ class Vinculo
         }
 
         flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
+        return redirect()->route('academico.ofertascursos.index');
     }
 
 
@@ -220,7 +211,7 @@ class Vinculo
      */
     private function handleTutoresGrupos($request, Closure $next)
     {
-        $id = $request->id;
+        $id = $request->get('id');
         $action = $this->actionName($request);
 
         if (is_null($id)) {
@@ -231,15 +222,14 @@ class Vinculo
             $grupo = $this->grupoRepository->find($id);
 
             if (!$grupo) {
-                flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
+                return $next($request);
             }
 
             $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
 
             if (!$curso) {
                 flash()->error($this->defaultResponse);
-                return redirect()->route('academico.cursos.index');
+                return redirect()->route('academico.ofertascursos.index');
             }
 
 
@@ -248,10 +238,13 @@ class Vinculo
             }
 
             flash()->error($this->defaultResponse);
-            return redirect()->route('academico.cursos.index');
+            return redirect()->route('academico.ofertascursos.index');
         }
 
         $tutorGrupo = $this->tutorGrupoRepository->find($id);
+        if (!$tutorGrupo) {
+            return $next($request);
+        }
         $grupo = $this->grupoRepository->find($tutorGrupo->ttg_grp_id);
         $curso = $this->turmaRepository->getCurso($grupo->grp_trm_id);
 
@@ -260,7 +253,7 @@ class Vinculo
         }
 
         flash()->error($this->defaultResponse);
-        return redirect()->route('academico.cursos.index');
+        return redirect()->route('academico.ofertascursos.index');
     }
 
     /**
@@ -374,7 +367,7 @@ class Vinculo
             $ofertas    = isset($parameters["ofertas"]) ? $parameters['ofertas'] : null;
             $matriculaId  = isset($parameters["mof_mat_id"]) ? $parameters['mof_mat_id'] : null;
 
-            if ($routeName == 'academico.async.matriculasofertasdisciplinas.postmatriculaslote') {
+            if ($routeName == 'academico.async.matriculasofertasdisciplinas.matriculaslote') {
                 $matriculaId = $parameters['matriculas'][0];
                 $ofertas[] = $parameters['ofd_id'];
             }

@@ -80,7 +80,7 @@
 
     <script>
         $(function () {
-           $('select').select2();
+            $('select').select2();
 
             var selectOfertas = $('#ofc_id');
             var selectTurmas = $('#trm_id');
@@ -92,22 +92,22 @@
             $('#crs_id').change(function () {
                 var curso = $(this).val();
 
-                if(curso) {
+                if (curso) {
                     selectOfertas.empty();
                     selectTurmas.empty();
                     selectPeriodos.empty();
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/"+curso)
-                    .done(function (data) {
-                        if(!$.isEmptyObject(data)) {
-                            selectOfertas.append('<option value="">Selecione uma oferta</option>');
-                            $.each(data, function (key, obj) {
-                               selectOfertas.append("<option value='"+obj.ofc_id+"'>"+obj.ofc_ano+" ("+obj.mdl_nome+")</option>");
-                            });
-                        } else {
-                            selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
-                        }
-                    });
+                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
+                        .done(function (data) {
+                            if (!$.isEmptyObject(data)) {
+                                selectOfertas.append('<option value="">Selecione uma oferta</option>');
+                                $.each(data, function (key, obj) {
+                                    selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ")</option>");
+                                });
+                            } else {
+                                selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
+                            }
+                        });
                 }
 
             });
@@ -116,42 +116,41 @@
             selectOfertas.change(function () {
                 var oferta = $(this).val();
 
-                if(oferta) {
+                if (oferta) {
                     selectTurmas.empty();
                     selectPeriodos.empty();
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/"+oferta)
-                            .done(function (data) {
-                                if(!$.isEmptyObject(data)) {
-                                    selectTurmas.append('<option value="">Selecione uma turma</option>');
-                                    $.each(data, function (key, obj) {
-                                        selectTurmas.append("<option value='"+obj.trm_id+"'>"+obj.trm_nome+"</option>");
-                                    });
-                                } else {
-                                    selectTurmas.append('<option value="">Sem turmas cadastradas</option>');
-                                }
-                            });
+                    $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + oferta)
+                        .done(function (data) {
+                            if (!$.isEmptyObject(data)) {
+                                selectTurmas.append('<option value="">Selecione uma turma</option>');
+                                $.each(data, function (key, obj) {
+                                    selectTurmas.append("<option value='" + obj.trm_id + "'>" + obj.trm_nome + "</option>");
+                                });
+                            } else {
+                                selectTurmas.append('<option value="">Sem turmas cadastradas</option>');
+                            }
+                        });
                 }
             });
 
-            selectTurmas.change(function() {
+            selectTurmas.change(function () {
                 var turmaId = $(this).val();
 
-                if(turmaId) {
+                if (turmaId) {
                     // limpando selects
                     selectPeriodos.empty();
-                    $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
-                    .done(function(response) {
-                        if(!$.isEmptyObject(response))
-                        {
-                            selectPeriodos.append("<option value=''>Selecione um periodo</option>");
-                            $.each(response, function (key, obj) {
-                                selectPeriodos.append("<option value='"+obj.per_id+"'>"+obj.per_nome+"</option>");
-                            });
-                        } else {
-                            selectPeriodos.append("<option value=''>Sem períodos disponíveis</option>");
-                        }
-                    });
+                    $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/" + turmaId)
+                        .done(function (response) {
+                            if (!$.isEmptyObject(response)) {
+                                selectPeriodos.append("<option value=''>Selecione um periodo</option>");
+                                $.each(response, function (key, obj) {
+                                    selectPeriodos.append("<option value='" + obj.per_id + "'>" + obj.per_nome + "</option>");
+                                });
+                            } else {
+                                selectPeriodos.append("<option value=''>Sem períodos disponíveis</option>");
+                            }
+                        });
                 }
             });
 
@@ -159,42 +158,44 @@
                 var turma = selectTurmas.val();
                 var periodo = $('#per_id').val();
 
-                if(turma == '' || periodo == '') {
+                if (turma == '' || periodo == '') {
                     return false;
                 }
 
                 $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turma + "&ofd_per_id=" + periodo)
-                .done(function (data) {
-                    boxDisciplinas.removeClass('hidden');
-                    boxDisciplinas.find('.conteudo').empty();
-                    if(!$.isEmptyObject(data)) {
+                    .done(function (data) {
+                        boxDisciplinas.removeClass('hidden');
+                        boxDisciplinas.find('.conteudo').empty();
+                        if (!$.isEmptyObject(data)) {
 
-                        var table = '';
-                        table += "<table class='table table-bordered'>";
-                        table += '<tr>';
-                        table += "<th>Disciplina</th>";
-                        table += "<th>Carga Horária</th>";
-                        table += "<th>Créditos</th>";
-                        table += "<th>Vagas</th>";
-                        table += "<th>Professor</th>";
-                        table += '</tr>';
-
-                        $.each(data, function (key, obj) {
+                            var table = '';
+                            table += "<table class='table table-bordered'>";
                             table += '<tr>';
-                            table += "<td>"+obj.dis_nome+"</td>";
-                            table += "<td>"+obj.dis_carga_horaria+"</td>";
-                            table += "<td>"+obj.dis_creditos+"</td>";
-                            table += "<td>"+obj.qtdMatriculas+"/<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
-                            table += "<td>"+obj.pes_nome+"</td>";
+                            table += "<th>Disciplina</th>";
+                            table += "<th>Carga Horária</th>";
+                            table += "<th>Créditos</th>";
+                            table += "<th>Tipo de Oferta</th>";
+                            table += "<th>Vagas</th>";
+                            table += "<th>Professor</th>";
                             table += '</tr>';
-                        });
 
-                        table += "</table>";
-                        boxDisciplinas.find('.conteudo').append(table);
-                    } else {
-                        boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
-                    }
-                });
+                            $.each(data, function (key, obj) {
+                                table += '<tr>';
+                                table += "<td>" + obj.dis_nome + "</td>";
+                                table += "<td>" + obj.dis_carga_horaria + "</td>";
+                                table += "<td>" + obj.dis_creditos + "</td>";
+                                table += "<td>" + obj.mdc_tipo_disciplina + "</td>";
+                                table += "<td>" + obj.qtdMatriculas + "/<strong>" + obj.ofd_qtd_vagas + "</strong></td>";
+                                table += "<td>" + obj.pes_nome + "</td>";
+                                table += '</tr>';
+                            });
+
+                            table += "</table>";
+                            boxDisciplinas.find('.conteudo').append(table);
+                        } else {
+                            boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
+                        }
+                    });
             });
         });
     </script>

@@ -13,16 +13,6 @@ class PerfilRepository extends BaseRepository
         $this->model = $perfil;
     }
 
-    public function getPerfilWithModulo($perfilId)
-    {
-        $sql = 'SELECT prf_id,prf_nome,prf_descricao,prf_mod_id,mod_nome
-                FROM seg_perfis
-                    INNER JOIN seg_modulos m ON mod_id = prf_mod_id
-                WHERE prf_id = :perfilid';
-
-        return DB::selectOne($sql, ['perfilid' => $perfilId]);
-    }
-
     public function getTreeOfPermissoesByPefilAndModulo($perfilId, $moduloId)
     {
         $sql = 'SELECT
@@ -74,16 +64,16 @@ class PerfilRepository extends BaseRepository
     public function getModulosWithoutPerfis($usuarioId)
     {
         $subquery = DB::table('seg_modulos')
-                    ->leftJoin('seg_perfis', 'mod_id', '=', 'prf_mod_id')
-                    ->select('mod_id', 'mod_nome', 'prf_id')
-                    ->groupBy('mod_id');
+            ->leftJoin('seg_perfis', 'mod_id', '=', 'prf_mod_id')
+            ->select('mod_id', 'mod_nome', 'prf_id')
+            ->groupBy('mod_id');
 
         $result = DB::table(DB::raw("({$subquery->toSql()}) as modulos"))
-                    ->leftJoin('seg_perfis_usuarios', function ($join) use ($usuarioId) {
-                        $join->on('modulos.prf_id', '=', 'pru_prf_id')->where('pru_usr_id', '=', $usuarioId);
-                    })
-                    ->whereNull('pru_prf_id')
-                    ->get();
+            ->leftJoin('seg_perfis_usuarios', function ($join) use ($usuarioId) {
+                $join->on('modulos.prf_id', '=', 'pru_prf_id')->where('pru_usr_id', '=', $usuarioId);
+            })
+            ->whereNull('pru_prf_id')
+            ->get();
 
         $retorno = [];
 

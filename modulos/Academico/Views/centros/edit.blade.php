@@ -18,7 +18,7 @@
             <h3 class="box-title">Formulário de Edição de Centro</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($centro,["url" => url('/') . "/academico/centros/edit/$centro->cen_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($centro,["route" => ['academico.centros.edit',$centro->cen_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
             @include('Academico::centros.includes.formulario')
             {!! Form::close() !!}
         </div>

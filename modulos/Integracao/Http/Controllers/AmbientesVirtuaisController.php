@@ -17,6 +17,7 @@ use Modulos\Integracao\Repositories\AmbienteServicoRepository;
 use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 use Modulos\Integracao\Repositories\ServicoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
+use GuzzleHttp\Client;
 use Validator;
 use DB;
 
@@ -47,7 +48,7 @@ class AmbientesVirtuaisController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/integracao/ambientesvirtuais/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('integracao.ambientesvirtuais.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -77,28 +78,31 @@ class AmbientesVirtuaisController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
-                                'action' => '/integracao/ambientesvirtuais/adicionarturma/'. $id,
+                                'route' => 'integracao.ambientesvirtuais.adicionarturma',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Turmas',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'text-blue',
                                 'icon' => 'fa fa-server',
-                                'action' => '/integracao/ambientesvirtuais/adicionarservico/'. $id,
+                                'route' => 'integracao.ambientesvirtuais.adicionarservico',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Web Services',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/integracao/ambientesvirtuais/edit/' . $id,
+                                'route' => 'integracao.ambientesvirtuais.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'action' => '/integracao/ambientesvirtuais/delete',
+                                'route' => 'integracao.ambientesvirtuais.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -130,7 +134,7 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             flash()->success('Ambiente Virtual criado com sucesso.');
-            return redirect('/integracao/ambientesvirtuais/index');
+            return redirect()->route('integracao.ambientesvirtuais.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -160,7 +164,7 @@ class AmbientesVirtuaisController extends BaseController
 
             if (!$ambientevirtual) {
                 flash()->error('Ambiente Virtual não existe.');
-                return redirect('integracao/ambientesvirtuais/index');
+                return redirect()->route('integracao.ambientesvirtuais.index');
             }
 
             $requestData = $request->only($this->ambienteVirtualRepository->getFillableModelFields());
@@ -171,7 +175,7 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             flash()->success('Ambiente Virtual atualizado com sucesso.');
-            return redirect('/integracao/ambientesvirtuais/index');
+            return redirect()->route('integracao.ambientesvirtuais.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -187,16 +191,18 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambientevirtualId = $request->get('id');
 
-            if ($this->ambienteVirtualRepository->delete($ambientevirtualId)) {
-                flash()->success('Ambiente Virtual excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o ambiente virtual');
-            }
+            $this->ambienteVirtualRepository->delete($ambientevirtualId);
+            flash()->success('Ambiente Virtual excluído com sucesso.');
 
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
+            }
+
+            if ($e->getCode() == 23000) {
+                flash()->error('Este ambiente ainda contém dependências no sistema e não pode ser excluído.');
+                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
@@ -232,10 +238,11 @@ class AmbientesVirtuaisController extends BaseController
         $dados['asr_ser_id'] = $request->asr_ser_id;
         $dados['asr_amb_id'] = $ambienteId;
         $dados['asr_token'] = $request->asr_token;
+        $servico = $this->servicoRepository->find($dados['asr_ser_id']);
 
         $validator = Validator::make($dados, [
-            'asr_ser_id' => 'required',
-            'asr_amb_id' => 'required',
+            'asr_ser_id' => 'required|integer|min:1',
+            'asr_amb_id' => 'required|integer|min:1',
             'asr_token' => 'required|max:255'
         ]);
 
@@ -244,6 +251,20 @@ class AmbientesVirtuaisController extends BaseController
         }
 
         try {
+            $ambiente = $this->ambienteVirtualRepository->find($dados['asr_amb_id']);
+            $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
+            $url .= $dados['asr_token'] . '&wsfunction='.strtolower($servico->ser_nome).'_ping&moodlewsrestformat=json';
+
+            $client = new Client();
+            $response = $client->request('POST', $url, ['query' => null]);
+
+            $data = (array) json_decode($response->getBody());
+
+            if (!array_key_exists('response', $data)) {
+                // Erro ao verificar token
+                return redirect()->back()->withErrors(['asr_token' => 'Token inválido'])->withInput();
+            }
+
             if (!$this->servicoRepository->verifyIfExistsAmbienteServico($dados['asr_amb_id'], $dados['asr_ser_id'])) {
                 $ambienteservico = $this->ambienteServicoRepository->create($dados);
 
@@ -254,6 +275,7 @@ class AmbientesVirtuaisController extends BaseController
                 flash()->success('Serviço Atribuído com sucesso');
                 return redirect()->back();
             }
+
             flash()->error('Esse ambiente já possui este serviço!');
             return redirect()->back();
         } catch (\Exception $e) {
@@ -318,10 +340,10 @@ class AmbientesVirtuaisController extends BaseController
         $validate['ofc_id'] = $request->ofc_id;
 
         $validator = Validator::make($validate, [
-            'atr_trm_id' => 'required',
-            'atr_amb_id' => 'required',
-            'crs_id' => 'required',
-            'ofc_id' => 'required'
+            'atr_trm_id' => 'required|integer|min:1',
+            'atr_amb_id' => 'required|integer|min:1',
+            'crs_id' => 'required|integer|min:1',
+            'ofc_id' => 'required|integer|min:1'
         ]);
 
         if ($validator->fails()) {
@@ -370,29 +392,17 @@ class AmbientesVirtuaisController extends BaseController
             DB::beginTransaction();
 
             $ambienteTurmaId = $request->get('id');
-
             $ambienteTurma = $this->ambienteTurmaRepository->find($ambienteTurmaId);
-
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
-
-
-            if ($turma->trm_integrada) {
-                event(new DeleteOfertaTurmaEvent($turma));
-
-                if (SincronizacaoRepository::excludedFromMoodle($turma->getTable(), $turma->trm_id)) {
-                    $this->ambienteTurmaRepository->delete($ambienteTurmaId);
-
-                    DB::commit();
-                    flash()->success('Turma excluída com sucesso.');
-                    return redirect()->back();
-                }
-
-                DB::commit();
-                flash()->error('Erro ao tentar excluir a turma');
-                return redirect()->back();
-            }
+            $ambiente = $turma->ambientes->first()->amb_id;
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
+
+            if ($turma->trm_integrada) {
+                event(new DeleteOfertaTurmaEvent($turma, "DELETE", $ambiente));
+            }
+
+            flash()->success('Turma excluída com sucesso.');
 
             DB::commit();
             return redirect()->back();

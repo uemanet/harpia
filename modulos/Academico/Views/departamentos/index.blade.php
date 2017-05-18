@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ url('/academico/departamentos/index') }}">
+                <form method="GET" action="{{ route('academico.departamentos.index') }}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="dep_nome" id="dep_nome" value="{{Input::get('dep_nome')}}" placeholder="Nome do departamento">
                     </div>

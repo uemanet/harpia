@@ -40,14 +40,15 @@
                                           [
                                             'classButton' => 'btn btn-primary btn-sm',
                                             'icon' => 'fa fa-pencil',
-                                            'action' => '/geral/documentos/edit/' . $documento->doc_id,
+                                            'route' => 'geral.pessoas.documentos.edit',
+                                            'parameters' => ['id' => $documento->doc_id],
                                             'label' => '',
                                             'method' => 'get'
                                           ],
                                           [
                                               'classButton' => 'btn-delete btn btn-danger btn-sm',
                                               'icon' => 'fa fa-trash',
-                                              'action' => '/geral/documentos/delete',
+                                              'route' => 'geral.pessoas.documentos.delete',
                                               'id' => $documento->doc_id,
                                               'label' => '',
                                               'method' => 'post'
@@ -58,7 +59,8 @@
                                     <?php $botoes[] =  [
                                               'classButton' => 'btn btn-success btn-sm docAnexo',
                                               'icon' => 'fa fa-download',
-                                              'action' => '/geral/documentos/anexo/' . $documento->doc_id,
+                                              'route' => 'geral.pessoas.documentos.anexo',
+                                              'parameters' => ['id' => $documento->doc_id],
                                               'label' => '',
                                               'method' => 'get'
                                           ];
@@ -83,7 +85,8 @@
                   [
                     'classButton' => 'btn btn-primary',
                     'icon' => 'fa fa-plus-square',
-                    'action' => '/geral/documentos/create/' . $pessoa->pes_id,
+                    'route' => 'geral.pessoas.documentos.create',
+                    'parameters' => ['id' => $pessoa->pes_id],
                     'label' => ' Novo Documento',
                     'method' => 'get'
                   ],

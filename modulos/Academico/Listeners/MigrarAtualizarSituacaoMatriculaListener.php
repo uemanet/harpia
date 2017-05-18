@@ -25,7 +25,6 @@ class MigrarAtualizarSituacaoMatriculaListener
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->matriculaCursoRepository = $matriculaCursoRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
-
     }
 
     public function handle(AtualizarSituacaoMatriculaEvent $event)

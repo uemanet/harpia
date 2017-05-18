@@ -58,7 +58,7 @@
                                                             <tr>
                                                                 <td>{{$disciplina->mof_id}}</td>
                                                                 <td>{{$disciplina->dis_nome}}</td>
-                                                                <td>{{ucfirst($disciplina->mdc_tipo_avaliacao)}}</td>
+                                                                <td>{{ucfirst($disciplina->mdc_tipo_disciplina)}}</td>
                                                                 <td>{{$disciplina->mdo_nome}}</td>
                                                                 <td>{{$disciplina->mof_nota1}}</td>
                                                                 <td>{{$disciplina->mof_nota2}}</td>
@@ -97,9 +97,23 @@
                                 @endforeach
                             </div>
                             <div class="box-footer">
-                                <a href="{{route('academico.historicoparcial.print', $matricula->mat_id)}}" class="btn btn-primary pull-right" target="_blank">
-                                    <i class="fa fa-file-pdf-o"></i> Imprimir Histórico
-                                </a>
+                                {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                        [
+                                            'classButton' => 'btn btn-primary pull-right',
+                                            'icon' => 'fa fa-file-pdf-o',
+                                            'route' => 'academico.historicoparcial.print',
+                                            'parameters' => ['id' => $matricula->mat_id],
+                                            'label' => 'Imprimir Histórico',
+                                            'method' => 'get',
+                                            'attributes' => [
+                                                'target' => '_blank',
+                                            ],
+                                        ],
+                                    ]
+                                ])
+                                !!}
                             </div>
                         @else
                             <p>Aluno não possui matrículas em disciplinas</p>

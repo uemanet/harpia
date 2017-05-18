@@ -1,5 +1,4 @@
 <?php
-
 namespace Modulos\Seguranca\Database\Seeds;
 
 use Illuminate\Database\Seeder;
@@ -25,22 +24,17 @@ class UsuarioTableSeeder extends Seeder
         $pessoa->pes_raca = 'Branco';
         $pessoa->pes_necessidade_especial = 'Não';
         $pessoa->pes_estrangeiro = 0;
-
         $pessoa->save();
-
         $documento = new Documento();
         $documento->doc_conteudo = '63737257400';
         $documento->doc_tpd_id = 2;
         $documento->doc_pes_id = $pessoa->pes_id;
-
         $documento->save();
-
         $usuario = new Usuario();
         $usuario->usr_pes_id = $pessoa->pes_id;
         $usuario->usr_usuario = $pessoa->pes_email;
         $usuario->usr_senha = bcrypt('123456');
         $usuario->usr_ativo = 1;
-
         $usuario->save();
     }
 }

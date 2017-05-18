@@ -25,7 +25,7 @@ class CentroRequest extends BaseRequest
         $rules = [
             'cen_prf_diretor' => 'required',
             'cen_nome' => 'required|min:3|max:45',
-            'cen_sigla' => 'required|min:2'
+            'cen_sigla' => 'min:2'
         ];
 
         return $rules;

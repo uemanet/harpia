@@ -19,7 +19,7 @@
             <h3 class="box-title"><b>Aluno</b>: {{$aluno->pessoa->pes_nome}} <b>Disciplina</b>: {{$disciplina->dis_nome}}</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/lancamentostccs/create/$turma->trm_id", "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            {!! Form::open(["route" => ['academico.lancamentostccs.create'], "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
                 @include('Academico::lancamentostccs.includes.formulario')
             {!! Form::close() !!}
         </div>

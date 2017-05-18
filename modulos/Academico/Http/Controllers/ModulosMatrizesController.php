@@ -40,7 +40,8 @@ class ModulosMatrizesController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/academico/modulosmatrizes/create/'.$matrizId)->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.cursos.matrizescurriculares.modulosmatrizes.create')
+                ->setParameters(['id' => $matrizId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $curso = $this->cursoRepository->find($matrizcurricular->mtc_crs_id);
 
@@ -57,11 +58,15 @@ class ModulosMatrizesController extends BaseController
             }
         }
 
-        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons, 'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos, 'disciplinas' => $disciplinas]);
+        return view('Academico::modulosmatrizes.index', ['actionButton' => $actionButtons,
+            'matrizcurricular' => $matrizcurricular, 'curso' => $curso, 'modulos' => $modulos,
+            'disciplinas' => $disciplinas]);
     }
 
-    public function getCreate($matrizId)
+    public function getCreate(Request $request)
     {
+        $matrizId = $request->get('id');
+
         $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
 
         if ($matriz->isEmpty()) {
@@ -97,7 +102,7 @@ class ModulosMatrizesController extends BaseController
             }
 
             flash()->success('Módulo criado com sucesso.');
-            return redirect('/academico/modulosmatrizes/index/'.$modulomatriz->mdo_mtc_id);
+            return redirect()->route('academico.cursos.matrizescurriculares.modulosmatrizes.index', $modulomatriz->mdo_mtc_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -132,7 +137,7 @@ class ModulosMatrizesController extends BaseController
 
             if (!$modulo) {
                 flash()->error('Módulo não existe.');
-                return redirect('/academico/modulosmatrizes/index/' . $id);
+                return redirect()->route('academico.cursos.matrizescurriculares.modulosmatrizes.index', $id);
             }
 
             $moduloNome = $request->input('mdo_nome');
@@ -153,7 +158,7 @@ class ModulosMatrizesController extends BaseController
             }
 
             flash()->success('Módulo atualizado com sucesso.');
-            return redirect('/academico/modulosmatrizes/index/' . $modulo->mdo_mtc_id);
+            return redirect()->route('academico.cursos.matrizescurriculares.modulosmatrizes.index', $id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -178,7 +183,6 @@ class ModulosMatrizesController extends BaseController
                 return redirect()->back();
             }
 
-
             if ($this->modulomatrizRepository->delete($modulomatrizId)) {
                 flash()->success('Módulo excluído com sucesso.');
             } else {
@@ -198,9 +202,14 @@ class ModulosMatrizesController extends BaseController
 
     public function getGerenciarDisciplinas($moduloId)
     {
-        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
-
         $modulo = $this->modulomatrizRepository->find($moduloId);
+
+        if (!$modulo) {
+            flash()->error('Módulo não existe.');
+            return redirect()->back();
+        }
+
+        $disciplinas = $this->modulodisciplinaRepository->getAllDisciplinasByModulo($moduloId);
 
         $matriz = $this->matrizcurricularRepository->find($modulo->mdo_mtc_id);
 

@@ -2,7 +2,6 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -27,7 +26,7 @@ class PessoasController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setAction('/geral/pessoas/create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('geral.pessoas.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
@@ -58,14 +57,16 @@ class PessoasController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'action' => '/geral/pessoas/edit/' . $id,
+                                'route' => 'geral.pessoas.edit',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
                             ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-eye',
-                                'action' => '/geral/pessoas/show/'.$id,
+                                'route' => 'geral.pessoas.show',
+                                'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
                             ]
@@ -121,6 +122,11 @@ class PessoasController extends BaseController
     {
         $pessoa = $this->pessoaRepository->findById($id);
 
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe');
+            return redirect()->back();
+        }
+
         return view('Geral::pessoas.edit', compact('pessoa'));
     }
 
@@ -161,11 +167,8 @@ class PessoasController extends BaseController
             DB::commit();
 
             $pessoaAtt = $this->pessoaRepository->find($id);
-            $ambientesvinculadosId = $this->pessoaRepository->findAmbientesPessoa($pessoaAtt);
 
-            foreach ($ambientesvinculadosId as $id) {
-                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-            }
+            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Pessoa editada com sucesso!');
             return redirect()->route('geral.pessoas.show', ['id' =>$id ]);
@@ -182,11 +185,24 @@ class PessoasController extends BaseController
     public function getShow($id)
     {
         $pessoa = $this->pessoaRepository->find($id);
+
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe');
+            return redirect()->back();
+        }
+
         session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $pessoa->pes_id]);
 
         session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $id]);
 
         return view('Geral::pessoas.show', ['pessoa' => $pessoa]);
+    }
+
+    public function getVerificapessoa($rota)
+    {
+        $rota = str_replace('-', '.', $rota);
+
+        return view('Geral::pessoas.verificapessoa', ['rota' => $rota]);
     }
 
     public function postVerificapessoa(Request $request)
