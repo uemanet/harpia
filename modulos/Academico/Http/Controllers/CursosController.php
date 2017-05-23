@@ -280,6 +280,8 @@ class CursosController extends BaseController
 
             $this->vinculoRepository->deleteAllVinculosByCurso($cursoId);
 
+            $this->cursoRepository->deleteConfiguracoes($cursoId);
+
             $this->cursoRepository->delete($cursoId);
 
             flash()->success('Curso excluído com sucesso.');
