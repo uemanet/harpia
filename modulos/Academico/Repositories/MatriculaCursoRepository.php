@@ -289,23 +289,16 @@ class MatriculaCursoRepository extends BaseRepository
             ->join('acd_modulos_disciplinas', function ($join) {
                 $join->on('ofd_mdc_id', '=', 'mdc_id');
             })
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->leftJoin('acd_lancamentos_tccs', 'ltc_mof_id', '=', 'mof_id')
             ->where('mdc_tipo_disciplina', '=', 'tcc')
-            ->get();
-
-        $matriculasId = [];
-
-        foreach ($dados as $key => $value) {
-            $matriculasId[] = $value->mof_mat_id;
-        }
-
-        $dados = DB::table('acd_matriculas')
-            ->leftJoin('acd_alunos', 'mat_alu_id', '=', 'alu_id')
-            ->leftJoin('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->leftJoin('acd_lancamentos_tccs', 'mat_ltc_id', '=', 'ltc_id')
             ->where('mat_trm_id', '=', $turmaId)
-            ->whereIn('mat_id', $matriculasId)
-            ->orderBy('pes_nome', 'asc')
             ->get();
+
 
         return $dados;
     }
@@ -316,11 +309,11 @@ class MatriculaCursoRepository extends BaseRepository
             ->join('acd_matriculas_ofertas_disciplinas', 'mof_mat_id', 'mat_id')
             ->join('acd_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
             ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
-            ->join('acd_lancamentos_tccs', 'mat_ltc_id', 'ltc_id')
+            ->leftJoin('acd_lancamentos_tccs', 'ltc_mof_id', '=', 'mof_id')
             ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->where('mof_mat_id', '=', $matriculaId)
             ->whereIn('mof_situacao_matricula', ['aprovado_media', 'aprovado_final'])
-            ->whereNotNull('mat_ltc_id')
+            ->whereNotNull('ltc_id')
             ->first();
 
         if (!is_null($result)) {

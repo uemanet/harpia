@@ -26,6 +26,7 @@ class LancamentoTccRequest extends BaseRequest
         $rules = [
 
             'ltc_prf_id' => 'required',
+            'ltc_mof_id' => 'required',
             'ltc_titulo' => 'required|max:45',
             'ltc_file' => 'mimes:pdf',
             'ltc_tipo' => 'required',

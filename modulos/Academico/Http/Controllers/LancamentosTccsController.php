@@ -91,7 +91,7 @@ class LancamentosTccsController extends BaseController
         $turma = $this->turmaRepository->find($turmaId);
 
         $dados = $this->matriculacursoRepository->findDadosByTurmaId($turmaId);
-        //dd($dados);
+      
         if (!$turma) {
             flash()->error('Turma não existe!');
             return redirect()->back();
@@ -112,6 +112,8 @@ class LancamentosTccsController extends BaseController
     {
         $turmaId = $request->get('turma');
         $alunoId = $request->get('aluno');
+        $matriculaoferta = $request->get('matriculaoferta');
+
 
         $turma = $this->turmaRepository->find($turmaId);
 
@@ -147,7 +149,7 @@ class LancamentosTccsController extends BaseController
         ];
         $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($turmaId);
 
-        return view('Academico::lancamentostccs.create', compact('turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula'));
+        return view('Academico::lancamentostccs.create', compact('turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula', 'matriculaoferta'));
     }
 
     public function getTccAnexo($lancamentotccId)
@@ -194,7 +196,6 @@ class LancamentosTccsController extends BaseController
             }
 
             unset($dados['ltc_file']);
-            unset($dados['mat_id']);
 
             $lancamentotcc = $this->lancamentotccRepository->create($dados);
 
@@ -203,9 +204,7 @@ class LancamentosTccsController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            $matricula = Matricula::find($request->mat_id);
-            $matricula->mat_ltc_id = $lancamentotcc->ltc_id;
-            $matricula->save();
+
 
             flash()->success('Lançamento de TCC criado com sucesso.');
             return redirect()->route('academico.lancamentostccs.alunosturma', $turmaId);
@@ -242,7 +241,7 @@ class LancamentosTccsController extends BaseController
 
         $anexo = $this->anexoRepository->find($lancamentoTcc->ltc_anx_tcc);
 
-        $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($lancamentoTcc->matriculaCurso->turma->trm_id);
+        $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($lancamentoTcc->matriculaOferta->matriculaCurso->turma->trm_id);
 
         return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula', 'anexo'));
     }
@@ -308,7 +307,7 @@ class LancamentosTccsController extends BaseController
             }
 
             flash()->success('Lançamento de TCC atualizado com sucesso.');
-            return redirect()->route('academico.lancamentostccs.alunosturma', $lancamentotcc->matriculaCurso->turma->trm_id);
+            return redirect()->route('academico.lancamentostccs.alunosturma', $lancamentotcc->matriculaOferta->matriculaCurso->turma->trm_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

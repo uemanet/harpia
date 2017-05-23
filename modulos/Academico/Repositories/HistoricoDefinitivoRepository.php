@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Repositories\TitulacaoInformacaoRepository;
+use DB;
 
 class HistoricoDefinitivoRepository extends BaseRepository
 {
@@ -75,8 +76,26 @@ class HistoricoDefinitivoRepository extends BaseRepository
 
         $returndata['disciplinas'] = $this->getDisciplinasGraduacao($matricula->mat_id);
 
+        $tcc = DB::table('acd_matriculas_ofertas_disciplinas')
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->join('acd_lancamentos_tccs', 'ltc_mof_id', '=', 'mof_id')
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
+            ->where('mat_id', '=', $matricula->mat_id)
+            ->select('ltc_id')
+            ->first();
+
         $returndata['tcc'] = $this->lancamentoTccRepository->findBy(
-            ['ltc_id' => $matricula->mat_ltc_id],
+            ['ltc_id' => $tcc->ltc_id],
             ['ltc_titulo', 'ltc_tipo', 'ltc_data_apresentacao', 'ltc_observacao']
         )->first();
 

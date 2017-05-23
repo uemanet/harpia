@@ -77,6 +77,8 @@
     </div>
 </div>
 
+{!! Form::input('hidden' , 'ltc_mof_id', $lancamentoTcc->ltc_mof_id ,  ['class' => 'form-control']) !!}
+
 <div class="row">
     <div class="form-group col-md-4">
         {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
