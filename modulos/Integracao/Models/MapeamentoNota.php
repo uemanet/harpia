@@ -4,7 +4,7 @@ namespace Modulos\Integracao\Models;
 
 use Modulos\Core\Model\BaseModel;
 
-class MapeamentoItemNota extends BaseModel
+class MapeamentoNota extends BaseModel
 {
     protected $table = 'int_mapeamento_itens_nota';
 

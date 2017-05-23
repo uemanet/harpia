@@ -19,6 +19,7 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
     });
 
     Route::group(['prefix' => 'mapeamentonotas'], function () {
-        Route::get('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotas@index')->name('integracao.mapeamentonotas.index');
+        Route::get('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
+        Route::post('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
     });
 });
