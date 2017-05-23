@@ -35,7 +35,7 @@
         {!! Form::label('modo_recuperacao', 'Modo de Recuperação*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('modo_recuperacao', ['substituir_menor_nota' => 'Substituir Menor Nota',
-            'substituir_media_final' => 'Substituir Média Final'],old('modo_recuperacao') ,
+            'substituir_media_final' => 'Substituir Média Final'], old('modo_recuperacao'),
             ['class' => 'form-control', 'placeholder' => 'Selecione o modo']) !!}
             @if ($errors->has('modo_recuperacao')) <p class="help-block">{{ $errors->first('modo_recuperacao') }}</p> @endif
         </div>
@@ -43,9 +43,9 @@
     <div class="col-md-6 form-group @if ($errors->has('conceitos_aprovacao')) has-error @endif">
         {!! Form::label('conceitos_aprovacao', 'Conceitos para Aprovação*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('conceitos_aprovacao', ['Insuficiente' => 'Insuficiente',
+            {!! Form::select('conceitos_aprovacao[]', ['Insuficiente' => 'Insuficiente',
             'Regular' => 'Regular', 'Bom' => 'Bom', 'Muito Bom' => 'Muito Bom', 'Excelente' => 'Excelente'],
-            old('conceitos_aprovacao'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+            old('conceitos_aprovacao[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
             @if ($errors->has('conceitos_aprovacao')) <p class="help-block">{{ $errors->first('conceitos_aprovacao') }}</p> @endif
         </div>
     </div>
