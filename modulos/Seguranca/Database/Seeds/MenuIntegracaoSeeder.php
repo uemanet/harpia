@@ -52,5 +52,15 @@ class MenuIntegracaoSeeder extends Seeder
             'mit_rota' => 'integracao.ambientesvirtuais.index',
             'mit_ordem' => 1
         ]);
+
+        // Item Mapeamento de Itens de Notas
+        $mapeamentoItensNota = MenuItem::create([
+            'mit_mod_id' => 4,
+            'mit_item_pai' => $cadastro->mit_id,
+            'mit_nome' => 'Mapeamento de Notas',
+            'mit_icone' => 'fa fa-pencil-square-o',
+            'mit_rota' => 'integracao.mapeamentonotas.index',
+            'mit_ordem' => 2
+        ]);
     }
 }

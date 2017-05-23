@@ -25,7 +25,7 @@ class CreateIntMapeamentoItensNotaTable extends Migration
 
             $table->timestamps();
 
-            // $table->foreign('min_ofd_id')->references('ofd_id')->on('acd_ofertas_disciplinas');
+            $table->foreign('min_ofd_id')->references('ofd_id')->on('acd_ofertas_disciplinas');
         });
     }
 

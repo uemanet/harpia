@@ -73,6 +73,12 @@ class PermissoesIntegracaoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'integracao.mapeamentonotas.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
 
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
