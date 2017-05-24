@@ -6,6 +6,7 @@ use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Curso;
 use Carbon\Carbon;
 use Auth;
+use DB;
 
 class CursoRepository extends BaseRepository
 {
@@ -82,5 +83,10 @@ class CursoRepository extends BaseRepository
     public function listsCursosTecnicos($nivelTecnicoId = 1)
     {
         return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
+    }
+
+    public function deleteConfiguracoes($cursoId)
+    {
+        return DB::table('acd_configuracoes_cursos')->where('cfc_crs_id', '=', $cursoId)->delete();
     }
 }
