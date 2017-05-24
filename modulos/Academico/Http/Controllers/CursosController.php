@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Models\ConfiguracaoCurso;
 use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -119,11 +120,50 @@ class CursosController extends BaseController
     public function postCreate(CursoRequest $request)
     {
         try {
-            $curso = $this->cursoRepository->create($request->all());
+            DB::beginTransaction();
+
+            $dataCurso = $request->only(
+                'crs_dep_id',
+                'crs_nvc_id',
+                'crs_prf_diretor',
+                'crs_nome',
+                'crs_sigla',
+                'crs_descricao',
+                'crs_resolucao',
+                'crs_autorizacao',
+                'crs_data_autorizacao',
+                'crs_eixo',
+                'crs_habilitacao'
+            );
+
+            // Salvar curso
+            $curso = $this->cursoRepository->create($dataCurso);
 
             if (!$curso) {
+                DB::rollback();
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
+            }
+
+            // Salvar configuracoes do curso
+            $dataConfiguracoes = $request->only(
+                'media_min_aprovacao',
+                'media_min_final',
+                'media_min_aprovacao_final',
+                'modo_recuperacao',
+                'conceitos_aprovacao'
+            );
+
+            foreach ($dataConfiguracoes as $nome => $valor) {
+                if ($nome == 'conceitos_aprovacao') {
+                    $valor = json_encode($valor);
+                }
+
+                ConfiguracaoCurso::create([
+                    'cfc_crs_id' => $curso->crs_id,
+                    'cfc_nome' => $nome,
+                    'cfc_valor' => $valor
+                ]);
             }
 
             // Cria vinculo com o curso para o usuario que esta criando o curso
@@ -134,10 +174,11 @@ class CursosController extends BaseController
 
             $this->vinculoRepository->create($vinculo);
 
-
+            DB::commit();
             flash()->success('Curso criado com sucesso.');
             return redirect()->route('academico.cursos.index');
         } catch (\Exception $e) {
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }
@@ -156,16 +197,29 @@ class CursosController extends BaseController
             return redirect()->back();
         }
 
+        $configuracoes = $curso->configuracoes;
+        if ($configuracoes) {
+            foreach ($configuracoes as $configuracao) {
+                $valor = $configuracao->cfc_valor;
+                if ($configuracao->cfc_nome == 'conceitos_aprovacao') {
+                    $valor = json_decode($configuracao->cfc_valor, true);
+                }
+
+                $curso->{$configuracao->cfc_nome} = $valor;
+            }
+        }
+
         $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
         $professores = $this->professorRepository->listsEditCurso('prf_id', 'pes_nome', $cursoId);
 
-        return view('Academico::cursos.edit', ['curso' => $curso, 'departamentos' => $departamentos, 'niveiscursos' => $niveiscursos, 'professores' => $professores]);
+        return view('Academico::cursos.edit', compact('curso', 'departamentos', 'niveiscursos', 'professores'));
     }
 
     public function putEdit($id, CursoRequest $request)
     {
         try {
+            DB::beginTransaction();
             $curso = $this->cursoRepository->find($id);
 
             if (!$curso) {
@@ -176,13 +230,38 @@ class CursosController extends BaseController
             $requestData = $request->only($this->cursoRepository->getFillableModelFields());
 
             if (!$this->cursoRepository->update($requestData, $curso->crs_id, 'crs_id')) {
+                DB::rollback();
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
 
+            $dataConfiguracoes = $request->only(
+                'media_min_aprovacao',
+                'media_min_final',
+                'media_min_aprovacao_final',
+                'modo_recuperacao',
+                'conceitos_aprovacao'
+            );
+
+            foreach ($dataConfiguracoes as $nome => $valor) {
+                if ($nome == 'conceitos_aprovacao') {
+                    $valor = json_encode($valor);
+                }
+
+                $configuracao = ConfiguracaoCurso::where([
+                    ['cfc_crs_id', '=', $curso->crs_id],
+                    ['cfc_nome', '=', $nome]
+                ])->first();
+
+                $configuracao->cfc_valor = $valor;
+                $configuracao->save();
+            }
+
+            DB::commit();
             flash()->success('Curso atualizado com sucesso.');
             return redirect()->route('academico.cursos.index');
         } catch (\Exception $e) {
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }
@@ -200,6 +279,8 @@ class CursosController extends BaseController
             $cursoId = $request->get('id');
 
             $this->vinculoRepository->deleteAllVinculosByCurso($cursoId);
+
+            $this->cursoRepository->deleteConfiguracoes($cursoId);
 
             $this->cursoRepository->delete($cursoId);
 

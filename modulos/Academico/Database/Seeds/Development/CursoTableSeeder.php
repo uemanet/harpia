@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Database\Seeds\Development;
 
 use Illuminate\Database\Seeder;
+use Modulos\Academico\Models\ConfiguracaoCurso;
 use Modulos\Academico\Models\Curso;
 use Faker\Factory;
 
@@ -11,6 +12,7 @@ class CursoTableSeeder extends Seeder
     public function run()
     {
         $faker = Factory::create();
+        $arrCursosIds = [];
 
         $curso = new Curso();
         $curso->crs_dep_id = 1;
@@ -25,6 +27,7 @@ class CursoTableSeeder extends Seeder
         $curso->crs_eixo = 'Computação';
         $curso->crs_habilitacao = 'Bacharel';
         $curso->save();
+        $arrCursosIds[] = $curso->crs_id;
 
         $curso = new Curso();
         $curso->crs_dep_id = 1;
@@ -39,6 +42,7 @@ class CursoTableSeeder extends Seeder
         $curso->crs_eixo = 'Computação';
         $curso->crs_habilitacao = 'Bacharel';
         $curso->save();
+        $arrCursosIds[] = $curso->crs_id;
 
         $curso = new Curso();
         $curso->crs_dep_id = 1;
@@ -53,6 +57,7 @@ class CursoTableSeeder extends Seeder
         $curso->crs_eixo = 'Computação';
         $curso->crs_habilitacao = 'Bacharel';
         $curso->save();
+        $arrCursosIds[] = $curso->crs_id;
 
         $curso = new Curso();
         $curso->crs_dep_id = 1;
@@ -67,6 +72,7 @@ class CursoTableSeeder extends Seeder
         $curso->crs_eixo = 'Computação';
         $curso->crs_habilitacao = 'Bacharel';
         $curso->save();
+        $arrCursosIds[] = $curso->crs_id;
 
         // Cursos Técnicos
         $curso = new Curso();
@@ -82,5 +88,27 @@ class CursoTableSeeder extends Seeder
         $curso->crs_eixo = 'Computação';
         $curso->crs_habilitacao = 'Técnico';
         $curso->save();
+        $arrCursosIds[] = $curso->crs_id;
+
+        $configuracoes = [
+            'media_min_aprovacao' => '7.0',
+            'media_min_final' => '5.0',
+            'media_min_aprovacao_final' => '7.0',
+            'modo_recuperacao' => 'substituir_media_final',
+            'conceitos_aprovacao' => json_encode(["Bom", "Muito Bom", "Excelente"])
+        ];
+
+        $func = function ($id) use ($configuracoes) {
+            foreach ($configuracoes as $nome => $valor) {
+                ConfiguracaoCurso::create([
+                    'cfc_crs_id' => $id,
+                    'cfc_nome' => $nome,
+                    'cfc_valor' => $valor
+                ]);
+            }
+            return true;
+        };
+
+        array_map($func, $arrCursosIds);
     }
 }
