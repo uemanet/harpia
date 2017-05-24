@@ -63,7 +63,7 @@ class HistoricoDefinitivoController extends BaseController
 
                 $blade = 'graduacao';
 
-                if ($matricula->turma->ofertacurso->curso->crs_nvc_id == 1) {
+                if ($matricula->turma->ofertacurso->curso->crs_nvc_id == 2) {
                     $blade = 'tecnico';
                 }
 
