@@ -34,8 +34,12 @@ class CursoRequest extends BaseRequest
             'crs_autorizacao' => 'max:255',
             'crs_data_autorizacao' => 'required|date_format:d/m/Y',
             'crs_eixo' => 'max:150',
-            'crs_habilitacao' => 'max:150'
-
+            'crs_habilitacao' => 'max:150',
+            'media_min_aprovacao' => 'required',
+            'media_min_final' => 'required',
+            'media_min_aprovacao_final' => 'required',
+            'modo_recuperacao' => 'required',
+            'conceitos_aprovacao' => 'required'
         ];
 
         return $rules;

@@ -85,6 +85,7 @@
         </div>
     </div>
 </div>
+@include('Academico::cursos.includes.formulario_configuracoes')
 <div class="row">
     <div class="form-group col-md-12">
         {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
