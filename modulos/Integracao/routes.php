@@ -22,4 +22,11 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
         Route::post('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
     });
+
+    Route::group(['prefix' => 'async'], function () {
+        Route::group(['prefix' => 'mapeamentonotas'], function () {
+            Route::post('/setmapeamentonotas', '\Modulos\Integracao\Http\Controllers\Async\MapeamentoNotas@setMapeamentoNotas')
+                ->name('integracao.async.mapeamentonotas.setmapeamentonotas');
+        });
+    });
 });

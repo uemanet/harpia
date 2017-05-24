@@ -6,6 +6,11 @@
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
+    <style>
+        .border-tr {
+            background-color: #8df9b8;
+        }
+    </style>
 @stop
 
 @section('content')
@@ -25,7 +30,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="POST" action="{{ route('integracao.mapeamentonotas.index') }}">
+                <form method="POST" action="">
                     {{ csrf_field() }}
                     <div class="col-md-3 form-group @if($errors->has('crs_id'))has-error @endif">
                         {!! Form::label('crs_id', 'Curso*') !!}
@@ -62,140 +67,7 @@
     </div>
     <!-- /.box-primary -->
 
-    @if(isset($ofertas))
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">
-                            Ofertas de Disciplinas
-                            @if(isset($turma))
-                                - {{ $turma->trm_nome }}
-                            @endif
-                        </h3>
-                        <!-- /.box-title -->
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                        </div>
-                        <!-- /.box-tools -->
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        @if(!empty($ofertas))
-                            <div id="accordion" class="box-group">
-                                @foreach($ofertas as $oferta)
-                                    <div class="panel box box-primary">
-                                        <div class="box-header with-border">
-                                            <div class="box-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$loop->index}}">
-                                                    {{ $oferta['per_nome'] }}
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div id="collapse{{$loop->index}}" class="panel-collapse collapse in">
-                                            <div class="box-body">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        @if($oferta['ofertas']->count())
-                                                            <table class="table table-bordered">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th width="1%">#</th>
-                                                                    <th>Disciplina</th>
-                                                                    <th width="10%">ID Nota 1</th>
-                                                                    <th width="10%">ID Nota 2</th>
-                                                                    <th width="10%">ID Nota 3</th>
-                                                                    <th width="10%">ID Conceito</th>
-                                                                    <th width="10%">ID Recuperação</th>
-                                                                    <th width="10%">ID Final</th>
-                                                                    <th width="5%"></th>
-                                                                    <th></th>
-                                                                    <th></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($oferta['ofertas'] as $key => $value)
-                                                                    @php
-                                                                        $numerica = '';
-                                                                        $conceito = 'disabled';
-
-                                                                        if ($value->mdc_tipo_avaliacao == 'conceitual') {
-                                                                            $numerica = 'disabled';
-                                                                            $conceito = '';
-                                                                        }
-                                                                    @endphp
-                                                                    <tr>
-                                                                        <td>{{ $value->ofd_id }}</td>
-                                                                        <td>{{ $value->dis_nome }}</td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" value="{{ $value->min_id_nota_um }}" {{$numerica}}>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" value="{{ $value->min_id_nota_dois }}" {{$numerica}}>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" value="{{ $value->min_id_nota_tres }}" {{$numerica}}>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" value="{{ $value->min_id_conceito }}" {{$conceito}}>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" value="{{ $value->min_id_recuperacao }}" {{$numerica}}>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" value="{{ $value->min_id_final }}" {{$numerica}}>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td style="text-align: center;">
-                                                                            <button class="btn bg-olive">
-                                                                                <i class="fa fa-save"></i>
-                                                                            </button>
-                                                                        </td>
-                                                                        <td style="text-align: center;">
-                                                                            <a href="#" class="btn btn-primary">
-                                                                                <i class="fa fa-users"></i> Alunos
-                                                                            </a>
-                                                                        </td>
-                                                                        <td style="text-align: center;">
-                                                                            <a href="#" class="btn btn-success">
-                                                                                <i class="fa fa-exchange"></i> Mapear notas
-                                                                            </a>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                        @else
-                                                            <p>Não há ofertas para este período</p>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <p>Não há ofertas de disciplinas para esta turma</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
+    <div id="disciplinas"></div>
 @stop
 
 @section('scripts')
@@ -204,6 +76,8 @@
     <script>
         $(function () {
             $('select').select2();
+
+            var token = "{{ csrf_token() }}";
 
             var cursosSelect = $('#crs_id');
             var ofertasCursoSelect = $('#ofc_id');
@@ -260,6 +134,86 @@
                     }
                 });
 
+            });
+
+            $('#btnBuscar').click(function (e) {
+                e.preventDefault();
+
+                var curso = $('#crs_id').val();
+                var ofertaCurso = $('#ofc_id').val();
+                var turma = $('#trm_id').val();
+
+                if (curso == '' || ofertaCurso == '' || turma == '') {
+                    return false;
+                }
+
+                var dados = {
+                    _token: token,
+                    crs_id: curso,
+                    ofc_id: ofertaCurso,
+                    trm_id: turma
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('integracao.mapeamentonotas.index') }}",
+                    data: dados,
+                    success: function (response) {
+                        $('#disciplinas').empty();
+                        $('#disciplinas').append(response.html);
+                    }
+                });
+            });
+
+            $('#disciplinas').on('click', '.btnSalvar', function(event) {
+                var ofd_id = $(event.currentTarget).data('id');
+
+                var nota1 = $('#'+ofd_id+'_nota1').val();
+                var nota2 = $('#'+ofd_id+'_nota2').val();
+                var nota3 = $('#'+ofd_id+'_nota3').val();
+                var conceito = $('#'+ofd_id+'_conceito').val();
+                var recuperacao = $('#'+ofd_id+'_recuperacao').val();
+                var final = $('#'+ofd_id+'_final').val();
+
+                if (nota1 != '' || nota2 != '' || nota3 != '' || conceito != '' || recuperacao != '' || final != '') {
+
+                    var dados = {
+                        _token: token,
+                        result: JSON.stringify({
+                            'min_ofd_id': ofd_id,
+                            'min_id_nota_um': nota1,
+                            'min_id_nota_dois': nota2,
+                            'min_id_nota_tres': nota3,
+                            'min_id_conceito': conceito,
+                            'min_id_recuperacao': recuperacao,
+                            'min_id_final': final
+                        })
+                    };
+
+                    $.harpia.showloading();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "/integracao/async/mapeamentonotas/setmapeamentonotas",
+                        data: dados,
+                        success: function (response) {
+                            $.harpia.hideloading();
+
+                            var msg = response.msg;
+
+                            toastr.success(msg, null, {progressBar: true});
+
+                            $('#'+ofd_id).addClass('border-tr');
+                        },
+                        error: function (response) {
+                            $.harpia.hideloading();
+
+                            var msg = response.responseJSON.error;
+
+                            toastr.error(msg, null, {progressBar: true});
+                        }
+                    });
+                }
             });
 
         });

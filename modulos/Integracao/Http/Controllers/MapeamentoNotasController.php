@@ -53,7 +53,9 @@ class MapeamentoNotasController extends BaseController
 
             $ofertas = $this->mapeamentoNotasRepository->getGradeCurricularByTurma($turmaId);
 
-            return view('Integracao::mapeamentonotas.index', compact('cursos', 'ofertas', 'turma'));
+            $html = view('Integracao::mapeamentonotas.ajax.disciplinas', compact('cursos', 'ofertas', 'turma'))->render();
+
+            return response()->json(['html' => $html]);
         }
 
         return view('Integracao::mapeamentonotas.index', compact('cursos'));

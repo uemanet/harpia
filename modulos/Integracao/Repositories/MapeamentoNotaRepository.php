@@ -37,7 +37,17 @@ class MapeamentoNotaRepository extends BaseRepository
             $ofertas = $this->ofertaDisciplinaRepository->findAllWithMapeamentoNotas([
                 'ofd_trm_id' => $turmaId,
                 'ofd_per_id' => $periodo->per_id
-            ], null, ['dis_nome' => 'asc']);
+            ], [
+                'ofd_id',
+                'mdc_tipo_avaliacao',
+                'dis_nome',
+                'min_id_nota_um',
+                'min_id_nota_dois',
+                'min_id_nota_tres',
+                'min_id_conceito',
+                'min_id_recuperacao',
+                'min_id_final'
+            ], ['dis_nome' => 'asc']);
 
             if ($ofertas->count()) {
                 $reg['ofertas'] = $ofertas;
@@ -47,5 +57,34 @@ class MapeamentoNotaRepository extends BaseRepository
         }
 
         return $returndata;
+    }
+
+    public function setMapeamentoNotas($dados)
+    {
+        $ofertaId = $dados['min_ofd_id'];
+
+        $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaId);
+
+        if (!$ofertaDisciplina) {
+            return array('error' => 'Oferta de Disciplina não existe!');
+        }
+
+        $func = function ($value) {
+            return !$value ? null : $value;
+        };
+
+        $dados = array_map($func, $dados);
+
+        $mapeamento = $this->model->where('min_ofd_id', '=', $dados['min_ofd_id'])->first();
+
+        if (!$mapeamento) {
+            $this->model->create($dados);
+            return array('msg' => "Id's de notas mapeadas com sucesso!");
+        }
+
+        $mapeamento->fill($dados);
+        $mapeamento->save();
+
+        return array('msg' => "Id's de notas atualizadas com sucesso!");
     }
 }
