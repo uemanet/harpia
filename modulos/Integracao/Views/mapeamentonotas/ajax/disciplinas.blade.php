@@ -101,7 +101,7 @@
                                                     </button>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="#" class="btn btn-primary">
+                                                    <a href="{{ route('integracao.mapeamentonotas.alunos', $value->ofd_id) }}" class="btn btn-primary">
                                                         <i class="fa fa-users"></i> Alunos
                                                     </a>
                                                 </td>
