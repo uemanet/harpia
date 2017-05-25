@@ -18,7 +18,7 @@ class MapeamentoNotas extends BaseController
 
     public function setMapeamentoNotas(Request $request)
     {
-        $dados = json_decode($request->get('result'), true);
+        $dados = json_decode($request->get('data'), true);
 
         $response = $this->mapeamentoNotaRepository->setMapeamentoNotas($dados);
 

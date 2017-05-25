@@ -6,11 +6,6 @@
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
-    <style>
-        .border-tr {
-            background-color: #8df9b8;
-        }
-    </style>
 @stop
 
 @section('content')
@@ -179,7 +174,7 @@
 
                     var dados = {
                         _token: token,
-                        result: JSON.stringify({
+                        data: JSON.stringify({
                             'min_ofd_id': ofd_id,
                             'min_id_nota_um': nota1,
                             'min_id_nota_dois': nota2,
@@ -203,7 +198,7 @@
 
                             toastr.success(msg, null, {progressBar: true});
 
-                            $('#'+ofd_id).addClass('border-tr');
+                            $(event.currentTarget).prop('disabled', true);
                         },
                         error: function (response) {
                             $.harpia.hideloading();

@@ -61,30 +61,46 @@ class MapeamentoNotaRepository extends BaseRepository
 
     public function setMapeamentoNotas($dados)
     {
-        $ofertaId = $dados['min_ofd_id'];
+        try {
+            $ofertaId = $dados['min_ofd_id'];
 
-        $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaId);
+            $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaId);
 
-        if (!$ofertaDisciplina) {
-            return array('error' => 'Oferta de Disciplina não existe!');
+            if (!$ofertaDisciplina) {
+                return array('error' => 'Oferta de Disciplina não existe!');
+            }
+
+            $moduloDisciplina = $ofertaDisciplina->modulosDisciplinas;
+
+            $func = function ($value) {
+                return !$value ? null : $value;
+            };
+
+            $dados = array_map($func, $dados);
+
+            $keys = ['min_id_conceito'];
+
+            if ($moduloDisciplina->mdc_tipo_avaliacao == 'conceitual') {
+                $keys = ['min_id_nota_um', 'min_id_nota_dois', 'min_id_nota_tres', 'min_id_recuperacao', 'min_id_final'];
+            }
+
+            foreach ($keys as $key) {
+                unset($dados[$key]);
+            }
+
+            $mapeamento = $this->model->where('min_ofd_id', '=', $dados['min_ofd_id'])->first();
+
+            if (!$mapeamento) {
+                $this->model->create($dados);
+                return array('msg' => "Itens de notas mapeadas com sucesso!");
+            }
+
+            $mapeamento->fill($dados);
+            $mapeamento->save();
+
+            return array('msg' => "Itens de notas atualizadas com sucesso!");
+        } catch (\Exception $e) {
+            return array('error' => 'Erro ao tentar salvar/atualizar itens de notas. Entra em contato com o suporte');
         }
-
-        $func = function ($value) {
-            return !$value ? null : $value;
-        };
-
-        $dados = array_map($func, $dados);
-
-        $mapeamento = $this->model->where('min_ofd_id', '=', $dados['min_ofd_id'])->first();
-
-        if (!$mapeamento) {
-            $this->model->create($dados);
-            return array('msg' => "Id's de notas mapeadas com sucesso!");
-        }
-
-        $mapeamento->fill($dados);
-        $mapeamento->save();
-
-        return array('msg' => "Id's de notas atualizadas com sucesso!");
     }
 }
