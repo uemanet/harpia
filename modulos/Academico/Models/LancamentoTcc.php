@@ -12,6 +12,7 @@ class LancamentoTcc extends BaseModel
     protected $primaryKey = 'ltc_id';
 
     protected $fillable = [
+        'ltc_mof_id',
         'ltc_prf_id',
         'ltc_anx_tcc',
         'ltc_titulo',
@@ -29,9 +30,10 @@ class LancamentoTcc extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\Professor', 'ltc_prf_id', 'prf_id');
     }
 
-    public function matriculaCurso()
+
+    public function matriculaOferta()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Matricula', 'ltc_id', 'mat_ltc_id');
+        return $this->belongsTo('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'ltc_mof_id', 'mof_id');
     }
 
     // Accessors

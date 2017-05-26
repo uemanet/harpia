@@ -16,7 +16,7 @@ class CreateAcdCentrosTable extends Migration
         Schema::create('acd_centros', function (Blueprint $table) {
             $table->increments('cen_id');
             $table->integer('cen_prf_diretor')->unsigned();
-            $table->string('cen_nome', 45);
+            $table->string('cen_nome', 90);
             $table->string('cen_sigla', 10)->nullable();
 
             $table->timestamps();

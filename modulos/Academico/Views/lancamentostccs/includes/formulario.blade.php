@@ -54,7 +54,7 @@
     </div>
 </div>
 
-{!! Form::input('hidden' , 'mat_id', $matricula->mat_id ,  ['class' => 'form-control']) !!}
+{!! Form::input('hidden' , 'ltc_mof_id', $matriculaoferta ,  ['class' => 'form-control']) !!}
 
 <div class="row">
     <div class="form-group col-md-4">
