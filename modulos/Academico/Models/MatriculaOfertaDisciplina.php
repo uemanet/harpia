@@ -17,6 +17,13 @@ class MatriculaOfertaDisciplina extends BaseModel
         'mof_situacao_matricula'
     ];
 
+    protected $searchable = [
+        'mof_ofd_id' => '=',
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
+        'pes_cpf' => '='
+    ];
+
     public function matriculaCurso()
     {
         return $this->belongsTo('Modulos\Academico\Models\Matricula', 'mof_mat_id', 'mat_id');
