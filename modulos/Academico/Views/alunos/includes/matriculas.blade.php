@@ -130,6 +130,14 @@
                                                 </div>
                                             </div>
                                             <div class="row">
+                                                <div class="form-group col-md-12">
+                                                    {!! Form::label('observacao_situacao', 'Observação', ['class' => 'control-label']) !!}
+                                                    <div class="controls">
+                                                        {!! Form::text('observacao_situacao', null, ['class' => 'form-control', 'id' => 'observacao_situacao'.$loop->index ]) !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="form-group col-md-6">
                                                     <button type="button" class="btn btn-default pull-left"
                                                             data-dismiss="modal">Cancelar
@@ -145,7 +153,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <!-- Modal Mudança Polo/Grupo -->
                             <div class="modal fade modalUpdatePolo{{$loop->index}}">
                                 <div class="modal-dialog">
@@ -170,8 +177,6 @@
                                                             {!! Form::select('mat_pol_id' . $loop->index, [], null, ['class' => 'form-control poloSelect']) !!}
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             {!! Form::label('mat_grp_id' . $loop->index, 'Grupo') !!}
@@ -180,12 +185,23 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <button type="submit" class="btn btn-primary btnAtualizar">
-                                                                Atualizar
-                                                            </button>
+                                                    <div class="form-group col-md-12">
+                                                        {!! Form::label('observacao_situacao', 'Observação', ['class' => 'control-label']) !!}
+                                                        <div class="controls">
+                                                            {!! Form::text('observacao_situacao', null, ['class' => 'form-control', 'id' => 'observacao_situacao'.$loop->index ]) !!}
                                                         </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <button type="button" class="btn btn-default pull-left"
+                                                                data-dismiss="modal">Cancelar
+                                                        </button>
+                                                    </div>
+                                                    <div class="form-group col-md-6 text-right">
+                                                        <button type="submit" class="btn btn-primary btnAtualizar">
+                                                            Atualizar
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </form>
