@@ -41,9 +41,9 @@ class MapeamentoNotaRepository extends BaseRepository
                 'ofd_id',
                 'mdc_tipo_avaliacao',
                 'dis_nome',
-                'min_id_nota_um',
-                'min_id_nota_dois',
-                'min_id_nota_tres',
+                'min_id_nota1',
+                'min_id_nota2',
+                'min_id_nota3',
                 'min_id_conceito',
                 'min_id_recuperacao',
                 'min_id_final'
@@ -81,7 +81,7 @@ class MapeamentoNotaRepository extends BaseRepository
             $keys = ['min_id_conceito'];
 
             if ($moduloDisciplina->mdc_tipo_avaliacao == 'conceitual') {
-                $keys = ['min_id_nota_um', 'min_id_nota_dois', 'min_id_nota_tres', 'min_id_recuperacao', 'min_id_final'];
+                $keys = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
             }
 
             foreach ($keys as $key) {

@@ -67,17 +67,17 @@
                                                 <td>{{ $value->dis_nome }}</td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <input type="text" id="{{ $value->ofd_id }}_nota1" class="form-control" value="{{ !$value->min_id_nota_um ? 0 : $value->min_id_nota_um }}" {{$numerica}}>
+                                                        <input type="text" id="{{ $value->ofd_id }}_nota1" class="form-control" value="{{ !$value->min_id_nota1 ? 0 : $value->min_id_nota1 }}" {{$numerica}}>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <input type="text" id="{{ $value->ofd_id }}_nota2" class="form-control" value="{{ !$value->min_id_nota_dois ? 0 : $value->min_id_nota_dois }}" {{$numerica}}>
+                                                        <input type="text" id="{{ $value->ofd_id }}_nota2" class="form-control" value="{{ !$value->min_id_nota2 ? 0 : $value->min_id_nota2 }}" {{$numerica}}>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <input type="text" id="{{ $value->ofd_id }}_nota3" class="form-control" value="{{ !$value->min_id_nota_tres ? 0 : $value->min_id_nota_tres }}" {{$numerica}}>
+                                                        <input type="text" id="{{ $value->ofd_id }}_nota3" class="form-control" value="{{ !$value->min_id_nota3 ? 0 : $value->min_id_nota3 }}" {{$numerica}}>
                                                     </div>
                                                 </td>
                                                 <td>

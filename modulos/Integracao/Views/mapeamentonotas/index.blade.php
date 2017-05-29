@@ -176,9 +176,9 @@
                         _token: token,
                         data: JSON.stringify({
                             'min_ofd_id': ofd_id,
-                            'min_id_nota_um': nota1,
-                            'min_id_nota_dois': nota2,
-                            'min_id_nota_tres': nota3,
+                            'min_id_nota1': nota1,
+                            'min_id_nota2': nota2,
+                            'min_id_nota3': nota3,
                             'min_id_conceito': conceito,
                             'min_id_recuperacao': recuperacao,
                             'min_id_final': final
