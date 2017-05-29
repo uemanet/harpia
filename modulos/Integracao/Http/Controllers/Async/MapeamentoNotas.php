@@ -4,16 +4,22 @@ namespace Modulos\Integracao\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Events\MapearNotasEvent;
 use Modulos\Integracao\Repositories\MapeamentoNotaRepository;
 
 class MapeamentoNotas extends BaseController
 {
     protected $mapeamentoNotaRepository;
+    protected $matriculaOfertaDisciplinaRepository;
 
-    public function __construct(MapeamentoNotaRepository $mapeamentoNotaRepository)
-    {
+    public function __construct(
+        MapeamentoNotaRepository $mapeamentoNotaRepository,
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
+    ) {
         $this->mapeamentoNotaRepository = $mapeamentoNotaRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
     }
 
     public function setMapeamentoNotas(Request $request)

@@ -2,24 +2,30 @@
 
 namespace Modulos\Integracao\Repositories;
 
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Core\Repository\BaseRepository;
+use Modulos\Integracao\Events\MapearNotasEvent;
 use Modulos\Integracao\Models\MapeamentoNota;
+use DB;
 
 class MapeamentoNotaRepository extends BaseRepository
 {
     protected $periodoLetivoRepository;
     protected $ofertaDisciplinaRepository;
+    protected $matriculaOfertaDisciplinaRepository;
 
     public function __construct(
         MapeamentoNota $model,
         PeriodoLetivoRepository $periodoLetivoRepository,
-        OfertaDisciplinaRepository $ofertaDisciplinaRepository
+        OfertaDisciplinaRepository $ofertaDisciplinaRepository,
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     ) {
         $this->model = $model;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
     }
 
     public function getGradeCurricularByTurma($turmaId)
@@ -70,7 +76,7 @@ class MapeamentoNotaRepository extends BaseRepository
                 return array('error' => 'Oferta de Disciplina não existe!');
             }
 
-            $moduloDisciplina = $ofertaDisciplina->modulosDisciplinas;
+            $moduloDisciplina = $ofertaDisciplina->moduloDisciplina;
 
             $func = function ($value) {
                 return !$value ? null : $value;
@@ -102,5 +108,47 @@ class MapeamentoNotaRepository extends BaseRepository
         } catch (\Exception $e) {
             return array('error' => 'Erro ao tentar salvar/atualizar itens de notas. Entra em contato com o suporte');
         }
+    }
+
+    public function mapearNotasAluno($mof_id)
+    {
+        $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($mof_id);
+
+        //event(new MapearNotasEvent($matriculaOfertaDisciplina, 'MAPEAR_NOTAS_ALUNO'));
+
+        $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
+
+        // buscar tipo de avaliacao da disciplina
+        $tipoAvaliacao = $matriculaOfertaDisciplina->ofertaDisciplina->moduloDisciplina->mdc_tipo_avaliacao;
+        if ($tipoAvaliacao == 'conceitual') {
+            $select = ['min_id_conceito'];
+        }
+
+        $itensNota = DB::table('int_mapeamento_itens_nota')
+                        ->where('min_ofd_id', $mof_id)
+                        ->select($select)
+                        ->first();
+
+        $itensNota = (array)$itensNota;
+
+        $pes_id = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
+
+        $itens = [];
+        foreach ($itensNota as $key => $value) {
+            if (!is_null($value)) {
+                $itens[] = $value;
+            }
+        }
+
+        $data = [
+            'pes_id' => $pes_id,
+            'itens' => json_encode($itens)
+        ];
+
+        $this->sendDataMoodle($data);
+    }
+
+    private function sendDataMoodle($data)
+    {
     }
 }

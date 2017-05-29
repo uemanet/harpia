@@ -179,7 +179,7 @@ class MapeamentoNotasController extends BaseController
                 return array('style' => 'width: 10%');
             })
             ->modify('mof_action', function ($row) {
-                return "<button class='btn bg-orange'><i class='fa fa-exchange'></i> Mapear Notas</button>";
+                return "<a href='".route('integracao.mapeamentonotas.aluno', $row->mof_id)."' class='btn bg-orange'><i class='fa fa-exchange'></i> Mapear Notas</a>";
             })
             ->sortable(array('mof_id', 'pes_nome'));
 
@@ -187,5 +187,17 @@ class MapeamentoNotasController extends BaseController
         }
 
         return view('Integracao::mapeamentonotas.alunos', compact('tabela', 'paginacao', 'ofertaDisciplina'));
+    }
+
+    public function mapearNotasAluno($matriculaOfertaId)
+    {
+        $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($matriculaOfertaId);
+
+        if (!$matriculaOfertaDisciplina) {
+            flash()->error('Matricula na Oferta de Disciplina não existe.');
+            return redirect()->back();
+        }
+
+        $this->mapeamentoNotasRepository->mapearNotasAluno($matriculaOfertaId);
     }
 }

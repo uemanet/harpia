@@ -22,6 +22,7 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
         Route::post('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
         Route::get('/{id}/alunos', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@showAlunos')->name('integracao.mapeamentonotas.alunos');
+        Route::get('/aluno/{id}', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@mapearNotasAluno')->name('integracao.mapeamentonotas.aluno');
     });
 
     Route::group(['prefix' => 'async'], function () {

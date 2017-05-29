@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Disciplina: {{ $ofertaDisciplina->modulosDisciplinas->disciplina->dis_nome }}
+    Disciplina: {{ $ofertaDisciplina->moduloDisciplina->disciplina->dis_nome }}
 @stop
 
 @section('content')
