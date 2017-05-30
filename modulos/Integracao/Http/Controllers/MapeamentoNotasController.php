@@ -198,6 +198,9 @@ class MapeamentoNotasController extends BaseController
             return redirect()->back();
         }
 
-        $this->mapeamentoNotasRepository->mapearNotasAluno($matriculaOfertaId);
+        $response = $this->mapeamentoNotasRepository->mapearNotasAluno($matriculaOfertaId);
+
+        flash()->{$response['status']}($response['message']);
+        return redirect()->route('integracao.mapeamentonotas.alunos', $matriculaOfertaDisciplina->mof_ofd_id);
     }
 }
