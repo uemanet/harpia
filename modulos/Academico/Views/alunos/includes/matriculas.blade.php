@@ -74,36 +74,36 @@
                                                         {!! ActionButton::grid([
                                                             'type' => 'LINE',
                                                             'buttons' => [
-                                                                [
-                                                                    'classButton' => 'btn btn-primary modal-update-polo',
-                                                                    'icon' => 'fa fa-pencil',
-                                                                    'route' => 'academico.matricularalunocurso.edit',
-                                                                    'parameters' => $matricula->mat_id,
-                                                                    'label' => ' Atualizar Polo/Grupo',
-                                                                    'method' => 'get',
-                                                                    'attributes' => [
-                                                                        'data-mat-id' => $matricula->mat_id,
-                                                                        'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
-                                                                        'data-trm-id' => $matricula->mat_trm_id,
-                                                                        'data-pol-id' => $matricula->mat_pol_id,
-                                                                        'data-grp-id' => $matricula->mat_grp_id,
-                                                                        'data-content' => $loop->index,
-                                                                    ],
-                                                                ],
-                                                                [
-                                                                    'classButton' => 'btn btn-primary modalButton',
-                                                                    'icon' => 'fa fa-pencil',
-                                                                    'route' => 'academico.matricularalunocurso.edit',
-                                                                    'parameters' => $matricula->mat_id,
-                                                                    'label' => 'Atualizar situação de Matricula',
-                                                                    'method' => 'get',
-                                                                    'attributes' => [
-                                                                        'data-content' => $loop->index,
-                                                                        'value' => $matricula->mat_id
-                                                                    ],
-                                                                ]
+                                                            [
+                                                            'classButton' => 'btn btn-primary modal-update-polo',
+                                                            'icon' => 'fa fa-pencil',
+                                                            'route' => 'academico.matricularalunocurso.edit',
+                                                            'parameters' => $matricula->mat_id,
+                                                            'label' => ' Atualizar Polo/Grupo',
+                                                            'method' => 'get',
+                                                            'attributes' => [
+                                                            'data-mat-id' => $matricula->mat_id,
+                                                            'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
+                                                            'data-trm-id' => $matricula->mat_trm_id,
+                                                            'data-pol-id' => $matricula->mat_pol_id,
+                                                            'data-grp-id' => $matricula->mat_grp_id,
+                                                            'data-content' => $loop->index,
+                                                            ],
+                                                            ],
+                                                            [
+                                                            'classButton' => 'btn btn-primary modalButton',
+                                                            'icon' => 'fa fa-pencil',
+                                                            'route' => 'academico.matricularalunocurso.edit',
+                                                            'parameters' => $matricula->mat_id,
+                                                            'label' => 'Atualizar situação de Matricula',
+                                                            'method' => 'get',
+                                                            'attributes' => [
+                                                            'data-content' => $loop->index,
+                                                            'value' => $matricula->mat_id
+                                                            ],
                                                             ]
-                                                        ]) !!}
+                                                            ]
+                                                            ]) !!}
                                                     </div>
                                                 </div>
                                             @endif
@@ -186,9 +186,9 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-md-12">
-                                                        {!! Form::label('observacao_situacao', 'Observação', ['class' => 'control-label']) !!}
+                                                        {!! Form::label('observacao_pologrupo', 'Observação', ['class' => 'control-label']) !!}
                                                         <div class="controls">
-                                                            {!! Form::text('observacao_situacao', null, ['class' => 'form-control', 'id' => 'observacao_situacao'.$loop->index ]) !!}
+                                                            {!! Form::text('observacao_pologrupo', null, ['class' => 'form-control', 'id' => 'observacao_pologrupo'.$loop->index ]) !!}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -218,19 +218,22 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                {!! ActionButton::grid([
+                {!!
+                ActionButton::grid([
                     'type' => 'LINE',
                     'buttons' => [
-                        [
-                            'classButton' => 'btn btn-primary',
-                            'icon' => 'fa fa-plus-square',
-                            'route' => 'academico.matricularalunocurso.create',
-                            'parameters' => $aluno->alu_id,
-                            'label' => ' Nova Matrícula',
-                            'method' => 'get'
-                        ],
+                    [
+                        'classButton' => 'btn btn-primary',
+                        'icon' => 'fa fa-plus-square',
+                        'route' => 'academico.matricularalunocurso.create',
+                        'parameters' => $aluno->alu_id,
+                        'label' => ' Nova Matrícula',
+                        'method' => 'get'
+                    ],
                     ]
-                ]) !!}
+                    ])
+
+                 !!}
             </div>
             <!-- /.box-footer -->
         </div>
@@ -259,6 +262,24 @@
                         return;
                     }
 
+                    var confirmCallback = function (isConfirm) {
+                        if (isConfirm) {
+                            var matricula = window.buttonGroup.attr("value");
+                            var token = "{{ csrf_token() }}";
+                            var observacao = $('#observacao_situacao' + modal).val();
+
+                            data = {
+                                id: matricula,
+                                situacao: situacao,
+                                observacao: observacao,
+                                _token: token
+                            };
+
+                            result = $.harpia.httppost('/academico/async/matricula/alterarsituacao', data);
+                            location.reload(true);
+                        }
+                    };
+
                     swal({
                         title: "Tem certeza que deseja alterar o status do aluno ?",
                         type: "warning",
@@ -267,21 +288,7 @@
                         confirmButtonText: "Sim, alterar status!",
                         cancelButtonText: "Não, quero cancelar!",
                         closeOnConfirm: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            var matricula = window.buttonGroup.attr("value");
-                            var token = "{{ csrf_token() }}";
-
-                            data = {
-                                id: matricula,
-                                situacao: situacao,
-                                _token: token
-                            };
-
-                            result = $.harpia.httppost('/academico/async/matricula/alterarsituacao', data);
-                            location.reload(true);
-                        }
-                    });
+                    }, confirmCallback);
                 })
             })
         });
@@ -340,8 +347,6 @@
                 var turma = window.turmaId;
                 var poloId = $(this).val();
 
-                console.log(turma);
-
                 if (poloId) {
                     loadingSelectGrupos(turma, poloId, 0);
                 }
@@ -381,22 +386,16 @@
                     return;
                 }
 
-                swal({
-                    title: "Tem certeza que deseja alterar o polo / grupo do aluno ?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Sim, alterar polo / grupo!",
-                    cancelButtonText: "Não, quero cancelar!",
-                    closeOnConfirm: true
-                }, function (isConfirm) {
+                var confirmCallback = function (isConfirm) {
                     if (isConfirm) {
                         var token = "{{ csrf_token() }}";
+                        var observacao = $('#observacao_pologrupo' + window.modalId).val();
 
                         data = {
                             method: "PUT",
                             mat_pol_id: polo,
                             mat_grp_id: grupo,
+                            observacao: observacao,
                             _token: token
                         };
 
@@ -408,6 +407,7 @@
                                 $.harpia.hideloading();
                                 result = resp;
                             },
+
                             error: function (e) {
                                 $.harpia.hideloading();
                                 sweetAlert("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
@@ -417,7 +417,17 @@
 
                         location.reload(true);
                     }
-                });
+                };
+
+                swal({
+                    title: "Tem certeza que deseja alterar o polo / grupo do aluno ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, alterar polo / grupo!",
+                    cancelButtonText: "Não, quero cancelar!",
+                    closeOnConfirm: true
+                }, confirmCallback);
             });
         });
     </script>

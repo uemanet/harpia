@@ -76,5 +76,9 @@ return [
     'Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Academico\Listeners\MigrarAtualizarSituacaoMatriculaListener',
+    ],
+
+    'Modulos\Academico\Events\AtualizarMatriculaCursoEvent' => [
+        'Modulos\Academico\Listeners\AtualizarMatriculaCursoListener'
     ]
 ];
