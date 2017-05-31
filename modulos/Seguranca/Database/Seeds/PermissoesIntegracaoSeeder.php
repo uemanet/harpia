@@ -81,7 +81,13 @@ class PermissoesIntegracaoSeeder extends Seeder
 
         $permissao = Permissao::create([
             'prm_nome' => 'index',
-            'prm_rota' => 'integracao.mapeamentonotas.alunos'
+            'prm_rota' => 'integracao.mapeamentonotas.showalunos'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'integracao.mapeamentonotas.aluno'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 

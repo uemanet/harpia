@@ -12,9 +12,9 @@ class MapeamentoNota extends BaseModel
 
     protected $fillable = [
         'min_ofd_id',
-        'min_id_nota_um',
-        'min_id_nota_dois',
-        'min_id_nota_tres',
+        'min_id_nota1',
+        'min_id_nota2',
+        'min_id_nota3',
         'min_id_recuperacao',
         'min_id_conceito',
         'min_id_final'

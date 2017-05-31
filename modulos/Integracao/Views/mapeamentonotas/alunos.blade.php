@@ -22,7 +22,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('integracao.mapeamentonotas.alunos', $ofertaDisciplina->ofd_id) }}">
+                <form method="GET" action="{{ route('integracao.mapeamentonotas.showalunos', $ofertaDisciplina->ofd_id) }}">
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Input::get('pes_cpf')}}" placeholder="CPF">
                     </div>

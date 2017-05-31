@@ -101,14 +101,14 @@
                                                     </button>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="{{ route('integracao.mapeamentonotas.alunos', $value->ofd_id) }}" class="btn btn-primary">
+                                                    <a href="{{ route('integracao.mapeamentonotas.showalunos', $value->ofd_id) }}" class="btn btn-primary">
                                                         <i class="fa fa-users"></i> Alunos
                                                     </a>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="#" class="btn btn-success">
+                                                    <button class="btn btn-success btnMapear" data-id="{{ $value->ofd_id }}">
                                                         <i class="fa fa-exchange"></i> Mapear notas
-                                                    </a>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             @endforeach
