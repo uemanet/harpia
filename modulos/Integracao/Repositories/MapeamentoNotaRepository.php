@@ -182,8 +182,9 @@ class MapeamentoNotaRepository extends BaseRepository
             }
 
             $cursoId = $matriculaOfertaDisciplina->matriculaCurso->turma->ofertaCurso->ofc_crs_id;
+            $configuracoesCurso = $this->getConfiguracoesCurso($cursoId);
 
-            $retorno = $this->calcularMedia($notas, $cursoId, $tipoAvaliacao);
+            $retorno = $this->calcularMedia($notas, $configuracoesCurso, $tipoAvaliacao);
         }
 
         return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
@@ -222,10 +223,8 @@ class MapeamentoNotaRepository extends BaseRepository
                         ->pluck('cfc_valor', 'cfc_nome');
     }
 
-    private function calcularNotas(array $notas, $cursoId, $tipoAvaliacao = 'numerica')
+    private function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'numerica')
     {
-        $configuracoesCurso = $this->getConfiguracoesCurso($cursoId);
-
         if ($tipoAvaliacao == 'conceitual') {
             $conceitosAprovacao = json_decode($configuracoesCurso['conceitos_aprovacao'], true);
 
@@ -259,7 +258,7 @@ class MapeamentoNotaRepository extends BaseRepository
         }
 
         // 2º Caso - Aluno nao atinge a media minima, mas possui recuperacao
-        if (!($mediaParcial >= $mediaAprovacao) && array_key_exists('mof_recuperacao', $notas)) {
+        if (($mediaParcial < $mediaAprovacao) && array_key_exists('mof_recuperacao', $notas)) {
             $recuperacao = $notas['mof_recuperacao'];
             $mediaParcial =  ($recuperacao > $mediaParcial) ? $recuperacao : $mediaParcial;
 
@@ -281,5 +280,28 @@ class MapeamentoNotaRepository extends BaseRepository
                 return $notas;
             }
         }
+
+        // 3º caso - Aluno não atinge a media minima, não passa na recuperação, mas pode ir pra final
+        $mediaMinFinal = (float)$configuracoesCurso['media_min_final'];
+        if (($mediaMinFinal <= $mediaParcial) && ($mediaParcial < $mediaAprovacao) && array_key_exists('mof_final', $notas)) {
+            $mediaAprovacaoFinal = (float)$configuracoesCurso['media_min_aprovacao_final'];
+
+            $notaFinal = $notas['mof_final'];
+
+            $mediaFinal = ($mediaParcial + $notaFinal) / 2;
+            $status = 'reprovado_final';
+            if ($mediaFinal >= $mediaAprovacaoFinal) {
+                $status = 'aprovado_final';
+            }
+
+            $notas['mof_mediafinal'] = $mediaParcial;
+            $notas['mof_situacao_matricula'] = $status;
+            return $notas;
+        }
+
+        // 4º Caso - Aluno não atinge a media minima, e nem vai pra final
+        $notas['mof_mediafinal'] = $mediaParcial;
+        $notas['mof_situacao_matricula'] = 'reprovado_media';
+        return $notas;
     }
 }
