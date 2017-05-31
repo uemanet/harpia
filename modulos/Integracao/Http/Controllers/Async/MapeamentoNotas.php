@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Events\MapearNotasEvent;
-use Modulos\Integracao\Repositories\MapeamentoNotaRepository;
+use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 
 class MapeamentoNotas extends BaseController
 {
@@ -15,7 +15,7 @@ class MapeamentoNotas extends BaseController
     protected $matriculaOfertaDisciplinaRepository;
 
     public function __construct(
-        MapeamentoNotaRepository $mapeamentoNotaRepository,
+        MapeamentoNotasRepository $mapeamentoNotaRepository,
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     ) {
         $this->mapeamentoNotaRepository = $mapeamentoNotaRepository;

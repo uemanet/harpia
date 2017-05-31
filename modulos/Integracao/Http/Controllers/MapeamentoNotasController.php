@@ -8,7 +8,7 @@ use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Integracao\Repositories\MapeamentoNotaRepository;
+use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 use Validator;
 
 class MapeamentoNotasController extends BaseController
@@ -21,13 +21,13 @@ class MapeamentoNotasController extends BaseController
 
     public function __construct(
         CursoRepository $cursoRepository,
-        MapeamentoNotaRepository $mapeamentoNotaRepository,
+        MapeamentoNotasRepository $mapeamentoNotasRepository,
         TurmaRepository $turmaRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     ) {
         $this->cursoRepository = $cursoRepository;
-        $this->mapeamentoNotasRepository = $mapeamentoNotaRepository;
+        $this->mapeamentoNotasRepository = $mapeamentoNotasRepository;
         $this->turmaRepository = $turmaRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;

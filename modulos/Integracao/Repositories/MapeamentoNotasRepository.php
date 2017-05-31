@@ -12,7 +12,7 @@ use Modulos\Integracao\Events\MapearNotasEvent;
 use Modulos\Integracao\Models\MapeamentoNota;
 use DB;
 
-class MapeamentoNotaRepository extends BaseRepository
+class MapeamentoNotasRepository extends BaseRepository
 {
     protected $periodoLetivoRepository;
     protected $ofertaDisciplinaRepository;
@@ -119,10 +119,7 @@ class MapeamentoNotaRepository extends BaseRepository
     {
         $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($mof_id);
 
-        $cursoId = $matriculaOfertaDisciplina->matriculaCurso->turma->ofertaCurso->ofc_crs_id;
-        dd($this->getConfiguracoesCurso($cursoId));
-
-        //event(new MapearNotasEvent($matriculaOfertaDisciplina, 'MAPEAR_NOTAS_ALUNO'));
+        event(new MapearNotasEvent($matriculaOfertaDisciplina, 'MAPEAR_NOTAS_ALUNO'));
 
         $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
 
@@ -166,7 +163,7 @@ class MapeamentoNotaRepository extends BaseRepository
             $status = (array_key_exists('status', $response) &&
                 $response['status'] == 'success') ? 2 : 3;
 
-            //event(new AtualizarSyncEvent($matriculaOfertaDisciplina, $status, $response['message']));
+            event(new AtualizarSyncEvent($matriculaOfertaDisciplina, $status, $response['message']));
         }
 
         if ($status == 2) {
@@ -184,7 +181,13 @@ class MapeamentoNotaRepository extends BaseRepository
             $cursoId = $matriculaOfertaDisciplina->matriculaCurso->turma->ofertaCurso->ofc_crs_id;
             $configuracoesCurso = $this->getConfiguracoesCurso($cursoId);
 
-            $retorno = $this->calcularMedia($notas, $configuracoesCurso, $tipoAvaliacao);
+            $notas = $this->calcularMedia($notas, $configuracoesCurso, $tipoAvaliacao);
+
+            // atualizar o registro de notas
+            $matriculaOfertaDisciplina->fill($notas);
+            $matriculaOfertaDisciplina->save();
+
+            return array('status' => 'success', 'message' => 'Notas mapeadas com sucesso.');
         }
 
         return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
@@ -223,7 +226,7 @@ class MapeamentoNotaRepository extends BaseRepository
                         ->pluck('cfc_valor', 'cfc_nome');
     }
 
-    private function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'numerica')
+    public function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'numerica')
     {
         if ($tipoAvaliacao == 'conceitual') {
             $conceitosAprovacao = json_decode($configuracoesCurso['conceitos_aprovacao'], true);
@@ -249,6 +252,7 @@ class MapeamentoNotaRepository extends BaseRepository
         $mediaAprovacao = (float)$configuracoesCurso['media_min_aprovacao'];
 
         $mediaParcial = array_sum($conjuntoNotas) / count($conjuntoNotas);
+        $mediaParcial = round($mediaParcial, 1);
 
         // 1º Caso - Aluno Aprovado por Media e sem recuperacao
         if ($mediaParcial >= $mediaAprovacao) {
@@ -272,6 +276,7 @@ class MapeamentoNotaRepository extends BaseRepository
 
                 // recalcula a media parcial
                 $mediaParcial = array_sum($conjuntoNotas) / count($conjuntoNotas);
+                $mediaParcial = round($mediaParcial, 1);
             }
 
             if ($mediaParcial >= $mediaAprovacao) {
@@ -289,12 +294,14 @@ class MapeamentoNotaRepository extends BaseRepository
             $notaFinal = $notas['mof_final'];
 
             $mediaFinal = ($mediaParcial + $notaFinal) / 2;
+            $mediaFinal = round($mediaFinal, 1);
+
             $status = 'reprovado_final';
             if ($mediaFinal >= $mediaAprovacaoFinal) {
                 $status = 'aprovado_final';
             }
 
-            $notas['mof_mediafinal'] = $mediaParcial;
+            $notas['mof_mediafinal'] = $mediaFinal;
             $notas['mof_situacao_matricula'] = $status;
             return $notas;
         }
