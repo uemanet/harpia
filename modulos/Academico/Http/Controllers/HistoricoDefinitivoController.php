@@ -71,6 +71,7 @@ class HistoricoDefinitivoController extends BaseController
             }
 
             $mpdf->Output('Historico_Definitivo_'.str_replace(' ', '_', $cursoNome).'.pdf', 'I');
+            exit;
         }
 
         flash()->error('Erro ao processar os dados. Entre em contato com o suporte');

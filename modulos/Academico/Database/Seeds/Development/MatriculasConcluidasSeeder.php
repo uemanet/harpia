@@ -33,19 +33,30 @@ class MatriculasConcluidasSeeder extends Seeder
                         $disciplina->save();
                     }
 
-                    $lancamentoTcc = new LancamentoTcc();
-                    $lancamentoTcc->ltc_prf_id = DB::table('acd_professores')->inRandomOrder()->first()->prf_id;
-                    $lancamentoTcc->ltc_titulo = 'Monografia';
-                    $lancamentoTcc->ltc_tipo = 'monografia';
-                    $lancamentoTcc->ltc_data_apresentacao = date('d/m/Y');
+                    $tcc = DB::table('acd_matriculas_ofertas_disciplinas')
+                        ->join('acd_ofertas_disciplinas', function ($join) {
+                            $join->on('mof_ofd_id', '=', 'ofd_id');
+                        })
+                        ->join('acd_modulos_disciplinas', function ($join) {
+                            $join->on('ofd_mdc_id', '=', 'mdc_id');
+                        })
+                        ->where('mdc_tipo_disciplina', '=', 'tcc')
+                        ->where('mof_id', '=', $disciplina->mof_id)
+                        ->first();
 
-                    $lancamentoTcc->save();
+                    if (!is_null($tcc)) {
+                        $lancamentoTcc = new LancamentoTcc();
+                        $lancamentoTcc->ltc_mof_id = $disciplina->mof_id;
+                        $lancamentoTcc->ltc_prf_id = DB::table('acd_professores')->inRandomOrder()->first()->prf_id;
+                        $lancamentoTcc->ltc_titulo = 'Monografia';
+                        $lancamentoTcc->ltc_tipo = 'monografia';
+                        $lancamentoTcc->ltc_data_apresentacao = date('d/m/Y');
+                        $lancamentoTcc->save();
 
-                    $matricula->mat_ltc_id = $lancamentoTcc->ltc_id;
-                    $matricula->mat_situacao = 'concluido';
-                    $matricula->mat_data_conclusao = date('d/m/Y');
-
-                    $matricula->save();
+                        $matricula->mat_situacao = 'concluido';
+                        $matricula->mat_data_conclusao = date('d/m/Y');
+                        $matricula->save();
+                    }
                 }
             }
         }

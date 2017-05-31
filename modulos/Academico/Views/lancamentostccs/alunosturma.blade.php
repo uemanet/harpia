@@ -31,13 +31,13 @@
                                 <td>{{$dado->mat_id}}</td>
                                 <td>{{$dado->pes_nome}}</td>
                                 <td>
-                                  @if($dado->mat_ltc_id == null)
+                                  @if($dado->ltc_id == null)
                                       <span class="label label-info">Tcc não lançado</span>
                                   @else
                                       <span class="label label-success">Tcc lançado</span>
                                   @endif</td>
                                 <td>
-                                  @if($dado->mat_ltc_id == null and $dado->ltc_anx_tcc == null )
+                                  @if($dado->ltc_id == null and $dado->ltc_anx_tcc == null )
                                     {!! ActionButton::grid([
                                         'type' => 'LINE',
                                         'buttons' => [
@@ -45,7 +45,9 @@
                                                 'classButton' => 'btn btn-success',
                                                 'icon' => 'fa fa-plus',
                                                 'route' => 'academico.lancamentostccs.create',
-                                                'parameters' => ['aluno' => $dado->alu_id,'turma' => $turma->trm_id],
+                                                'parameters' => ['aluno' => $dado->alu_id,
+                                                                 'turma' => $turma->trm_id,
+                                                                 'matriculaoferta' => $dado->mof_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ]
@@ -53,7 +55,7 @@
                                     ]) !!}
                                   @endif
 
-                                  @if($dado->mat_ltc_id != null and $dado->ltc_anx_tcc == null )
+                                  @if($dado->ltc_id != null and $dado->ltc_anx_tcc == null )
                                     {!! ActionButton::grid([
                                         'type' => 'LINE',
                                         'buttons' => [
@@ -61,7 +63,7 @@
                                                 'classButton' => 'btn btn-primary',
                                                 'icon' => 'fa fa-edit',
                                                 'route' => 'academico.lancamentostccs.edit',
-                                                'parameters' => ['id' => $dado->mat_ltc_id],
+                                                'parameters' => ['id' => $dado->ltc_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ]
@@ -69,7 +71,7 @@
                                     ]) !!}
                                   @endif
 
-                                  @if($dado->mat_ltc_id != null and $dado->ltc_anx_tcc !== null )
+                                  @if($dado->ltc_id != null and $dado->ltc_anx_tcc !== null )
                                     {!! ActionButton::grid([
                                         'type' => 'LINE',
                                         'buttons' => [
@@ -77,7 +79,7 @@
                                                 'classButton' => 'btn btn-primary',
                                                 'icon' => 'fa fa-edit',
                                                 'route' => 'academico.lancamentostccs.edit',
-                                                'parameters' => ['id' => $dado->mat_ltc_id],
+                                                'parameters' => ['id' => $dado->ltc_id],
                                                 'label' => '',
                                                 'method' => 'get'
                                             ],

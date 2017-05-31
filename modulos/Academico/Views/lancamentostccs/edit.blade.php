@@ -16,7 +16,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title"><b>Aluno</b>: {{$lancamentoTcc->matriculaCurso->aluno->pessoa->pes_nome}} <b>Disciplina</b>: {{$disciplina->dis_nome}}</h3>
+            <h3 class="box-title"><b>Aluno</b>: {{$lancamentoTcc->matriculaOferta->matriculaCurso->aluno->pessoa->pes_nome}} <b>Disciplina</b>: {{$disciplina->dis_nome}}</h3>
         </div>
         <div class="box-body">
             {!! Form::model($lancamentoTcc,["route" => ['academico.lancamentostccs.edit',$lancamentoTcc->ltc_id], "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
