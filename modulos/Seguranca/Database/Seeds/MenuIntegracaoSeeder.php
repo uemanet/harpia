@@ -53,14 +53,23 @@ class MenuIntegracaoSeeder extends Seeder
             'mit_ordem' => 1
         ]);
 
+        // Subcategoria Processos
+        $processos = MenuItem::create([
+            'mit_mod_id' => 4,
+            'mit_item_pai' => $integracao->mit_id,
+            'mit_nome' => 'Processos',
+            'mit_icone' => 'fa fa-gears',
+            'mit_ordem' => 3
+        ]);
+
         // Item Mapeamento de Itens de Notas
         $mapeamentoItensNota = MenuItem::create([
             'mit_mod_id' => 4,
-            'mit_item_pai' => $cadastro->mit_id,
+            'mit_item_pai' => $processos->mit_id,
             'mit_nome' => 'Mapeamento de Notas',
             'mit_icone' => 'fa fa-pencil-square-o',
             'mit_rota' => 'integracao.mapeamentonotas.index',
-            'mit_ordem' => 2
+            'mit_ordem' => 1
         ]);
     }
 }
