@@ -297,6 +297,7 @@ class MatriculaCursoRepository extends BaseRepository
             ->leftJoin('acd_lancamentos_tccs', 'ltc_mof_id', '=', 'mof_id')
             ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->where('mat_trm_id', '=', $turmaId)
+            ->orderBy('pes_nome', 'asc')
             ->get();
 
 
