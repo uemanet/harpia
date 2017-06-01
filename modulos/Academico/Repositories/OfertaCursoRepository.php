@@ -111,11 +111,12 @@ class OfertaCursoRepository extends BaseRepository
 
     public function create(array $data)
     {
-        // verifica se existe um registro com mesmo ano e modalidade
+        // verifica se existe um registro com mesmo ano, modalidade e curso
         $entry = $this->model
                         ->where([
                             ['ofc_ano', '=', $data['ofc_ano']],
-                            ['ofc_mdl_id', '=', $data['ofc_mdl_id']]
+                            ['ofc_mdl_id', '=', $data['ofc_mdl_id']],
+                            ['ofc_crs_id', '=', $data['ofc_crs_id']]
                         ])->first();
 
         if (!$entry) {

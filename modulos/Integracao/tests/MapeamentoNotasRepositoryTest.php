@@ -98,6 +98,38 @@ class MapeamentoNotasRepositoryTest extends TestCase
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
     }
 
+    public function testIfAlunoIsAprovadoFinalWithoutRecuperacaoSubstituirMedia()
+    {
+        $data = [
+            'mof_nota1' => 7.0,
+            'mof_nota2' => 7.0,
+            'mof_nota3' => 6.0,
+            'mof_final' => 6.0
+        ];
+
+        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+
+        $this->assertEquals($result['mof_mediafinal'], 6.4);
+        $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
+    }
+
+    public function testIfAlunoIsReprovadoFinalWithoutRecuperacaoSubstituirMedia()
+    {
+        $data = [
+            'mof_nota1' => 7.0,
+            'mof_nota2' => 7.0,
+            'mof_nota3' => 6.0,
+            'mof_final' => 3.0
+        ];
+
+        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+
+        $this->assertEquals($result['mof_mediafinal'], 4.9);
+        $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
+    }
+
+    /* Testes com Modo de Recuperação Substituir Media Final */
+
     public function testIfAlunoAprovadoMediaWithRecuperacaoSubstituirMedia()
     {
         $data = [
@@ -160,35 +192,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
     }
 
-    public function testIfAlunoIsAprovadoFinalWithoutRecuperacaoSubstituirMedia()
-    {
-        $data = [
-            'mof_nota1' => 7.0,
-            'mof_nota2' => 7.0,
-            'mof_nota3' => 6.0,
-            'mof_final' => 6.0
-        ];
-
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
-
-        $this->assertEquals($result['mof_mediafinal'], 6.4);
-        $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
-    }
-
-    public function testIfAlunoIsReprovadoFinalWithoutRecuperacaoSubstituirMedia()
-    {
-        $data = [
-            'mof_nota1' => 7.0,
-            'mof_nota2' => 7.0,
-            'mof_nota3' => 6.0,
-            'mof_final' => 3.0
-        ];
-
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
-
-        $this->assertEquals($result['mof_mediafinal'], 4.9);
-        $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
-    }
+    /* Testes com Modo de Recuperação Substituir Menor Nota */
 
     public function testIfAlunoAprovadoMediaWithRecuperacaoSubstituirMenorNota()
     {
