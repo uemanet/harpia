@@ -224,8 +224,7 @@
 
                     // corpo da tabela
                     $.each(certificados, function (key, obj) {
-                      console.log(obj);
-                      console.log();
+
                         table2 += '<tr>';
                         table2 += '<td>' + obj.pes_nome + '</td>';
                         table2 += '<td><span class="label label-info">Certificados</span></td>';

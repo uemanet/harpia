@@ -227,7 +227,6 @@
                         toastr.success(msg, null, {progressBar: true});
                     },
                     error: function (response) {
-                        console.log(response);
                         $.harpia.hideloading();
 
                         var msg = response.responseJSON.error;

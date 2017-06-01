@@ -324,8 +324,6 @@
                 var turma = window.turmaId;
                 var poloId = $(this).val();
 
-                console.log(turma);
-
                 if (poloId) {
                     loadingSelectGrupos(turma, poloId, 0);
                 }

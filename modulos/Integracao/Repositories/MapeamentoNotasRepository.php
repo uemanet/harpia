@@ -91,7 +91,9 @@ class MapeamentoNotasRepository extends BaseRepository
 
             $keys = ['min_id_conceito'];
 
-            if ($moduloDisciplina->mdc_tipo_avaliacao == 'conceitual') {
+            $tipoAvaliacao = lcfirst($moduloDisciplina->mdc_tipo_avaliacao);
+
+            if ($tipoAvaliacao == 'conceitual') {
                 $keys = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
             }
 
@@ -126,7 +128,7 @@ class MapeamentoNotasRepository extends BaseRepository
         $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
 
         // buscar tipo de avaliacao da disciplina
-        $tipoAvaliacao = $matriculaOfertaDisciplina->ofertaDisciplina->moduloDisciplina->mdc_tipo_avaliacao;
+        $tipoAvaliacao = lcfirst($matriculaOfertaDisciplina->ofertaDisciplina->moduloDisciplina->mdc_tipo_avaliacao);
         if ($tipoAvaliacao == 'conceitual') {
             $select = ['min_id_conceito'];
         }
