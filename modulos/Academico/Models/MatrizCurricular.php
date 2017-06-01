@@ -31,7 +31,7 @@ class MatrizCurricular extends BaseModel
 
     public function curso()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Curso', 'mtc_crs_id');
+        return $this->belongsTo('Modulos\Academico\Models\Curso', 'mtc_crs_id', 'crs_id');
     }
 
     public function modulos()

@@ -119,8 +119,10 @@ class MapeamentoNotasRepository extends BaseRepository
 
     public function mapearNotasAluno($mof_id)
     {
+        // busca o objeto da matricula na oferta de disciplina
         $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($mof_id);
 
+        // caso não exista, envia mensagem de erro
         if (!$matriculaOfertaDisciplina) {
             return array('status' => 'error', 'message' => 'Matricula na Oferta de Disciplina não existe.');
         }
@@ -133,11 +135,14 @@ class MapeamentoNotasRepository extends BaseRepository
             $select = ['min_id_conceito'];
         }
 
+        // dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas
+        // necessários
         $itensNota = DB::table('int_mapeamento_itens_nota')
                         ->where('min_ofd_id', $matriculaOfertaDisciplina->mof_ofd_id)
                         ->select($select)
                         ->first();
 
+        // caso não exista itens de notas cadastrados, envia uma mensagem de erro
         if (!$itensNota) {
             return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
         }
@@ -146,6 +151,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
         $pes_id = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
 
+        // prepara o array com as informações que seram enviadas para o moodle
         $itens = [];
         foreach ($itensNota as $key => $value) {
             if ($value) {
@@ -157,10 +163,12 @@ class MapeamentoNotasRepository extends BaseRepository
             }
         }
 
+        // faz outra checagem pra evitar de mandar dados de itens de nota vazio
         if (empty($itens)) {
             return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
         }
 
+        // dados dos itens de notas são encapsulados em uma string json
         $data = [
             'pes_id' => $pes_id,
             'itens' => json_encode($itens)
@@ -168,10 +176,12 @@ class MapeamentoNotasRepository extends BaseRepository
 
         $trm_id = $matriculaOfertaDisciplina->matriculaCurso->mat_trm_id;
 
+        // chama o evento para registra ocorrencia no tabela de sincronização
         event(new MapearNotasEvent($matriculaOfertaDisciplina, 'MAPEAR_NOTAS_ALUNO'));
 
         $response = $this->sendDataMoodle($data, $trm_id);
 
+        // verifica se veio alguma resposta do moodle, e qual status ela será encaixada
         $status = 3;
         if ($response) {
             $status = (array_key_exists('status', $response) &&
@@ -180,12 +190,15 @@ class MapeamentoNotasRepository extends BaseRepository
             event(new AtualizarSyncEvent($matriculaOfertaDisciplina, $status, $response['message'], 'MAPEAR_NOTAS_ALUNO'));
         }
 
+        // caso tenha trago as notas
         if ($status == 2) {
             $arrayNotas = json_decode($response['grades'], true);
 
+            // Caso o aluno não possua nenhuma nota no moodle, envia uma mensagem de erro
             if (empty($arrayNotas)) {
                 return array('status' => 'error', 'message' => 'Aluno não possui notas na oferta de disciplina.');
             }
+
             $notas = [];
             foreach ($arrayNotas as $nota) {
                 $value = $nota['nota'];
@@ -195,9 +208,11 @@ class MapeamentoNotasRepository extends BaseRepository
                 $notas['mof_'.$nota['tipo']] = $value;
             }
 
+            // busca as configurações de notas do curso
             $cursoId = $matriculaOfertaDisciplina->matriculaCurso->turma->ofertaCurso->ofc_crs_id;
             $configuracoesCurso = $this->getConfiguracoesCurso($cursoId);
 
+            // calcula a media final e o status de matricula do aluno
             $notas = $this->calcularMedia($notas, $configuracoesCurso, $tipoAvaliacao);
 
             // atualizar o registro de notas
