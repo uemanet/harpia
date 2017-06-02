@@ -116,9 +116,6 @@ $('#grp_id').change(function (e) {
     var tipotutoria = $(this).val();
     var selectTutores = $('#tut_id');
 
-    // console.log(turmaId);
-    // console.log(tipotutoria);
-
     if (turmaId) {
 
         selectTutores.empty();
@@ -181,8 +178,6 @@ $(document).on('click', '.btn-primary', function (event) {
             async: false,
             success: function (moodledata) {
                 $.harpia.hideloading();
-
-                console.log(moodledata);
 
                 if (moodledata.errorcode === "startdateerror") {
                     toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});

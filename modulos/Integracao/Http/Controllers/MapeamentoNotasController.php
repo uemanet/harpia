@@ -8,7 +8,7 @@ use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Integracao\Repositories\MapeamentoNotaRepository;
+use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 use Validator;
 
 class MapeamentoNotasController extends BaseController
@@ -21,13 +21,13 @@ class MapeamentoNotasController extends BaseController
 
     public function __construct(
         CursoRepository $cursoRepository,
-        MapeamentoNotaRepository $mapeamentoNotaRepository,
+        MapeamentoNotasRepository $mapeamentoNotasRepository,
         TurmaRepository $turmaRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     ) {
         $this->cursoRepository = $cursoRepository;
-        $this->mapeamentoNotasRepository = $mapeamentoNotaRepository;
+        $this->mapeamentoNotasRepository = $mapeamentoNotasRepository;
         $this->turmaRepository = $turmaRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
@@ -179,7 +179,7 @@ class MapeamentoNotasController extends BaseController
                 return array('style' => 'width: 10%');
             })
             ->modify('mof_action', function ($row) {
-                return "<button class='btn bg-orange'><i class='fa fa-exchange'></i> Mapear Notas</button>";
+                return "<a href='".route('integracao.mapeamentonotas.aluno', $row->mof_id)."' class='btn bg-orange'><i class='fa fa-exchange'></i> Mapear Notas</a>";
             })
             ->sortable(array('mof_id', 'pes_nome'));
 
@@ -187,5 +187,20 @@ class MapeamentoNotasController extends BaseController
         }
 
         return view('Integracao::mapeamentonotas.alunos', compact('tabela', 'paginacao', 'ofertaDisciplina'));
+    }
+
+    public function mapearNotasAluno($matriculaOfertaId)
+    {
+        $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($matriculaOfertaId);
+
+        if (!$matriculaOfertaDisciplina) {
+            flash()->error('Matricula na Oferta de Disciplina não existe.');
+            return redirect()->back();
+        }
+
+        $response = $this->mapeamentoNotasRepository->mapearNotasAluno($matriculaOfertaId);
+
+        flash()->{$response['status']}($response['message']);
+        return redirect()->route('integracao.mapeamentonotas.showalunos', $matriculaOfertaDisciplina->mof_ofd_id);
     }
 }

@@ -34,7 +34,6 @@ class MatriculaOfertaDisciplina extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'mof_ofd_id', 'ofd_id');
     }
 
-
     public function getSituacaoMatriculaAttribute($value)
     {
         if ($this->mof_situacao_matricula == 'aprovado_media') {

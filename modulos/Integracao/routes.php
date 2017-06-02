@@ -21,13 +21,16 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'mapeamentonotas'], function () {
         Route::get('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
         Route::post('/', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@index')->name('integracao.mapeamentonotas.index');
-        Route::get('/{id}/alunos', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@showAlunos')->name('integracao.mapeamentonotas.alunos');
+        Route::get('/{id}/alunos', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@showAlunos')->name('integracao.mapeamentonotas.showalunos');
+        Route::get('/aluno/{id}', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@mapearNotasAluno')->name('integracao.mapeamentonotas.aluno');
     });
 
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'mapeamentonotas'], function () {
             Route::post('/setmapeamentonotas', '\Modulos\Integracao\Http\Controllers\Async\MapeamentoNotas@setMapeamentoNotas')
                 ->name('integracao.async.mapeamentonotas.setmapeamentonotas');
+            Route::get('{id}/mapearnotasalunos', '\Modulos\Integracao\Http\Controllers\Async\MapeamentoNotas@mapearNotasTurma')
+                    ->name('integracao.async.mapeamentonotas.mapearnotasalunos');
         });
     });
 });

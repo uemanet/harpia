@@ -67,17 +67,17 @@
                                                 <td>{{ $value->dis_nome }}</td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <input type="text" id="{{ $value->ofd_id }}_nota1" class="form-control" value="{{ !$value->min_id_nota_um ? 0 : $value->min_id_nota_um }}" {{$numerica}}>
+                                                        <input type="text" id="{{ $value->ofd_id }}_nota1" class="form-control" value="{{ !$value->min_id_nota1 ? 0 : $value->min_id_nota1 }}" {{$numerica}}>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <input type="text" id="{{ $value->ofd_id }}_nota2" class="form-control" value="{{ !$value->min_id_nota_dois ? 0 : $value->min_id_nota_dois }}" {{$numerica}}>
+                                                        <input type="text" id="{{ $value->ofd_id }}_nota2" class="form-control" value="{{ !$value->min_id_nota2 ? 0 : $value->min_id_nota2 }}" {{$numerica}}>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <input type="text" id="{{ $value->ofd_id }}_nota3" class="form-control" value="{{ !$value->min_id_nota_tres ? 0 : $value->min_id_nota_tres }}" {{$numerica}}>
+                                                        <input type="text" id="{{ $value->ofd_id }}_nota3" class="form-control" value="{{ !$value->min_id_nota3 ? 0 : $value->min_id_nota3 }}" {{$numerica}}>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -101,14 +101,14 @@
                                                     </button>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="{{ route('integracao.mapeamentonotas.alunos', $value->ofd_id) }}" class="btn btn-primary">
+                                                    <a href="{{ route('integracao.mapeamentonotas.showalunos', $value->ofd_id) }}" class="btn btn-primary">
                                                         <i class="fa fa-users"></i> Alunos
                                                     </a>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="#" class="btn btn-success">
+                                                    <button class="btn btn-success btnMapear" data-id="{{ $value->ofd_id }}">
                                                         <i class="fa fa-exchange"></i> Mapear notas
-                                                    </a>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             @endforeach

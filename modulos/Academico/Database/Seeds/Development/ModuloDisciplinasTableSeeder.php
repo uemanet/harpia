@@ -15,12 +15,12 @@ class ModuloDisciplinasTableSeeder extends Seeder
         $matrizesCurriculares = MatrizCurricular::all();
 
         foreach ($matrizesCurriculares as $matriz) {
-            $skip = 0;
             $nivelCurso = $matriz->curso->crs_nvc_id;
 
             $modulos = $matriz->modulos;
 
             $m = 1;
+            $skip = 0;
             foreach ($modulos as $modulo) {
 
                 // pega 4 disciplinas desse nivel de curso
@@ -35,7 +35,7 @@ class ModuloDisciplinasTableSeeder extends Seeder
                     $moduloDisciplina->mdc_tipo_avaliacao = 'numerica';
                     $moduloDisciplina->mdc_tipo_disciplina = 'obrigatoria';
 
-                    if ($m == $modulos->count() && $d == 4) {
+                    if (($m == $modulos->count()) && ($d == 4)) {
                         $moduloDisciplina->mdc_tipo_disciplina = 'tcc';
                     }
 

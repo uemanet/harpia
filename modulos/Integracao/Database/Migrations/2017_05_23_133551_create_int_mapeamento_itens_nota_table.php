@@ -16,9 +16,9 @@ class CreateIntMapeamentoItensNotaTable extends Migration
         Schema::create('int_mapeamento_itens_nota', function (Blueprint $table) {
             $table->increments('min_id');
             $table->integer('min_ofd_id')->unsigned();
-            $table->integer('min_id_nota_um')->nullable();
-            $table->integer('min_id_nota_dois')->nullable();
-            $table->integer('min_id_nota_tres')->nullable();
+            $table->integer('min_id_nota1')->nullable();
+            $table->integer('min_id_nota2')->nullable();
+            $table->integer('min_id_nota3')->nullable();
             $table->integer('min_id_recuperacao')->nullable();
             $table->integer('min_id_conceito')->nullable();
             $table->integer('min_id_final')->nullable();
