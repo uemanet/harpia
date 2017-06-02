@@ -88,7 +88,7 @@ class MatriculaCursoRepository extends BaseRepository
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
             ->join('acd_cursos', function ($join) {
-                $join->on('ofc_crs_id', '=', 'crs_id')->where('crs_nvc_id', '=', '3');
+                $join->on('ofc_crs_id', '=', 'crs_id')->where('crs_nvc_id', '=', '1');
             })
             ->where('mat_alu_id', '=', $alunoId)
             ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
@@ -143,7 +143,7 @@ class MatriculaCursoRepository extends BaseRepository
                     ->whereNotIn('crs_id', $cursosMatriculados);
 
         if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
-            $query = $query->where('crs_nvc_id', '<>', 3);
+            $query = $query->where('crs_nvc_id', '<>', 1);
         }
 
         return $query->pluck('crs_nome', 'crs_id');
@@ -215,7 +215,7 @@ class MatriculaCursoRepository extends BaseRepository
         $curso = DB::table('acd_cursos')->where('crs_id', $options['crs_id'])->first();
 
         // caso seja de Graducao
-        if ($curso->crs_nvc_id == 3) {
+        if ($curso->crs_nvc_id == 1) {
             if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
                 return array(
                     'type' => 'error',
@@ -397,7 +397,7 @@ class MatriculaCursoRepository extends BaseRepository
             }
 
             // se o curso for de nivel Tecnico, não possui tcc, mas seta a variavel true
-            if ($ofertaCurso->curso->crs_nvc_id == 1) {
+            if ($ofertaCurso->curso->crs_nvc_id == 2) {
                 $temTcc = true;
             }
 

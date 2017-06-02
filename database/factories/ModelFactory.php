@@ -179,7 +179,7 @@ $factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator
 $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generator $faker) {
     return [
         'crs_dep_id' => factory(Modulos\Academico\Models\Departamento::class)->create()->dep_id,
-        'crs_nvc_id' => 1,
+        'crs_nvc_id' => 2,
         'crs_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'crs_nome' => $faker->name,
         'crs_sigla' => $faker->name,

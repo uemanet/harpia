@@ -68,7 +68,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
 
         $returndata['data'] = 'São Luís, '.strftime('%d de %B de %Y', strtotime('today'));
 
-        if ($curso->crs_nvc_id == 1) {
+        if ($curso->crs_nvc_id == 2) {
             $returndata['modulos'] = $this->getDisciplinasTecnico($matricula->mat_id);
 
             return $returndata;
