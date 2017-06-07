@@ -15,11 +15,13 @@ class CreateAcdHistoricoMatriculasTable extends Migration
     {
         Schema::create('acd_historico_matriculas', function (Blueprint $table) {
             $table->increments('hmt_id');
-            $table->string('hmt_mat_id');
+            $table->integer('hmt_mat_id')->unsigned();
             $table->date('hmt_data');
             $table->enum('hmt_tipo', ['mudanca_polo', 'mudanca_grupo', 'alteracao_status']);
             $table->string('hmt_observacao')->nullable();
             $table->timestamps();
+
+            $table->foreign('hmt_mat_id')->references('mat_id')->on('acd_matriculas');
         });
     }
 

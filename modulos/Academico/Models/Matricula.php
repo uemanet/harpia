@@ -45,6 +45,11 @@ class Matricula extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_mat_id', 'mat_id');
     }
 
+    public function historico()
+    {
+        return $this->hasMany('Modulos\Academico\Models\HistoricoMatricula', 'hmt_mat_id', 'mat_id');
+    }
+
     public function getMatModoEntradaAttribute($value)
     {
         $values = [
