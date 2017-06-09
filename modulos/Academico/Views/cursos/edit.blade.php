@@ -20,7 +20,7 @@
         </div>
         <div class="box-body">
             {!! Form::model($curso,["route" => ['academico.cursos.edit',$curso->crs_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            @include('Academico::cursos.includes.formulario')
+            @include('Academico::cursos.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>
@@ -34,43 +34,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("select").select2();
-
-            var mediaAprovacao = $('#media_min_aprovacao').val();
-            var mediaFinal = $('#media_min_final').val();
-            var aprovacaoFinal = $('#media_min_aprovacao_final').val();
-            var modoRecuperacao = $('#modo_recuperacao').val();
-
-            $('#form').submit(function (event) {
-                event.preventDefault();
-
-                var form = this;
-                var formMediaAprovacao = $('#media_min_aprovacao').val();
-                var formMediaFinal = $('#media_min_final').val();
-                var formAprovacaoFinal = $('#media_min_aprovacao_final').val();
-                var formModoRecuperacao = $('#modo_recuperacao').val();
-
-                if ((mediaAprovacao !== formMediaAprovacao) || (mediaFinal !== formMediaFinal)
-                    || (aprovacaoFinal !== formAprovacaoFinal) || (modoRecuperacao !== formModoRecuperacao)) {
-
-                    event.preventDefault();
-                    swal({
-                        title: "Alterar configurações de notas do curso",
-                        text: "Alterar as configurações de notas do curso exige que a migração das notas das turmas relativas ao curso seja refeita manualmente. Deseja continuar ?",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Sim, alterar configurações",
-                        cancelButtonText: "Não, quero cancelar!",
-                        closeOnConfirm: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            form.submit();
-                        }
-                    });
-                } else {
-                    form.submit();
-                }
-            })
         });
 
         $('.datepicker').datepicker({
