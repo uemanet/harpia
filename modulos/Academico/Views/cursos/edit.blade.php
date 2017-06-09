@@ -55,7 +55,7 @@
                     event.preventDefault();
                     swal({
                         title: "Alterar configurações de notas do curso",
-                        text: "Alterar as configurações de notas do curso exige que as notas das turmas relativas ao curso sejam recalculadas manualmente. Deseja continuar ?",
+                        text: "Alterar as configurações de notas do curso exige que a migração das notas das turmas relativas ao curso seja refeita manualmente. Deseja continuar ?",
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#DD6B55",
