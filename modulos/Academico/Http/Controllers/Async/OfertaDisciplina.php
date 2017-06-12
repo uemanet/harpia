@@ -50,12 +50,13 @@ class OfertaDisciplina extends BaseController
             'ofd_qtd_vagas',
             'mdc_tipo_disciplina',
             'ofd_id',
+            'ofd_tipo_avaliacao',
             'prf_id',
             'pes_nome',
         ]);
 
         for ($i = 0; $i < $retorno->count(); ++$i) {
-            $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
+            $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getQuantMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
             $retorno[$i]->qtdMatriculas = $qtdMatriculas;
 
             if ($retorno[$i]->mof_tipo_matricula == 'matriculacomum') {
@@ -146,5 +147,24 @@ class OfertaDisciplina extends BaseController
 
             return new JsonResponse('Não foi possível excluir a disciplina', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    public function getPageTableOfertasDisciplinas(Request $request)
+    {
+        $busca = [];
+        foreach ($request->all() as $key => $value) {
+            $busca[] = [$key, '=', $value];
+        }
+
+        $ofertas = \Modulos\Academico\Models\OfertaDisciplina::where($busca)->get();
+
+        foreach ($ofertas as $key => $oferta) {
+            $ofertas[$key]->ofd_quant_matriculados = $this->matriculaOfertaDisciplinaRepository
+                ->getQuantMatriculasByOfertaDisciplina($oferta->ofd_id);
+        }
+
+        $html = view('Academico::ofertasdisciplinas.ajax.table_ofertas', compact('ofertas'))->render();
+
+        return new JsonResponse(['html' => $html], 200);
     }
 }

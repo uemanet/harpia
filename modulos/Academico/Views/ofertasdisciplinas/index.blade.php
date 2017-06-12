@@ -55,24 +55,7 @@
         <!-- /.box-body -->
     </div>
 
-    <div class="box box-primary hidden" id="boxDisciplinas">
-        <div class="box-header with-border">
-            <h3 class="box-title">Disciplinas Ofertadas</h3>
-
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-12 conteudo"></div>
-            </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
+    <div class="table-ofertas"></div>
 @stop
 
 @section('scripts')
@@ -162,40 +145,17 @@
                     return false;
                 }
 
-                $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turma + "&ofd_per_id=" + periodo)
-                    .done(function (data) {
-                        boxDisciplinas.removeClass('hidden');
-                        boxDisciplinas.find('.conteudo').empty();
-                        if (!$.isEmptyObject(data)) {
+                var url = "{{url('/')}}/academico/async/ofertasdisciplinas/getpagetableofertas?ofd_trm_id=" + turma + "&ofd_per_id=" + periodo;
 
-                            var table = '';
-                            table += "<table class='table table-bordered'>";
-                            table += '<tr>';
-                            table += "<th>Disciplina</th>";
-                            table += "<th>Carga Horária</th>";
-                            table += "<th>Créditos</th>";
-                            table += "<th>Tipo de Oferta</th>";
-                            table += "<th>Vagas</th>";
-                            table += "<th>Professor</th>";
-                            table += '</tr>';
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    success: function(response) {
+                        $('.table-ofertas').empty();
+                        $('.table-ofertas').append(response.html)
+                    }
+                });
 
-                            $.each(data, function (key, obj) {
-                                table += '<tr>';
-                                table += "<td>" + obj.dis_nome + "</td>";
-                                table += "<td>" + obj.dis_carga_horaria + "</td>";
-                                table += "<td>" + obj.dis_creditos + "</td>";
-                                table += "<td>" + obj.mdc_tipo_disciplina + "</td>";
-                                table += "<td>" + obj.qtdMatriculas + "/<strong>" + obj.ofd_qtd_vagas + "</strong></td>";
-                                table += "<td>" + obj.pes_nome + "</td>";
-                                table += '</tr>';
-                            });
-
-                            table += "</table>";
-                            boxDisciplinas.find('.conteudo').append(table);
-                        } else {
-                            boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
-                        }
-                    });
             });
         });
     </script>

@@ -233,18 +233,20 @@
                                     table += "<table class='table table-bordered'>";
                                     table += '<tr>';
                                     table += "<th>Disciplina</th>";
-                                    table += "<th>Carga Horária</th>";
-                                    table += "<th>Créditos</th>";
-                                    table += "<th>Vagas</th>";
+                                    table += "<th width='10%'>Carga Horária</th>";
+                                    table += "<th width='8%'>Créditos</th>";
+                                    table += "<th width='12%'>Tipo de Avaliação</th>";
+                                    table += "<th width='8%'>Vagas</th>";
                                     table += "<th>Professor</th>";
-                                    table += "<th>Ações</th>";
+                                    table += "<th width='5%'>Ações</th>";
                                     table += '</tr>';
 
                                     $.each(data, function (key, obj) {
                                         table += '<tr>';
                                         table += "<td>"+obj.dis_nome+"</td>";
-                                        table += "<td>"+obj.dis_carga_horaria+"</td>";
+                                        table += "<td>"+obj.dis_carga_horaria+" horas</td>";
                                         table += "<td>"+obj.dis_creditos+"</td>";
+                                        table += "<td>"+obj.ofd_tipo_avaliacao+"</td>";
                                         table += "<td>"+obj.qtdMatriculas+"/<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
                                         table += "<td>"+obj.pes_nome+"</td>";
                                         if(obj.qtdMatriculas == 0) {

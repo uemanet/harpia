@@ -288,11 +288,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return true;
     }
 
-    public function getMatriculasByOfertaDisciplina($ofertaId)
+    public function getQuantMatriculasByOfertaDisciplina($ofertaId)
     {
         return $this->model->where('mof_ofd_id', '=', $ofertaId)
-                    ->where('mof_situacao_matricula', '=', 'cursando')
-                    ->get();
+                            ->whereNotIn('mof_situacao_matricula', ['cancelado'])
+                            ->count();
     }
     
     public function verifyIfAlunoAprovadoPreRequisitos($matriculaId, $ofertaDisciplinaId)

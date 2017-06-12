@@ -257,6 +257,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getFindall')->name('academico.async.ofertasdisciplinas.findall');
             Route::post('/oferecerdisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postOferecerdisciplina')->name('academico.async.ofertasdisciplinas.oferecerdisciplina');
             Route::post('/deletarofertadisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postDeletarofertadisciplina')->name('academico.async.ofertasdisciplinas.deletarofertadisciplina');
+            Route::get('/getpagetableofertas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getPageTableOfertasDisciplinas')->name('academico.async.ofertasdisciplinas.getpagetableofertas');
         });
 
         Route::group(['prefix' => 'matriculasofertasdisciplinas', 'middleware' => ['vinculo']], function () {
