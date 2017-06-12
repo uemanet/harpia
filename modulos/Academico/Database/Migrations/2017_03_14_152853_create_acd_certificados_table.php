@@ -14,16 +14,15 @@ class CreateAcdCertificadosTable extends Migration
     public function up()
     {
         Schema::create('acd_certificados', function (Blueprint $table) {
-            $table->increments('dip_id');
+            $table->increments('crt_id');
 
-            $table->integer('dip_reg_id')->unsigned();
-            $table->integer('dip_mat_id')->unsigned();
+            $table->integer('crt_reg_id')->unsigned();
+            $table->integer('crt_mat_id')->unsigned();
+            $table->integer('crt_mdo_id')->unsigned();
 
-            $table->string('dip_processo');
-            $table->string('dip_codigo_autenticidade_externo');
-
-            $table->foreign('dip_liv_id')->references('liv_id')->on('acd_livros');
-            $table->foreign('dip_usr_id')->references('usr_id')->on('seg_usuarios');
+            $table->foreign('crt_reg_id')->references('reg_id')->on('acd_registros');
+            $table->foreign('crt_mat_id')->references('mat_id')->on('acd_matriculas');
+            $table->foreign('crt_mdo_id')->references('mdo_id')->on('acd_modulos_matrizes');
 
             $table->timestamps();
         });

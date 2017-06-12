@@ -22,8 +22,8 @@ class CreateAcdDiplomasTable extends Migration
             $table->string('dip_processo');
             $table->string('dip_codigo_autenticidade_externo');
 
-            $table->foreign('dip_liv_id')->references('liv_id')->on('acd_livros');
-            $table->foreign('dip_usr_id')->references('usr_id')->on('seg_usuarios');
+            $table->foreign('dip_reg_id')->references('reg_id')->on('acd_registros');
+            $table->foreign('dip_mat_id')->references('mat_id')->on('acd_matriculas');
 
             $table->timestamps();
         });
