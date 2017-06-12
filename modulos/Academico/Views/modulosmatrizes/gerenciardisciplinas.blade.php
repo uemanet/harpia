@@ -75,7 +75,6 @@
                         <th>Nível</th>
                         <th>Carga Horária</th>
                         <th>Créditos</th>
-                        <th>Tipo de Avaliação</th>
                         <th>Tipo da Disciplina</th>
                         <th>Pré-Requisitos</th>
                         <th>Ações</th>
@@ -88,7 +87,6 @@
                             <td>{{$disciplina->nvc_nome}}</td>
                             <td>{{$disciplina->dis_carga_horaria}} horas</td>
                             <td>{{$disciplina->dis_creditos}}</td>
-                            <td>{{$disciplina->mdc_tipo_avaliacao}}</td>
                             <td>{{$disciplina->mdc_tipo_disciplina}}</td>
                             @if(!empty($disciplina->pre_requisitos))
                                 <td>
@@ -238,7 +236,6 @@
                             table += '<th width="20%">Nome</th>';
                             table += '<th width="5%">Carga Horária</th>';
                             table += '<th width="5%">Créditos</th>';
-                            table += '<th width="13%">Tipo de Avaliação</th>';
                             table += '<th width="13%">Tipo da Disciplina</th>';
                             table += '<th>Pré-Requisitos</th>';
                             table += '<th width="10%">Ações</th>';
@@ -247,7 +244,6 @@
                             table += '<th>Nome</th>';
                             table += '<th width="10%">Carga Horária</th>';
                             table += '<th width="5%">Créditos</th>';
-                            table += '<th width="18%">Tipo de Avaliação</th>';
                             table += '<th width="18%">Tipo da Disciplina</th>';
                             table += '<th width="10%">Ações</th>';
                         }
@@ -261,14 +257,8 @@
 
                             table += '<td id="dis_id">'+value.dis_id+'</td>';
                             table += '<td id="nome">'+value.dis_nome+'</td>';
-                            table += '<td id="cargahoraria">'+value.dis_carga_horaria+' h</td>';
+                            table += '<td id="cargahoraria">'+value.dis_carga_horaria+' horas</td>';
                             table += '<td id="creditos">'+value.dis_creditos+'</td>';
-
-                            table += '<td><div class="form-group">';
-                            table += '<select class="form-control" id="mdc_tipo_avaliacao">';
-                            table += '<option value="numerica" selected>NUMERICA</option>';
-                            table += '<option value="conceitual">CONCEITUAL</option>';
-                            table += '</select></div></td>';
 
                             table += '<td><div class="form-group">';
                             table += '<select class="form-control" id="mdc_tipo_disciplina">';
@@ -318,7 +308,6 @@
 
                 var data = {
                     dis_id: linha.find('#dis_id').text(),
-                    tipo_avaliacao: linha.find('#mdc_tipo_avaliacao').val(),
                     tipo_disciplina: linha.find('#mdc_tipo_disciplina').val(),
                     pre_requisitos: prerequisitos,
                     mtc_id: matriz,
@@ -372,7 +361,6 @@
                         table += '<th>Nível</th>';
                         table += '<th>Carga Horária</th>';
                         table += '<th>Créditos</th>';
-                        table += '<th>Tipo de Avaliação</th>';
                         table += '<th>Tipo da Disciplina</th>';
                         table += '<th>Pré-Requisitos</th>';
                         table += '<th>Ações</th>';
@@ -385,9 +373,8 @@
                             table += '<td>'+obj.mdc_id+'</td>';
                             table += '<td>'+obj.dis_nome+'</td>';
                             table += '<td>'+obj.nvc_nome+'</td>';
-                            table += '<td>'+obj.dis_carga_horaria+'</td>';
+                            table += '<td>'+obj.dis_carga_horaria+' horas</td>';
                             table += '<td>'+obj.dis_creditos+'</td>';
-                            table += '<td>'+obj.mdc_tipo_avaliacao+'</td>';
                             table += '<td>'+obj.mdc_tipo_disciplina+'</td>';
                             var prerequisitos = obj.pre_requisitos;
                             if(prerequisitos.length) {
