@@ -15,14 +15,7 @@ class Registro extends BaseModel
         'reg_mat_id',
         'reg_folha',
         'reg_registro',
-        'reg_registro_externo',
-        'reg_processo',
-        'reg_data_expedicao',
-        'reg_observacao',
-        'reg_usuario',
-        'reg_data',
-        'reg_id_interno',
-        'reg_mdo_id'
+        'reg_codigo_autenticidade'
     ];
 
     public function livro()
