@@ -17,12 +17,15 @@
                     <thead>
                         <tr>
                             <th>Disciplina</th>
-                            <th>Carga Horária</th>
-                            <th>Créditos</th>
-                            <th>Tipo de Avaliação</th>
-                            <th>Tipo de Disciplina</th>
-                            <th>Vagas</th>
+                            <th width="10%">Carga Horária</th>
+                            <th width="5%">Créditos</th>
+                            <th width="12%">Tipo de Avaliação</th>
+                            <th width="12%">Tipo de Disciplina</th>
+                            <th width="5%">Vagas</th>
                             <th>Professor</th>
+                            @if($buttonDelete)
+                                <th width="5%">Ações</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +38,20 @@
                                 <td>{{ $oferta->moduloDisciplina->mdc_tipo_disciplina }}</td>
                                 <td>{{ $oferta->ofd_quant_matriculados }}/<strong>{{ $oferta->ofd_qtd_vagas }}</strong></td>
                                 <td>{{ $oferta->professor->pessoa->pes_nome }}</td>
+                                @if($buttonDelete)
+                                    @if(!$oferta->ofd_quant_matriculados)
+                                        <td>
+                                            <form action="">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="_method" value="POST">
+                                                <input type="hidden" name="id" value="{{ $oferta->ofd_id }}">
+                                                <button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    @else
+                                        <td></td>
+                                    @endif
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

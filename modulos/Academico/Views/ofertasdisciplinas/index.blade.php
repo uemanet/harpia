@@ -19,7 +19,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+            <h3 class="box-title"><i class="fa fa-search"></i> Buscar Ofertas de Disciplinas</h3>
 
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -81,16 +81,16 @@
                     selectPeriodos.empty();
 
                     $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
-                        .done(function (data) {
-                            if (!$.isEmptyObject(data)) {
-                                selectOfertas.append('<option value="">Selecione uma oferta</option>');
-                                $.each(data, function (key, obj) {
-                                    selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ")</option>");
-                                });
-                            } else {
-                                selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
-                            }
-                        });
+                    .done(function (data) {
+                        if (!$.isEmptyObject(data)) {
+                            selectOfertas.append('<option value="">Selecione uma oferta</option>');
+                            $.each(data, function (key, obj) {
+                                selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ")</option>");
+                            });
+                        } else {
+                            selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
+                        }
+                    });
                 }
 
             });
@@ -137,22 +137,30 @@
                 }
             });
 
+            // evento click no botão de pesquisar ofertas
             $('#btnLocalizar').click(function () {
                 var turma = selectTurmas.val();
-                var periodo = $('#per_id').val();
+                var periodo = selectPeriodos.val();
 
                 if (turma == '' || periodo == '') {
                     return false;
                 }
 
-                var url = "{{url('/')}}/academico/async/ofertasdisciplinas/getpagetableofertas?ofd_trm_id=" + turma + "&ofd_per_id=" + periodo;
+                var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?"+
+                "ofd_trm_id=" + turma + "&ofd_per_id=" + periodo + "&button_delete=0";
 
+                $.harpia.showloading();
                 $.ajax({
                     method: 'GET',
                     url: url,
                     success: function(response) {
+                        $.harpia.hideloading();
                         $('.table-ofertas').empty();
                         $('.table-ofertas').append(response.html)
+                    },
+                    error: function(response) {
+                        $.harpia.hideloading();
+                        toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
                     }
                 });
 

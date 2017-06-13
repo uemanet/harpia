@@ -34,7 +34,9 @@ class ProfessorRepository extends BaseRepository
                 ->whereNull('crs_prf_diretor');
         }
 
-        $entries = $sql->select($identifier, $field)->pluck($field, $identifier);
+        $sql = $sql->select($identifier, $field)->orderBy('pes_nome', 'asc');
+
+        $entries = $sql->pluck($field, $identifier);
 
         return collect($entries);
     }

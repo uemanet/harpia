@@ -215,6 +215,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')->name('academico.async.matrizescurriculares.findallbycurso');
+            Route::get('/findbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindByOfertaCurso')->name('academico.async.matrizescurriculares.findbyofertacurso');
         });
 
         Route::group(['prefix' => 'turmas'], function () {
@@ -257,7 +258,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getFindall')->name('academico.async.ofertasdisciplinas.findall');
             Route::post('/oferecerdisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postOferecerdisciplina')->name('academico.async.ofertasdisciplinas.oferecerdisciplina');
             Route::post('/deletarofertadisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postDeletarofertadisciplina')->name('academico.async.ofertasdisciplinas.deletarofertadisciplina');
-            Route::get('/getpagetableofertas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getPageTableOfertasDisciplinas')->name('academico.async.ofertasdisciplinas.getpagetableofertas');
+            Route::get('/gettableofertasdisciplinas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getTableOfertasDisciplinas')->name('academico.async.ofertasdisciplinas.gettableofertasdisciplinas');
+            Route::get('/gettabledisciplinasnaoofertadas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getTableDisciplinasNaoOfertadas')->name('academico.async.ofertasdisciplinas.gettabledisciplinasnaoofertadas');
         });
 
         Route::group(['prefix' => 'matriculasofertasdisciplinas', 'middleware' => ['vinculo']], function () {
