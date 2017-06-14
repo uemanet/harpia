@@ -283,12 +283,11 @@ $factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function (Fak
     return [
         'mdc_dis_id' => $disciplina->dis_id,
         'mdc_mdo_id' => $moduloMatriz->mdo_id,
-        'mdc_tipo_avaliacao' => $faker->randomElement(['numerica', 'conceitual']),
         'mdc_tipo_disciplina' => $faker->randomElement(['obrigatoria', 'eletiva', 'optativa', 'tcc'])
     ];
 });
 
-$factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function () {
+$factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
 
     $ofertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
@@ -317,6 +316,7 @@ $factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function () {
         'ofd_trm_id' => $turma->trm_id,
         'ofd_per_id' => $turma->trm_per_id,
         'ofd_prf_id' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
+        'ofd_tipo_avaliacao' => $faker->randomElement(['numerica', 'conceitual']),
         'ofd_qtd_vagas' => 500
     ];
 });

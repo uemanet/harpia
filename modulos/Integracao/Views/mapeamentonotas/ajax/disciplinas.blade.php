@@ -57,7 +57,7 @@
                                             $numerica = '';
                                             $conceito = 'disabled';
 
-                                            if ($value->mdc_tipo_avaliacao == 'conceitual') {
+                                            if ($value->ofd_tipo_avaliacao == 'conceitual') {
                                             $numerica = 'disabled';
                                             $conceito = '';
                                             }

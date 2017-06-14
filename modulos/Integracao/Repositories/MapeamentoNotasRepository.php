@@ -50,7 +50,7 @@ class MapeamentoNotasRepository extends BaseRepository
                 'ofd_per_id' => $periodo->per_id
             ], [
                 'ofd_id',
-                'mdc_tipo_avaliacao',
+                'ofd_tipo_avaliacao',
                 'dis_nome',
                 'min_id_nota1',
                 'min_id_nota2',
@@ -81,8 +81,6 @@ class MapeamentoNotasRepository extends BaseRepository
                 return array('error' => 'Oferta de Disciplina não existe!');
             }
 
-            $moduloDisciplina = $ofertaDisciplina->moduloDisciplina;
-
             $func = function ($value) {
                 return !$value ? null : $value;
             };
@@ -91,9 +89,9 @@ class MapeamentoNotasRepository extends BaseRepository
 
             $keys = ['min_id_conceito'];
 
-            $tipoAvaliacao = lcfirst($moduloDisciplina->mdc_tipo_avaliacao);
+            $tipoAvaliacao = $ofertaDisciplina->ofd_tipo_avaliacao;
 
-            if ($tipoAvaliacao == 'conceitual') {
+            if ($tipoAvaliacao == 'Conceitual') {
                 $keys = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
             }
 
@@ -130,8 +128,8 @@ class MapeamentoNotasRepository extends BaseRepository
         $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
 
         // buscar tipo de avaliacao da disciplina
-        $tipoAvaliacao = lcfirst($matriculaOfertaDisciplina->ofertaDisciplina->moduloDisciplina->mdc_tipo_avaliacao);
-        if ($tipoAvaliacao == 'conceitual') {
+        $tipoAvaliacao = $matriculaOfertaDisciplina->ofertaDisciplina->ofd_tipo_avaliacao;
+        if ($tipoAvaliacao == 'Conceitual') {
             $select = ['min_id_conceito'];
         }
 
@@ -261,9 +259,9 @@ class MapeamentoNotasRepository extends BaseRepository
                         ->toArray();
     }
 
-    public function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'numerica')
+    public function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'Numérica')
     {
-        if ($tipoAvaliacao == 'conceitual') {
+        if ($tipoAvaliacao == 'Conceitual') {
             $conceitosAprovacao = json_decode($configuracoesCurso['conceitos_aprovacao'], true);
 
             $situacaoMatricula = 'reprovado_media';
