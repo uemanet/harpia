@@ -12,7 +12,7 @@ class Registro extends BaseModel
 
     protected $fillable = [
         'reg_liv_id',
-        'reg_mat_id',
+        'reg_usr_id',
         'reg_folha',
         'reg_registro',
         'reg_codigo_autenticidade'
