@@ -23,7 +23,16 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function update(array $data, $id, $attribute = "id")
     {
-        return $this->model->where($attribute, '=', $id)->update($data);
+        $obj = $this->model->where($attribute, '=', $id)->first();
+
+        if ($obj) {
+            $obj->fill($data);
+            $obj->save();
+
+            return $obj;
+        }
+
+        return null;
     }
 
     public function delete($id)
