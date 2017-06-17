@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Repositories;
 
+use Modulos\Academico\Models\ConfiguracaoCurso;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Curso;
 use Carbon\Carbon;
@@ -10,9 +11,14 @@ use DB;
 
 class CursoRepository extends BaseRepository
 {
-    public function __construct(Curso $curso)
-    {
+    protected $vinculoRepository;
+
+    public function __construct(
+        Curso $curso,
+        VinculoRepository $vinculoRepository
+    ) {
         $this->model = $curso;
+        $this->vinculoRepository = $vinculoRepository;
     }
 
     /**
@@ -99,8 +105,53 @@ class CursoRepository extends BaseRepository
         return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
     }
 
+    public function delete($id)
+    {
+        $curso = $this->find($id);
+
+        if ($curso) {
+            try {
+                DB::beginTransaction();
+
+                $this->vinculoRepository->deleteAllVinculosByCurso($id);
+
+                $this->deleteConfiguracoes($id);
+
+                $curso->delete();
+
+                DB::commit();
+
+                return array('status' => 'success', 'message' => 'Curso excluído com sucesso.');
+            } catch (\Illuminate\Database\QueryException $e) {
+                DB::rollback();
+
+                return array('status' => 'error','message' => 'Erro ao tentar deletar. O curso contém dependências no sistema.');
+            } catch (\Exception $e) {
+                DB::rollback();
+
+                if (config('app.debug')) {
+                    throw $e;
+                }
+
+                return array('status' => 'error', 'message' => 'Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            }
+        }
+
+        return array('status' => 'error', 'message' => 'Curso não existe.');
+    }
+
     public function deleteConfiguracoes($cursoId)
     {
-        return DB::table('acd_configuracoes_cursos')->where('cfc_crs_id', '=', $cursoId)->delete();
+        $collection = ConfiguracaoCurso::where('cfc_crs_id', '=', $cursoId)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->delete();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }

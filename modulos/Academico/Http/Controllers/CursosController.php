@@ -273,35 +273,12 @@ class CursosController extends BaseController
 
     public function postDelete(Request $request)
     {
-        try {
-            DB::beginTransaction();
+        $id = $request->get('id');
 
-            $cursoId = $request->get('id');
+        $response = $this->cursoRepository->delete($id);
 
-            $this->vinculoRepository->deleteAllVinculosByCurso($cursoId);
+        flash()->{$response['status']}($response['message']);
 
-            $this->cursoRepository->deleteConfiguracoes($cursoId);
-
-            $this->cursoRepository->delete($cursoId);
-
-            flash()->success('Curso excluído com sucesso.');
-            return redirect()->back();
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este curso ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
-            }
-
-            flash()->error('Erro ao tentar excluir o módulo');
-            return redirect()->back();
-        }
+        return redirect()->back();
     }
 }
