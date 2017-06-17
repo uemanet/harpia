@@ -51,7 +51,18 @@ class DocumentoRepository extends BaseRepository
             $query = $query->where($key, '=', $value);
         }
 
-        return $query->update($data);
+        $registros = $query->get();
+
+        if ($registros) {
+            foreach ($registros as $obj) {
+                $obj->fill($data);
+                $obj->save();
+            }
+
+            return $registros->count();
+        }
+
+        return 0;
     }
 
     public function deleteDocumento($documentoId)
@@ -59,7 +70,7 @@ class DocumentoRepository extends BaseRepository
         try {
             $anexoId = DB::table('gra_documentos')->where('doc_id', '=', $documentoId)->pluck('doc_anx_documento')->toArray();
 
-            $this->model->where('doc_id', '=', $documentoId)->update(['doc_anx_documento' => null]);
+            $this->update(['doc_anx_documento' => null], $documentoId);
 
             if ($anexoId) {
                 $anexoRepository = new AnexoRepository(new Anexo());
@@ -84,14 +95,27 @@ class DocumentoRepository extends BaseRepository
      * @param string $attribute
      * @return mixed
      */
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
-        if ($data['doc_data_expedicao'] != "") {
-            $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
-        } else {
-            $data['doc_data_expedicao'] = null;
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
         }
-        return $this->model->where($attribute, '=', $id)->update($data);
+
+        $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ?
+            Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString() :
+            null;
+
+        $registros = $this->model->where($attribute, '=', $id)->get();
+
+        if ($registros) {
+            foreach ($registros as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $registros->count();
+        }
+
+        return 0;
     }
 
     public function verifyTipoExists($tipodocumentoId, $pessoaId)

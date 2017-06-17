@@ -21,18 +21,23 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
-        $obj = $this->model->where($attribute, '=', $id)->first();
-
-        if ($obj) {
-            $obj->fill($data);
-            $obj->save();
-
-            return $obj;
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
         }
 
-        return null;
+        $collection = $this->model->where($attribute, '=', $id)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $collection->count();
+        }
+
+        return 0;
     }
 
     public function delete($id)

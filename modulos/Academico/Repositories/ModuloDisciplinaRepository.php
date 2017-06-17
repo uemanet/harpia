@@ -194,13 +194,36 @@ class ModuloDisciplinaRepository extends BaseRepository
 
     public function updatePreRequisitos($matrizId, $moduloDisciplinaId)
     {
-        $query = DB::table('acd_modulos_disciplinas')
-                    ->join('acd_modulos_matrizes', 'mdc_mdo_id', 'mdo_id')
-                    ->where('mdo_mtc_id', '=', $matrizId)
-                    ->update(['mdc_pre_requisitos' => DB::raw('JSON_REMOVE(mdc_pre_requisitos, JSON_UNQUOTE(JSON_SEARCH(mdc_pre_requisitos, "one", "'.$moduloDisciplinaId.'", NULL, "$")))')]);
+        $registros = $this->model->join('acd_modulos_matrizes', 'mdc_mdo_id', '=', 'mdo_id')
+                                ->where('mdo_mtc_id', '=', $matrizId)
+                                ->get();
 
+        if ($registros) {
+            try {
+                DB::beginTransaction();
 
-        return $query;
+                foreach ($registros as $obj) {
+                    $arrayPreRequisitos = json_decode($obj->mdc_pre_requisitos, true);
+
+                    unset($arrayPreRequisitos[array_search($moduloDisciplinaId, $arrayPreRequisitos)]);
+
+                    $obj->fill([
+                        'mdc_pre_requisitos' => json_encode($arrayPreRequisitos)
+                    ]);
+
+                    $obj->save();
+                }
+
+                DB::commit();
+
+                return $registros->count();
+            } catch (\Exception $e) {
+                DB::rollback();
+                return 0;
+            }
+        }
+
+        return 0;
     }
 
     public function getDisciplinasPreRequisitos($moduloDisciplinaId)

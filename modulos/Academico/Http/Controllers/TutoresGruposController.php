@@ -231,8 +231,7 @@ class TutoresGruposController extends BaseController
             $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
 
             //Atualiza o fim do vículo do tutor antigo
-            $date = date('Y-m-d');
-            $dados['ttg_data_fim'] = $date;
+            $dados['ttg_data_fim'] = date('Y-m-d');
             $this->tutorgrupoRepository->update($dados, $tutorGrupoOld->ttg_id, 'ttg_id');
 
 

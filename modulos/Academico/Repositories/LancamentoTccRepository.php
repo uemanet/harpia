@@ -57,11 +57,25 @@ class LancamentoTccRepository extends BaseRepository
      * @param string $attribute
      * @return mixed
      */
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
+        }
+
         $data['ltc_data_apresentacao'] = Carbon::createFromFormat('d/m/Y', $data['ltc_data_apresentacao'])->toDateString();
 
-        return $this->model->where($attribute, '=', $id)->update($data);
+        $collection = $this->model->where($attribute, '=', $id)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $collection->count();
+        }
+
+        return 0;
     }
 
     public function deleteTcc($lancamentotccId)
@@ -69,7 +83,12 @@ class LancamentoTccRepository extends BaseRepository
         try {
             $anexoId = DB::table('acd_lancamentos_tccs')->where('ltc_id', '=', $lancamentotccId)->pluck('ltc_anx_tcc')->toArray();
 
-            $this->model->where('ltc_id', '=', $lancamentotccId)->update(['ltc_anx_tcc' => null]);
+            $lancamentoTccObject = $this->model->find($lancamentotccId);
+
+            if ($lancamentoTccObject) {
+                $lancamentoTccObject->fill(['ltc_anx_tcc' => null]);
+                $lancamentoTccObject->save();
+            }
 
             if ($anexoId) {
                 $anexoRepository = new AnexoRepository(new Anexo());
