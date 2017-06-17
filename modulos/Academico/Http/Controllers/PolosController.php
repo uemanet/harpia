@@ -149,21 +149,17 @@ class PolosController extends BaseController
         try {
             $poloId = $request->get('id');
 
-            if ($this->poloRepository->delete($poloId)) {
-                flash()->success('Polo excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o polo');
-            }
+            $this->poloRepository->delete($poloId);
 
+            flash()->success('Polo excluído com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O polo contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este polo ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');

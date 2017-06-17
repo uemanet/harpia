@@ -155,7 +155,7 @@ class AnexoRepository extends BaseRepository
     /**
      * Deleta um anexo do servidor e seu registro no banco
      * @param $anexoId
-     * @return int|string
+     * @return int|string|array
      * @throws \Exception
      */
     public function deletarAnexo($anexoId)

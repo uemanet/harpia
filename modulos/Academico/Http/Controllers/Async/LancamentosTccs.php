@@ -29,7 +29,7 @@ class LancamentosTccs extends BaseController
             return new JsonResponse('Sem anexos para serem exluidos!', Response::HTTP_BAD_REQUEST);
         }
 
-        if ($this->lancamentotccRepository->deleteTcc($lancamentotccId)) {
+        if ($this->lancamentotccRepository->deleteAnexoTcc($lancamentotccId)) {
             return new JsonResponse(Response::HTTP_OK);
         }
     }

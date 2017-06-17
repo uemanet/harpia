@@ -209,21 +209,16 @@ class TurmasController extends BaseController
         try {
             $turmaId = $request->get('id');
 
-            if ($this->turmaRepository->delete($turmaId)) {
-                flash()->success('Turma excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a turma');
-            }
+            $this->turmaRepository->delete($turmaId);
+            flash()->success('Turma excluída com sucesso.');
 
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Esta turma ainda contém dependências no sistema e não pode ser excluída.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
