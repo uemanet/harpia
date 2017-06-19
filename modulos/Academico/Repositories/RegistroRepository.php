@@ -211,8 +211,8 @@ class RegistroRepository extends BaseRepository
     {
         $result = $this->model
             ->join('acd_certificados', 'reg_id', '=', 'crt_reg_id')
-            ->where('reg_mat_id', '=', $matriculaId)
-            ->where('reg_mdo_id', '=', $moduloId)->get();
+            ->where('crt_mat_id', '=', $matriculaId)
+            ->where('crt_mdo_id', '=', $moduloId)->get();
 
         if ($result->count()) {
             return true;

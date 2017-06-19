@@ -80,7 +80,7 @@ class CursoRepository extends BaseRepository
      * @param int $nivelTecnicoId
      * @return mixed
      */
-    public function listsCursosTecnicos($nivelTecnicoId = 1)
+    public function listsCursosTecnicos($nivelTecnicoId = 2)
     {
         return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
     }
