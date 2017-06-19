@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Certificado;
+use Modulos\Academico\Models\Diploma;
 use Modulos\Academico\Models\Livro;
 use Modulos\Academico\Models\Registro;
 use Modulos\Core\Repository\BaseRepository;
@@ -25,7 +26,6 @@ class RegistroRepository extends BaseRepository
     public function create(array $data)
     {
         try {
-            // TODO create code
             if (isset($data['tipo_livro']) && $data['tipo_livro'] == 'CERTIFICADO') {
                 return $this->certificar($data);
             }
@@ -44,9 +44,16 @@ class RegistroRepository extends BaseRepository
 
         // Se null, nao ha livros de certificacao ainda ou se nao ha vagas no livro, criar um novo
         if (!$ultimoLivro || !$this->livroTemRegistroDisponiveis($ultimoLivro)) {
+            $numero = 1;
+
+            if (!is_null($ultimoLivro)) {
+                $numero = $ultimoLivro->liv_numero;
+                $numero++;
+            }
+
             $this->livroRepository->create([
-                'liv_numero' => 1,
-                'liv_tipo_livro' => 'CERTIFICADO'
+                'liv_numero' => $numero,
+                'liv_tipo_livro' => 'DIPLOMA'
             ]);
 
             $ultimoLivro = $this->ultimoLivro();
@@ -74,11 +81,50 @@ class RegistroRepository extends BaseRepository
 
     private function diplomar(array $data)
     {
-        return parent::create($data);
+        $ultimoLivro = $this->ultimoLivro('DIPLOMA');
+
+        // Se null, nao ha livros de certificacao ainda ou se nao ha vagas no livro, criar um novo
+        if (!$ultimoLivro || !$this->livroTemRegistroDisponiveis($ultimoLivro)) {
+            $numero = 1;
+
+            if (!is_null($ultimoLivro)) {
+                $numero = $ultimoLivro->liv_numero;
+                $numero++;
+            }
+
+            $this->livroRepository->create([
+                'liv_numero' => $numero,
+                'liv_tipo_livro' => 'DIPLOMA'
+            ]);
+
+            $ultimoLivro = $this->ultimoLivro();
+        }
+
+        // Adicionar ao livro
+        $uuid = Uuid::uuid4();
+
+        $registro = parent::create([
+            'reg_liv_id' => $ultimoLivro->liv_id,
+            'reg_usr_id' => Auth::user()->usr_id,
+            'reg_folha' => $this->folhaParaNovoRegistro($ultimoLivro),
+            'reg_registro' => $this->numeroParaNovoRegistro($ultimoLivro),
+            'reg_codigo_autenticidade' => $uuid->toString()
+        ]);
+
+        // Diploma
+        $diploma = new Diploma();
+        $diploma->dip_reg_id = $registro->reg_id;
+        $diploma->dip_mat_id = $data['matricula'];
+        $diploma->dip_processo = $data['processo'];
+        $diploma->dip_codigo_autenticidade_externo = $data['codigo_externo'];
+        $diploma->save();
+
+        return $registro;
     }
 
     /**
      * @param string $tipo CERTIFICADO || DIPLOMA
+     * @return mixed
      */
     private function ultimoLivro($tipo = 'CERTIFICADO')
     {
@@ -157,14 +203,15 @@ class RegistroRepository extends BaseRepository
 
 
     /**
-     * TODO review
      * @param $matriculaId
      * @param $moduloId
      * @return bool
      */
     public function matriculaTemRegistro($matriculaId, $moduloId)
     {
-        $result = $this->model->where('reg_mat_id', '=', $matriculaId)
+        $result = $this->model
+            ->join('acd_certificados', 'reg_id', '=', 'crt_reg_id')
+            ->where('reg_mat_id', '=', $matriculaId)
             ->where('reg_mdo_id', '=', $moduloId)->get();
 
         if ($result->count()) {
@@ -191,36 +238,5 @@ class RegistroRepository extends BaseRepository
         }
 
         return $query->all();
-    }
-
-    /**
-     * TODO review
-     * @param Registro $last
-     * @return mixed
-     */
-    private function registrosFolha(Registro $last)
-    {
-        return $this->findBy([
-            'reg_liv_id' => $last->reg_liv_id,
-            'reg_folha' => $last->reg_folha,
-        ])->count();
-    }
-
-    /**
-     * TODO review
-     * @param Livro $livro
-     * @return int
-     */
-    private function folhasLivro(Livro $livro)
-    {
-        $last = $this->findBy([
-            'reg_liv_id' => $livro->liv_id
-        ])->last();
-
-        if ($last) {
-            return $last->reg_folha;
-        }
-
-        return 0;
     }
 }
