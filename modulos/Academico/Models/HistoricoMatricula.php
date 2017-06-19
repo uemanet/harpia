@@ -16,4 +16,17 @@ class HistoricoMatricula extends BaseModel
         'hmt_tipo',
         'hmt_observacao'
     ];
+
+    public function getHmtTipoAttribute($value)
+    {
+        $tipos = [
+            'mudanca_polo' => 'Mudança de Polo',
+            'mudanca_grupo' => 'Mudança de Grupo',
+            'alteracao_status' => 'Alteração de Status'
+        ];
+
+        if ($value) {
+            return $tipos[$value];
+        }
+    }
 }

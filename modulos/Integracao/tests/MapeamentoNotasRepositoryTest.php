@@ -54,7 +54,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
             'mof_conceito' => 'Bom'
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso, 'conceitual');
+        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso, 'Conceitual');
 
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_media');
     }
@@ -65,7 +65,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
             'mof_conceito' => 'Insuficiente'
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso, 'conceitual');
+        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso, 'Conceitual');
 
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
     }

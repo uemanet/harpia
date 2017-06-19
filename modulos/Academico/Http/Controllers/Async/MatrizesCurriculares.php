@@ -21,4 +21,11 @@ class MatrizesCurriculares extends BaseController
 
         return new JsonResponse($matrizes, 200);
     }
+
+    public function getFindByOfertaCurso($ofc_id)
+    {
+        $matriz = $this->matrizCurricularRepository->findByOfertaCurso($ofc_id);
+
+        return new JsonResponse($matriz, 200);
+    }
 }

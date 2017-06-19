@@ -1,8 +1,8 @@
 @extends('layouts.modulos.seguranca')
 
 @section('stylesheets')
-  <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-  <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
 @endsection
 
 @section('title')
@@ -20,7 +20,7 @@
         </div>
         <div class="box-body">
             {!! Form::model($curso,["route" => ['academico.cursos.edit',$curso->crs_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                 @include('Academico::cursos.includes.formulario')
+            @include('Academico::cursos.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>
@@ -32,15 +32,13 @@
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
 
     <script type="text/javascript">
-            $(document).ready(function() {
-                $("select").select2();
-            });
-    </script>
+        $(document).ready(function () {
+            $("select").select2();
+        });
 
-    <script type="text/javascript">
-            $('.datepicker').datepicker({
-              format: 'dd/mm/yyyy',
-              language: 'pt-BR'
-            });
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR'
+        });
     </script>
 @endsection

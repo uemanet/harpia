@@ -211,31 +211,6 @@
                 }
             });
 
-            $('#disciplinas').on('click', '.btnMapear', function (event) {
-                var ofd_id = $(event.currentTarget).data('id');
-
-                $.harpia.showloading();
-
-                $.ajax({
-                    type: 'GET',
-                    url: "/integracao/async/mapeamentonotas/"+ofd_id+"/mapearnotasalunos",
-                    success: function (response) {
-                        $.harpia.hideloading();
-
-                        var msg = response.msg;
-
-                        toastr.success(msg, null, {progressBar: true});
-                    },
-                    error: function (response) {
-                        $.harpia.hideloading();
-
-                        var msg = response.responseJSON.error;
-
-                        toastr.error(msg, null, {progressBar: true});
-                    }
-                });
-            });
-
         });
     </script>
 @stop
