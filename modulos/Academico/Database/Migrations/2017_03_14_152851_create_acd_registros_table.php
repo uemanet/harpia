@@ -21,7 +21,7 @@ class CreateAcdRegistrosTable extends Migration
 
             $table->integer('reg_folha');
             $table->integer('reg_registro');
-            $table->string('reg_codigo_autenticidade', 255);
+            $table->string('reg_codigo_autenticidade', 255)->unique();
 
             $table->foreign('reg_liv_id')->references('liv_id')->on('acd_livros');
             $table->foreign('reg_usr_id')->references('usr_id')->on('seg_usuarios');
