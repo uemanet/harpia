@@ -47,6 +47,12 @@ class MapeamentoNotas extends BaseController
             return new JsonResponse(['error' => 'Oferta de Disciplina não existe.'], 400, [], JSON_UNESCAPED_UNICODE);
         }
 
+        $mapeamento = $ofertaDisciplina->mapeamentoItensNotas;
+
+        if (!$mapeamento) {
+            return new JsonResponse(['error' => 'Não há itens de notas cadastradas para esta oferta de disciplina.'], 400, [], JSON_UNESCAPED_UNICODE);
+        }
+
         $matriculasOfertaDisciplina = $ofertaDisciplina->matriculasOfertasDisciplinas;
 
         if ($matriculasOfertaDisciplina->count()) {
