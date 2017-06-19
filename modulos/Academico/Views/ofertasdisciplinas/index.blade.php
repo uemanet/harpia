@@ -19,7 +19,7 @@
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+            <h3 class="box-title"><i class="fa fa-search"></i> Buscar Ofertas de Disciplinas</h3>
 
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -55,24 +55,7 @@
         <!-- /.box-body -->
     </div>
 
-    <div class="box box-primary hidden" id="boxDisciplinas">
-        <div class="box-header with-border">
-            <h3 class="box-title">Disciplinas Ofertadas</h3>
-
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-12 conteudo"></div>
-            </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
+    <div class="table-ofertas"></div>
 @stop
 
 @section('scripts')
@@ -98,16 +81,16 @@
                     selectPeriodos.empty();
 
                     $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
-                        .done(function (data) {
-                            if (!$.isEmptyObject(data)) {
-                                selectOfertas.append('<option value="">Selecione uma oferta</option>');
-                                $.each(data, function (key, obj) {
-                                    selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ")</option>");
-                                });
-                            } else {
-                                selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
-                            }
-                        });
+                    .done(function (data) {
+                        if (!$.isEmptyObject(data)) {
+                            selectOfertas.append('<option value="">Selecione uma oferta</option>');
+                            $.each(data, function (key, obj) {
+                                selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ")</option>");
+                            });
+                        } else {
+                            selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
+                        }
+                    });
                 }
 
             });
@@ -154,48 +137,33 @@
                 }
             });
 
+            // evento click no botão de pesquisar ofertas
             $('#btnLocalizar').click(function () {
                 var turma = selectTurmas.val();
-                var periodo = $('#per_id').val();
+                var periodo = selectPeriodos.val();
 
                 if (turma == '' || periodo == '') {
                     return false;
                 }
 
-                $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turma + "&ofd_per_id=" + periodo)
-                    .done(function (data) {
-                        boxDisciplinas.removeClass('hidden');
-                        boxDisciplinas.find('.conteudo').empty();
-                        if (!$.isEmptyObject(data)) {
+                var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?"+
+                "ofd_trm_id=" + turma + "&ofd_per_id=" + periodo + "&button_delete=0";
 
-                            var table = '';
-                            table += "<table class='table table-bordered'>";
-                            table += '<tr>';
-                            table += "<th>Disciplina</th>";
-                            table += "<th>Carga Horária</th>";
-                            table += "<th>Créditos</th>";
-                            table += "<th>Tipo de Oferta</th>";
-                            table += "<th>Vagas</th>";
-                            table += "<th>Professor</th>";
-                            table += '</tr>';
+                $.harpia.showloading();
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    success: function(response) {
+                        $.harpia.hideloading();
+                        $('.table-ofertas').empty();
+                        $('.table-ofertas').append(response.html)
+                    },
+                    error: function(response) {
+                        $.harpia.hideloading();
+                        toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
+                    }
+                });
 
-                            $.each(data, function (key, obj) {
-                                table += '<tr>';
-                                table += "<td>" + obj.dis_nome + "</td>";
-                                table += "<td>" + obj.dis_carga_horaria + "</td>";
-                                table += "<td>" + obj.dis_creditos + "</td>";
-                                table += "<td>" + obj.mdc_tipo_disciplina + "</td>";
-                                table += "<td>" + obj.qtdMatriculas + "/<strong>" + obj.ofd_qtd_vagas + "</strong></td>";
-                                table += "<td>" + obj.pes_nome + "</td>";
-                                table += '</tr>';
-                            });
-
-                            table += "</table>";
-                            boxDisciplinas.find('.conteudo').append(table);
-                        } else {
-                            boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
-                        }
-                    });
             });
         });
     </script>

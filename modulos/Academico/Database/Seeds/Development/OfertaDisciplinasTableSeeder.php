@@ -16,13 +16,10 @@ class OfertaDisciplinasTableSeeder extends Seeder
         $turmas = Turma::all();
 
         foreach ($turmas as $turma) {
-            $matrizId = $turma->ofertacurso->ofc_mtc_id;
+            $modulos = $turma->ofertacurso->matriz->modulos;
 
-            $modulos = ModuloMatriz::where('mdo_mtc_id', $matrizId)->get();
-
-            $i = 1;
-            foreach ($modulos as $modulo) {
-                $disciplinas = ModuloDisciplina::where('mdc_mdo_id', $modulo->mdo_id)->get();
+            for ($i = 0; $i < $modulos->count(); $i++) {
+                $disciplinas = ModuloDisciplina::where('mdc_mdo_id', '=', $modulos[$i]->mdo_id)->get();
 
                 foreach ($disciplinas as $disciplina) {
                     $professor = DB::table('acd_professores')->inRandomOrder()->first();
@@ -30,14 +27,13 @@ class OfertaDisciplinasTableSeeder extends Seeder
 
                     $ofertaDisciplina->ofd_mdc_id = $disciplina->mdc_id;
                     $ofertaDisciplina->ofd_trm_id = $turma->trm_id;
-                    $ofertaDisciplina->ofd_per_id = $i;
+                    $ofertaDisciplina->ofd_per_id = $i+1;
                     $ofertaDisciplina->ofd_prf_id = $professor->prf_id;
+                    $ofertaDisciplina->ofd_tipo_avaliacao = 'numerica';
                     $ofertaDisciplina->ofd_qtd_vagas = 500;
 
                     $ofertaDisciplina->save();
                 }
-
-                $i += 1;
             }
         }
     }

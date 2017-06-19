@@ -41,30 +41,81 @@
                                 <div class="panel-collapse collapse" id="collapse{{ $loop->index }}">
                                     <div class="box-body">
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <p><strong>Nível do
-                                                        Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}
-                                                </p>
-                                                <p>
-                                                    <strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}
-                                                </p>
-                                                <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}
-                                                </p>
+                                            <div class="col-md-12 col-sm-6 col-xs-3">
+                                                <div class="box box-solid">
+                                                    <div class="box-header with-border">
+                                                        <h3 class="box-title">Informações do Curso</h3>
+                                                        <div class="box-tools pull-right">
+                                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="col-md-4">
+                                                            <p><strong>Nível do
+                                                                    Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}
+                                                            </p>
+                                                            <p>
+                                                                <strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}
+                                                            </p>
+                                                            <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p><strong>Oferta de
+                                                                    Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
+                                                            <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
+                                                            <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p>
+                                                                <strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else
+                                                                    Sem Grupo @endif</p>
+                                                            @if($matricula->mat_situacao == 'concluido')
+                                                                <p><strong>Data de
+                                                                        Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p><strong>Oferta de
-                                                        Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
-                                                <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
-                                                <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p>
-                                                    <strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else
-                                                        Sem Grupo @endif</p>
-                                                @if($matricula->mat_situacao == 'concluido')
-                                                    <p><strong>Data de
-                                                            Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
-                                                @endif
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-sm-6 col-xs-3">
+                                                <div class="box box-solid collapsed-box">
+                                                    <div class="box-header with-border">
+                                                        <h3 class="box-title">Histórico de Matrícula</h3>
+                                                        <div class="box-tools pull-right">
+                                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                            <tr>
+                                                                <th width="20%">Tipo</th>
+                                                                <th width="15%">Data</th>
+                                                                <th>Observação</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>Matrícula no Curso</td>
+                                                                <td>{{ Format::formatDate($matricula->created_at, 'd/m/Y') }}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                            @foreach($matricula->historico as $historico)
+                                                                <tr>
+                                                                    <td>{{ $historico->hmt_tipo }}</td>
+                                                                    <td>{{ Format::formatDate($historico->hmt_data, 'd/m/Y') }}</td>
+                                                                    <td>{{ $historico->hmt_observacao }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -153,6 +204,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <!-- Modal Mudança Polo/Grupo -->
                             <div class="modal fade modalUpdatePolo{{$loop->index}}">
                                 <div class="modal-dialog">

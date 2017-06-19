@@ -74,6 +74,15 @@ class MatrizCurricularRepository extends BaseRepository
         return $this->model->where('mtc_crs_id', $cursoid)->get(['mtc_id', 'mtc_titulo']);
     }
 
+    public function findByOfertaCurso($ofc_id)
+    {
+        return $this->model
+                    ->join('acd_ofertas_cursos', 'ofc_mtc_id', '=', 'mtc_id')
+                    ->select('acd_matrizes_curriculares.*')
+                    ->where('ofc_id', '=', $ofc_id)
+                    ->first();
+    }
+
     /**
      * Busca todas as matrizes de acordo com o curso informado e retorna como lists para popular um field select
      *

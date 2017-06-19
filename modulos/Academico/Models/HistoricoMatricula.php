@@ -17,8 +17,22 @@ class HistoricoMatricula extends BaseModel
         'hmt_observacao'
     ];
 
+
     public function matricula()
     {
         return $this->belongsTo('Modulos\Academico\Models\Matricula', 'hmt_mat_id', 'mat_id');
+    }
+
+    public function getHmtTipoAttribute($value)
+    {
+        $tipos = [
+            'mudanca_polo' => 'Mudança de Polo',
+            'mudanca_grupo' => 'Mudança de Grupo',
+            'alteracao_status' => 'Alteração de Status'
+        ];
+
+        if ($value) {
+            return $tipos[$value];
+        }
     }
 }
