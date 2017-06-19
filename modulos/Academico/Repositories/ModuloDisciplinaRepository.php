@@ -196,6 +196,7 @@ class ModuloDisciplinaRepository extends BaseRepository
     {
         $registros = $this->model->join('acd_modulos_matrizes', 'mdc_mdo_id', '=', 'mdo_id')
                                 ->where('mdo_mtc_id', '=', $matrizId)
+                                ->whereNotNull('mdc_pre_requisitos')
                                 ->get();
 
         if ($registros) {
@@ -205,13 +206,14 @@ class ModuloDisciplinaRepository extends BaseRepository
                 foreach ($registros as $obj) {
                     $arrayPreRequisitos = json_decode($obj->mdc_pre_requisitos, true);
 
-                    unset($arrayPreRequisitos[array_search($moduloDisciplinaId, $arrayPreRequisitos)]);
+                    if (gettype(array_search($moduloDisciplinaId, $arrayPreRequisitos)) != 'boolean') {
+                        $key = array_search($moduloDisciplinaId, $arrayPreRequisitos);
+                        unset($arrayPreRequisitos[$key]);
 
-                    $obj->fill([
-                        'mdc_pre_requisitos' => json_encode($arrayPreRequisitos)
-                    ]);
-
-                    $obj->save();
+                        $obj->fill([
+                            'mdc_pre_requisitos' => json_encode($arrayPreRequisitos)
+                        ])->save();
+                    }
                 }
 
                 DB::commit();

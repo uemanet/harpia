@@ -120,7 +120,13 @@ class OfertaCursoRepository extends BaseRepository
                         ])->first();
 
         if (!$entry) {
-            $oferta = $this->create($data);
+            $oferta = $this->model->create($data);
+
+            if (!is_null($data['polos'])) {
+                foreach ($data['polos'] as $id) {
+                    $oferta->polos()->attach($id);
+                }
+            }
 
             return $oferta;
         }

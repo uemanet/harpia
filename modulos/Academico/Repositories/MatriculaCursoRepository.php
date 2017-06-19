@@ -242,6 +242,7 @@ class MatriculaCursoRepository extends BaseRepository
         ];
 
         $matricula = $this->create($dataMatricula);
+
         if ($matricula) {
             return array(
                 'type' => 'success',
@@ -569,16 +570,19 @@ class MatriculaCursoRepository extends BaseRepository
     public function concluirMatricula($matriculaId, $ofertaCursoId)
     {
         // verifica se matricula existe
-        $matricula = $this->find($matriculaId);
+        $matricula = $this->model->find($matriculaId);
 
         if ($matricula) {
             // verifica se matricula está apta para conclusao
             $result = $this->verifyIfAlunoIsAptoOrNot($matriculaId, $ofertaCursoId);
 
             if ($result == 1) {
-                $matricula->mat_situacao = 'concluido';
-                $matricula->mat_data_conclusao = date('d/m/Y');
-                $matricula->save();
+                $data = [
+                    'mat_situacao' => 'concluido',
+                    'mat_data_conclusao' => date('d/m/Y')
+                ];
+
+                $matricula->fill($data)->save();
 
                 return $matricula;
             }

@@ -115,12 +115,6 @@ class OfertasCursosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            if (!is_null($request->polos)) {
-                foreach ($request->polos as $key => $polo) {
-                    $ofertacurso->polos()->attach($polo);
-                }
-            }
-            
             DB::commit();
 
             flash()->success('Oferta de curso criada com sucesso.');
