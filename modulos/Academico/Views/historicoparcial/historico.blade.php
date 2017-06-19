@@ -177,7 +177,7 @@
                 <td>{{$disciplina->dis_nome}}</td>
                 <td>{{$disciplina->mdc_tipo_disciplina}}</td>
                 <td>{{$disciplina->mdo_nome}}</td>
-                <td>{{$disciplina->dis_carga_horaria}}</td>
+                <td>{{$disciplina->dis_carga_horaria}} h</td>
                 <td>{{$disciplina->mof_mediafinal}}</td>
                 @php
                     if ($disciplina->mof_mediafinal != '---'):
@@ -217,7 +217,7 @@
     <tbody>
     <tr>
         <td width="50%">
-            <strong>Carga Horária Total: </strong>{{$cargaHorariaTotal}} h
+            <strong>Carga Horária Total: </strong>{{$cargaHorariaTotal}} horas
         </td>
         <td width="50%" align="right">
             @php

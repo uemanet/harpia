@@ -19,6 +19,7 @@ class CreateAcdOfertasDisciplinasTable extends Migration
             $table->integer('ofd_trm_id')->unsigned();
             $table->integer('ofd_per_id')->unsigned();
             $table->integer('ofd_prf_id')->unsigned()->nulllable();
+            $table->enum('ofd_tipo_avaliacao', ['numerica', 'conceitual']);
             $table->smallInteger('ofd_qtd_vagas')->unsigned();
 
             $table->timestamps();

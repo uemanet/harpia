@@ -16,6 +16,7 @@ class OfertaDisciplina extends BaseModel
         'ofd_trm_id',
         'ofd_per_id',
         'ofd_prf_id',
+        'ofd_tipo_avaliacao',
         'ofd_qtd_vagas'
     ];
 
@@ -51,5 +52,15 @@ class OfertaDisciplina extends BaseModel
     public function mapeamentoItensNotas()
     {
         return $this->hasOne('Modulos\Integracao\Models\MapeamentoNota', 'min_ofd_id', 'ofd_id');
+    }
+
+    public function getOfdTipoAvaliacaoAttribute($value)
+    {
+        $dados = [
+            'numerica' => 'Numérica',
+            'conceitual' => 'Conceitual'
+        ];
+
+        return $dados[$value];
     }
 }

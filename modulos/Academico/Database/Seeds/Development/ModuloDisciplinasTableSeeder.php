@@ -19,35 +19,32 @@ class ModuloDisciplinasTableSeeder extends Seeder
 
             $modulos = $matriz->modulos;
 
-            $m = 1;
-            $skip = 0;
-            foreach ($modulos as $modulo) {
+            $disciplinas = Disciplina::where('dis_nvc_id', $nivelCurso)->get();
 
-                // pega 4 disciplinas desse nivel de curso
-                $disciplinas = Disciplina::where('dis_nvc_id', $nivelCurso)->skip($skip)->take(4)->get();
+            $j = 0;
+            for ($i = 0; $i < $modulos->count(); $i++) {
+                $tipoDisciplina = 'obrigatoria';
 
-                $d = 1;
-                foreach ($disciplinas as $disciplina) {
+                // pega 3 disciplinas do nivel do curso
+                $take = 3;
+
+                // se for o ultimo modulo, pega somente 1 disciplina
+                if (($i+1) == $modulos->count()) {
+                    $take = 1;
+                    $tipoDisciplina = 'tcc';
+                }
+
+                $n = $j + $take;
+                for (;$j < $n; $j++) {
                     $moduloDisciplina = new ModuloDisciplina();
 
-                    $moduloDisciplina->mdc_dis_id = $disciplina->dis_id;
-                    $moduloDisciplina->mdc_mdo_id = $modulo->mdo_id;
-                    $moduloDisciplina->mdc_tipo_avaliacao = 'numerica';
-                    $moduloDisciplina->mdc_tipo_disciplina = 'obrigatoria';
-
-                    if (($m == $modulos->count()) && ($d == 4)) {
-                        $moduloDisciplina->mdc_tipo_disciplina = 'tcc';
-                    }
-
+                    $moduloDisciplina->mdc_dis_id = $disciplinas[$j]->dis_id;
+                    $moduloDisciplina->mdc_mdo_id = $modulos[$i]->mdo_id;
+                    $moduloDisciplina->mdc_tipo_disciplina = $tipoDisciplina;
                     $moduloDisciplina->mdc_pre_requisitos = null;
 
                     $moduloDisciplina->save();
-
-                    $d += 1;
                 }
-
-                $skip += 4;
-                $m += 1;
             }
         }
     }

@@ -88,7 +88,7 @@
                             <td>{{$disciplina->mof_id}}</td>
                             <td>{{$disciplina->dis_nome}}</td>
                             <td>{{$disciplina->mdo_nome}}</td>
-                            <td>{{$disciplina->dis_carga_horaria}}</td>
+                            <td>{{$disciplina->dis_carga_horaria}} h</td>
                             <td>{{$disciplina->mof_mediafinal}}</td>
                             <?php
                                 if ($disciplina->mof_mediafinal != '---'):
