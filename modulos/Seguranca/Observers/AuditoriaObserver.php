@@ -1,9 +1,9 @@
 <?php
 
-namespace Modulos\Seguranca\Providers\Auditoria;
+namespace Modulos\Seguranca\Observers;
 
 use Modulos\Core\Model\BaseModel;
-use Modulos\Seguranca\Models\Auditoria;
+use DB;
 use Auth;
 
 class AuditoriaObserver
@@ -13,13 +13,17 @@ class AuditoriaObserver
         if (Auth::check()) {
             $jsonObject = json_encode($model->toArray(), JSON_UNESCAPED_UNICODE);
 
-            Auditoria::create([
+            $data = [
                 'log_usr_id' => Auth::user()->usr_id,
                 'log_action' => 'INSERT',
                 'log_table' => $model->getTable(),
                 'log_table_id' => $model->getKey(),
-                'log_object' => $jsonObject
-            ]);
+                'log_object' => $jsonObject,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            DB::table('seg_auditoria')->insert($data);
         }
     }
 
@@ -28,13 +32,17 @@ class AuditoriaObserver
         if (Auth::check()) {
             $jsonObject = json_encode($model->getOriginal(), JSON_UNESCAPED_UNICODE);
 
-            Auditoria::create([
+            $data = [
                 'log_usr_id' => Auth::user()->usr_id,
                 'log_action' => 'UPDATE',
                 'log_table' => $model->getTable(),
                 'log_table_id' => $model->getKey(),
-                'log_object' => $jsonObject
-            ]);
+                'log_object' => $jsonObject,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            DB::table('seg_auditoria')->insert($data);
         }
     }
 
@@ -43,13 +51,17 @@ class AuditoriaObserver
         if (Auth::check()) {
             $jsonObject = json_encode($model->getOriginal(), JSON_UNESCAPED_UNICODE);
 
-            Auditoria::create([
+            $data = [
                 'log_usr_id' => Auth::user()->usr_id,
                 'log_action' => 'DELETE',
                 'log_table' => $model->getTable(),
                 'log_table_id' => $model->getKey(),
-                'log_object' => $jsonObject
-            ]);
+                'log_object' => $jsonObject,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            DB::table('seg_auditoria')->insert($data);
         }
     }
 }

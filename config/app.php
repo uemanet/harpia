@@ -192,11 +192,6 @@ return [
          * Moodle Service Provider
          */
         Harpia\Moodle\MoodleServiceProvider::class,
-
-        /*
-         * Auditoria Service Provider
-         */
-        Modulos\Seguranca\Providers\Auditoria\AuditoriaServiceProvider::class,
     ],
 
     /*

@@ -2,9 +2,9 @@
 
 namespace Modulos\Seguranca\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Modulos\Core\Model\BaseModel;
 
-class Auditoria extends Model
+class Auditoria extends BaseModel
 {
     protected $table = 'seg_auditoria';
 

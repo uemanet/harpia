@@ -304,6 +304,9 @@ class UsuariosController extends BaseController
 
             flash()->success('Usuario editado com sucesso!');
             return redirect()->route('seguranca.usuarios.index');
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -312,9 +315,6 @@ class UsuariosController extends BaseController
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-        } catch (ValidationException $e) {
-            DB::rollback();
-            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
         }
     }
 
