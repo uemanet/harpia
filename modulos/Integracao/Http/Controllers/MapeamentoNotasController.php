@@ -179,7 +179,7 @@ class MapeamentoNotasController extends BaseController
                 return array('style' => 'width: 10%');
             })
             ->modify('mof_action', function ($row) {
-                return "<a href='".route('integracao.mapeamentonotas.aluno', $row->mof_id)."' class='btn bg-orange'><i class='fa fa-exchange'></i> Mapear Notas</a>";
+                return "<a href='".route('integracao.mapeamentonotas.aluno', $row->mof_id)."' class='btn bg-orange'><i class='fa fa-exchange'></i> Migrar Notas</a>";
             })
             ->sortable(array('mof_id', 'pes_nome'));
 

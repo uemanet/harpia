@@ -48,7 +48,6 @@
                                                 <th width="10%">ID Final</th>
                                                 <th width="2%"></th>
                                                 <th width="5%"></th>
-                                                <th width="5%"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -102,13 +101,8 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <a href="{{ route('integracao.mapeamentonotas.showalunos', $value->ofd_id) }}" class="btn btn-primary">
-                                                        <i class="fa fa-users"></i> Alunos
+                                                        <i class="fa fa-exchange"></i> Migrar Notas
                                                     </a>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <button class="btn btn-success btnMapear" data-id="{{ $value->ofd_id }}">
-                                                        <i class="fa fa-exchange"></i> Mapear notas
-                                                    </button>
                                                 </td>
                                             </tr>
                                             @endforeach
