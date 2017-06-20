@@ -465,12 +465,13 @@ class MatriculaCursoRepository extends BaseRepository
             /**
              * Se aluno concluiu todas as disciplinas, nao estah apto para certificacao
              */
-            if (!$this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
                 continue;
             }
 
             // Verifica se o aluno esta apto para certificacao
-            if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
+            // $this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)
+            if (true) {
                 if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
                     $certificados[] = $matricula;
                     continue;
@@ -705,14 +706,16 @@ class MatriculaCursoRepository extends BaseRepository
 
         //recebe livro, folha e registro da certificação
         $livfolreg = DB::table('acd_registros')
-                  ->where('reg_mat_id', $IdMatricula)
-                  ->where('reg_mdo_id', $IdModulo)
-                  ->join('acd_livros', 'reg_liv_id', 'liv_id')
-                  ->first();
+            ->join('acd_certificados', 'reg_id', '=', 'crt_reg_id')
+            ->where('crt_mat_id', '=', $IdMatricula)
+            ->where('crt_mdo_id', '=', $IdModulo)
+            ->join('acd_livros', 'reg_liv_id', 'liv_id')
+            ->first();
 
         if (!$livfolreg) {
             return null;
         }
+
         $matricula = $this->model->find($IdMatricula);
         $curso = $matricula->turma->ofertacurso->curso;
         $pessoa = $matricula->aluno->pessoa;
