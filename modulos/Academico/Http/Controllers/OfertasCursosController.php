@@ -119,6 +119,10 @@ class OfertasCursosController extends BaseController
 
             flash()->success('Oferta de curso criada com sucesso.');
             return redirect()->route('academico.ofertascursos.index');
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            flash()->error('Erro ao tentar criar. Problema de duplicação de registro.');
+            return redirect()->back();
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {

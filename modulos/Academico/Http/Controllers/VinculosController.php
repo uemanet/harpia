@@ -152,6 +152,8 @@ class VinculosController extends BaseController
         $data = $request->get('cursos');
 
         try {
+            DB::beginTransaction();
+
             foreach ($data as $curso) {
                 $vinculo = [
                     'ucr_usr_id' => $usuarioId,
@@ -160,9 +162,12 @@ class VinculosController extends BaseController
                 $this->vinculoRepository->create($vinculo);
             }
 
+            DB::commit();
+
             flash()->success('Vínculos criados com sucesso.');
             return redirect()->route('academico.vinculos.vinculos', ['id' => $usuarioId]);
         } catch (\Exception $e) {
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }
