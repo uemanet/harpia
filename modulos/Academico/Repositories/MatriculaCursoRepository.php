@@ -470,8 +470,7 @@ class MatriculaCursoRepository extends BaseRepository
             }
 
             // Verifica se o aluno esta apto para certificacao
-            // $this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)
-            if (true) {
+            if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
                 if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
                     $certificados[] = $matricula;
                     continue;
@@ -499,8 +498,10 @@ class MatriculaCursoRepository extends BaseRepository
         $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($matrizCurricular->mtc_id);
 
         // busca todas as disciplinas da matriz do curso
-        $disciplinasMatriz = $this->matrizCurricularRepository->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
-            ->pluck('mdc_id')->toArray();
+        $disciplinasMatriz = $this->matrizCurricularRepository
+            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
+            ->pluck('mdc_id')
+            ->toArray();
 
         // busca as informações da matricula
         $matricula = $this->find($matriculaId);
@@ -509,7 +510,7 @@ class MatriculaCursoRepository extends BaseRepository
             return false;
         }
 
-        if ($matricula->mat_situacao == 'cursando') {
+        if ($matricula->mat_situacao == 'cursando' || $matricula->mat_situacao == 'reprovado') {
             $quantDisciplinasObrigatorias = 0;
             $quantDisciplinasObrigatoriasAprovadas = 0;
 
@@ -709,7 +710,7 @@ class MatriculaCursoRepository extends BaseRepository
             ->join('acd_certificados', 'reg_id', '=', 'crt_reg_id')
             ->where('crt_mat_id', '=', $IdMatricula)
             ->where('crt_mdo_id', '=', $IdModulo)
-            ->join('acd_livros', 'reg_liv_id', 'liv_id')
+            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
             ->first();
 
         if (!$livfolreg) {
