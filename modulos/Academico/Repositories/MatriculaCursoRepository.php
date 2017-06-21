@@ -510,7 +510,7 @@ class MatriculaCursoRepository extends BaseRepository
             return false;
         }
 
-        if ($matricula->mat_situacao == 'cursando' || $matricula->mat_situacao == 'reprovado') {
+        if ($matricula->mat_situacao != 'cursando') {
             $quantDisciplinasObrigatorias = 0;
             $quantDisciplinasObrigatoriasAprovadas = 0;
 
