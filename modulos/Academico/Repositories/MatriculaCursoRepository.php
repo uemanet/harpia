@@ -466,7 +466,7 @@ class MatriculaCursoRepository extends BaseRepository
             /**
              * Se aluno concluiu todas as disciplinas, nao estah apto para certificacao
              */
-            if (!$this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
                 continue;
             }
 
@@ -499,8 +499,10 @@ class MatriculaCursoRepository extends BaseRepository
         $modulos = $this->moduloMatrizRepository->getAllModulosByMatriz($matrizCurricular->mtc_id);
 
         // busca todas as disciplinas da matriz do curso
-        $disciplinasMatriz = $this->matrizCurricularRepository->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
-            ->pluck('mdc_id')->toArray();
+        $disciplinasMatriz = $this->matrizCurricularRepository
+            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
+            ->pluck('mdc_id')
+            ->toArray();
 
         // busca as informações da matricula
         $matricula = $this->find($matriculaId);
@@ -509,7 +511,7 @@ class MatriculaCursoRepository extends BaseRepository
             return false;
         }
 
-        if ($matricula->mat_situacao == 'cursando') {
+        if ($matricula->mat_situacao != 'cursando') {
             $quantDisciplinasObrigatorias = 0;
             $quantDisciplinasObrigatoriasAprovadas = 0;
 
@@ -709,14 +711,16 @@ class MatriculaCursoRepository extends BaseRepository
 
         //recebe livro, folha e registro da certificação
         $livfolreg = DB::table('acd_registros')
-                  ->where('reg_mat_id', $IdMatricula)
-                  ->where('reg_mdo_id', $IdModulo)
-                  ->join('acd_livros', 'reg_liv_id', 'liv_id')
-                  ->first();
+            ->join('acd_certificados', 'reg_id', '=', 'crt_reg_id')
+            ->where('crt_mat_id', '=', $IdMatricula)
+            ->where('crt_mdo_id', '=', $IdModulo)
+            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
+            ->first();
 
         if (!$livfolreg) {
             return null;
         }
+
         $matricula = $this->model->find($IdMatricula);
         $curso = $matricula->turma->ofertacurso->curso;
         $pessoa = $matricula->aluno->pessoa;
