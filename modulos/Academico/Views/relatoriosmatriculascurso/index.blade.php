@@ -71,27 +71,29 @@
     @if(!is_null($tabela))
         <div class="box box-primary">
             <div class="box-header">
-                <div class="pull-right box-tools">
-                    <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculascurso.pdf') }}">
-                        {!! ActionButton::grid([
-                                'type' => 'LINE',
-                                'buttons' => [
-                                    [
-                                    'classButton' => 'btn btn-success',
-                                    'icon' => 'fa fa-file-pdf-o',
-                                    'route' => 'academico.relatoriosmatriculascurso.pdf',
-                                    'label' => 'Exportar para PDF',
-                                    'method' => 'post',
-                                    'id' => '',
-                                    'attributes' => ['id' => 'formPdf','target' => '_blank']
+                <div class="row">
+                    <div class="col-md-2 pull-right box-tools">
+                        <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculascurso.pdf') }}">
+                            {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                        [
+                                        'classButton' => 'btn btn-success form-control',
+                                        'icon' => 'fa fa-file-pdf-o',
+                                        'route' => 'academico.relatoriosmatriculascurso.pdf',
+                                        'label' => 'Exportar para PDF',
+                                        'method' => 'post',
+                                        'id' => '',
+                                        'attributes' => ['id' => 'formPdf','target' => '_blank']
+                                        ]
                                     ]
-                                ]
-                        ]) !!}
-                        <input type="hidden" name="trm_id" id="turmaId" value="">
-                        <input type="hidden" name="crs_id" id="cursoId" value="">
-                        <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
-                        <input type="hidden" name="mat_situacao" id="situacao" value="">
-                    </form>
+                            ]) !!}
+                            <input type="hidden" name="trm_id" id="turmaId" value="">
+                            <input type="hidden" name="crs_id" id="cursoId" value="">
+                            <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
+                            <input type="hidden" name="mat_situacao" id="situacao" value="">
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="box-body">

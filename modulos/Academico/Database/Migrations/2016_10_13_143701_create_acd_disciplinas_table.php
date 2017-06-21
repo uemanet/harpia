@@ -16,7 +16,7 @@ class CreateAcdDisciplinasTable extends Migration
         Schema::create('acd_disciplinas', function (Blueprint $table) {
             $table->increments('dis_id');
             $table->integer('dis_nvc_id')->unsigned();
-            $table->string('dis_nome', 90);
+            $table->string('dis_nome', 255);
             $table->integer('dis_carga_horaria');
             $table->integer('dis_creditos');
             $table->text('dis_ementa')->nullable();
