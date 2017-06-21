@@ -3,6 +3,7 @@
 namespace Modulos\Core\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Modulos\Seguranca\Observers\AuditoriaObserver;
 use Stevebauman\EloquentTable\TableTrait;
 
 class BaseModel extends Model
@@ -14,6 +15,7 @@ class BaseModel extends Model
     public static function boot()
     {
         parent::boot();
+        parent::observe(AuditoriaObserver::class);
     }
 
     public function searchable()

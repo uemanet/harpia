@@ -14,6 +14,13 @@ class MatriculaOfertaDisciplina extends BaseModel
         'mof_mat_id',
         'mof_ofd_id',
         'mof_tipo_matricula',
+        'mof_nota1',
+        'mof_nota2',
+        'mof_nota3',
+        'mof_conceito',
+        'mof_recuperacao',
+        'mof_final',
+        'mof_mediafinal',
         'mof_situacao_matricula'
     ];
 

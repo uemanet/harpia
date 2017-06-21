@@ -228,19 +228,14 @@ class TutoresGruposController extends BaseController
                 return redirect()->back();
             }
 
-            $requestData = $request->only($this->tutorgrupoRepository->getFillableModelFields());
-
             //Atualiza o fim do vículo do tutor antigo
-            $date = date('Y-m-d');
-            $dados['ttg_data_fim'] = $date;
+            $dados['ttg_data_fim'] = date('Y-m-d');
             $this->tutorgrupoRepository->update($dados, $tutorGrupoOld->ttg_id, 'ttg_id');
-
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
             $grupo = $this->grupoRepository->find($tutorgrupo->ttg_grp_id);
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
-
 
             if (!$tutorgrupo) {
                 DB::rollback();

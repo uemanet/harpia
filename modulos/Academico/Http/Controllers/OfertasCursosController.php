@@ -115,16 +115,14 @@ class OfertasCursosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            if (!is_null($request->polos)) {
-                foreach ($request->polos as $key => $polo) {
-                    $ofertacurso->polos()->attach($polo);
-                }
-            }
-            
             DB::commit();
 
             flash()->success('Oferta de curso criada com sucesso.');
             return redirect()->route('academico.ofertascursos.index');
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            flash()->error('Erro ao tentar criar. Problema de duplicação de registro.');
+            return redirect()->back();
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {

@@ -31,6 +31,7 @@ class Matricula extends BaseController
             $id = $request->input('id');
             $situacao = $request->input('situacao');
             $observacao = $request->input('observacao');
+
             $matricula = $this->matriculaRepository->find($id);
             $matricula->mat_situacao = $situacao;
             $matricula->save();

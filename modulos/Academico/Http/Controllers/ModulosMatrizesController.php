@@ -174,21 +174,21 @@ class ModulosMatrizesController extends BaseController
         try {
             $modulomatrizId = $request->get('id');
 
-            $modulo = $this->modulomatrizRepository->find(($modulomatrizId));
+            $modulo = $this->modulomatrizRepository->find($modulomatrizId);
 
-            $disciplinas = $modulo->disciplinas()->get();
+            $disciplinas = $modulo->disciplinas;
 
-            if (!$disciplinas->isEmpty()) {
+            if ($disciplinas->count()) {
                 flash()->error('Módulo tem disciplinas cadastradas, delete-as para excluir o módulo!');
                 return redirect()->back();
             }
 
-            if ($this->modulomatrizRepository->delete($modulomatrizId)) {
-                flash()->success('Módulo excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o módulo');
-            }
+            $this->modulomatrizRepository->delete($modulomatrizId);
+            flash()->success('Módulo excluído com sucesso.');
 
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O módulo contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

@@ -97,15 +97,15 @@ class MatriculaCursoController extends BaseController
         try {
             $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
 
-            flash()->{$result['type']}($result['message']);
-
             if ($result['type'] == 'success') {
                 $matricula = $result['matricula'];
-                $turma = $this->turmaRepository->find($matricula->mat_trm_id);
-                if ($turma->trm_integrada) {
+
+                if ($matricula->turma->trm_integrada) {
                     event(new MatriculaAlunoTurmaEvent($matricula));
                 }
             }
+
+            flash()->{$result['type']}($result['message']);
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -129,19 +129,26 @@ class MatriculaCursoController extends BaseController
 
             $oldMatricula = clone $matricula;
 
-            $matricula->mat_pol_id = $request->input('mat_pol_id');
-            $matricula->mat_grp_id = ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id');
+            $data = [
+                'mat_pol_id' => $request->input('mat_pol_id'),
+                'mat_grp_id' => ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id'),
+            ];
+
+            $matricula->fill($data)->save();
+
             $observacao = $request->input('observacao');
-            $matricula->save();
 
             $turma = $matricula->turma;
 
-            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
-                event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
-            }
+            // caso a turma seja integrada, manda as alterações pro moodle
+            if ($turma->trm_integrada) {
+                if (($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
+                    event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                }
 
-            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
-                event(new DeletarGrupoAlunoEvent($matricula, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                if (($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
+                    event(new DeletarGrupoAlunoEvent($matricula, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                }
             }
 
             if ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) {

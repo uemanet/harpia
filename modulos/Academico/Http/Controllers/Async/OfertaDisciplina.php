@@ -65,7 +65,7 @@ class OfertaDisciplina extends BaseController
         ]);
 
         for ($i = 0; $i < $retorno->count(); ++$i) {
-            $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getQuantMatriculasByOfertaDisciplina($retorno[$i]->ofd_id)->count();
+            $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getQuantMatriculasByOfertaDisciplina($retorno[$i]->ofd_id);
             $retorno[$i]->qtdMatriculas = $qtdMatriculas;
 
             if ($retorno[$i]->mof_tipo_matricula == 'matriculacomum') {

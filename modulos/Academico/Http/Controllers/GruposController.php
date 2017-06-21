@@ -251,12 +251,13 @@ class GruposController extends BaseController
 
             $grupo = $this->grupoRepository->find($grupoId);
 
+            $turmaId = $grupo->grp_trm_id;
 
             DB::beginTransaction();
 
             $this->grupoRepository->delete($grupoId);
 
-            $ambiente = $this->ambienteRepository->getAmbienteByTurma($grupo->turma->trm_id);
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($turmaId);
 
             if ($ambiente) {
                 event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente->id));
@@ -267,16 +268,15 @@ class GruposController extends BaseController
             DB::commit();
 
             return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            flash()->error('Erro ao tentar deletar. O grupo contém dependências no sistema.');
+            return redirect()->back();
         } catch (\Exception $e) {
             DB::rollback();
 
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este grupo ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');

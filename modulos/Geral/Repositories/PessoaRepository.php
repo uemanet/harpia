@@ -67,9 +67,17 @@ class PessoaRepository extends BaseRepository
 
     public function update(array $data, $id, $attribute = "pes_id")
     {
-        $pessoa = $this->model->find($id);
+        $registros = $this->model->where($attribute, '=', $id)->get();
 
-        return $pessoa->fill($data)->save();
+        if ($registros) {
+            foreach ($registros as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $registros->count();
+        }
+
+        return 0;
     }
 
     public function findPessoaByCpf($cpf)

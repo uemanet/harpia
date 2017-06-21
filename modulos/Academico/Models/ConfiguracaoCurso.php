@@ -10,7 +10,11 @@ class ConfiguracaoCurso extends BaseModel
 
     protected $primaryKey = 'cfc_id';
 
-    protected $fillable = ['cfc_crs_id', 'cfc_nome', 'cfc_valor'];
+    protected $fillable = [
+        'cfc_crs_id',
+        'cfc_nome',
+        'cfc_valor'
+    ];
 
     public function curso()
     {

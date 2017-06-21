@@ -120,14 +120,13 @@ class OfertaCursoRepository extends BaseRepository
                         ])->first();
 
         if (!$entry) {
-            $oferta = new OfertaCurso();
+            $oferta = $this->model->create($data);
 
-            $oferta->ofc_crs_id = $data['ofc_crs_id'];
-            $oferta->ofc_mtc_id = $data['ofc_mtc_id'];
-            $oferta->ofc_mdl_id = $data['ofc_mdl_id'];
-            $oferta->ofc_ano = $data['ofc_ano'];
-
-            $oferta->save();
+            if (!is_null($data['polos'])) {
+                foreach ($data['polos'] as $id) {
+                    $oferta->polos()->attach($id);
+                }
+            }
 
             return $oferta;
         }

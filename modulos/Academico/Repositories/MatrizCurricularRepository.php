@@ -21,11 +21,25 @@ class MatrizCurricularRepository extends BaseRepository
      * @param string $attribute
      * @return mixed
      */
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
+        }
+
         $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
 
-        return $this->model->where($attribute, '=', $id)->update($data);
+        $collection = $this->model->where($attribute, '=', $id)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $collection->count();
+        }
+
+        return 0;
     }
 
     /**

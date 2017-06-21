@@ -152,6 +152,8 @@ class VinculosController extends BaseController
         $data = $request->get('cursos');
 
         try {
+            DB::beginTransaction();
+
             foreach ($data as $curso) {
                 $vinculo = [
                     'ucr_usr_id' => $usuarioId,
@@ -160,9 +162,12 @@ class VinculosController extends BaseController
                 $this->vinculoRepository->create($vinculo);
             }
 
+            DB::commit();
+
             flash()->success('Vínculos criados com sucesso.');
             return redirect()->route('academico.vinculos.vinculos', ['id' => $usuarioId]);
         } catch (\Exception $e) {
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }
@@ -177,12 +182,12 @@ class VinculosController extends BaseController
         try {
             $vinculoId = $request->get('id');
 
-            if ($this->vinculoRepository->delete($vinculoId)) {
-                flash()->success('Vínculo excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o vínculo');
-            }
+            $this->vinculoRepository->delete($vinculoId);
+            flash()->success('Vínculo excluído com sucesso.');
 
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O vínculo contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

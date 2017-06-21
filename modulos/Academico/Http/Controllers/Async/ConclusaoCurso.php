@@ -39,22 +39,24 @@ class ConclusaoCurso extends BaseController
 
         try {
             foreach ($matriculas as $matricula) {
-                $result = $this->matriculaCursoRepository->concluirMatricula($matricula, $ofertaCursoId);
+                $matricula = $this->matriculaCursoRepository->concluirMatricula($matricula, $ofertaCursoId);
 
-                if (!$result) {
+                if (!$matricula) {
                     DB::rollback();
 
                     return new JsonResponse('Matricula(s) não está apta para conclusão de curso', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
-                event(new AtualizarSituacaoMatriculaEvent($result));
+                if ($matricula->turma->trm_integrada) {
+                    event(new AtualizarSituacaoMatriculaEvent($matricula));
+                }
 
                 DB::commit();
 
                 return new JsonResponse('Matriculas concluidas com sucesso', 200);
             }
         } catch (\Exception $e) {
-            DB::rollBack();
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }
