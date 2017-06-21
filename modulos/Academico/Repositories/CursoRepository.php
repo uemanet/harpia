@@ -60,8 +60,6 @@ class CursoRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
-        $data['crs_data_autorizacao'] = Carbon::createFromFormat('d/m/Y', $data['crs_data_autorizacao'])->toDateString();
-
         $collection = $this->model->where($attribute, '=', $id)->get();
 
         if ($collection) {
