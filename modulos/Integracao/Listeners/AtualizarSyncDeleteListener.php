@@ -20,7 +20,7 @@ class AtualizarSyncDeleteListener
         $data = $event->getData();
 
         try {
-            $this->sincronizacaoRepository->update($data);
+            $this->sincronizacaoRepository->updateSyncMoodle($data);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
