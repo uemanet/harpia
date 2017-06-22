@@ -162,10 +162,7 @@ class TurmasController extends BaseController
 
         $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
 
-        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano);
-        if (empty($periodosletivos)) {
-            $periodosletivos['0'] = 'Sem períodos letivos disponíveis';
-        }
+        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, $turma->trm_per_id);
 
         return view('Academico::turmas.edit', compact('turma', 'curso', 'oferta', 'periodosletivos'));
     }

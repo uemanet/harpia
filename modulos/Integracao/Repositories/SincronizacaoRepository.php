@@ -12,17 +12,25 @@ class SincronizacaoRepository extends BaseRepository
         $this->model = $sincronizacao;
     }
 
-    public function update(array $data, $id = null, $attribute = null)
+    public function updateSyncMoodle(array $data)
     {
+        $keysSearch = [
+            'sym_table',
+            'sym_table_id',
+            'sym_action',
+        ];
+
         $query = $this->model;
 
-        foreach ($data as $key => $value) {
-            $query = $query->where($key, '=', $value);
+        foreach ($keysSearch as $key) {
+            if (array_key_exists($key, $data)) {
+                $query = $query->where($key, '=', $data[$key]);
+            }
         }
 
         $registros = $query->get();
 
-        if ($registros) {
+        if ($registros->count()) {
             foreach ($registros as $obj) {
                 $obj->fill($data)->save();
             }
