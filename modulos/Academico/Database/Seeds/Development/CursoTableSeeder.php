@@ -15,7 +15,7 @@ class CursoTableSeeder extends Seeder
         $arrCursosIds = [];
 
         $curso = new Curso();
-        $curso->crs_dep_id = 1;
+        $curso->crs_cen_id = 1;
         $curso->crs_nvc_id = 1;
         $curso->crs_prf_diretor = 1;
         $curso->crs_nome = 'Ciência da Computação';
@@ -30,7 +30,7 @@ class CursoTableSeeder extends Seeder
         $arrCursosIds[] = $curso->crs_id;
 
         $curso = new Curso();
-        $curso->crs_dep_id = 1;
+        $curso->crs_cen_id = 1;
         $curso->crs_nvc_id = 1;
         $curso->crs_prf_diretor = 2;
         $curso->crs_nome = 'Engenharia da Computação';
@@ -45,7 +45,7 @@ class CursoTableSeeder extends Seeder
         $arrCursosIds[] = $curso->crs_id;
 
         $curso = new Curso();
-        $curso->crs_dep_id = 1;
+        $curso->crs_cen_id = 1;
         $curso->crs_nvc_id = 1;
         $curso->crs_prf_diretor = 3;
         $curso->crs_nome = 'Sistemas de Informação';
@@ -60,7 +60,7 @@ class CursoTableSeeder extends Seeder
         $arrCursosIds[] = $curso->crs_id;
 
         $curso = new Curso();
-        $curso->crs_dep_id = 1;
+        $curso->crs_cen_id = 1;
         $curso->crs_nvc_id = 1;
         $curso->crs_prf_diretor = 4;
         $curso->crs_nome = 'Engenharia de Software';
@@ -76,7 +76,7 @@ class CursoTableSeeder extends Seeder
 
         // Cursos Técnicos
         $curso = new Curso();
-        $curso->crs_dep_id = 1;
+        $curso->crs_cen_id = 1;
         $curso->crs_nvc_id = 2;  // Nivel Tecnico
         $curso->crs_prf_diretor = 5;
         $curso->crs_nome = 'Técnico em Informática';

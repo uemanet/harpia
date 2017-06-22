@@ -70,15 +70,6 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 2
       ]);
 
-        $departamentos = MenuItem::create([
-          'mit_mod_id' => 3,
-          'mit_item_pai' => $institucional->mit_id,
-          'mit_nome' => 'Departamentos',
-          'mit_rota' => 'academico.departamentos.index',
-          'mit_icone' => 'fa fa-sitemap',
-          'mit_ordem' => 3
-      ]);
-
       // Subcategoria Pessoas
       $pessoas = MenuItem::create([
           'mit_mod_id' => 3,
