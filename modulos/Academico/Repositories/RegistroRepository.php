@@ -159,7 +159,7 @@ class RegistroRepository extends BaseRepository
             }
 
             // Pula para proxima folha
-            if ($ultimoRegistro->reg_registro == RegistroRepository::REGISTROS_FOLHA) {
+            if ($ultimoRegistro->reg_registro >= RegistroRepository::REGISTROS_FOLHA) {
                 return (int) ($ultimoRegistro->reg_folha + 1);
             }
 
@@ -181,7 +181,7 @@ class RegistroRepository extends BaseRepository
             }
 
             // Pula para proxima folha, iniciando  contagem de registros da folha
-            if ($ultimoRegistro->reg_registro == RegistroRepository::REGISTROS_FOLHA) {
+            if ($ultimoRegistro->reg_registro >= RegistroRepository::REGISTROS_FOLHA) {
                 return 1;
             }
 
