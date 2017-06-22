@@ -58,7 +58,7 @@
                                 {!! Form::select('ofd_id', $disciplinas, Input::get('ofd_id'), ['class' => 'form-control']) !!}
                             </div>
                         </div>
-                        <div class="col-md-2 @if ($errors->has('mof_situacao_matricula')) has-error @endif">
+                        <div class="col-md-3 @if ($errors->has('mof_situacao_matricula')) has-error @endif">
                             {!! Form::label('mof_situacao_matricula', 'Situação da matricula') !!}
                             <div class="form-group">
                                 {!! Form::select('mof_situacao_matricula', ["cursando" => "Cursando",
@@ -70,7 +70,7 @@
                                 ], Input::get('mof_situacao_matricula'), ['class' => 'form-control', 'placeholder' => 'Selecione o status']) !!}
                             </div>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <label for="">&nbsp;</label>
                             <div class="form-group">
                                 <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
@@ -86,29 +86,31 @@
     @if(!is_null($tabela))
         <div class="box box-primary">
             <div class="box-header">
-                <div class="pull-right box-tools">
-                    <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculasdisciplinas.pdf') }}">
-                        {!! ActionButton::grid([
-                                'type' => 'LINE',
-                                'buttons' => [
-                                    [
-                                    'classButton' => 'btn btn-success',
-                                    'icon' => 'fa fa-file-pdf-o',
-                                    'route' => 'academico.relatoriosmatriculasdisciplinas.pdf',
-                                    'label' => 'Exportar para PDF',
-                                    'method' => 'post',
-                                    'id' => '',
-                                    'attributes' => ['id' => 'formPdf','target' => '_blank']
+                <div class="row">
+                    <div class="col-md-offset-10 box-tools">
+                        <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculasdisciplinas.pdf') }}">
+                            {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                        [
+                                        'classButton' => 'btn btn-success',
+                                        'icon' => 'fa fa-file-pdf-o',
+                                        'route' => 'academico.relatoriosmatriculasdisciplinas.pdf',
+                                        'label' => 'Exportar para PDF',
+                                        'method' => 'post',
+                                        'id' => '',
+                                        'attributes' => ['id' => 'formPdf','target' => '_blank']
+                                        ]
                                     ]
-                                ]
-                        ]) !!}
-                        <input type="hidden" name="trm_id" id="turmaId" value="">
-                        <input type="hidden" name="crs_id" id="cursoId" value="">
-                        <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
-                        <input type="hidden" name="per_id" id="periodoId" value="">
-                        <input type="hidden" name="ofd_id" id="ofertaDisciplinaId" value="">
-                        <input type="hidden" name="mof_situacao_matricula" id="situacao" value="">
-                    </form>
+                            ]) !!}
+                            <input type="hidden" name="trm_id" id="turmaId" value="">
+                            <input type="hidden" name="crs_id" id="cursoId" value="">
+                            <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
+                            <input type="hidden" name="per_id" id="periodoId" value="">
+                            <input type="hidden" name="ofd_id" id="ofertaDisciplinaId" value="">
+                            <input type="hidden" name="mof_situacao_matricula" id="situacao" value="">
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="box-body">

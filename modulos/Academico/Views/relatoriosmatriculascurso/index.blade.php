@@ -72,13 +72,13 @@
         <div class="box box-primary">
             <div class="box-header">
                 <div class="row">
-                    <div class="col-md-2 pull-right box-tools">
+                    <div class="col-md-offset-10 box-tools">
                         <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculascurso.pdf') }}">
                             {!! ActionButton::grid([
                                     'type' => 'LINE',
                                     'buttons' => [
                                         [
-                                        'classButton' => 'btn btn-success form-control',
+                                        'classButton' => 'btn btn-success',
                                         'icon' => 'fa fa-file-pdf-o',
                                         'route' => 'academico.relatoriosmatriculascurso.pdf',
                                         'label' => 'Exportar para PDF',
