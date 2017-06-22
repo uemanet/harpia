@@ -4,6 +4,16 @@
     </div>
 </div>
 <hr>
+@if(Route::getCurrentRoute()->getName() == 'academico.cursos.edit')
+    <div class="row">
+        <div class="col-md-12">
+            <div class="callout callout-warning">
+                <h4>Atenção</h4>
+                <p>Alterar as configurações de notas do curso exige que a migração das notas das turmas relativas ao curso seja refeita manualmente.</p>
+            </div>
+        </div>
+    </div>
+@endif
 <div class="row">
     <div class="col-md-4 form-group @if ($errors->has('media_min_aprovacao')) has-error @endif">
         {!! Form::label('media_min_aprovacao', 'Média Mínima Para Aprovação*', ['class' => 'control-label']) !!}
