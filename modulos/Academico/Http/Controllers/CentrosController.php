@@ -86,7 +86,7 @@ class CentrosController extends BaseController
 
     public function getCreate()
     {
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
         return view('Academico::centros.create', compact('professores'));
     }
 
@@ -117,14 +117,14 @@ class CentrosController extends BaseController
     {
         $centro = $this->centroRepository->find($centroId);
 
-        if (is_null($centro)) {
+        if (!$centro) {
             flash()->error('Centro não existe!');
             return redirect()->back();
         }
 
-        $professores = $this->professorRepository->listsEditCentro('prf_id', 'pes_nome', $centroId);
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
-        return view('Academico::centros.edit', ['centro' => $centro, 'professores' => $professores]);
+        return view('Academico::centros.edit', compact('centro', 'professores'));
     }
 
     public function putEdit($id, CentroRequest $request)
@@ -134,15 +134,10 @@ class CentrosController extends BaseController
 
             if (!$centro) {
                 flash()->error('Centro não existe.');
-                return redirect('/academico/centros/index');
+                return redirect()->route('academico.centros.index');
             }
 
-            $requestData = $request->only($this->centroRepository->getFillableModelFields());
-
-            if (!$this->centroRepository->update($requestData, $centro->cen_id, 'cen_id')) {
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-            }
+            $this->centroRepository->update($request->all(), $centro->cen_id, 'cen_id');
 
             flash()->success('Centro atualizado com sucesso.');
 

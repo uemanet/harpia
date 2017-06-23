@@ -24,7 +24,7 @@ class CursoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'crs_dep_id' => 'required',
+            'crs_cen_id' => 'required',
             'crs_nvc_id' => 'required',
             'crs_prf_diretor' => 'required',
             'crs_nome' => 'required|min:3|max:45',

@@ -20,7 +20,7 @@
         </div>
         <div class="box-body">
             {!! Form::model($curso,["route" => ['academico.cursos.edit',$curso->crs_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            @include('Academico::cursos.includes.formulario_edit')
+                @include('Academico::cursos.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>

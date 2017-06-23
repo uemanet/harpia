@@ -1,9 +1,9 @@
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('crs_dep_id')) has-error @endif">
-        {!! Form::label('crs_dep_id', 'Departamento*', ['class' => 'control-label']) !!}
+    <div class="form-group col-md-4 @if ($errors->has('crs_cen_id')) has-error @endif">
+        {!! Form::label('crs_cen_id', 'Centro*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('crs_dep_id', $departamentos, old('crs_dep_id'), ['placeholder' => 'Selecione um departamento','class' => 'form-control']) !!}
-            @if ($errors->has('crs_dep_id')) <p class="help-block">{{ $errors->first('crs_dep_id') }}</p> @endif
+            {!! Form::select('crs_cen_id', $centros, old('crs_cen_id'), ['placeholder' => 'Selecione um centro','class' => 'form-control']) !!}
+            @if ($errors->has('crs_cen_id')) <p class="help-block">{{ $errors->first('crs_cen_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('crs_nvc_id')) has-error @endif">

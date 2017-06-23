@@ -89,7 +89,7 @@ class DepartamentosController extends BaseController
     public function getCreate()
     {
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
         return view('Academico::departamentos.create', ['centros' => $centros, 'professores' => $professores]);
     }
@@ -126,7 +126,7 @@ class DepartamentosController extends BaseController
             return redirect()->back();
         }
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
         return view('Academico::departamentos.edit', ['departamento' => $departamento, 'centros' => $centros, 'professores' => $professores]);
     }
