@@ -55,6 +55,33 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+
+        //permissões do recurso departamentos
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.departamentos.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.departamentos.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'academico.departamentos.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.departamentos.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
         //permissões do recurso periodosletivos
         $permissao = Permissao::create([
             'prm_nome' => 'index',

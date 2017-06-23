@@ -21,6 +21,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\CentrosController@postDelete')->name('academico.centros.delete');
     });
 
+    Route::group(['prefix' => 'departamentos'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\DepartamentosController@getIndex')->name('academico.departamentos.index');
+        Route::get('/create', '\Modulos\Academico\Http\Controllers\DepartamentosController@getCreate')->name('academico.departamentos.create');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\DepartamentosController@postCreate')->name('academico.departamentos.create');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\DepartamentosController@getEdit')->name('academico.departamentos.edit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\DepartamentosController@putEdit')->name('academico.departamentos.edit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\DepartamentosController@postDelete')->name('academico.departamentos.delete');
+    });
+
     Route::group(['prefix' => 'alunos', 'middleware' => ['vinculo']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\AlunosController@getIndex')->name('academico.alunos.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\AlunosController@getCreate')->name('academico.alunos.create')->middleware('verificapessoa');
