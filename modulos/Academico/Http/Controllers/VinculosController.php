@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Modulos\Seguranca\Repositories\UsuarioRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
 use Auth;
+use DB;
 
 class VinculosController extends BaseController
 {
