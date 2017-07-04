@@ -462,20 +462,18 @@ class MatriculaCursoRepository extends BaseRepository
             $turma = $this->turmaRepository->find($turmaId);
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
-            /**
-             * Se aluno concluiu todas as disciplinas, nao estah apto para certificacao
-             */
+            // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
             if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+                continue;
+            }
+
+            if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
+                $certificados[] = $matricula;
                 continue;
             }
 
             // Verifica se o aluno esta apto para certificacao
             if ($this->verifyIfAlunoIsAptoCertificacao($matricula->mat_id, $turmaId, $moduloId)) {
-                if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
-                    $certificados[] = $matricula;
-                    continue;
-                }
-
                 $aptos[] = $matricula;
             }
         }
@@ -510,59 +508,57 @@ class MatriculaCursoRepository extends BaseRepository
             return false;
         }
 
-        if ($matricula->mat_situacao != 'cursando') {
-            $quantDisciplinasObrigatorias = 0;
-            $quantDisciplinasObrigatoriasAprovadas = 0;
+        $quantDisciplinasObrigatorias = 0;
+        $quantDisciplinasObrigatoriasAprovadas = 0;
 
-            foreach ($modulos as $modulo) {
-                if ($modulo->mdo_id > $moduloId) {
-                    break;
+        foreach ($modulos as $modulo) {
+            if ($modulo->mdo_id > $moduloId) {
+                break;
+            }
+
+            $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAlunoModuloMatriz($matricula->mat_alu_id, $modulo->mdo_id);
+
+            if (!$disciplinasAluno->count()) {
+                return false;
+            }
+
+            $cargaHorariaEletivas = 0;
+            $creditosEletivas = 0;
+
+            foreach ($disciplinasAluno as $disciplina) {
+                if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                    $quantDisciplinasObrigatorias++;
                 }
+                // Verifica se a oferta de disciplina está na matriz do curso
+                if (in_array($disciplina->mdc_id, $disciplinasMatriz)) {
+                    // Caso o aluno foi aprovado na disciplina, incrementa a variavel
+                    if (in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                        if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                            $quantDisciplinasObrigatoriasAprovadas++;
+                        }
 
-                $disciplinasAluno = $this->matriculaOfertaDisciplinaRepository->getAllMatriculasByAlunoModuloMatriz($matricula->mat_alu_id, $modulo->mdo_id);
-
-                if (!$disciplinasAluno->count()) {
-                    return false;
-                }
-
-                $cargaHorariaEletivas = 0;
-                $creditosEletivas = 0;
-
-                foreach ($disciplinasAluno as $disciplina) {
-                    if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
-                        $quantDisciplinasObrigatorias++;
-                    }
-                    // Verifica se a oferta de disciplina está na matriz do curso
-                    if (in_array($disciplina->mdc_id, $disciplinasMatriz)) {
-                        // Caso o aluno foi aprovado na disciplina, incrementa a variavel
-                        if (in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                            if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
-                                $quantDisciplinasObrigatoriasAprovadas++;
-                            }
-
-                            if ($disciplina->mdc_tipo_disciplina == 'eletiva') {
-                                $cargaHorariaEletivas += $disciplina->dis_carga_horaria;
-                                $creditosEletivas += $disciplina->dis_creditos;
-                            }
+                        if ($disciplina->mdc_tipo_disciplina == 'eletiva') {
+                            $cargaHorariaEletivas += $disciplina->dis_carga_horaria;
+                            $creditosEletivas += $disciplina->dis_creditos;
                         }
                     }
                 }
-
-                // se o aluno não atingir a carga horaria minima de disciplinas eletivas do módulo, não está apto para conclusão
-                if ((!is_null($modulo->mdo_cargahoraria_min_eletivas)) && ($cargaHorariaEletivas < $modulo->mdo_cargahoraria_min_eletivas)) {
-                    return false;
-                }
-
-                // se o aluno não atingir os creditos minimos de disciplinas eletivas do módulo, não está apto para conclusão
-                if ((!is_null($modulo->mdo_creditos_min_eletivas)) && ($creditosEletivas < $modulo->mdo_creditos_min_eletivas)) {
-                    return false;
-                }
             }
 
-            // Casos de situações
-            if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias)) {
-                return true;
+            // se o aluno não atingir a carga horaria minima de disciplinas eletivas do módulo, não está apto para conclusão
+            if ((!is_null($modulo->mdo_cargahoraria_min_eletivas)) && ($cargaHorariaEletivas < $modulo->mdo_cargahoraria_min_eletivas)) {
+                return false;
             }
+
+            // se o aluno não atingir os creditos minimos de disciplinas eletivas do módulo, não está apto para conclusão
+            if ((!is_null($modulo->mdo_creditos_min_eletivas)) && ($creditosEletivas < $modulo->mdo_creditos_min_eletivas)) {
+                return false;
+            }
+        }
+
+        // Casos de situações
+        if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias)) {
+            return true;
         }
 
         return false;
