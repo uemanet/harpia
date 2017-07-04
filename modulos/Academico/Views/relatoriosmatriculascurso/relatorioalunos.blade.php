@@ -65,10 +65,7 @@
     </tr>
     </thead>
     <tbody>
-
-
     @foreach ($matriculas as $matricula)
-
         <tr>
             <td align="center" class="matricula">{{$matricula->mat_id}}</td>
             <td class="nome">{{$matricula->pes_nome}}</td>

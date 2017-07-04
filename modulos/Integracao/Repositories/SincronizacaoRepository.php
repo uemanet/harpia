@@ -11,22 +11,36 @@ class SincronizacaoRepository extends BaseRepository
     {
         $this->model = $sincronizacao;
     }
-    public function update(array $data, $id = null, $attribute = "id")
+
+    public function updateSyncMoodle(array $data)
     {
-        if ($data['sym_extra']) {
-            return $this->model
-              ->where('sym_table', '=', $data['sym_table'])
-              ->where('sym_table_id', '=', $data['sym_table_id'])
-              ->where('sym_action', '=', $data['sym_action'])
-              ->where('sym_extra', '=', $data['sym_extra'])
-              ->update($data);
+        $keysSearch = [
+            'sym_table',
+            'sym_table_id',
+            'sym_action',
+        ];
+
+        $query = $this->model;
+
+        foreach ($keysSearch as $key) {
+            if (array_key_exists($key, $data)) {
+                $query = $query->where($key, '=', $data[$key]);
+            }
         }
-        return $this->model
-            ->where('sym_table', '=', $data['sym_table'])
-            ->where('sym_table_id', '=', $data['sym_table_id'])
-            ->where('sym_action', '=', $data['sym_action'])
-            ->update($data);
+
+        $registros = $query->get();
+
+        if ($registros->count()) {
+            foreach ($registros as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $registros->count();
+        }
+
+        return 0;
     }
+
     public function findBy(array $options)
     {
         $query = $this->model;

@@ -304,6 +304,9 @@ class UsuariosController extends BaseController
 
             flash()->success('Usuario editado com sucesso!');
             return redirect()->route('seguranca.usuarios.index');
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -312,9 +315,6 @@ class UsuariosController extends BaseController
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-        } catch (ValidationException $e) {
-            DB::rollback();
-            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
         }
     }
 
@@ -377,9 +377,10 @@ class UsuariosController extends BaseController
             if (!$this->perfilRepository->verifyExistsPerfilModulo($request->input('mod_id'), $usuario->usr_id)) {
                 $usuario->perfis()->attach($request->input('prf_id'));
                 flash()->success('Perfil Atribuído com sucesso');
-            } else {
-                flash()->error('Usuario já possui perfil associado ao módulo!');
+                return redirect()->back();
             }
+
+            flash()->error('Usuario já possui perfil associado ao módulo!');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -406,10 +407,10 @@ class UsuariosController extends BaseController
 
             if ($usuario->perfis()->detach($prf_id)) {
                 flash()->success('Perfil excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir perfil');
+                return redirect()->back();
             }
 
+            flash()->error('Erro ao tentar excluir perfil');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

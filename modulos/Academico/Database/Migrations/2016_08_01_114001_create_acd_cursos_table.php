@@ -15,7 +15,7 @@ class CreateAcdCursosTable extends Migration
     {
         Schema::create('acd_cursos', function (Blueprint $table) {
             $table->increments('crs_id');
-            $table->integer('crs_dep_id')->unsigned();
+            $table->integer('crs_cen_id')->unsigned();
             $table->integer('crs_nvc_id')->unsigned();
             $table->integer('crs_prf_diretor')->unsigned();
             $table->string('crs_nome', 45);
@@ -29,7 +29,7 @@ class CreateAcdCursosTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('crs_dep_id')->references('dep_id')->on('acd_departamentos');
+            $table->foreign('crs_cen_id')->references('cen_id')->on('acd_centros');
             $table->foreign('crs_nvc_id')->references('nvc_id')->on('acd_niveis_cursos');
             $table->foreign('crs_prf_diretor')->references('prf_id')->on('acd_professores');
         });

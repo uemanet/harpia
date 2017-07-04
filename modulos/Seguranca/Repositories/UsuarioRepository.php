@@ -48,14 +48,14 @@ class UsuarioRepository extends BaseRepository
 
     public function create(array $data)
     {
-        $user = new Usuario();
+        $dados = [
+            'usr_usuario' => $data['usr_usuario'],
+            'usr_senha' => bcrypt($data['usr_senha']),
+            'usr_ativo' => $data['usr_ativo'],
+            'usr_pes_id' => $data['usr_pes_id']
+        ];
 
-        $user->usr_usuario = $data['usr_usuario'];
-        $user->usr_senha = bcrypt($data['usr_senha']);
-        $user->usr_ativo = $data['usr_ativo'];
-        $user->usr_pes_id = $data['usr_pes_id'];
-
-        return $user->save();
+        return $this->model->create($dados);
     }
     
     public function sincronizarPerfis($usuarioId, array $perfis)

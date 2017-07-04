@@ -170,9 +170,9 @@ class CentroRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Centro::class)->create();
-        $centroId = $data->cen_id;
+        $id = $data->cen_id;
 
-        $response = $this->repo->delete($centroId);
+        $response = $this->repo->delete($id);
 
         $this->assertEquals(1, $response);
     }

@@ -17,7 +17,8 @@ class Matricula extends BaseModel
         'mat_pol_id',
         'mat_grp_id',
         'mat_situacao',
-        'mat_modo_entrada'
+        'mat_modo_entrada',
+        'mat_data_conclusao'
     ];
 
     public function aluno()

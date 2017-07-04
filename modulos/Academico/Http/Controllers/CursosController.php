@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Modulos\Academico\Models\ConfiguracaoCurso;
+use Modulos\Academico\Repositories\CentroRepository;
 use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -10,7 +11,6 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\CursoRequest;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\DepartamentoRepository;
 use Modulos\Academico\Repositories\NivelCursoRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Auth;
@@ -23,18 +23,20 @@ class CursosController extends BaseController
     protected $nivelcursoRepository;
     protected $professorRepository;
     protected $vinculoRepository;
+    protected $centroRepository;
 
-    public function __construct(CursoRepository $curso,
-                                DepartamentoRepository $departamento,
-                                NivelCursoRepository $nivelcurso,
-                                ProfessorRepository $professor,
-                                VinculoRepository $vinculoRepository)
-    {
+    public function __construct(
+        CursoRepository $curso,
+        NivelCursoRepository $nivelcurso,
+        ProfessorRepository $professor,
+        VinculoRepository $vinculoRepository,
+        CentroRepository $centroRepository
+    ) {
         $this->cursoRepository = $curso;
-        $this->departamentoRepository = $departamento;
         $this->nivelcursoRepository = $nivelcurso;
         $this->professorRepository = $professor;
         $this->vinculoRepository = $vinculoRepository;
+        $this->centroRepository = $centroRepository;
     }
 
     public function getIndex(Request $request)
@@ -110,82 +112,24 @@ class CursosController extends BaseController
 
     public function getCreate()
     {
-        $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
+        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
-        return view('Academico::cursos.create', ['departamentos' => $departamentos, 'niveiscursos' => $niveiscursos, 'professores' => $professores]);
+        return view('Academico::cursos.create', compact('centros', 'niveiscursos', 'professores'));
     }
 
     public function postCreate(CursoRequest $request)
     {
-        try {
-            DB::beginTransaction();
+        $response = $this->cursoRepository->create($request->all());
 
-            $dataCurso = $request->only(
-                'crs_dep_id',
-                'crs_nvc_id',
-                'crs_prf_diretor',
-                'crs_nome',
-                'crs_sigla',
-                'crs_descricao',
-                'crs_resolucao',
-                'crs_autorizacao',
-                'crs_data_autorizacao',
-                'crs_eixo',
-                'crs_habilitacao'
-            );
+        flash()->{$response['status']}($response['message']);
 
-            // Salvar curso
-            $curso = $this->cursoRepository->create($dataCurso);
-
-            if (!$curso) {
-                DB::rollback();
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-            }
-
-            // Salvar configuracoes do curso
-            $dataConfiguracoes = $request->only(
-                'media_min_aprovacao',
-                'media_min_final',
-                'media_min_aprovacao_final',
-                'modo_recuperacao',
-                'conceitos_aprovacao'
-            );
-
-            foreach ($dataConfiguracoes as $nome => $valor) {
-                if ($nome == 'conceitos_aprovacao') {
-                    $valor = json_encode($valor);
-                }
-
-                ConfiguracaoCurso::create([
-                    'cfc_crs_id' => $curso->crs_id,
-                    'cfc_nome' => $nome,
-                    'cfc_valor' => $valor
-                ]);
-            }
-
-            // Cria vinculo com o curso para o usuario que esta criando o curso
-            $vinculo = [
-                'ucr_usr_id' => Auth::user()->usr_id,
-                'ucr_crs_id' => $curso->crs_id,
-            ];
-
-            $this->vinculoRepository->create($vinculo);
-
-            DB::commit();
-            flash()->success('Curso criado com sucesso.');
+        if ($response['status'] == 'success') {
             return redirect()->route('academico.cursos.index');
-        } catch (\Exception $e) {
-            DB::rollback();
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-            return redirect()->back();
         }
+
+        return redirect()->back();
     }
 
     public function getEdit($cursoId)
@@ -209,99 +153,34 @@ class CursosController extends BaseController
             }
         }
 
-        $departamentos = $this->departamentoRepository->lists('dep_id', 'dep_nome');
+        $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
-        $professores = $this->professorRepository->listsEditCurso('prf_id', 'pes_nome', $cursoId);
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
-        return view('Academico::cursos.edit', compact('curso', 'departamentos', 'niveiscursos', 'professores'));
+        return view('Academico::cursos.edit', compact('curso', 'centros', 'niveiscursos', 'professores'));
     }
 
     public function putEdit($id, CursoRequest $request)
     {
-        try {
-            DB::beginTransaction();
-            $curso = $this->cursoRepository->find($id);
+        $response = $this->cursoRepository->updateCurso($request->all(), $id);
 
-            if (!$curso) {
-                flash()->error('Curso não existe.');
-                return redirect()->route('academico.cursos.index');
-            }
+        flash()->{$response['status']}($response['message']);
 
-            $requestData = $request->only($this->cursoRepository->getFillableModelFields());
-
-            if (!$this->cursoRepository->update($requestData, $curso->crs_id, 'crs_id')) {
-                DB::rollback();
-                flash()->error('Erro ao tentar salvar.');
-                return redirect()->back()->withInput($request->all());
-            }
-
-            $dataConfiguracoes = $request->only(
-                'media_min_aprovacao',
-                'media_min_final',
-                'media_min_aprovacao_final',
-                'modo_recuperacao',
-                'conceitos_aprovacao'
-            );
-
-            foreach ($dataConfiguracoes as $nome => $valor) {
-                if ($nome == 'conceitos_aprovacao') {
-                    $valor = json_encode($valor);
-                }
-
-                $configuracao = ConfiguracaoCurso::where([
-                    ['cfc_crs_id', '=', $curso->crs_id],
-                    ['cfc_nome', '=', $nome]
-                ])->first();
-
-                $configuracao->cfc_valor = $valor;
-                $configuracao->save();
-            }
-
-            DB::commit();
-            flash()->success('Curso atualizado com sucesso.');
+        if ($response['status'] == 'success') {
             return redirect()->route('academico.cursos.index');
-        } catch (\Exception $e) {
-            DB::rollback();
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
-            return redirect()->back();
         }
+
+        return redirect()->back();
     }
 
     public function postDelete(Request $request)
     {
-        try {
-            DB::beginTransaction();
+        $id = $request->get('id');
 
-            $cursoId = $request->get('id');
+        $response = $this->cursoRepository->delete($id);
 
-            $this->vinculoRepository->deleteAllVinculosByCurso($cursoId);
+        flash()->{$response['status']}($response['message']);
 
-            $this->cursoRepository->deleteConfiguracoes($cursoId);
-
-            $this->cursoRepository->delete($cursoId);
-
-            flash()->success('Curso excluído com sucesso.');
-            return redirect()->back();
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este curso ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
-            }
-
-            flash()->error('Erro ao tentar excluir o módulo');
-            return redirect()->back();
-        }
+        return redirect()->back();
     }
 }

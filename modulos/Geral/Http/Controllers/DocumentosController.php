@@ -4,8 +4,6 @@ namespace Modulos\Geral\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Modulos\Geral\Repositories\AnexoRepository;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\DocumentoRequest;
 use Illuminate\Http\Request;
@@ -54,10 +52,10 @@ class DocumentosController extends BaseController
             return redirect()->back();
         }
 
-        $anexo =  $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
+        $anexo = $this->anexoRepository->recuperarAnexo($documento->doc_anx_documento);
 
         if ($anexo == 'error_non_existent') {
-            flash()->error('anexo não existe');
+            flash()->error('Anexo não existe');
             return redirect()->back();
         }
 
@@ -110,7 +108,6 @@ class DocumentosController extends BaseController
             }
 
             DB::commit();
-
 
             flash()->success('Documento criado com sucesso.');
             return redirect()->route($url, ['id' => $id]);

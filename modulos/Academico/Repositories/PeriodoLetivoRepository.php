@@ -22,12 +22,26 @@ class PeriodoLetivoRepository extends BaseRepository
      * @param string $attribute
      * @return mixed
      */
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
+        }
+
         $data['per_inicio'] = Carbon::createFromFormat('d/m/Y', $data['per_inicio'])->toDateString();
         $data['per_fim'] = Carbon::createFromFormat('d/m/Y', $data['per_fim'])->toDateString();
 
-        return $this->model->where($attribute, '=', $id)->update($data);
+        $collection = $this->model->where($attribute, '=', $id)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $collection->count();
+        }
+
+        return 0;
     }
 
     public function getAllByTurma($turmaId)
@@ -45,14 +59,31 @@ class PeriodoLetivoRepository extends BaseRepository
         return $result;
     }
 
-    public function getPeriodosValidos($ofc_ano)
+    public function getPeriodosValidos($ofc_ano, $periodo)
     {
-        return $this->model
+        $periodosvalidos = $this->model
                     ->whereYear('per_inicio', $ofc_ano)
                     ->where('per_fim', '>=', date('Y-m-d'))
                     ->orderBy('per_inicio', 'ASC')
                     ->pluck('per_nome', 'per_id')
                     ->toArray();
+
+        $periodosId = [];
+
+
+
+        foreach ($periodosvalidos as $key => $valido) {
+            $periodosId[] = $key;
+        }
+
+        if ($periodo) {
+            $periodosId[] = $periodo;
+        }
+
+        return $this->model
+               ->whereIn('per_id', $periodosId)
+               ->pluck('per_nome', 'per_id')
+               ->toArray();
     }
 
     public function verifyNamePeriodo($periodoName, $periodoId = null)

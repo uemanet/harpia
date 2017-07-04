@@ -2,10 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
-use League\Flysystem\FileExistsException;
 use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Geral\Http\Requests\AnexoRequest;
 use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -13,9 +10,7 @@ use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\MatrizCurricularRepository;
 use Modulos\Academico\Http\Requests\MatrizCurricularRequest;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use DB;
 
 class MatrizesCurricularesController extends BaseController
 {
@@ -214,10 +209,12 @@ class MatrizesCurricularesController extends BaseController
             flash()->error('Matriz curricular não existe.');
             return redirect()->back();
         }
+
         // Carrega no select o curso da matriz como a unica opcao
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-        $curso = null;
+        $curso = [];
         $curso[$matrizCurricular->mtc_crs_id] = $cursos[$matrizCurricular->mtc_crs_id];
+
         return view('Academico::matrizescurriculares.edit', ['matrizCurricular' => $matrizCurricular, 'curso' => $curso, 'cursoId' => $matrizCurricular->mtc_crs_id]);
     }
 
@@ -225,7 +222,9 @@ class MatrizesCurricularesController extends BaseController
     {
         try {
             DB::beginTransaction();
+
             $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
+
             $dados = $request->only('mtc_anx_projeto_pedagogico', 'mtc_descricao', 'mtc_titulo',
                 'mtc_data', 'mtc_creditos', 'mtc_horas', 'mtc_horas_praticas');
 
@@ -253,6 +252,7 @@ class MatrizesCurricularesController extends BaseController
             }
 
             $dados['mtc_anx_projeto_pedagogico'] = $matrizCurricular->mtc_anx_projeto_pedagogico;
+
             if (!$this->matrizCurricularRepository->update($dados, $matrizCurricular->mtc_id, 'mtc_id')) {
                 DB::rollBack();
                 flash()->error('Erro ao tentar atualizar');
@@ -284,18 +284,17 @@ class MatrizesCurricularesController extends BaseController
             if ($this->matrizCurricularRepository->delete($matrizCurricularId)) {
                 // Excluir Anexo correspondente
                 $this->anexoRepository->deletarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
+
                 flash()->success('Matriz curricular excluída com sucesso.');
             }
 
             return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. A matriz curricular contém dependências no sistema.');
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Esta matriz curricular ainda contém dependências no sistema e não pode ser excluída.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
