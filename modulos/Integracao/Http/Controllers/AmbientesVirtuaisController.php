@@ -397,6 +397,13 @@ class AmbientesVirtuaisController extends BaseController
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
             $ambiente = $turma->ambientes->first()->amb_id;
 
+            $deletar = $this->ambienteTurmaRepository->verificaPendenciasTurma($ambienteTurmaId);
+
+            if ($deletar) {
+                flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
+            }
+            return redirect()->back();
+
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
             if ($turma->trm_integrada) {
