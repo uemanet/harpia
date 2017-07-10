@@ -67,8 +67,10 @@ class Curso extends BaseModel
     // Accessors
     public function getCrsDataAutorizacaoAttribute($value)
     {
-        setlocale(LC_ALL, 'pt_BR');
-        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        if (!is_null($value)) {
+            setlocale(LC_ALL, 'pt_BR');
+            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        }
     }
 
     // Mutators
