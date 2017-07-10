@@ -18,7 +18,7 @@ class CreateAcdCursosTable extends Migration
             $table->integer('crs_cen_id')->unsigned();
             $table->integer('crs_nvc_id')->unsigned();
             $table->integer('crs_prf_diretor')->unsigned();
-            $table->string('crs_nome', 45);
+            $table->string('crs_nome', 255);
             $table->string('crs_sigla', 10);
             $table->string('crs_descricao')->nullable();
             $table->string('crs_resolucao')->nullable();
