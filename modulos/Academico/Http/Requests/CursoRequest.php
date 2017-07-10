@@ -27,7 +27,7 @@ class CursoRequest extends BaseRequest
             'crs_cen_id' => 'required',
             'crs_nvc_id' => 'required',
             'crs_prf_diretor' => 'required',
-            'crs_nome' => 'required|min:3|max:90',
+            'crs_nome' => 'required|min:3|max:255',
             'crs_sigla'=>'required|max:10',
             'crs_descricao' => 'max:255',
             'crs_resolucao' => 'max:255',
