@@ -43,8 +43,10 @@ class MatrizCurricular extends BaseModel
     // Retorna a data em padrao pt-BR em vez do padrao internacional
     public function getMtcDataAttribute($value)
     {
-        setlocale(LC_ALL, 'pt_BR');
-        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        if (!is_null($value)) {
+            setlocale(LC_ALL, 'pt_BR');
+            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        }
     }
 
     // Mutators
