@@ -7,9 +7,6 @@ class GeralSeeder extends Seeder
 {
     public function run()
     {
-        $this->call(TiposAnexoTableSeeder::class);
-        $this->command->info('Tipos Anexos Table seeded');
-
         $this->call(TiposDocumentoSeeder::class);
         $this->command->info('Tipos de Documentos Table seeded');
 
