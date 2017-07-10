@@ -8,6 +8,7 @@
     <title>@yield('title')</title>
 
     <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/css/plugins/toastr.min.css') }}" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -72,11 +73,13 @@
     </div>
 
     <!-- JQUERY-->
-    <script src="{{ asset('/js/jquery-2.2.3.min.js')}}"></script>
+    <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
     <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
     <script src="{{ asset('/js/app.min.js')}}"></script>
+    <script src="{{ asset('/js/plugins/toastr.min.js')}}"></script>
+    <script src="{{ asset('/js/harpia.js')}}"></script>
+    {!! Flash::render() !!}
 
-    @section('scripts')
-    @show
+    @yield('scripts')
 </body>
 </html>

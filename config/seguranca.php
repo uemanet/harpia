@@ -8,6 +8,9 @@ return [
 
     'postlogin_openroutes' => array(
         'auth.logout',
-        'index'
+        'index',
+        'seguranca.profile.index',
+        'seguranca.profile.edit',
+        'seguranca.profile.updatepassword'
     )
 ];
