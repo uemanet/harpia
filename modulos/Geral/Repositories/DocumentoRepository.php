@@ -101,7 +101,9 @@ class DocumentoRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
-        $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ? $data['doc_data_expedicao'] : null;
+        if (isset($data['doc_data_expedicao'])) {
+            $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ? $data['doc_data_expedicao'] : null;
+        }
 
         $registros = $this->model->where($attribute, '=', $id)->get();
 

@@ -32,12 +32,11 @@ class AnexoRepository extends BaseRepository
      * Trata uploads guardando o arquivo no servidor e registrando na
      * base de dados
      * @param UploadedFile $uploadedFile
-     * @param int $tipoAnexo
      * @return \Illuminate\Http\RedirectResponse|static
      * @throws FileExistsException
      * @throws \Exception
      */
-    public function salvarAnexo(UploadedFile $uploadedFile, $tipoAnexo = 1)
+    public function salvarAnexo(UploadedFile $uploadedFile)
     {
         $hash = sha1_file($uploadedFile);
         list($firstDir, $secondDir) = $this->hashDirectories($hash);
@@ -97,12 +96,11 @@ class AnexoRepository extends BaseRepository
      * Atualiza o registro de um anexo
      * @param $anexoId
      * @param UploadedFile $uploadedFile
-     * @param $tipoAnexo
      * @return \Illuminate\Http\RedirectResponse|string
      * @throws FileExistsException
      * @throws \Exception
      */
-    public function atualizarAnexo($anexoId, UploadedFile $uploadedFile, $tipoAnexo = 1)
+    public function atualizarAnexo($anexoId, UploadedFile $uploadedFile)
     {
         $anexo = $this->find($anexoId);
 
