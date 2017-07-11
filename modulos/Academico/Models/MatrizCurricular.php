@@ -57,6 +57,8 @@ class MatrizCurricular extends BaseModel
     // Mutators
     public function setMtcDataAttribute($value)
     {
-        $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if ($value) {
+            $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
 }

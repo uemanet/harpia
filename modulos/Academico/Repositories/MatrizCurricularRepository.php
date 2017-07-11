@@ -27,8 +27,6 @@ class MatrizCurricularRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
-        $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
-
         $collection = $this->model->where($attribute, '=', $id)->get();
 
         if ($collection) {

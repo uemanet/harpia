@@ -73,7 +73,7 @@ class MatrizesCurricularesController extends BaseController
                         $button->setName('Download do projeto')
                             ->setRoute('academico.cursos.matrizescurriculares.anexo')
                             ->setParameters(['id' => $id])
-                            ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
+                            ->setIcon('fa fa-download')->setStyle('btn bg-green');
 
                         return ActionButton::render(array($button));
                     }
@@ -233,33 +233,39 @@ class MatrizesCurricularesController extends BaseController
 
             $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
 
-            $dados = $request->only('mtc_anx_projeto_pedagogico', 'mtc_descricao', 'mtc_titulo',
+            $dados = $request->only('mtc_descricao', 'mtc_titulo',
                 'mtc_data', 'mtc_creditos', 'mtc_horas', 'mtc_horas_praticas');
 
             if ($request->file('mtc_file') != null) {
                 // Novo Anexo
                 $projetoPedagogico = $request->file('mtc_file');
+                $anexo = null;
 
-                // Atualiza anexo
-                $atualizaAnexo = $this->anexoRepository->atualizarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico, $projetoPedagogico);
+                if (is_null($matrizCurricular->mtc_anx_projeto_pedagogico)) {
+                    // Cria anexo, se nao existir
+                    $anexo = $this->anexoRepository->salvarAnexo($projetoPedagogico);
+                    $dados['mtc_anx_projeto_pedagogico'] = $anexo->anx_id;
+                } else {
+                    // Apenas atualiza
+                    $anexo = $this->anexoRepository->atualizarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico, $projetoPedagogico);
+                    $dados['mtc_anx_projeto_pedagogico'] = $matrizCurricular->mtc_anx_projeto_pedagogico;
+                }
 
-                if ($atualizaAnexo['type'] == 'error_non_existent') {
-                    flash()->error($atualizaAnexo['message']);
+                if (is_array($anexo) && $anexo['type'] == 'error_non_existent') {
+                    flash()->error($anexo['message']);
                     return redirect()->back();
                 }
 
-                if ($atualizaAnexo['type'] == 'error_exists') {
-                    flash()->error($atualizaAnexo['message']);
+                if (is_array($anexo) && $anexo['type'] == 'error_exists') {
+                    flash()->error($anexo['message']);
                     return redirect()->back()->withInput($request->all());
                 }
 
-                if (!$atualizaAnexo) {
+                if (!$anexo) {
                     flash()->error('ocorreu um problema ao salvar o arquivo');
                     return redirect()->back()->withInput($request->all());
                 }
             }
-
-            $dados['mtc_anx_projeto_pedagogico'] = $matrizCurricular->mtc_anx_projeto_pedagogico;
 
             if (!$this->matrizCurricularRepository->update($dados, $matrizCurricular->mtc_id, 'mtc_id')) {
                 DB::rollBack();
