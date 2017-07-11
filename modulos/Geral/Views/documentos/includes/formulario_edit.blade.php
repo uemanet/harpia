@@ -29,30 +29,26 @@
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('doc_file')) has-error @endif">
+    <div class="form-group col-md-6 @if ($errors->has('doc_file')) has-error @endif">
         {!! Form::label('doc_file', 'Documento', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::file('doc_file', ['class' => 'form-control file']) !!}
             @if ($errors->has('doc_file')) <p class="help-block">{{ $errors->first('doc_file') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-4 @if ($errors->has('doc_anx_nome')) has-error @endif">
+    <div class="form-group col-md-6 @if ($errors->has('doc_anx_nome')) has-error @endif">
         {!! Form::label('doc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
-        <div class="input-group-button">
+        <div class="input-group">
             @if($anexo != null)
             <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
-                @if($anexo != null)
                 <div class="input-group-btn botaoDelete">
                     <button type="button" class="btn btn-danger btn-delete">Excluir</button>
                 </div>
-                @endif
             @else
             <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
-                @if($anexo != null)
-                    <div class="input-group-btn botaoDelete">
-                        <button type="button" class="btn btn-danger btn-delete">Excluir</button>
-                    </div>
-                @endif
+                <div class="input-group-btn botaoDelete">
+                    <button type="button" class="btn btn-danger btn-delete" disabled="">Excluir</button>
+                </div>
             @endif
         </div>
     </div>
@@ -136,6 +132,4 @@
 
         });
     </script>
-
-
 @endsection
