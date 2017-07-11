@@ -213,6 +213,12 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
+        Route::group(['prefix' => 'dashboard'], function () {
+            Route::get('/cursopornivel', '\Modulos\Academico\Http\Controllers\Async\Index@getCursoPorNivelData')->name('academico.async.dashboard.cursopornivel');
+            Route::get('/matriculasstatus', '\Modulos\Academico\Http\Controllers\Async\Index@getMatriculaPorStatusData')->name('academico.async.dashboard.matriculasstatus');
+            Route::get('/matriculasmes', '\Modulos\Academico\Http\Controllers\Async\Index@getMatriculasPorMes')->name('academico.async.dashboard.matriculasmes');
+        });
+
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')->name('academico.async.matrizescurriculares.findallbycurso');
             Route::get('/findbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindByOfertaCurso')->name('academico.async.matrizescurriculares.findbyofertacurso');
