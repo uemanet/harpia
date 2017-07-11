@@ -40,6 +40,7 @@
                     <li><a href="#senha" data-toggle="tab">Alterar Senha</a></li>
                 </ul>
                 <div class="tab-content">
+
                     <div class="active tab-pane" id="dados">
                         {!! Form::model($usuario->pessoa,["route" => ['seguranca.profile.edit'], "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal"]) !!}
                             <div class="form-group @if ($errors->has('pes_nome')) has-error @endif">
@@ -173,7 +174,7 @@
                     </div>
 
                     <div class="tab-pane" id="endereco">
-                        {!! Form::model($usuario->pessoa, ['route' => 'seguranca.profile.edit', 'method' => 'POST', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+                        {!! Form::model($usuario->pessoa, ['route' => 'seguranca.profile.edit', 'method' => 'POST','id' => 'form', 'role' => 'form', 'class' => 'form-horizontal']) !!}
                             <div class="form-group @if ($errors->has('pes_cep')) has-error @endif">
                                 {!! Form::label('pes_cep', 'CEP*', ['class' => 'col-sm-3 control-label']) !!}
 
@@ -223,41 +224,43 @@
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
-                                {!! Form::label('pes_estado', 'Estado*', ['class' => 'col-sm-3 control-label']) !!}
-
-                                <div class="col-sm-9">
-                                    {!! Form::select('pes_estado',[
-                                                        'AC' => 'Acre',
-                                                        'AL' => 'Alagoas',
-                                                        'AP' => 'Amapá',
-                                                        'AM' => 'Amazonas',
-                                                        'BA' => 'Bahia',
-                                                        'CE' => 'Ceará',
-                                                        'DF' => 'Distrito Federal',
-                                                        'ES' => 'Espirito Santo',
-                                                        'GO' => 'Goiás',
-                                                        'MA' => 'Maranhão',
-                                                        'MT' => 'Mato Grosso',
-                                                        'MS' => 'Mato Grosso do Sul',
-                                                        'MG' => 'Minas Gerais',
-                                                        'PA' => 'Pará',
-                                                        'PB' => 'Paraiba',
-                                                        'PR' => 'Paraná',
-                                                        'PE' => 'Pernambuco',
-                                                        'PI' => 'Piauí',
-                                                        'RJ' => 'Rio de Janeiro',
-                                                        'RN' => 'Rio Grande do Norte',
-                                                        'RS' => 'Rio Grande do Sul',
-                                                        'RO' => 'Rondônia',
-                                                        'RR' => 'Roraima',
-                                                        'SC' => 'Santa Catarina',
-                                                        'SP' => 'São Paulo',
-                                                        'SE' => 'Sergipe',
-                                                        'TO' => 'Tocantis',
-                                                    ], old('pes_estado'), ['class' => 'form-control']) !!}
-                                    @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
-                                </div>
+                            {!! Form::label('pes_estado', 'Estado*', ['class' => 'col-sm-3 control-label']) !!}
+                            @php
+                                $estados = ['AC' => 'Acre',
+                                            'AL' => 'Alagoas',
+                                            'AP' => 'Amapá',
+                                            'AM' => 'Amazonas',
+                                            'BA' => 'Bahia',
+                                            'CE' => 'Ceará',
+                                            'DF' => 'Distrito Federal',
+                                            'ES' => 'Espirito Santo',
+                                            'GO' => 'Goiás',
+                                            'MA' => 'Maranhão',
+                                            'MT' => 'Mato Grosso',
+                                            'MS' => 'Mato Grosso do Sul',
+                                            'MG' => 'Minas Gerais',
+                                            'PA' => 'Pará',
+                                            'PB' => 'Paraiba',
+                                            'PR' => 'Paraná',
+                                            'PE' => 'Pernambuco',
+                                            'PI' => 'Piauí',
+                                            'RJ' => 'Rio de Janeiro',
+                                            'RN' => 'Rio Grande do Norte',
+                                            'RS' => 'Rio Grande do Sul',
+                                            'RO' => 'Rondônia',
+                                            'RR' => 'Roraima',
+                                            'SC' => 'Santa Catarina',
+                                            'SP' => 'São Paulo',
+                                            'SE' => 'Sergipe',
+                                            'TO' => 'Tocantis',
+                                ];
+                            @endphp
+                            <div class="col-sm-9">
+                                {!! Form::select('pes_estado',$estados, old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione um estado']) !!}
+                                @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
                             </div>
+                        </div>
+
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <button type="submit" class="btn btn-primary">Atualizar Endereço</button>
@@ -265,6 +268,7 @@
                             </div>
                         {!! Form::close() !!}
                     </div>
+                    <!-- /.tab-pane -->
 
                     <div class="tab-pane" id="senha">
                         {!! Form::model($usuario->pessoa,["route" => "seguranca.profile.updatepassword", "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal"]) !!}

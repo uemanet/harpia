@@ -37,7 +37,7 @@ class ProfileController extends BaseController
     public function putEdit(ProfileRequest $request)
     {
         if (!$this->auth->check()) {
-            flash()->error('Voçê não tem permissão para acessar este recurso!');
+            flash()->error('Você não tem permissão para acessar este recurso!');
             return redirect()->back();
         }
 
@@ -93,6 +93,11 @@ class ProfileController extends BaseController
 
     public function postUpdatepassword(Request $request)
     {
+        if (!$this->auth->check()) {
+            flash()->error('Você não tem permissão para acessar este recurso!');
+            return redirect()->back();
+        }
+
         // Faz a validação dos dados
         $validator = Validator::make($request->all(), [
             'usr_senha' => 'required|min:6',
