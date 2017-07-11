@@ -17,11 +17,11 @@
 
         td {
             border: 0.2mm solid #000000;
-            padding: 0.5em;
+            padding: 0.4em;
         }
 
         .heightMin td{
-            height: 8em;
+            height: 7em;
             vertical-align: top;
         }
 
@@ -106,10 +106,10 @@
     <table>
         <tbody>
             <tr>
-                <td width="5%"><strong>ITEM</strong></td>
-                <td width="40%"><strong>DISCIPLINA</strong></td>
-                <td width="35%"><strong>PROFESSOR(TITULAÇÃO)</strong></td>
-                <td width="5%"><strong>C.H</strong></td>
+                <td width="7%"><strong>ITEM</strong></td>
+                <td><strong>DISCIPLINA</strong></td>
+                <td><strong>PROFESSOR(TITULAÇÃO)</strong></td>
+                <td width="6%"><strong>C.H</strong></td>
                 <td width="5%"><strong>CR</strong></td>
                 <td width="10%"><strong>NOTA FINAL</strong></td>
             </tr>
@@ -127,6 +127,10 @@
 
                             if (!empty($disciplina->professor_titulacao)) {
                                 $name .= ' ('.$disciplina->professor_titulacao.')';
+                            }
+
+                            if ($disciplina->mdc_tipo_disciplina == 'tcc') {
+                                $name = $dados['tcc']->pes_nome.' ('.$dados['tcc']->prf_titulacao.')';
                             }
 
                             echo mb_strtoupper($name, 'UTF-8');
@@ -165,16 +169,6 @@
                     <p><strong>DATA</strong></p>
                     <p>{{$dados['tcc']->ltc_data_apresentacao}}</p>
                 </td>
-            </tr>
-        </tbody>
-    </table>
-    <table>
-        <tbody>
-            <tr>
-                <td width="100%" class="center"><strong>REGULAMENTAÇÃO</strong></td>
-            </tr>
-            <tr>
-                <td></td>
             </tr>
         </tbody>
     </table>
