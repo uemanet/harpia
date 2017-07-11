@@ -20,7 +20,7 @@
         </div>
         <div class="box-body">
             {!! Form::model($matrizCurricular,["url" => url('/') . "/academico/matrizescurriculares/edit/$matrizCurricular->mtc_id", "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
-                @include('Academico::matrizescurriculares.includes.formulario')
+                @include('Academico::matrizescurriculares.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>

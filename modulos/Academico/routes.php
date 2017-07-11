@@ -216,6 +216,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'matrizescurriculares'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindallbycurso')->name('academico.async.matrizescurriculares.findallbycurso');
             Route::get('/findbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@getFindByOfertaCurso')->name('academico.async.matrizescurriculares.findbyofertacurso');
+            Route::post('/removeanexo', '\Modulos\Academico\Http\Controllers\Async\MatrizesCurriculares@postRemoveAnexo')->name('academico.async.matrizescurriculares.removeanexo');
         });
 
         Route::group(['prefix' => 'turmas'], function () {
