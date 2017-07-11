@@ -50,7 +50,7 @@
                 <div class="box box-primary">
                     <div class="box-header">
                         <div class="row">
-                            <div class="col-md-2 pull-right">
+                            <div class="col-md-3 pull-right">
                                 <div class="form-group">
                                     <button class="btn btn-success form-control btn-mapear" data-id="{{ $ofertaDisciplina->ofd_id }}">
                                         <i class="fa fa-exchange"></i> Migrar Todas as Notas

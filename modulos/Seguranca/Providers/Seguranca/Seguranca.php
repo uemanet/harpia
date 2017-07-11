@@ -86,7 +86,11 @@ class Seguranca implements SegurancaContract
 
             // Se é uma subcategoria, monta recursivamente a arvore
             if ($menuItemRepository->isSubCategoria($itensFilho->mit_id)) {
-                $categoriaTree->addTree($this->makeCategoriaTree($moduloId, $itensFilho->mit_id));
+                $tree = $this->makeCategoriaTree($moduloId, $itensFilho->mit_id);
+
+                if ($tree->getRoot()->hasChildren()) {
+                    $categoriaTree->addTree($tree);
+                }
             }
 
             // Se for um item final, adiciona a arvore

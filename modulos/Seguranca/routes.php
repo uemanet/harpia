@@ -32,6 +32,13 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::post('/deletarperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postDeletarperfil')->name('seguranca.usuarios.deletarperfil');
     });
 
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@getIndex')->name('seguranca.profile.index');
+        Route::put('/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
+        Route::post('/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
+        Route::put('/password/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@postUpdatepassword')->name('seguranca.profile.updatepassword');
+    });
+
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'perfis'], function () {
             Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Perfis@getFindallbymodulo')->name('seguranca.async.perfis.findallbymodulo');
