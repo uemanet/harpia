@@ -24,7 +24,6 @@ class AnexoRequest extends BaseRequest
     public function rules()
     {
         return [
-            'anx_tax_id' => 'required',
             'anx_nome' => 'required',
             'anx_mime' => 'required',
             'anx_localizacao' => 'required'

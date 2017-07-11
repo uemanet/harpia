@@ -11,7 +11,6 @@ class Anexo extends BaseModel
     protected $primaryKey = 'anx_id';
 
     protected $fillable = [
-        'anx_tax_id',
         'anx_nome',
         'anx_mime',
         'anx_extensao',
