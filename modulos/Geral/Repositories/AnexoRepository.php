@@ -57,7 +57,6 @@ class AnexoRepository extends BaseRepository
 
         try {
             $anexo = [
-                'anx_tax_id' => $tipoAnexo,
                 'anx_nome' => $uploadedFile->getClientOriginalName(),
                 'anx_mime' => $uploadedFile->getClientMimeType(),
                 'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
@@ -136,7 +135,6 @@ class AnexoRepository extends BaseRepository
 
             // Atualiza registro com o novo arquivo
             $data = [
-                'anx_tax_id' => $tipoAnexo,
                 'anx_nome' => $uploadedFile->getClientOriginalName(),
                 'anx_mime' => $uploadedFile->getClientMimeType(),
                 'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
