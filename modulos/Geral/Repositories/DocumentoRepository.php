@@ -101,9 +101,7 @@ class DocumentoRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
-        $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ?
-            Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString() :
-            null;
+        $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ? $data['doc_data_expedicao'] : null;
 
         $registros = $this->model->where($attribute, '=', $id)->get();
 
