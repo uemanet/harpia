@@ -76,28 +76,28 @@ class HistoricoDefinitivoRepository extends BaseRepository
 
         $returndata['disciplinas'] = $this->getDisciplinasGraduacao($matricula->mat_id);
 
-        $tcc = DB::table('acd_matriculas_ofertas_disciplinas')
-            ->join('acd_ofertas_disciplinas', function ($join) {
-                $join->on('mof_ofd_id', '=', 'ofd_id');
-            })
-            ->join('acd_modulos_disciplinas', function ($join) {
-                $join->on('ofd_mdc_id', '=', 'mdc_id');
-            })
-            ->join('acd_matriculas', function ($join) {
-                $join->on('mof_mat_id', '=', 'mat_id');
-            })
-            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
-            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->join('acd_lancamentos_tccs', 'ltc_mof_id', '=', 'mof_id')
-            ->where('mdc_tipo_disciplina', '=', 'tcc')
-            ->where('mat_id', '=', $matricula->mat_id)
-            ->select('ltc_id')
-            ->first();
+        $mof_tcc = DB::table('acd_matriculas_ofertas_disciplinas')
+                        ->join('acd_ofertas_disciplinas', function ($join) {
+                            $join->on('mof_ofd_id', '=', 'ofd_id');
+                        })
+                        ->join('acd_modulos_disciplinas', function ($join) {
+                            $join->on('ofd_mdc_id', '=', 'mdc_id');
+                        })
+                        ->where('mdc_tipo_disciplina', '=', 'tcc')
+                        ->where('mof_mat_id', '=', $matricula->mat_id)
+                        ->select('mof_id')
+                        ->first();
 
-        $returndata['tcc'] = $this->lancamentoTccRepository->findBy(
-            ['ltc_id' => $tcc->ltc_id],
-            ['ltc_titulo', 'ltc_tipo', 'ltc_data_apresentacao', 'ltc_observacao']
+        $tcc = $this->lancamentoTccRepository->findBy(
+            ['ltc_mof_id' => $mof_tcc->mof_id],
+            ['ltc_titulo', 'ltc_tipo', 'ltc_data_apresentacao', 'ltc_observacao', 'pes_nome', 'pes_id']
         )->first();
+
+        if ($tcc) {
+            $tcc->prf_titulacao = $this->getTitulacaoMaxProfessor($tcc->pes_id);
+        }
+
+        $returndata['tcc'] = $tcc;
 
         return $returndata;
     }
@@ -121,7 +121,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
                         ['mof_situacao_matricula', '<>', ['cursando', 'cancelado']]
                     ],
                     ['mof_id', 'mof_nota1', 'mof_nota2', 'mof_nota3', 'mof_conceito', 'mof_recuperacao', 'mof_final',
-                        'mof_mediafinal', 'mof_situacao_matricula', 'mdo_id', 'mdo_nome', 'mdo_descricao', 'mdo_qualificacao',
+                        'mof_mediafinal', 'mof_situacao_matricula','mdc_tipo_disciplina', 'mdo_id', 'mdo_nome', 'mdo_descricao', 'mdo_qualificacao',
                         'dis_nome', 'dis_carga_horaria', 'dis_creditos', 'pes_id', 'pes_nome as professor']
                 )->last();
 
@@ -132,35 +132,39 @@ class HistoricoDefinitivoRepository extends BaseRepository
         }
 
         for ($i = 0; $i < count($arrDisciplinas); $i++) {
-            $titulacao = null;
-            $arrDisciplinas[$i]->professor_titulacao = '';
-
-            $result = $this->titulacaoInformacaoRepository->findBy(
-                ['tin_pes_id' => $arrDisciplinas[$i]->pes_id],
-                null,
-                ['tit_peso' => 'desc']
-            );
-
-            if ($result) {
-                $titulacao = $result->where('tin_anofim', '<>', null)->first();
-
-                if ($titulacao->tit_id == 2) {
-                    $arrDisciplinas[$i]->professor_titulacao = 'Graduado';
-                } elseif ($titulacao->tit_id == 3) {
-                    $arrDisciplinas[$i]->professor_titulacao = 'Especialista';
-                } elseif ($titulacao->tit_id == 4) {
-                    $arrDisciplinas[$i]->professor_titulacao = 'Mestre';
-                } elseif ($titulacao->tit_id == 5) {
-                    $arrDisciplinas[$i]->professor_titulacao = 'Doutor';
-                } elseif ($titulacao->tit_id == 6) {
-                    $arrDisciplinas[$i]->professor_titulacao = 'Pós-Doutor';
-                } elseif ($titulacao->tit_id == 7) {
-                    $arrDisciplinas[$i]->professor_titulacao = 'Pós-Graduado';
-                }
-            }
+            $arrDisciplinas[$i]->professor_titulacao = $this->getTitulacaoMaxProfessor($arrDisciplinas[$i]->pes_id);
         }
 
         return $arrDisciplinas;
+    }
+
+    private function getTitulacaoMaxProfessor($pes_id)
+    {
+        $result = $this->titulacaoInformacaoRepository->findBy(
+            ['tin_pes_id' => $pes_id],
+            null,
+            ['tit_peso' => 'desc']
+        );
+
+        if ($result) {
+            $titulacao = $result->where('tin_anofim', '<>', null)->first();
+
+            if ($titulacao->tit_id == 2) {
+                return 'Graduado';
+            } elseif ($titulacao->tit_id == 3) {
+                return 'Especialista';
+            } elseif ($titulacao->tit_id == 4) {
+                return 'Mestre';
+            } elseif ($titulacao->tit_id == 5) {
+                return 'Doutor';
+            } elseif ($titulacao->tit_id == 6) {
+                return 'Pós-Doutor';
+            } elseif ($titulacao->tit_id == 7) {
+                return 'Pós-Graduado';
+            }
+        }
+
+        return null;
     }
 
     private function getDisciplinasTecnico($matriculaId)
