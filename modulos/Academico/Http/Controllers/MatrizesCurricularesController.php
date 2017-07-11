@@ -62,19 +62,23 @@ class MatrizesCurricularesController extends BaseController
                     return array('style' => 'width: 140px;');
                 })
                 ->means('mtc_action', 'mtc_id')
-                ->means('mtc_anx_projeto_pedagogico', 'mtc_id')
+                ->means('mtc_anx_projeto_pedagogico', 'projeto')
                 ->means('mtc_crs_id', 'curso')
                 ->modify('mtc_crs_id', function ($curso) {
                     return $curso->crs_nome;
                 })
-                ->modify('mtc_anx_projeto_pedagogico', function ($id) {
-                    $button = new TButton();
-                    $button->setName('Download do projeto')
-                        ->setRoute('academico.cursos.matrizescurriculares.anexo')
-                        ->setParameters(['id' => $id])
-                        ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
+                ->modify('mtc_anx_projeto_pedagogico', function ($projeto, $id) {
+                    if (!is_null($projeto)) {
+                        $button = new TButton();
+                        $button->setName('Download do projeto')
+                            ->setRoute('academico.cursos.matrizescurriculares.anexo')
+                            ->setParameters(['id' => $id])
+                            ->setIcon('fa fa-file-pdf-o')->setStyle('btn bg-blue');
 
-                    return ActionButton::render(array($button));
+                        return ActionButton::render(array($button));
+                    }
+
+                    return "-";
                 })
                 ->modify('mtc_action', function ($id) {
                     return ActionButton::grid([
@@ -139,7 +143,7 @@ class MatrizesCurricularesController extends BaseController
     public function getMatrizAnexo($matrizCurricularId)
     {
         $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
-
+        
         if (!$matrizCurricular) {
             flash()->error('Matriz curricular não existe.');
             return redirect()->back();
@@ -148,7 +152,7 @@ class MatrizesCurricularesController extends BaseController
         $anexo =  $this->anexoRepository->recuperarAnexo($matrizCurricular->mtc_anx_projeto_pedagogico);
 
         if ($anexo == 'error_non_existent') {
-            flash()->error('anexo não existe');
+            flash()->error('Anexo não existe');
             return redirect()->back();
         }
 
@@ -161,22 +165,26 @@ class MatrizesCurricularesController extends BaseController
             DB::beginTransaction();
 
             $projetoPegagogico = $request->file('mtc_file');
-            $anexoCriado = $this->anexoRepository->salvarAnexo($projetoPegagogico);
-
-            if ($anexoCriado['type'] == 'error_exists') {
-                flash()->error($anexoCriado['message']);
-                return redirect()->back()->withInput($request->all());
-            }
-
-            if (!$anexoCriado) {
-                flash()->error('ocorreu um problema ao salvar o arquivo');
-                return redirect()->back()->withInput($request->all());
-            }
+            $anexoCriado = null;
 
             $dados = $request->all();
             unset($dados['mtc_file']);
 
-            $dados['mtc_anx_projeto_pedagogico'] = $anexoCriado->anx_id;
+            if ($projetoPegagogico) {
+                $anexoCriado = $this->anexoRepository->salvarAnexo($projetoPegagogico);
+
+                if (is_array($anexoCriado) && $anexoCriado['type'] == 'error_exists') {
+                    flash()->error($anexoCriado['message']);
+                    return redirect()->back()->withInput($request->all());
+                }
+
+                if (!$anexoCriado) {
+                    flash()->error('Ocorreu um problema ao salvar o arquivo');
+                    return redirect()->back()->withInput($request->all());
+                }
+
+                $dados['mtc_anx_projeto_pedagogico'] = $anexoCriado->anx_id;
+            }
 
             $matrizCurricular = $this->matrizCurricularRepository->create($dados);
 

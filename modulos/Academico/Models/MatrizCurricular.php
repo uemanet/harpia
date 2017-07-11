@@ -39,6 +39,11 @@ class MatrizCurricular extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\ModuloMatriz', 'mdo_mtc_id', 'mtc_id');
     }
 
+    public function projeto()
+    {
+        return $this->hasOne('Modulos\Geral\Models\Anexo', 'anx_id', 'mtc_anx_projeto_pedagogico');
+    }
+
     // Accessors
     // Retorna a data em padrao pt-BR em vez do padrao internacional
     public function getMtcDataAttribute($value)

@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('mtc_file')) has-error @endif">
-        {!! Form::label('mtc_file', 'Projeto Pedagógico*', ['class' => 'control-label']) !!}
+        {!! Form::label('mtc_file', 'Projeto Pedagógico', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::file('mtc_file', ['class' => 'form-control file']) !!}
             @if ($errors->has('mtc_file')) <p class="help-block">{{ $errors->first('mtc_file') }}</p> @endif
