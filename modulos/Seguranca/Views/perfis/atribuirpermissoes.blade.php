@@ -9,7 +9,7 @@
 @stop
 
 @section('subtitle')
-    <b>Módulo:</b> {{ $perfil->mod_nome }} | <b>Perfil:</b> {{ $perfil->prf_nome }}
+    <b>Módulo:</b> {{ $perfil->modulo->mod_nome }} | <b>Perfil:</b> {{ $perfil->prf_nome }}
 @stop
 
 @section('content')
@@ -41,7 +41,7 @@
                 </ul>
             </div>
 
-            {!! Form::open(["url" => "/seguranca/perfis/atribuirpermissoes", "method" => "POST", "role" => "form"]) !!}
+            {!! Form::open(["url" => "/seguranca/perfis/atribuirpermissoes/". $perfil->prf_id, "method" => "POST", "role" => "form"]) !!}
                 {!! Form::hidden('permissao','' , ['id'=>'permissao']) !!}
                 {!! Form::hidden('prf_id', $perfil->prf_id) !!}
                 <div class="row">
