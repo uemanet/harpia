@@ -120,4 +120,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model->getFillable();
     }
+
+    public function count()
+    {
+        return $this->model->count();
+    }
 }
