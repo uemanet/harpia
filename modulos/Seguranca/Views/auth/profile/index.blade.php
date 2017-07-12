@@ -41,7 +41,7 @@
                 </ul>
                 <div class="tab-content">
 
-                    <div class="active tab-pane" id="dados">
+                    <div class="tab-pane active" id="dados">
                         {!! Form::model($usuario->pessoa,["route" => ['seguranca.profile.edit'], "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal"]) !!}
                             <div class="form-group @if ($errors->has('pes_nome')) has-error @endif">
                                 {!! Form::label('pes_nome', 'Nome completo*', ['class' => 'col-sm-3 control-label']) !!}
@@ -224,42 +224,40 @@
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
-                            {!! Form::label('pes_estado', 'Estado*', ['class' => 'col-sm-3 control-label']) !!}
-                            @php
-                                $estados = ['AC' => 'Acre',
-                                            'AL' => 'Alagoas',
-                                            'AP' => 'Amapá',
-                                            'AM' => 'Amazonas',
-                                            'BA' => 'Bahia',
-                                            'CE' => 'Ceará',
-                                            'DF' => 'Distrito Federal',
-                                            'ES' => 'Espirito Santo',
-                                            'GO' => 'Goiás',
-                                            'MA' => 'Maranhão',
-                                            'MT' => 'Mato Grosso',
-                                            'MS' => 'Mato Grosso do Sul',
-                                            'MG' => 'Minas Gerais',
-                                            'PA' => 'Pará',
-                                            'PB' => 'Paraiba',
-                                            'PR' => 'Paraná',
-                                            'PE' => 'Pernambuco',
-                                            'PI' => 'Piauí',
-                                            'RJ' => 'Rio de Janeiro',
-                                            'RN' => 'Rio Grande do Norte',
-                                            'RS' => 'Rio Grande do Sul',
-                                            'RO' => 'Rondônia',
-                                            'RR' => 'Roraima',
-                                            'SC' => 'Santa Catarina',
-                                            'SP' => 'São Paulo',
-                                            'SE' => 'Sergipe',
-                                            'TO' => 'Tocantis',
-                                ];
-                            @endphp
-                            <div class="col-sm-9">
-                                {!! Form::select('pes_estado',$estados, old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione um estado']) !!}
-                                @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
+                                {!! Form::label('pes_estado', 'Estado*', ['class' => 'col-sm-3 control-label']) !!}
+                                <div class="col-sm-9">
+                                    {!! Form::select('pes_estado',[
+                                        "AC" => "Acre",
+                                        "AL" => "Alagoas",
+                                        "AP" => "Amapá",
+                                        "AM" => "Amazonas",
+                                        "BA" => "Bahia",
+                                        "CE" => "Ceará",
+                                        "DF" => "Distrito Federal",
+                                        "ES" => "Espirito Santo",
+                                        "GO" => "Goiás",
+                                        "MA" => "Maranhão",
+                                        "MT" => "Mato Grosso",
+                                        "MS" => "Mato Grosso do Sul",
+                                        "MG" => "Minas Gerais",
+                                        "PA" => "Pará",
+                                        "PB" => "Paraiba",
+                                        "PR" => "Paraná",
+                                        "PE" => "Pernambuco",
+                                        "PI" => "Piauí",
+                                        "RJ" => "Rio de Janeiro",
+                                        "RN" => "Rio Grande do Norte",
+                                        "RS" => "Rio Grande do Sul",
+                                        "RO" => "Rondônia",
+                                        "RR" => "Roraima",
+                                        "SC" => "Santa Catarina",
+                                        "SP" => "São Paulo",
+                                        "SE" => "Sergipe",
+                                        "TO" => "Tocantis"
+                                    ], old('pes_estado'), ['placeholder' => 'Selecione um estado', 'class' => 'form-control', 'style' => 'width: 100%;']) !!}
+                                    @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
+                                </div>
                             </div>
-                        </div>
 
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
@@ -325,60 +323,66 @@
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $("select").select2();
 
-        $('.datepicker').datepicker({
-            format: "dd/mm/yyyy",
-            language: 'pt-BR',
-            autoclose: true
-        });
+        $(function() {
+            $("select").select2();
 
-        $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
-        $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
+            $('.datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                language: 'pt-BR',
+                autoclose: true
+            });
 
-        $("#pes_cep").focusout(function(e){
+            $(document).find('span .select2').css('width', '100%');
 
-            function limpaFormCep() {
+            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
+            $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
 
-                $("#pes_cidade").val("");
-                $("#pes_estado").val("");
-                $("#pes_bairro").val("");
-                $("#pes_endereco").val("");
-            }
+            $("#pes_cep").focusout(function(e){
 
-            var str = e.target.value;
+                function limpaFormCep() {
 
-            var cep = str.replace(/\D/g, '');
+                    $("#pes_cidade").val("");
+                    $("#pes_estado").val("");
+                    $("#pes_bairro").val("");
+                    $("#pes_endereco").val("");
+                }
 
-            if (str != "") {
-                //Expressão regular para validar o CEP.
-                var validacep = /^[0-9]{8}$/;
+                var str = e.target.value;
 
-                if(validacep.test(cep)) {
+                var cep = str.replace(/\D/g, '');
 
-                    $("#pes_cidade").val("Buscando...");
-                    $("#pes_estado").val("Buscando...");
-                    $("#pes_bairro").val("Buscando...");
-                    $("#pes_endereco").val("Buscando...");
+                if (str != "") {
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
 
-                    $.harpia.httpget('https://viacep.com.br/ws/' + cep + '/json/').done(function (data) {
-                        if (!data.erro) {
-                            $("#pes_cidade").val(data.localidade);
-                            $("#pes_estado").val(data.uf).change();
-                            $("#pes_bairro").val(data.bairro);
-                            $("#pes_endereco").val(data.logradouro);
-                        } else {
-                            limpaFormCep();
-                            toastr.error("CEP não encontrado", null, {progressBar: true});
-                        }
-                    });
+                    if(validacep.test(cep)) {
+
+                        $("#pes_cidade").val("Buscando...");
+                        $("#pes_estado").val("Buscando...");
+                        $("#pes_bairro").val("Buscando...");
+                        $("#pes_endereco").val("Buscando...");
+
+                        $.harpia.httpget('https://viacep.com.br/ws/' + cep + '/json/').done(function (data) {
+                            if (!data.erro) {
+                                $("#pes_cidade").val(data.localidade);
+                                $("#pes_estado").val(data.uf).change();
+                                $("#pes_bairro").val(data.bairro);
+                                $("#pes_endereco").val(data.logradouro);
+                            } else {
+                                limpaFormCep();
+                                toastr.error("CEP não encontrado", null, {progressBar: true});
+                            }
+                        });
+                    } else {
+                        limpaFormCep();
+                        toastr.warning("Formato do CEP inválido", null, {progressBar: true});
+                    }
                 } else {
                     limpaFormCep();
-                    toastr.warning("Formato do CEP inválido", null, {progressBar: true});
                 }
-            } else {
-                limpaFormCep();
-            }
+            });
         });
+
     </script>
 @stop

@@ -9,7 +9,7 @@
 @stop
 
 @section('content')
-    <section class="content" style="margin-bottom: -10%">
+    <section class="content">
         <div class="row">
             <div class="col-lg-3 col-xs-6">
                 <div class="small-box bg-aqua">
@@ -56,10 +56,8 @@
                 </div>
             </div>
         </div>
-    </section>
-    <div class="content">
         <div class="row">
-            <div class="col-md-6 text-center">
+            <div class="col-md-6">
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Matrículas nos últimos 6 meses</h3>
@@ -75,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 text-center">
+            <div class="col-md-6">
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Cursos por nível</h3>
@@ -110,7 +108,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 @endsection
 
 @section('scripts')
