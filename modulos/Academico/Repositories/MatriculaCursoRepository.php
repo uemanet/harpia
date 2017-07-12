@@ -17,6 +17,21 @@ class MatriculaCursoRepository extends BaseRepository
     protected $turmaRepository;
     protected $registroRepository;
 
+    private $meses = [
+        1 => "Janeiro",
+        2 => "Fevereiro",
+        3 => "Março",
+        4 => "Abril",
+        5 => "Maio",
+        6 => "Junho",
+        7 => "Julho",
+        8 => "Agosto",
+        9 => "Setembro",
+        10 => "Outubro",
+        11 => "Novembro",
+        12 => "Dezembro",
+    ];
+
     public function __construct(
         Matricula $matricula,
         OfertaCursoRepository $oferta,
@@ -778,5 +793,32 @@ class MatriculaCursoRepository extends BaseRepository
                         'PESSOACPF'=> $cpfpessoaformatado
                         ];
         return $returnData;
+    }
+
+    public function getMatriculasPorStatus()
+    {
+        $result = DB::table('acd_matriculas')
+            ->select('mat_situacao', DB::raw("COUNT(*) as quantidade"))
+            ->groupBy('mat_situacao')->get()->toArray();
+
+        foreach ($result as $key => $item) {
+            $result[$key]->mat_situacao = ucfirst($result[$key]->mat_situacao);
+        }
+
+        return $result;
+    }
+
+    public function getMatriculasPorMesUltimosSeisMeses()
+    {
+        $result = DB::table('acd_matriculas')
+            ->select(DB::raw('MONTH(created_at) as mes'), DB::raw('COUNT(*) as quantidade'))
+            ->where(DB::raw('created_at'), '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 6 MONTH)'))
+            ->groupBy('mes')->get()->toArray();
+
+        foreach ($result as $key => $item) {
+            $result[$key]->mes = $this->meses[$result[$key]->mes];
+        }
+
+        return $result;
     }
 }

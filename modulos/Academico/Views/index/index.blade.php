@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="chart">
+                        <div class="chart matriculasmes">
                             <canvas id="matriculasmes" width="undefined" height="undefined"></canvas>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="chart">
+                        <div class="chart curso">
                             <canvas id="curso" width="undefined" height="undefined"></canvas>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="chart">
+                        <div class="chart matricula">
                             <canvas id="matricula" width="undefined" height="undefined"></canvas>
                         </div>
                     </div>
@@ -168,7 +168,8 @@
                     new Chart(area, config);
                 },
                 error: function (error) {
-                    console.log(error);
+                    $(".curso").empty();
+                    $(".curso").append("<p>Sem dados disponíveis</p>");
                 }
             });
 
@@ -212,7 +213,8 @@
                     new Chart(area, config);
                 },
                 error: function (error) {
-                    console.log(error);
+                    $(".matricula").empty();
+                    $(".matricula").append("<p>Sem dados disponíveis</p>");
                 }
             });
 
@@ -252,7 +254,8 @@
                     new Chart(area, config);
                 },
                 error: function (error) {
-                    console.log(error);
+                    $(".matriculasmes").empty();
+                    $(".matriculasmes").append("<p>Sem dados disponíveis</p>");
                 }
             });
         });

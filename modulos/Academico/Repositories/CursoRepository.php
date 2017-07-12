@@ -244,4 +244,12 @@ class CursoRepository extends BaseRepository
 
         return false;
     }
+
+    public function getCursosPorNivel()
+    {
+        return DB::table('acd_cursos')
+            ->select('nvc_nome', 'crs_nvc_id', DB::raw("COUNT(*) as quantidade"))
+            ->join('acd_niveis_cursos', 'crs_nvc_id', '=', 'nvc_id')
+            ->groupBy('crs_nvc_id')->get()->toArray();
+    }
 }

@@ -34,7 +34,6 @@ class indexController extends Controller
      */
     public function getIndex()
     {
-        //        dd(route("academico.async.dashboard.cursopornivel"));
         return view('Academico::index.index', [
             'alunos' => $this->alunoRepository->count(),
             'matriculas' => $this->matriculaRepository->count(),
