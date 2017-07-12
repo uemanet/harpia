@@ -61,6 +61,9 @@ class HistoricoDefinitivoRepository extends BaseRepository
         $pessoa['nacionalidade'] = $matricula->aluno->pessoa->pes_nacionalidade;
         $pessoa['matricula'] = $matricula->mat_id;
 
+        // buscar a graduacao da pessoa
+        $pessoa['graduacao'] = $matricula->aluno->pessoa->titulacoes_informacoes()->where('tin_tit_id', '=', 1)->first();
+
         $returndata['pessoa'] = $pessoa;
 
         setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
@@ -121,7 +124,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
                         ['mof_situacao_matricula', '<>', ['cursando', 'cancelado']]
                     ],
                     ['mof_id', 'mof_nota1', 'mof_nota2', 'mof_nota3', 'mof_conceito', 'mof_recuperacao', 'mof_final',
-                        'mof_mediafinal', 'mof_situacao_matricula','mdc_tipo_disciplina', 'mdo_id', 'mdo_nome', 'mdo_descricao', 'mdo_qualificacao',
+                        'mof_mediafinal', 'mof_situacao_matricula', 'mdc_tipo_disciplina', 'mdo_id', 'mdo_nome', 'mdo_descricao', 'mdo_qualificacao',
                         'dis_nome', 'dis_carga_horaria', 'dis_creditos', 'pes_id', 'pes_nome as professor']
                 )->last();
 
