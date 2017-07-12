@@ -87,10 +87,17 @@
             <td width="16%" class="center"><strong>CONCLUSÃO</strong></td>
         </tr>
         <tr>
-            <td width="50%" class="center">{{$dados['pessoa']['graduacao']->tin_titulo}}</td>
-            <td width="17%" class="center">{{$dados['pessoa']['graduacao']->tin_instituicao_sigla}}</td>
-            <td width="17%" class="center">{{$dados['pessoa']['graduacao']->tin_instituicao_sede}}</td>
-            <td width="16%" class="center">{{$dados['pessoa']['graduacao']->tin_anofim}}</td>
+            @if ($dados['pessoa']['graduacao'])
+                <td width="50%" class="center">{{$dados['pessoa']['graduacao']->tin_titulo}}</td>
+                <td width="17%" class="center">{{$dados['pessoa']['graduacao']->tin_instituicao_sigla}}</td>
+                <td width="17%" class="center">{{$dados['pessoa']['graduacao']->tin_instituicao_sede}}</td>
+                <td width="16%" class="center">{{$dados['pessoa']['graduacao']->tin_anofim}}</td>
+            @else
+                <td width="50%" class="center">---</td>
+                <td width="17%" class="center">---</td>
+                <td width="17%" class="center">---</td>
+                <td width="16%" class="center">---</td>
+            @endif
         </tr>
     </tbody>
 </table>
