@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Gerenciamento de turmas :: Oferta do ano de {{$ofertacurso->ofc_ano}}
+    Gerenciamento de turmas :: {{$ofertacurso->curso->crs_nome}} ::Oferta do ano de {{$ofertacurso->ofc_ano}}
 @stop
 
 @section('actionButton')

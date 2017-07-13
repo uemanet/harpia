@@ -23,7 +23,7 @@
     }
 
     .matricula {
-        width: 8% ;
+        width: 5% ;
     }
 
     .nome {
@@ -31,7 +31,7 @@
     }
 
     .email{
-        width: 25%;
+        width: 20%;
     }
 
     .turma{
@@ -43,7 +43,7 @@
     }
 
     .situacao{
-        width: 9%;
+        width: 15%;
     }
 
 </style>
@@ -68,13 +68,12 @@
 
 
     @foreach ($alunos as $aluno)
-
-        <tr>
+        <tr >
             <td align="center" class="matricula">{{$aluno->mat_id}}</td>
             <td class="nome">{{$aluno->pes_nome}}</td>
-            <td class="email">{{$aluno->pes_email}}</td>
+            <td class="email" style="width: 20%">{{$aluno->pes_email}}</td>
             <td class="polo">{{$aluno->pol_nome}}</td>
-            <td class="situacao">{{$aluno->mof_situacao_matricula}}</td>
+            <td class="situacao center">{{$aluno->situacao_matricula}}</td>
         </tr>
     @endforeach
 

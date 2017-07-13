@@ -36,7 +36,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     {!! Form::label('mtc_id', 'Matriz Curricular*', ['class' => 'control-label']) !!}
-                    {!! Form::select('mtc_id', [], null, ['class' => 'form-control']) !!}
+                    {!! Form::select('mtc_id', [], null, ['disabled', 'class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-3">
                     {!! Form::label('ofd_mdo_id', 'Módulos da Matriz Curricular*', ['class' => 'control-label']) !!}
