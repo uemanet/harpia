@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
 use DB;
+use Auth;
 use stdClass;
 
 class MatriculaCursoRepository extends BaseRepository
@@ -16,6 +17,7 @@ class MatriculaCursoRepository extends BaseRepository
     protected $moduloMatrizRepository;
     protected $turmaRepository;
     protected $registroRepository;
+    protected $vinculoRepository;
 
     private $meses = [
         1 => "Janeiro",
@@ -38,7 +40,8 @@ class MatriculaCursoRepository extends BaseRepository
         MatrizCurricularRepository $matriz,
         MatriculaOfertaDisciplinaRepository $matriculaOferta,
         ModuloMatrizRepository $modulo, TurmaRepository $turmaRepository,
-        RegistroRepository $registroRepository
+        RegistroRepository $registroRepository,
+        VinculoRepository $vinculoRepository
     ) {
         $this->model = $matricula;
         $this->turmaRepository = $turmaRepository;
@@ -47,6 +50,7 @@ class MatriculaCursoRepository extends BaseRepository
         $this->matriculaOfertaDisciplinaRepository = $matriculaOferta;
         $this->moduloMatrizRepository = $modulo;
         $this->registroRepository = $registroRepository;
+        $this->vinculoRepository = $vinculoRepository;
     }
 
     public function verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $ofertaCursoId, $turmaId)
@@ -187,6 +191,49 @@ class MatriculaCursoRepository extends BaseRepository
             })->join('gra_pessoas', function ($join) {
                 $join->on('alu_pes_id', '=', 'pes_id');
             });
+
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $query = $query->where($key, '=', $value);
+            }
+        }
+
+        if (!is_null($select)) {
+            $query = $query->select($select);
+        }
+
+        if (!is_null($order)) {
+            foreach ($order as $key => $value) {
+                $query = $query->orderBy($key, $value);
+            }
+        }
+
+        return $query->get();
+    }
+
+    public function findAllVinculo(array $options, array $select = null, array $order = null)
+    {
+        $query = $this->model
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
+            })
+            ->leftJoin('acd_polos', function ($join) {
+                $join->on('mat_pol_id', '=', 'pol_id');
+            })
+            ->leftJoin('acd_grupos', function ($join) {
+                $join->on('mat_grp_id', '=', 'grp_id');
+            })
+            ->join('acd_alunos', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            })->whereIn('ofc_crs_id', $this->vinculoRepository->getCursos(Auth::user()->usr_id));
 
         if (!empty($options)) {
             foreach ($options as $key => $value) {
