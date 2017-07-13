@@ -152,18 +152,32 @@ class HistoricoDefinitivoRepository extends BaseRepository
         if ($result) {
             $titulacao = $result->where('tin_anofim', '<>', null)->first();
 
-            if ($titulacao->tit_id == 2) {
-                return 'Graduado';
-            } elseif ($titulacao->tit_id == 3) {
-                return 'Especialista';
-            } elseif ($titulacao->tit_id == 4) {
-                return 'Mestre';
-            } elseif ($titulacao->tit_id == 5) {
-                return 'Doutor';
-            } elseif ($titulacao->tit_id == 6) {
-                return 'Pós-Doutor';
-            } elseif ($titulacao->tit_id == 7) {
-                return 'Pós-Graduado';
+            /*
+             * Titulacoes ID
+             * Graduação -> 1
+             * Mestrado -> 2
+             * Doutorado -> 3
+             * Pós-Doutorado -> 4
+             * Especialização -> 5
+             * Ensino Médio -> 6
+             */
+
+            switch ($titulacao->tit_id) {
+                case 1:
+                    return 'Graduado';
+                    break;
+                case 2:
+                    return 'Mestre';
+                    break;
+                case 3:
+                    return 'Doutor';
+                    break;
+                case 4:
+                    return 'Pós-Doutor';
+                    break;
+                case 5:
+                    return 'Especialista';
+                    break;
             }
         }
 

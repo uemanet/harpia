@@ -65,7 +65,7 @@
     </tr>
     <tr>
         <td width="50%" class="center">{{$dados['pessoa']['nascimento']}}</td>
-        <td width="50%" class="center">{{$dados['pessoa']['rg']['conteudo']}}</td>
+        <td width="50%" class="center">{{$dados['pessoa']['rg']['conteudo']}} {{$dados['pessoa']['rg']['orgao']}}</td>
     </tr>
     <tr>
         <td width="50%" class="center"><strong>NATURALIDADE</strong></td>
