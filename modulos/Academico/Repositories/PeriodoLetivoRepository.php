@@ -28,9 +28,6 @@ class PeriodoLetivoRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
-        $data['per_inicio'] = Carbon::createFromFormat('d/m/Y', $data['per_inicio'])->toDateString();
-        $data['per_fim'] = Carbon::createFromFormat('d/m/Y', $data['per_fim'])->toDateString();
-
         $collection = $this->model->where($attribute, '=', $id)->get();
 
         if ($collection) {
