@@ -1,19 +1,10 @@
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('ltc_tipo')) has-error @endif">
-        {!! Form::label('ltc_tipo', 'Tipo de TCC*', ['class' => 'control-label']) !!}
+    <div class="form-group col-md-12 @if ($errors->has('ltc_titulo')) has-error @endif">
+        {!! Form::label('ltc_titulo', 'Título do TCC*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('ltc_tipo', $tiposdetcc, old('ltc_tipo'), ['placeholder' => 'Selecione um tipo','class' => 'form-control']) !!}
-            @if ($errors->has('ltc_tipo')) <p class="help-block">{{ $errors->first('ltc_tipo') }}</p> @endif
+            {!! Form::text('ltc_titulo', old('ltc_titulo'), ['class' => 'form-control']) !!}
+            @if ($errors->has('ltc_titulo')) <p class="help-block">{{ $errors->first('ltc_titulo') }}</p> @endif
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('ltc_titulo')) has-error @endif">
-      {!! Form::label('ltc_titulo', 'Título do TCC*', ['class' => 'control-label']) !!}
-      <div class="controls">
-        {!! Form::text('ltc_titulo', old('ltc_titulo'), ['class' => 'form-control']) !!}
-        @if ($errors->has('ltc_titulo')) <p class="help-block">{{ $errors->first('ltc_titulo') }}</p> @endif
-      </div>
     </div>
 </div>
 <div class="row">
@@ -24,8 +15,13 @@
             @if ($errors->has('ltc_prf_id')) <p class="help-block">{{ $errors->first('ltc_prf_id') }}</p> @endif
         </div>
     </div>
-</div>
-<div class="row">
+    <div class="form-group col-md-4 @if ($errors->has('ltc_tipo')) has-error @endif">
+        {!! Form::label('ltc_tipo', 'Tipo de TCC*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('ltc_tipo', $tiposdetcc, old('ltc_tipo'), ['placeholder' => 'Selecione um tipo','class' => 'form-control']) !!}
+            @if ($errors->has('ltc_tipo')) <p class="help-block">{{ $errors->first('ltc_tipo') }}</p> @endif
+        </div>
+    </div>
     <div class="form-group col-md-4 @if ($errors->has('ltc_data_apresentacao')) has-error @endif">
         {!! Form::label('ltc_data_apresentacao', 'Data de apresentação*', ['class' => 'control-label']) !!}
         <div class="controls">
@@ -35,40 +31,32 @@
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('ltc_file')) has-error @endif">
+    <div class="form-group col-md-6 @if ($errors->has('ltc_file')) has-error @endif">
         {!! Form::label('ltc_file', 'Documento', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::file('ltc_file', ['class' => 'form-control file']) !!}
             @if ($errors->has('ltc_file')) <p class="help-block">{{ $errors->first('ltc_file') }}</p> @endif
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('ltc_anx_nome')) has-error @endif">
-         {!! Form::label('ltc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
-
-        <div class="input-group-button">
+    <div class="form-group col-md-6 @if ($errors->has('ltc_anx_nome')) has-error @endif">
+        {!! Form::label('ltc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
+        <div class="input-group">
             @if($anexo != null)
                 <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
-                @if($anexo != null)
-                    <div class="input-group-btn botaoDelete">
-                        <button type="button" class="btn btn-danger btn-delete">Excluir</button>
-                    </div>
-                @endif
+                <span class="input-group-btn botaoDelete">
+                    <button type="button" class="btn btn-danger btn-delete">Excluir</button>
+                </span>
             @else
                 <input type="text" class="form-control" placeholder="Sem anexos" disabled="">
-                @if($anexo != null)
-                    <div class="input-group-btn botaoDelete">
-                        <button type="button" class="btn btn-danger btn-delete">Excluir</button>
-                    </div>
-                @endif
+                <span class="input-group-btn botaoDelete">
+                    <button type="button" class="btn btn-danger btn-delete" disabled="">Excluir</button>
+                </span>
             @endif
         </div>
-     </div>
+    </div>
 </div>
-
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('ltc_observacao')) has-error @endif">
+    <div class="form-group col-md-12 @if ($errors->has('ltc_observacao')) has-error @endif">
         {!! Form::label('ltc_observacao', 'Observação', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::textarea('ltc_observacao', old('ltc_observacao'), ['class' => 'form-control', 'rows' => '4']) !!}
@@ -76,11 +64,9 @@
         </div>
     </div>
 </div>
-
-{!! Form::input('hidden' , 'ltc_mof_id', $lancamentoTcc->ltc_mof_id ,  ['class' => 'form-control']) !!}
-
 <div class="row">
-    <div class="form-group col-md-4">
+    {!! Form::input('hidden' , 'ltc_mof_id', $lancamentoTcc->ltc_mof_id ,  ['class' => 'form-control']) !!}
+    <div class="form-group col-md-offset-8 col-md-4">
         {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
     </div>
 </div>
