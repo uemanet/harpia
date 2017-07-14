@@ -282,42 +282,31 @@ class RegistroRepository extends BaseRepository
 
     public function detalhesDoRegistro($id)
     {
-        if ($this->tipoRegistro($id) == "CERTIFICADO") {
-            return $this->model
-                ->select('acd_registros.*', 'pes_nome', 'pes_email', 'crs_nome', 'liv_tipo_livro')
-                ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
+        $registro = Registro::find($id);
+
+        $query = $this->model
+            ->select('acd_registros.*', 'pes_nome', 'pes_email', 'crs_nome', 'liv_tipo_livro')
+            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id');
+
+
+        if ($registro->livro()->first()->liv_tipo_livro == "CERTIFICADO") {
+            $query = $query
                 ->join('acd_certificados', 'crt_reg_id', '=', 'reg_id')
-                ->join('acd_matriculas', 'crt_mat_id', '=', 'mat_id')
-                ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
-                ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
-                ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
-                ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
-                ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-                ->where('reg_id', '=', $id)->get()->first();
+                ->join('acd_matriculas', 'crt_mat_id', '=', 'mat_id');
         }
 
-        return $this->model
-            ->select('acd_registros.*', 'pes_nome', 'pes_email', 'crs_nome', 'liv_tipo_livro')
-            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
-            ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
-            ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id')
+        if ($registro->livro()->first()->liv_tipo_livro == "DIPLOMA") {
+            $query = $query
+                ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
+                ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id');
+        }
+
+        return $query
             ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
             ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
             ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
             ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
             ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
             ->where('reg_id', '=', $id)->get()->first();
-    }
-
-    private function tipoRegistro($id)
-    {
-        $query = $this->model;
-
-        $result = $query
-            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
-            ->where('reg_id', '=', $id)
-            ->pluck('liv_tipo_livro')->toArray();
-
-        return array_pop($result);
     }
 }
