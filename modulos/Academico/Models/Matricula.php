@@ -77,4 +77,9 @@ class Matricula extends BaseModel
     {
         $this->attributes['mat_data_conclusao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
+
+    public function getSituacaoMatriculaCursoAttribute($value)
+    {
+        return ucfirst($this->mat_situacao);
+    }
 }

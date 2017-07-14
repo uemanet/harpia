@@ -59,7 +59,7 @@ class RelatoriosMatriculasCursoController extends BaseController
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
                 'pol_nome' => 'Polo',
-                'mat_situacao' => 'Situação Matricula'
+                'situacao_matricula_curso' => 'Situação Matricula'
             ))
                 ->sortable(array('pes_nome', 'mat_id'));
 
