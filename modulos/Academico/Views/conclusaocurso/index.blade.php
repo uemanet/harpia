@@ -218,7 +218,6 @@
 
                 $.harpia.httpget("{{url('/')}}/academico/async/conclusaocurso/findallalunosaptosounao?" + data).done(function (response) {
 
-                    console.log(response);
                     $('#boxAlunos').removeClass('hidden');
 
                     var boxAlunos = $('#boxAlunos .box-body');
