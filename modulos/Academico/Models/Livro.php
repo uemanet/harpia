@@ -17,6 +17,6 @@ class Livro extends BaseModel
 
     public function registros()
     {
-        return $this->hasMany('Modulos\Academico\Models\Registro', 'liv_id');
+        return $this->hasMany('Modulos\Academico\Models\Registro', 'reg_liv_id');
     }
 }

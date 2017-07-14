@@ -23,48 +23,6 @@ class RegistroRepository extends BaseRepository
         parent::__construct($registro);
     }
 
-    public function paginate($sort = null, $search = null)
-    {
-        $certificados = $this->model->select('reg_codigo_autenticidade', 'reg_id', 'pes_id', 'pes_nome', 'liv_tipo_livro')
-            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
-            ->join('acd_certificados', 'crt_reg_id', '=', 'reg_id')
-            ->join('acd_matriculas', 'crt_mat_id', '=', 'mat_id')
-            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
-            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->distinct();
-
-        $diplomados = $this->model->select('reg_codigo_autenticidade', 'reg_id', 'pes_id', 'pes_nome', 'liv_tipo_livro')
-            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
-            ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
-            ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id')
-            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
-            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->distinct();
-
-
-        if (!empty($search)) {
-            foreach ($search as $key => $value) {
-                switch ($value['type']) {
-                    case 'like':
-                        $diplomados = $diplomados->where($value['field'], $value['type'], "%{$value['term']}%");
-                        $certificados = $certificados->where($value['field'], $value['type'], "%{$value['term']}%");
-                        break;
-                    default:
-                        $diplomados = $diplomados->where($value['field'], $value['type'], $value['term']);
-                        $certificados = $certificados->where($value['field'], $value['type'], $value['term']);
-                }
-            }
-        }
-
-        $result = $certificados->union($diplomados);
-
-        if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
-        }
-
-        return $this->model->paginateUnion($result->get(), 15);
-    }
-
     public function create(array $data)
     {
         try {
@@ -281,36 +239,5 @@ class RegistroRepository extends BaseRepository
         }
 
         return $query->all();
-    }
-
-    public function detalhesDoRegistro($id)
-    {
-        $registro = Registro::find($id);
-
-        $query = $this->model
-            ->select('acd_registros.*', 'pes_nome', 'pes_email', 'crs_nome', 'liv_tipo_livro')
-            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id');
-
-
-        if ($registro->livro()->first()->liv_tipo_livro == "CERTIFICADO") {
-            $query = $query
-                ->join('acd_certificados', 'crt_reg_id', '=', 'reg_id')
-                ->join('acd_matriculas', 'crt_mat_id', '=', 'mat_id');
-        }
-
-        if ($registro->livro()->first()->liv_tipo_livro == "DIPLOMA") {
-            $query = $query
-                ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
-                ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id')
-                ->addSelect('dip_processo');
-        }
-
-        return $query
-            ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
-            ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
-            ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
-            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
-            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->where('reg_id', '=', $id)->get()->first();
     }
 }
