@@ -23,11 +23,11 @@
     }
 
     .matricula {
-        width: 5% ;
+        width: 6% ;
     }
 
     .nome {
-        width: 26%;
+        width: 27%;
     }
 
     .email{
