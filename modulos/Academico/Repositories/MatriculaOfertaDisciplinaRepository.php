@@ -4,6 +4,7 @@ namespace Modulos\Academico\Repositories;
 
 use Illuminate\Support\Collection;
 use Modulos\Academico\Models\MatriculaOfertaDisciplina;
+use Modulos\Academico\Models\OfertaDisciplina;
 use Modulos\Core\Repository\BaseRepository;
 use DB;
 
@@ -135,6 +136,33 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->get();
 
         return $query;
+    }
+
+    public function getMatriculasByMatriculaModuloMatriz($matriculaId, $moduloId)
+    {
+        // buscar as ofertas de disciplinas do modulo
+
+        $ofertasDisciplinas = $this->ofertaDisciplinaRepository->findAll(['mdc_mdo_id' => $moduloId], ['ofd_id']);
+
+        $matriculas = [];
+        foreach ($ofertasDisciplinas as $oferta) {
+
+            // busca sempre a ultima matricula do aluno na oferta de disciplina
+            $result = $this->model
+                            ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
+                            ->join('acd_modulos_disciplinas', 'ofd_mdc_id', '=', 'mdc_id')
+                            ->join('acd_disciplinas', 'mdc_dis_id', '=', 'dis_id')
+                            ->where('mof_ofd_id', '=', $oferta->ofd_id)
+                            ->where('mof_mat_id', '=', $matriculaId)
+                            ->orderBy('mof_id', 'desc')
+                            ->first();
+
+            if ($result) {
+                $matriculas[] = $result;
+            }
+        }
+
+        return $matriculas;
     }
 
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
