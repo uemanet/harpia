@@ -63,8 +63,6 @@ class LancamentoTccRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
-        $data['ltc_data_apresentacao'] = Carbon::createFromFormat('d/m/Y', $data['ltc_data_apresentacao'])->toDateString();
-
         $collection = $this->model->where($attribute, '=', $id)->get();
 
         if ($collection) {

@@ -24,7 +24,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
                     <select id="crs_id" class="form-control">
                         @if($matriculas->count())
