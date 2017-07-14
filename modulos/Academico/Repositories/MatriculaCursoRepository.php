@@ -348,8 +348,23 @@ class MatriculaCursoRepository extends BaseRepository
 
                 if ($matricula->mat_situacao == 'cursando') {
                     $obj->status = $this->verifyIfAlunoIsAptoOrNot($matricula->mat_id);
+                    $result[] = $obj;
+                    continue;
                 }
 
+                if ($matricula->mat_situacao == 'reprovado') {
+                    $obj->status = [
+                        'status' => 'danger',
+                        'message' => 'Reprovado',
+                    ];
+                    $result[] = $obj;
+                    continue;
+                }
+
+                $obj->status = [
+                    'status' => 'warning',
+                    'message' => ucfirst($matricula->mat_situacao)
+                ];
                 $result[] = $obj;
             }
         }
