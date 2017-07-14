@@ -104,13 +104,20 @@ class MatrizCurricularRepository extends BaseRepository
         return $this->model->where('mtc_id', $id)->pluck('mtc_titulo', 'mtc_id');
     }
 
-    public function getDisciplinasByMatrizId($matrizCurricularId)
+    public function getDisciplinasByMatrizId($matrizCurricularId, array $options = [])
     {
-        return $this->model
-            ->join('acd_modulos_matrizes', 'mdo_mtc_id', 'mtc_id')
-            ->join('acd_modulos_disciplinas', 'mdc_mdo_id', 'mdo_id')
-            ->where('mtc_id', $matrizCurricularId)
-            ->get();
+        $query = $this->model
+                        ->join('acd_modulos_matrizes', 'mdo_mtc_id', 'mtc_id')
+                        ->join('acd_modulos_disciplinas', 'mdc_mdo_id', 'mdo_id')
+                        ->where('mtc_id', $matrizCurricularId);
+
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $query = $query->where($key, '=', $value);
+            }
+        }
+
+        return $query->get();
     }
 
     public function verifyIfDisciplinaExistsInMatriz($matrizId, $disciplinaId)
