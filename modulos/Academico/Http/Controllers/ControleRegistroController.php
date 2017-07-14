@@ -34,10 +34,10 @@ class ControleRegistroController
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'reg_id' => '#',
-                'reg_mat_id' => 'Matrícula',
-                'reg_liv_id' => 'Livro',
-            ))->sortable(array('reg_id', 'reg_mat_id'));
+                'pes_id' => '#',
+                'pes_nome' => 'Nome',
+                'liv_tipo_livro' => 'Tipo de registro',
+            ))->sortable(array('pes_id', 'pes_nome', 'liv_tipo_livro'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }

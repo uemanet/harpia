@@ -23,6 +23,45 @@ class RegistroRepository extends BaseRepository
         parent::__construct($registro);
     }
 
+    public function paginate($sort = null, $search = null)
+    {
+        $certificados = $this->model->select('reg_codigo_autenticidade', 'pes_id', 'pes_nome', 'liv_tipo_livro')
+            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
+            ->join('acd_certificados', 'crt_reg_id', '=', 'reg_id')
+            ->join('acd_matriculas', 'crt_mat_id', '=', 'mat_id')
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->distinct('reg_codigo_autenticidade');
+
+        $diplomados = $this->model->select('reg_codigo_autenticidade', 'pes_id', 'pes_nome', 'liv_tipo_livro')
+            ->join('acd_livros', 'reg_liv_id', '=', 'liv_id')
+            ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
+            ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id')
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->distinct();
+
+        $result = $diplomados->union($certificados);
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        return $this->model->paginateUnion($result->get(), 15);
+    }
+
     public function create(array $data)
     {
         try {
