@@ -298,7 +298,8 @@ class RegistroRepository extends BaseRepository
         if ($registro->livro()->first()->liv_tipo_livro == "DIPLOMA") {
             $query = $query
                 ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
-                ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id');
+                ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id')
+                ->addSelect('dip_processo');
         }
 
         return $query

@@ -25,7 +25,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <p><strong>Aluno: </strong> {{$registro->pes_nome}}</p>
                             <p><strong>Email: </strong> {{$registro->pes_email}}</p>
                             <p><strong>Curso: </strong> {{$registro->crs_nome}}</p>
@@ -35,8 +35,11 @@
                             <p><strong>Folha: </strong> {{ $registro->reg_folha }}</p>
                             <p><strong>Registro: </strong> {{ $registro->reg_registro }}</p>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <p><strong>Código de Autenticidade: </strong> {{ $registro->reg_codigo_autenticidade }}</p>
+                            @if(isset($registro->dip_processo))
+                                <p><strong>Processo: </strong> {{ $registro->dip_processo }}</p>
+                            @endif
                             <p><strong>Data: </strong> {{ date('d/m/Y', strtotime($registro->created_at)) }}</p>
                         </div>
                     </div>
