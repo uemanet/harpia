@@ -25,7 +25,7 @@ class ConclusaoCurso extends BaseController
     {
         $dados = $request->all();
 
-        $alunos = $this->matriculaCursoRepository->getAlunosAptosOrNot($dados['ofc_id'], $dados['trm_id'], $dados['pol_id']);
+        $alunos = $this->matriculaCursoRepository->getAlunosAptosOrNot($dados['trm_id'], $dados['pol_id']);
 
         return new JsonResponse($alunos, 200);
     }
@@ -33,13 +33,12 @@ class ConclusaoCurso extends BaseController
     public function postConcluirMatriculas(Request $request)
     {
         $matriculas = $request->input('matriculas');
-        $ofertaCursoId = $request->input('ofc_id');
 
         DB::beginTransaction();
 
         try {
             foreach ($matriculas as $matricula) {
-                $matricula = $this->matriculaCursoRepository->concluirMatricula($matricula, $ofertaCursoId);
+                $matricula = $this->matriculaCursoRepository->concluirMatricula($matricula);
 
                 if (!$matricula) {
                     DB::rollback();

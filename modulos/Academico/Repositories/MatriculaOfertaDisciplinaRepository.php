@@ -138,11 +138,10 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $query;
     }
 
-    public function getMatriculasByMatriculaModuloMatriz($matriculaId, $moduloId)
+    public function getMatriculasOfertasDisciplinasByMatricula($matriculaId, array $options)
     {
-        // buscar as ofertas de disciplinas do modulo
-
-        $ofertasDisciplinas = $this->ofertaDisciplinaRepository->findAll(['mdc_mdo_id' => $moduloId], ['ofd_id']);
+        // buscar as ofertas de disciplinas
+        $ofertasDisciplinas = $this->ofertaDisciplinaRepository->findAll($options, ['ofd_id']);
 
         $matriculas = [];
         foreach ($ofertasDisciplinas as $oferta) {
