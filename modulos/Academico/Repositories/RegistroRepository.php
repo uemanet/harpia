@@ -41,19 +41,22 @@ class RegistroRepository extends BaseRepository
             ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
             ->distinct();
 
-        $result = $diplomados->union($certificados);
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
                 switch ($value['type']) {
                     case 'like':
-                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        $diplomados = $diplomados->where($value['field'], $value['type'], "%{$value['term']}%");
+                        $certificados = $certificados->where($value['field'], $value['type'], "%{$value['term']}%");
                         break;
                     default:
-                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                        $diplomados = $diplomados->where($value['field'], $value['type'], $value['term']);
+                        $certificados = $certificados->where($value['field'], $value['type'], $value['term']);
                 }
             }
         }
+
+        $result = $certificados->union($diplomados);
 
         if (!empty($sort)) {
             $result = $result->orderBy($sort['field'], $sort['sort']);
