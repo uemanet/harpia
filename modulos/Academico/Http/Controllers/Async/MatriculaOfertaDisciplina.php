@@ -39,11 +39,13 @@ class MatriculaOfertaDisciplina extends BaseController
         return new JsonResponse($disciplinas, 200);
     }
 
-    public function getFindAllAlunosMatriculasLote($turmaId, $ofertaId)
+    public function getFindAllAlunosMatriculasLote(Request $request)
     {
-        $alunos = $this->matriculaOfertaDisciplinaRepository->getAlunosMatriculasLote($turmaId, $ofertaId);
+        $matriculas = $this->matriculaOfertaDisciplinaRepository->getAlunosMatriculasLote($request->all());
 
-        return new JsonResponse($alunos, 200);
+        $html = view('Academico::matriculaslote.ajax.alunos', compact('matriculas'))->render();
+
+        return new JsonResponse($html, 200);
     }
 
     public function postMatriculasLote(Request $request)

@@ -15,9 +15,9 @@ class Polos extends BaseController
         $this->poloRepository = $polo;
     }
 
-    public function getFindallbyofertacurso($idOfertaCurso)
+    public function getFindallbyofertacurso($ofertaCursoId)
     {
-        $polos = $this->poloRepository->findAllByOfertaCurso($idOfertaCurso);
+        $polos = $this->poloRepository->findAllByOfertaCurso($ofertaCursoId);
 
         return new JsonResponse($polos, 200);
     }
