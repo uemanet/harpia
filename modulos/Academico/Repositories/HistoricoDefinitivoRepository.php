@@ -121,7 +121,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
                     [
                         ['mof_mat_id', '=', $matriculaId],
                         ['dis_id', '=', $disciplina->dis_id],
-                        ['mof_situacao_matricula', '<>', ['cursando', 'cancelado']]
+                        ['mof_situacao_matricula', '<>', ['cursando', 'cancelado', 'reprovado_media', 'reprovado_final']]
                     ],
                     ['mof_id', 'mof_nota1', 'mof_nota2', 'mof_nota3', 'mof_conceito', 'mof_recuperacao', 'mof_final',
                         'mof_mediafinal', 'mof_situacao_matricula', 'mdc_tipo_disciplina', 'mdo_id', 'mdo_nome', 'mdo_descricao', 'mdo_qualificacao',
