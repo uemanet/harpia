@@ -13,7 +13,7 @@ class AlterGraAnexosTable extends Migration
     public function up()
     {
         Schema::table('gra_anexos', function (Blueprint $table) {
-            $table->dropColumn('anx_tax_id');
+            $table->dropForeign(['anx_tax_id']);
         });
     }
 

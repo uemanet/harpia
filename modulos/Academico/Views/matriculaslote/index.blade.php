@@ -239,7 +239,6 @@
                 if (poloId && poloId != '') {
                     parameters['pol_id'] = poloId;
                 }
-                console.log($.param(parameters));
 
                 renderTable(parameters);
 
@@ -324,8 +323,18 @@
 
                         var turma = turmaSelect.val();
                         var ofertaDisciplina = disciplinasOfertadasSelect.val();
+                        var polo = poloSelect.val();
 
-                        renderTable(turma, ofertaDisciplina);
+                        var parameters = {
+                            trm_id: turma,
+                            ofd_id: ofertaDisciplina
+                        };
+
+                        if (polo && polo != '') {
+                            parameters['pol_id'] = polo;
+                        }
+
+                        renderTable(parameters);
                     },
                     error: function (xhr, textStatus, error) {
                         $.harpia.hideloading();

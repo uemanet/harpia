@@ -296,7 +296,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $query = $this->model->join('acd_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
                             ->where('ofd_mdc_id', '=', $moduloDisciplinaId)
                             ->where('mof_mat_id', '=', $matriculaId)
-                            ->whereNotIn('mof_situacao_matricula', ['cancelado']);
+                            ->orderBy('mof_id', 'desc');
 
         return $query->first();
     }
@@ -371,14 +371,17 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             return array("type" => "error", "message" => "Sem vagas disponiveis");
         }
 
-        // verifica se já existe uma matricula ativa nessa disciplina da matriz
+        // busca a ultima matricula do aluno na disciplina da matriz
         $matriculaExists = $this->verifyMatriculaDisciplina($data['mat_id'], $ofertaDisciplina->ofd_mdc_id);
 
-        if (!is_null($matriculaExists)) {
-            if ($matriculaExists['mof_situacao_matricula'] == 'aprovado_media' || 'aprovado_final') {
+        if ($matriculaExists) {
+            if (in_array($matriculaExists->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
                 return array("type" => "error", "message" => "Aluno já aprovado nessa disciplina.");
-            } elseif ($matriculaExists['mof_situacao_matricula'] == 'cursando') {
-                return array("type" => "error", "message" => "Aluno já matriculado nessa disciplina para esse periodo e turma");
+            } elseif ($matriculaExists->mof_situacao_matricula == 'cursando') {
+                return array("type" => "error", "message" => "Aluno está cursando essa disciplina");
+            } elseif (in_array($matriculaExists->mof_situacao_matricula, ['reprovado_media', 'reprovado_final']) &&
+            $matriculaExists->ofd_id == $ofertaDisciplina->ofd_id) {
+                return array("type" => "error", "message" => "Aluno está reprovado nesta oferta de disciplina");
             }
         }
 
@@ -417,7 +420,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         $query = Matricula::join('acd_alunos', 'mat_alu_id', 'alu_id')
                         ->join('gra_pessoas', 'alu_pes_id', 'pes_id')
-                        ->where('mat_trm_id', $parameters['trm_id']);
+                        ->where('mat_trm_id', $parameters['trm_id'])
+                        ->where('mat_situacao', 'cursando');
 
         if ($poloId) {
             $query = $query->where('mat_pol_id', $poloId);
