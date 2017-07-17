@@ -422,6 +422,7 @@ class MatriculaCursoRepository extends BaseRepository
     public function verifyIfAlunoIsAptoOrNot($matriculaId)
     {
         $matricula = $this->find($matriculaId);
+        $curso = $matricula->turma->ofertacurso->curso;
 
         // 1º Regra - Aprovação em todas as disciplinas Obrigatórias
         $aprovacao = $this->verifyIfAlunoIsAprovadoDisciplinasObrigatorias($matricula);
@@ -441,21 +442,23 @@ class MatriculaCursoRepository extends BaseRepository
             return array('status' => 'warning', 'message' => 'Aluno não atingiu carga horária minima do curso');
         }
 
-        // 4º Regra - Aprovação Tcc
-        $aprovacao = $this->verifyIfAlunoAprovadoTcc($matricula);
-        if (!$aprovacao) {
-            return array('status' => 'warning', 'message' => 'Aluno não possui aprovação na disciplina de TCC');
-        }
+        // A 4º e 5º regra nao se aplicam aos cursos tecnicos
+        if ($curso->crs_nvc_id != 2) {
+            // 4º Regra - Aprovação Tcc
+            $aprovacao = $this->verifyIfAlunoAprovadoTcc($matricula);
+            if (!$aprovacao) {
+                return array('status' => 'warning', 'message' => 'Aluno não possui aprovação na disciplina de TCC');
+            }
 
-        // 5º Regra - Verificar se aluno possui Tcc lançado
-        $aprovacao = $this->verifyIfAlunoHaveTccLancado($matricula);
-        if (!$aprovacao) {
-            return array('status' => 'warning', 'message' => 'Aluno não possui TCC lançado');
+            // 5º Regra - Verificar se aluno possui Tcc lançado
+            $aprovacao = $this->verifyIfAlunoHaveTccLancado($matricula);
+            if (!$aprovacao) {
+                return array('status' => 'warning', 'message' => 'Aluno não possui TCC lançado');
+            }
         }
 
         // 6º Regra - Especifica para cursos de especialização
         // Verifica se o aluno possui uma titulação de Graduacao cadastrada no sistema
-        $curso = $matricula->turma->ofertacurso->curso;
         if ($curso->crs_nvc_id == 4) {
             $aprovacao = $this->verifyIfAlunoHaveTitulacaoGraduacao($matricula);
             if (!$aprovacao) {
@@ -648,7 +651,7 @@ class MatriculaCursoRepository extends BaseRepository
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
             // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
-            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)['status'] == 'success') {
                 continue;
             }
 
