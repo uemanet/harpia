@@ -46,16 +46,23 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3 @if ($errors->has('per_id')) has-error @endif">
+                        <div class="col-md-2 @if ($errors->has('per_id')) has-error @endif">
                             {!! Form::label('per_id', 'Período Letivo*') !!}
                             <div class="form-group">
                                 {!! Form::select('per_id', $periodos, Input::get('per_id'), ['class' => 'form-control']) !!}
                             </div>
                         </div>
-                        <div class="col-md-4 @if ($errors->has('ofd_id')) has-error @endif">
+                        <div class="col-md-3 @if ($errors->has('ofd_id')) has-error @endif">
                             {!! Form::label('ofd_id', 'Disciplinas Ofertadas*') !!}
                             <div class="form-group">
                                 {!! Form::select('ofd_id', $disciplinas, Input::get('ofd_id'), ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-2 @if ($errors->has('pol_id')) has-error @endif">
+                            {!! Form::label('pol_id', 'Polo') !!}
+                            <div class="form-group">
+                                {!! Form::select('pol_id', $polos, Input::get('pol_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o polo']) !!}
+                                @if ($errors->has('pol_id')) <p class="help-block">{{ $errors->first('pol_id') }}</p> @endif
                             </div>
                         </div>
                         <div class="col-md-3 @if ($errors->has('mof_situacao_matricula')) has-error @endif">
@@ -106,6 +113,7 @@
                             <input type="hidden" name="trm_id" id="turmaId" value="">
                             <input type="hidden" name="crs_id" id="cursoId" value="">
                             <input type="hidden" name="ofc_id" id="ofertaCursoId" value="">
+                            <input type="hidden" name="pol_id" id="poloId" value="">
                             <input type="hidden" name="per_id" id="periodoId" value="">
                             <input type="hidden" name="ofd_id" id="ofertaDisciplinaId" value="">
                             <input type="hidden" name="mof_situacao_matricula" id="situacao" value="">
@@ -139,6 +147,7 @@
             var ofertasCursoSelect = $('#ofc_id');
             var cursoSelect = $('#crs_id');
             var turmaSelect = $('#trm_id');
+            var polosSelect = $('#pol_id');
             var periodosLetivosSelect = $('#per_id');
             var disciplinasOfertadasSelect = $('#ofd_id');
             var btnBuscar = $('#btnBuscar');
@@ -151,6 +160,7 @@
                 // limpando selects
                 ofertasCursoSelect.empty();
                 turmaSelect.empty();
+                polosSelect.empty();
                 periodosLetivosSelect.empty();
                 disciplinasOfertadasSelect.empty();
 
@@ -180,6 +190,7 @@
                 turmaSelect.empty();
                 periodosLetivosSelect.empty();
                 disciplinasOfertadasSelect.empty();
+                polosSelect.empty();
 
                 // buscar as turmas de acordo com a oferta de curso
                 var ofertaCursoId = $(this).val();
@@ -196,6 +207,19 @@
                         });
                     } else {
                         turmaSelect.append('<option>Sem turmas disponíveis</option>');
+                    }
+                });
+
+                // buscar polos
+                $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+                    if(!$.isEmptyObject(response)) {
+                        polosSelect.append("<option value=''>Selecione um polo</option>");
+
+                        $.each(response, function (key, obj) {
+                            polosSelect.append("<option value='"+obj.pol_id+"'>"+obj.pol_nome+"</option>");
+                        });
+                    } else {
+                        polosSelect.append("<option value=''>Sem polos cadastrados</option>");
                     }
                 });
             });
@@ -258,6 +282,7 @@
 
             $('#turmaId').attr('value', turmaSelect.val());
             $('#ofertaCursoId').attr('value', ofertasCursoSelect.val());
+            $('#poloId').attr('value', polosSelect.val());
             $('#cursoId').attr('value', cursoSelect.val());
             $('#periodoId').attr('value', periodosLetivosSelect.val());
             $('#ofertaDisciplinaId').attr('value', disciplinasOfertadasSelect.val());

@@ -422,6 +422,7 @@ class MatriculaCursoRepository extends BaseRepository
     public function verifyIfAlunoIsAptoOrNot($matriculaId)
     {
         $matricula = $this->find($matriculaId);
+        $curso = $matricula->turma->ofertacurso->curso;
 
         // 1º Regra - Aprovação em todas as disciplinas Obrigatórias
         $aprovacao = $this->verifyIfAlunoIsAprovadoDisciplinasObrigatorias($matricula);
@@ -441,21 +442,23 @@ class MatriculaCursoRepository extends BaseRepository
             return array('status' => 'warning', 'message' => 'Aluno não atingiu carga horária minima do curso');
         }
 
-        // 4º Regra - Aprovação Tcc
-        $aprovacao = $this->verifyIfAlunoAprovadoTcc($matricula);
-        if (!$aprovacao) {
-            return array('status' => 'warning', 'message' => 'Aluno não possui aprovação na disciplina de TCC');
-        }
+        // A 4º e 5º regra nao se aplicam aos cursos tecnicos
+        if ($curso->crs_nvc_id != 2) {
+            // 4º Regra - Aprovação Tcc
+            $aprovacao = $this->verifyIfAlunoAprovadoTcc($matricula);
+            if (!$aprovacao) {
+                return array('status' => 'warning', 'message' => 'Aluno não possui aprovação na disciplina de TCC');
+            }
 
-        // 5º Regra - Verificar se aluno possui Tcc lançado
-        $aprovacao = $this->verifyIfAlunoHaveTccLancado($matricula);
-        if (!$aprovacao) {
-            return array('status' => 'warning', 'message' => 'Aluno não possui TCC lançado');
+            // 5º Regra - Verificar se aluno possui Tcc lançado
+            $aprovacao = $this->verifyIfAlunoHaveTccLancado($matricula);
+            if (!$aprovacao) {
+                return array('status' => 'warning', 'message' => 'Aluno não possui TCC lançado');
+            }
         }
 
         // 6º Regra - Especifica para cursos de especialização
         // Verifica se o aluno possui uma titulação de Graduacao cadastrada no sistema
-        $curso = $matricula->turma->ofertacurso->curso;
         if ($curso->crs_nvc_id == 4) {
             $aprovacao = $this->verifyIfAlunoHaveTitulacaoGraduacao($matricula);
             if (!$aprovacao) {
@@ -648,7 +651,7 @@ class MatriculaCursoRepository extends BaseRepository
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
             // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
-            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)) {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)['status'] == 'success') {
                 continue;
             }
 
@@ -784,100 +787,53 @@ class MatriculaCursoRepository extends BaseRepository
             return new Collection();
         }
 
+        $query = $this->model
+            ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
+            ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
+            ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
+            ->leftJoin('acd_polos', 'mat_pol_id', '=', 'pol_id')
+            ->leftJoin('acd_grupos', 'mat_grp_id', '=', 'grp_id')
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->select('mat_pol_id', 'mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
+            ->where('mat_trm_id', $requestParameters['trm_id']);
+
+        if ($requestParameters['pol_id']) {
+            $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+        }
+
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
             $sort = [
                 'field' => $requestParameters['field'],
                 'sort' => $requestParameters['sort']
             ];
-            $query = $this->model
-                ->join('acd_turmas', function ($join) {
-                    $join->on('mat_trm_id', '=', 'trm_id');
-                })
-                ->join('acd_ofertas_cursos', function ($join) {
-                    $join->on('trm_ofc_id', '=', 'ofc_id');
-                })
-                ->join('acd_cursos', function ($join) {
-                    $join->on('ofc_crs_id', '=', 'crs_id');
-                })
-                ->leftJoin('acd_polos', function ($join) {
-                    $join->on('mat_pol_id', '=', 'pol_id');
-                })
-                ->leftJoin('acd_grupos', function ($join) {
-                    $join->on('mat_grp_id', '=', 'grp_id');
-                })
-                ->join('acd_alunos', function ($join) {
-                    $join->on('mat_alu_id', '=', 'alu_id');
-                })->join('gra_pessoas', function ($join) {
-                    $join->on('alu_pes_id', '=', 'pes_id');
-                })
-                ->select('mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
-                ->where('mat_trm_id', $requestParameters['trm_id'])
-                ->orderBy($sort['field'], $sort['sort']);
-
-            if ($requestParameters['mat_situacao'] != null) {
-                $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
-            }
-
-            return $query->paginate(15);
+            $query = $query->orderBy($sort['field'], $sort['sort']);
         }
-
-        $dados = $this->model
-            ->join('acd_turmas', function ($join) {
-                $join->on('mat_trm_id', '=', 'trm_id');
-            })
-            ->join('acd_ofertas_cursos', function ($join) {
-                $join->on('trm_ofc_id', '=', 'ofc_id');
-            })
-            ->join('acd_cursos', function ($join) {
-                $join->on('ofc_crs_id', '=', 'crs_id');
-            })
-            ->leftJoin('acd_polos', function ($join) {
-                $join->on('mat_pol_id', '=', 'pol_id');
-            })
-            ->leftJoin('acd_grupos', function ($join) {
-                $join->on('mat_grp_id', '=', 'grp_id');
-            })
-            ->join('acd_alunos', function ($join) {
-                $join->on('mat_alu_id', '=', 'alu_id');
-            })->join('gra_pessoas', function ($join) {
-                $join->on('alu_pes_id', '=', 'pes_id');
-            })
-            ->select('mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
-            ->where('mat_trm_id', $requestParameters['trm_id']);
 
         if ($requestParameters['mat_situacao'] != null) {
-            $dados = $dados->where('mat_situacao', $requestParameters['mat_situacao']);
+            $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
         }
 
-        return $dados->paginate(15);
+        return $query->paginate(15);
     }
 
     public function findAllBySitucao(array $requestParameters)
     {
         $query = $this->model
-            ->join('acd_turmas', function ($join) {
-                $join->on('mat_trm_id', '=', 'trm_id');
-            })
-            ->join('acd_ofertas_cursos', function ($join) {
-                $join->on('trm_ofc_id', '=', 'ofc_id');
-            })
-            ->join('acd_cursos', function ($join) {
-                $join->on('ofc_crs_id', '=', 'crs_id');
-            })
-            ->leftJoin('acd_polos', function ($join) {
-                $join->on('mat_pol_id', '=', 'pol_id');
-            })
-            ->leftJoin('acd_grupos', function ($join) {
-                $join->on('mat_grp_id', '=', 'grp_id');
-            })
-            ->join('acd_alunos', function ($join) {
-                $join->on('mat_alu_id', '=', 'alu_id');
-            })->join('gra_pessoas', function ($join) {
-                $join->on('alu_pes_id', '=', 'pes_id');
-            })
-        ->select('mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
-        ->where('mat_trm_id', $requestParameters['trm_id'])
-        ->orderBy('pes_nome', 'asc');
+            ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
+            ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
+            ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
+            ->leftJoin('acd_polos', 'mat_pol_id', '=', 'pol_id')
+            ->leftJoin('acd_grupos', 'mat_grp_id', '=', 'grp_id')
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->select('mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
+            ->where('mat_trm_id', $requestParameters['trm_id'])
+            ->orderBy('pes_nome', 'asc');
+
+        if ($requestParameters['pol_id'] != null) {
+            $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+        }
 
         if ($requestParameters['mat_situacao'] != null) {
             $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);

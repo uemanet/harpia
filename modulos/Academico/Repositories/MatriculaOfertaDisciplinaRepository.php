@@ -339,7 +339,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                             ->whereNotIn('mof_situacao_matricula', ['cancelado'])
                             ->count();
     }
-    
+
     public function verifyIfAlunoAprovadoPreRequisitos($matriculaId, $ofertaDisciplinaId)
     {
         $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaDisciplinaId);
@@ -512,7 +512,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         ];
     }
 
-    public function getAllAlunosBySituacao($turmaId, $ofertaId, $situacao)
+    public function getAllAlunosBySituacao($turmaId, $ofertaId, $situacao, $poloId)
     {
         $query = $this->model
             ->join('acd_matriculas', function ($join) {
@@ -530,11 +530,15 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->join('gra_pessoas', function ($join) {
                 $join->on('alu_pes_id', '=', 'pes_id');
             })
-            ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email')
+            ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email', 'mat_pol_id')
             ->where('mof_ofd_id', '=', $ofertaId)
             ->where('mat_trm_id', $turmaId)
             ->orderBy('pes_nome', 'asc')
             ->get();
+
+        if ($poloId != null) {
+            $query = $query->where('mat_pol_id', $poloId);
+        }
 
         if ($situacao != null) {
             $query = $query->where('mof_situacao_matricula', $situacao);
@@ -559,65 +563,33 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             return new Collection();
         }
 
+        $query =  $this->model
+            ->join('acd_matriculas', 'mof_mat_id', '=', 'mat_id')
+            ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
+            ->join('acd_polos', 'mat_pol_id', '=', 'pol_id')
+            ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
+            ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
+            ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email', 'mat_pol_id')
+            ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
+            ->where('mat_trm_id', $requestParameters['trm_id']);
+
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
             $sort = [
                 'field' => $requestParameters['field'],
                 'sort' => $requestParameters['sort']
             ];
-            $query =  $this->model
-                ->join('acd_matriculas', function ($join) {
-                    $join->on('mof_mat_id', '=', 'mat_id');
-                })
-                ->join('acd_turmas', function ($join) {
-                    $join->on('mat_trm_id', '=', 'trm_id');
-                })
-                ->join('acd_polos', function ($join) {
-                    $join->on('mat_pol_id', '=', 'pol_id');
-                })
-                ->join('acd_alunos', function ($join) {
-                    $join->on('mat_alu_id', '=', 'alu_id');
-                })
-                ->join('gra_pessoas', function ($join) {
-                    $join->on('alu_pes_id', '=', 'pes_id');
-                })
-                ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email')
-                ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
-                ->where('mat_trm_id', $requestParameters['trm_id'])
-                ->orderBy($sort['field'], $sort['sort']);
-
-            if ($requestParameters['mof_situacao_matricula'] != null) {
-                $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
-            }
-
-            return $query->paginate(15);
+            $query =  $query->orderBy($sort['field'], $sort['sort']);
         }
-
-        $dados =  $this->model
-            ->join('acd_matriculas', function ($join) {
-                $join->on('mof_mat_id', '=', 'mat_id');
-            })
-            ->join('acd_turmas', function ($join) {
-                $join->on('mat_trm_id', '=', 'trm_id');
-            })
-            ->join('acd_polos', function ($join) {
-                $join->on('mat_pol_id', '=', 'pol_id');
-            })
-            ->join('acd_alunos', function ($join) {
-                $join->on('mat_alu_id', '=', 'alu_id');
-            })
-            ->join('gra_pessoas', function ($join) {
-                $join->on('alu_pes_id', '=', 'pes_id');
-            })
-            ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email')
-            ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
-            ->where('mat_trm_id', $requestParameters['trm_id']);
 
         if ($requestParameters['mof_situacao_matricula'] != null) {
-            $dados = $dados->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
+            $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
         }
 
+        if ($requestParameters['pol_id'] != null) {
+            $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+        }
 
-        return $dados->paginate(15);
+        return $query->paginate(15);
     }
 
     public function paginate($sort = null, $search = null)
