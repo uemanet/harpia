@@ -110,6 +110,18 @@
                 }
             });
 
+            var hiddenButton = function () {
+                var checkboxes = $('.tabela-ofertas table td input[type="checkbox"]');
+
+                if(checkboxes.is(':checked')){
+                    $(document).find('#confirmMatricula').removeClass('hidden');
+                }else{
+                    $(document).find('#confirmMatricula').addClass('hidden');
+                }
+            };
+
+            $(document).on('click', '.tabela-ofertas table input[type="checkbox"]', hiddenButton);
+
             // evento do botão de confirmar a matricula na(s) disciplina(s)
             $('.tabela-ofertas').on('click', '#confirmMatricula', function (e) {
 

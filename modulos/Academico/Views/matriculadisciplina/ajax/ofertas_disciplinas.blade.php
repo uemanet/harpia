@@ -13,11 +13,11 @@
     <div class="box-body">
         <div class="row">
             <div class="col-md-12">
-                @if($naomatriculadas->count())
+                @if(!empty($naomatriculadas))
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th><label><input type="checkbox" id="select_all"></label></th>
+                                <th width="1%"><label><input type="checkbox" id="select_all"></label></th>
                                 <th>Disciplina</th>
                                 <th>Carga Horária</th>
                                 <th>Créditos</th>
@@ -53,7 +53,7 @@
                         </tbody>
                     </table>
                     <div class="form-group">
-                        <button class="btn btn-primary pull-right" id="confirmMatricula">Confirmar Matricula</button>
+                        <button class="btn btn-primary pull-right hidden" id="confirmMatricula">Confirmar Matricula</button>
                     </div>
                 @else
                     <p>Não há disciplinas disponíveis para este período</p>

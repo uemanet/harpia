@@ -220,78 +220,90 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId)
     {
-        // pega as disciplinas cursadas, aprovadas e reprovados pelo aluno no periodo e turma
+        // busca as disciplinas ofertadas para a turma e periodo
+        $ofertasDisciplinas = $this->ofertaDisciplinaRepository->findAll([
+            'ofd_trm_id' => $turmaId, 'ofd_per_id' => $periodoId]);
 
-        $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
-            'ofd_per_id' => $periodoId,
-            'ofd_trm_id' => $turmaId,
-            'mof_situacao_matricula' => ['cursando', 'aprovado_media', 'aprovado_final', 'reprovado_final', 'reprovado_media'],
-        ])->pluck('mof_ofd_id')->toArray();
-
-        // pega as disciplinas ofertadas no periodo e turma correspondentes, e verifica se o aluno
-        // está matriculado ou não em cada disciplina
-        $query = DB::table('acd_ofertas_disciplinas')
-                    ->join('acd_modulos_disciplinas', function ($join) {
-                        $join->on('ofd_mdc_id', '=', 'mdc_id');
-                    })
-                    ->join('acd_disciplinas', function ($join) {
-                        $join->on('mdc_dis_id', '=', 'dis_id');
-                    })
-                    ->join('acd_professores', function ($join) {
-                        $join->on('ofd_prf_id', '=', 'prf_id');
-                    })
-                    ->join('gra_pessoas', function ($join) {
-                        $join->on('prf_pes_id', '=', 'pes_id');
-                    })
-                    ->select(
-                        'ofd_id',
-                        'dis_nome',
-                        'dis_creditos',
-                        'dis_carga_horaria',
-                        'ofd_qtd_vagas',
-                        'pes_nome'
-                    )
-                    ->where('ofd_per_id', '=', $periodoId)
-                    ->where('ofd_trm_id', '=', $turmaId);
-
-        if (!empty($disciplinasCursadas)) {
-            $query = $query->whereNotIn('ofd_id', $disciplinasCursadas);
-        } else {
-            $query = $query->whereNotIn('ofd_id', [0]);
-        }
-
-        $disciplinasOfertadas =  $query->get();
-
-        // pega a matricula do aluno
+        // busca o aluno
         $aluno = $this->alunoRepository->find($alunoId);
-        $matriculaAluno = $aluno->matriculas()->where('mat_trm_id', $turmaId)->first();
 
-        if ($disciplinasOfertadas->count()) {
-            for ($i=0;$i<$disciplinasOfertadas->count();$i++) {
-                $quantMatriculas = $this->model
-                                        ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
-                                        ->where('mof_situacao_matricula', '<>', 'cancelado')
-                                        ->count();
+        // busca a matricula do aluno na turma
+        $matricula = $aluno->matriculas()->where('mat_trm_id', '=', $turmaId)->first();
 
-                $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;
+        $naomatriculadas = [];
 
-                //Status 1 vagas disponiveis, status 2 sem pré requisitos satisfeitos, status 0 sem vagas disponiveis
-                $disciplinasOfertadas[$i]->status = 1;
+        foreach ($ofertasDisciplinas as $ofertasDisciplina) {
+            $ofd_id = $ofertasDisciplina->ofd_id;
+            $status = 1;
 
-                if (!$this->verifyIfAlunoAprovadoPreRequisitos($matriculaAluno->mat_id, $disciplinasOfertadas[$i]->ofd_id)) {
-                    $disciplinasOfertadas[$i]->status = 2;
+            // 1º Passo - Verifica se o aluno possui matricula na disciplina da matriz
+            $matriculaOfertaDisciplina = $this->getLastMatriculaDisciplina($matricula->mat_id, $ofertasDisciplina->ofd_mdc_id);
+
+            if ($matriculaOfertaDisciplina) {
+                if ($matriculaOfertaDisciplina->mof_situacao_matricula == 'cancelado') {
+
+                    // Se o aluno não satisfazer os pre-requisitos, seta o status com valor 2
+                    if (!$this->verifyIfAlunoAprovadoPreRequisitos($matricula->mat_id, $ofd_id)) {
+                        $status = 2;
+                    }
+
+                    // Se a disciplina não possuir vagas disponiveis, setar o status zero
+                    if (!$this->verifyHaveVagas($ofd_id)) {
+                        $status = 0;
+                    }
+
+                    $ofertasDisciplina->status = $status;
+                    $ofertasDisciplina->quant_matriculas = $this->getQuantMatriculasByOfertaDisciplina($ofd_id);
+                    $naomatriculadas[] = $ofertasDisciplina;
+                    continue;
                 }
 
-                if ($quantMatriculas >= $disciplinasOfertadas[$i]->ofd_qtd_vagas) {
-                    $disciplinasOfertadas[$i]->status = 0;
+                if (in_array($matriculaOfertaDisciplina->mof_situacao_matricula, ['reprovado_media', 'reprovado_final'])
+                    && ($matriculaOfertaDisciplina->mof_ofd_id != $ofd_id)) {
+
+                    // Se o aluno não satisfazer os pre-requisitos, seta o status com valor 2
+                    if (!$this->verifyIfAlunoAprovadoPreRequisitos($matricula->mat_id, $ofd_id)) {
+                        $status = 2;
+                    }
+
+                    // Se a disciplina não possuir vagas disponiveis, setar o status zero
+                    if (!$this->verifyHaveVagas($ofd_id)) {
+                        $status = 0;
+                    }
+
+                    $ofertasDisciplina->status = $status;
+                    $ofertasDisciplina->quant_matriculas = $this->getQuantMatriculasByOfertaDisciplina($ofd_id);
+                    $naomatriculadas[] = $ofertasDisciplina;
+                    continue;
+                }
+
+                if (in_array($matriculaOfertaDisciplina->mof_situacao_matricula, ['cursando', 'aprovado_media', 'aprovado_final'])) {
+                    continue;
                 }
             }
+
+            // 2º Passo - Caso o aluno não possui matricula na disciplina da matriz, disponibilizar a matricula do mesmo
+            $status = 1;
+
+            // Se o aluno não satisfazer os pre-requisitos, seta o status com valor 2
+            if (!$this->verifyIfAlunoAprovadoPreRequisitos($matricula->mat_id, $ofd_id)) {
+                $status = 2;
+            }
+
+            // Se a disciplina não possuir vagas disponiveis, setar o status zero
+            if (!$this->verifyHaveVagas($ofd_id)) {
+                $status = 0;
+            }
+
+            $ofertasDisciplina->status = $status;
+            $ofertasDisciplina->quant_matriculas = $this->getQuantMatriculasByOfertaDisciplina($ofd_id);
+            $naomatriculadas[] = $ofertasDisciplina;
         }
 
-        return $disciplinasOfertadas;
+        return $naomatriculadas;
     }
 
-    public function verifyMatriculaDisciplina($matriculaId, $moduloDisciplinaId)
+    public function getLastMatriculaDisciplina($matriculaId, $moduloDisciplinaId)
     {
         $query = $this->model->join('acd_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
                             ->where('ofd_mdc_id', '=', $moduloDisciplinaId)
@@ -301,19 +313,19 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $query->first();
     }
 
-    public function verifyQtdVagas($ofertaId)
+    public function verifyHaveVagas($ofertaId)
     {
         $query = $this->model
                     ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
                     ->where('mof_ofd_id', '=', $ofertaId)
-                    ->where('mof_situacao_matricula', '=', 'cursando')
+                    ->where('mof_situacao_matricula', '<>', 'cancelado')
                     ->get();
 
         if ($query->count()) {
             $vagas = $query[0]->ofd_qtd_vagas;
             $qtd = $query->count();
 
-            if (($vagas == $qtd)) {
+            if (($qtd >= $vagas)) {
                 return false;
             }
         }
@@ -364,15 +376,22 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function createMatricula(array $data)
     {
+        // verifica se o aluno ainda está cursando o curso
+        $matricula = Matricula::find($data['mat_id']);
+
+        if ($matricula->mat_situacao != 'cursando') {
+            return array("type" => "error", "message" => "Aluno não está cursando o curso");
+        }
+
         $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($data['ofd_id']);
 
         // verifica se a disciplina possui vagas disponiveis
-        if (!($this->verifyQtdVagas($ofertaDisciplina->ofd_id))) {
+        if (!($this->verifyHaveVagas($ofertaDisciplina->ofd_id))) {
             return array("type" => "error", "message" => "Sem vagas disponiveis");
         }
 
         // busca a ultima matricula do aluno na disciplina da matriz
-        $matriculaExists = $this->verifyMatriculaDisciplina($data['mat_id'], $ofertaDisciplina->ofd_mdc_id);
+        $matriculaExists = $this->getLastMatriculaDisciplina($data['mat_id'], $ofertaDisciplina->ofd_mdc_id);
 
         if ($matriculaExists) {
             if (in_array($matriculaExists->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
