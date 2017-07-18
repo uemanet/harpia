@@ -220,12 +220,12 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId)
     {
-        // pega as disciplinas cursadas pelo aluno
+        // pega as disciplinas cursadas, aprovadas e reprovados pelo aluno no periodo e turma
 
         $disciplinasCursadas = $this->getDisciplinasCursadasByAluno($alunoId, [
             'ofd_per_id' => $periodoId,
             'ofd_trm_id' => $turmaId,
-            'mof_situacao_matricula' => ['cursando', 'aprovado_media', 'aprovado_final'],
+            'mof_situacao_matricula' => ['cursando', 'aprovado_media', 'aprovado_final', 'reprovado_final', 'reprovado_media'],
         ])->pluck('mof_ofd_id')->toArray();
 
         // pega as disciplinas ofertadas no periodo e turma correspondentes, e verifica se o aluno
@@ -270,7 +270,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             for ($i=0;$i<$disciplinasOfertadas->count();$i++) {
                 $quantMatriculas = $this->model
                                         ->where('mof_ofd_id', '=', $disciplinasOfertadas[$i]->ofd_id)
-                                        ->where('mof_situacao_matricula', '=', 'cursando')
+                                        ->where('mof_situacao_matricula', '<>', 'cancelado')
                                         ->count();
 
                 $disciplinasOfertadas[$i]->quant_matriculas = $quantMatriculas;

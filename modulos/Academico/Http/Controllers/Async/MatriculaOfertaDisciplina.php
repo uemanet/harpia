@@ -22,6 +22,20 @@ class MatriculaOfertaDisciplina extends BaseController
         $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
+    public function getTableOfertasDisciplinas($alunoId, $turmaId, $periodoLetivoId)
+    {
+        $matriculadas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
+            'ofd_per_id' => $periodoLetivoId,
+            'ofd_trm_id' => $turmaId,
+        ]);
+
+        $naomatriculadas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoLetivoId);
+
+        $html = view('Academico::matriculadisciplina.ajax.ofertas_disciplinas', compact('matriculadas', 'naomatriculadas'))->render();
+
+        return new JsonResponse($html, 200);
+    }
+
     public function getFindAllDisciplinasCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
     {
         $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
