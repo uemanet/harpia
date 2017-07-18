@@ -337,7 +337,7 @@ class Vinculo
     {
         $routeName = $request->route()->getName();
 
-        if ($routeName == 'academico.async.matriculasofertasdisciplinas.getmatriculaslote') {
+        if ($routeName == 'academico.async.matriculasofertasdisciplinas.getalunosmatriculaslote') {
             return $next($request);
         }
 
