@@ -421,16 +421,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!', 'obj' => $obj);
     }
 
-    private function getMatriculaByAlunoDisciplina($matriculaId, $moduloDisciplinaId)
-    {
-        return $this->model
-                    ->join('acd_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
-                    ->where('mof_mat_id', $matriculaId)
-                    ->where('ofd_mdc_id', $moduloDisciplinaId)
-                    ->orderBy('mof_id', 'desc')
-                    ->first();
-    }
-
     public function getAlunosMatriculasLote(array $parameters)
     {
         $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($parameters['ofd_id']);
@@ -457,7 +447,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         foreach ($matriculas as $matricula) {
 
             // verifica se o aluno possui alguma matricula nesta disciplina da matriz
-            $matriculaDisciplina = $this->getMatriculaByAlunoDisciplina($matricula->mat_id, $ofertaDisciplina->ofd_mdc_id);
+            $matriculaDisciplina = $this->getLastMatriculaDisciplina($matricula->mat_id, $ofertaDisciplina->ofd_mdc_id);
 
             if ($matriculaDisciplina) {
                 if ($matriculaDisciplina->mof_situacao_matricula == 'cancelado') {
