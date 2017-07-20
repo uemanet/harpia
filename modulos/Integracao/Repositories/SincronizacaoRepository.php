@@ -52,6 +52,34 @@ class SincronizacaoRepository extends BaseRepository
         }
         return $query->all();
     }
+
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->model;
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (empty($sort)) {
+            $result = $result->orderBy('created_at', 'DESC');
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        return $result->paginate(15);
+    }
+
     /**
      * Verifica se dado registro foi excluido do Moodle
      * @param $table

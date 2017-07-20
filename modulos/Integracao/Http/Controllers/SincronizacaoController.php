@@ -1,0 +1,95 @@
+<?php
+
+namespace Modulos\Integracao\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
+
+class SincronizacaoController extends BaseController
+{
+    protected $sincronizacaoRepository;
+
+    public function __construct(SincronizacaoRepository $sincronizacaoRepository)
+    {
+        $this->sincronizacaoRepository = $sincronizacaoRepository;
+    }
+
+    public function index(Request $request)
+    {
+        $tabela = null;
+        $paginacao = null;
+
+        $tableData = $this->sincronizacaoRepository->paginateRequest($request->all());
+
+        if ($tableData->count()) {
+            $tabela = $tableData->columns(array(
+                'sym_id' => '#',
+                'sym_table' => 'Tabela',
+                'sym_action' => 'Ação',
+                'sym_status' => 'Status',
+                'sym_mensagem' => 'Mensagem',
+                'sym_data_envio' => 'Data de Envio',
+                'sym_actions' => 'Ações'
+            ))->modifyCell('sym_actions', function () {
+                return array('style' => 'width: 140px;');
+            })->modify('sym_status', function ($sync) {
+                if ($sync->sym_status == 1) {
+                    return "<small class=\"label pull-right bg-blue\">Pendente</small>";
+                }
+
+                if ($sync->sym_status == 2) {
+                    return "<small class=\"label pull-right bg-green\">Sucesso</small>";
+                }
+
+                if ($sync->sym_status == 3) {
+                    return "<small class=\"label pull-right bg-red\">Falha</small>";
+                }
+            })->modify('sym_data_envio', function ($sync) {
+                if ($sync->sym_data_envio) {
+                    return date('d/m/Y', strtotime($sync->sym_data_envio));
+                }
+            })->modify('sym_actions', function ($sync) {
+                $buttons = [
+                    [
+                        'classButton' => '',
+                        'icon' => 'fa fa-eye',
+                        'route' => 'integracao.sincronizacao.show',
+                        'parameters' => ['id' => $sync->sym_id],
+                        'label' => 'Visualizar',
+                        'method' => 'get'
+                    ],
+                ];
+
+                if ($sync->sym_status == 1 || $sync->sym_status == 3) {
+                    $buttons[] = [
+                        'classButton' => 'btn-migrar',
+                        'icon' => 'fa fa-refresh',
+                        'route' => 'integracao.sincronizacao.migrar',
+                        'parameters' => ['id' => $sync->sym_id],
+                        'label' => ' Migrar',
+                        'id' => $sync->sym_id,
+                        'method' => 'post'
+                    ];
+                }
+
+                return ActionButton::grid([
+                    'type' => 'SELECT',
+                    'config' => [
+                        'classButton' => 'btn-default',
+                        'label' => 'Selecione'
+                    ],
+                    'buttons' => $buttons
+                ]);
+            })->sortable(array('sym_id', 'sym_table', 'sym_action'));
+
+            $paginacao = $tableData->appends($request->except('page'));
+        }
+
+        return view('Integracao::sincronizacao.index', [
+            'tabela' => $tabela,
+            'paginacao' => $paginacao
+        ]);
+    }
+}
