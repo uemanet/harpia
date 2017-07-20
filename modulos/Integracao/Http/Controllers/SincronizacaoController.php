@@ -92,4 +92,16 @@ class SincronizacaoController extends BaseController
             'paginacao' => $paginacao
         ]);
     }
+
+    public function show($id)
+    {
+        if ($this->sincronizacaoRepository->find($id)) {
+            return view('Integracao::sincronizacao.show', [
+                'sincronizacao' => $this->sincronizacaoRepository->find($id)
+            ]);
+        }
+
+        flash()->error('Registro não encontrado.');
+        return redirect()->back();
+    }
 }
