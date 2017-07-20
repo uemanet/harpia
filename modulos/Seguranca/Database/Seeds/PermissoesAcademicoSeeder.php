@@ -635,6 +635,12 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'print',
+            'prm_rota' => 'academico.controlederegistro.show'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
 
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
