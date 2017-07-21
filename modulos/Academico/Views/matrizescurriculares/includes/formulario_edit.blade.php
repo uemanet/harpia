@@ -87,8 +87,16 @@
     </div>
 </div>
 @section('scripts')
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
     <script type="text/javascript">
         $(function () {
+
+            $(".datepicker").datepicker({
+                language: 'pt-BR',
+                format: 'dd/mm/yyyy'
+            });
 
             var matrizId = "{{$matrizCurricular->mtc_id}}"
             var csrf_token = "{{csrf_token()}}";

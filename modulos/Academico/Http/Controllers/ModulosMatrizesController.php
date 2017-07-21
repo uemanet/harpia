@@ -158,7 +158,7 @@ class ModulosMatrizesController extends BaseController
             }
 
             flash()->success('Módulo atualizado com sucesso.');
-            return redirect()->route('academico.cursos.matrizescurriculares.modulosmatrizes.index', $id);
+            return redirect()->route('academico.cursos.matrizescurriculares.modulosmatrizes.index', $idMatriz);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
