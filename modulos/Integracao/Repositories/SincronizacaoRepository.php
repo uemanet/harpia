@@ -19,6 +19,7 @@ class SincronizacaoRepository extends BaseRepository
     public function updateSyncMoodle(array $data)
     {
         $keysSearch = [
+            'sym_id',
             'sym_table',
             'sym_table_id',
             'sym_action',
