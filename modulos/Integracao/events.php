@@ -43,6 +43,7 @@ return [
     'Modulos\Integracao\Events\SincronizacaoEvent' => [
         'Modulos\Integracao\Listeners\Sincronizacao\TurmaListener',
         'Modulos\Integracao\Listeners\Sincronizacao\GrupoListener',
+        'Modulos\Integracao\Listeners\Sincronizacao\UsuarioListener',
         'Modulos\Integracao\Listeners\Sincronizacao\DisciplinaListener',
         'Modulos\Integracao\Listeners\Sincronizacao\MatriculaCursoListener',
     ]
