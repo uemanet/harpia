@@ -112,43 +112,43 @@ class MapeamentoNotasController extends BaseController
                 return array('style' => 'width: 5%;', 'class' => 'text-center');
             })
             ->modify('mof_nota1', function ($row) {
-                return !$row->mof_nota1 ? '---' : number_format($row->mof_nota1, 1);
+                return is_null($row->mof_nota1) ? '---' : number_format($row->mof_nota1, 1);
             })
             ->modifyCell('mof_nota2', function () {
                 return array('style' => 'width: 5%;', 'class' => 'text-center');
             })
             ->modify('mof_nota2', function ($row) {
-                return !$row->mof_nota2 ? '---' : number_format($row->mof_nota2, 1);
+                return is_null($row->mof_nota2) ? '---' : number_format($row->mof_nota2, 1);
             })
             ->modifyCell('mof_nota3', function () {
                 return array('style' => 'width: 5%;', 'class' => 'text-center');
             })
             ->modify('mof_nota3', function ($row) {
-                return !$row->mof_nota3 ? '---' : number_format($row->mof_nota3, 1);
+                return is_null($row->mof_nota3) ? '---' : number_format($row->mof_nota3, 1);
             })
             ->modifyCell('mof_conceito', function () {
                 return array('style' => 'width: 5%;', 'class' => 'text-center');
             })
             ->modify('mof_conceito', function ($row) {
-                return !$row->mof_conceito ? '---' : $row->mof_conceito;
+                return is_null($row->mof_conceito) ? '---' : $row->mof_conceito;
             })
             ->modifyCell('mof_recuperacao', function () {
                 return array('style' => 'width: 5%;', 'class' => 'text-center');
             })
             ->modify('mof_recuperacao', function ($row) {
-                return !$row->mof_recuperacao ? '---' : number_format($row->mof_recuperacao, 1);
+                return is_null($row->mof_recuperacao) ? '---' : number_format($row->mof_recuperacao, 1);
             })
             ->modifyCell('mof_final', function () {
                 return array('style' => 'width: 5%;', 'class' => 'text-center');
             })
             ->modify('mof_final', function ($row) {
-                return !$row->mof_final ? '---' : number_format($row->mof_final, 1);
+                return is_null($row->mof_final) ? '---' : number_format($row->mof_final, 1);
             })
             ->modifyCell('mof_mediafinal', function () {
                 return array('style' => 'width: 8%;', 'class' => 'text-center');
             })
             ->modify('mof_mediafinal', function ($row) {
-                return !$row->mof_mediafinal ? '---' : number_format($row->mof_mediafinal, 1);
+                return is_null($row->mof_mediafinal) ? '---' : number_format($row->mof_mediafinal, 1);
             })
             ->modifyCell('mof_situacao_matricula', function () {
                 return array('style' => 'width: 5%;');
