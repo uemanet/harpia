@@ -5,9 +5,16 @@ namespace Modulos\Integracao\Events;
 use Harpia\Event\Event;
 use Modulos\Integracao\Models\Sincronizacao;
 
+/**
+ * Class SincronizacaoEvent
+ *
+ * Deve ser disparado para refazer uma unica sincronizacao
+ *
+ * @package Modulos\Integracao\Events
+ */
 class SincronizacaoEvent extends Event
 {
-    public function __construct(Sincronizacao $entry, $action, $extra = null)
+    public function __construct(Sincronizacao $entry, $action = 'SINCRONIZACAO_MANUAL', $extra = null)
     {
         parent::__construct($entry, $action, $extra);
     }
@@ -53,6 +60,11 @@ class SincronizacaoEvent extends Event
         // Atualizacao de dados de usuario
         if ($this->entry->sym_table == 'gra_pessoas' && $this->entry->sym_action == 'UPDATE') {
             return 'local_integracao_update_user';
+        }
+
+        // Atualizar grupo do aluno
+        if ($this->entry->sym_table == 'acd_matriculas' && $this->entry->sym_action == 'UPDATE_GRUPO_ALUNO') {
+            return 'local_integracao_change_student_group';
         }
 
         // Remover aluno de grupo

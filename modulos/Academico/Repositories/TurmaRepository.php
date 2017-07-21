@@ -3,14 +3,22 @@
 namespace Modulos\Academico\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use Modulos\Academico\Models\Curso;
 use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
 
 class TurmaRepository extends BaseRepository
 {
-    public function __construct(Turma $turma)
+    protected $cursoRepository;
+    protected $periodoLetivoRepository;
+
+    public function __construct(Turma $turma,
+                                CursoRepository $cursoRepository,
+                                PeriodoLetivoRepository $periodoLetivoRepository)
     {
         $this->model = $turma;
+        $this->cursoRepository = $cursoRepository;
+        $this->periodoLetivoRepository = $periodoLetivoRepository;
     }
 
     public function findAllByOfertaCurso($ofertaCursoId)
@@ -98,5 +106,36 @@ class TurmaRepository extends BaseRepository
     public function listsAllById($turmaid)
     {
         return $this->model->where('trm_id', $turmaid)->pluck('trm_nome', 'trm_id');
+    }
+
+    /**
+     * @param Turma $turma
+     * @return mixed|string
+     */
+    public function shortName(Turma $turma)
+    {
+        $cursoId = $this->getCurso($turma->trm_id);
+        $curso = $this->cursoRepository->find($cursoId);
+        $periodoLetivo = $this->periodoLetivoRepository->find($turma->trm_per_id);
+
+        $shortName = $curso->crs_sigla .' ' . $turma->trm_nome . ' ' . $periodoLetivo->per_nome;
+        $shortName = str_replace(' ', '_', $shortName);
+
+        return $shortName;
+    }
+
+    /**
+     * @param Turma $turma
+     * @return string
+     */
+    public function fullName(Turma $turma)
+    {
+        $cursoId = $this->getCurso($turma->trm_id);
+        $curso = $this->cursoRepository->find($cursoId);
+        $periodoLetivo = $this->periodoLetivoRepository->find($turma->trm_per_id);
+
+        $fullname = $curso->crs_nome .' - ' . $turma->trm_nome . ' - ' . $periodoLetivo->per_nome;
+
+        return $fullname;
     }
 }

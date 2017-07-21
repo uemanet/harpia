@@ -2,6 +2,7 @@
 namespace Modulos\Integracao\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
+use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Integracao\Models\Sincronizacao;
 use DB;
 
@@ -107,8 +108,8 @@ class SincronizacaoRepository extends BaseRepository
     {
         $sincronizacao = $this->find($id);
 
-        if (!$sincronizacao) {
-            return null;
+        if ($sincronizacao) {
+            event(new SincronizacaoEvent($sincronizacao));
         }
     }
 }

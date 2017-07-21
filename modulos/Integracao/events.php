@@ -38,5 +38,9 @@ return [
 
     'Modulos\Integracao\Events\MapearNotasEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10
+    ],
+
+    'Modulos\Integracao\Events\SincronizacaoEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener'
     ]
 ];
