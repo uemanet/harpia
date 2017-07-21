@@ -36,15 +36,15 @@ class SincronizacaoController extends BaseController
                 return array('style' => 'width: 140px;');
             })->modify('sym_status', function ($sync) {
                 if ($sync->sym_status == 1) {
-                    return "<small class=\"label pull-right bg-blue\">Pendente</small>";
+                    return "<small class=\"label bg-blue\">Pendente</small>";
                 }
 
                 if ($sync->sym_status == 2) {
-                    return "<small class=\"label pull-right bg-green\">Sucesso</small>";
+                    return "<small class=\"label bg-green\">Sucesso</small>";
                 }
 
                 if ($sync->sym_status == 3) {
-                    return "<small class=\"label pull-right bg-red\">Falha</small>";
+                    return "<small class=\"label bg-red\">Falha</small>";
                 }
             })->modify('sym_data_envio', function ($sync) {
                 if ($sync->sym_data_envio) {
@@ -66,7 +66,7 @@ class SincronizacaoController extends BaseController
                     $buttons[] = [
                         'classButton' => 'btn-migrar',
                         'icon' => 'fa fa-refresh',
-                        'route' => 'integracao.sincronizacao.migrar',
+                        'route' => 'integracao.sincronizacao.sincronizar',
                         'parameters' => ['id' => $sync->sym_id],
                         'label' => ' Migrar',
                         'id' => $sync->sym_id,
@@ -103,5 +103,22 @@ class SincronizacaoController extends BaseController
 
         flash()->error('Registro não encontrado.');
         return redirect()->back();
+    }
+
+    public function postSincronizar($id, Request $request)
+    {
+        $sincronizacao = $this->sincronizacaoRepository->find($id);
+
+        if (!$sincronizacao) {
+            flash()->error('Registro não encontrado.');
+            return redirect()->route('integracao.sincronizacao.index');
+        }
+
+        if ($sincronizacao->sym_status == 2) {
+            flash()->error('Sincronização já realizada com sucesso anteriormente.');
+            return redirect()->route('integracao.sincronizacao.index');
+        }
+
+        $this->sincronizacaoRepository->migrar($id);
     }
 }

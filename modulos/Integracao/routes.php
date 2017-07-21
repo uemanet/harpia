@@ -28,7 +28,7 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'sincronizacao'], function () {
         Route::get('/', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@index')->name('integracao.sincronizacao.index');
         Route::get('/{id}', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@show')->name('integracao.sincronizacao.show');
-        Route::post('/migrar/{id}', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@postMigrar')->name('integracao.sincronizacao.migrar');
+        Route::post('/sincronizar/{id}', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@postSincronizar')->name('integracao.sincronizacao.sincronizar');
     });
 
     Route::group(['prefix' => 'async'], function () {

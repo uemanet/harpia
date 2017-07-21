@@ -99,4 +99,9 @@ class SincronizacaoRepository extends BaseRepository
         }
         return false;
     }
+
+    public function migrar($id)
+    {
+        // Implements
+    }
 }

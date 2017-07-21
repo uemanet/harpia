@@ -76,7 +76,7 @@ class MenuIntegracaoSeeder extends Seeder
         $mapeamentoItensNota = MenuItem::create([
             'mit_mod_id' => 4,
             'mit_item_pai' => $processos->mit_id,
-            'mit_nome' => 'Mapeamento de Notas',
+            'mit_nome' => 'Sincronização',
             'mit_icone' => 'fa fa-refresh',
             'mit_rota' => 'integracao.sincronizacao.index',
             'mit_ordem' => 1

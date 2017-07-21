@@ -33,8 +33,13 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Data: </strong> {{ date('d/m/Y', strtotime($sincronizacao->sym_data_envio)) }}</p>
-                            <p><strong>Hora: </strong> {{ date('H:i:s', strtotime($sincronizacao->sym_data_envio)) }}</p>
+                            @if($sincronizacao->sym_data_envio)
+                                <p><strong>Data: </strong> {{ date('d/m/Y', strtotime($sincronizacao->sym_data_envio)) }}</p>
+                                <p><strong>Hora: </strong> {{ date('H:i:s', strtotime($sincronizacao->sym_data_envio)) }}</p>
+                            @else
+                                <p><strong>Data: </strong> - </p>
+                                <p><strong>Hora: </strong> - </p>
+                            @endif
                             <p><strong>Mensagem: </strong> {{ $sincronizacao->sym_mensagem }}</p>
                         </div>
                         <div class="col-md-6">
