@@ -7,6 +7,9 @@ use DB;
 
 class SincronizacaoRepository extends BaseRepository
 {
+    protected $tabelasSincronizacao = [
+        'acd_turmas', 'acd_matriculas', ''
+    ];
     public function __construct(Sincronizacao $sincronizacao)
     {
         $this->model = $sincronizacao;
@@ -102,6 +105,10 @@ class SincronizacaoRepository extends BaseRepository
 
     public function migrar($id)
     {
-        // Implements
+        $sincronizacao = $this->find($id);
+
+        if (!$sincronizacao) {
+            return null;
+        }
     }
 }
