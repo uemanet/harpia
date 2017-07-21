@@ -177,6 +177,11 @@ class MapeamentoNotasRepository extends BaseRepository
         // chama o evento para registra ocorrencia no tabela de sincronização
         event(new MapearNotasEvent($matriculaOfertaDisciplina, 'MAPEAR_NOTAS_ALUNO'));
 
+        $tiposenviados = [];
+        foreach ($itens as $key => $tipo) {
+            $tiposenviados[] = $tipo['tipo'];
+        }
+
         $response = $this->sendDataMoodle($data, $trm_id);
 
         // verifica se veio alguma resposta do moodle, e qual status ela será encaixada
@@ -192,9 +197,14 @@ class MapeamentoNotasRepository extends BaseRepository
         if ($status == 2) {
             $arrayNotas = json_decode($response['grades'], true);
 
-            // Caso o aluno não possua nenhuma nota no moodle, envia uma mensagem de erro
-            if (empty($arrayNotas)) {
-                return array('status' => 'error', 'message' => 'Aluno não possui notas na oferta de disciplina.');
+
+            $tiposrecebidos = [];
+
+
+            foreach ($arrayNotas as $recebido) {
+                if (array_key_exists('tipo', $recebido)) {
+                    $tiposrecebidos[] = $recebido['tipo'];
+                }
             }
 
             $notas = [];
@@ -204,6 +214,16 @@ class MapeamentoNotasRepository extends BaseRepository
                     $value = (float)$nota['nota'];
                 }
                 $notas['mof_'.$nota['tipo']] = $value;
+            }
+
+            foreach ($tiposenviados as $enviado) {
+                if (!in_array($enviado, $tiposrecebidos)) {
+                    $notas['mof_'.$enviado] = 0;
+                }
+            }
+
+            // Caso o aluno não possua nenhuma nota no moodle, envia uma mensagem de erro
+            if (empty($arrayNotas)) {
             }
 
             // busca as configurações de notas do curso
