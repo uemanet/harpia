@@ -44,5 +44,6 @@ return [
         'Modulos\Integracao\Listeners\Sincronizacao\TurmaListener',
         'Modulos\Integracao\Listeners\Sincronizacao\GrupoListener',
         'Modulos\Integracao\Listeners\Sincronizacao\DisciplinaListener',
+        'Modulos\Integracao\Listeners\Sincronizacao\MatriculaCursoListener',
     ]
 ];
