@@ -42,5 +42,6 @@ return [
 
     'Modulos\Integracao\Events\SincronizacaoEvent' => [
         'Modulos\Integracao\Listeners\Sincronizacao\TurmaListener',
+        'Modulos\Integracao\Listeners\Sincronizacao\GrupoListener',
     ]
 ];

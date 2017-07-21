@@ -94,6 +94,7 @@ class TurmaListener
         }
 
         event(new AtualizarSyncEvent($turma, $status, $response['message']));
+        return true;
     }
 
     /**
@@ -129,6 +130,7 @@ class TurmaListener
             }
 
             event(new AtualizarSyncEvent($turma, $status, $response['message'], $param['action']));
+            return true;
         }
     }
 
@@ -164,10 +166,12 @@ class TurmaListener
                 $sync->sym_table_id,
                 $status,
                 $response['message'],
-                $sync->sym_action,
+                'DELETE',
                 null,
                 $sync->sym_extra
             ));
+
+            return true;
         }
 
         return false;
