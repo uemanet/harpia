@@ -99,4 +99,21 @@ class TurmaRepository extends BaseRepository
     {
         return $this->model->where('trm_id', $turmaid)->pluck('trm_nome', 'trm_id');
     }
+
+    /**
+     * @param $turmaid
+     *
+     * Busca os polos de todos baseados nas informações dos alunos matriculados na turma
+     *
+     * @return mixed
+     */
+    public function getTurmaPolosByMatriculas($turmaid)
+    {
+        return $this->model->select('pol_id', 'pol_nome')
+            ->join('acd_matriculas', 'mat_trm_id', '=', 'trm_id')
+            ->join('acd_polos', 'mat_pol_id', '=', 'pol_id')
+            ->where('trm_id', '=', $turmaid)
+            ->groupby('pol_id')
+            ->get();
+    }
 }
