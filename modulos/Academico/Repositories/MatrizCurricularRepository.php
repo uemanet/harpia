@@ -21,11 +21,23 @@ class MatrizCurricularRepository extends BaseRepository
      * @param string $attribute
      * @return mixed
      */
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
-        $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
+        }
 
-        return $this->model->where($attribute, '=', $id)->update($data);
+        $collection = $this->model->where($attribute, '=', $id)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $collection->count();
+        }
+
+        return 0;
     }
 
     /**
@@ -60,6 +72,15 @@ class MatrizCurricularRepository extends BaseRepository
         return $this->model->where('mtc_crs_id', $cursoid)->get(['mtc_id', 'mtc_titulo']);
     }
 
+    public function findByOfertaCurso($ofc_id)
+    {
+        return $this->model
+                    ->join('acd_ofertas_cursos', 'ofc_mtc_id', '=', 'mtc_id')
+                    ->select('acd_matrizes_curriculares.*')
+                    ->where('ofc_id', '=', $ofc_id)
+                    ->first();
+    }
+
     /**
      * Busca todas as matrizes de acordo com o curso informado e retorna como lists para popular um field select
      *
@@ -83,13 +104,20 @@ class MatrizCurricularRepository extends BaseRepository
         return $this->model->where('mtc_id', $id)->pluck('mtc_titulo', 'mtc_id');
     }
 
-    public function getDisciplinasByMatrizId($matrizCurricularId)
+    public function getDisciplinasByMatrizId($matrizCurricularId, array $options = [])
     {
-        return $this->model
-            ->join('acd_modulos_matrizes', 'mdo_mtc_id', 'mtc_id')
-            ->join('acd_modulos_disciplinas', 'mdc_mdo_id', 'mdo_id')
-            ->where('mtc_id', $matrizCurricularId)
-            ->get();
+        $query = $this->model
+                        ->join('acd_modulos_matrizes', 'mdo_mtc_id', 'mtc_id')
+                        ->join('acd_modulos_disciplinas', 'mdc_mdo_id', 'mdo_id')
+                        ->where('mtc_id', $matrizCurricularId);
+
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $query = $query->where($key, '=', $value);
+            }
+        }
+
+        return $query->get();
     }
 
     public function verifyIfDisciplinaExistsInMatriz($matrizId, $disciplinaId)

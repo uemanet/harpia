@@ -89,7 +89,7 @@ class DepartamentosController extends BaseController
     public function getCreate()
     {
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
         return view('Academico::departamentos.create', ['centros' => $centros, 'professores' => $professores]);
     }
@@ -126,7 +126,7 @@ class DepartamentosController extends BaseController
             return redirect()->back();
         }
         $centros = $this->centroRepository->lists('cen_id', 'cen_nome');
-        $professores = $this->professorRepository->listsEditDepartamento('prf_id', 'pes_nome', $departamentoId);
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
         return view('Academico::departamentos.edit', ['departamento' => $departamento, 'centros' => $centros, 'professores' => $professores]);
     }
@@ -165,21 +165,17 @@ class DepartamentosController extends BaseController
         try {
             $departamentoId = $request->get('id');
 
-            if ($this->departamentoRepository->delete($departamentoId)) {
-                flash()->success('Departamento excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o módulo');
-            }
+            $this->departamentoRepository->delete($departamentoId);
 
+            flash()->success('Departamento excluído com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O departamento contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Este departamento ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');

@@ -17,7 +17,8 @@ class Matricula extends BaseModel
         'mat_pol_id',
         'mat_grp_id',
         'mat_situacao',
-        'mat_modo_entrada'
+        'mat_modo_entrada',
+        'mat_data_conclusao'
     ];
 
     public function aluno()
@@ -45,6 +46,11 @@ class Matricula extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_mat_id', 'mat_id');
     }
 
+    public function historico()
+    {
+        return $this->hasMany('Modulos\Academico\Models\HistoricoMatricula', 'hmt_mat_id', 'mat_id');
+    }
+
     public function getMatModoEntradaAttribute($value)
     {
         $values = [
@@ -70,5 +76,10 @@ class Matricula extends BaseModel
     public function setMatDataConclusaoAttribute($value)
     {
         $this->attributes['mat_data_conclusao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+    }
+
+    public function getSituacaoMatriculaCursoAttribute($value)
+    {
+        return ucfirst($this->mat_situacao);
     }
 }

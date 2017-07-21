@@ -17,7 +17,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::put('/edit/{id}', '\Modulos\Seguranca\Http\Controllers\PerfisController@putEdit')->name('seguranca.perfis.edit');
         Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\PerfisController@postDelete')->name('seguranca.perfis.delete');
         Route::get('/atribuirpermissoes/{id}', '\Modulos\Seguranca\Http\Controllers\PerfisController@getAtribuirpermissoes')->name('seguranca.perfis.atribuirpermissoes');
-        Route::post('/atribuirpermissoes', '\Modulos\Seguranca\Http\Controllers\PerfisController@postAtribuirpermissoes')->name('seguranca.perfis.atribuirpermissoes');
+        Route::post('/atribuirpermissoes/{id}', '\Modulos\Seguranca\Http\Controllers\PerfisController@postAtribuirpermissoes')->name('seguranca.perfis.atribuirpermissoes');
     });
 
     Route::group(['prefix' => 'usuarios'], function () {
@@ -30,6 +30,13 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::get('/atribuirperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@getAtribuirperfil')->name('seguranca.usuarios.atribuirperfil');
         Route::post('/atribuirperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postAtribuirperfil')->name('seguranca.usuarios.atribuirperfil');
         Route::post('/deletarperfil/{id}', '\Modulos\Seguranca\Http\Controllers\UsuariosController@postDeletarperfil')->name('seguranca.usuarios.deletarperfil');
+    });
+
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@getIndex')->name('seguranca.profile.index');
+        Route::put('/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
+        Route::post('/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
+        Route::put('/password/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@postUpdatepassword')->name('seguranca.profile.updatepassword');
     });
 
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {

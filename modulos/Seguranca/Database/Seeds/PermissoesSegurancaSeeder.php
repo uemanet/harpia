@@ -38,6 +38,12 @@ class PermissoesSegurancaSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
+            'prm_nome' => 'atribuirpermissoes',
+            'prm_rota' => 'seguranca.perfis.atribuirpermissoes'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
             'prm_nome' => 'create',
             'prm_rota' => 'seguranca.perfis.create'
         ]);

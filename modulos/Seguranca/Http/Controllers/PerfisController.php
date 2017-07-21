@@ -38,48 +38,52 @@ class PerfisController extends BaseController
                 'prf_id' => '#',
                 'prf_nome' => 'Perfil',
                 'prf_descricao' => 'Descrição',
+                'prf_mod_id' => 'Módulo',
                 'prf_action' => 'Ações'
             ))
-                ->modifyCell('prf_action', function () {
-                    return array('style' => 'width: 140px;');
-                })
-                ->means('prf_action', 'prf_id')
-                ->modify('prf_action', function ($id) {
-                    return ActionButton::grid([
-                        'type' => 'SELECT',
-                        'config' => [
-                            'classButton' => 'btn-default',
-                            'label' => 'Selecione'
+            ->modify('prf_mod_id', function ($obj) {
+                return $obj->modulo->mod_nome;
+            })
+            ->modifyCell('prf_action', function () {
+                return array('style' => 'width: 140px;');
+            })
+            ->means('prf_action', 'prf_id')
+            ->modify('prf_action', function ($id) {
+                return ActionButton::grid([
+                    'type' => 'SELECT',
+                    'config' => [
+                        'classButton' => 'btn-default',
+                        'label' => 'Selecione'
+                    ],
+                    'buttons' => [
+                        [
+                            'classButton' => 'text-blue',
+                            'icon' => 'fa fa-check-square-o',
+                            'route' => 'seguranca.perfis.atribuirpermissoes',
+                            'parameters' => ['id' => $id],
+                            'label' => 'Permissões',
+                            'method' => 'get'
                         ],
-                        'buttons' => [
-                            [
-                                'classButton' => 'text-blue',
-                                'icon' => 'fa fa-check-square-o',
-                                'route' => 'seguranca.perfis.atribuirpermissoes',
-                                'parameters' => ['id' => $id],
-                                'label' => 'Permissões',
-                                'method' => 'get'
-                            ],
-                            [
-                                'classButton' => '',
-                                'icon' => 'fa fa-pencil',
-                                'route' => 'seguranca.perfis.edit',
-                                'parameters' => ['id' => $id],
-                                'label' => 'Editar',
-                                'method' => 'get'
-                            ],
-                            [
-                                'classButton' => 'btn-delete text-red',
-                                'icon' => 'fa fa-trash',
-                                'route' =>  'seguranca.perfis.delete',
-                                'id' => $id,
-                                'label' => 'Excluir',
-                                'method' => 'post'
-                            ]
+                        [
+                            'classButton' => '',
+                            'icon' => 'fa fa-pencil',
+                            'route' => 'seguranca.perfis.edit',
+                            'parameters' => ['id' => $id],
+                            'label' => 'Editar',
+                            'method' => 'get'
+                        ],
+                        [
+                            'classButton' => 'btn-delete text-red',
+                            'icon' => 'fa fa-trash',
+                            'route' =>  'seguranca.perfis.delete',
+                            'id' => $id,
+                            'label' => 'Excluir',
+                            'method' => 'post'
                         ]
-                    ]);
-                })
-                ->sortable(array('prf_id', 'prf_nome'));
+                    ]
+                ]);
+            })
+            ->sortable(array('prf_id', 'prf_nome'));
             $paginacao = $tableData->appends($request->except('page'));
         }
 
@@ -189,46 +193,47 @@ class PerfisController extends BaseController
     }
 
 
-//    public function getAtribuirpermissoes($perfilId)
-//    {
-////        $perfil = $this->perfilRepository->getPerfilWithModulo($perfilId);
-////
-////        if (!sizeof($perfil)) {
-////            return redirect()->route('seguranca.perfis.index');
-////        }
-////
-////        $permissoes = $this->perfilRepository->getTreeOfPermissoesByPefilAndModulo($perfil->prf_id, $perfil->prf_mod_id);
-////
-////        return view('Seguranca::perfis.atribuirpermissoes', compact('perfil', 'permissoes'));
-//    }
-//
-//    public function postAtribuirpermissoes(Request $request)
-//    {
-//        try {
-//            $perfilId = $request->prf_id;
-//
-//            if ($request->input('permissao') == "") {
-//                flash()->success('Permissões atribuídas com sucesso.');
-//                $permissoes = [];
-//                $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-//
-//                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-//            }
-//
-//            $permissoes = explode(',', $request->input('permissao'));
-//
-//            $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
-//
-//            flash()->success('Permissões atribuídas com sucesso.');
-//
-//            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
-//        } catch (\Exception $e) {
-//            if (config('app.debug')) {
-//                throw $e;
-//            }
-//            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
-//
-//            return redirect()->back();
-//        }
-//    }
+    public function getAtribuirpermissoes($perfilId)
+    {
+        $perfil = $this->perfilRepository->find($perfilId);
+
+        if (!sizeof($perfil)) {
+            flash()->error('Perfil não existe.');
+            return redirect()->route('seguranca.perfis.index');
+        }
+
+        $permissoes = $this->perfilRepository->getPerfilModulo($perfil);
+
+        return view('Seguranca::perfis.atribuirpermissoes', compact('perfil', 'permissoes'));
+    }
+
+    public function postAtribuirpermissoes($id, Request $request)
+    {
+        try {
+            $perfilId = $request->prf_id;
+
+            if ($request->input('permissao') == "") {
+                flash()->success('Permissões atribuídas com sucesso.');
+                $permissoes = [];
+                $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
+
+                return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+            }
+
+            $permissoes = explode(',', $request->input('permissao'));
+
+            $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
+
+            flash()->success('Permissões atribuídas com sucesso.');
+
+            return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
 }

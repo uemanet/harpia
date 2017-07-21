@@ -11,6 +11,7 @@ use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\PoloRepository;
 use Validator;
 
 class RelatoriosMatriculasDisciplinaController extends BaseController
@@ -18,6 +19,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
     protected $matriculaDisciplinaRepository;
     protected $cursoRepository;
     protected $turmaRepository;
+    protected $poloRepository;
     private $ofertaCursoRepository;
     private $periodoLetivoRepository;
     private $ofertaDisciplinaRepository;
@@ -28,7 +30,8 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         TurmaRepository $turmaRepository,
         OfertaCursoRepository $ofertaCursoRepository,
         PeriodoLetivoRepository $periodoLetivoRepository,
-        OfertaDisciplinaRepository $ofertaDisciplinaRepository)
+        OfertaDisciplinaRepository $ofertaDisciplinaRepository,
+        PoloRepository $poloRepository)
     {
         $this->matriculaDisciplinaRepository = $matricula;
         $this->cursoRepository = $curso;
@@ -36,6 +39,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $this->ofertaCursoRepository = $ofertaCursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
+        $this->poloRepository = $poloRepository;
     }
 
     public function getIndex(Request $request)
@@ -45,6 +49,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $dados = $request->all();
         $ofertasCurso = [];
         $turmas = [];
+        $polos = [];
         $periodos = [];
         $disciplinas = [];
 
@@ -63,6 +68,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             foreach ($sqlOfertas as $oferta) {
                 $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
             }
+            $polos = $this->poloRepository->findAllByOfertaCurso($ofc_id)->pluck('pol_nome', 'pol_id');
         }
 
         $paginacao = null;
@@ -83,7 +89,17 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('Academico::relatoriosmatriculasdisciplina.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'periodos', 'disciplinas'));
+        $situacao = [
+                      "" => "Selecione o status",
+                      "cursando" => "Cursando",
+                      "aprovado_media" => "Aprovado por Média",
+                      "aprovado_final" => "Aprovado por Final",
+                      "reprovado_media" => "Reprovado por Média",
+                      "reprovado_final" => "Reprovado por Final",
+                      "cancelado" => "Cancelado"
+                   ];
+
+        return view('Academico::relatoriosmatriculasdisciplina.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'periodos', 'disciplinas', 'polos', 'situacao'));
     }
 
     public function postPdf(Request $request)
@@ -104,9 +120,10 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $turmaId = $request->input('trm_id');
         $ofertaId = $request->input('ofd_id');
         $situacao = $request->input('mof_situacao_matricula');
+        $poloId = $request->input('pol_id');
         $dis = ['ofd_id' => $ofertaId];
 
-        $alunos = $this->matriculaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
+        $alunos = $this->matriculaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao, $poloId);
 
         $disciplina = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome');
         $turma = $this->turmaRepository->find($turmaId);
@@ -129,6 +146,59 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
         $mpdf->WriteHTML(view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina', 'date', 'turma'))->render());
         $mpdf->Output();
+        exit;
+    }
+
+    public function postXls(Request $request)
+    {
+        $rules = [
+            'crs_id' => 'required',
+            'ofc_id' => 'required',
+            'per_id' => 'required',
+            'ofd_id' => 'required',
+            'trm_id' => 'required'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $turmaId = $request->input('trm_id');
+        $ofertaId = $request->input('ofd_id');
+        $situacao = $request->input('mof_situacao_matricula');
+        $poloId = $request->input('pol_id');
+        $dis = ['ofd_id' => $ofertaId];
+
+        $alunos = $this->matriculaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao, $poloId);
+
+        $disciplina = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome');
+        $turma = $this->turmaRepository->find($turmaId);
+
+        $date = new Carbon();
+
+        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+
+        $mpdf->mirrorMargins = 1;
+        $mpdf->SetTitle('Relatório de alunos da Disciplina: ' . $disciplina[0]);
+        $mpdf->SetHeader('{PAGENO} / {nb}');
+        $mpdf->SetFooter('Emitido em : ' . $date->format('d/m/Y H:i:s'));
+        $mpdf->defaultheaderfontsize = 10;
+        $mpdf->defaultheaderfontstyle = 'B';
+        $mpdf->defaultheaderline = 0;
+        $mpdf->defaultfooterfontsize = 10;
+        $mpdf->defaultfooterfontstyle = 'BI';
+        $mpdf->defaultfooterline = 0;
+        $mpdf->addPage('L');
+
+        $html = view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina', 'date', 'turma'))->render();
+
+        $arquivo = 'Matriculados na disciplina '.$disciplina.'.xls';
+        header("Content-Type: application/xls");
+        header("Content-Disposition: attachment; filename=$arquivo");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        print chr(255) . chr(254) . mb_convert_encoding($html, 'UTF-16LE', 'UTF-8');
         exit;
     }
 }

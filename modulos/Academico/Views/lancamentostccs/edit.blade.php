@@ -25,21 +25,3 @@
         </div>
     </div>
 @stop
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("select").select2();
-            });
-    </script>
-
-    <script type="text/javascript">
-            $('.datepicker').datepicker({
-              format: 'dd/mm/yyyy',
-              language: 'pt-BR'
-            });
-    </script>
-@endsection

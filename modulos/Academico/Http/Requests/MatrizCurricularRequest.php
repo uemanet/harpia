@@ -28,7 +28,7 @@ class MatrizCurricularRequest extends BaseRequest
             {
                 return [
                     'mtc_crs_id' => 'required',
-                    'mtc_file' => 'required|mimes:pdf',
+                    'mtc_file' => 'mimes:pdf',
                     'mtc_descricao' => 'max:255',
                     'mtc_data' => 'required|date_format:"d/m/Y"',
                     'mtc_titulo' => 'required',

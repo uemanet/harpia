@@ -18,7 +18,7 @@ class CreateAcdLancamentosTccsTable extends Migration
             $table->integer('ltc_mof_id')->unsigned();
             $table->integer('ltc_prf_id')->unsigned();
             $table->integer('ltc_anx_tcc')->unsigned()->nullable();
-            $table->string('ltc_titulo', 45);
+            $table->string('ltc_titulo', 200);
             $table->enum('ltc_tipo', [
                 'artigo',
                 'monografia',

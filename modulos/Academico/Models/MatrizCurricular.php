@@ -31,7 +31,7 @@ class MatrizCurricular extends BaseModel
 
     public function curso()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Curso', 'mtc_crs_id');
+        return $this->belongsTo('Modulos\Academico\Models\Curso', 'mtc_crs_id', 'crs_id');
     }
 
     public function modulos()
@@ -39,17 +39,26 @@ class MatrizCurricular extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\ModuloMatriz', 'mdo_mtc_id', 'mtc_id');
     }
 
+    public function projeto()
+    {
+        return $this->hasOne('Modulos\Geral\Models\Anexo', 'anx_id', 'mtc_anx_projeto_pedagogico');
+    }
+
     // Accessors
     // Retorna a data em padrao pt-BR em vez do padrao internacional
     public function getMtcDataAttribute($value)
     {
-        setlocale(LC_ALL, 'pt_BR');
-        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        if (!is_null($value)) {
+            setlocale(LC_ALL, 'pt_BR');
+            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        }
     }
 
     // Mutators
     public function setMtcDataAttribute($value)
     {
-        $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if ($value) {
+            $this->attributes['mtc_data'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
 }

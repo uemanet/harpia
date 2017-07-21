@@ -11,7 +11,6 @@ class Servico extends BaseModel
     protected $primaryKey = 'ser_id';
 
     protected $fillable = [
-        'ser_id',
         'ser_nome',
         'ser_slug'
     ];

@@ -29,13 +29,6 @@ class CursoRepositoryTest extends TestCase
         return $app;
     }
 
-    public function login()
-    {
-        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
-
-        $this->actingAs($user);
-    }
-
     public function setUp()
     {
         parent::setUp();
@@ -43,7 +36,6 @@ class CursoRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(CursoRepository::class);
-        $this->login();
     }
 
     public function testAllWithEmptyDatabase()
@@ -193,7 +185,11 @@ class CursoRepositoryTest extends TestCase
 
         $response = $this->repo->delete($cursoId);
 
-        $this->assertEquals(1, $response);
+        $this->assertInternalType('array', $response);
+        $this->assertArrayHasKey('status', $response);
+        $this->assertArrayHasKey('message', $response);
+        $this->assertEquals($response['status'], 'success');
+        $this->assertEquals($response['message'], 'Curso excluído com sucesso.');
     }
 
     public function tearDown()

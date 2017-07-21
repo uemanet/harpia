@@ -65,7 +65,7 @@ class TitulacoesInformacoesController extends BaseController
         }
     }
 
-    public function getEdit($titulacaoId, Request $request)
+    public function getEdit($titulacaoId)
     {
         $titulacaoInfo = $this->titulacaoInformacaoRepository->find($titulacaoId);
 
@@ -118,11 +118,8 @@ class TitulacoesInformacoesController extends BaseController
         try {
             $titulacaoId = $request->get('id');
 
-            if ($this->titulacaoInformacaoRepository->delete($titulacaoId)) {
-                flash()->success('Titulação excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a titulação');
-            }
+            $this->titulacaoInformacaoRepository->delete($titulacaoId);
+            flash()->success('Titulação excluída com sucesso.');
 
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {

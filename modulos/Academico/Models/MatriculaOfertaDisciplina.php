@@ -14,7 +14,21 @@ class MatriculaOfertaDisciplina extends BaseModel
         'mof_mat_id',
         'mof_ofd_id',
         'mof_tipo_matricula',
+        'mof_nota1',
+        'mof_nota2',
+        'mof_nota3',
+        'mof_conceito',
+        'mof_recuperacao',
+        'mof_final',
+        'mof_mediafinal',
         'mof_situacao_matricula'
+    ];
+
+    protected $searchable = [
+        'mof_ofd_id' => '=',
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
+        'pes_cpf' => '='
     ];
 
     public function matriculaCurso()
@@ -27,6 +41,10 @@ class MatriculaOfertaDisciplina extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'mof_ofd_id', 'ofd_id');
     }
 
+    public function tcc()
+    {
+        return $this->hasOne('Modulos\Academico\Models\LancamentoTcc', 'ltc_mof_id', 'mof_id');
+    }
 
     public function getSituacaoMatriculaAttribute($value)
     {

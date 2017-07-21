@@ -48,11 +48,15 @@ class PeriodoLetivo extends BaseModel
     // Mutators
     public function setPerInicioAttribute($value)
     {
-        $this->attributes['per_inicio'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if ($value) {
+            $this->attributes['per_inicio'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
 
     public function setPerFimAttribute($value)
     {
-        $this->attributes['per_fim'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if ($value) {
+            $this->attributes['per_fim'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
 }

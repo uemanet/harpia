@@ -13,19 +13,78 @@ class PerfilRepository extends BaseRepository
         $this->model = $perfil;
     }
 
+    public function getPerfilModulo($perfil)
+    {
+        $permissoes = DB::table('seg_permissoes')
+                   ->where('prm_rota', 'like', $perfil->modulo->mod_slug.'%')->get();
+
+        $arrayRecursos = [];
+        $arrayRecursosPermissoes = [];
+
+        foreach ($permissoes as $key => $permissao) {
+            $habilitado = DB::table('seg_permissoes_perfis')
+                     ->where('prp_prf_id', '=', $perfil->prf_id)
+                     ->where('prp_prm_id', '=', $permissao->prm_id)
+                     ->get();
+
+            if ($habilitado->isEmpty()) {
+                $habilitado = 0;
+            } else {
+                $habilitado = 1;
+            }
+
+            $separa = explode('.', $permissao->prm_rota);
+            $conta = count($separa);
+            $arrayPermissoes = [
+            'prm_id' => $permissao->prm_id,
+            'prm_nome' => $separa[$conta-1],
+            'habilitado' => $habilitado
+          ];
+            $arrayRecursosPermissoes[$key]['rcs_nome'] = $separa[$conta-2];
+            $arrayRecursosPermissoes[$key]['permissao'] = $arrayPermissoes;
+
+            if (!in_array($separa[$conta-2], $arrayRecursos)) {
+                $arrayRecursos[] = $separa[$conta-2];
+            }
+        }
+
+        $retornoperfis = [];
+
+        foreach ($arrayRecursos as $key => $arrayRecurso) {
+            $retornoperfis[$key]['rcs_id'] = 0;
+            $retornoperfis[$key]['rcs_nome'] = $arrayRecurso;
+            $retornoperfis[$key]['permissoes'] = 'arraydepermissoes';
+        }
+
+        $arraypermissoes = [];
+        foreach ($retornoperfis as $keyA => $novo) {
+            foreach ($arrayRecursosPermissoes as $keyB => $arrayRecurso) {
+                $stringA =$arrayRecurso['rcs_nome'];
+                $stringB = $novo['rcs_nome'];
+                if ($stringA == $stringB) {
+                    $arraypermissoes[] = $arrayRecurso['permissao'];
+                }
+            }
+            $retornoperfis[$keyA]['permissoes'] = $arraypermissoes;
+            $arraypermissoes = [];
+        }
+
+        return $retornoperfis;
+    }
+
     public function getTreeOfPermissoesByPefilAndModulo($perfilId, $moduloId)
     {
         $sql = 'SELECT
                   rcs_id, rcs_nome, rcs_nome, prm_id,prm_nome, (CASE WHEN bol=1 THEN 1 ELSE 0 END) AS habilitado
                 FROM (
-                    SELECT rcs_id, rcs_nome, prm_id, prm_nome 
+                    SELECT rcs_id, rcs_nome, prm_id, prm_nome
                     FROM seg_permissoes
                         LEFT JOIN seg_recursos ON rcs_id = prm_rcs_id
                         LEFT JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id
                     WHERE ctr_mod_id = :moduloid
                 ) todas
                 LEFT JOIN (
-                    SELECT prm_id as temp, 1 as bol 
+                    SELECT prm_id as temp, 1 as bol
                     FROM seg_permissoes
                         LEFT JOIN seg_recursos ON rcs_id = prm_rcs_id
                         LEFT JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id

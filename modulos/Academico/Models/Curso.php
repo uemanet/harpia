@@ -12,7 +12,7 @@ class Curso extends BaseModel
     protected $primaryKey = 'crs_id';
 
     protected $fillable = [
-        'crs_dep_id',
+        'crs_cen_id',
         'crs_nvc_id',
         'crs_prf_diretor',
         'crs_nome',
@@ -29,9 +29,9 @@ class Curso extends BaseModel
         'crs_nome' => 'like'
     ];
 
-    public function departamento()
+    public function centro()
     {
-        return $this->belongsTo('Modulos\Academico\Models\Departamento', 'crs_dep_id', 'dep_id');
+        return $this->belongsTo('Modulos\Academico\Models\Centro', 'crs_cen_id', 'cen_id');
     }
 
     public function diretor()
@@ -59,11 +59,18 @@ class Curso extends BaseModel
         return $this->belongsToMany('Modulos\Seguranca\Models\Vinculos', 'pcr_crs_id', 'crs_id');
     }
 
+    public function configuracoes()
+    {
+        return $this->hasMany('Modulos\Academico\Models\ConfiguracaoCurso', 'cfc_crs_id', 'crs_id');
+    }
+
     // Accessors
     public function getCrsDataAutorizacaoAttribute($value)
     {
-        setlocale(LC_ALL, 'pt_BR');
-        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        if (!is_null($value)) {
+            setlocale(LC_ALL, 'pt_BR');
+            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        }
     }
 
     // Mutators

@@ -75,12 +75,11 @@
         <div class="controls">
             {!! Form::select('pes_estado_civil',
                                 ["solteiro" => "Solteiro(a)",
-                                  "casado" => "Casado(a)",
-                                  "divorciado" => "Divorciado(a)",
-                                  "uniao_estavel" => "União estável",
-                                  "viuvo" => "Viúvo(a)",
-                                  "outro" => "Outro"],
-                                 isset($pessoa->pes_estado_civil) ? $pessoa->pes_estado_civil : old('pes_estado_civil'),
+                                 "casado" => "Casado(a)",
+                                 "divorciado" => "Divorciado(a)",
+                                 "uniao_estavel" => "União estável",
+                                 "viuvo(a)" => "Viúvo(a)"],
+                                 isset($pessoa->pes_estado_civil) ? $pessoa->getOriginal('pes_estado_civil') : old('pes_estado_civil'),
                                  ['class' => 'form-control', 'placeholder' => 'Selecione o estado civil']) !!}
             @if ($errors->has('pes_estado_civil')) <p class="help-block">{{ $errors->first('pes_estado_civil') }}</p> @endif
         </div>

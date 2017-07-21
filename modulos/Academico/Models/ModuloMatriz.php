@@ -15,6 +15,7 @@ class ModuloMatriz extends BaseModel
         'mdo_nome',
         'mdo_descricao',
         'mdo_qualificacao',
+        'mdo_competencias',
         'mdo_mtc_id',
         'mdo_cargahoraria_min_eletivas',
         'mdo_creditos_min_eletivas'

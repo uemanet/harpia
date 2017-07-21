@@ -25,7 +25,7 @@ class ConclusaoCurso extends BaseController
     {
         $dados = $request->all();
 
-        $alunos = $this->matriculaCursoRepository->getAlunosAptosOrNot($dados['ofc_id'], $dados['trm_id'], $dados['pol_id']);
+        $alunos = $this->matriculaCursoRepository->getAlunosAptosOrNot($dados['trm_id'], $dados['pol_id']);
 
         return new JsonResponse($alunos, 200);
     }
@@ -33,28 +33,29 @@ class ConclusaoCurso extends BaseController
     public function postConcluirMatriculas(Request $request)
     {
         $matriculas = $request->input('matriculas');
-        $ofertaCursoId = $request->input('ofc_id');
 
         DB::beginTransaction();
 
         try {
             foreach ($matriculas as $matricula) {
-                $result = $this->matriculaCursoRepository->concluirMatricula($matricula, $ofertaCursoId);
+                $matricula = $this->matriculaCursoRepository->concluirMatricula($matricula);
 
-                if (!$result) {
+                if (!$matricula) {
                     DB::rollback();
 
                     return new JsonResponse('Matricula(s) não está apta para conclusão de curso', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
                 }
 
-                event(new AtualizarSituacaoMatriculaEvent($result));
+                if ($matricula->turma->trm_integrada) {
+                    event(new AtualizarSituacaoMatriculaEvent($matricula));
+                }
 
                 DB::commit();
 
                 return new JsonResponse('Matriculas concluidas com sucesso', 200);
             }
         } catch (\Exception $e) {
-            DB::rollBack();
+            DB::rollback();
             if (config('app.debug')) {
                 throw $e;
             }

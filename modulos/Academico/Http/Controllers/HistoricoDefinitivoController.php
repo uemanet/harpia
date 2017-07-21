@@ -61,10 +61,30 @@ class HistoricoDefinitivoController extends BaseController
 
                 $dados = $this->historicoDefinitivoRepository->getGradeCurricularByMatricula($matricula->mat_id);
 
-                $blade = 'graduacao';
+                /*
+                 * Niveis de Curso
+                 *
+                 * Graduação -> 1
+                 * Técnico -> 2
+                 * Tecnólogo -> 3
+                 * Especialização -> 4
+                 * Mestrado -> 5
+                 * Doutorado -> 6
+                 * Aperfeiçoamento -> 7
+                 */
 
-                if ($matricula->turma->ofertacurso->curso->crs_nvc_id == 1) {
-                    $blade = 'tecnico';
+                $blade = '';
+
+                switch ($matricula->turma->ofertacurso->curso->crs_nvc_id) {
+                    case 2:
+                        $blade = 'tecnico';
+                        break;
+                    case 4:
+                        $blade = 'especializacao';
+                        break;
+                    default:
+                        $blade = 'graduacao';
+                        break;
                 }
 
                 $mpdf->WriteHTML(view('Academico::historicodefinitivo.'.$blade, compact('dados'))->render());

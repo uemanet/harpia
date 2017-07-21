@@ -194,13 +194,38 @@ class ModuloDisciplinaRepository extends BaseRepository
 
     public function updatePreRequisitos($matrizId, $moduloDisciplinaId)
     {
-        $query = DB::table('acd_modulos_disciplinas')
-                    ->join('acd_modulos_matrizes', 'mdc_mdo_id', 'mdo_id')
-                    ->where('mdo_mtc_id', '=', $matrizId)
-                    ->update(['mdc_pre_requisitos' => DB::raw('JSON_REMOVE(mdc_pre_requisitos, JSON_UNQUOTE(JSON_SEARCH(mdc_pre_requisitos, "one", "'.$moduloDisciplinaId.'", NULL, "$")))')]);
+        $registros = $this->model->join('acd_modulos_matrizes', 'mdc_mdo_id', '=', 'mdo_id')
+                                ->where('mdo_mtc_id', '=', $matrizId)
+                                ->whereNotNull('mdc_pre_requisitos')
+                                ->get();
 
+        if ($registros) {
+            try {
+                DB::beginTransaction();
 
-        return $query;
+                foreach ($registros as $obj) {
+                    $arrayPreRequisitos = json_decode($obj->mdc_pre_requisitos, true);
+
+                    if (gettype(array_search($moduloDisciplinaId, $arrayPreRequisitos)) != 'boolean') {
+                        $key = array_search($moduloDisciplinaId, $arrayPreRequisitos);
+                        unset($arrayPreRequisitos[$key]);
+
+                        $obj->fill([
+                            'mdc_pre_requisitos' => json_encode($arrayPreRequisitos)
+                        ])->save();
+                    }
+                }
+
+                DB::commit();
+
+                return $registros->count();
+            } catch (\Exception $e) {
+                DB::rollback();
+                return 0;
+            }
+        }
+
+        return 0;
     }
 
     public function getDisciplinasPreRequisitos($moduloDisciplinaId)
@@ -278,7 +303,6 @@ class ModuloDisciplinaRepository extends BaseRepository
 
         $modulodisciplina['mdc_dis_id'] = $dados['dis_id'];
         $modulodisciplina['mdc_mdo_id'] = $dados['mod_id'];
-        $modulodisciplina['mdc_tipo_avaliacao'] = $dados['tipo_avaliacao'];
         $modulodisciplina['mdc_tipo_disciplina'] = $dados['tipo_disciplina'];
         $modulodisciplina['mdc_pre_requisitos'] = (empty($dados['pre_requisitos'])) ? null : json_encode($dados['pre_requisitos']);
 

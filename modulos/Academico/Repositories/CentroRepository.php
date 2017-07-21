@@ -11,15 +11,4 @@ class CentroRepository extends BaseRepository
     {
         $this->model = $centro;
     }
-
-    public function delete($id)
-    {
-        $centro = $this->model->find($id);
-
-        if ($centro->departamentos->count()) {
-            return null;
-        }
-
-        return $this->model->destroy($id);
-    }
 }

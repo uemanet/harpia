@@ -22,28 +22,27 @@ class MatriculaOfertaDisciplina extends BaseController
         $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
-    public function getFindAllDisciplinasCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
+    public function getTableOfertasDisciplinas($alunoId, $turmaId, $periodoLetivoId)
     {
-        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
-            'ofd_per_id' => $periodoId,
+        $matriculadas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasCursadasByAluno($alunoId, [
+            'ofd_per_id' => $periodoLetivoId,
             'ofd_trm_id' => $turmaId,
         ]);
 
-        return new JsonResponse($disciplinas, 200);
+        $naomatriculadas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoLetivoId);
+
+        $html = view('Academico::matriculadisciplina.ajax.ofertas_disciplinas', compact('matriculadas', 'naomatriculadas'))->render();
+
+        return new JsonResponse($html, 200);
     }
 
-    public function getFindAllDisciplinasNotCursadasByAlunoTurmaPeriodo($alunoId, $turmaId, $periodoId)
+    public function getFindAllAlunosMatriculasLote(Request $request)
     {
-        $disciplinas = $this->matriculaOfertaDisciplinaRepository->getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId);
+        $matriculas = $this->matriculaOfertaDisciplinaRepository->getAlunosMatriculasLote($request->all());
 
-        return new JsonResponse($disciplinas, 200);
-    }
+        $html = view('Academico::matriculaslote.ajax.alunos', compact('matriculas'))->render();
 
-    public function getFindAllAlunosMatriculasLote($turmaId, $ofertaId)
-    {
-        $alunos = $this->matriculaOfertaDisciplinaRepository->getAlunosMatriculasLote($turmaId, $ofertaId);
-
-        return new JsonResponse($alunos, 200);
+        return new JsonResponse($html, 200);
     }
 
     public function postMatriculasLote(Request $request)

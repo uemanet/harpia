@@ -82,6 +82,25 @@ class Pessoa extends BaseModel
         return strtolower($value);
     }
 
+    public function getPesEstadoCivilAttribute($value)
+    {
+        if (!$value) {
+            return "Não informado";
+        }
+
+        if (in_array($value, ['solteiro', 'casado', 'divorciado'])) {
+            return ucfirst($value);
+        }
+
+        if ($value == "viuvo(a)") {
+            return "Viúvo(a)";
+        }
+
+        if ($value == "uniao_estavel") {
+            return "União estável";
+        }
+    }
+
     // Mutators
     public function setPesNascimentoAttribute($value)
     {

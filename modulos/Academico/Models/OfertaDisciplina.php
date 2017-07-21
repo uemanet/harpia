@@ -16,6 +16,7 @@ class OfertaDisciplina extends BaseModel
         'ofd_trm_id',
         'ofd_per_id',
         'ofd_prf_id',
+        'ofd_tipo_avaliacao',
         'ofd_qtd_vagas'
     ];
 
@@ -28,7 +29,7 @@ class OfertaDisciplina extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\PeriodoLetivo', 'ofd_per_id', 'per_id');
     }
 
-    public function modulosDisciplinas()
+    public function moduloDisciplina()
     {
         return $this->belongsTo('Modulos\Academico\Models\ModuloDisciplina', 'ofd_mdc_id', 'mdc_id');
     }
@@ -45,6 +46,21 @@ class OfertaDisciplina extends BaseModel
 
     public function matriculasOfertasDisciplinas()
     {
-        return $this->hasMany('Modulos\Aacademico\Models\MatriculaOfertaDisciplina', 'mof_ofd_id', 'ofd_id');
+        return $this->hasMany('Modulos\Academico\Models\MatriculaOfertaDisciplina', 'mof_ofd_id', 'ofd_id');
+    }
+
+    public function mapeamentoItensNotas()
+    {
+        return $this->hasOne('Modulos\Integracao\Models\MapeamentoNota', 'min_ofd_id', 'ofd_id');
+    }
+
+    public function getOfdTipoAvaliacaoAttribute($value)
+    {
+        $dados = [
+            'numerica' => 'Numérica',
+            'conceitual' => 'Conceitual'
+        ];
+
+        return $dados[$value];
     }
 }

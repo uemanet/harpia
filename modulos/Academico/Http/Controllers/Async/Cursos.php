@@ -88,9 +88,9 @@ class Cursos
             $registros = [];
 
             foreach ($requestData['matriculas'] as $key => $value) {
-                $data['reg_liv_id'] = 1; // Certificacao;
-                $data['reg_mat_id'] = $value;
-                $data['reg_mdo_id'] = $requestData['modulo'];
+                $data['tipo_livro'] = 'CERTIFICADO'; // Certificacao;
+                $data['matricula'] = $value;
+                $data['modulo'] = $requestData['modulo'];
 
                 $registro = $this->registroRepository->create($data);
                 $registros[] = $registro->reg_id;

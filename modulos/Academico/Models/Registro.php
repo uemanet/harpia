@@ -2,7 +2,10 @@
 
 namespace Modulos\Academico\Models;
 
+use Illuminate\Pagination\Paginator;
 use Modulos\Core\Model\BaseModel;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Stevebauman\EloquentTable\TableCollection;
 
 class Registro extends BaseModel
 {
@@ -12,21 +15,38 @@ class Registro extends BaseModel
 
     protected $fillable = [
         'reg_liv_id',
-        'reg_mat_id',
+        'reg_usr_id',
         'reg_folha',
         'reg_registro',
-        'reg_registro_externo',
-        'reg_processo',
-        'reg_data_expedicao',
-        'reg_observacao',
-        'reg_usuario',
-        'reg_data',
-        'reg_id_interno',
-        'reg_mdo_id'
+        'reg_codigo_autenticidade'
+    ];
+
+    protected $searchable = [
+        'pes_nome' => 'like',
+        'pes_email' => 'like',
     ];
 
     public function livro()
     {
         return $this->belongsTo('Modulos\Academico\Models\Livro', 'reg_liv_id');
+    }
+
+    /**
+     * Paginate the given query into a simple paginator.
+     * @param  int  $perPage
+     * @param  string  $pageName
+     * @param  int|null  $page
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginateUnion(TableCollection $collection, $perPage = 15, $pageName = 'page', $page = null)
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+        $total = $collection->count();
+
+        $results = $total ? $collection->slice(($page - 1) * $perPage, $perPage) : [];
+        return new LengthAwarePaginator($results, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => $pageName,
+        ]);
     }
 }

@@ -173,21 +173,17 @@ class DisciplinasController extends BaseController
         try {
             $disciplinaId = $request->get('id');
 
-            if ($this->disciplinaRepository->delete($disciplinaId)) {
-                flash()->success('Disciplina excluída com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir a disciplina');
-            }
+            $this->disciplinaRepository->delete($disciplinaId);
 
+            flash()->success('Disciplina excluída com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. A disciplina contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            }
-
-            if ($e->getCode() == 23000) {
-                flash()->error('Esta disciplina ainda contém dependências no sistema e não pode ser excluído.');
-                return redirect()->back();
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');

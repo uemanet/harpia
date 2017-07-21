@@ -237,27 +237,25 @@
 
                         $.each(response, function (key, obj) {
                             table += '<tr>';
-                            if(obj.status == 1) {
+                            if(obj.status['status'] == 'success') {
                                 table += '<td><label><input type="checkbox" class="matriculas" value="'+obj.mat_id+'"></label></td>';
                             } else {
                                 table += '<td></td>';
                             }
                             table += '<td>'+obj.mat_id+'</td>';
                             table += '<td>'+obj.pes_nome+'</td>';
-                            if(obj.status == 0) {
-                                table += '<td><span class="label label-danger">Não Apto</span></td>';
-                            } else if(obj.status == 1) {
-                                table += '<td><span class="label label-success">Apto</span></td>';
-                            } else {
-                                table += '<td><p><span class="label label-info">Concluído</span></p><p><strong>Data de Conclusão:</strong> '+obj.data_conclusao+'</p></td>';
+                            table += '<td><span class="label label-'+obj.status['status']+'">'+obj.status['message']+'</span>';
+                            if (obj.status['status'] == 'info') {
+                                table += '<p><strong>Data de Conclusão:</strong> '+obj.status['data_conclusao']+'</p>';
                             }
+                            table += '</td>';
                             table += '</tr>';
                         });
 
                         table += '</table></div></div>';
 
                         table += "<div class='row'>";
-                        table += "<div class='col-md-12'>"
+                        table += "<div class='col-md-12'>";
                         table += "<div class='form-group'>";
                         table += "<button class='btn btn-primary confirmConclusao hidden'>Confirmar Conclusão</button>";
                         table += "</div></div></div>";

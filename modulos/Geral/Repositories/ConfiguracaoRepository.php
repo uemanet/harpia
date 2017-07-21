@@ -52,7 +52,14 @@ class ConfiguracaoRepository extends BaseRepository
      */
     public function update(array $data, $id = null, $attribute = 'cnf_nome')
     {
-        return $this->model->where($attribute, '=', $data['cnf_nome'])->update($data);
+        $obj = $this->model->where($attribute, '=', $data['cnf_nome'])->first();
+
+        if ($obj) {
+            $obj->fill($data)->save();
+            return 1;
+        }
+
+        return 0;
     }
 
     /**

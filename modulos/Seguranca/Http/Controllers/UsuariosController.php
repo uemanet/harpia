@@ -5,6 +5,7 @@ namespace Modulos\Seguranca\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modulos\Geral\Repositories\DocumentoRepository;
+use Modulos\Seguranca\Models\Usuario;
 use Modulos\Seguranca\Repositories\PerfilRepository;
 use Validator;
 use Modulos\Geral\Http\Requests\PessoaRequest;
@@ -102,9 +103,11 @@ class UsuariosController extends BaseController
         return view('Seguranca::usuarios.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    public function getCreate($pesId = null)
+    public function getCreate(Request $request)
     {
-        if (!is_null($pesId)) {
+        $pesId = $request->id;
+
+        if ($pesId) {
             $pessoa = $this->pessoaRepository->findById($pesId);
 
             if ($pessoa) {
@@ -120,15 +123,28 @@ class UsuariosController extends BaseController
         $usuarioRequest = new UsuarioRequest();
         $pessoaRequest = new PessoaRequest();
 
+        // Faz a validação dos dados
+        $validator = Validator::make($request->all(), array_merge($usuarioRequest->rules(), $pessoaRequest->rules()));
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validator);
+        }
+
+        $pes_id = $request->input('pes_id');
+
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
+        }
+
+        if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
+            $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+            return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
+        }
+
         DB::beginTransaction();
 
         try {
-            $validator = Validator::make($request->all(), array_merge($usuarioRequest->rules(), $pessoaRequest->rules()));
-
-            if ($validator->fails()) {
-                return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validator);
-            }
-
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -142,55 +158,43 @@ class UsuariosController extends BaseController
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
                 'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro')
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
-            $cpf = $request->input('doc_conteudo');
-
-            $dataForm = $request->all();
-            $pes_id = isset($dataForm['pes_id']) ? $request->input('pes_id') : null;
+            $dataDocumento = array(
+                'doc_tpd_id' => 2,
+                'doc_conteudo' => $request->input('doc_conteudo'),
+                'doc_pes_id' => $pes_id
+            );
 
             if ($pes_id) {
-                if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
-                    $errors = ['pes_email' => 'Email já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
-                }
-
-                if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
-                    $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
-                }
-
                 $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
-
-                $dataDocumento = array(
-                    'doc_tpd_id' => 2,
-                    'doc_conteudo' => $cpf,
-                    'doc_pes_id' => $pes_id
-                );
 
                 $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
             } else {
-                if ($this->pessoaRepository->verifyEmail($request->input('pes_email'))) {
-                    $errors = ['pes_email' => 'Email já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
-                }
-
-                if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'))) {
-                    $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
-                }
-
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
                 $pes_id = $pessoa->pes_id;
 
-                $dataDocumento = array(
-                    'doc_pes_id' => $pes_id,
-                    'doc_tpd_id' => 2,
-                    'doc_conteudo' => $cpf
-                );
+                $dataDocumento['doc_pes_id'] = $pes_id;
 
                 $this->documentoRepository->create($dataDocumento);
+            }
+
+            // Verifica se existe um usuário para a pessoa criada/atualizada
+
+            $user = Usuario::where('usr_pes_id', $pes_id)->first();
+
+            if ($user) {
+                DB::rollback();
+                flash()->error('Usuário já cadastrado');
+                return redirect()->route('seguranca.usuarios.index');
             }
 
             $dataUsuario = array(
@@ -199,13 +203,6 @@ class UsuariosController extends BaseController
                 'usr_ativo' => $request->input('usr_ativo'),
                 'usr_pes_id' => $pes_id
             );
-
-            $validator = Validator::make($dataUsuario, ['usr_pes_id' => 'required|unique:seg_usuarios']);
-
-            if ($validator->fails()) {
-                flash()->error('Usuário já cadastrado');
-                return redirect()->route('seguranca.usuarios.index');
-            }
 
             $this->usuarioRepository->create($dataUsuario);
 
@@ -253,25 +250,30 @@ class UsuariosController extends BaseController
             return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($validation->messages());
         }
 
+        $pes_id = $request->input('pes_id');
+
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
+        if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
+            $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
         DB::beginTransaction();
         try {
-            $pes_id = $request->input('pes_id');
-
-            if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
-                $errors = ['pes_email' => 'Email já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
-
-            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
-                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
-
             $dataUsuario = [
                 'usr_usuario' => $request->input('usr_usuario'),
-                'usr_senha' => bcrypt($request->input('usr_senha')),
                 'usr_ativo' => $request->input('usr_ativo')
             ];
+
+            $senha = $request->input('usr_senha');
+
+            if ($senha) {
+                $dataUsuario['usr_senha'] = bcrypt($senha);
+            }
 
             $this->usuarioRepository->update($dataUsuario, $id, 'usr_id');
 
@@ -287,7 +289,15 @@ class UsuariosController extends BaseController
                 'pes_naturalidade' => $request->input('pes_naturalidade'),
                 'pes_nacionalidade' => $request->input('pes_nacionalidade'),
                 'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial')
+                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
+                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
+                'pes_cep' => $request->input('pes_cep'),
+                'pes_endereco' => $request->input('pes_endereco'),
+                'pes_complemento' => $request->input('pes_complemento'),
+                'pes_numero' => $request->input('pes_numero'),
+                'pes_bairro' => $request->input('pes_bairro'),
+                'pes_cidade' => $request->input('pes_cidade'),
+                'pes_estado' => $request->input('pes_estado')
             );
 
             $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
@@ -304,6 +314,9 @@ class UsuariosController extends BaseController
 
             flash()->success('Usuario editado com sucesso!');
             return redirect()->route('seguranca.usuarios.index');
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -312,9 +325,6 @@ class UsuariosController extends BaseController
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-        } catch (ValidationException $e) {
-            DB::rollback();
-            return redirect()->back()->withInput($request->except('usr_senha'))->withErrors($e);
         }
     }
 
@@ -377,9 +387,10 @@ class UsuariosController extends BaseController
             if (!$this->perfilRepository->verifyExistsPerfilModulo($request->input('mod_id'), $usuario->usr_id)) {
                 $usuario->perfis()->attach($request->input('prf_id'));
                 flash()->success('Perfil Atribuído com sucesso');
-            } else {
-                flash()->error('Usuario já possui perfil associado ao módulo!');
+                return redirect()->back();
             }
+
+            flash()->error('Usuario já possui perfil associado ao módulo!');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -406,10 +417,10 @@ class UsuariosController extends BaseController
 
             if ($usuario->perfis()->detach($prf_id)) {
                 flash()->success('Perfil excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir perfil');
+                return redirect()->back();
             }
 
+            flash()->error('Erro ao tentar excluir perfil');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

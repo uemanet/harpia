@@ -4,9 +4,11 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modulos\Academico\Events\AlterarGrupoAlunoEvent;
+use Modulos\Academico\Events\AtualizarMatriculaCursoEvent;
 use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
 use Modulos\Academico\Events\MatriculaAlunoTurmaEvent;
 use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
+use Modulos\Academico\Listeners\AtualizarMatriculaCursoListener;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
@@ -95,15 +97,15 @@ class MatriculaCursoController extends BaseController
         try {
             $result = $this->matriculaCursoRepository->createMatricula($alunoId, $request->all());
 
-            flash()->{$result['type']}($result['message']);
-
             if ($result['type'] == 'success') {
                 $matricula = $result['matricula'];
-                $turma = $this->turmaRepository->find($matricula->mat_trm_id);
-                if ($turma->trm_integrada) {
+
+                if ($matricula->turma->trm_integrada) {
                     event(new MatriculaAlunoTurmaEvent($matricula));
                 }
             }
+
+            flash()->{$result['type']}($result['message']);
             return redirect()->route('academico.matricularalunocurso.show', $alunoId);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -127,19 +129,34 @@ class MatriculaCursoController extends BaseController
 
             $oldMatricula = clone $matricula;
 
-            $matricula->mat_pol_id = $request->input('mat_pol_id');
-            $matricula->mat_grp_id = ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id');
+            $data = [
+                'mat_pol_id' => $request->input('mat_pol_id'),
+                'mat_grp_id' => ($request->input('mat_grp_id') == '') ? null : $request->input('mat_grp_id'),
+            ];
 
-            $matricula->save();
+            $matricula->fill($data)->save();
+
+            $observacao = $request->input('observacao');
 
             $turma = $matricula->turma;
 
-            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
-                event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+            // caso a turma seja integrada, manda as alterações pro moodle
+            if ($turma->trm_integrada) {
+                if (($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
+                    event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                }
+
+                if (($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
+                    event(new DeletarGrupoAlunoEvent($matricula, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                }
             }
 
-            if (($turma->trm_integrada) && ($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
-                event(new DeletarGrupoAlunoEvent($matricula, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+            if ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) {
+                event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::GRUPO, $observacao));
+            }
+
+            if ($oldMatricula->mat_pol_id != $matricula->mat_pol_id) {
+                event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::POLO, $observacao));
             }
 
             flash()->success('Matrícula atualizada com sucesso.');

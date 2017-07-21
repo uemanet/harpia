@@ -35,49 +35,37 @@
                     {!! Form::select('ofc_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-3">
+                    {!! Form::label('mtc_id', 'Matriz Curricular*', ['class' => 'control-label']) !!}
+                    {!! Form::select('mtc_id', [], null, ['disabled', 'class' => 'form-control']) !!}
+                </div>
+                <div class="form-group col-md-3">
+                    {!! Form::label('ofd_mdo_id', 'Módulos da Matriz Curricular*', ['class' => 'control-label']) !!}
+                    {!! Form::select('ofd_mdo_id', [], null, ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-3">
                     {!! Form::label('ofd_trm_id', 'Turma*', ['class' => 'control-label']) !!}
                     {!! Form::select('ofd_trm_id', [], null, ['class' => 'form-control']) !!}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     {!! Form::label('ofd_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
                     {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
-                    <button class="btn btn-primary form-control" id="btnLocalizar"><i class="fa fa-search"></i></button>
+                    <button class="btn btn-primary form-control" id="btnLocalizar">
+                        <i class="fa fa-search"></i>
+                    </button>
                 </div>
             </div>
         </div>
         <!-- /.box-body -->
     </div>
 
-    <div class="box box-primary" id="formDisciplinas">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de ofertas de disciplinas</h3>
-        </div>
-        <div class="box-body">
-            @include('Academico::ofertasdisciplinas.includes.formulario_create')
-        </div>
-    </div>
+    <div class="table-disciplinas"></div>
 
-    <div class="box box-primary hidden" id="boxDisciplinas">
-        <div class="box-header with-border">
-            <h3 class="box-title">Disciplinas Ofertadas</h3>
-
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-12 conteudo"></div>
-            </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
+    <div class="table-ofertas"></div>
 @stop
 
 @section('scripts')
@@ -85,231 +73,279 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-                $("select").select2();
-                var token = "{{csrf_token()}}";
+            $("select").select2();
 
-                var selectTurmas = $('#ofd_trm_id');
-                var selectPeriodos = $('#ofd_per_id');
-                var selectProfessores = $('#ofd_prf_id');
-                var selectDisciplinas = $('#ofd_mdc_id');
+            var token = "{{csrf_token()}}";
 
-                var boxDisciplinas = $('#boxDisciplinas');
-                var boxFormDisciplinas = $('#formDisciplinas');
-                boxFormDisciplinas.hide();
+            var selectCursos = $('#crs_id');
+            var selectOfertasCursos = $('#ofc_id');
+            var selectTurmas = $('#ofd_trm_id');
+            var selectMatrizCurricular = $('#mtc_id');
+            var selectModulosMatriz = $('#ofd_mdo_id');
+            var selectPeriodosLetivos = $('#ofd_per_id');
 
+            // populando select de matrizes e ofertas de cursos
+            selectCursos.change(function (e) {
+                var crsId = $(this).val();
 
-                // Botao de Localizar Disciplinas Ofertadas
-                $('#btnLocalizar').click(function () {
-                    var turma = selectTurmas.val();
-                    var periodo = $('#ofd_per_id').val();
+                if(crsId) {
 
-                    if(turma == '' || periodo == '') {
-                        return false;
-                    }
+                    // limpando todos os selects
+                    selectOfertasCursos.empty();
+                    selectMatrizCurricular.empty();
+                    selectTurmas.empty();
+                    selectModulosMatriz.empty();
+                    selectPeriodosLetivos.empty();
 
-                    localizarDisciplinasOfertadas(turma, periodo);
-                });
-
-                $('#btnAdicionar').click(function (e) {
-                    e.preventDefault();
-
-                    var turmaId = selectTurmas.val();
-                    var periodoId = selectPeriodos.val();
-                    var professorId = selectProfessores.val();
-                    var disciplinaId = selectDisciplinas.val();
-                    var qtdVagas = $('#ofd_qtd_vagas').val();
-
-                    if(turmaId == '' || periodoId == '' || professorId == '' || disciplinaId == '' || qtdVagas == '') {
-                        return false;
-                    }
-
-                    var token = "{{csrf_token()}}";
-
-                    var dados = {
-                        ofd_trm_id: turmaId,
-                        ofd_per_id: periodoId,
-                        ofd_prf_id: professorId,
-                        ofd_mdc_id: disciplinaId,
-                        ofd_qtd_vagas: qtdVagas,
-                        _token: token
-                    };
-
-                    $.harpia.showloading();
-                    var result = false;
-
-                    $.ajax({
-                        url: "{{url('/')}}/academico/async/ofertasdisciplinas/oferecerdisciplina",
-                        data: dados,
-                        method: 'POST',
-                        success: function (data) {
-                            localizarDisciplinasOfertadas(dados.ofd_trm_id, dados.ofd_per_id);
-                            $.harpia.hideloading();
-                            toastr.success('Disciplina ofertada com sucesso!', null, {progressBar: true});
-                        },
-                        error: function (xhr, textStatus, error) {
-                            $.harpia.hideloading();
-
-                            switch (xhr.status) {
-                                case 400:
-                                    toastr.error(xhr.responseText, null, {progressBar: true});
-                                    break;
-                                default:
-                                    toastr.error(xhr.responseText, null, {progressBar: true});
-
-                                    result = false;
-                            }
+                    // Populando o select de ofertas de cursos
+                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
+                    .done(function (data) {
+                        if(!$.isEmptyObject(data)) {
+                            selectOfertasCursos.append("<option value=''>Selecione a oferta</option>");
+                            $.each(data, function (key, value) {
+                                selectOfertasCursos.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+' ('+value.mdl_nome+')</option>');
+                            });
+                        } else {
+                            selectOfertasCursos.append("<option value=''>Sem ofertas cadastradas</option>");
                         }
                     });
+                }
+            });
 
-                    resetForm();
-                });
+            // populando select de turmas
+            selectOfertasCursos.change(function (e) {
+                var ofertaId = $(this).val();
 
-                $(document).on('click', '.btn-delete', function (event) {
-                    event.preventDefault();
+                if (ofertaId) {
+                    // limpando selects
+                    selectMatrizCurricular.empty();
+                    selectTurmas.empty();
+                    selectModulosMatriz.empty();
+                    selectPeriodosLetivos.empty();
 
-                    var button = $(this);
+                    // populando o select de matriz curricular
+                    $.harpia.httpget('{{url("/")}}/academico/async/matrizescurriculares/findbyofertacurso/' + ofertaId)
+                    .done(function (response) {
+                        var mtc_id = '';
+                        if (!$.isEmptyObject(response)) {
+                            mtc_id = response.mtc_id;
+                            selectMatrizCurricular.append('<option value="'+response.mtc_id+'">'+response.mtc_titulo+'</option>')
+                        } else {
+                            selectMatrizCurricular.append('<option value="">Sem matriz cadastrada</option>')
+                        }
 
-                    swal({
-                        title: "Tem certeza que deseja excluir?",
-                        text: "Você não poderá recuperar essa informação!",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Sim, pode excluir!",
-                        cancelButtonText: "Não, quero cancelar!",
-                        closeOnConfirm: true
-                    }, function(isConfirm){
-                        if (isConfirm) {
-
-                            var ofd_id = button.closest('form').find('input[name="id"]').val();
-                            var turmaId = $('#ofd_trm_id').val();
-                            var periodoId = $('#ofd_per_id').val();
-
-                            var data = {ofd_id : ofd_id, _token : token};
-
-                            $.harpia.showloading();
-
-                            var result = false;
-
-                            $.ajax({
-                                type: 'POST',
-                                url: '/academico/async/ofertasdisciplinas/deletarofertadisciplina',
-                                data: data,
-                                success: function (data) {
-                                    $.harpia.hideloading();
-
-                                    toastr.success('Oferta excluída com sucesso!', null, {progressBar: true});
-                                    localizarDisciplinasOfertadas(turmaId, periodoId);
-                                    result = resp;
-                                },
-                                error: function (xhr, textStatus, error) {
-                                    $.harpia.hideloading();
-
-                                    switch (xhr.status) {
-                                        case 400:
-                                            toastr.error('Erro ao tentar deletar a oferta de disciplina.', null, {progressBar: true});
-                                            break;
-                                        default:
-                                            toastr.error(xhr.responseText, null, {progressBar: true});
-
-                                            result = false;
+                        // populando o select de modulos da matriz curricular
+                        $.harpia.httpget('{{url("/")}}/academico/async/modulosmatriz/findallbymatriz/' + mtc_id)
+                        .done(function (data) {
+                            if(!$.isEmptyObject(data)) {
+                                selectModulosMatriz.append('<option value="">Selecione o módulo</option>');
+                                $.each(data, function (key, obj) {
+                                    var option = '<option value="'+obj.mdo_id+'"';
+                                    if (key == 0) {
+                                        option += ' selected';
                                     }
-                                }
+                                    option += '>'+obj.mdo_nome+'</option>';
+                                    selectModulosMatriz.append(option);
+                                });
+                            } else {
+                                selectModulosMatriz.append('<option value="">Sem módulos cadastrados</option>');
+                            }
+                        });
+                    });
+
+                    // populando o select de turmas
+                    $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacurso/' + ofertaId)
+                    .done(function (data) {
+                        if (!$.isEmptyObject(data)){
+                            selectTurmas.append('<option value="">Selecione a turma</option>');
+                            $.each(data, function (key, obj) {
+                                selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>')
                             });
+                        }else {
+                            selectTurmas.append('<option value="">Sem turmas cadastradas</option>')
                         }
                     });
+                }
+
+            });
+
+            // populando select de periodos letivos
+            selectTurmas.change(function() {
+                var turmaId = $(this).val();
+
+                if(turmaId) {
+                    // limpando selects
+                    selectPeriodosLetivos.empty();
+                    $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+                    .done(function(response) {
+                        if(!$.isEmptyObject(response))
+                        {
+                            selectPeriodosLetivos.append("<option value=''>Selecione um periodo</option>");
+                            $.each(response, function (key, obj) {
+                                selectPeriodosLetivos.append("<option value='"+obj.per_id+"'>"+obj.per_nome+"</option>");
+                            });
+                        } else {
+                            selectPeriodosLetivos.append("<option value=''>Sem períodos disponíveis</option>");
+                        }
+                    });
+                }
+            });
+
+            // Botao de Localizar Disciplinas Ofertadas
+            $('#btnLocalizar').click(function () {
+                var turma = selectTurmas.val();
+                var periodo = selectPeriodosLetivos.val();
+                var modulo = selectModulosMatriz.val();
+
+                if(turma == '' || periodo == '' || modulo == '') {
+                    return false;
+                }
+
+                renderTables(turma, periodo, modulo);
+            });
+
+            $(document).on('click', '.btnAdicionar', function (e) {
+                e.preventDefault();
+
+                var disciplina = $(e.target).data('mdc');
+                var tipo_avaliacao = $(e.target).closest('tr').find('.tipo-avaliacao').val();
+                var qtd_vagas = $(e.target).closest('tr').find('.qtd-vagas').val();
+                var professor = $(e.target).closest('tr').find('.professor').val();
+                var turma = selectTurmas.val();
+                var periodo = selectPeriodosLetivos.val();
+                var modulo = selectModulosMatriz.val();
+
+                if (turma == '' || periodo == '' || professor == '' || !(qtd_vagas > 0)
+                    || tipo_avaliacao == '' || disciplina == '') {
+                    return false;
+                }
+
+                var dados = {
+                    ofd_trm_id: turma,
+                    ofd_per_id: periodo,
+                    ofd_prf_id: professor,
+                    ofd_mdc_id: disciplina,
+                    ofd_qtd_vagas: qtd_vagas,
+                    ofd_tipo_avaliacao: tipo_avaliacao,
+                    _token: token
+                };
+
+                $.harpia.showloading();
+
+                $.ajax({
+                    url: "{{url('/')}}/academico/async/ofertasdisciplinas/oferecerdisciplina",
+                    data: dados,
+                    method: 'POST',
+                    success: function(response) {
+                        $.harpia.hideloading();
+                        toastr.success(response.message, null, {progressBar: true});
+                        renderTables(turma, periodo, modulo);
+                    },
+                    error: function(response) {
+                        $.harpia.hideloading();
+                        var obj = response.responseJSON;
+                        toastr.error(obj.error, null, {progressBar: true});
+                    }
                 });
+            });
 
-                var localizarDisciplinasOfertadas = function (turmaId, periodoId) {
-                    $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId)
-                            .done(function (data) {
-                                boxDisciplinas.removeClass('hidden');
-                                boxFormDisciplinas.show();
+            $(document).on('click', '.btn-delete', function (event) {
+                event.preventDefault();
 
-                                boxDisciplinas.find('.conteudo').empty();
-                                if(!$.isEmptyObject(data)) {
+                var button = $(this);
 
-                                    var table = '';
-                                    table += "<table class='table table-bordered'>";
-                                    table += '<tr>';
-                                    table += "<th>Disciplina</th>";
-                                    table += "<th>Carga Horária</th>";
-                                    table += "<th>Créditos</th>";
-                                    table += "<th>Vagas</th>";
-                                    table += "<th>Professor</th>";
-                                    table += "<th>Ações</th>";
-                                    table += '</tr>';
+                swal({
+                    title: "Tem certeza que deseja excluir?",
+                    text: "Você não poderá recuperar essa informação!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, pode excluir!",
+                    cancelButtonText: "Não, quero cancelar!",
+                    closeOnConfirm: true
+                }, function(isConfirm){
+                    if (isConfirm) {
 
-                                    $.each(data, function (key, obj) {
-                                        table += '<tr>';
-                                        table += "<td>"+obj.dis_nome+"</td>";
-                                        table += "<td>"+obj.dis_carga_horaria+"</td>";
-                                        table += "<td>"+obj.dis_creditos+"</td>";
-                                        table += "<td>"+obj.qtdMatriculas+"/<strong>"+obj.ofd_qtd_vagas+"</strong></td>";
-                                        table += "<td>"+obj.pes_nome+"</td>";
-                                        if(obj.qtdMatriculas == 0) {
-                                            table += '<td>' +
-                                                    '<form action="" method="POST">' +
-                                                    '<input type="hidden" name="id" value="'+obj.ofd_id+'">' +
-                                                    '<input type="hidden" name="_token" value="'+token+'">' +
-                                                    '<input type="hidden" name="_method" value="POST">' +
-                                                    '<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>' +
-                                                    '</form></td>';
-                                        } else {
-                                            table += '<td></td>';
-                                        }
-                                        table += '</tr>';
-                                    });
+                        var ofd_id = button.closest('form').find('input[name="id"]').val();
+                        var turma = selectTurmas.val();
+                        var periodo = selectPeriodosLetivos.val();
+                        var modulo = selectModulosMatriz.val();
 
-                                    table += "</table>";
-                                    boxDisciplinas.find('.conteudo').append(table);
-                                } else {
-                                    boxDisciplinas.find('.conteudo').append('<p>O periodo letivo não possui disciplinas ofertadas</p>');
+                        var data = {ofd_id : ofd_id, _token : token};
+
+                        $.harpia.showloading();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/academico/async/ofertasdisciplinas/deletarofertadisciplina',
+                            data: data,
+                            success: function (data) {
+                                $.harpia.hideloading();
+                                toastr.success('Oferta excluída com sucesso!', null, {progressBar: true});
+                                renderTables(turma, periodo, modulo);
+                            },
+                            error: function (xhr, textStatus, error) {
+                                $.harpia.hideloading();
+                                switch (xhr.status) {
+                                    case 400:
+                                        toastr.error('Erro ao tentar deletar a oferta de disciplina.', null, {progressBar: true});
+                                        break;
+                                    default:
+                                        toastr.error(xhr.responseText, null, {progressBar: true});
                                 }
-                            });
-                };
+                            }
+                        });
+                    }
+                });
+            });
 
-                var resetForm = function () {
-                    resetSelectMatrizes();
-                    $('#ofd_mdo_id').empty();
-                    $('#ofd_mdc_id').empty();
-                    resetSelectProfessores();
-                    $('#ofd_qtd_vagas').val('');
-                };
+            var renderTableOfertasDisciplinas = function (turmaId, periodoId) {
+                var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?" +
+                        "ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId + "&button_delete=1";
 
-                var resetSelectMatrizes = function () {
-                    $('#mtc_id').empty();
-                    var crsId = $('#crs_id').val();
-                    // Populando o select de matrizes
-                    $.harpia.httpget("{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/" + crsId)
-                            .done(function (data) {
-                                if(!$.isEmptyObject(data)) {
-                                    $('#mtc_id').append("<option value=''>Selecione a matriz</option>");
-                                    $.each(data, function (key, value) {
-                                        $('#mtc_id').append('<option value="'+value.mtc_id+'">'+value.mtc_titulo+'</option>');
-                                    });
-                                } else {
-                                    $('#mtc_id').append("<option value=''>Sem matrizes cadastradas</option>");
-                                }
-                            });
-                };
-                
-                var resetSelectProfessores = function () {
-                    $('#ofd_prf_id').empty();
+                $.harpia.showloading();
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    success: function(response) {
+                        $.harpia.hideloading();
+                        $('.table-ofertas').empty();
+                        $('.table-ofertas').append(response.html);
+                        $('select').select2();
+                    },
+                    error: function(response) {
+                        $.harpia.hideloading();
+                        toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
+                    }
+                });
+            };
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/professores/findall")
-                            .done(function (data) {
+            var renderTableDisciplinasNaoOfertadas = function(turmaId, periodoId, moduloId) {
+                var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettabledisciplinasnaoofertadas?" +
+                    "ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId + "&mdo_id=" + moduloId;
 
-                                if(!$.isEmptyObject(data)) {
-                                    $('#ofd_prf_id').append("<option value=''>Selecione o professor</option>");
-                                    $.each(data, function (key, value) {
-                                        $('#ofd_prf_id').append('<option value="'+key+'">'+value+'</option>');
-                                    });
-                                } else {
-                                    $('#ofd_prf_id').append("<option value=''>Sem professores cadastrados</option>");
-                                }
-                            });
-                };
+                $.harpia.showloading();
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    success: function(response) {
+                        $.harpia.hideloading();
+                        $('.table-disciplinas').empty();
+                        $('.table-disciplinas').append(response.html);
+                        $('.table-disciplinas select').select2();
+                    },
+                    error: function(response) {
+                        $.harpia.hideloading();
+                        toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
+                    }
+                });
+            };
+
+            var renderTables = function(turma, periodo, modulo) {
+                renderTableOfertasDisciplinas(turma, periodo);
+                renderTableDisciplinasNaoOfertadas(turma, periodo, modulo);
+            };
+
             });
     </script>
 @endsection

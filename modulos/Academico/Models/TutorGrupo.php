@@ -40,6 +40,17 @@ class TutorGrupo extends BaseModel
         return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
     }
 
+    public function getTtgTipoTutoriaAttribute($value)
+    {
+        if ($value) {
+            if ($value == "distancia") {
+                return "Distância";
+            }
+            
+            return ucfirst($value);
+        }
+    }
+
     // Mutators
     public function setTtgDataInicioAttribute($value)
     {

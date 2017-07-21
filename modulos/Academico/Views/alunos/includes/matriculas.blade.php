@@ -41,30 +41,81 @@
                                 <div class="panel-collapse collapse" id="collapse{{ $loop->index }}">
                                     <div class="box-body">
                                         <div class="row">
-                                            <div class="col-md-4">
-                                                <p><strong>Nível do
-                                                        Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}
-                                                </p>
-                                                <p>
-                                                    <strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}
-                                                </p>
-                                                <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}
-                                                </p>
+                                            <div class="col-md-12 col-sm-6 col-xs-3">
+                                                <div class="box box-solid">
+                                                    <div class="box-header with-border">
+                                                        <h3 class="box-title">Informações do Curso</h3>
+                                                        <div class="box-tools pull-right">
+                                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="col-md-4">
+                                                            <p><strong>Nível do
+                                                                    Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}
+                                                            </p>
+                                                            <p>
+                                                                <strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}
+                                                            </p>
+                                                            <p><strong>Modo de Entrada:</strong> {{ $matricula->mat_modo_entrada }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p><strong>Oferta de
+                                                                    Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
+                                                            <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
+                                                            <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p>
+                                                                <strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else
+                                                                    Sem Grupo @endif</p>
+                                                            @if($matricula->mat_situacao == 'concluido')
+                                                                <p><strong>Data de
+                                                                        Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p><strong>Oferta de
-                                                        Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}</p>
-                                                <p><strong>Turma:</strong> {{$matricula->turma->trm_nome}}</p>
-                                                <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}</p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p>
-                                                    <strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else
-                                                        Sem Grupo @endif</p>
-                                                @if($matricula->mat_situacao == 'concluido')
-                                                    <p><strong>Data de
-                                                            Conclusão:</strong> {{ $matricula->mat_data_conclusao }}</p>
-                                                @endif
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-sm-6 col-xs-3">
+                                                <div class="box box-solid">
+                                                    <div class="box-header with-border">
+                                                        <h3 class="box-title">Histórico de Matrícula</h3>
+                                                        <div class="box-tools pull-right">
+                                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                            <tr>
+                                                                <th width="20%">Tipo</th>
+                                                                <th width="15%">Data</th>
+                                                                <th>Observação</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>Matrícula no Curso</td>
+                                                                <td>{{ Format::formatDate($matricula->created_at, 'd/m/Y') }}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                            @foreach($matricula->historico as $historico)
+                                                                <tr>
+                                                                    <td>{{ $historico->hmt_tipo }}</td>
+                                                                    <td>{{ Format::formatDate($historico->hmt_data, 'd/m/Y') }}</td>
+                                                                    <td>{{ $historico->hmt_observacao }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -74,36 +125,36 @@
                                                         {!! ActionButton::grid([
                                                             'type' => 'LINE',
                                                             'buttons' => [
-                                                                [
-                                                                    'classButton' => 'btn btn-primary modal-update-polo',
-                                                                    'icon' => 'fa fa-pencil',
-                                                                    'route' => 'academico.matricularalunocurso.edit',
-                                                                    'parameters' => $matricula->mat_id,
-                                                                    'label' => ' Atualizar Polo/Grupo',
-                                                                    'method' => 'get',
-                                                                    'attributes' => [
-                                                                        'data-mat-id' => $matricula->mat_id,
-                                                                        'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
-                                                                        'data-trm-id' => $matricula->mat_trm_id,
-                                                                        'data-pol-id' => $matricula->mat_pol_id,
-                                                                        'data-grp-id' => $matricula->mat_grp_id,
-                                                                        'data-content' => $loop->index,
-                                                                    ],
-                                                                ],
-                                                                [
-                                                                    'classButton' => 'btn btn-primary modalButton',
-                                                                    'icon' => 'fa fa-pencil',
-                                                                    'route' => 'academico.matricularalunocurso.edit',
-                                                                    'parameters' => $matricula->mat_id,
-                                                                    'label' => 'Atualizar situação de Matricula',
-                                                                    'method' => 'get',
-                                                                    'attributes' => [
-                                                                        'data-content' => $loop->index,
-                                                                        'value' => $matricula->mat_id
-                                                                    ],
-                                                                ]
+                                                            [
+                                                            'classButton' => 'btn btn-primary modal-update-polo',
+                                                            'icon' => 'fa fa-pencil',
+                                                            'route' => 'academico.matricularalunocurso.edit',
+                                                            'parameters' => $matricula->mat_id,
+                                                            'label' => ' Atualizar Polo/Grupo',
+                                                            'method' => 'get',
+                                                            'attributes' => [
+                                                            'data-mat-id' => $matricula->mat_id,
+                                                            'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
+                                                            'data-trm-id' => $matricula->mat_trm_id,
+                                                            'data-pol-id' => $matricula->mat_pol_id,
+                                                            'data-grp-id' => $matricula->mat_grp_id,
+                                                            'data-content' => $loop->index,
+                                                            ],
+                                                            ],
+                                                            [
+                                                            'classButton' => 'btn btn-primary modalButton',
+                                                            'icon' => 'fa fa-pencil',
+                                                            'route' => 'academico.matricularalunocurso.edit',
+                                                            'parameters' => $matricula->mat_id,
+                                                            'label' => 'Atualizar situação de Matricula',
+                                                            'method' => 'get',
+                                                            'attributes' => [
+                                                            'data-content' => $loop->index,
+                                                            'value' => $matricula->mat_id
+                                                            ],
                                                             ]
-                                                        ]) !!}
+                                                            ]
+                                                            ]) !!}
                                                     </div>
                                                 </div>
                                             @endif
@@ -126,6 +177,14 @@
                                                     {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
                                                     <div class="controls">
                                                         {!! Form::select('situacao', $situacaoArray, array_shift($situacaoArray), ['placeholder' => 'Selecione uma opção', 'class' => 'form-control', 'id' => 'situacao-select'.$loop->index ]) !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-12">
+                                                    {!! Form::label('observacao_situacao', 'Observação', ['class' => 'control-label']) !!}
+                                                    <div class="controls">
+                                                        {!! Form::text('observacao_situacao', null, ['class' => 'form-control', 'id' => 'observacao_situacao'.$loop->index ]) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -170,8 +229,6 @@
                                                             {!! Form::select('mat_pol_id' . $loop->index, [], null, ['class' => 'form-control poloSelect']) !!}
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             {!! Form::label('mat_grp_id' . $loop->index, 'Grupo') !!}
@@ -180,12 +237,23 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <button type="submit" class="btn btn-primary btnAtualizar">
-                                                                Atualizar
-                                                            </button>
+                                                    <div class="form-group col-md-12">
+                                                        {!! Form::label('observacao_pologrupo', 'Observação', ['class' => 'control-label']) !!}
+                                                        <div class="controls">
+                                                            {!! Form::text('observacao_pologrupo', null, ['class' => 'form-control', 'id' => 'observacao_pologrupo'.$loop->index ]) !!}
                                                         </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <button type="button" class="btn btn-default pull-left"
+                                                                data-dismiss="modal">Cancelar
+                                                        </button>
+                                                    </div>
+                                                    <div class="form-group col-md-6 text-right">
+                                                        <button type="submit" class="btn btn-primary btnAtualizar">
+                                                            Atualizar
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -202,19 +270,22 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                {!! ActionButton::grid([
+                {!!
+                ActionButton::grid([
                     'type' => 'LINE',
                     'buttons' => [
-                        [
-                            'classButton' => 'btn btn-primary',
-                            'icon' => 'fa fa-plus-square',
-                            'route' => 'academico.matricularalunocurso.create',
-                            'parameters' => $aluno->alu_id,
-                            'label' => ' Nova Matrícula',
-                            'method' => 'get'
-                        ],
+                    [
+                        'classButton' => 'btn btn-primary',
+                        'icon' => 'fa fa-plus-square',
+                        'route' => 'academico.matricularalunocurso.create',
+                        'parameters' => $aluno->alu_id,
+                        'label' => ' Nova Matrícula',
+                        'method' => 'get'
+                    ],
                     ]
-                ]) !!}
+                    ])
+
+                 !!}
             </div>
             <!-- /.box-footer -->
         </div>
@@ -243,6 +314,24 @@
                         return;
                     }
 
+                    var confirmCallback = function (isConfirm) {
+                        if (isConfirm) {
+                            var matricula = window.buttonGroup.attr("value");
+                            var token = "{{ csrf_token() }}";
+                            var observacao = $('#observacao_situacao' + modal).val();
+
+                            data = {
+                                id: matricula,
+                                situacao: situacao,
+                                observacao: observacao,
+                                _token: token
+                            };
+
+                            result = $.harpia.httppost('/academico/async/matricula/alterarsituacao', data);
+                            location.reload(true);
+                        }
+                    };
+
                     swal({
                         title: "Tem certeza que deseja alterar o status do aluno ?",
                         type: "warning",
@@ -251,21 +340,7 @@
                         confirmButtonText: "Sim, alterar status!",
                         cancelButtonText: "Não, quero cancelar!",
                         closeOnConfirm: true
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            var matricula = window.buttonGroup.attr("value");
-                            var token = "{{ csrf_token() }}";
-
-                            data = {
-                                id: matricula,
-                                situacao: situacao,
-                                _token: token
-                            };
-
-                            result = $.harpia.httppost('/academico/async/matricula/alterarsituacao', data);
-                            location.reload(true);
-                        }
-                    });
+                    }, confirmCallback);
                 })
             })
         });
@@ -324,8 +399,6 @@
                 var turma = window.turmaId;
                 var poloId = $(this).val();
 
-                console.log(turma);
-
                 if (poloId) {
                     loadingSelectGrupos(turma, poloId, 0);
                 }
@@ -365,22 +438,16 @@
                     return;
                 }
 
-                swal({
-                    title: "Tem certeza que deseja alterar o polo / grupo do aluno ?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Sim, alterar polo / grupo!",
-                    cancelButtonText: "Não, quero cancelar!",
-                    closeOnConfirm: true
-                }, function (isConfirm) {
+                var confirmCallback = function (isConfirm) {
                     if (isConfirm) {
                         var token = "{{ csrf_token() }}";
+                        var observacao = $('#observacao_pologrupo' + window.modalId).val();
 
                         data = {
                             method: "PUT",
                             mat_pol_id: polo,
                             mat_grp_id: grupo,
+                            observacao: observacao,
                             _token: token
                         };
 
@@ -392,6 +459,7 @@
                                 $.harpia.hideloading();
                                 result = resp;
                             },
+
                             error: function (e) {
                                 $.harpia.hideloading();
                                 sweetAlert("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
@@ -401,7 +469,17 @@
 
                         location.reload(true);
                     }
-                });
+                };
+
+                swal({
+                    title: "Tem certeza que deseja alterar o polo / grupo do aluno ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, alterar polo / grupo!",
+                    cancelButtonText: "Não, quero cancelar!",
+                    closeOnConfirm: true
+                }, confirmCallback);
             });
         });
     </script>

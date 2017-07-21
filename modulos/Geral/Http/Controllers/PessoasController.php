@@ -136,7 +136,7 @@ class PessoasController extends BaseController
 
         if (!$pessoa) {
             flash()->error('Pessoa não existe');
-            return redirect('/geral/pessoas/index');
+            return redirect()->route('geral.pessoas.index');
         }
 
         DB::beginTransaction();

@@ -65,16 +65,13 @@
     </tr>
     </thead>
     <tbody>
-
-
     @foreach ($matriculas as $matricula)
-
         <tr>
             <td align="center" class="matricula">{{$matricula->mat_id}}</td>
             <td class="nome">{{$matricula->pes_nome}}</td>
             <td class="email">{{$matricula->pes_email}}</td>
             <td class="polo">{{$matricula->pol_nome}}</td>
-            <td class="situacao">{{$matricula->mat_situacao}}</td>
+            <td class="situacao">{{ucfirst($matricula->mat_situacao)}}</td>
         </tr>
     @endforeach
 

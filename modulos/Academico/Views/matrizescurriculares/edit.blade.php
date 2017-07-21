@@ -20,26 +20,8 @@
         </div>
         <div class="box-body">
             {!! Form::model($matrizCurricular,["url" => url('/') . "/academico/matrizescurriculares/edit/$matrizCurricular->mtc_id", "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
-                @include('Academico::matrizescurriculares.includes.formulario')
+                @include('Academico::matrizescurriculares.includes.formulario_edit')
             {!! Form::close() !!}
         </div>
     </div>
 @stop
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(".select-control").select2();
-        });
-
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-@endsection

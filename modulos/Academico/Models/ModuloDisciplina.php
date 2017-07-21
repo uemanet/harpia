@@ -13,7 +13,6 @@ class ModuloDisciplina extends BaseModel
     protected $fillable = [
         'mdc_dis_id',
         'mdc_mdo_id',
-        'mdc_tipo_avaliacao',
         'mdc_tipo_disciplina',
         'mdc_pre_requisitos'
     ];
@@ -44,16 +43,6 @@ class ModuloDisciplina extends BaseModel
             'optativa' => 'Optativa',
             'eletiva' => 'Eletiva',
             'tcc' => 'TCC'
-        ];
-
-        return $values[$value];
-    }
-
-    public function getMdcTipoAvaliacaoAttribute($value)
-    {
-        $values = [
-            'numerica' => 'Numérica',
-            'conceitual' => 'Conceitual'
         ];
 
         return $values[$value];

@@ -21,9 +21,23 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $data, $id, $attribute = null)
     {
-        return $this->model->where($attribute, '=', $id)->update($data);
+        if (!$attribute) {
+            $attribute = $this->model->getKeyName();
+        }
+
+        $collection = $this->model->where($attribute, '=', $id)->get();
+
+        if ($collection) {
+            foreach ($collection as $obj) {
+                $obj->fill($data)->save();
+            }
+
+            return $collection->count();
+        }
+
+        return 0;
     }
 
     public function delete($id)
@@ -105,5 +119,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function getFillableModelFields()
     {
         return $this->model->getFillable();
+    }
+
+    public function count()
+    {
+        return $this->model->count();
     }
 }

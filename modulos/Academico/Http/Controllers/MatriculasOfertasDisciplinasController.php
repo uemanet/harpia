@@ -95,11 +95,16 @@ class MatriculasOfertasDisciplinasController extends BaseController
             return redirect()->route('academico.matriculasofertasdisciplinas.index');
         }
 
-        $matriculas = $this->matriculaRepository->findAll(['mat_alu_id' => $alunoId, 'mat_situacao' => 'cursando']);
+        $matriculas = $this->matriculaRepository->findAllVinculo(['mat_alu_id' => $alunoId, 'mat_situacao' => 'cursando']);
 
         $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-        return view('Academico::matriculadisciplina.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'matriculas' => $matriculas, 'periodoletivo' => $periodoletivo]);
+        return view('Academico::matriculadisciplina.show', [
+            'pessoa' => $aluno->pessoa,
+            'aluno' => $aluno,
+            'matriculas' => $matriculas,
+            'periodoletivo' => $periodoletivo
+        ]);
     }
 
     public function getCreate()

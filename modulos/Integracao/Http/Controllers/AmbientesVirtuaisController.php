@@ -294,12 +294,13 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambienteservicoId = $request->get('id');
 
-            if ($this->ambienteServicoRepository->delete($ambienteservicoId)) {
-                flash()->success('Serviço excluído com sucesso.');
-            } else {
-                flash()->error('Erro ao tentar excluir o serviço');
-            }
+            $this->ambienteServicoRepository->delete($ambienteservicoId);
 
+            flash()->success('Serviço excluído com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O serviço contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -396,6 +397,13 @@ class AmbientesVirtuaisController extends BaseController
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
             $ambiente = $turma->ambientes->first()->amb_id;
 
+            $deletar = $this->ambienteTurmaRepository->verificaPendenciasTurma($ambienteTurmaId);
+
+            if ($deletar) {
+                flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
+            }
+            return redirect()->back();
+
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
             if ($turma->trm_integrada) {
@@ -405,6 +413,10 @@ class AmbientesVirtuaisController extends BaseController
             flash()->success('Turma excluída com sucesso.');
 
             DB::commit();
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
             DB::rollback();
