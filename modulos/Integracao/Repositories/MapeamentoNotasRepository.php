@@ -222,10 +222,6 @@ class MapeamentoNotasRepository extends BaseRepository
                 }
             }
 
-            // Caso o aluno não possua nenhuma nota no moodle, envia uma mensagem de erro
-            if (empty($arrayNotas)) {
-            }
-
             // busca as configurações de notas do curso
             $cursoId = $matriculaOfertaDisciplina->matriculaCurso->turma->ofertaCurso->ofc_crs_id;
             $configuracoesCurso = $this->getConfiguracoesCurso($cursoId);

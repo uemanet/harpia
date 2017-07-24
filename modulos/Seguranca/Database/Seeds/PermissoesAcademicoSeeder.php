@@ -510,6 +510,11 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'xls',
+            'prm_rota' => 'academico.relatoriosmatriculascurso.xls'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
 
         //permissões do recurso matriculasofertasdisciplinas
         $permissao = Permissao::create([
@@ -524,8 +529,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
-
         //permissões do recurso relatoriosmatriculasdisciplinas
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -536,6 +539,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'pdf',
             'prm_rota' => 'academico.relatoriosmatriculasdisciplinas.pdf'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'xls',
+            'prm_rota' => 'academico.relatoriosmatriculasdisciplinas.xls'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
