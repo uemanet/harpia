@@ -46,6 +46,7 @@ return [
         'Modulos\Integracao\Listeners\Sincronizacao\TutorListener',
         'Modulos\Integracao\Listeners\Sincronizacao\UsuarioListener',
         'Modulos\Integracao\Listeners\Sincronizacao\DisciplinaListener',
+        'Modulos\Integracao\Listeners\Sincronizacao\AlunoGrupoListener',
         'Modulos\Integracao\Listeners\Sincronizacao\MatriculaCursoListener',
         'Modulos\Integracao\Listeners\Sincronizacao\MatriculaDisciplinaListener'
     ]

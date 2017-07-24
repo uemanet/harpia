@@ -120,5 +120,6 @@ class SincronizacaoController extends BaseController
         }
 
         $this->sincronizacaoRepository->migrar($id);
+        return redirect()->route('integracao.sincronizacao.index');
     }
 }
