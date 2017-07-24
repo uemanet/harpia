@@ -52,6 +52,11 @@ class SincronizacaoEvent extends Event
             return 'local_integracao_enrol_student';
         }
 
+        // Atualizacao de status da matricula de aluno em curso
+        if ($this->entry->sym_table == 'acd_matriculas' && $this->entry->sym_action == 'UPDATE_SITUACAO_MATRICULA') {
+            return 'local_integracao_change_role_student_course';
+        }
+
         // Matricula de aluno em oferta de disciplina
         if ($this->entry->sym_table == 'acd_matriculas_ofertas_disciplinas' && $this->entry->sym_action == 'CREATE') {
             return 'local_integracao_enrol_student_discipline';

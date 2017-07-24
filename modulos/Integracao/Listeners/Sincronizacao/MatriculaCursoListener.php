@@ -39,6 +39,11 @@ class MatriculaCursoListener
             if ($sincronizacaoEvent->getMoodleFunction() == 'local_integracao_enrol_student') {
                 return $this->create($sincronizacaoEvent);
             }
+
+
+            if ($sincronizacaoEvent->getMoodleFunction() == 'local_integracao_change_role_student_course') {
+                return $this->update($sincronizacaoEvent);
+            }
         } catch (ConnectException $exception) {
             flash()->error('Falha ao tentar sincronizar com o ambiente');
 
@@ -108,6 +113,48 @@ class MatriculaCursoListener
             }
 
             event(new AtualizarSyncEvent($matriculaTurma, $status, $response['message']));
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Atualiza o status da matricula do aluno
+     * @param SincronizacaoEvent $sincronizacaoEvent
+     * @return bool
+     */
+    private function update(SincronizacaoEvent $sincronizacaoEvent)
+    {
+        $sync = $sincronizacaoEvent->getData();
+
+        $matriculaTurma = $this->matriculaCursoRepository->find($sync->sym_table_id);
+
+        // ambiente virtual vinculado à turma do grupo
+        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matriculaTurma->mat_trm_id);
+
+        if ($ambiente) {
+            $param = [];
+
+            // url do ambiente
+            $param['url'] = $ambiente->url;
+            $param['token'] = $ambiente->token;
+            $param['functioname'] = 'local_integracao_change_role_student_course';
+            $param['action'] = 'UPDATE_SITUACAO_MATRICULA';
+
+            $param['data']['student']['trm_id'] = $matriculaTurma->mat_trm_id;
+            $param['data']['student']['pes_id'] = $matriculaTurma->aluno->alu_pes_id;
+            $param['data']['student']['new_status'] = $matriculaTurma->mat_situacao;
+
+            $response = Moodle::send($param);
+
+            $status = 3;
+            if (array_key_exists('status', $response)) {
+                if ($response['status'] == 'success') {
+                    $status = 2;
+                }
+            }
+            event(new AtualizarSyncEvent($matriculaTurma, $status, $response['message'], 'UPDATE_SITUACAO_MATRICULA'));
             return true;
         }
 
