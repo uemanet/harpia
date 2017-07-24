@@ -46,14 +46,16 @@ class TurmaListener
             }
         } catch (ConnectException $exception) {
             flash()->error('Falha ao tentar sincronizar com o ambiente');
-            // Interrompe a propagacao do evento
-            return false;
+
+            // Mantem a propagacao do evento
+            return true;
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            return false;
+            // Mantem a propagacao do evento
+            return true;
         }
     }
 

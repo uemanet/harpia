@@ -9,34 +9,36 @@ use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Integracao\Events\AtualizarSyncEvent;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
-class MatriculaCursoListener
+class MatriculaDisciplinaListener
 {
     private $turmaRepository;
     private $alunoRepository;
     private $pessoaRepository;
-    private $matriculaCursoRepository;
     private $ambienteVirtualRepository;
+    private $matriculaOfertaDisciplinaRepository;
 
     public function __construct(PessoaRepository $pessoaRepository,
                                 AlunoRepository $alunoRepository,
                                 TurmaRepository $turmaRepository,
                                 MatriculaCursoRepository $matriculaCursoRepository,
-                                AmbienteVirtualRepository $ambienteVirtualRepository)
+                                AmbienteVirtualRepository $ambienteVirtualRepository,
+                                MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository)
     {
         $this->turmaRepository = $turmaRepository;
         $this->alunoRepository = $alunoRepository;
         $this->pessoaRepository = $pessoaRepository;
-        $this->matriculaCursoRepository = $matriculaCursoRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
     }
 
     public function handle(SincronizacaoEvent $sincronizacaoEvent)
     {
         try {
-            if ($sincronizacaoEvent->getMoodleFunction() == 'local_integracao_enrol_student') {
+            if ($sincronizacaoEvent->getMoodleFunction() == 'local_integracao_enrol_student_discipline') {
                 return $this->create($sincronizacaoEvent);
             }
         } catch (ConnectException $exception) {
@@ -49,12 +51,13 @@ class MatriculaCursoListener
                 throw $exception;
             }
 
+            // Mantem a propagacao do evento
             return true;
         }
     }
 
     /**
-     * Matricula o aluno em uma turma no Moodle
+     * Matricula o aluno em uma disciplina no Moodle
      * @param SincronizacaoEvent $sincronizacaoEvent
      * @return bool
      */
@@ -62,12 +65,14 @@ class MatriculaCursoListener
     {
         $sync = $sincronizacaoEvent->getData();
 
-        $matriculaTurma = $this->matriculaCursoRepository->find($sync->sym_table_id);
-        $aluno = $this->alunoRepository->find($matriculaTurma->mat_alu_id);
-        $pessoa = $this->pessoaRepository->find($aluno->alu_pes_id);
+        // busca a matricula na oferta de disciplina
+        $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($sync->sym_table_id);
 
-        // ambiente virtual vinculado à turma do grupo
-        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matriculaTurma->mat_trm_id);
+        // pega a matricula do aluno no curso
+        $matriculaCurso = $matriculaOfertaDisciplina->matriculaCurso;
+
+        // ambiente virtual vinculado à turma do aluno
+        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matriculaCurso->mat_trm_id);
 
         if ($ambiente) {
             $param = [];
@@ -75,27 +80,16 @@ class MatriculaCursoListener
             // url do ambiente
             $param['url'] = $ambiente->url;
             $param['token'] = $ambiente->token;
-            $param['functioname'] = 'local_integracao_enrol_student';
+            $param['functioname'] = 'local_integracao_enrol_student_discipline';
             $param['action'] = 'CREATE';
 
-            $nome = explode(" ", $pessoa->pes_nome);
-            $firstName = array_shift($nome);
-            $lastName = implode(" ", $nome);
+            $param['data']['enrol']['mof_id'] = $matriculaOfertaDisciplina->mof_id;
 
-            $param['data']['student']['trm_id'] = $matriculaTurma->mat_trm_id;
-            $param['data']['student']['mat_id'] = $matriculaTurma->mat_id;
+            // pega as informações do aluno
+            $aluno = $this->alunoRepository->find($matriculaCurso->mat_alu_id);
 
-            if ($matriculaTurma->mat_grp_id) {
-                $param['data']['student']['grp_id'] = $matriculaTurma->mat_grp_id;
-            }
-
-            $param['data']['student']['pes_id'] = $pessoa->pes_id;
-            $param['data']['student']['firstname'] = $firstName;
-            $param['data']['student']['lastname'] = $lastName;
-            $param['data']['student']['email'] = $pessoa->pes_email;
-            $param['data']['student']['username'] = $pessoa->pes_email;
-            $param['data']['student']['password'] = 'changeme';
-            $param['data']['student']['city'] = $pessoa->pes_cidade;
+            $param['data']['enrol']['pes_id'] = $aluno->alu_pes_id;
+            $param['data']['enrol']['ofd_id'] = $matriculaOfertaDisciplina->mof_ofd_id;
 
             $response = Moodle::send($param);
 
@@ -107,7 +101,7 @@ class MatriculaCursoListener
                 }
             }
 
-            event(new AtualizarSyncEvent($matriculaTurma, $status, $response['message']));
+            event(new AtualizarSyncEvent($matriculaOfertaDisciplina, $status, $response['message']));
             return true;
         }
 
