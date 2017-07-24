@@ -34,9 +34,5 @@ return [
     'Modulos\Integracao\Events\DeleteOfertaTurmaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
         'Modulos\Integracao\Listeners\MigrarExclusaoOfertaTurmaListener'
-    ],
-
-    'Modulos\Integracao\Events\MapearNotasEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10
     ]
 ];
