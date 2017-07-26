@@ -6,13 +6,10 @@ use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Academico\Http\Requests\OfertaDisciplinaRequest;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
@@ -22,18 +19,14 @@ class OfertasDisciplinasController extends BaseController
 {
     protected $ofertadisciplinaRepository;
     protected $turmaRepository;
-    protected $modulodisciplinaRepository;
     protected $professorRepository;
-    protected $periodoletivoRepository;
     protected $cursoRepository;
     protected $matriculaOfertaDisciplinaRepository;
     protected $ambienteVirtualRepository;
 
     public function __construct(OfertaDisciplinaRepository $ofertadisciplinaRepository,
                                 TurmaRepository $turmaRepository,
-                                ModuloDisciplinaRepository $modulodisciplinaRepository,
                                 ProfessorRepository $professorRepository,
-                                PeriodoLetivoRepository $periodoletivoRepository,
                                 CursoRepository $cursoRepository,
                                 MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
                                 AmbienteVirtualRepository $ambienteVirtualRepository
@@ -41,9 +34,7 @@ class OfertasDisciplinasController extends BaseController
     {
         $this->ofertadisciplinaRepository = $ofertadisciplinaRepository;
         $this->turmaRepository = $turmaRepository;
-        $this->modulodisciplinaRepository = $modulodisciplinaRepository;
         $this->professorRepository = $professorRepository;
-        $this->periodoletivoRepository = $periodoletivoRepository;
         $this->cursoRepository = $cursoRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
