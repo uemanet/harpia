@@ -149,6 +149,9 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'ofertasdisciplinas'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getIndex')->name('academico.ofertasdisciplinas.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getCreate')->name('academico.ofertasdisciplinas.create');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getEdit')->name('academico.ofertasdisciplinas.edit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@putEdit')->name('academico.ofertasdisciplinas.edit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@postDelete')->name('academico.ofertasdisciplinas.delete');
     });
 
     Route::group(['prefix' => 'matricularalunocurso'], function () {
@@ -267,7 +270,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertasdisciplinas'], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getFindall')->name('academico.async.ofertasdisciplinas.findall');
             Route::post('/oferecerdisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postOferecerdisciplina')->name('academico.async.ofertasdisciplinas.oferecerdisciplina');
-            Route::post('/deletarofertadisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postDeletarofertadisciplina')->name('academico.async.ofertasdisciplinas.deletarofertadisciplina');
             Route::get('/gettableofertasdisciplinas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getTableOfertasDisciplinas')->name('academico.async.ofertasdisciplinas.gettableofertasdisciplinas');
             Route::get('/gettabledisciplinasnaoofertadas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getTableDisciplinasNaoOfertadas')->name('academico.async.ofertasdisciplinas.gettabledisciplinasnaoofertadas');
         });
