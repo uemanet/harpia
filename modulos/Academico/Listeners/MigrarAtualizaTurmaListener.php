@@ -52,8 +52,8 @@ class MigrarAtualizaTurmaListener
 
                 if ($ambiente) {
                     $data['course']['trm_id'] = $turma->trm_id;
-                    $data['course']['shortname'] = $this->turmaShortName($turma);
-                    $data['course']['fullname'] = $this->turmaFullName($turma);
+                    $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
+                    $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
 
                     $param['url'] = $ambiente->url;
                     $param['token'] = $ambiente->token;
@@ -72,36 +72,5 @@ class MigrarAtualizaTurmaListener
                 }
             }
         }
-    }
-
-    /**
-     * @param Turma $turma
-     * @return mixed|string
-     */
-    private function turmaShortName(Turma $turma)
-    {
-        $cursoId = $this->turmaRepository->getCurso($turma->trm_id);
-        $curso = $this->cursoRepository->find($cursoId);
-        $periodoLetivo = $this->periodoLetivoRepository->find($turma->trm_per_id);
-
-        $shortName = $curso->crs_sigla .' ' . $turma->trm_nome . ' ' . $periodoLetivo->per_nome;
-        $shortName = str_replace(' ', '_', $shortName);
-
-        return $shortName;
-    }
-
-    /**
-     * @param Turma $turma
-     * @return string
-     */
-    private function turmaFullName(Turma $turma)
-    {
-        $cursoId = $this->turmaRepository->getCurso($turma->trm_id);
-        $curso = $this->cursoRepository->find($cursoId);
-        $periodoLetivo = $this->periodoLetivoRepository->find($turma->trm_per_id);
-
-        $fullname = $curso->crs_nome .' - ' . $turma->trm_nome . ' - ' . $periodoLetivo->per_nome;
-
-        return $fullname;
     }
 }

@@ -34,15 +34,13 @@ class MigrarAtualizarPessoaListener
             'sym_action' => "UPDATE"
         ]);
 
-        // dd($pessoasMigrar);
-
         if ($pessoasMigrar->count()) {
             foreach ($pessoasMigrar as $reg) {
                 $pessoa = $this->pessoaRepository->find($reg->sym_table_id);
 
                 // ambiente virtual vinculado à turma do grupo
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($reg->sym_extra);
-                // dd($ambiente);
+
                 if ($ambiente) {
                     $param = [];
 
@@ -62,10 +60,9 @@ class MigrarAtualizarPessoaListener
                     $param['data']['user']['email'] = $pessoa->pes_email;
                     $param['data']['user']['username'] = $pessoa->pes_email;
                     $param['data']['user']['city'] = $pessoa->pes_cidade;
+
                     $moodleSync = new Moodle();
-
                     $retorno = $moodleSync->send($param);
-
 
                     $status = 3;
 

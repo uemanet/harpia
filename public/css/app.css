@@ -14753,6 +14753,21 @@ fieldset[disabled] .btn-yahoo.active {
   background-color: #e1e3e9;
   color: #d73925 !important;
 }
+.form-singlebutton .btn-migrar {
+  border: none;
+  background-color: transparent;
+  padding: 3px 20px;
+  clear: both;
+  width: 100%;
+  text-align: left;
+}
+.form-singlebutton .btn-migrar i.fa {
+  margin-right: 12px;
+}
+.form-singlebutton .btn-migrar:hover {
+  background-color: #e1e3e9;
+  color: #4e7cd7 !important;
+}
 .actionbutton {
   float: right;
   background: transparent;

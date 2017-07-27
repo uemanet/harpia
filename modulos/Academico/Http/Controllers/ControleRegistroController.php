@@ -75,5 +75,8 @@ class ControleRegistroController
                 'registro' => $registro
             ]);
         };
+
+        flash()->error('Registro não encontrado.');
+        return redirect()->back();
     }
 }
