@@ -470,6 +470,17 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'academico.ofertasdisciplinas.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.ofertasdisciplinas.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
 
 
         //permissões do recurso matricularalunocurso
@@ -641,6 +652,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'print',
             'prm_rota' => 'academico.historicodefinitivo.print'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'print',
+            'prm_rota' => 'academico.controlederegistro.show'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 

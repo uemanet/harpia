@@ -71,5 +71,15 @@ class MenuIntegracaoSeeder extends Seeder
             'mit_rota' => 'integracao.mapeamentonotas.index',
             'mit_ordem' => 1
         ]);
+
+        // Item Sincronizacao
+        $mapeamentoItensNota = MenuItem::create([
+            'mit_mod_id' => 4,
+            'mit_item_pai' => $processos->mit_id,
+            'mit_nome' => 'Sincronização',
+            'mit_icone' => 'fa fa-refresh',
+            'mit_rota' => 'integracao.sincronizacao.index',
+            'mit_ordem' => 1
+        ]);
     }
 }

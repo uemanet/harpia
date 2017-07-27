@@ -23,9 +23,7 @@
                             <th width="12%">Tipo de Disciplina</th>
                             <th width="5%">Vagas</th>
                             <th>Professor</th>
-                            @if($buttonDelete)
-                                <th width="5%">Ações</th>
-                            @endif
+                            <th width="10%">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,20 +36,34 @@
                                 <td>{{ $oferta->moduloDisciplina->mdc_tipo_disciplina }}</td>
                                 <td>{{ $oferta->ofd_quant_matriculados }}/<strong>{{ $oferta->ofd_qtd_vagas }}</strong></td>
                                 <td>{{ $oferta->professor->pessoa->pes_nome }}</td>
-                                @if($buttonDelete)
-                                    @if(!$oferta->ofd_quant_matriculados)
-                                        <td>
-                                            <form action="">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="_method" value="POST">
-                                                <input type="hidden" name="id" value="{{ $oferta->ofd_id }}">
-                                                <button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
-                                            </form>
-                                        </td>
-                                    @else
-                                        <td></td>
-                                    @endif
-                                @endif
+                                <td>
+                                    {!! ActionButton::grid([
+                                                    'type' => 'SELECT',
+                                                    'config' => [
+                                                        'classButton' => 'btn-default',
+                                                        'label' => 'Selecione'
+                                                    ],
+                                                    'buttons' => [
+                                                        [
+                                                            'classButton' => '',
+                                                            'icon' => 'fa fa-pencil',
+                                                            'route' => 'academico.ofertasdisciplinas.edit',
+                                                            'parameters' => ['id' => $oferta->ofd_id],
+                                                            'label' => 'Editar',
+                                                            'method' => 'get'
+                                                        ],
+                                                        [
+                                                            'classButton' => 'btn-delete text-red',
+                                                            'icon' => 'fa fa-trash',
+                                                            'route' => 'academico.ofertasdisciplinas.delete',
+                                                            'id' => $oferta->ofd_id,
+                                                            'label' => 'Excluir',
+                                                            'method' => 'post'
+                                                        ]
+                                                    ]
+                                                ]);
+                                    !!}
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
