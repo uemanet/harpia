@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Modulos\Academico\Events\AlterarProfessorOfertaDisciplinaEvent;
 use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Academico\Http\Requests\OfertaDisciplinaRequest;
 use Modulos\Academico\Repositories\CursoRepository;
@@ -84,7 +85,12 @@ class OfertasDisciplinasController extends BaseController
         }
 
         try {
+            $oldProfessor = $ofertaDisciplina->ofd_prf_id;
             $ofertaDisciplina->fill($request->all())->save();
+
+            if ($ofertaDisciplina->turma->trm_integrada && ($ofertaDisciplina->ofd_prf_id != $oldProfessor)) {
+                event(new AlterarProfessorOfertaDisciplinaEvent($ofertaDisciplina));
+            }
 
             flash()->success('Oferta de Disciplina atualizada com sucesso.');
 
