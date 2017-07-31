@@ -11,7 +11,7 @@ use Modulos\Core\Model\BaseModel;
 abstract class SyncEvent extends Event
 {
     /**
-     * Array com os endpoins do plugin de integração ( [tabela][acao] => endpoint )
+     * Array com os endpoints do plugin de integração ( [tabela][acao] => endpoint )
      * @var array
      */
     protected $endpoints = [

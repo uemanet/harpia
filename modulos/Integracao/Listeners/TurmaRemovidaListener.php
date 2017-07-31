@@ -2,17 +2,16 @@
 
 namespace Modulos\Integracao\Listeners;
 
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
-use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
+use GuzzleHttp\Exception\ConnectException;
+use Modulos\Integracao\Events\TurmaRemovidaEvent;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class MigrarTurmaListener
+class TurmaRemovidaListener
 {
     private $turmaRepository;
     private $cursoRepository;
@@ -33,36 +32,21 @@ class MigrarTurmaListener
         $this->sincronizacaoRepository = $sincronizacaoRepository;
     }
 
-    public function handle(TurmaMapeadaEvent $event)
+    public function handle(TurmaRemovidaEvent $event)
     {
-        $turmasMigrar = $this->sincronizacaoRepository->findBy([
-            'sym_table' => 'acd_turmas',
-            'sym_status' => 1,
-            'sym_action' => 'CREATE'
-        ]);
+        try {
+            $sync = $event->getData();
 
-        if ($turmasMigrar->count()) {
-            foreach ($turmasMigrar as $item) {
-                $turma = $this->turmaRepository->find($item->sym_table_id);
-                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
+            $ambiente = $this->ambienteVirtualRepository
+                ->getAmbienteWithTokenWhithoutTurma($sync->sym_extra);
 
-                if (!$ambiente) {
-                    continue;
-                }
-
-                $data['course']['trm_id'] = $turma->trm_id;
-                $data['course']['category'] = 1;
-                $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
-                $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
-                $data['course']['summaryformat'] = 1;
-                $data['course']['format'] = 'topics';
-                $data['course']['numsections'] = 0;
-
+            if ($ambiente) {
+                $data['course']['trm_id'] = $sync->sym_table_id;
 
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
                 $param['action'] = 'post';
-                $param['functioname'] = 'local_integracao_create_course';
+                $param['functioname'] = $event->getEndpoint();
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
@@ -72,8 +56,28 @@ class MigrarTurmaListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncEvent($turma, $status, $response['message']));
+                event(new AtualizarSyncDeleteEvent($sync->sym_table,
+                    $sync->sym_table_id,
+                    $status,
+                    $response['message'],
+                    'DELETE',
+                    null,
+                    $sync->sym_extra
+                ));
             }
+        } catch (ConnectException $exception) {
+            if (config('app.debug')) {
+                throw $exception;
+            }
+
+            return true;
+        } catch (\Exception $exception) {
+            if (config('app.debug')) {
+                throw $exception;
+            }
+
+            // Mantem a propagacao do evento
+            return true;
         }
     }
 }

@@ -28,12 +28,12 @@ return [
 
     'Modulos\Integracao\Events\TurmaMapeadaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Integracao\Listeners\MigrarTurmaListener'
+        'Modulos\Integracao\Listeners\TurmaMapeadaListener'
     ],
 
-    'Modulos\Integracao\Events\DeleteOfertaTurmaEvent' => [
+    'Modulos\Integracao\Events\TurmaRemovidaEvent' => [
         'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Integracao\Listeners\MigrarExclusaoOfertaTurmaListener'
+        'Modulos\Integracao\Listeners\TurmaRemovidaListener'
     ],
 
     'Modulos\Integracao\Events\MapearNotasEvent' => [

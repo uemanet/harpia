@@ -3,7 +3,7 @@
 namespace Modulos\Integracao\Http\Controllers;
 
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Events\DeleteOfertaTurmaEvent;
+use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -382,7 +382,7 @@ class AmbientesVirtuaisController extends BaseController
                 $turma = $this->turmaRepository->find($dados['atr_trm_id']);
 
                 if ($turma->trm_integrada) {
-                    event(new TurmaMapeadaEvent($turma, "CREATE"));
+                    event(new TurmaMapeadaEvent($turma));
                 }
 
                 return redirect()->back();
@@ -420,7 +420,7 @@ class AmbientesVirtuaisController extends BaseController
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
             if ($turma->trm_integrada) {
-                event(new DeleteOfertaTurmaEvent($turma, "DELETE", $ambiente));
+                event(new TurmaRemovidaEvent($turma, $ambiente));
             }
 
             flash()->success('Turma excluída com sucesso.');
