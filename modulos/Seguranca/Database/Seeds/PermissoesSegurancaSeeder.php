@@ -24,7 +24,7 @@ class PermissoesSegurancaSeeder extends Seeder
 
         // Criar permissao index do modulo Integracao (DASHBOARD)
         $permissao = Permissao::create([
-            'prm_nome' => 'dashboard',
+            'prm_nome' => 'index',
             'prm_rota' => 'seguranca.index.index'
         ]);
         $arrPermissoes[] = $permissao->prm_id;

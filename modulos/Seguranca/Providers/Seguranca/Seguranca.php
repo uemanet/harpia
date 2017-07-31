@@ -114,6 +114,10 @@ class Seguranca implements SegurancaContract
             ->where('pru_usr_id', '=', $user->usr_id)
             ->get();
 
+        if (!env('IS_SECURITY_ENNABLED')) {
+            $permissions = DB::table('seg_permissoes')->get();
+        }
+
         $permissions = $permissions->pluck('prm_rota')->toArray();
 
         Cache::forever('PERMISSOES_'.$user->usr_id, $permissions);
@@ -128,6 +132,10 @@ class Seguranca implements SegurancaContract
      */
     public function haspermission($rota)
     {
+        if (!env('IS_SECURITY_ENNABLED')) {
+            return true;
+        }
+
         // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
         if (is_null($this->getUser())) {
             if ($this->isPreLoginOpenRoutes($rota)) {
