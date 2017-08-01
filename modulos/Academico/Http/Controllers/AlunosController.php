@@ -89,7 +89,14 @@ class AlunosController extends BaseController
     public function getCreate(Request $request)
     {
         $pessoaId = $request->get('id');
-        
+
+        $alunos = $this->alunoRepository->search(array(['alu_pes_id', '=', $pessoaId]));
+
+        if (!$alunos->isEmpty()) {
+            flash()->error('Este CPF já tem um aluno cadastrado!');
+            return redirect()->route('academico.alunos.index');
+        }
+
         if (!is_null($pessoaId)) {
             $pessoa = $this->pessoaRepository->findById($pessoaId);
 
