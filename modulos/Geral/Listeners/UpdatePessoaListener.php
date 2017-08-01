@@ -1,0 +1,74 @@
+<?php
+
+namespace Modulos\Geral\Listeners;
+
+use Moodle;
+use Modulos\Geral\Events\UpdatePessoaEvent;
+use Modulos\Geral\Repositories\PessoaRepository;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
+
+class UpdatePessoaListener
+{
+    protected $sincronizacaoRepository;
+    protected $ambienteVirtualRepository;
+    protected $pessoaRepository;
+
+    public function __construct(
+        SincronizacaoRepository $sincronizacaoRepository,
+        PessoaRepository $pessoaRepository,
+        AmbienteVirtualRepository $ambienteVirtualRepository
+    ) {
+        $this->sincronizacaoRepository = $sincronizacaoRepository;
+        $this->pessoaRepository = $pessoaRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
+    }
+
+    public function handle(UpdatePessoaEvent $event)
+    {
+        $pessoa = $event->getData();
+
+        // ambiente virtual vinculado à turma do grupo
+        $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($event->getExtra());
+
+        if ($ambiente) {
+            $param = [];
+
+            // url do ambiente
+            $param['url'] = $ambiente->url;
+            $param['token'] = $ambiente->token;
+            $param['functioname'] = $event->getEndpoint();
+            $param['action'] = 'UPDATE';
+
+            $nome = explode(" ", $pessoa->pes_nome);
+            $firstName = array_shift($nome);
+            $lastName = implode(" ", $nome);
+
+            $param['data']['user']['pes_id'] = $pessoa->pes_id;
+            $param['data']['user']['firstname'] = $firstName;
+            $param['data']['user']['lastname'] = $lastName;
+            $param['data']['user']['email'] = $pessoa->pes_email;
+            $param['data']['user']['username'] = $pessoa->pes_email;
+            $param['data']['user']['city'] = $pessoa->pes_cidade;
+
+            $response = Moodle::send($param);
+            $status = 3;
+
+            if (array_key_exists('status', $response)) {
+                if ($response['status'] == 'success') {
+                    $status = 2;
+                }
+            }
+
+            event(new UpdateSincronizacaoEvent(
+                $pessoa,
+                $status,
+                $response['message'],
+                $param['action'],
+                null,
+                $event->getExtra()
+            ));
+        }
+    }
+}

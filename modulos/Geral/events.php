@@ -17,8 +17,8 @@ return [
         'Modulos\Geral\Listeners\GeralListener',
     ],
 
-    'Modulos\Geral\Events\AtualizarPessoaEvent' => [
+    'Modulos\Geral\Events\UpdatePessoaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Geral\Listeners\MigrarAtualizarPessoaListener',
+        'Modulos\Geral\Listeners\UpdatePessoaListener',
     ]
 ];

@@ -2,6 +2,7 @@
 
 namespace Modulos\Integracao\Listeners;
 
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
@@ -19,12 +20,13 @@ class TurmaRemovidaListener
     private $ambienteVirtualRepository;
     private $sincronizacaoRepository;
 
-    public function __construct(TurmaRepository $turmaRepository,
-                                CursoRepository $cursoRepository,
-                                PeriodoLetivoRepository $periodoLetivoRepository,
-                                AmbienteVirtualRepository $ambienteVirtualRepository,
-                                SincronizacaoRepository $sincronizacaoRepository)
-    {
+    public function __construct(
+        TurmaRepository $turmaRepository,
+        CursoRepository $cursoRepository,
+        PeriodoLetivoRepository $periodoLetivoRepository,
+        AmbienteVirtualRepository $ambienteVirtualRepository,
+        SincronizacaoRepository $sincronizacaoRepository
+    ) {
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
@@ -56,7 +58,8 @@ class TurmaRemovidaListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncDeleteEvent($sync->sym_table,
+                event(new DeleteSincronizacaoEvent(
+                    $sync->sym_table,
                     $sync->sym_table_id,
                     $status,
                     $response['message'],

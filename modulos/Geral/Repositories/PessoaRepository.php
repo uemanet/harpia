@@ -2,7 +2,7 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Modulos\Geral\Events\AtualizarPessoaEvent;
+use Modulos\Geral\Events\UpdatePessoaEvent;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Pessoa;
 use DB;
@@ -175,7 +175,7 @@ class PessoaRepository extends BaseRepository
         $ambientesId = array_unique($ambientesdapessoaId);
 
         foreach ($ambientesId as $id) {
-            event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
+            event(new UpdatePessoaEvent($pessoaAtt, $id));
         }
     }
 }
