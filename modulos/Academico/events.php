@@ -38,9 +38,9 @@ return [
         'Modulos\Academico\Listeners\MigrarTutorVinculadoListener',
     ],
 
-    'Modulos\Academico\Events\OfertaDisciplinaEvent' => [
+    'Modulos\Academico\Events\CreateOfertaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarOfertaDisciplinaListener',
+        'Modulos\Academico\Listeners\CreateOfertaDisciplinaListener',
     ],
 
     'Modulos\Academico\Events\AtualizarGrupoEvent' => [
