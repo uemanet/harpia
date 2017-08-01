@@ -8,7 +8,7 @@ use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
@@ -164,7 +164,7 @@ class TurmaListener
                 $status = 2;
             }
 
-            event(new AtualizarSyncDeleteEvent($sync->sym_table,
+            event(new DeleteSincronizacaoEvent($sync->sym_table,
                 $sync->sym_table_id,
                 $status,
                 $response['message'],

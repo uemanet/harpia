@@ -5,7 +5,7 @@ namespace Modulos\Academico\Listeners;
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Repositories\GrupoRepository;
-use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -62,7 +62,7 @@ class MigrarExclusaoGrupoListener
                         }
                     }
 
-                    event(new AtualizarSyncDeleteEvent($reg->sym_table,
+                    event(new DeleteSincronizacaoEvent($reg->sym_table,
                                                        $reg->sym_table_id,
                                                        $status,
                                                        $retorno['message'],

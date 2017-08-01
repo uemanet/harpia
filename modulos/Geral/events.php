@@ -18,7 +18,7 @@ return [
     ],
 
     'Modulos\Geral\Events\AtualizarPessoaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncUpdatePessoaListener' => 10,
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Geral\Listeners\MigrarAtualizarPessoaListener',
     ]
 ];

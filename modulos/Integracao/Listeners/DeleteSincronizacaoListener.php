@@ -3,10 +3,10 @@
 
 namespace Modulos\Integracao\Listeners;
 
-use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
-class AtualizarSyncDeleteListener
+class DeleteSincronizacaoListener
 {
     protected $sincronizacaoRepository;
 
@@ -15,18 +15,18 @@ class AtualizarSyncDeleteListener
         $this->sincronizacaoRepository = $sincronizacaoRepository;
     }
 
-    public function handle(AtualizarSyncDeleteEvent $event)
+    public function handle(DeleteSincronizacaoEvent $event)
     {
-        $data = $event->getData();
-
         try {
+            $data = $event->getData();
             $this->sincronizacaoRepository->updateSyncMoodle($data);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
-        }
 
-        return true;
+            // Mantem a propagacao do evento
+            return true;
+        }
     }
 }

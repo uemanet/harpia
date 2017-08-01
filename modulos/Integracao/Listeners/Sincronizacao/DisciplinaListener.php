@@ -7,7 +7,7 @@ use GuzzleHttp\Exception\ConnectException;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
-use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Academico\Repositories\DisciplinaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -147,7 +147,7 @@ class DisciplinaListener
                 $status = 2;
             }
 
-            event(new AtualizarSyncDeleteEvent(
+            event(new DeleteSincronizacaoEvent(
                 $sync->sym_table,
                 $sync->sym_table_id,
                 $status,

@@ -22,8 +22,8 @@ return [
         'Modulos\Integracao\Listeners\UpdateSincronizacaoListener'
     ],
 
-    'Modulos\Integracao\Events\AtualizarSyncDeleteEvent' => [
-        'Modulos\Integracao\Listeners\AtualizarSyncDeleteListener'
+    'Modulos\Integracao\Events\DeleteSincronizacaoEvent' => [
+        'Modulos\Integracao\Listeners\DeleteSincronizacaoListener'
     ],
 
     'Modulos\Integracao\Events\TurmaMapeadaEvent' => [

@@ -6,7 +6,7 @@ use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
@@ -61,7 +61,7 @@ class MigrarExclusaoOfertaDisciplinaListener
                         $status = 2;
                     }
 
-                    event(new AtualizarSyncDeleteEvent($item->sym_table,
+                    event(new DeleteSincronizacaoEvent($item->sym_table,
                                                      $item->sym_table_id,
                                                      $status,
                                                      $response['message'],

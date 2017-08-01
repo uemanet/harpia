@@ -3,29 +3,19 @@
 namespace Modulos\Integracao\Events;
 
 use Harpia\Event\Event;
-use Harpia\Event\EventInterface;
-use Modulos\Core\Model\BaseModel;
 
 /**
- * Class UpdateSincronizacaoEvent
+ * Evento para atualizacao de exclusao de registros associados a ambientes virtuais
+ *
  * @package Modulos\Integracao\Events
  */
-class AtualizarSyncDeleteEvent extends Event
+class DeleteSincronizacaoEvent extends Event
 {
     private $status;
     private $sendingDate;
     private $message;
     private $extraInformation;
 
-    /**
-     * UpdateSincronizacaoEvent constructor.
-     * @param BaseModel $entry
-     * @param string $action
-     * @param int $status default = 2 for success
-     * @param null $message
-     * @param null $sendingDate
-     * @param null $extraInformation
-     */
     public function __construct($table,
                                 $tableId,
                                 $status = 2,
@@ -46,7 +36,7 @@ class AtualizarSyncDeleteEvent extends Event
     }
 
     /**
-     * Para atualizar na tabela de sincronizacao
+     * Dados para atualizacao na tabela de sincronizacao
      * @return array
      */
     public function getData()

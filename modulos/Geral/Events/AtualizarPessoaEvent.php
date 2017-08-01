@@ -2,8 +2,9 @@
 
 namespace Modulos\Geral\Events;
 
-use Harpia\Event\Event;
+use Harpia\Event\SincronizacaoEvent;
+use Modulos\Core\Model\BaseModel;
 
-class AtualizarPessoaEvent extends Event
+class AtualizarPessoaEvent extends SincronizacaoEvent
 {
 }
