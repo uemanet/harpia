@@ -5,7 +5,7 @@ namespace Modulos\Geral\Listeners;
 use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
 use Modulos\Geral\Events\AtualizarPessoaEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -72,7 +72,7 @@ class MigrarAtualizarPessoaListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($pessoa, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
+                    event(new UpdateSincronizacaoEvent($pessoa, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
                 }
             }
         }

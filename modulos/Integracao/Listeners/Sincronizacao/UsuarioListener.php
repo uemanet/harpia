@@ -5,7 +5,7 @@ namespace Modulos\Integracao\Listeners\Sincronizacao;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
@@ -84,7 +84,7 @@ class UsuarioListener
                 }
             }
 
-            event(new AtualizarSyncEvent($pessoa, $status, $response['message'], $param['action'], null, $sync->sym_extra));
+            event(new UpdateSincronizacaoEvent($pessoa, $status, $response['message'], $param['action'], null, $sync->sym_extra));
             return true;
         }
 

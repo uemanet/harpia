@@ -6,7 +6,7 @@ use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Events\AtualizarTurmaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
@@ -68,7 +68,7 @@ class MigrarAtualizaTurmaListener
                         $status = 2;
                     }
 
-                    event(new AtualizarSyncEvent($turma, $status, $response['message'], $param['action']));
+                    event(new UpdateSincronizacaoEvent($turma, $status, $response['message'], $param['action']));
                 }
             }
         }

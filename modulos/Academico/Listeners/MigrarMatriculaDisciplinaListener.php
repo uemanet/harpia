@@ -7,7 +7,7 @@ use Modulos\Academico\Events\NovaMatriculaDisciplinaEvent;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -78,7 +78,7 @@ class MigrarMatriculaDisciplinaListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($matriculaOfertaDisciplina, $status, $retorno['message']));
+                    event(new UpdateSincronizacaoEvent($matriculaOfertaDisciplina, $status, $retorno['message']));
                 }
             }
         }

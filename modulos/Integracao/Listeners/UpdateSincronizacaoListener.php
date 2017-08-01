@@ -3,10 +3,10 @@
 
 namespace Modulos\Integracao\Listeners;
 
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
-class AtualizarSyncListener
+class UpdateSincronizacaoListener
 {
     protected $sincronizacaoRepository;
 
@@ -15,18 +15,18 @@ class AtualizarSyncListener
         $this->sincronizacaoRepository = $sincronizacaoRepository;
     }
 
-    public function handle(AtualizarSyncEvent $event)
+    public function handle(UpdateSincronizacaoEvent $event)
     {
-        $data = $event->getData();
-
         try {
+            $data = $event->getData();
             $this->sincronizacaoRepository->updateSyncMoodle($data);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
-        }
 
-        return true;
+            // Mantem a propagacao do evento
+            return true;
+        }
     }
 }

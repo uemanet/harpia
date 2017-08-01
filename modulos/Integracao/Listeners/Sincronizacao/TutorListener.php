@@ -6,7 +6,7 @@ use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\SincronizacaoEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
@@ -102,7 +102,7 @@ class TutorListener
                 $status = 2;
             }
 
-            event(new AtualizarSyncEvent($tutorGrupo, $status, $response['message']));
+            event(new UpdateSincronizacaoEvent($tutorGrupo, $status, $response['message']));
             return true;
         }
 
@@ -142,7 +142,7 @@ class TutorListener
                 $status = 2;
             }
 
-            event(new AtualizarSyncEvent($tutorGrupo, $status, $response['message'], 'DELETE'));
+            event(new UpdateSincronizacaoEvent($tutorGrupo, $status, $response['message'], 'DELETE'));
             return true;
         }
 

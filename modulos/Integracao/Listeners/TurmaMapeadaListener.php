@@ -5,7 +5,7 @@ namespace Modulos\Integracao\Listeners;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
@@ -65,7 +65,7 @@ class TurmaMapeadaListener
                 $status = 2;
             }
 
-            event(new AtualizarSyncEvent($turma, $status, $response['message']));
+            event(new UpdateSincronizacaoEvent($turma, $status, $response['message']));
         } catch (ConnectException $exception) {
             if (config('app.debug')) {
                 throw $exception;

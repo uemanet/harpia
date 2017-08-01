@@ -6,7 +6,7 @@ use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\SincronizacaoEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Academico\Repositories\DisciplinaRepository;
@@ -115,7 +115,7 @@ class DisciplinaListener
             $status = 2;
         }
 
-        event(new AtualizarSyncEvent($oferta, $status, $response['message']));
+        event(new UpdateSincronizacaoEvent($oferta, $status, $response['message']));
         return true;
     }
 

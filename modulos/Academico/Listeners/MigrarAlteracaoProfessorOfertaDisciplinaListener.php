@@ -11,7 +11,7 @@ namespace Modulos\Academico\Listeners;
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Events\AlterarProfessorOfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -84,13 +84,13 @@ class MigrarAlteracaoProfessorOfertaDisciplinaListener
                             }
                         }
 
-                        event(new AtualizarSyncEvent($ofertaDisciplina, $status, $retorno['message']));
+                        event(new UpdateSincronizacaoEvent($ofertaDisciplina, $status, $retorno['message']));
                     } catch (\GuzzleHttp\Exception\ConnectException $e) {
-                        event(new AtualizarSyncEvent($ofertaDisciplina, 3, $e->getMessage()));
+                        event(new UpdateSincronizacaoEvent($ofertaDisciplina, 3, $e->getMessage()));
                     } catch (\GuzzleHttp\Exception\ClientException $e) {
-                        event(new AtualizarSyncEvent($ofertaDisciplina, 3, $e->getMessage()));
+                        event(new UpdateSincronizacaoEvent($ofertaDisciplina, 3, $e->getMessage()));
                     } catch (\Exception $e) {
-                        event(new AtualizarSyncEvent($ofertaDisciplina, 3, 'Erro ao tentar sincronizar. Tente novamente mais tarde.'));
+                        event(new UpdateSincronizacaoEvent($ofertaDisciplina, 3, 'Erro ao tentar sincronizar. Tente novamente mais tarde.'));
                     }
 
                     return true;

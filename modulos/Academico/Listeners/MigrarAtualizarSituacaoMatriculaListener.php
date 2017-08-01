@@ -6,7 +6,7 @@ use Harpia\Moodle\Moodle;
 use Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -64,7 +64,7 @@ class MigrarAtualizarSituacaoMatriculaListener
                             $status = 2;
                         }
                     }
-                    event(new AtualizarSyncEvent($matriculaTurma, $status, $retorno['message'], $event->getAction()));
+                    event(new UpdateSincronizacaoEvent($matriculaTurma, $status, $retorno['message'], $event->getAction()));
                 }
             }
         }

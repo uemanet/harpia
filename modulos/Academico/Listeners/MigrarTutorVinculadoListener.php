@@ -8,7 +8,7 @@ use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
 
@@ -85,7 +85,7 @@ class MigrarTutorVinculadoListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncEvent($tutorGrupo, $status, $response['message']));
+                event(new UpdateSincronizacaoEvent($tutorGrupo, $status, $response['message']));
             }
         }
     }

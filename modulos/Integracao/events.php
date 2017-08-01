@@ -18,8 +18,8 @@ return [
      * Evento de updates em sincronizacao
      * */
 
-    'Modulos\Integracao\Events\AtualizarSyncEvent' => [
-        'Modulos\Integracao\Listeners\AtualizarSyncListener'
+    'Modulos\Integracao\Events\UpdateSincronizacaoEvent' => [
+        'Modulos\Integracao\Listeners\UpdateSincronizacaoListener'
     ],
 
     'Modulos\Integracao\Events\AtualizarSyncDeleteEvent' => [

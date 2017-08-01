@@ -16,19 +16,19 @@ abstract class SyncEvent extends Event
      */
     protected $endpoints = [
         'acd_turmas' => [
-            'CREATE' => 'local_integration_create_course',
-            'UPDATE' => 'local_integration_update_course',
-            'DELETE' => 'local_integration_delete_course',
+            'CREATE' => 'local_integracao_create_course',
+            'UPDATE' => 'local_integracao_update_course',
+            'DELETE' => 'local_integracao_delete_course',
         ],
         'acd_grupos' => [
-            'CREATE' => 'local_integration_create_group',
-            'UPDATE' => 'local_integration_update_group',
-            'DELETE' => 'local_integration_delete_group',
+            'CREATE' => 'local_integracao_create_group',
+            'UPDATE' => 'local_integracao_update_group',
+            'DELETE' => 'local_integracao_delete_group',
         ],
         'acd_ofertas_disciplinas' => [
-            'CREATE' => 'local_integration_create_discipline',
-            'UPDATE' => 'local_integration_update_discipline',
-            'DELETE' => 'local_integration_delete_discipline',
+            'CREATE' => 'local_integracao_create_discipline',
+            'UPDATE' => 'local_integracao_update_discipline',
+            'DELETE' => 'local_integracao_delete_discipline',
         ],
         'acd_matriculas' => [
             'CREATE' => 'local_integracao_enrol_student',

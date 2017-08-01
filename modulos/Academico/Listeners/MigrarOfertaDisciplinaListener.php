@@ -9,7 +9,7 @@ use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Moodle;
@@ -95,7 +95,7 @@ class MigrarOfertaDisciplinaListener
                     $status = 2;
                 }
 
-                event(new AtualizarSyncEvent($oferta, $status, $response['message']));
+                event(new UpdateSincronizacaoEvent($oferta, $status, $response['message']));
             }
         }
     }

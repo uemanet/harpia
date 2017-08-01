@@ -7,7 +7,7 @@ use Modulos\Academico\Events\MatriculaAlunoTurmaEvent;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -90,7 +90,7 @@ class MigrarMatriculaAlunoTurmaListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($matriculaTurma, $status, $retorno['message']));
+                    event(new UpdateSincronizacaoEvent($matriculaTurma, $status, $retorno['message']));
                 }
             }
         }

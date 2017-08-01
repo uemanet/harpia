@@ -5,7 +5,7 @@ namespace Modulos\Integracao\Listeners\Sincronizacao;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\SincronizacaoEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
@@ -93,7 +93,7 @@ class GrupoListener
                 }
             }
 
-            event(new AtualizarSyncEvent($grupo, $status, $response['message']));
+            event(new UpdateSincronizacaoEvent($grupo, $status, $response['message']));
             return true;
         }
 
@@ -136,7 +136,7 @@ class GrupoListener
                 }
             }
 
-            event(new AtualizarSyncEvent($grupo, $status, $response['message'], 'UPDATE'));
+            event(new UpdateSincronizacaoEvent($grupo, $status, $response['message'], 'UPDATE'));
             return true;
         }
 

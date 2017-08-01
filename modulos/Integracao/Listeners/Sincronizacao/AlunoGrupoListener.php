@@ -4,7 +4,7 @@ namespace Modulos\Integracao\Listeners\Sincronizacao;
 
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -84,7 +84,7 @@ class AlunoGrupoListener
                     $status = 2;
                 }
             }
-            event(new AtualizarSyncEvent($matricula, $status, $response['message'], $param['action'], null, $sync->sym_extra));
+            event(new UpdateSincronizacaoEvent($matricula, $status, $response['message'], $param['action'], null, $sync->sym_extra));
             return true;
         }
 
@@ -128,7 +128,7 @@ class AlunoGrupoListener
                 }
             }
 
-            event(new AtualizarSyncEvent($matricula, $status, $response['message'], $param['action'], null, $sync->sym_extra));
+            event(new UpdateSincronizacaoEvent($matricula, $status, $response['message'], $param['action'], null, $sync->sym_extra));
             return true;
         }
 

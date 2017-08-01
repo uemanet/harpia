@@ -5,7 +5,7 @@ namespace Modulos\Integracao\Listeners\Sincronizacao;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\SincronizacaoEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\AtualizarSyncDeleteEvent;
@@ -95,7 +95,7 @@ class TurmaListener
             $status = 2;
         }
 
-        event(new AtualizarSyncEvent($turma, $status, $response['message']));
+        event(new UpdateSincronizacaoEvent($turma, $status, $response['message']));
         return true;
     }
 
@@ -131,7 +131,7 @@ class TurmaListener
                 $status = 2;
             }
 
-            event(new AtualizarSyncEvent($turma, $status, $response['message'], $param['action']));
+            event(new UpdateSincronizacaoEvent($turma, $status, $response['message'], $param['action']));
             return true;
         }
     }

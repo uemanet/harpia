@@ -4,7 +4,7 @@ namespace Modulos\Academico\Listeners;
 
 use Harpia\Event\Event;
 use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
@@ -65,7 +65,7 @@ class MigrarDeletarGrupoAlunoListener
                             $status = 2;
                         }
                     }
-                    event(new AtualizarSyncEvent($matricula, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
+                    event(new UpdateSincronizacaoEvent($matricula, $status, $retorno['message'], $param['action'], null, $reg->sym_extra));
                 }
             }
         }

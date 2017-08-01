@@ -7,7 +7,7 @@ use Harpia\Event\EventInterface;
 use Modulos\Core\Model\BaseModel;
 
 /**
- * Class AtualizarSyncEvent
+ * Class UpdateSincronizacaoEvent
  * @package Modulos\Integracao\Events
  */
 class AtualizarSyncDeleteEvent extends Event
@@ -18,7 +18,7 @@ class AtualizarSyncDeleteEvent extends Event
     private $extraInformation;
 
     /**
-     * AtualizarSyncEvent constructor.
+     * UpdateSincronizacaoEvent constructor.
      * @param BaseModel $entry
      * @param string $action
      * @param int $status default = 2 for success

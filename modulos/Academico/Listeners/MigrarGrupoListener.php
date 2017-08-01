@@ -6,7 +6,7 @@ use Harpia\Event\Event;
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Events\NovoGrupoEvent;
 use Modulos\Academico\Repositories\GrupoRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -67,7 +67,7 @@ class MigrarGrupoListener
                         }
                     }
 
-                    event(new AtualizarSyncEvent($grupo, $status, $retorno['message']));
+                    event(new UpdateSincronizacaoEvent($grupo, $status, $retorno['message']));
                 }
             }
         }
