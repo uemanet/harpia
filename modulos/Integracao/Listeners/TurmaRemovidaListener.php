@@ -37,13 +37,13 @@ class TurmaRemovidaListener
     public function handle(TurmaRemovidaEvent $event)
     {
         try {
-            $sync = $event->getData();
+            $turma = $event->getData();
 
             $ambiente = $this->ambienteVirtualRepository
-                ->getAmbienteWithTokenWhithoutTurma($sync->sym_extra);
+                ->getAmbienteWithTokenWhithoutTurma($event->getExtra());
 
             if ($ambiente) {
-                $data['course']['trm_id'] = $sync->sym_table_id;
+                $data['course']['trm_id'] = $turma->trm_id;
 
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
@@ -59,13 +59,13 @@ class TurmaRemovidaListener
                 }
 
                 event(new DeleteSincronizacaoEvent(
-                    $sync->sym_table,
-                    $sync->sym_table_id,
+                    $turma->getTable(),
+                    $turma->trm_id,
                     $status,
                     $response['message'],
                     'DELETE',
                     null,
-                    $sync->sym_extra
+                    $turma->sym_extra
                 ));
             }
         } catch (ConnectException $exception) {

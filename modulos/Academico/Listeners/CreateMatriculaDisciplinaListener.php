@@ -23,7 +23,8 @@ class CreateMatriculaDisciplinaListener
 
     public function handle(CreateMatriculaDisciplinaEvent $event)
     {
-        try {// busca a matricula na oferta de disciplina
+        try {
+            // busca a matricula na oferta de disciplina
             $matriculaOfertaDisciplina = $event->getData();
 
             // pega a matricula do aluno no curso
