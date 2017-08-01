@@ -8,30 +8,22 @@ use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class CreateMatriculaTurmaListener
 {
-    protected $sincronizacaoRepository;
-    protected $matriculaCursoRepository;
-    protected $ambienteVirtualRepository;
-    protected $pessoaRepository;
     protected $alunoRepository;
+    protected $pessoaRepository;
+    protected $ambienteVirtualRepository;
 
     public function __construct(
-        SincronizacaoRepository $sincronizacaoRepository,
-        MatriculaCursoRepository $matriculaCursoRepository,
-        AmbienteVirtualRepository $ambienteVirtualRepository,
+        AlunoRepository $alunoRepository,
         PessoaRepository $pessoaRepository,
-        AlunoRepository $alunoRepository
+        AmbienteVirtualRepository $ambienteVirtualRepository
     ) {
-        $this->sincronizacaoRepository = $sincronizacaoRepository;
-        $this->matriculaCursoRepository = $matriculaCursoRepository;
-        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
-        $this->pessoaRepository = $pessoaRepository;
         $this->alunoRepository = $alunoRepository;
+        $this->pessoaRepository = $pessoaRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
     public function handle(CreateMatriculaTurmaEvent $event)
@@ -45,7 +37,6 @@ class CreateMatriculaTurmaListener
 
             // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matriculaTurma->mat_trm_id);
-
 
             if ($ambiente) {
                 $param = [];

@@ -28,9 +28,9 @@ return [
         'Modulos\Academico\Listeners\MigrarGrupoListener',
     ],
 
-    'Modulos\Academico\Events\NovaMatriculaDisciplinaEvent' => [
+    'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarMatriculaDisciplinaListener',
+        'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
     ],
 
     'Modulos\Academico\Events\TutorVinculadoEvent' => [
