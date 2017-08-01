@@ -36,10 +36,6 @@ return [
         'Modulos\Integracao\Listeners\TurmaRemovidaListener'
     ],
 
-    'Modulos\Integracao\Events\MapearNotasEvent' => [
-        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10
-    ],
-
     'Modulos\Integracao\Events\SincronizacaoEvent' => [
         'Modulos\Integracao\Listeners\Sincronizacao\TurmaListener',
         'Modulos\Integracao\Listeners\Sincronizacao\GrupoListener',

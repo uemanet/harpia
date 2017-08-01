@@ -13,10 +13,6 @@
  */
 
 return [
-    'Modulos\Geral\Events\HelloGeral' => [
-        'Modulos\Geral\Listeners\GeralListener',
-    ],
-
     'Modulos\Geral\Events\UpdatePessoaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Geral\Listeners\UpdatePessoaListener',

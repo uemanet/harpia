@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Modulos\Academico\Events\AlterarGrupoAlunoEvent;
 use Modulos\Academico\Events\AtualizarMatriculaCursoEvent;
 use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
-use Modulos\Academico\Events\MatriculaAlunoTurmaEvent;
+use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
 use Modulos\Academico\Listeners\AtualizarMatriculaCursoListener;
 use Modulos\Academico\Repositories\AlunoRepository;
@@ -101,7 +101,7 @@ class MatriculaCursoController extends BaseController
                 $matricula = $result['matricula'];
 
                 if ($matricula->turma->trm_integrada) {
-                    event(new MatriculaAlunoTurmaEvent($matricula));
+                    event(new CreateMatriculaTurmaEvent($matricula));
                 }
             }
 
