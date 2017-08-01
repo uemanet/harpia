@@ -35,15 +35,4 @@ class Permissao extends BaseModel
         $slugModulo = explode('.', $this->prm_rota)[0];
         return $slugModulo;
     }
-
-    public function recurso()
-    {
-        $rota = explode('.', $this->prm_rota);
-
-        if (count($rota) > 3) {
-            return $rota[2];
-        }
-
-        return $rota[1];
-    }
 }
