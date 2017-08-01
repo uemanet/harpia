@@ -414,8 +414,8 @@ class AmbientesVirtuaisController extends BaseController
 
             if ($deletar) {
                 flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
+                return redirect()->back();
             }
-            return redirect()->back();
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 

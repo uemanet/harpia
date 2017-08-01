@@ -2,10 +2,10 @@
 
 namespace Modulos\Integracao\Events;
 
-use Harpia\Event\SyncEvent;
+use Harpia\Event\SincronizacaoEvent;
 use Modulos\Academico\Models\Turma;
 
-class TurmaMapeadaEvent extends SyncEvent
+class TurmaMapeadaEvent extends SincronizacaoEvent
 {
     public function __construct(Turma $entry)
     {

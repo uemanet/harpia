@@ -8,7 +8,7 @@ use Modulos\Core\Model\BaseModel;
  * Eventos de sincronizacao com o Moodle
  * @package Harpia\Event
  */
-abstract class SyncEvent extends Event
+abstract class SincronizacaoEvent extends Event
 {
     /**
      * Array com os endpoints do plugin de integração ( [tabela][acao] => endpoint )

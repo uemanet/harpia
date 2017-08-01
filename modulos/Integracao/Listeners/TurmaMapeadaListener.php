@@ -5,9 +5,9 @@ namespace Modulos\Integracao\Listeners;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -36,7 +36,7 @@ class TurmaMapeadaListener
     public function handle(TurmaMapeadaEvent $event)
     {
         try {
-            $turma = $this->turmaRepository->find($event->getData()->sym_table_id);
+            $turma = $event->getData();
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
             if (!$ambiente) {

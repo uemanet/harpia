@@ -27,17 +27,17 @@ return [
     ],
 
     'Modulos\Integracao\Events\TurmaMapeadaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Integracao\Listeners\TurmaMapeadaListener'
     ],
 
     'Modulos\Integracao\Events\TurmaRemovidaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Integracao\Listeners\TurmaRemovidaListener'
     ],
 
     'Modulos\Integracao\Events\MapearNotasEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10
     ],
 
     'Modulos\Integracao\Events\SincronizacaoEvent' => [
