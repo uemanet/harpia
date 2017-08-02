@@ -23,9 +23,9 @@ return [
         'Modulos\Academico\Listeners\MigrarAtualizaTurmaListener'
     ],
 
-    'Modulos\Academico\Events\NovoGrupoEvent' => [
+    'Modulos\Academico\Events\CreateGrupoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarGrupoListener',
+        'Modulos\Academico\Listeners\CreateGrupoListener',
     ],
 
     'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [

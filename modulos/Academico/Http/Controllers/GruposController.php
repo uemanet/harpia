@@ -4,7 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 use Illuminate\Http\Request;
 use Modulos\Academico\Events\AtualizarGrupoEvent;
 use Modulos\Academico\Events\DeleteGrupoEvent;
-use Modulos\Academico\Events\NovoGrupoEvent;
+use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Academico\Http\Requests\GrupoRequest;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -165,7 +165,7 @@ class GruposController extends BaseController
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
             if ($turma->trm_integrada) {
-                event(new NovoGrupoEvent($grupo, "CREATE"));
+                event(new CreateGrupoEvent($grupo));
             }
 
             flash()->success('Grupo criado com sucesso.');
