@@ -78,12 +78,12 @@ return [
         'Modulos\Academico\Listeners\UpdateSituacaoMatriculaListener',
     ],
 
-    'Modulos\Academico\Events\AtualizarMatriculaCursoEvent' => [
-        'Modulos\Academico\Listeners\AtualizarMatriculaCursoListener'
+    'Modulos\Academico\Events\UpdateMatriculaCursoEvent' => [
+        'Modulos\Academico\Listeners\UpdateMatriculaCursoListener'
     ],
 
-    'Modulos\Academico\Events\AlterarProfessorOfertaDisciplinaEvent' => [
+    'Modulos\Academico\Events\UpdateProfessorDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAlteracaoProfessorOfertaDisciplinaListener'
+        'Modulos\Academico\Listeners\UpdateProfessorDisciplinaListener'
     ],
 ];

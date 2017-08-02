@@ -4,11 +4,11 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modulos\Academico\Events\AlterarGrupoAlunoEvent;
-use Modulos\Academico\Events\AtualizarMatriculaCursoEvent;
+use Modulos\Academico\Events\UpdateMatriculaCursoEvent;
 use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
-use Modulos\Academico\Listeners\AtualizarMatriculaCursoListener;
+use Modulos\Academico\Listeners\UpdateMatriculaCursoListener;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
@@ -152,11 +152,11 @@ class MatriculaCursoController extends BaseController
             }
 
             if ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) {
-                event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::GRUPO, $observacao));
+                event(new UpdateMatriculaCursoEvent($matricula, UpdateMatriculaCursoEvent::GRUPO, $observacao));
             }
 
             if ($oldMatricula->mat_pol_id != $matricula->mat_pol_id) {
-                event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::POLO, $observacao));
+                event(new UpdateMatriculaCursoEvent($matricula, UpdateMatriculaCursoEvent::POLO, $observacao));
             }
 
             flash()->success('Matrícula atualizada com sucesso.');

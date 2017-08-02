@@ -2,12 +2,12 @@
 
 namespace Modulos\Academico\Listeners;
 
-use Modulos\Academico\Events\AtualizarMatriculaCursoEvent;
 use Modulos\Academico\Models\HistoricoMatricula;
+use Modulos\Academico\Events\UpdateMatriculaCursoEvent;
 
-class AtualizarMatriculaCursoListener
+class UpdateMatriculaCursoListener
 {
-    public function handle(AtualizarMatriculaCursoEvent $event)
+    public function handle(UpdateMatriculaCursoEvent $event)
     {
         $historico = new HistoricoMatricula();
 

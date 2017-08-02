@@ -2,12 +2,13 @@
 
 namespace Modulos\Integracao\Listeners;
 
-use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -73,13 +74,14 @@ class TurmaRemovidaListener
                 throw $exception;
             }
 
-            return true;
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            // Mantem a propagacao do evento
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } finally {
             return true;
         }
     }

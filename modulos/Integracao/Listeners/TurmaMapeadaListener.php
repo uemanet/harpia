@@ -20,12 +20,13 @@ class TurmaMapeadaListener
     private $ambienteVirtualRepository;
     private $sincronizacaoRepository;
 
-    public function __construct(TurmaRepository $turmaRepository,
-                                CursoRepository $cursoRepository,
-                                PeriodoLetivoRepository $periodoLetivoRepository,
-                                AmbienteVirtualRepository $ambienteVirtualRepository,
-                                SincronizacaoRepository $sincronizacaoRepository)
-    {
+    public function __construct(
+        TurmaRepository $turmaRepository,
+        CursoRepository $cursoRepository,
+        PeriodoLetivoRepository $periodoLetivoRepository,
+        AmbienteVirtualRepository $ambienteVirtualRepository,
+        SincronizacaoRepository $sincronizacaoRepository
+    ) {
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
@@ -71,13 +72,14 @@ class TurmaMapeadaListener
                 throw $exception;
             }
 
-            return true;
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            // Mantem a propagacao do evento
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } finally {
             return true;
         }
     }

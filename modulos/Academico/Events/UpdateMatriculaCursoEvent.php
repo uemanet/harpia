@@ -2,7 +2,7 @@
 
 namespace Modulos\Academico\Events;
 
-class AtualizarMatriculaCursoEvent
+class UpdateMatriculaCursoEvent
 {
     const POLO = "polo";
     const GRUPO = "grupo";
@@ -12,7 +12,7 @@ class AtualizarMatriculaCursoEvent
     private $tipoAlteracao;
     private $observacao;
 
-    public function __construct($entry, $tipoAlteracao = AtualizarMatriculaCursoEvent::POLO, $observacao = "")
+    public function __construct($entry, $tipoAlteracao = UpdateMatriculaCursoEvent::POLO, $observacao = "")
     {
         $this->matricula = $entry;
         $this->tipoAlteracao = $tipoAlteracao;
@@ -32,11 +32,11 @@ class AtualizarMatriculaCursoEvent
      */
     public function getTipoAlteracao()
     {
-        if ($this->tipoAlteracao == AtualizarMatriculaCursoEvent::POLO) {
+        if ($this->tipoAlteracao == UpdateMatriculaCursoEvent::POLO) {
             return "mudanca_polo";
         };
 
-        if ($this->tipoAlteracao == AtualizarMatriculaCursoEvent::GRUPO) {
+        if ($this->tipoAlteracao == UpdateMatriculaCursoEvent::GRUPO) {
             return "mudanca_grupo";
         };
 

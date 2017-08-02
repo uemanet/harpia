@@ -67,13 +67,14 @@ class CreateMatriculaDisciplinaListener
                 throw $exception;
             }
 
-            return true;
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage()));
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            // Mantem a propagacao do evento
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage()));
+        } finally {
             return true;
         }
     }

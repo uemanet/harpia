@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Listeners;
 
 use Moodle;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Academico\Events\UpdateTurmaEvent;
 use Modulos\Academico\Repositories\TurmaRepository;
@@ -26,6 +27,7 @@ class UpdateTurmaListener
     {
         try {
             $turma = $event->getData();
+
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
             if ($ambiente) {
@@ -53,13 +55,14 @@ class UpdateTurmaListener
                 throw $exception;
             }
 
-            return true;
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            // Mantem a propagacao do evento
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } finally {
             return true;
         }
     }
