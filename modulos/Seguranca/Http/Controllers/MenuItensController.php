@@ -4,7 +4,7 @@ namespace Modulos\Seguranca\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Events\ReloadCacheMenuEvent;
+use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Http\Requests\MenuItemRequest;
 use Modulos\Seguranca\Models\MenuItem;
 use Modulos\Seguranca\Models\Modulo;
@@ -105,7 +105,7 @@ class MenuItensController extends BaseController
         try {
             $this->menuItemRepository->create($request->all());
 
-            event(new ReloadCacheMenuEvent());
+            event(new ReloadCacheEvent());
 
             flash()->success('Item de Menu criado com sucesso.');
 
@@ -152,7 +152,7 @@ class MenuItensController extends BaseController
         try {
             $this->menuItemRepository->update($request->all(), $id);
 
-            event(new ReloadCacheMenuEvent());
+            event(new ReloadCacheEvent());
 
             flash()->success('Item de Menu atualizado com sucesso.');
 
@@ -176,7 +176,7 @@ class MenuItensController extends BaseController
 
             $this->menuItemRepository->delete($id);
 
-            event(new ReloadCacheMenuEvent());
+            event(new ReloadCacheEvent());
 
             flash()->success('Item de Menu excluído com sucesso.');
 

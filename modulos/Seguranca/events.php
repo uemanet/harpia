@@ -13,7 +13,7 @@
  */
 
 return [
-    'Modulos\Seguranca\Events\ReloadCacheMenuEvent' => [
-        'Modulos\Seguranca\Listeners\ReloadCacheMenuListener',
+    'Modulos\Seguranca\Events\ReloadCacheEvent' => [
+        'Modulos\Seguranca\Listeners\ReloadCacheListener',
     ],
 ];

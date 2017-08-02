@@ -65,6 +65,6 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'menuitens'], function () {
             Route::get('/getitenbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\MenuItem@getItensByModulo')->name('seguranca.async.menuitens.getitensbymodulo');
         });
-        
+
     });
 });

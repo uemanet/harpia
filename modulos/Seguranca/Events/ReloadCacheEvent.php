@@ -4,7 +4,7 @@ namespace Modulos\Seguranca\Events;
 
 use App\Events\Event;
 
-class ReloadCacheMenuEvent extends Event
+class ReloadCacheEvent extends Event
 {
 
 }
