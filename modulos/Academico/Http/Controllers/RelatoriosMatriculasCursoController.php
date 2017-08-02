@@ -51,6 +51,7 @@ class RelatoriosMatriculasCursoController extends BaseController
             foreach ($sqlOfertas as $oferta) {
                 $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '('.$oferta->mdl_nome.')';
             }
+
             $polos = $this->poloRepository->findAllByOfertaCurso($ofc_id)->pluck('pol_nome', 'pol_id');
         }
 
@@ -75,13 +76,12 @@ class RelatoriosMatriculasCursoController extends BaseController
         $situacao = [
                       "" => "Selecione a situação",
                       "cursando" => "Cursando",
-                      "aprovado_media" => "Aprovado por Média",
-                      "aprovado_final" => "Aprovado por Final",
-                      "reprovado_media" => "Reprovado por Média",
-                      "reprovado_final" => "Reprovado por Final",
-                      "cancelado" => "Cancelado"
+                      "concluido" => "Concluido",
+                      "reprovado" => "Reprovado",
+                      "evadido" => "Evadido",
+                      "trancado" => "Trancado",
+                      "desistente" => "Desistente"
                    ];
-
         return view('Academico::relatoriosmatriculascurso.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'polos', 'situacao'));
     }
 
@@ -151,7 +151,7 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $date = new Carbon();
 
-        $html = view('Academico::relatoriosmatriculascurso.relatorioalunos', compact('matriculas', 'nomecurso', 'date', 'turma'))->render();
+        $html = view('Academico::relatoriosmatriculascurso.relatorioalunosxls', compact('matriculas', 'nomecurso', 'date', 'turma'))->render();
 
         $arquivo = 'Matriculados na turma '.$turma->trm_nome.'.xls';
 

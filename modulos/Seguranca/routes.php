@@ -62,12 +62,9 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
             Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Perfis@getFindallbymodulo')->name('seguranca.async.perfis.findallbymodulo');
         });
 
-        Route::group(['prefix' => 'permissoes'], function () {
-            Route::get('/getrecursos', '\Modulos\Seguranca\Http\Controllers\Async\Permissao@getRecursosByModulo')->name('seguranca.async.permissoes.getrecursos');
-        });
-
         Route::group(['prefix' => 'menuitens'], function () {
             Route::get('/getitenbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\MenuItem@getItensByModulo')->name('seguranca.async.menuitens.getitensbymodulo');
         });
+        
     });
 });

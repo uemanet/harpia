@@ -38,7 +38,6 @@ class OfertaDisciplinaRequest extends BaseRequest
             'ofd_prf_id' => 'required',
             'ofd_qtd_vagas' => 'required'
         ];
-
     }
 
     public function messages()

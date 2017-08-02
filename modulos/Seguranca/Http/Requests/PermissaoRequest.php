@@ -24,9 +24,8 @@ class PermissaoRequest extends BaseRequest
     public function rules()
     {
         return [
-            'modulo' => 'required',
-            'recurso' => 'required',
-            'prm_nome' => 'required',
+            'prm_nome' => 'required|min:3',
+            'prm_rota' => 'required|min:3',
             'prm_descricao' => 'min:3'
         ];
     }
