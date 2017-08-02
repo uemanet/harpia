@@ -73,9 +73,9 @@ return [
         'Modulos\Academico\Listeners\MigrarDeletarGrupoAlunoListener',
     ],
 
-    'Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent' => [
+    'Modulos\Academico\Events\UpdateSituacaoMatriculaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAtualizarSituacaoMatriculaListener',
+        'Modulos\Academico\Listeners\UpdateSituacaoMatriculaListener',
     ],
 
     'Modulos\Academico\Events\AtualizarMatriculaCursoEvent' => [

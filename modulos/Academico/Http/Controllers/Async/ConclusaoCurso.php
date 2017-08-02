@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modulos\Academico\Events\AlterarStatusMatriculaEvent;
-use Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent;
+use Modulos\Academico\Events\UpdateSituacaoMatriculaEvent;
 use Modulos\Academico\Events\ConclusaoCursoEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
@@ -47,7 +47,7 @@ class ConclusaoCurso extends BaseController
                 }
 
                 if ($matricula->turma->trm_integrada) {
-                    event(new AtualizarSituacaoMatriculaEvent($matricula));
+                    event(new UpdateSituacaoMatriculaEvent($matricula));
                 }
 
                 DB::commit();

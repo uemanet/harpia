@@ -3,7 +3,7 @@
 namespace Modulos\Academico\Http\Controllers\Async;
 
 use Modulos\Academico\Events\AtualizarMatriculaCursoEvent;
-use Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent;
+use Modulos\Academico\Events\UpdateSituacaoMatriculaEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
@@ -39,7 +39,7 @@ class Matricula extends BaseController
             $turma = $matricula->turma;
 
             if ($turma->trm_integrada) {
-                event(new AtualizarSituacaoMatriculaEvent($matricula));
+                event(new UpdateSituacaoMatriculaEvent($matricula));
             }
 
             event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::SITUACAO, $observacao));
