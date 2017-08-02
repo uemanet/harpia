@@ -2,7 +2,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Events\AtualizarGrupoEvent;
+use Modulos\Academico\Events\UpdateGrupoEvent;
 use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Academico\Http\Requests\GrupoRequest;
@@ -229,7 +229,7 @@ class GruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 $grupoAtt = $this->grupoRepository->find($id);
-                event(new AtualizarGrupoEvent($grupoAtt));
+                event(new UpdateGrupoEvent($grupoAtt));
             }
 
             flash()->success('Grupo atualizado com sucesso.');

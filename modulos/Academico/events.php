@@ -43,9 +43,9 @@ return [
         'Modulos\Academico\Listeners\CreateOfertaDisciplinaListener',
     ],
 
-    'Modulos\Academico\Events\AtualizarGrupoEvent' => [
+    'Modulos\Academico\Events\UpdateGrupoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAtualizaGrupoListener'
+        'Modulos\Academico\Listeners\UpdateGrupoListener'
     ],
 
     'Modulos\Academico\Events\DeleteGrupoEvent' => [
