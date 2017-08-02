@@ -6,6 +6,7 @@ use Harpia\Menu\MenuTree;
 use Harpia\Tree\Node;
 use Harpia\Menu\MenuItem as MenuNode;
 use Illuminate\Contracts\Foundation\Application;
+use Modulos\Seguranca\Models\MenuItem;
 use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
 use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 use Cache;
@@ -44,7 +45,7 @@ class Seguranca implements SegurancaContract
      */
     public function makeCacheMenu()
     {
-        $menuItemRepository = new MenuItemRepository();
+        $menuItemRepository = new MenuItemRepository(new MenuItem());
         $modulosRepository = new ModuloRepository();
 
         $user = $this->getUser();
@@ -72,7 +73,7 @@ class Seguranca implements SegurancaContract
 
     public function makeCategoriaTree($moduloId, $categoriaId)
     {
-        $menuItemRepository = new MenuItemRepository();
+        $menuItemRepository = new MenuItemRepository(new MenuItem());
         $categoriaTree = new MenuTree();
 
         // Categoria eh a raiz da subarvore atual
