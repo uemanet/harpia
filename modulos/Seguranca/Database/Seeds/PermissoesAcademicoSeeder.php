@@ -613,6 +613,19 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso diplomas
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.diplomas.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'imprimirdiplomas',
+            'prm_rota' => 'academico.diplomas.imprimirdiplomas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         //permissões do recurso controlederegistro
         $permissao = Permissao::create([
             'prm_nome' => 'index',

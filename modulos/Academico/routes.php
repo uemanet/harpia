@@ -200,6 +200,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
     });
 
+    Route::group(['prefix' => 'diplomas'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\DiplomasController@getIndex')->name('academico.diplomas.index');
+        Route::post('/imprimirdiplomas', '\Modulos\Academico\Http\Controllers\DiplomasController@postPrint')->name('academico.diplomas.imprimirdiplomas');
+    });
+
     Route::group(['prefix' => 'relatoriosmatriculascurso'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasCursoController@getIndex')->name('academico.relatoriosmatriculascurso.index');
         Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasCursoController@postPdf')->name('academico.relatoriosmatriculascurso.pdf');
@@ -315,6 +320,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/getalunosaptos/{turma}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos')->name('academico.async.cursos.getalunosaptos');
             Route::post('/certificaralunos', '\Modulos\Academico\Http\Controllers\Async\Cursos@postCertificarAlunos')->name('academico.async.cursos.certificaralunos');
             Route::get('/printCertificado/{idMatricula}/{idModulo}', '\Modulos\Academico\Http\Controllers\CertificacaoController@getPrint')->name('academico.async.cursos.printcertificado');
+        });
+
+        Route::group(['prefix' => 'diplomas'], function () {
+            Route::get('/getalunosdiplomados/{turmaId}/', '\Modulos\Academico\Http\Controllers\Async\Diplomas@getAlunosDiplomados')->name('academico.async.diplomas.getalunosdiplomados');
         });
 
         Route::group(['prefix' => 'matricula'], function () {

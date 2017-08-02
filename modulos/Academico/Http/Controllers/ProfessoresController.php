@@ -90,6 +90,13 @@ class ProfessoresController extends BaseController
     {
         $pessoaId = $request->get('id');
 
+        $professor = $this->professorRepository->search(array(['prf_pes_id', '=', $pessoaId]));
+
+        if (!$professor->isEmpty()) {
+            flash()->error('Este CPF já tem um professor cadastrado!');
+            return redirect()->route('academico.professores.index');
+        }
+
         if (!is_null($pessoaId)) {
             $pessoa = $this->pessoaRepository->findById($pessoaId);
 
@@ -186,14 +193,14 @@ class ProfessoresController extends BaseController
                 $this->documentoRepository->create($dataDocumento);
             }
 
-            $validator = Validator::make(['prf_pes_id' => $pes_id], $professorRequest->rules());
+            $validator = Validator::make(['prf_pes_id' => $pes_id, 'prf_codigo' => $request->prf_codigo], $professorRequest->rules());
 
             if ($validator->fails()) {
                 flash()->error('Professor já cadastrado!');
                 return redirect()->route('academico.professores.index');
             }
 
-            $this->professorRepository->create(['prf_pes_id' => $pes_id]);
+            $this->professorRepository->create(['prf_pes_id' => $pes_id, 'prf_codigo' => $request->prf_codigo]);
 
             DB::commit();
 
@@ -221,15 +228,31 @@ class ProfessoresController extends BaseController
         }
 
         $pessoa = $this->pessoaRepository->findById($professor->prf_pes_id);
+        $pessoa->prf_codigo = $professor->prf_codigo;
 
         return view('Academico::professores.edit', ['pessoa' => $pessoa]);
     }
 
-    public function putEdit($pessoaId, Request $request)
+    public function putEdit($pessoaId, Request $request, ProfessorRequest $professorRequest)
     {
         $pessoaRequest = new PessoaRequest();
 
+        $professor = $this->professorRepository->search(array(['prf_pes_id', '=', $pessoaId]))->first();
+
+        $dataProfessor = [
+          'prf_id' => $professor->prf_id,
+          'prf_pes_id' => $professor->prf_pes_id,
+          'prf_codigo' => $request->prf_codigo
+        ];
+
+
         $validation = Validator::make($request->all(), $pessoaRequest->rules());
+
+        if ($validation->fails()) {
+            return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
+        }
+
+        $validation = Validator::make($dataProfessor, $professorRequest->rules());
 
         if ($validation->fails()) {
             return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
@@ -271,6 +294,8 @@ class ProfessoresController extends BaseController
             );
 
             $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');
+
+            $this->professorRepository->update($dataProfessor, $professor->prf_id, 'prf_id');
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoaId,
