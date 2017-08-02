@@ -31,8 +31,7 @@ class OfertasDisciplinasController extends BaseController
                                 CursoRepository $cursoRepository,
                                 MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
                                 AmbienteVirtualRepository $ambienteVirtualRepository
-    )
-    {
+    ) {
         $this->ofertadisciplinaRepository = $ofertadisciplinaRepository;
         $this->turmaRepository = $turmaRepository;
         $this->professorRepository = $professorRepository;
@@ -103,7 +102,6 @@ class OfertasDisciplinasController extends BaseController
             flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
-
     }
 
     public function postDelete(Request $request)

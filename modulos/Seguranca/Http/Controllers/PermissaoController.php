@@ -144,7 +144,6 @@ class PermissaoController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-
             $this->permissaoRepository->delete($request->input('id'));
 
             flash()->success('Permissão excluída com sucesso.');

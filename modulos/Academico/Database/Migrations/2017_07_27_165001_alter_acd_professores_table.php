@@ -13,7 +13,7 @@ class AlterAcdProfessoresTable extends Migration
     public function up()
     {
         Schema::table('acd_professores', function (Blueprint $table) {
-            $table->integer('prf_codigo');
+            $table->integer('prf_codigo')->nullable();
         });
     }
 

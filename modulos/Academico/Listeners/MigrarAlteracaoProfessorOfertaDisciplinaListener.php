@@ -8,7 +8,6 @@
 
 namespace Modulos\Academico\Listeners;
 
-
 use Harpia\Moodle\Moodle;
 use Modulos\Academico\Events\AlterarProfessorOfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
@@ -26,8 +25,7 @@ class MigrarAlteracaoProfessorOfertaDisciplinaListener
         SincronizacaoRepository $sincronizacaoRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
-    )
-    {
+    ) {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
@@ -42,7 +40,6 @@ class MigrarAlteracaoProfessorOfertaDisciplinaListener
         ]);
 
         if ($registrosMigrar->count()) {
-
             foreach ($registrosMigrar as $reg) {
                 $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($reg->sym_table_id);
 
