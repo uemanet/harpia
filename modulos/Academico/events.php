@@ -33,9 +33,9 @@ return [
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
     ],
 
-    'Modulos\Academico\Events\TutorVinculadoEvent' => [
+    'Modulos\Academico\Events\CreateVinculoTutorEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarTutorVinculadoListener',
+        'Modulos\Academico\Listeners\CreateVinculoTutorListener',
     ],
 
     'Modulos\Academico\Events\CreateOfertaDisciplinaEvent' => [
