@@ -3,7 +3,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Events\AtualizarTurmaEvent;
+use Modulos\Academico\Events\UpdateTurmaEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -188,7 +188,7 @@ class TurmasController extends BaseController
 
             $turmaUpdated = $this->turmaRepository->find($id);
             if ($turmaUpdated->trm_integrada) {
-                event(new AtualizarTurmaEvent($turmaUpdated, 'UPDATE'));
+                event(new UpdateTurmaEvent($turmaUpdated));
             }
             return redirect()->route('academico.ofertascursos.turmas.index', $turma->trm_ofc_id);
         } catch (\Exception $e) {

@@ -18,9 +18,9 @@ return [
         'Modulos\Academico\Listeners\CreateMatriculaTurmaListener'
     ],
 
-    'Modulos\Academico\Events\AtualizarTurmaEvent' => [
+    'Modulos\Academico\Events\UpdateTurmaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAtualizaTurmaListener'
+        'Modulos\Academico\Listeners\UpdateTurmaListener'
     ],
 
     'Modulos\Academico\Events\CreateGrupoEvent' => [
