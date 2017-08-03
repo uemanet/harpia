@@ -25,12 +25,13 @@ class OfertasDisciplinasController extends BaseController
     protected $matriculaOfertaDisciplinaRepository;
     protected $ambienteVirtualRepository;
 
-    public function __construct(OfertaDisciplinaRepository $ofertadisciplinaRepository,
-                                TurmaRepository $turmaRepository,
-                                ProfessorRepository $professorRepository,
-                                CursoRepository $cursoRepository,
-                                MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
-                                AmbienteVirtualRepository $ambienteVirtualRepository
+    public function __construct(
+        OfertaDisciplinaRepository $ofertadisciplinaRepository,
+        TurmaRepository $turmaRepository,
+        ProfessorRepository $professorRepository,
+        CursoRepository $cursoRepository,
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
+        AmbienteVirtualRepository $ambienteVirtualRepository
     ) {
         $this->ofertadisciplinaRepository = $ofertadisciplinaRepository;
         $this->turmaRepository = $turmaRepository;
@@ -127,7 +128,7 @@ class OfertasDisciplinasController extends BaseController
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
             if ($turma->trm_integrada && $ambiente) {
-                event(new DeleteOfertaDisciplinaEvent($ofertaDisciplina, "DELETE", $ambiente->id));
+                event(new DeleteOfertaDisciplinaEvent($ofertaDisciplina, $ambiente->amb_id));
             }
 
             DB::commit();

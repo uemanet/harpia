@@ -3,6 +3,7 @@
 namespace Modulos\Geral\Listeners;
 
 use Moodle;
+use GuzzleHttp\Exception\ConnectException;
 use Modulos\Geral\Events\UpdatePessoaEvent;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
@@ -27,48 +28,64 @@ class UpdatePessoaListener
 
     public function handle(UpdatePessoaEvent $event)
     {
-        $pessoa = $event->getData();
+        try {
+            $pessoa = $event->getData();
 
-        // ambiente virtual vinculado à turma do grupo
-        $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($event->getExtra());
+            // ambiente virtual vinculado à turma do grupo
+            $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($event->getExtra());
 
-        if ($ambiente) {
-            $param = [];
+            if ($ambiente) {
+                $param = [];
 
-            // url do ambiente
-            $param['url'] = $ambiente->url;
-            $param['token'] = $ambiente->token;
-            $param['functioname'] = $event->getEndpoint();
-            $param['action'] = 'UPDATE';
+                // url do ambiente
+                $param['url'] = $ambiente->url;
+                $param['token'] = $ambiente->token;
+                $param['functioname'] = $event->getEndpoint();
+                $param['action'] = 'UPDATE';
 
-            $nome = explode(" ", $pessoa->pes_nome);
-            $firstName = array_shift($nome);
-            $lastName = implode(" ", $nome);
+                $nome = explode(" ", $pessoa->pes_nome);
+                $firstName = array_shift($nome);
+                $lastName = implode(" ", $nome);
 
-            $param['data']['user']['pes_id'] = $pessoa->pes_id;
-            $param['data']['user']['firstname'] = $firstName;
-            $param['data']['user']['lastname'] = $lastName;
-            $param['data']['user']['email'] = $pessoa->pes_email;
-            $param['data']['user']['username'] = $pessoa->pes_email;
-            $param['data']['user']['city'] = $pessoa->pes_cidade;
+                $param['data']['user']['pes_id'] = $pessoa->pes_id;
+                $param['data']['user']['firstname'] = $firstName;
+                $param['data']['user']['lastname'] = $lastName;
+                $param['data']['user']['email'] = $pessoa->pes_email;
+                $param['data']['user']['username'] = $pessoa->pes_email;
+                $param['data']['user']['city'] = $pessoa->pes_cidade;
 
-            $response = Moodle::send($param);
-            $status = 3;
+                $response = Moodle::send($param);
+                $status = 3;
 
-            if (array_key_exists('status', $response)) {
-                if ($response['status'] == 'success') {
-                    $status = 2;
+                if (array_key_exists('status', $response)) {
+                    if ($response['status'] == 'success') {
+                        $status = 2;
+                    }
                 }
+
+                event(new UpdateSincronizacaoEvent(
+                    $pessoa,
+                    $status,
+                    $response['message'],
+                    $param['action'],
+                    null,
+                    $event->getExtra()
+                ));
+            }
+        } catch (ConnectException $exception) {
+            if (config('app.debug')) {
+                throw $exception;
             }
 
-            event(new UpdateSincronizacaoEvent(
-                $pessoa,
-                $status,
-                $response['message'],
-                $param['action'],
-                null,
-                $event->getExtra()
-            ));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } catch (\Exception $exception) {
+            if (config('app.debug')) {
+                throw $exception;
+            }
+
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } finally {
+            return true;
         }
     }
 }
