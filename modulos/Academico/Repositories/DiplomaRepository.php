@@ -97,7 +97,7 @@ class DiplomaRepository extends BaseRepository
 
 
             $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
-            $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das'));
+            $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
             setlocale(LC_CTYPE, 'pt_BR');
 
             $returnData = [

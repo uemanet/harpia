@@ -32,7 +32,7 @@ class DiplomasController
 
     public function getIndex(Request $request)
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $cursos = $this->cursoRepository->listsCursosTecnicos();
 
         return view('Academico::diplomas.index', compact('cursos'));
     }
