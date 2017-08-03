@@ -47,7 +47,7 @@ class DiplomasController
         }
 
         $mpdf = new \mPDF();
-        $mpdf->addPage('L', '', '', '', '');
+        $mpdf->addPage('L', '', '', '', '','','');
 
         $mpdf->WriteHTML(view('Academico::diplomas.print', ['retorno' => $retorno])->render());
         $mpdf->Output();

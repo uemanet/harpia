@@ -95,6 +95,11 @@ class DiplomaRepository extends BaseRepository
             31 => 'trinta e um'
             ];
 
+
+            $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
+            $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das'));
+            setlocale(LC_CTYPE, 'pt_BR');
+
             $returnData = [
               'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
               'HABILITAÇÂO' => mb_strtoupper($curso->crs_habilitacao, "UTF-8") ,
@@ -111,7 +116,7 @@ class DiplomaRepository extends BaseRepository
               'CHPRATICA'=> $matriz->mtc_horas_praticas,
               'CHTOTAL'=> $matriz->mtc_horas,
               'CENTRO' => $curso->centro->cen_nome,
-              'CURSO' => $curso->crs_nome,
+              'CURSO' => $cursonome,
               'NACIONALIDADE' => $matricula->aluno->pessoa->pes_nacionalidade,
               'NATURALIDADE' => $matricula->aluno->pessoa->pes_naturalidade,
               'NASCIMENTO' => $nascimento,
@@ -129,4 +134,9 @@ class DiplomaRepository extends BaseRepository
 
         return $retorno;
     }
+    function ucwords_improved($s, $e = array())
+    {
+      return join(' ',array_map(create_function('$s','return (!in_array($s, '.var_export($e, true) . ')) ? ucfirst($s) : $s;'),explode(' ',strtolower($s))));
+    }
+
 }
