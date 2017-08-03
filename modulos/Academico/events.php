@@ -63,9 +63,9 @@ return [
         'Modulos\Academico\Listeners\MigrarExclusaoTutorVinculadoListener',
     ],
 
-    'Modulos\Academico\Events\AlterarGrupoAlunoEvent' => [
+    'Modulos\Academico\Events\UpdateGrupoAlunoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAlterarGrupoAlunoListener',
+        'Modulos\Academico\Listeners\UpdateGrupoAlunoListener',
     ],
 
     'Modulos\Academico\Events\DeletarGrupoAlunoEvent' => [

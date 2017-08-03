@@ -3,7 +3,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Events\AlterarGrupoAlunoEvent;
+use Modulos\Academico\Events\UpdateGrupoAlunoEvent;
 use Modulos\Academico\Events\UpdateMatriculaCursoEvent;
 use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
@@ -143,7 +143,7 @@ class MatriculaCursoController extends BaseController
             // caso a turma seja integrada, manda as alterações pro moodle
             if ($turma->trm_integrada) {
                 if (($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
-                    event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                    event(new UpdateGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id));
                 }
 
                 if (($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
