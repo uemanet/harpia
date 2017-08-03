@@ -4,7 +4,7 @@ namespace Modulos\Academico\Listeners;
 
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
-use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
@@ -40,12 +40,11 @@ class DeleteOfertaDisciplinaListener
                     $status = 2;
                 }
 
-                event(new DeleteSincronizacaoEvent(
-                    $oferta->getTable(),
-                    $oferta->ofd_id,
+                event(new UpdateSincronizacaoEvent(
+                    $oferta,
                     $status,
                     $response['message'],
-                    'DELETE',
+                    $event->getAction(),
                     null,
                     $event->getExtra()
                 ));
@@ -55,29 +54,13 @@ class DeleteOfertaDisciplinaListener
                 throw $exception;
             }
 
-            event(new DeleteSincronizacaoEvent(
-                $oferta->getTable(),
-                $oferta->ofd_id,
-                3,
-                $exception->getMessage(),
-                $event->getAction(),
-                null,
-                $event->getExtra()
-            ));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            event(new DeleteSincronizacaoEvent(
-                $oferta->getTable(),
-                $oferta->ofd_id,
-                3,
-                $exception->getMessage(),
-                $event->getAction(),
-                null,
-                $event->getExtra()
-            ));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } finally {
             return true;
         }

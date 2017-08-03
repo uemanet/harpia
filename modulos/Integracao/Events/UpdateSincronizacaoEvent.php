@@ -3,7 +3,6 @@
 namespace Modulos\Integracao\Events;
 
 use Harpia\Event\Event;
-use Harpia\Event\EventInterface;
 use Modulos\Core\Model\BaseModel;
 
 /**

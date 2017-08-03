@@ -8,7 +8,6 @@ use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
-use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -59,14 +58,13 @@ class TurmaRemovidaListener
                     $status = 2;
                 }
 
-                event(new DeleteSincronizacaoEvent(
-                    $turma->getTable(),
-                    $turma->trm_id,
+                event(new UpdateSincronizacaoEvent(
+                    $turma,
                     $status,
                     $response['message'],
-                    'DELETE',
+                    $event->getAction(),
                     null,
-                    $turma->sym_extra
+                    $event->getExtra()
                 ));
             }
         } catch (ConnectException $exception) {

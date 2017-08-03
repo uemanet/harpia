@@ -58,9 +58,9 @@ return [
         'Modulos\Academico\Listeners\DeleteOfertaDisciplinaListener',
     ],
 
-    'Modulos\Academico\Events\DeleteTutorVinculadoEvent' => [
+    'Modulos\Academico\Events\DeleteVinculoTutorEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarExclusaoTutorVinculadoListener',
+        'Modulos\Academico\Listeners\DeleteVinculoTutorListener',
     ],
 
     'Modulos\Academico\Events\UpdateGrupoAlunoEvent' => [

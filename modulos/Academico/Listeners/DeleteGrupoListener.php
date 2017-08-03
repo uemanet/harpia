@@ -5,7 +5,7 @@ namespace Modulos\Academico\Listeners;
 use Moodle;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Academico\Events\DeleteGrupoEvent;
-use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class DeleteGrupoListener
@@ -19,9 +19,9 @@ class DeleteGrupoListener
 
     public function handle(DeleteGrupoEvent $event)
     {
-        $grupo = $event->getData();
-
         try {
+            $grupo = $event->getData();
+
             // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($event->getExtra());
 
@@ -46,12 +46,11 @@ class DeleteGrupoListener
                     }
                 }
 
-                event(new DeleteSincronizacaoEvent(
-                    $grupo->getTable(),
-                    $grupo->grp_id,
+                event(new UpdateSincronizacaoEvent(
+                    $grupo,
                     $status,
                     $response['message'],
-                    'DELETE',
+                    $event->getAction(),
                     null,
                     $event->getExtra()
                 ));
@@ -61,29 +60,13 @@ class DeleteGrupoListener
                 throw $exception;
             }
 
-            event(new DeleteSincronizacaoEvent(
-                $grupo->getTable(),
-                $grupo->grp_id,
-                3,
-                $exception->getMessage(),
-                $event->getAction(),
-                null,
-                $event->getExtra()
-            ));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
             if (config('app.debug')) {
                 throw $exception;
             }
 
-            event(new DeleteSincronizacaoEvent(
-                $grupo->getTable(),
-                $grupo->grp_id,
-                3,
-                $exception->getMessage(),
-                $event->getAction(),
-                null,
-                $event->getExtra()
-            ));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } finally {
             return true;
         }
