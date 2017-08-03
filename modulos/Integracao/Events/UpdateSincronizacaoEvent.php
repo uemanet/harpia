@@ -26,13 +26,14 @@ class UpdateSincronizacaoEvent extends Event
      * @param null $sendingDate
      * @param null $extraInformation
      */
-    public function __construct(BaseModel $entry,
-                                $status = 2,
-                                $message = null,
-                                $action = "CREATE",
-                                $sendingDate = null,
-                                $extraInformation = null)
-    {
+    public function __construct(
+        BaseModel $entry,
+        $status = 2,
+        $message = null,
+        $action = "CREATE",
+        $sendingDate = null,
+        $extraInformation = null
+    ) {
         $date = new \DateTime('NOW');
 
         $this->entry = $entry;

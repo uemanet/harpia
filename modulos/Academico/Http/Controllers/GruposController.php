@@ -13,7 +13,6 @@ use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use DB;
@@ -27,13 +26,14 @@ class GruposController extends BaseController
     protected $ofertaCursoRepository;
     protected $ambienteRepository;
 
-    public function __construct(GrupoRepository $grupo,
-                                CursoRepository $curso,
-                                TurmaRepository $turma,
-                                PoloRepository $polo,
-                                OfertaCursoRepository $oferta,
-                                AmbienteVirtualRepository $ambienteRepository)
-    {
+    public function __construct(
+        GrupoRepository $grupo,
+        CursoRepository $curso,
+        TurmaRepository $turma,
+        PoloRepository $polo,
+        OfertaCursoRepository $oferta,
+        AmbienteVirtualRepository $ambienteRepository
+    ) {
         $this->grupoRepository = $grupo;
         $this->cursoRepository = $curso;
         $this->turmaRepository = $turma;
@@ -260,7 +260,7 @@ class GruposController extends BaseController
             $ambiente = $this->ambienteRepository->getAmbienteByTurma($turmaId);
 
             if ($ambiente) {
-                event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente->id));
+                event(new DeleteGrupoEvent($grupo, $ambiente->amb_id));
             }
 
             flash()->success('Grupo excluído com sucesso.');

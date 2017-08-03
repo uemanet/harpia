@@ -50,7 +50,7 @@ return [
 
     'Modulos\Academico\Events\DeleteGrupoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\MigrarExclusaoGrupoListener',
+        'Modulos\Academico\Listeners\DeleteGrupoListener',
     ],
 
     'Modulos\Academico\Events\DeleteOfertaDisciplinaEvent' => [
