@@ -24,6 +24,7 @@ class DiplomaRepository extends BaseRepository
                            ->join('acd_alunos', 'mat_alu_id', 'alu_id')
                            ->join('gra_pessoas', 'alu_pes_id', 'pes_id')
                            ->where('mat_trm_id', $turmaId)
+                           ->whereNotNull('mat_data_conclusao')
                            ->orderBy('pes_nome', 'asc')
                            ->get();
 
