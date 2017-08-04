@@ -97,6 +97,7 @@ class DiplomaRepository extends BaseRepository
 
 
             $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
+            $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $curso->crs_nome );
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
             setlocale(LC_CTYPE, 'pt_BR');
 
@@ -128,6 +129,12 @@ class DiplomaRepository extends BaseRepository
               'RESOLUCAO' => $curso->crs_resolucao,
               'DATA_AUTORIZACAO' => strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))
             ];
+
+            foreach ($returnData as $key => $dado) {
+              if(!$dado){
+                return array('type' => 'error' , 'dados' => $returnData, 'campo' => $key);
+              }
+            }
 
             $retorno[] = $returnData;
         }

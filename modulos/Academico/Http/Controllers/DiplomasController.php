@@ -41,6 +41,11 @@ class DiplomasController
     {
         $retorno = $this->diplomaRepository->getPrintData($request['diplomas']);
 
+        if (array_key_exists('type', $retorno)) {
+            flash()->error('O aluno '.$retorno['dados']['NOME'].' não possui o registro '.$retorno['campo'].' cadastrado');
+            return redirect()->back();
+        }
+
         if (!$retorno) {
             flash()->error('Esse registro não existe.');
             return redirect()->back();
