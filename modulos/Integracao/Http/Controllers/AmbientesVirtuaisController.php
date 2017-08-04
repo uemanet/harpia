@@ -30,13 +30,14 @@ class AmbientesVirtuaisController extends BaseController
     protected $ambienteTurmaRepository;
     protected $turmaRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambienteVirtualRepository,
-                                ServicoRepository $servicoRepository,
-                                AmbienteServicoRepository $ambienteServicoRepository,
-                                CursoRepository $cursoRepository,
-                                AmbienteTurmaRepository $ambienteTurmaRepository,
-                                TurmaRepository $turmaRepository)
-    {
+    public function __construct(
+        AmbienteVirtualRepository $ambienteVirtualRepository,
+        ServicoRepository $servicoRepository,
+        AmbienteServicoRepository $ambienteServicoRepository,
+        CursoRepository $cursoRepository,
+        AmbienteTurmaRepository $ambienteTurmaRepository,
+        TurmaRepository $turmaRepository
+    ) {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteServicoRepository = $ambienteServicoRepository;
@@ -294,11 +295,10 @@ class AmbientesVirtuaisController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->error('Erro ao tentar atribuir serviço ao ambiente. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->error('Erro ao tentar atribuir serviço ao ambiente. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -392,11 +392,10 @@ class AmbientesVirtuaisController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->error('Erro ao tentar vincular turma ao ambiente. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->error('Erro ao tentar vincular turma ao ambiente. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -410,7 +409,7 @@ class AmbientesVirtuaisController extends BaseController
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
             $ambiente = $turma->ambientes->first()->amb_id;
 
-            $deletar = $this->ambienteTurmaRepository->verificaPendenciasTurma($ambienteTurmaId);
+            $deletar = $this->ambienteTurmaRepository->verificaPendenciasTurma($turma->trm_id);
 
             if ($deletar) {
                 flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');

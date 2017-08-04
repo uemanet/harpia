@@ -504,7 +504,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function getAllAlunosBySituacao($turmaId, $ofertaId, $situacao, $poloId)
     {
-        $query = $this->model
+        $matriculas = $this->model
             ->join('acd_matriculas', function ($join) {
                 $join->on('mof_mat_id', '=', 'mat_id');
             })
@@ -520,21 +520,46 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->join('gra_pessoas', function ($join) {
                 $join->on('alu_pes_id', '=', 'pes_id');
             })
-            ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email', 'mat_pol_id')
             ->where('mof_ofd_id', '=', $ofertaId)
             ->where('mat_trm_id', $turmaId)
             ->orderBy('pes_nome', 'asc')
             ->get();
 
         if ($poloId != null) {
-            $query = $query->where('mat_pol_id', $poloId);
+            $matriculas = $matriculas->where('mat_pol_id', $poloId);
         }
 
         if ($situacao != null) {
-            $query = $query->where('mof_situacao_matricula', $situacao);
+            $matriculas = $matriculas->where('mof_situacao_matricula', $situacao);
         }
 
-        return $query;
+        foreach ($matriculas as $key => $matricula) {
+            $rg = DB::table('gra_documentos')
+            ->where('doc_pes_id', '=', $matricula->pes_id)
+            ->where('doc_tpd_id', 1)
+            ->first();
+
+            if ($rg) {
+                $matricula['rg'] = $rg->doc_conteudo;
+            } else {
+                $matricula['rg'] = null;
+            }
+
+            $cpf = DB::table('gra_documentos')
+                ->where('doc_pes_id', '=', $matricula->pes_id)
+                ->where('doc_tpd_id', 2)
+                ->first();
+
+            if ($rg) {
+                $matricula['cpf'] = $cpf->doc_conteudo;
+            } else {
+                $matricula['cpf'] = null;
+            }
+
+            $matricula->pes_nascimento = date("d/m/Y", strtotime($matricula->pes_nascimento));
+        }
+
+        return $matriculas;
     }
 
     /**
@@ -575,9 +600,12 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
         }
 
-        if ($requestParameters['pol_id'] != null) {
-            $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+        if (array_key_exists('pol_id', $requestParameters)) {
+            if ($requestParameters['pol_id']) {
+                $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+            }
         }
+
 
         return $query->paginate(15);
     }

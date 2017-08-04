@@ -85,22 +85,24 @@ class PermissaoController extends BaseController
 
     public function getCreate()
     {
-        $modulos = $this->moduloRepository->lists('mod_slug', 'mod_nome');
-
-        return view('Seguranca::permissoes.create', compact('modulos'));
+        return view('Seguranca::permissoes.create');
     }
 
     public function postCreate(PermissaoRequest $request)
     {
-        $return = $this->permissaoRepository->create($request->all());
+        try {
+            $this->permissaoRepository->create($request->all());
 
-        flash()->{$return['status']}($return['message']);
+            flash()->success('Permissão criada com sucesso.');
+            return redirect()->route('seguranca.permissoes.index');
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
 
-        if ($return['status'] == 'error') {
-            return redirect()->back()->withInput();
+            flash()->error('Erro ao tentar salvar. Entrar em contato com o suporte.');
+            return redirect()->route('seguranca.permissoes.index');
         }
-
-        return redirect()->route('seguranca.permissoes.index');
     }
 
     public function getEdit($permissaoId)
@@ -112,13 +114,7 @@ class PermissaoController extends BaseController
             return redirect()->back();
         }
 
-        $permissao->modulo = $permissao->slugModulo();
-        $permissao->recurso = $permissao->recurso();
-
-        $modulos = $this->moduloRepository->lists('mod_slug', 'mod_nome');
-        $recursos = $this->permissaoRepository->getRecursosByModulo($permissao->slugModulo());
-
-        return view('Seguranca::permissoes.edit', compact('permissao', 'modulos', 'recursos'));
+        return view('Seguranca::permissoes.edit', compact('permissao'));
     }
 
     public function putEdit($permissaoId, PermissaoRequest $request)
@@ -131,7 +127,7 @@ class PermissaoController extends BaseController
         }
 
         try {
-            $this->permissaoRepository->update($request->all(), $permissaoId);
+            $permissao->fill($request->all())->save();
 
             flash()->success('Permissão atualizada com sucesso.');
             return redirect()->route('seguranca.permissoes.index');

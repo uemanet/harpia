@@ -16,21 +16,21 @@ class AmbienteTurmaRepository extends BaseRepository
     public function verificaPendenciasTurma($turmaId)
     {
         $result = DB::table('acd_ofertas_disciplinas')
-                    ->where('ofd_trm_id', $turmaId);
+                    ->where('ofd_trm_id', 80)->get();
 
         if ($result->count()) {
             return true;
         }
 
         $result = DB::table('acd_matriculas')
-                    ->where('mat_trm_id', $turmaId);
+                    ->where('mat_trm_id', $turmaId)->get();
 
         if ($result->count()) {
             return true;
         }
 
         $result = DB::table('acd_grupos')
-                    ->where('grp_trm_id', $turmaId);
+                    ->where('grp_trm_id', $turmaId)->get();
 
         if ($result->count()) {
             return true;

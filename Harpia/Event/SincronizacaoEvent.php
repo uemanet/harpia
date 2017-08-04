@@ -27,8 +27,8 @@ abstract class SincronizacaoEvent extends Event
         ],
         'acd_ofertas_disciplinas' => [
             'CREATE' => 'local_integracao_create_discipline',
-            'UPDATE' => 'local_integracao_update_discipline',
             'DELETE' => 'local_integracao_delete_discipline',
+            'UPDATE_PROFESSOR_OFERTA_DISCIPLINA' => 'local_integracao_change_teacher',
         ],
         'acd_matriculas' => [
             'CREATE' => 'local_integracao_enrol_student',

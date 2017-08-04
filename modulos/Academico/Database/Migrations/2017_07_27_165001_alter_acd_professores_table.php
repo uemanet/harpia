@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DropGraTiposAnexosTable extends Migration
+class AlterAcdProfessoresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,9 @@ class DropGraTiposAnexosTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('gra_tipos_anexos');
+        Schema::table('acd_professores', function (Blueprint $table) {
+            $table->integer('prf_codigo')->after('prf_pes_id')->nullable();
+        });
     }
 
     /**
@@ -22,11 +24,5 @@ class DropGraTiposAnexosTable extends Migration
      */
     public function down()
     {
-        Schema::create('gra_tipos_anexos', function (Blueprint $table) {
-            $table->increments('tax_id');
-            $table->string('tax_nome', 45);
-
-            $table->timestamps();
-        });
     }
 }

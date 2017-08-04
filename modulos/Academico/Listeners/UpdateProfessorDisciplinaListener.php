@@ -38,8 +38,8 @@ class UpdateProfessorDisciplinaListener
 
                 $param['url'] = $ambiente->url;
                 $param['token'] = $ambiente->token;
-                $param['functioname'] = 'local_integracao_change_teacher';
-                $param['action'] = $event->getAction();
+                $param['functioname'] = $event->getEndpoint();
+                $param['action'] = "UPDATE";
 
                 $nome = explode(" ", $ofertaDisciplina->professor->pessoa->pes_nome);
                 $firstName = array_shift($nome);
@@ -73,7 +73,12 @@ class UpdateProfessorDisciplinaListener
                     }
                 }
 
-                event(new UpdateSincronizacaoEvent($ofertaDisciplina, $status, $response['message']));
+                event(new UpdateSincronizacaoEvent(
+                    $ofertaDisciplina,
+                    $status,
+                    $response['message'],
+                    $event->getAction()
+                ));
             }
         } catch (ConnectException $exception) {
             if (config('app.debug')) {
