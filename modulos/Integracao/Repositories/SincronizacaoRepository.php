@@ -35,9 +35,19 @@ class SincronizacaoRepository extends BaseRepository
 
         $registros = $query->get();
 
+        // Atualiza o ultimo registro
+        $registro = $registros->pop();
+        $registro->fill($data)->save();
+
+        // Os demais mantem mensagem, status e data de envio originais
+        unset($data['sym_mensagem']);
+        unset($data['sym_data_envio']);
+        unset($data['sym_status']);
+
         if ($registros->count()) {
             foreach ($registros as $obj) {
                 $obj->fill($data)->save();
+                break;
             }
 
             return $registros->count();
