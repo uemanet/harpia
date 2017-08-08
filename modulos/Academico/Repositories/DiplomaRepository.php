@@ -98,10 +98,11 @@ class DiplomaRepository extends BaseRepository
 
 
             $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
-            $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $curso->crs_nome );
+            $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $formata );
+
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
             setlocale(LC_CTYPE, 'pt_BR');
-
+            
             $returnData = [
               'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
               'HABILITAÇÂO' => mb_strtoupper($curso->crs_habilitacao, "UTF-8") ,
