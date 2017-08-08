@@ -152,6 +152,7 @@ class PessoaRepositoryTest extends TestCase
         $data = $dados->toArray();
         // Retorna para date format americano antes de comparar com o banco
         $data['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $data['pes_nascimento'])->toDateString();
+        unset($data['pes_estado_civil']);
 
         $this->seeInDatabase('gra_pessoas', $data);
     }

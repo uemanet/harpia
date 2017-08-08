@@ -109,7 +109,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 6.4);
+        $this->assertEquals($result['mof_mediafinal'], 6.33);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
     }
 
@@ -124,7 +124,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 4.9);
+        $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
     }
 
@@ -156,7 +156,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 4.7);
+        $this->assertEquals($result['mof_mediafinal'], 4.67);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
     }
 
@@ -172,7 +172,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 5.9);
+        $this->assertEquals($result['mof_mediafinal'], 5.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
     }
 
@@ -188,7 +188,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 4.9);
+        $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
     }
 
@@ -224,7 +224,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 5.3);
+        $this->assertEquals($result['mof_mediafinal'], 5.33);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
     }
 
@@ -242,7 +242,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
 
-        $this->assertEquals($result['mof_mediafinal'], 5.9);
+        $this->assertEquals($result['mof_mediafinal'], 5.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
     }
 
@@ -259,8 +259,8 @@ class MapeamentoNotasRepositoryTest extends TestCase
         ];
 
         $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
-
-        $this->assertEquals($result['mof_mediafinal'], 4.9);
+        
+        $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
     }
 

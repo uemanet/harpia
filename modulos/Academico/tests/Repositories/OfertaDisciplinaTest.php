@@ -57,8 +57,11 @@ class OfertaDisciplinaTest extends TestCase
     public function testFind()
     {
         $data = factory(OfertaDisciplina::class)->create();
+        $data = $data->toArray();
+        
+        unset($data['ofd_tipo_avaliacao']);
 
-        $this->seeInDatabase('acd_ofertas_disciplinas', $data->toArray());
+        $this->seeInDatabase('acd_ofertas_disciplinas', $data);
     }
 
     public function tearDown()

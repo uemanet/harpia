@@ -10,7 +10,7 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_nascimento' => $faker->date('d/m/Y'),
         'pes_mae' => $faker->name,
         'pes_pai' => $faker->name,
-        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'viuvo', 'separado']),
+        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'divorciado', 'viuvo(a)', 'uniao_estavel']),
         'pes_naturalidade' => $faker->city,
         'pes_nacionalidade' => $faker->country,
         'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
@@ -65,7 +65,6 @@ $factory->define(Modulos\Geral\Models\TitulacaoInformacao::class, function (Fake
         'tin_pes_id' =>  1,
         'tin_tit_id' =>  1,
         'tin_titulo' =>  $faker->word,
-        'tin_codigo_externo' =>  $faker->randomNumber(4),
         'tin_instituicao' =>  $faker->word,
         'tin_instituicao_sigla' =>  $faker->word,
         'tin_instituicao_sede' =>  $faker->word,
@@ -177,7 +176,7 @@ $factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator
 
 $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generator $faker) {
     return [
-        'crs_dep_id' => factory(Modulos\Academico\Models\Departamento::class)->create()->dep_id,
+        'crs_cen_id' => factory(Modulos\Academico\Models\Centro::class)->create()->cen_id,
         'crs_nvc_id' => 2,
         'crs_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'crs_nome' => $faker->name,
@@ -228,6 +227,7 @@ $factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generato
         'trm_ofc_id' => factory(Modulos\Academico\Models\OfertaCurso::class)->create()->ofc_id,
         'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
         'trm_nome' => $faker->sentence(3),
+        'trm_integrada' => 0,
         'trm_qtd_vagas' => 50
     ];
 });
@@ -431,6 +431,6 @@ $factory->define(Modulos\Integracao\Models\AmbienteVirtual::class, function (Fak
     return [
         'amb_nome' => $faker->name,
         'amb_versao' => $faker->sentence(2),
-        'amb_token' => $faker->sentence(3)
+        'amb_url' => $faker->sentence(3)
     ];
 });

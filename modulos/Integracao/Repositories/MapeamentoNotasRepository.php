@@ -284,7 +284,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
         // 1º Caso - Aluno Aprovado por Media e sem recuperacao
         if ($mediaParcial >= $mediaAprovacao) {
-            $notas['mof_mediafinal'] = $mediaParcial;
+            $notas['mof_mediafinal'] = (float)number_format($mediaParcial,2);
             $notas['mof_situacao_matricula'] = 'aprovado_media';
             return $notas;
         }
@@ -307,7 +307,7 @@ class MapeamentoNotasRepository extends BaseRepository
             }
 
             if ($mediaParcial >= $mediaAprovacao) {
-                $notas['mof_mediafinal'] = $mediaParcial;
+                $notas['mof_mediafinal'] = (float)number_format($mediaParcial,2);
                 $notas['mof_situacao_matricula'] = 'aprovado_media';
                 return $notas;
             }
@@ -327,13 +327,13 @@ class MapeamentoNotasRepository extends BaseRepository
                 $status = 'aprovado_final';
             }
 
-            $notas['mof_mediafinal'] = $mediaFinal;
+            $notas['mof_mediafinal'] = (float)number_format($mediaFinal,2);
             $notas['mof_situacao_matricula'] = $status;
             return $notas;
         }
 
         // 4º Caso - Aluno não atinge a media minima, e nem vai pra final
-        $notas['mof_mediafinal'] = $mediaParcial;
+        $notas['mof_mediafinal'] = (float)number_format($mediaParcial,2);
         $notas['mof_situacao_matricula'] = 'reprovado_media';
         return $notas;
     }
