@@ -42,11 +42,8 @@
                   Registrado sob o N° <b>{{$dados['REGISTRO']}}</b><br><br>
                   Livro N° <b>{{$dados['LIVRO']}}</b> FLS N° <b>{{$dados['FOLHA']}} </b><br><br>
                   Processo N° <b>{{$dados['PROCESSO']}}</b><br><br><br><br><br>
-                  <?php
-                      setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-                      date_default_timezone_set('America/Sao_Paulo');
-                  ?>
-                  SÃO LUÍS-MA, <u>{{strftime('%d', strtotime('today'))}}</u>/<u>{{strftime('%m', strtotime('today'))}}</u>/<u>{{strftime('%Y', strtotime('today'))}}</u><br><br><br><br><br>
+
+                  SÃO LUÍS-MA, <u>{{$dados['DIAATUAL']['DIA']}}</u>/<u>{{$dados['DIAATUAL']['MES']}}</u>/<u>{{$dados['DIAATUAL']['ANO']}}</u><br><br><br><br><br>
                   _________________________________________________<br>
                   <b>NOME DO PROFISSIONAL RESPONSÁVEL</b><br><br>
               </p>
@@ -68,7 +65,7 @@
                 N°. de Registro no SISTEC: <b>{{$dados['REGISTROSISTEC']}}</b><br><br><br>
                 CARGA HORÁRIA DA PRÁTICA PROFISSIONAL: <b>{{$dados['CHPRATICA']}}</b><br><br>
                 CARGA HORÁRIA TOTAL DO CURSO: <b>{{$dados['CHTOTAL']}}</b><br><br><br>
-                <b>Resolução de Reconhecimento N°</b>: {{$dados['RESOLUCAO']}} de {{strftime('%d de %B de %Y', $dados['DATA_AUTORIZACAO'])}}
+                <b>Resolução de Reconhecimento N°</b>: {{$dados['RESOLUCAO']}} de {{$dados['DATA_AUTORIZACAO']['DIA']}} de {{$dados['DATA_AUTORIZACAO']['MESEXTENSO']}} de {{$dados['DATA_AUTORIZACAO']['ANO']}}
         </div>
 
       </div>
@@ -78,11 +75,11 @@
 
         <br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p style="font-size:14pt; font-family: Arial;margin-left:0px; margin-right:50px; text-align:justify; line-height:1.5">
-            A UNIVERSIDADE ESTADUAL DO MARANHÃO, por meio do {{$dados['CENTRO']}}, tendo em vista a conclusão do Curso Técnico de Nível Médio em {{$dados['CURSO']}}, em {{strftime('%d de %B de %Y', $dados['CONCLUSAO'])}}, confere o título de <b>{{$dados['HABILITAÇÂO']}}</b> a <b>{{$dados['NOME']}}</b>, nascido(a) aos {{$dados['DIAEXTENSO']}} {{strftime('dias do mês de %B de %Y', $dados['NASCIMENTO'])}}, nacionalidade {{$dados['NACIONALIDADE']}}, natural de {{$dados['NATURALIDADE']}}, carteira de identidade N° {{$dados['IDENTIDADE']}} / {{$dados['ORGAO']}}, outorga-lhe o  presente Diploma a fim de que possa gozar de todos os direitos e prerrogativas legais.
+            A UNIVERSIDADE ESTADUAL DO MARANHÃO, por meio do {{$dados['CENTRO']}}, tendo em vista a conclusão do Curso Técnico de Nível Médio em {{$dados['CURSO']}}, em {{$dados['CONCLUSAO']['DIA']}} de {{$dados['CONCLUSAO']['MESEXTENSO']}} de {{$dados['CONCLUSAO']['ANO']}}, confere o título de <b>{{$dados['HABILITAÇÂO']}}</b> a <b>{{$dados['NOME']}}</b>, nascido(a) aos {{$dados['NASCIMENTO']['DIAEXTENSO']}} dias do mês de {{$dados['NASCIMENTO']['MESEXTENSO']}} de {{$dados['NASCIMENTO']['ANO']}}, nacionalidade {{$dados['NACIONALIDADE']}}, natural de {{$dados['NATURALIDADE']}}, carteira de identidade N° {{$dados['IDENTIDADE']}} / {{$dados['ORGAO']}}, outorga-lhe o  presente Diploma a fim de que possa gozar de todos os direitos e prerrogativas legais.
         </p>
 
         <p  style="font-size:18px; font-family: Arial;margin-left:0px; margin-right:50px; text-align:right">
-            São Luís (MA), {{strftime('%d de %B de %Y', strtotime('today'))}}<br>
+            São Luís (MA), {{$dados['DIAATUAL']['DIA']}} de {{$dados['DIAATUAL']['MESEXTENSO']}} de {{$dados['DIAATUAL']['ANO']}}<br>
         </p>
 
     </html>

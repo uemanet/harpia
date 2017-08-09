@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Diploma;
 use Modulos\Academico\Models\Matricula;
+use Harpia\Util\Util;
 use DB;
 
 class DiplomaRepository extends BaseRepository
@@ -53,56 +54,28 @@ class DiplomaRepository extends BaseRepository
 
             $conclusao = $matricula->mat_data_conclusao;
             $conclusao = strtotime(str_replace('/', '-', $matricula->mat_data_conclusao));
+            $dataconclusao = new Util();
+            $dataconclusao = $dataconclusao->getDiaMesExtenso($conclusao);
 
             $nascimento = strtotime(str_replace('/', '-', $matricula->aluno->pessoa->pes_nascimento));
 
             $curso = Matricula::find($livfolreg->dip_mat_id)->turma->ofertacurso->curso;
-
             $matriz = Matricula::find($livfolreg->dip_mat_id)->turma->ofertacurso->matriz;
 
+            $dataautorizacao = new Util();
+            $dataautorizacao = $dataautorizacao->getDiaMesExtenso(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao)));
 
-            $diaextenso = [
-                0 => 'zero',
-                1 => 'um',
-                2 => 'dois',
-                3 => 'três',
-                4 => 'quatro',
-                5 => 'cinco',
-                6 => 'seis',
-                7 => 'sete',
-                8 => 'oito',
-                9 => 'nove',
-                10 => 'dez',
-                11 => 'onze',
-                12 => 'doze',
-                13 => 'treze',
-                14 => 'quatorze',
-                15=> 'quinze',
-                16 => 'dezesseis',
-                17 => 'dezessete',
-                18 => 'dezoito',
-                19 => 'dezenove',
-                20 => 'vinte',
-                21 => 'vinte e um',
-                22 => 'vinte e dois',
-                23 => 'vinte e três',
-                24 => 'vinte e quatro',
-                25 => 'vinte e cinco',
-                26 => 'vinte e seis',
-                27 => 'vinte e sete',
-                28 => 'vinte e oito',
-                29 => 'vinte e nove',
-                30 => 'trinta',
-                31 => 'trinta e um'
-            ];
+            $diaatual = new Util();
+            $diaatual = $diaatual->getDiaMesExtenso(strtotime('today'));
 
+            $datanascimento = new Util();
+            $datanascimento = $datanascimento->getDiaMesExtenso($nascimento);
 
             $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
             $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $formata );
-
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
-            setlocale(LC_CTYPE, 'pt_BR');
-            
+
+
             $returnData = [
               'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
               'HABILITAÇÂO' => mb_strtoupper($curso->crs_habilitacao, "UTF-8") ,
@@ -122,14 +95,14 @@ class DiplomaRepository extends BaseRepository
               'CURSO' => $cursonome,
               'NACIONALIDADE' => $matricula->aluno->pessoa->pes_nacionalidade,
               'NATURALIDADE' => $matricula->aluno->pessoa->pes_naturalidade,
-              'NASCIMENTO' => $nascimento,
+              'NASCIMENTO' => $datanascimento,
               'NOME' => $matricula->aluno->pessoa->pes_nome,
               'IDENTIDADE' => $matricula->aluno->pessoa->documentos->where('doc_tpd_id', 1)->first()->doc_conteudo,
               'ORGAO' => str_replace('/', '-', $matricula->aluno->pessoa->documentos->where('doc_tpd_id', 1)->first()->doc_orgao),
-              'CONCLUSAO' => $conclusao,
-              'DIAEXTENSO' => $diaextenso[str_replace(' ', '', strftime('%e', $nascimento))],
+              'CONCLUSAO' => $dataconclusao,
               'RESOLUCAO' => $curso->crs_resolucao,
-              'DATA_AUTORIZACAO' => strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))
+              'DATA_AUTORIZACAO' => $dataautorizacao,
+              'DIAATUAL' => $diaatual
             ];
 
             foreach ($returnData as $key => $dado) {
