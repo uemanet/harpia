@@ -2,19 +2,19 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Academico\Events\UpdateProfessorDisciplinaEvent;
-use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
-use Modulos\Academico\Http\Requests\OfertaDisciplinaRequest;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Modulos\Core\Http\Controller\BaseController;
-use Illuminate\Http\Request;
 use DB;
+use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Seguranca\Providers\ActionButton\TButton;
+use Modulos\Academico\Repositories\ProfessorRepository;
+use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
+use Modulos\Academico\Events\UpdateProfessorDisciplinaEvent;
+use Modulos\Academico\Http\Requests\OfertaDisciplinaRequest;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class OfertasDisciplinasController extends BaseController
 {
@@ -128,7 +128,7 @@ class OfertasDisciplinasController extends BaseController
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
             if ($turma->trm_integrada && $ambiente) {
-                event(new DeleteOfertaDisciplinaEvent($ofertaDisciplina, $ambiente->amb_id));
+                event(new DeleteOfertaDisciplinaEvent($ofertaDisciplina, $ambiente->id));
             }
 
             DB::commit();
