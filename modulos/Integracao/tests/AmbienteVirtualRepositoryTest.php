@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\AmbienteVitualRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class AmbienteVitualRepositoryTest extends TestCase
+class AmbienteVirtualRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -18,7 +18,7 @@ class AmbienteVitualRepositoryTest extends TestCase
     {
         putenv('DB_CONNECTION=sqlite_testing');
 
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
+        $app = require __DIR__ . '/../../../bootstrap/app.php';
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
@@ -31,7 +31,7 @@ class AmbienteVitualRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(AmbienteVitualRepository::class);
+        $this->repo = $this->app->make(AmbienteVirtualRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +44,7 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,7 +55,7 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
 
         $sort = [
             'field' => 'amb_id',
@@ -71,9 +71,9 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
 
-        factory(Modulos\Integracao\Models\AmbienteVitual::class)->create([
+        factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create([
             'amb_nome' => 'icatu',
         ]);
 
@@ -96,7 +96,7 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
 
         $sort = [
             'field' => 'amb_id',
@@ -122,7 +122,7 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\AmbienteVitual::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -139,23 +139,23 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
+        $response = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteVitual::class, $response);
+        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteVirtual::class, $response);
 
         $this->assertArrayHasKey('amb_id', $response->toArray());
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
 
-        $this->seeInDatabase('acd_ambientes_virtuais', $data->toArray());
+        $this->seeInDatabase('int_ambientes_virtuais', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
 
         $updateArray = $data->toArray();
         $updateArray['amb_nome'] = 'abcde_edcba';
@@ -170,7 +170,7 @@ class AmbienteVitualRepositoryTest extends TestCase
 
     public function testDelete()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteVitual::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
         $ambientevirtualId = $data->amb_id;
 
         $response = $this->repo->delete($ambientevirtualId);

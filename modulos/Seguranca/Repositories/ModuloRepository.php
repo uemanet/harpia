@@ -5,8 +5,9 @@ namespace Modulos\Seguranca\Repositories;
 use DB;
 use Cache;
 use Modulos\Seguranca\Models\Modulo;
+use Modulos\Core\Repository\BaseRepository;
 
-class ModuloRepository
+class ModuloRepository extends BaseRepository
 {
     public function getByUser($userId)
     {
