@@ -179,8 +179,6 @@ class PermissaoRepositoryTest extends TestCase
     public function testFindModulo()
     {
         factory(Modulos\Seguranca\Models\Modulo::class)->create();
-        factory(Modulos\Seguranca\Models\CategoriaRecurso::class)->create();
-        factory(Modulos\Seguranca\Models\Recurso::class)->create();
         factory(Modulos\Seguranca\Models\Permissao::class)->create();
 
         $permissaoId = 1;

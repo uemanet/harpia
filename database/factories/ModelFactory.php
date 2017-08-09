@@ -79,10 +79,10 @@ $factory->define(Modulos\Seguranca\Models\Modulo::class, function (Faker\Generat
 
     return [
         'mod_nome' => $rota,
-        'mod_rota' => strtolower($rota),
+        'mod_slug' => strtolower($rota),
         'mod_descricao' => $faker->sentence(3),
         'mod_icone' => 'fa fa-cog',
-        'mod_ativo' => 1
+        'mod_classes' => 'bg-aqua'
     ];
 });
 
@@ -94,36 +94,10 @@ $factory->define(Modulos\Seguranca\Models\Perfil::class, function (Faker\Generat
     ];
 });
 
-$factory->define(Modulos\Seguranca\Models\CategoriaRecurso::class, function (Faker\Generator $faker) {
-    return [
-        'ctr_mod_id' => 1,
-        'ctr_nome' => $faker->name,
-        'ctr_descricao' => $faker->sentence(3),
-        'ctr_icone' => 'fa fa-cog',
-        'ctr_ordem' => 1,
-        'ctr_ativo' => 1,
-        'ctr_visivel' => 1
-    ];
-});
-
-$factory->define(Modulos\Seguranca\Models\Recurso::class, function (Faker\Generator $faker) {
-    $rota = $faker->name;
-
-    return [
-        'rcs_ctr_id' => 1,
-        'rcs_nome' => $rota,
-        'rcs_rota' => strtolower($rota),
-        'rcs_descricao' => $faker->sentence(3),
-        'rcs_icone' => 'fa fa-cog',
-        'rcs_ativo' => 1,
-        'rcs_ordem' => 1
-    ];
-});
-
 $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Generator $faker) {
     return [
-        'prm_rcs_id' => 1,
         'prm_nome' => $faker->name,
+        'prm_rota' => $faker->name,
         'prm_descricao' => $faker->sentence(3)
     ];
 });
