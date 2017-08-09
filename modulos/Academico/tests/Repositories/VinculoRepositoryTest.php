@@ -7,7 +7,6 @@ use Modulos\Academico\Models\Vinculo;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
-use Auth;
 
 class VinculoRepositoryTest extends TestCase
 {

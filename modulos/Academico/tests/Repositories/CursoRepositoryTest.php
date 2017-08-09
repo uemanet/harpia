@@ -3,13 +3,11 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Academico\Models\Curso;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Carbon\Carbon;
-use Auth;
 
 class CursoRepositoryTest extends TestCase
 {
@@ -29,6 +27,13 @@ class CursoRepositoryTest extends TestCase
         return $app;
     }
 
+    public function login()
+    {
+        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+
+        $this->actingAs($user);
+    }
+
     public function setUp()
     {
         parent::setUp();
@@ -36,6 +41,7 @@ class CursoRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(CursoRepository::class);
+        $this->login();
     }
 
     public function testAllWithEmptyDatabase()
