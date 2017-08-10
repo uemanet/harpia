@@ -9,6 +9,10 @@ use Modulos\Core\Repository\BaseRepository;
 
 class ModuloRepository extends BaseRepository
 {
+    public function __construct(Modulo $modulo)
+    {
+        $this->model = $modulo;
+    }
     public function getByUser($userId)
     {
         $modulos = DB::table('seg_modulos')
