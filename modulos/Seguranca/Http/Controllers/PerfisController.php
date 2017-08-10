@@ -16,10 +16,10 @@ class PerfisController extends BaseController
     protected $perfilRepository;
     protected $moduloRepository;
 
-    public function __construct(PerfilRepository $perfilRepository)
+    public function __construct(PerfilRepository $perfilRepository, ModuloRepository $moduloRepository)
     {
         $this->perfilRepository = $perfilRepository;
-        $this->moduloRepository = new ModuloRepository();
+        $this->moduloRepository = $moduloRepository;
     }
 
     public function getIndex(Request $request)
