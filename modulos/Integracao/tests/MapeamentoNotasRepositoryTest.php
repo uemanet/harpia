@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Artisan;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 
 class MapeamentoNotasRepositoryTest extends TestCase

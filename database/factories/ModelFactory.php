@@ -28,11 +28,11 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
 
 $factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generator $faker) {
     return [
-       'doc_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
-       'doc_tpd_id' => 2,
-       'doc_data_expedicao' => $faker->date('d/m/Y'),
-       'doc_conteudo' => $faker->creditCardNumber
-   ];
+        'doc_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
+        'doc_tpd_id' => 2,
+        'doc_data_expedicao' => $faker->date('d/m/Y'),
+        'doc_conteudo' => $faker->creditCardNumber
+    ];
 });
 
 $factory->define(Modulos\Geral\Models\Anexo::class, function (Faker\Generator $faker) {
@@ -62,14 +62,14 @@ $factory->define(Modulos\Geral\Models\Titulacao::class, function (Faker\Generato
 
 $factory->define(Modulos\Geral\Models\TitulacaoInformacao::class, function (Faker\Generator $faker) {
     return [
-        'tin_pes_id' =>  1,
-        'tin_tit_id' =>  1,
-        'tin_titulo' =>  $faker->word,
-        'tin_instituicao' =>  $faker->word,
-        'tin_instituicao_sigla' =>  $faker->word,
-        'tin_instituicao_sede' =>  $faker->word,
-        'tin_anoinicio' =>  $faker->randomNumber(4),
-        'tin_anofim' =>  $faker->randomNumber(4),
+        'tin_pes_id' => 1,
+        'tin_tit_id' => 1,
+        'tin_titulo' => $faker->word,
+        'tin_instituicao' => $faker->word,
+        'tin_instituicao_sigla' => $faker->word,
+        'tin_instituicao_sede' => $faker->word,
+        'tin_anoinicio' => $faker->randomNumber(4),
+        'tin_anofim' => $faker->randomNumber(4),
     ];
 });
 
@@ -114,10 +114,10 @@ $factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Genera
 /** Factories Modulo Academico */
 $factory->define(Modulos\Academico\Models\Departamento::class, function (Faker\Generator $faker) {
     return [
-       'dep_cen_id' => factory(Modulos\Academico\Models\Centro::class)->create()->cen_id,
-       'dep_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
-       'dep_nome' => $faker->word
-   ];
+        'dep_cen_id' => factory(Modulos\Academico\Models\Centro::class)->create()->cen_id,
+        'dep_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
+        'dep_nome' => $faker->word
+    ];
 });
 
 $factory->define(Modulos\Academico\Models\Centro::class, function (Faker\Generator $faker) {
@@ -190,10 +190,10 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
 
 $factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
     return [
-       'grp_trm_id' => factory(Modulos\Academico\Models\Turma::class)->create()->trm_id,
-       'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
-       'grp_nome' => $faker->name
-   ];
+        'grp_trm_id' => factory(Modulos\Academico\Models\Turma::class)->create()->trm_id,
+        'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
+        'grp_nome' => $faker->name
+    ];
 });
 
 $factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generator $faker) {
@@ -229,13 +229,13 @@ $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generato
 
 $factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
     return [
-       'dis_nvc_id' => $faker->randomElement([1, 2, 3, 4, 5]),
-       'dis_nome' => $faker->sentence(3),
-       'dis_carga_horaria' => $faker->randomNumber(2),
-       'dis_bibliografia' => $faker->text(),
-       'dis_creditos' => $faker->randomNumber(2),
-       'dis_ementa' => $faker->text()
-   ];
+        'dis_nvc_id' => $faker->randomElement([1, 2, 3, 4, 5]),
+        'dis_nome' => $faker->sentence(3),
+        'dis_carga_horaria' => $faker->randomNumber(2),
+        'dis_bibliografia' => $faker->text(),
+        'dis_creditos' => $faker->randomNumber(2),
+        'dis_ementa' => $faker->text()
+    ];
 });
 
 $factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function (Faker\Generator $faker) {
@@ -280,7 +280,7 @@ $factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function (Fak
     ]);
 
     $moduloDisciplina = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
-       'mdc_dis_id' => $disciplina->dis_id,
+        'mdc_dis_id' => $disciplina->dis_id,
         'mdc_mdo_id' => $moduloMatriz->mdo_id
     ]);
 
@@ -406,5 +406,24 @@ $factory->define(Modulos\Integracao\Models\AmbienteVirtual::class, function (Fak
         'amb_nome' => $faker->name,
         'amb_versao' => $faker->sentence(2),
         'amb_url' => $faker->sentence(3)
+    ];
+});
+
+$factory->define(Modulos\Integracao\Models\Servico::class, function (Faker\Generator $faker) {
+    return [
+        'ser_nome' => $faker->word,
+        'ser_slug' => $faker->word
+    ];
+});
+
+$factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Faker\Generator $faker) {
+
+    $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+    $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
+
+    return [
+        'asr_amb_id' => $ambiente->amb_id,
+        'asr_ser_id' => $servico->amb_id,
+        'asr_token' => $faker->uuid
     ];
 });
