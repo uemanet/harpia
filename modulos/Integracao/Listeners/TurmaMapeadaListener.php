@@ -52,7 +52,6 @@ class TurmaMapeadaListener
             $data['course']['format'] = 'topics';
             $data['course']['numsections'] = 0;
 
-
             $param['url'] = $ambiente->url;
             $param['token'] = $ambiente->token;
             $param['action'] = 'post';
