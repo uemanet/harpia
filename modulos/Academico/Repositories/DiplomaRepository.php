@@ -49,27 +49,50 @@ class DiplomaRepository extends BaseRepository
             if (!$livfolreg) {
                 return null;
             }
-
+            //busca a mtricula relacionada com o Id do diploma
             $matricula = Matricula::find($livfolreg->dip_mat_id);
 
             $conclusao = $matricula->mat_data_conclusao;
             $conclusao = strtotime(str_replace('/', '-', $matricula->mat_data_conclusao));
             $dataconclusao = new Util();
-            $dataconclusao = $dataconclusao->getDiaMesExtenso($conclusao);
+            $dataconclusao = [
+              'DIA' => $dataconclusao->getDia($conclusao),
+              'DIAEXTENSO' => $dataconclusao->getDiaExtenso($conclusao),
+              'MES' => $dataconclusao->getMes($conclusao),
+              'MESEXTENSO' => $dataconclusao->getMesExtenso($conclusao),
+              'ANO' => $dataconclusao->getAno($conclusao),
+            ];
 
             $nascimento = strtotime(str_replace('/', '-', $matricula->aluno->pessoa->pes_nascimento));
+            $datanascimento = new Util();
+            $datanascimento = [
+              'DIA' => $datanascimento->getDia($nascimento),
+              'DIAEXTENSO' => $datanascimento->getDiaExtenso($nascimento),
+              'MES' => $datanascimento->getMes($nascimento),
+              'MESEXTENSO' => $datanascimento->getMesExtenso($nascimento),
+              'ANO' => $datanascimento->getAno($nascimento),
+            ];
 
             $curso = Matricula::find($livfolreg->dip_mat_id)->turma->ofertacurso->curso;
             $matriz = Matricula::find($livfolreg->dip_mat_id)->turma->ofertacurso->matriz;
 
             $dataautorizacao = new Util();
-            $dataautorizacao = $dataautorizacao->getDiaMesExtenso(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao)));
+            $dataautorizacao = [
+              'DIA' => $dataautorizacao->getDia(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))),
+              'DIAEXTENSO' => $dataautorizacao->getDiaExtenso(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))),
+              'MES' => $dataautorizacao->getMes(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))),
+              'MESEXTENSO' => $dataautorizacao->getMesExtenso(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))),
+              'ANO' => $dataautorizacao->getAno(strtotime(str_replace('/', '-', $curso->crs_data_autorizacao))),
+            ];
 
             $diaatual = new Util();
-            $diaatual = $diaatual->getDiaMesExtenso(strtotime('today'));
-
-            $datanascimento = new Util();
-            $datanascimento = $datanascimento->getDiaMesExtenso($nascimento);
+            $diaatual = [
+              'DIA' => $diaatual->getDia(strtotime('today')),
+              'DIAEXTENSO' => $diaatual->getDiaExtenso(strtotime('today')),
+              'MES' => $diaatual->getMes(strtotime('today')),
+              'MESEXTENSO' => $diaatual->getMesExtenso(strtotime('today')),
+              'ANO' => $diaatual->getAno(strtotime('today')),
+            ];
 
             $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
             $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $formata );

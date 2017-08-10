@@ -5,15 +5,12 @@ class Util
 {
 
     /**
-     * Retorna um array com o mês e o dia por extenso.
+     * Recebe um timestamp e retorna o valor do dia por extenso.
      *
-     * @return array
+     * @return string
      */
-    public function getDiaMesExtenso($date)
+    public function getDiaExtenso($date)
     {
-
-      setlocale(LC_ALL, config('app.locale'), 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-      date_default_timezone_set(config('app.timezone'));
 
       $diaextenso = [
                 0 => 'zero',
@@ -50,19 +47,61 @@ class Util
                 31 => 'trinta e um'
             ];
 
-      $dia = strftime('%d', $date);
-      $mes = strftime('%m', $date);
-      $ano = strftime('%Y', $date);
-      $returnData = [
-        'DIA' => $dia,
-        'DIAEXTENSO' => $diaextenso[str_replace(' ', '', strftime('%e', $date))],
-        'MES' => $mes,
-        'MESEXTENSO' => strftime('%B', $date),
-        'ANO' => $ano
-      ];
-      return $returnData;
+      $dia = $diaextenso[str_replace(' ', '', strftime('%e', $date))];
+      return $dia;
 
     }
 
+    /**
+     * Recebe um timestamp e retorna o valor do mês por extenso.
+     *
+     * @return string
+     */
+    public function getMesExtenso($date)
+    {
+      setlocale(LC_ALL, config('app.locale'), 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+      date_default_timezone_set(config('app.timezone'));
+
+      $mesextenso = strftime('%B', $date);
+      return $mesextenso;
+
+    }
+
+    /**
+     * Recebe um timestamp e retorna o dia.
+     *
+     * @return int
+     */
+    public function getDia($date)
+    {
+
+      $dia = strftime('%d', $date);
+      return $dia;
+
+    }
+
+    /**
+     * Recebe um timestamp e retorna mês.
+     *
+     * @return int
+     */
+    public function getMes($date)
+    {
+
+      $mes = strftime('%m', $date);
+      return $mes;
+
+    }
+    /**
+     * Recebe um timestamp e retorna o ano.
+     *
+     * @return int
+     */
+    public function getAno($date)
+    {
+      $ano = strftime('%Y', $date);
+      return $ano;
+
+    }
 
 }
