@@ -75,8 +75,7 @@ class Util
     public function getDia($date)
     {
 
-      $dia = strftime('%d', $date);
-      return $dia;
+      return strftime('%d', $date);
 
     }
 
@@ -88,8 +87,7 @@ class Util
     public function getMes($date)
     {
 
-      $mes = strftime('%m', $date);
-      return $mes;
+      return strftime('%m', $date);
 
     }
     /**
@@ -99,8 +97,8 @@ class Util
      */
     public function getAno($date)
     {
-      $ano = strftime('%Y', $date);
-      return $ano;
+
+      return strftime('%Y', $date);
 
     }
 
