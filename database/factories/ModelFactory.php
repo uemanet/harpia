@@ -437,3 +437,43 @@ $factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Fak
         'asr_token' => $faker->uuid
     ];
 });
+
+$factory->define(Modulos\Integracao\Models\Sincronizacao::class, function (Faker\Generator $faker) {
+
+    $tablesActions = [
+        'acd_turmas' => [
+            'CREATE', 'UPDATE', 'DELETE'
+        ],
+        'acd_grupos' => [
+            'CREATE', 'UPDATE', 'DELETE',
+        ],
+        'acd_ofertas_disciplinas' => [
+            'CREATE', 'DELETE', 'UPDATE_PROFESSOR_OFERTA_DISCIPLINA',
+        ],
+        'acd_matriculas_ofertas_disciplinas' => [
+            'CREATE'
+        ],
+        'acd_matriculas' => [
+            'CREATE', 'UPDATE_SITUACAO_MATRICULA', 'UPDATE_GRUPO_ALUNO', 'DELETE_GRUPO_ALUNO'
+        ],
+        'acd_tutores_grupos' => [
+            'CREATE', 'DELETE'
+        ],
+        'gra_pessoas' => [
+            'UPDATE'
+        ]
+    ];
+
+    $tabela = $faker->randomElement(array_keys($tablesActions));
+    $acao = $faker->randomElement($tablesActions[$tabela]);
+
+    return [
+        'sym_table' => $tabela,
+        'sym_table_id' => $faker->numberBetween(1, 200),
+        'sym_action' => $acao,
+        'sym_status' => $faker->randomElement([1, 2, 3]),
+        'sym_mensagem' => $faker->words(3, true),
+        'sym_data_envio' => $faker->dateTime->format("Y-m-d H:i:s"),
+        'sym_extra' => $faker->word
+    ];
+});

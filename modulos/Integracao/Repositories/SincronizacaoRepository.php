@@ -11,6 +11,7 @@ class SincronizacaoRepository extends BaseRepository
     protected $tabelasSincronizacao = [
         'acd_turmas', 'acd_matriculas', ''
     ];
+
     public function __construct(Sincronizacao $sincronizacao)
     {
         $this->model = $sincronizacao;
@@ -42,7 +43,7 @@ class SincronizacaoRepository extends BaseRepository
         $registro = $registros->pop();
         $registro->fill($data)->save();
 
-        return 1;
+        return $registro->sym_id;
     }
 
     public function findBy(array $options)
@@ -98,6 +99,7 @@ class SincronizacaoRepository extends BaseRepository
             ->where('sym_action', '=', 'DELETE')
             ->where('sym_status', '=', 2)
             ->first();
+
         if ($result) {
             return true;
         }

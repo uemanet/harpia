@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\AmbienteServicoRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class AmbienteServicoRepositoryTest extends TestCase
+class SincronizacaoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -31,7 +31,7 @@ class AmbienteServicoRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(AmbienteServicoRepository::class);
+        $this->repo = $this->app->make(SincronizacaoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +44,7 @@ class AmbienteServicoRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,10 +55,10 @@ class AmbienteServicoRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $sort = [
-            'field' => 'asr_id',
+            'field' => 'sym_id',
             'sort' => 'desc'
         ];
 
@@ -66,22 +66,22 @@ class AmbienteServicoRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertEquals(2, $response[0]->asr_id);
+        $this->assertEquals(2, $response[0]->sym_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
-        factory(Modulos\Integracao\Models\AmbienteServico::class)->create([
-            'asr_token' => 'kjh231kjagJAsuihsauigsakj',
+        factory(Modulos\Integracao\Models\Sincronizacao::class)->create([
+            'sym_mensagem' => 'icatu',
         ]);
 
         $search = [
             [
-                'field' => 'asr_token',
+                'field' => 'sym_mensagem',
                 'type' => 'like',
-                'term' => 'kjh231kjagJAsuihsauigsakj'
+                'term' => 'icatu'
             ]
         ];
 
@@ -91,21 +91,21 @@ class AmbienteServicoRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
 
-        $this->assertEquals('kjh231kjagJAsuihsauigsakj', $response[0]->asr_token);
+        $this->assertEquals('icatu', $response[0]->sym_mensagem);
     }
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $sort = [
-            'field' => 'asr_id',
+            'field' => 'sym_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'asr_id',
+                'field' => 'sym_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -117,16 +117,16 @@ class AmbienteServicoRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
 
-        $this->assertEquals(2, $response[0]->asr_id);
+        $this->assertEquals(2, $response[0]->sym_id);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'asr_id',
+            'field' => 'sym_id',
             'sort' => 'asc'
         ];
 
@@ -139,39 +139,71 @@ class AmbienteServicoRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
+        $response = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteServico::class, $response);
+        $this->assertInstanceOf(\Modulos\Integracao\Models\Sincronizacao::class, $response);
 
-        $this->assertArrayHasKey('asr_id', $response->toArray());
+        $this->assertArrayHasKey('sym_id', $response->toArray());
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
-        $this->seeInDatabase('int_ambientes_servicos', $data->toArray());
+        $this->seeInDatabase('int_sync_moodle', $data->toArray());
+    }
+
+
+    public function testFindBy()
+    {
+        $data = [
+            'sym_table' => 'gra_pessoas',
+            'sym_action' => 'UPDATE',
+        ];
+
+        $sync = factory(Modulos\Integracao\Models\Sincronizacao::class)->create($data);
+
+        $recovered = $this->repo->findBy($data)->last();
+
+        $this->seeInDatabase('int_sync_moodle', $sync->toArray());
+        $this->assertEquals($sync->toArray(), $recovered->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['asr_token'] = 'asd5weAse78r54asskhae';
+        $updateArray['sym_mensagem'] = 'abcde_edcba';
 
-        $ambientevirtualdId = $updateArray['asr_id'];
-        unset($updateArray['asr_id']);
+        $syncId = $updateArray['sym_id'];
+        unset($updateArray['sym_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'asr_id');
+        $response = $this->repo->update($updateArray, $syncId, 'sym_id');
 
         $this->assertEquals(1, $response);
     }
 
+    public function testUpdateSyncMoodle()
+    {
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create([
+            'sym_table' => 'gra_pessoas',
+            'sym_table_id' => 1,
+            'sym_action' => 'UPDATE',
+        ]);
+
+        $updateArray = $data->toArray();
+        $updateArray['sym_mensagem'] = 'abcde_edcba';
+
+        $response = $this->repo->updateSyncMoodle($updateArray);
+
+        $this->assertEquals($data->sym_id, $response);
+    }
+
     public function testDelete()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
-        $ambientevirtualId = $data->asr_id;
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
+        $ambientevirtualId = $data->sym_id;
 
         $response = $this->repo->delete($ambientevirtualId);
 
