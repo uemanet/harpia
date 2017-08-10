@@ -416,14 +416,24 @@ $factory->define(Modulos\Integracao\Models\Servico::class, function (Faker\Gener
     ];
 });
 
-$factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Faker\Generator $faker) {
-
+$factory->define(Modulos\Integracao\Models\AmbienteTurma::class, function () {
     $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
-    $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
+    $turma = factory(Modulos\Academico\Models\Turma::class)->create();
 
     return [
-        'asr_amb_id' => $ambiente->amb_id,
-        'asr_ser_id' => $servico->amb_id,
-        'asr_token' => $faker->uuid
+        'atr_trm_id' => $turma->trm_id,
+        'atr_amb_id' => $ambiente->amb_id
     ];
 });
+
+//$factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Faker\Generator $faker) {
+//
+//    $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+//    $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
+//
+//    return [
+//        'asr_amb_id' => $ambiente->amb_id,
+//        'asr_ser_id' => $servico->amb_id,
+//        'asr_token' => $faker->uuid
+//    ];
+//});
