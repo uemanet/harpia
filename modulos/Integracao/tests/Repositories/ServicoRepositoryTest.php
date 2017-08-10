@@ -160,10 +160,10 @@ class ServicoRepositoryTest extends TestCase
         $updateArray = $data->toArray();
         $updateArray['ser_nome'] = 'abcde_edcba';
 
-        $ambientevirtualdId = $updateArray['ser_id'];
+        $servicoId = $updateArray['ser_id'];
         unset($updateArray['ser_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'ser_id');
+        $response = $this->repo->update($updateArray, $servicoId, 'ser_id');
 
         $this->assertEquals(1, $response);
     }
@@ -171,9 +171,9 @@ class ServicoRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Modulos\Integracao\Models\Servico::class)->create();
-        $ambientevirtualId = $data->ser_id;
+        $servicoId = $data->ser_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($servicoId);
 
         $this->assertEquals(1, $response);
     }

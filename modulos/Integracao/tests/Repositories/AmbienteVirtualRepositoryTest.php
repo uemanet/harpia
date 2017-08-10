@@ -160,10 +160,10 @@ class AmbienteVirtualRepositoryTest extends TestCase
         $updateArray = $data->toArray();
         $updateArray['amb_nome'] = 'abcde_edcba';
 
-        $ambientevirtualdId = $updateArray['amb_id'];
+        $ambienteVirtualId = $updateArray['amb_id'];
         unset($updateArray['amb_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'amb_id');
+        $response = $this->repo->update($updateArray, $ambienteVirtualId, 'amb_id');
 
         $this->assertEquals(1, $response);
     }
@@ -171,9 +171,9 @@ class AmbienteVirtualRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
-        $ambientevirtualId = $data->amb_id;
+        $ambienteVirtualId = $data->amb_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($ambienteVirtualId);
 
         $this->assertEquals(1, $response);
     }

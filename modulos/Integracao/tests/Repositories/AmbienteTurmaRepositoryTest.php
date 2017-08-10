@@ -161,10 +161,10 @@ class AmbienteTurmaRepositoryTest extends TestCase
         $updateArray = $data->toArray();
         $updateArray['atr_amb_id'] = $ambiente->amb_id;
 
-        $ambientevirtualdId = $updateArray['atr_id'];
+        $ambienteTurmaId = $updateArray['atr_id'];
         unset($updateArray['atr_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'atr_id');
+        $response = $this->repo->update($updateArray, $ambienteTurmaId, 'atr_id');
 
         $this->assertEquals(1, $response);
     }
@@ -172,9 +172,9 @@ class AmbienteTurmaRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create();
-        $ambientevirtualId = $data->atr_id;
+        $ambienteTurmaId = $data->atr_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($ambienteTurmaId);
 
         $this->assertEquals(1, $response);
     }

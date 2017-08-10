@@ -160,10 +160,10 @@ class AmbienteServicoRepositoryTest extends TestCase
         $updateArray = $data->toArray();
         $updateArray['asr_token'] = 'asd5weAse78r54asskhae';
 
-        $ambientevirtualdId = $updateArray['asr_id'];
+        $ambienteServicoId = $updateArray['asr_id'];
         unset($updateArray['asr_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'asr_id');
+        $response = $this->repo->update($updateArray, $ambienteServicoId, 'asr_id');
 
         $this->assertEquals(1, $response);
     }
@@ -171,9 +171,9 @@ class AmbienteServicoRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
-        $ambientevirtualId = $data->asr_id;
+        $ambienteServicoId = $data->asr_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($ambienteServicoId);
 
         $this->assertEquals(1, $response);
     }

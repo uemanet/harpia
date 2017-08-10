@@ -203,9 +203,9 @@ class SincronizacaoRepositoryTest extends TestCase
     public function testDelete()
     {
         $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
-        $ambientevirtualId = $data->sym_id;
+        $syncId = $data->sym_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($syncId);
 
         $this->assertEquals(1, $response);
     }
