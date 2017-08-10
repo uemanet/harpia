@@ -32,7 +32,7 @@ class DiplomasController
 
     public function getIndex(Request $request)
     {
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $cursos = $this->cursoRepository->listsCursosTecnicos();
 
         return view('Academico::diplomas.index', compact('cursos'));
     }
@@ -41,13 +41,18 @@ class DiplomasController
     {
         $retorno = $this->diplomaRepository->getPrintData($request['diplomas']);
 
+        if (array_key_exists('type', $retorno)) {
+            flash()->error('O aluno(a) '.$retorno['dados']['NOME'].' não possui o registro '.$retorno['campo'].' cadastrado');
+            return redirect()->back();
+        }
+
         if (!$retorno) {
             flash()->error('Esse registro não existe.');
             return redirect()->back();
         }
 
         $mpdf = new \mPDF();
-        $mpdf->addPage('L', '', '', '', '');
+        $mpdf->addPage('L', '', '', '', '','','');
 
         $mpdf->WriteHTML(view('Academico::diplomas.print', ['retorno' => $retorno])->render());
         $mpdf->Output();

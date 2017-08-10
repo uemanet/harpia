@@ -21,8 +21,8 @@ class SincronizacaoController extends BaseController
         $tabela = null;
         $paginacao = null;
 
-        $tableData = $this->sincronizacaoRepository->paginateRequest($request->all());
 
+        $tableData = $this->sincronizacaoRepository->paginateRequest($request->all());
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'sym_id' => '#',
