@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Academico\Repositories\TutorRepository;
+use Modulos\Academico\Models\TutorGrupo;
+use Modulos\Academico\Models\Tutor;
 
 class TutorRepositoryTest extends TestCase
 {
@@ -146,6 +148,51 @@ class TutorRepositoryTest extends TestCase
         $this->assertArrayHasKey('tut_id', $data);
     }
 
+    public function testListsTutorPessoa()
+    {
+      $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+      $response = factory(Modulos\Academico\Models\Tutor::class)->create();
+
+      $tutorgrupo = new TutorGrupo();
+      $TutorRepository = new TutorRepository(new Tutor());
+
+      $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
+
+      $tutores = $TutorRepository->listsTutorPessoa($grupo->grp_id);
+
+      $this->assertEmpty($tutores, '');
+    }
+
+    public function testFindAllByGrupo()
+    {
+      $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+      $response = factory(Modulos\Academico\Models\Tutor::class)->create();
+
+      $tutorgrupo = new TutorGrupo();
+      $TutorRepository = new TutorRepository(new Tutor());
+
+      $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
+
+      $tutores = $TutorRepository->findAllByGrupo($grupo->grp_id);
+
+      $this->assertNotEmpty($tutores, '');
+    }
+
+    public function testFindallbyTurmaTipoTutoria()
+    {
+      $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+      $response = factory(Modulos\Academico\Models\Tutor::class)->create();
+
+      $tutorgrupo = new TutorGrupo();
+      $TutorRepository = new TutorRepository(new Tutor());
+
+      $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
+
+      $tutores = $TutorRepository->FindallbyTurmaTipoTutoria($grupo->turma->trm_id, 'presencial');
+      
+      $this->assertNotEmpty($tutores, '');
+    }
+
     public function testFind()
     {
         $data = factory(Modulos\Academico\Models\Tutor::class)->create();
@@ -163,9 +210,11 @@ class TutorRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');
         parent::tearDown();
     }
+
 }
