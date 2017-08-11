@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Carbon\Carbon;
 
 class MatriculaCursoTest extends TestCase
 {
@@ -58,6 +59,7 @@ class MatriculaCursoTest extends TestCase
 
         $data = $data->toArray();
         unset($data['mat_modo_entrada']);
+        $data['mat_data_conclusao'] = Carbon::createFromFormat('d/m/Y', $data['mat_data_conclusao'])->toDateString();
 
         $this->seeInDatabase('acd_matriculas', $data);
     }
