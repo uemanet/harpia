@@ -3,6 +3,7 @@
 namespace Harpia\Moodle;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class Moodle
 {
@@ -13,20 +14,41 @@ class Moodle
         $this->client = new Client();
     }
 
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
+    }
+
+    public function getClient()
+    {
+        return $this->client;
+    }
+
     /**
      * @param array $param - array de parametros para comunicação com o web service do Moodle
      */
     public function send(array $param)
     {
-        $url = $param['url'].'/webservice/rest/server.php?wstoken='.$param['token'].'&wsfunction='.$param['functioname'].'&moodlewsrestformat=json';
+        try {
+            $url = $param['url'] . '/webservice/rest/server.php?wstoken=' . $param['token'] . '&wsfunction=' . $param['functioname'] . '&moodlewsrestformat=json';
 
-        $method = 'post';
+            $method = 'post';
 
-        if ($param['action'] == 'SELECT') {
-            $method = 'get';
+            if ($param['action'] == 'SELECT') {
+                $method = 'get';
+            }
+
+            return $this->$method($url, $param['data']);
+        } catch (ClientException $e) {
+
+            if (env('app.debug')) {
+                throw $e;
+            }
+
+            return [
+                'message' => "Falha na requisição"
+            ];
         }
-
-        return $this->$method($url, $param['data']);
     }
 
     private function get($url, $data)

@@ -59,7 +59,7 @@ class TurmaMapeadaListenerTest extends TestCase
         $moodle = [
             'amb_nome' => 'Moodle',
             'amb_versao' => '3.2+',
-            'amb_url' => env('MOODLE_TEST_URL')
+            'amb_url' => "http://localhost:8080/"
         ];
 
         $this->ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
@@ -167,7 +167,7 @@ class TurmaMapeadaListenerTest extends TestCase
         $this->seeInDatabase('int_ambientes_virtuais', [
             'amb_nome' => 'Moodle',
             'amb_versao' => '3.2+',
-            'amb_url' => env('MOODLE_TEST_URL')
+            'amb_url' => "http://localhost:8080/"
         ]);
 
         $this->seeInDatabase('int_ambientes_turmas', [
@@ -181,7 +181,7 @@ class TurmaMapeadaListenerTest extends TestCase
             'sym_table' => $turmaMapeadaEvent->getData()->getTable(),
             'sym_table_id' => $turmaMapeadaEvent->getData()->getKey(),
             'sym_action' => $turmaMapeadaEvent->getAction(),
-            'sym_status' => 2,
+            'sym_status' => 1,
         ])->count());
     }
 
