@@ -45,7 +45,7 @@ Route::group(['prefix' => 'geral', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'anexos'], function () {
-            Route::post('/deletaranexodocumento', '\Modulos\Geral\Http\Controllers\Async\Documentos@postDeletarAnexo')->name('geral.anexos.deletaranexodocumento');
+            Route::post('/deletaranexodocumento', '\Modulos\Geral\Http\Controllers\Async\Documentos@postDeletarAnexo')->name('geral.async.anexos.deletaranexodocumento');
         });
     });
 });
