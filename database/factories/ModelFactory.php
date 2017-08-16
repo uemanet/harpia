@@ -227,6 +227,19 @@ $factory->define(Modulos\Academico\Models\Tutor::class, function (Faker\Generato
     ];
 });
 
+$factory->define(Modulos\Academico\Models\TutorGrupo::class, function (Faker\Generator $faker) {
+    $tutor = factory(Modulos\Academico\Models\Tutor::class)->create();
+    $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+
+    return [
+        'ttg_tut_id' => $tutor->tut_id,
+        'ttg_grp_id' => $grupo->grp_id,
+        'ttg_tipo_tutoria' => 'presencial',
+        'ttg_data_inicio' => '10/11/2010',
+        'ttg_data_fim' => null
+    ];
+});
+
 $factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
     return [
         'dis_nvc_id' => $faker->randomElement([1, 2, 3, 4, 5]),
@@ -449,7 +462,7 @@ $factory->define(Modulos\Academico\Models\Diploma::class, function (Faker\Genera
     $registro = factory(Modulos\Academico\Models\Registro::class)->create();
     $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
     return [
-      
+
         'dip_reg_id' => $registro->reg_id,
         'dip_mat_id' => $matricula->mat_id,
         'dip_processo' => $faker->sentence(3),
@@ -484,14 +497,14 @@ $factory->define(Modulos\Integracao\Models\AmbienteTurma::class, function () {
     ];
 });
 
-//$factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Faker\Generator $faker) {
-//
-//    $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
-//    $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
-//
-//    return [
-//        'asr_amb_id' => $ambiente->amb_id,
-//        'asr_ser_id' => $servico->amb_id,
-//        'asr_token' => $faker->uuid
-//    ];
-//});
+$factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Faker\Generator $faker) {
+
+   $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+   $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
+
+   return [
+       'asr_amb_id' => $ambiente->amb_id,
+       'asr_ser_id' => $servico->amb_id,
+       'asr_token' => $faker->uuid
+   ];
+});
