@@ -4,23 +4,10 @@ use GuzzleHttp\Client;
 use Harpia\Moodle\Moodle;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Handler\MockHandler;
 
 class MoodleServiceProviderTest extends TestCase
 {
     protected $moodleServiceProvider;
-
-    protected $successResponseBody = [
-        'id' => 1,
-        'status' => 'success',
-        'message' => "Recurso criado com sucesso"
-    ];
-
-    protected $failureResponseBody = [
-        'message' => "Falha"
-    ];
-
 
     public function setUp()
     {
@@ -43,13 +30,13 @@ class MoodleServiceProviderTest extends TestCase
         $client = new Client(['handler' => $stack]);
         $this->moodleServiceProvider->setClient($client);
 
-        $this->moodleServiceProvider->send([
-            'url' => 'http://localhost/',
+        $response = $this->moodleServiceProvider->send([
+            'url' => 'http://localhost:8080',
             'token' => 'abdefgh123456',
-            'functioname' => 'function_post_test',
+            'functioname' => 'test_post',
             'action' => 'post',
             'data' => [
-                'form' => 'data'
+                'form' => []
             ]
         ]);
 
@@ -57,9 +44,11 @@ class MoodleServiceProviderTest extends TestCase
 
         $transaction = array_shift($container);
 
-        $expectedUrl = "http://localhost/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=function_post_test&moodlewsrestformat=json";
-        $this->assertSame($expectedUrl, $transaction->getUrl());
-        $this->assertEquals('POST', $transaction->getMethod());
+        $expectedUrl = "http://localhost:8080/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=test_post&moodlewsrestformat=json";
+
+        $this->assertTrue(is_array($response), "Response must be an array");
+        $this->assertSame($expectedUrl, (string) $transaction["request"]->getUri());
+        $this->assertEquals('POST', $transaction["request"]->getMethod());
     }
 
     public function testGetRequest()
@@ -73,23 +62,22 @@ class MoodleServiceProviderTest extends TestCase
         $client = new Client(['handler' => $stack]);
         $this->moodleServiceProvider->setClient($client);
 
-        $this->moodleServiceProvider->send([
-            'url' => 'http://localhost/',
+        $response = $this->moodleServiceProvider->send([
+            'url' => 'http://localhost:8080',
             'token' => 'abdefgh123456',
-            'functioname' => 'function_get_test',
+            'functioname' => 'integracao_ping',
             'action' => 'SELECT',
-            'data' => [
-                'form' => 'data'
-            ]
+            'data' => []
         ]);
 
         $this->assertEquals(1, count($container));
 
         $transaction = array_shift($container);
 
-        $expectedUrl = "http://localhost/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=function_get_test&moodlewsrestformat=json";
+        $expectedUrl = "http://localhost:8080/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=integracao_ping&moodlewsrestformat=json";
 
-        $this->assertEquals($expectedUrl, $transaction->getUrl());
-        $this->assertEquals('GET', $transaction->getMethod());
+        $this->assertTrue(is_array($response), "Response must be an array");
+        $this->assertSame($expectedUrl, (string) $transaction["request"]->getUri());
+        $this->assertEquals('GET', $transaction["request"]->getMethod());
     }
 }

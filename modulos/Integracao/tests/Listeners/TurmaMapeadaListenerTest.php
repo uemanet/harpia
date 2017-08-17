@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Models\Curso;
 use Modulos\Academico\Models\Vinculo;
@@ -14,6 +15,7 @@ use Modulos\Integracao\Listeners\TurmaMapeadaListener;
 use Modulos\Integracao\Listeners\SincronizacaoListener;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
+
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class TurmaMapeadaListenerTest extends TestCase
@@ -28,7 +30,7 @@ class TurmaMapeadaListenerTest extends TestCase
 
         $app = require __DIR__ . '/../../../../bootstrap/app.php';
 
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
         return $app;
     }
@@ -175,6 +177,7 @@ class TurmaMapeadaListenerTest extends TestCase
             'atr_amb_id' => $this->ambiente->amb_id
         ]);
 
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
 
         $this->assertEquals(1, $this->sincronizacaoRepository->findBy([

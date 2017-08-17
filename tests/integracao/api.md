@@ -9,11 +9,15 @@ Plugin de integração entre Matraca e o Moodle
 
 Usado para testar a conectividade com o plugin
 
-## Ping [/webservice/rest/server?wstoken={wstoken}&wsfunction=integracao_ping&moodlewsrestformat=json]
+## Ping [/webservice/rest/server.php?wstoken={wstoken}&wsfunction=integracao_ping&moodlewsrestformat=json]
 
 ### Ping [GET]
 + Request
-    + Attributes (PingRequest)
+    + Attributes
+        + Body 
+          {
+            
+          }
 
 + Response 200
     + Attributes (PingResponse)
@@ -21,7 +25,7 @@ Usado para testar a conectividade com o plugin
 + Response 400
     + Attributes (PingError)
 
-## Mudar papel de estudante [/webservice/rest/server?wstoken={wstoken}&wsfunction=local_integracao_change_role_student_course&moodlewsrestformat=json]
+## Mudar papel de estudante [/webservice/rest/server.php?wstoken={wstoken}&wsfunction=local_integracao_change_role_student_course&moodlewsrestformat=json]
 
 ### Mudar papel de estudante [POST]
 + Request
@@ -33,7 +37,7 @@ Usado para testar a conectividade com o plugin
 + Response 400
     + Attributes (MoodleError)
 
-## Mudar grupo de estudante [/webservice/rest/server?wstoken={wstoken}&wsfunction=local_integracao_change_student_group&moodlewsrestformat=json]
+## Mudar grupo de estudante [/webservice/rest/server.php?wstoken={wstoken}&wsfunction=local_integracao_change_student_group&moodlewsrestformat=json]
 
 ### Mudar grupo de estudante [POST]
 + Request
@@ -46,6 +50,27 @@ Usado para testar a conectividade com o plugin
     + Attributes (MoodleError)
 
 
+# Group Sandbox
+
+Usado para testar a conectividade com o plugin
+
+## Test post [/webservice/rest/server.php?wstoken={wstoken}&wsfunction=test_post&moodlewsrestformat=json]
+
+### Test post [POST]
++ Request
+    + Attributes
+        + Body 
+          {
+            
+          }
+
++ Response 200
+    + Attributes (PingResponse)
+
++ Response 400
+    + Attributes (PingError)
+
+
 # Data Structures
 
 ## PingRequest (object)
@@ -53,7 +78,10 @@ Usado para testar a conectividade com o plugin
    + wstoken: asjowie54sre77adrf45as (string) - Token do plugin
 
 ## PingResponse (object)
-+ response: true (boolean)
++ Body 
+  {
+    response: true (boolean)
+  }
 
 ## PingError (object)
 + exception: moodle_exception (string)
