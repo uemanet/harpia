@@ -111,6 +111,33 @@ $factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Genera
     ];
 });
 
+$factory->define(Modulos\Seguranca\Models\MenuItem::class, function (Faker\Generator $faker) {
+    $modulo = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+
+    return [
+        'mit_mod_id' => $modulo->mod_id,
+        'mit_item_pai' => null,
+        'mit_nome' => $faker->sentence(1),
+        'mit_icone' => 'fa fa-cog',
+        'mit_visivel' => 1,
+        'mit_rota' => $faker->sentence(1),
+        'mit_descricao' => $faker->sentence(1),
+        'mit_ordem' => 1
+    ];
+});
+
+$factory->define(Modulos\Seguranca\Models\Auditoria::class, function (Faker\Generator $faker) {
+    $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+
+    return [
+      'log_usr_id' => $user->usr_id,
+      'log_action' => $faker->sentence(1),
+      'log_table' => $faker->sentence(1),
+      'log_table_id' => $faker->randomNumber(2),
+      'log_object' => $faker->sentence(1)
+    ];
+});
+
 /** Factories Modulo Academico */
 $factory->define(Modulos\Academico\Models\Departamento::class, function (Faker\Generator $faker) {
     return [
