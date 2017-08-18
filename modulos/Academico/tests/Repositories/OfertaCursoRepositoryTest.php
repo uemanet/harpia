@@ -4,6 +4,8 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Models\OfertaCurso;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Models\Turma;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -131,7 +133,7 @@ class OfertaCursoRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertCount(1, $response);
+        $this->assertCount(2, $response);
     }
 
     public function testPaginateWithSearchAndOrder()
@@ -226,6 +228,51 @@ class OfertaCursoRepositoryTest extends TestCase
         $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
 
         $this->assertEquals(1, $response);
+    }
+
+    public function testFindAllByCurso()
+    {
+        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+
+        $curso = $this->repo->findAllByCurso($ofertacurso->curso->crs_id);
+
+        $this->assertNotEmpty($curso, '');
+    }
+
+    public function testFindAllByCursowithoutpresencial()
+    {
+        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class, 2)->create();
+
+        $curso = $this->repo->findAllByCursowithoutpresencial($ofertacurso[1]->curso->crs_id);
+
+        $this->assertNotEmpty($curso, '');
+    }
+
+    public function testListsAllByCurso()
+    {
+        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class, 2)->create();
+
+        $curso = $this->repo->listsAllByCurso($ofertacurso[1]->curso->crs_id);
+
+        $this->assertNotEmpty($curso, '');
+    }
+
+    public function testListsAllById()
+    {
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create();
+
+        $curso = $this->repo->listsAllById($turma->ofertacurso->curso->crs_id);
+
+        $this->assertNotEmpty($curso, '');
+    }
+
+    public function testListsOfertaByTurma()
+    {
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create();
+
+        $curso = $this->repo->listsOfertaByTurma($turma->ofertacurso->curso->crs_id);
+
+        $this->assertNotEmpty($curso, '');
     }
 
     public function testDelete()
