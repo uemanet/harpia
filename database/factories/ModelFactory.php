@@ -191,12 +191,19 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
     ];
 });
 
+$factory->define(Modulos\Academico\Models\Modalidade::class, function (Faker\Generator $faker) {
+    return [
+        'mdl_nome' => 'distancia'
+    ];
+});
+
 $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+    $modalidade = factory(Modulos\Academico\Models\Modalidade::class)->create();
     return [
         'ofc_crs_id' => $curso->crs_id,
         'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create(['mtc_crs_id' => $curso->crs_id])->mtc_id,
-        'ofc_mdl_id' => 1,
+        'ofc_mdl_id' => $modalidade->mdl_id,
         'ofc_ano' => $faker->year
     ];
 });
