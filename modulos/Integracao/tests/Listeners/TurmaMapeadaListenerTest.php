@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Models\Curso;
 use Modulos\Academico\Models\Vinculo;
@@ -61,7 +60,7 @@ class TurmaMapeadaListenerTest extends TestCase
         $moodle = [
             'amb_nome' => 'Moodle',
             'amb_versao' => '3.2+',
-            'amb_url' => "http://localhost:8080/"
+            'amb_url' => "http://localhost:8080"
         ];
 
         $this->ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
@@ -102,7 +101,7 @@ class TurmaMapeadaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_MONITOR_TEST_TOKEN")
+            'asr_token' => "abcdefgh12345"
         ]);
     }
 
@@ -138,6 +137,17 @@ class TurmaMapeadaListenerTest extends TestCase
     {
         $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
 
+        $this->seeInDatabase('int_ambientes_virtuais', [
+            'amb_nome' => 'Moodle',
+            'amb_versao' => '3.2+',
+            'amb_url' => "http://localhost:8080"
+        ]);
+
+        $this->seeInDatabase('int_ambientes_turmas', [
+            'atr_trm_id' => $this->turma->trm_id,
+            'atr_amb_id' => $this->ambiente->amb_id
+        ]);
+
         $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
         $vinculoRepository = new VinculoRepository(new Vinculo());
         $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
@@ -166,26 +176,7 @@ class TurmaMapeadaListenerTest extends TestCase
             'sym_extra' => $turmaMapeadaEvent->getExtra()
         ]);
 
-        $this->seeInDatabase('int_ambientes_virtuais', [
-            'amb_nome' => 'Moodle',
-            'amb_versao' => '3.2+',
-            'amb_url' => "http://localhost:8080/"
-        ]);
-
-        $this->seeInDatabase('int_ambientes_turmas', [
-            'atr_trm_id' => $this->turma->trm_id,
-            'atr_amb_id' => $this->ambiente->amb_id
-        ]);
-
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
-
-        $this->assertEquals(1, $this->sincronizacaoRepository->findBy([
-            'sym_table' => $turmaMapeadaEvent->getData()->getTable(),
-            'sym_table_id' => $turmaMapeadaEvent->getData()->getKey(),
-            'sym_action' => $turmaMapeadaEvent->getAction(),
-            'sym_status' => 1,
-        ])->count());
     }
-
 }

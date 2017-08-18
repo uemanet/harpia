@@ -427,7 +427,6 @@ $factory->define(Modulos\Integracao\Models\AmbienteTurma::class, function () {
 });
 
 $factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Faker\Generator $faker) {
-
     $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
     $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
 
@@ -439,7 +438,6 @@ $factory->define(Modulos\Integracao\Models\AmbienteServico::class, function (Fak
 });
 
 $factory->define(Modulos\Integracao\Models\Sincronizacao::class, function (Faker\Generator $faker) {
-
     $tablesActions = [
         'acd_turmas' => [
             'CREATE', 'UPDATE', 'DELETE'

@@ -37,6 +37,18 @@ Usado para testar a conectividade com o plugin
 + Response 400
     + Attributes (MoodleError)
 
+## Mudar papel de estudante [/webservice/rest/server.php?wstoken={wstoken}&wsfunction=local_integracao_change_role_student_course&moodlewsrestformat=json]
+
+### Mudar papel de estudante [POST]
++ Request
+    + Attributes (ChangeUserRoleRequest)
+
++ Response 200
+    + Attributes (ChangeUserRoleResponse)
+
++ Response 400
+    + Attributes (MoodleError)
+
 ## Mudar grupo de estudante [/webservice/rest/server.php?wstoken={wstoken}&wsfunction=local_integracao_change_student_group&moodlewsrestformat=json]
 
 ### Mudar grupo de estudante [POST]

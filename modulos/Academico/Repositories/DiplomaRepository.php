@@ -94,8 +94,8 @@ class DiplomaRepository extends BaseRepository
               'ANO' => $diaatual->getAno(strtotime('today')),
             ];
 
-            $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
-            $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $formata );
+            $formata = str_replace('CURSO TÉCNICO EM ', '', $curso->crs_nome);
+            $formata = str_replace('CURSO TÉCNICO ', '', $formata);
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
 
 
@@ -129,9 +129,9 @@ class DiplomaRepository extends BaseRepository
             ];
 
             foreach ($returnData as $key => $dado) {
-              if(!$dado){
-                return array('type' => 'error' , 'dados' => $returnData, 'campo' => $key);
-              }
+                if (!$dado) {
+                    return array('type' => 'error' , 'dados' => $returnData, 'campo' => $key);
+                }
             }
 
             $retorno[] = $returnData;
@@ -139,9 +139,8 @@ class DiplomaRepository extends BaseRepository
 
         return $retorno;
     }
-    function ucwords_improved($s, $e = array())
+    public function ucwords_improved($s, $e = array())
     {
-      return join(' ',array_map(create_function('$s','return (!in_array($s, '.var_export($e, true) . ')) ? ucfirst($s) : $s;'),explode(' ',strtolower($s))));
+        return join(' ', array_map(create_function('$s', 'return (!in_array($s, '.var_export($e, true) . ')) ? ucfirst($s) : $s;'), explode(' ', strtolower($s))));
     }
-
 }
