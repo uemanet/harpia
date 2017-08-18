@@ -1,22 +1,13 @@
 <?php
 
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Models\Curso;
-use Modulos\Academico\Models\Vinculo;
-use Modulos\Academico\Models\PeriodoLetivo;
 use Modulos\Integracao\Models\Sincronizacao;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
-use Modulos\Integracao\Listeners\TurmaMapeadaListener;
 use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
+use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Listeners\DeleteSincronizacaoListener;
 
-class TurmaMapeadaListenerTest extends TestCase
+class DeleteSincronizacaoListenerTest extends TestCase
 {
     protected $ambiente;
     protected $sincronizacaoRepository;
@@ -136,35 +127,40 @@ class TurmaMapeadaListenerTest extends TestCase
     {
         $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
 
-        $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
-        $vinculoRepository = new VinculoRepository(new Vinculo());
-        $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
-        $turmaRepository = new TurmaRepository(new Turma(), $cursoRepository, $periodoLetivoRepository);
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
+        $syncEvent = new TurmaMapeadaEvent($this->turma);
 
-        $turmaMapeadaListener = new TurmaMapeadaListener(
-            $turmaRepository,
-            $cursoRepository,
-            $periodoLetivoRepository,
-            $ambienteVirtualRepository,
-            $this->sincronizacaoRepository
-        );
-
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
-
-        $sincronizacaoListener->handle($turmaMapeadaEvent);
+        $sincronizacaoListener->handle($syncEvent);
 
         $this->seeInDatabase('int_sync_moodle', [
-            'sym_table' => $turmaMapeadaEvent->getData()->getTable(),
-            'sym_table_id' => $turmaMapeadaEvent->getData()->getKey(),
-            'sym_action' => $turmaMapeadaEvent->getAction(),
+            'sym_table' => $syncEvent->getData()->getTable(),
+            'sym_table_id' => $syncEvent->getData()->getKey(),
+            'sym_action' => $syncEvent->getAction(),
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => $turmaMapeadaEvent->getExtra()
+            'sym_extra' => $syncEvent->getExtra()
         ]);
 
-        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
-        $turmaMapeadaListener->handle($turmaMapeadaEvent);
+        $deleteEvent = new DeleteSincronizacaoEvent(
+          $syncEvent->getData()->getTable(),
+          $syncEvent->getData()->getKey(),
+          2,
+          "",
+            $syncEvent->getAction()
+        );
+
+        $deleteListener = new DeleteSincronizacaoListener($this->sincronizacaoRepository);
+
+        $deleteListener->handle($deleteEvent);
+
+        $this->assertEquals(1, Sincronizacao::all()->count());
+
+        $this->seeInDatabase('int_sync_moodle', [
+            'sym_table' => $syncEvent->getData()->getTable(),
+            'sym_table_id' => $syncEvent->getData()->getKey(),
+            'sym_action' => $syncEvent->getAction(),
+            'sym_status' => 2,
+            'sym_mensagem' => ""
+        ]);
     }
 }

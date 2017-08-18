@@ -85,6 +85,8 @@ class TurmaMapeadaListener
             }
 
             event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } finally {
+            return true;
         }
     }
 }
