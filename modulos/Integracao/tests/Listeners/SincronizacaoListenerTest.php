@@ -1,9 +1,6 @@
 <?php
 
-use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
 class SincronizacaoListenerTest extends TestCase
 {
@@ -28,7 +25,7 @@ class SincronizacaoListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -123,7 +120,7 @@ class SincronizacaoListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 

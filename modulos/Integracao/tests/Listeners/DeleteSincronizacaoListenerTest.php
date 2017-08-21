@@ -1,11 +1,7 @@
 <?php
 
-use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Listeners\SincronizacaoListener;
 use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Listeners\DeleteSincronizacaoListener;
 
 class DeleteSincronizacaoListenerTest extends TestCase
 {
@@ -30,7 +26,7 @@ class DeleteSincronizacaoListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -125,7 +121,7 @@ class DeleteSincronizacaoListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
         $syncEvent = new TurmaMapeadaEvent($this->turma);
 
@@ -149,11 +145,11 @@ class DeleteSincronizacaoListenerTest extends TestCase
             $syncEvent->getAction()
         );
 
-        $deleteListener = new DeleteSincronizacaoListener($this->sincronizacaoRepository);
+        $deleteListener = $this->app->make(\Modulos\Integracao\Listeners\DeleteSincronizacaoListener::class);
 
         $deleteListener->handle($deleteEvent);
 
-        $this->assertEquals(1, Sincronizacao::all()->count());
+        $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
         $this->seeInDatabase('int_sync_moodle', [
             'sym_table' => $syncEvent->getData()->getTable(),

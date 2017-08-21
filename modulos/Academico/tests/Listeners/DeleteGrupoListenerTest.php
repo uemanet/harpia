@@ -1,22 +1,7 @@
 <?php
 
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Models\Curso;
-use Modulos\Academico\Models\Vinculo;
-use Modulos\Academico\Models\PeriodoLetivo;
-use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Academico\Events\CreateGrupoEvent;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Listeners\CreateGrupoListener;
-use Modulos\Academico\Repositories\VinculoRepository;
-use Modulos\Integracao\Listeners\TurmaMapeadaListener;
-use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class DeleteGrupoListenerTest extends TestCase
 {
@@ -42,7 +27,7 @@ class DeleteGrupoListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -135,21 +120,8 @@ class DeleteGrupoListenerTest extends TestCase
         ]);
 
         // Mapeia a turma
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
-
-        $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
-        $vinculoRepository = new VinculoRepository(new Vinculo());
-        $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
-        $turmaRepository = new TurmaRepository(new Turma(), $cursoRepository, $periodoLetivoRepository);
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $turmaMapeadaListener = new TurmaMapeadaListener(
-            $turmaRepository,
-            $cursoRepository,
-            $periodoLetivoRepository,
-            $ambienteVirtualRepository,
-            $this->sincronizacaoRepository
-        );
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 
@@ -166,10 +138,10 @@ class DeleteGrupoListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
-        $createGroupListener = new CreateGrupoListener(new AmbienteVirtualRepository(new AmbienteVirtual()));
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $createGroupListener = $this->app->make(\Modulos\Academico\Listeners\CreateGrupoListener::class);
 
-        $this->assertEquals(1, Sincronizacao::all()->count());
+        $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
         $createGroupEvent = new CreateGrupoEvent($this->grupo);
         $sincronizacaoListener->handle($createGroupEvent);
@@ -187,6 +159,6 @@ class DeleteGrupoListenerTest extends TestCase
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $createGroupListener->handle($createGroupEvent);
 
-        $this->assertEquals(2, Sincronizacao::all()->count());
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
     }
 }

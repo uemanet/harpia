@@ -30,7 +30,7 @@ class UpdateSincronizacaoListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -125,7 +125,7 @@ class UpdateSincronizacaoListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 

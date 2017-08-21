@@ -1,32 +1,7 @@
 <?php
 
-use Modulos\Academico\Models\Disciplina;
-use Modulos\Academico\Models\MatrizCurricular;
-use Modulos\Academico\Models\ModuloDisciplina;
-use Modulos\Academico\Models\Professor;
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Models\Curso;
-use Modulos\Academico\Models\Vinculo;
-use Modulos\Academico\Models\PeriodoLetivo;
-use Modulos\Academico\Repositories\DisciplinaRepository;
-use Modulos\Academico\Repositories\MatrizCurricularRepository;
-use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Geral\Models\Pessoa;
-use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Integracao\Models\Sincronizacao;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
-use Modulos\Integracao\Listeners\TurmaMapeadaListener;
-use Modulos\Integracao\Listeners\SincronizacaoListener;
 use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Academico\Listeners\CreateOfertaDisciplinaListener;
 
 class CreateOfertaDisciplinaListenerTest extends TestCase
 {
@@ -34,7 +9,6 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
     protected $ambiente;
     protected $ofertaDisciplina;
     protected $sincronizacaoRepository;
-    protected $createOfertaDisciplinaListener;
 
     public function createApplication()
     {
@@ -53,7 +27,7 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -61,31 +35,6 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
         $this->createIntegracao();
         $this->createMonitor();
         $this->mockUpDatabase();
-
-        $pessoaRepository = new PessoaRepository(new Pessoa());
-        $professorRepository = new ProfessorRepository(new Professor());
-        $matrizCurricularRepository = new MatrizCurricularRepository(new MatrizCurricular());
-
-        $disciplinaRepository = new DisciplinaRepository(
-            new Disciplina(),
-            $matrizCurricularRepository
-        );
-
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $moduloDisciplinaRepository = new ModuloDisciplinaRepository(
-            new ModuloDisciplina(),
-            $disciplinaRepository,
-            $matrizCurricularRepository
-        );
-
-        $this->createOfertaDisciplinaListener = new CreateOfertaDisciplinaListener(
-            $pessoaRepository,
-            $professorRepository,
-            $disciplinaRepository,
-            $ambienteVirtualRepository,
-            $moduloDisciplinaRepository
-        );
     }
 
     /**
@@ -179,21 +128,8 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
         ]);
 
         // Mapeia a turma
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
-
-        $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
-        $vinculoRepository = new VinculoRepository(new Vinculo());
-        $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
-        $turmaRepository = new TurmaRepository(new Turma(), $cursoRepository, $periodoLetivoRepository);
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $turmaMapeadaListener = new TurmaMapeadaListener(
-            $turmaRepository,
-            $cursoRepository,
-            $periodoLetivoRepository,
-            $ambienteVirtualRepository,
-            $this->sincronizacaoRepository
-        );
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 
@@ -203,9 +139,10 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $createOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateOfertaDisciplinaListener::class);
 
-        $this->assertEquals(1, Sincronizacao::all()->count());
+        $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
         $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
@@ -221,8 +158,8 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
         ]);
 
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
-        $this->createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
+        $createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
 
-        $this->assertEquals(2, Sincronizacao::all()->count());
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
     }
 }

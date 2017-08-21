@@ -1,34 +1,8 @@
 <?php
 
-use Modulos\Geral\Models\Pessoa;
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Models\Curso;
-use Modulos\Academico\Models\Vinculo;
-use Modulos\Academico\Models\Professor;
-use Modulos\Academico\Models\Disciplina;
-use Modulos\Academico\Models\PeriodoLetivo;
-use Modulos\Integracao\Models\Sincronizacao;
-use Modulos\Academico\Models\MatrizCurricular;
-use Modulos\Academico\Models\ModuloDisciplina;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
-use Modulos\Integracao\Listeners\TurmaMapeadaListener;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Academico\Repositories\DisciplinaRepository;
 use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Academico\Repositories\MatrizCurricularRepository;
-use Modulos\Academico\Listeners\CreateOfertaDisciplinaListener;
-use Modulos\Academico\Listeners\DeleteOfertaDisciplinaListener;
 
 class DeleteOfertaDisciplinaListenerTest extends TestCase
 {
@@ -36,8 +10,6 @@ class DeleteOfertaDisciplinaListenerTest extends TestCase
     protected $ambiente;
     protected $ofertaDisciplina;
     protected $sincronizacaoRepository;
-    protected $createOfertaDisciplinaEvent;
-    protected $createOfertaDisciplinaListener;
 
     public function createApplication()
     {
@@ -56,39 +28,13 @@ class DeleteOfertaDisciplinaListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();
-
-        $pessoaRepository = new PessoaRepository(new Pessoa());
-        $professorRepository = new ProfessorRepository(new Professor());
-        $matrizCurricularRepository = new MatrizCurricularRepository(new MatrizCurricular());
-
-        $disciplinaRepository = new DisciplinaRepository(
-            new Disciplina(),
-            $matrizCurricularRepository
-        );
-
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $moduloDisciplinaRepository = new ModuloDisciplinaRepository(
-            new ModuloDisciplina(),
-            $disciplinaRepository,
-            $matrizCurricularRepository
-        );
-
-        $this->createOfertaDisciplinaListener = new CreateOfertaDisciplinaListener(
-            $pessoaRepository,
-            $professorRepository,
-            $disciplinaRepository,
-            $ambienteVirtualRepository,
-            $moduloDisciplinaRepository
-        );
-
         $this->mockUpDatabase();
     }
 
@@ -183,38 +129,26 @@ class DeleteOfertaDisciplinaListenerTest extends TestCase
         ]);
 
         // Mapeia a turma
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
-
-        $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
-        $vinculoRepository = new VinculoRepository(new Vinculo());
-        $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
-        $turmaRepository = new TurmaRepository(new Turma(), $cursoRepository, $periodoLetivoRepository);
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $turmaMapeadaListener = new TurmaMapeadaListener(
-            $turmaRepository,
-            $cursoRepository,
-            $periodoLetivoRepository,
-            $ambienteVirtualRepository,
-            $this->sincronizacaoRepository
-        );
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
+        $createOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateOfertaDisciplinaListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
 
-        $this->createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
-        $sincronizacaoListener->handle($this->createOfertaDisciplinaEvent);
-        $this->createOfertaDisciplinaListener->handle($this->createOfertaDisciplinaEvent);
+        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
+        $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
+        $createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
     }
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
-        $deleteOfertaDisciplinaListener = new DeleteOfertaDisciplinaListener(new AmbienteVirtualRepository(new AmbienteVirtual()));
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $deleteOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\DeleteOfertaDisciplinaListener::class);
 
-        $this->assertEquals(2, Sincronizacao::all()->count());
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
         $deleteOfertaDisciplinaEvent = new DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id);
 
@@ -234,6 +168,6 @@ class DeleteOfertaDisciplinaListenerTest extends TestCase
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $deleteOfertaDisciplinaListener->handle($deleteOfertaDisciplinaEvent);
 
-        $this->assertEquals(3, Sincronizacao::all()->count());
+        $this->assertEquals(3, $this->sincronizacaoRepository->count());
     }
 }

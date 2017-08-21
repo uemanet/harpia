@@ -41,7 +41,7 @@ class TurmaRemovidaListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -134,21 +134,8 @@ class TurmaRemovidaListenerTest extends TestCase
         ]);
 
         // Mapeia a turma
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
-
-        $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
-        $vinculoRepository = new VinculoRepository(new Vinculo());
-        $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
-        $turmaRepository = new TurmaRepository(new Turma(), $cursoRepository, $periodoLetivoRepository);
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $turmaMapeadaListener = new TurmaMapeadaListener(
-            $turmaRepository,
-            $cursoRepository,
-            $periodoLetivoRepository,
-            $ambienteVirtualRepository,
-            $this->sincronizacaoRepository
-        );
+        $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
+        $turmaMapeadaListener = $this->app->make(TurmaMapeadaListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 
@@ -157,27 +144,14 @@ class TurmaRemovidaListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
+        $turmaRemovidaListener = $this->app->make(TurmaRemovidaListener::class);
 
         $this->assertEquals(1, Sincronizacao::all()->count());
 
         $turmaRemovidaEvent = new TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id);
 
         $sincronizacaoListener->handle($turmaRemovidaEvent);
-
-        $periodoLetivoRepository = new PeriodoLetivoRepository(new PeriodoLetivo());
-        $vinculoRepository = new VinculoRepository(new Vinculo());
-        $cursoRepository = new CursoRepository(new Curso(), $vinculoRepository);
-        $turmaRepository = new TurmaRepository(new Turma(), $cursoRepository, $periodoLetivoRepository);
-        $ambienteVirtualRepository = new AmbienteVirtualRepository(new AmbienteVirtual());
-
-        $turmaRemovidaListener = new TurmaRemovidaListener(
-            $turmaRepository,
-            $cursoRepository,
-            $periodoLetivoRepository,
-            $ambienteVirtualRepository,
-            $this->sincronizacaoRepository
-        );
 
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $turmaRemovidaListener->handle($turmaRemovidaEvent);
