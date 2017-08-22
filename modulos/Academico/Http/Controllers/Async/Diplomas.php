@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\DiplomaRepository;
+use Modulos\Academico\Repositories\RegistroRepository;
 
 class Diplomas
 {
     protected $diplomaRepository;
 
-    public function __construct(DiplomaRepository $diplomaRepository)
+    public function __construct(DiplomaRepository $diplomaRepository, RegistroRepository $registroRepository)
     {
         $this->diplomaRepository = $diplomaRepository;
+        $this->registroRepository = $registroRepository;
     }
 
     public function getAlunosDiplomados($turmaId, Request $request)
@@ -44,7 +46,7 @@ class Diplomas
                 $registro = $this->registroRepository->create($data);
                 $registros[] = $registro->reg_id;
             }
-            return new JsonResponse($registros, JsonResponse::HTTP_OK, $this->defaultHeaders);
+            return new JsonResponse($registros, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

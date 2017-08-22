@@ -181,12 +181,12 @@
 
                     // criacao do botao de diplomar alunos
                     div += '<div class="row"><div class="col-md-12">';
-                    div += '<button class="btn btn-success hidden btnDiplomar">Certificar Alunos</button>';
+                    div += '<button class="btn btn-success hidden btnDiplomar">Diplomar Alunos</button>';
                     div += '</div></div>';
 
                     tab1 += div;
                 } else {
-                    tab1 += '<p>Sem alunos para certificar</p>';
+                    tab1 += '<p>Sem alunos para diplomar</p>';
                 }
 
                 tab1 += '</div>';
