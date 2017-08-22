@@ -409,7 +409,7 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
         'mof_mat_id' => $matricula->mat_id,
         'mof_ofd_id' => $ofertaDisciplina->ofd_id,
         'mof_tipo_matricula' => 'matriculacomum',
-        'mof_status' => 'cursando'
+        'mof_situacao_matricula' => 'cursando'
     ];
 });
 
