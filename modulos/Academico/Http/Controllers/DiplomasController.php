@@ -50,7 +50,7 @@ class DiplomasController
             flash()->error('Esse registro não existe.');
             return redirect()->back();
         }
-
+        define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
         $mpdf = new \mPDF();
         $mpdf->addPage('L', '', '', '', '', '', '');
 

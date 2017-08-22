@@ -130,10 +130,9 @@ class OfertaCursoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertCount(2, $response);
+        $this->assertCount(1, $response);
     }
 
     public function testPaginateWithSearchAndOrder()
