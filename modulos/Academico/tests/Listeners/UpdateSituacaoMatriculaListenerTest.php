@@ -1,14 +1,17 @@
 <?php
 
-use Modulos\Academico\Events\UpdateGrupoEvent;
+use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
+use Modulos\Academico\Events\UpdateSituacaoMatriculaEvent;
 
-class UpdateGrupoListenerTest extends TestCase
+class UpdateSituacaoMatriculaListenerTest extends TestCase
 {
     protected $ambiente;
     protected $sincronizacaoRepository;
     protected $turma;
     protected $grupo;
+    protected $matricula;
 
     public function createApplication()
     {
@@ -110,7 +113,6 @@ class UpdateGrupoListenerTest extends TestCase
             'trm_qtd_vagas' => 50
         ];
 
-
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
 
         // Vincular com o ambiente
@@ -122,7 +124,9 @@ class UpdateGrupoListenerTest extends TestCase
         // Mapeia a turma
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
+        $createGroupListener = $this->app->make(\Modulos\Academico\Listeners\CreateGrupoListener::class);
 
+        // Eventos de turma
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
@@ -134,42 +138,54 @@ class UpdateGrupoListenerTest extends TestCase
             'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
             'grp_nome' => "Group A"
         ]);
+
+        // Eventos de grupo
+        $createGroupEvent = new CreateGrupoEvent($this->grupo);
+
+        $sincronizacaoListener->handle($createGroupEvent);
+        $createGroupListener->handle($createGroupEvent);
+
+        // Cria a matricula
+        $this->matricula = factory(\Modulos\Academico\Models\Matricula::class)->create([
+            'mat_trm_id' => $this->turma->trm_id,
+            'mat_grp_id' => $this->grupo->grp_id,
+        ]);
     }
 
     public function testHandle()
     {
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-        $updateGrupoListener = $this->app->make(\Modulos\Academico\Listeners\UpdateGrupoListener::class);
-        $grupoRepository = $this->app->make(\Modulos\Academico\Repositories\GrupoRepository::class);
+        $updateSituacaoMatriculaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateSituacaoMatriculaListener::class);
+        $matriculaRepository = $this->app->make(\Modulos\Academico\Repositories\MatriculaCursoRepository::class);
 
-        $this->assertEquals(1, $this->sincronizacaoRepository->count());
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        // Atualiza o grupo
-        $grupoRepository->update(["grp_nome" => "Grupo B"], $this->grupo->grp_id);
+        // Atualiza a situacao da matricula
 
-        $this->seeInDatabase('acd_grupos', [
-            "grp_id" => $this->grupo->grp_id,
-            "grp_trm_id" => $this->turma->trm_id,
-            "grp_pol_id" => $this->grupo->grp_pol_id,
-            "grp_nome" => "Grupo B",
+        $this->assertEquals(1, $matriculaRepository->count());
+
+        $matriculaRepository->update(['mat_situacao' => 'trancado'], $this->matricula->mat_id);
+
+        $this->seeInDatabase('acd_matriculas', [
+            'mat_situacao' => 'trancado',
         ]);
 
-        $updateGrupoEvent = new UpdateGrupoEvent($this->grupo);
-        $sincronizacaoListener->handle($updateGrupoEvent);
+        $updateSituacaoMatriculaEvent = new UpdateSituacaoMatriculaEvent($this->matricula);
+        $sincronizacaoListener->handle($updateSituacaoMatriculaEvent);
 
         $this->seeInDatabase('int_sync_moodle', [
-            'sym_table' => $updateGrupoEvent->getData()->getTable(),
-            'sym_table_id' => $updateGrupoEvent->getData()->getKey(),
-            'sym_action' => $updateGrupoEvent->getAction(),
+            'sym_table' => $updateSituacaoMatriculaEvent->getData()->getTable(),
+            'sym_table_id' => $updateSituacaoMatriculaEvent->getData()->getKey(),
+            'sym_action' => $updateSituacaoMatriculaEvent->getAction(),
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => $updateGrupoEvent->getExtra()
+            'sym_extra' => $updateSituacaoMatriculaEvent->getExtra()
         ]);
 
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
-        $updateGrupoListener->handle($updateGrupoEvent);
+        $updateSituacaoMatriculaListener->handle($updateSituacaoMatriculaEvent);
 
-        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+        $this->assertEquals(3, $this->sincronizacaoRepository->count());
     }
 }

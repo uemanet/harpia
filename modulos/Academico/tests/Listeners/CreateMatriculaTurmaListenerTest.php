@@ -112,7 +112,6 @@ class CreateMatriculaTurmaListenerTest extends TestCase
             'trm_qtd_vagas' => 50
         ];
 
-
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
 
         // Vincular com o ambiente
