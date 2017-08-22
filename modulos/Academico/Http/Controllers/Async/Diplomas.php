@@ -30,4 +30,27 @@ class Diplomas
             return new JsonResponse($e, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function postDiplomarAlunos(Request $request)
+    {
+        try {
+            $requestData = $request->all();
+            $registros = [];
+
+            foreach ($requestData['matriculas'] as $key => $value) {
+                $data['tipo_livro'] = 'DIPLOMA'; // Diplomação
+                $data['matricula'] = $value;
+
+                $registro = $this->registroRepository->create($data);
+                $registros[] = $registro->reg_id;
+            }
+            return new JsonResponse($registros, JsonResponse::HTTP_OK, $this->defaultHeaders);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            return new JsonResponse($e, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

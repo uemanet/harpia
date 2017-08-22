@@ -95,7 +95,7 @@ class RegistroRepository extends BaseRepository
 
             $this->livroRepository->create([
                 'liv_numero' => $numero,
-                'liv_tipo_livro' => 'DIPLOMA'
+                'liv_tipo_livro' => 'CERTIFICADO'
             ]);
 
             $ultimoLivro = $this->ultimoLivro();
