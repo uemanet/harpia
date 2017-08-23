@@ -8,14 +8,11 @@ use Harpia\Event\Contracts\SincronizacaoFactoryInterface;
 abstract class SincronizacaoFactory extends SincronizacaoEvent implements SincronizacaoFactoryInterface
 {
     const EVENTS = [
-        // Turma
         'Turma' => [
             'local_integracao_create_course' => \Modulos\Integracao\Events\TurmaMapeadaEvent::class,
             'local_integracao_update_course' => \Modulos\Academico\Events\UpdateTurmaEvent::class,
             'local_integracao_delete_course' => \Modulos\Integracao\Events\TurmaRemovidaEvent::class,
         ],
-
-        // Grupo
 
         'Grupo' => [
             'local_integracao_create_group' => \Modulos\Academico\Events\CreateGrupoEvent::class,
@@ -23,14 +20,11 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
             'local_integracao_delete_group' => \Modulos\Academico\Events\DeleteGrupoEvent::class,
         ],
 
-        // OfertaDisciplina
         'OfertaDisciplina' => [
             'local_integracao_create_discipline' => \Modulos\Academico\Events\CreateOfertaDisciplinaEvent::class,
             'local_integracao_delete_discipline' => \Modulos\Academico\Events\DeleteOfertaDisciplinaEvent::class,
             'local_integracao_change_teacher' => \Modulos\Academico\Events\UpdateProfessorDisciplinaEvent::class,
         ],
-
-        // Matricula
 
         'Matricula' => [
             'local_integracao_enrol_student' => \Modulos\Academico\Events\CreateMatriculaTurmaEvent::class,
@@ -39,57 +33,45 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
             'local_integracao_unenrol_student_group' => \Modulos\Academico\Events\DeleteGrupoAlunoEvent::class,
         ],
 
-        // MatriculaOfertaDisciplina
         'MatriculaOfertaDisciplina' => [
             'local_integracao_enrol_student_discipline' => \Modulos\Academico\Events\CreateMatriculaDisciplinaEvent::class,
         ],
 
-        // TutorGrupo
         'TutorGrupo' => [
             'local_integracao_enrol_tutor' => \Modulos\Academico\Events\CreateVinculoTutorEvent::class,
             'local_integracao_unenrol_tutor_group' => \Modulos\Academico\Events\DeleteVinculoTutorEvent::class,
         ],
 
-        // Pessoa
         'Pessoa' => [
             'local_integracao_update_user' => \Modulos\Geral\Events\UpdatePessoaEvent::class
         ],
     ];
 
-    /**
-     * Cria um evento de sincronizacao com base em seu registro na tabela de sincronizacao
-     * @param Sincronizacao $sincronizacao
-     * @throws \Exception
-     */
     final public static function factorySincronizacao(Sincronizacao $sincronizacao)
     {
         $entry = $sincronizacao;
 
         $event = self::makeEvent($sincronizacao);
-    }
 
-    /**
-     * Retorna o endpoint correspondent ao evento
-     * @param $table
-     * @param $action
-     * @return string
-     */
-    final private static function getEventEndpoint($table, $action)
-    {
-        if (isset(self::ENDPOINTS[$table][$action])) {
-            return self::ENDPOINTS[$table][$action];
-        }
+        // O evento equivale a uma nova tentativa de migracao
+        $event->setAttemptAsNew();
 
-        return "";
+        return $event;
     }
 
     /**
      * Recria o evento correspodente para a classe passada
      * @param Sincronizacao $sincronizacao
+     * @return \Harpia\Event\SincronizacaoEvent
      */
     final private static function makeEvent(Sincronizacao $sincronizacao)
     {
+        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action);
+
         $dependencies = self::getDependencies($sincronizacao);
+        $eventClass = self::getEventClass($endpoint);
+
+        return new $eventClass($dependencies['entry'], $dependencies['extra']);
     }
 
     /**
@@ -142,6 +124,38 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
         if (in_array($endpoint, self::EVENTS['Pessoa'])) {
             return \Modulos\Geral\Models\Pessoa::find($id);
+        }
+
+        throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");
+    }
+
+    /**
+     * Retorna o endpoint correspondent ao evento
+     * @param $table
+     * @param $action
+     * @return string
+     */
+    final private static function getEventEndpoint($table, $action)
+    {
+        if (isset(self::ENDPOINTS[$table][$action])) {
+            return self::ENDPOINTS[$table][$action];
+        }
+
+        return "";
+    }
+
+    /**
+     * Retorna a classe correspondent ao evento
+     * @param $endpoint
+     * @throws \Exception
+     * @return string
+     */
+    final private static function getEventClass($endpoint)
+    {
+        foreach (self::EVENTS as $eventGroup) {
+            if (isset($eventGroup[$endpoint])) {
+                return $eventGroup[$endpoint];
+            }
         }
 
         throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");
