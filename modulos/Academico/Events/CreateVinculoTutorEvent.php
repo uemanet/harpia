@@ -7,8 +7,8 @@ use Modulos\Academico\Models\TutorGrupo;
 
 class CreateVinculoTutorEvent extends SincronizacaoEvent
 {
-    public function __construct(TutorGrupo $entry)
+    public function __construct(TutorGrupo $entry, $extra = null)
     {
-        parent::__construct($entry, "CREATE");
+        parent::__construct($entry, "CREATE", $extra);
     }
 }

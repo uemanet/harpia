@@ -7,8 +7,8 @@ use Modulos\Academico\Models\OfertaDisciplina;
 
 class UpdateProfessorDisciplinaEvent extends SincronizacaoEvent
 {
-    public function __construct(OfertaDisciplina $entry)
+    public function __construct(OfertaDisciplina $entry, $extra = null)
     {
-        parent::__construct($entry, "UPDATE_PROFESSOR_OFERTA_DISCIPLINA");
+        parent::__construct($entry, "UPDATE_PROFESSOR_OFERTA_DISCIPLINA", $extra);
     }
 }

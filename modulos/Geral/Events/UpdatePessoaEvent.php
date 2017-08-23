@@ -2,12 +2,12 @@
 
 namespace Modulos\Geral\Events;
 
+use Modulos\Geral\Models\Pessoa;
 use Harpia\Event\SincronizacaoEvent;
-use Modulos\Core\Model\BaseModel;
 
 class UpdatePessoaEvent extends SincronizacaoEvent
 {
-    public function __construct(BaseModel $entry, $extra = null)
+    public function __construct(Pessoa $entry, $extra = null)
     {
         parent::__construct($entry, "UPDATE", $extra);
     }
