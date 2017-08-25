@@ -131,8 +131,12 @@ class UpdateTurmaListenerTest extends TestCase
     {
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $updateTurmaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateTurmaListener::class);
+        $turmaRepository = $this->app->make(\Modulos\Academico\Repositories\TurmaRepository::class);
 
         $this->assertEquals(1, $this->sincronizacaoRepository->count());
+
+        // Atualiza o grupo
+        $turmaRepository->update(["trm_nome" => "Teste Mudança de Nome"], $this->turma->trm_id);
 
         $updateTurmaEvent = new UpdateTurmaEvent($this->turma);
         $sincronizacaoListener->handle($updateTurmaEvent);

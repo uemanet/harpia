@@ -90,7 +90,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
     }
 
     /**
-     * Recupera o
+     * Recupera o registro correspondente ao evento a ser fabricado
      * @param $endpoint
      * @param $id
      * @return \Modulos\Core\Model\BaseModel
@@ -98,31 +98,31 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      */
     final public static function getEventEntry($endpoint, $id)
     {
-        if (in_array($endpoint, self::EVENTS['Turma'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['Turma']))) {
             return \Modulos\Academico\Models\Turma::find($id);
         }
 
-        if (in_array($endpoint, self::EVENTS['Grupo'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['Grupo']))) {
             return \Modulos\Academico\Models\Grupo::find($id);
         }
 
-        if (in_array($endpoint, self::EVENTS['OfertaDisciplina'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['OfertaDisciplina']))) {
             return \Modulos\Academico\Models\OfertaDisciplina::find($id);
         }
 
-        if (in_array($endpoint, self::EVENTS['Matricula'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['Matricula']))) {
             return \Modulos\Academico\Models\Matricula::find($id);
         }
 
-        if (in_array($endpoint, self::EVENTS['MatriculaOfertaDisciplina'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['MatriculaOfertaDisciplina']))) {
             return \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($id);
         }
 
-        if (in_array($endpoint, self::EVENTS['TutorGrupo'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['TutorGrupo']))) {
             return \Modulos\Academico\Models\TutorGrupo::find($id);
         }
 
-        if (in_array($endpoint, self::EVENTS['Pessoa'])) {
+        if (in_array($endpoint, array_keys(self::EVENTS['Pessoa']))) {
             return \Modulos\Geral\Models\Pessoa::find($id);
         }
 

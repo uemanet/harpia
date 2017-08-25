@@ -1,6 +1,6 @@
 <?php
 
-use Modulos\Academico\Events\CreateGrupoEvent;
+use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
 class DeleteGrupoListenerTest extends TestCase
@@ -139,25 +139,25 @@ class DeleteGrupoListenerTest extends TestCase
     public function testHandle()
     {
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-        $createGroupListener = $this->app->make(\Modulos\Academico\Listeners\CreateGrupoListener::class);
+        $deleteGroupListener = $this->app->make(\Modulos\Academico\Listeners\DeleteGrupoListener::class);
 
         $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
-        $createGroupEvent = new CreateGrupoEvent($this->grupo);
-        $sincronizacaoListener->handle($createGroupEvent);
+        $deleteGroupEvent = new DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id);
+        $sincronizacaoListener->handle($deleteGroupEvent);
 
         $this->seeInDatabase('int_sync_moodle', [
-            'sym_table' => $createGroupEvent->getData()->getTable(),
-            'sym_table_id' => $createGroupEvent->getData()->getKey(),
-            'sym_action' => $createGroupEvent->getAction(),
+            'sym_table' => $deleteGroupEvent->getData()->getTable(),
+            'sym_table_id' => $deleteGroupEvent->getData()->getKey(),
+            'sym_action' => $deleteGroupEvent->getAction(),
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => $createGroupEvent->getExtra()
+            'sym_extra' => $deleteGroupEvent->getExtra()
         ]);
 
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
-        $createGroupListener->handle($createGroupEvent);
+        $deleteGroupListener->handle($deleteGroupEvent);
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
     }
