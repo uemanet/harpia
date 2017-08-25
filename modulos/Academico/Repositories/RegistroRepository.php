@@ -157,8 +157,6 @@ class RegistroRepository extends BaseRepository
         $diploma = new Diploma();
         $diploma->dip_reg_id = $registro->reg_id;
         $diploma->dip_mat_id = $data['matricula'];
-        $diploma->dip_processo = '123456';
-        $diploma->dip_codigo_autenticidade_externo = '123456';
         $diploma->save();
 
         return $registro;
