@@ -303,7 +303,7 @@ $factory->define(Modulos\Academico\Models\ModuloDisciplina::class, function (Fak
     return [
         'mdc_dis_id' => $disciplina->dis_id,
         'mdc_mdo_id' => $moduloMatriz->mdo_id,
-        'mdc_tipo_disciplina' => $faker->randomElement(['obrigatoria', 'eletiva', 'optativa', 'tcc'])
+        'mdc_tipo_disciplina' => $faker->randomElement(['obrigatoria', 'eletiva', 'optativa'])
     ];
 });
 

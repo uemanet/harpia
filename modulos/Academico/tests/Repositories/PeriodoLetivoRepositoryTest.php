@@ -173,6 +173,33 @@ class PeriodoLetivoRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testGetAllByTurma()
+    {
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+
+        $response = $this->repo->getAllByTurma($turma->trm_id);
+
+        $this->assertNotEmpty($response, false);
+    }
+
+    public function testGetPeriodosValidos()
+    {
+        $oferta = factory(\Modulos\Academico\Models\OfertaCurso::class)->create();
+
+        $response = $this->repo->getPeriodosValidos($oferta->ofc_ano, null);
+
+        $this->assertEmpty($response, false);
+    }
+
+    public function testVerifyNamePeriodo()
+    {
+        $data = factory(PeriodoLetivo::class)->create();
+
+        $response = $this->repo->verifyNamePeriodo($data->per_nome);
+
+        $this->assertEquals($response, true);
+    }
+
     public function testDelete()
     {
         $data = factory(PeriodoLetivo::class)->create();

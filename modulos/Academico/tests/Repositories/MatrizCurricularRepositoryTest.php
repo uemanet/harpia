@@ -174,6 +174,81 @@ class MatrizCurricularRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testFindAllByCurso()
+    {
+
+        $matriz = factory(MatrizCurricular::class)->create();
+        $response = $this->repo->findAllByCurso($matriz->curso->crs_id);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testFindByOfertaCurso()
+    {
+        $ofertacurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create();
+
+        $response = $this->repo->findByOfertaCurso($ofertacurso->ofc_id);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testListsAllByCurso()
+    {
+        $ofertacurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create();
+
+        $response = $this->repo->listsAllByCurso($ofertacurso->curso->crs_id);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testListsAllById()
+    {
+        $matriz = factory(\Modulos\Academico\Models\MatrizCurricular::class)->create();
+
+        $response = $this->repo->listsAllByCurso($matriz->mtc_id);
+
+        $this->assertNotEmpty($response, '');
+
+    }
+
+    public function testGetDisciplinasByMatrizId()
+    {
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+
+        $response = $this->repo->getDisciplinasByMatrizId($modulodisciplina->modulo->matriz->mtc_id);
+
+        $this->assertNotEmpty($response, '');
+
+    }
+
+    public function testVerifyIfDisciplinaExistsInMatriz()
+    {
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+
+        $response = $this->repo->verifyIfDisciplinaExistsInMatriz($modulodisciplina->modulo->matriz->mtc_id, $modulodisciplina->disciplina->dis_id);
+
+        $this->assertNotEmpty($response, '');
+
+    }
+
+    public function testVerifyIfNomeDisciplinaExistsInMatriz()
+    {
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+
+        $response = $this->repo->verifyIfNomeDisciplinaExistsInMatriz($modulodisciplina->modulo->matriz->mtc_id, $modulodisciplina->disciplina->dis_nome);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testVerifyIfExistsDisciplinaTccInMatriz()
+    {
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+
+        $response = $this->repo->verifyIfExistsDisciplinaTccInMatriz($modulodisciplina->modulo->matriz->mtc_id);
+
+        $this->assertEquals($response, false);
+    }
+    
     public function testDelete()
     {
         $data = factory(MatrizCurricular::class)->create();
