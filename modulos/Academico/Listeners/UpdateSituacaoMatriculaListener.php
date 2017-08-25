@@ -57,13 +57,19 @@ class UpdateSituacaoMatriculaListener
                 ));
             }
         } catch (ConnectException $exception) {
-            if (config('app.debug')) {
+            if (env('app.debug')) {
+                throw $exception;
+            }
+
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } catch (ClientException $exception) {
+            if (env('app.debug')) {
                 throw $exception;
             }
 
             event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
-            if (config('app.debug')) {
+            if (env('app.debug')) {
                 throw $exception;
             }
 

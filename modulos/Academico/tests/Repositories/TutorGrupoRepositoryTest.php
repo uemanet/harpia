@@ -39,26 +39,26 @@ class TutorGrupoRepositoryTest extends TestCase
 
     public function testVerifyTutorExists()
     {
-      $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class,10)->create();
-      $retorno = $this->repo->verifyTutorExists(1);
+        $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class, 10)->create();
+        $retorno = $this->repo->verifyTutorExists(1);
 
-      $this->assertEquals($retorno, true);
+        $this->assertEquals($retorno, true);
     }
 
     public function testHowManyTutors()
     {
-      $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class,10)->create();
-      $retorno = $this->repo->howManyTutors(1);
-      $this->assertEquals($retorno, 1);
+        $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class, 10)->create();
+        $retorno = $this->repo->howManyTutors(1);
+        $this->assertEquals($retorno, 1);
     }
 
     public function testVerifyTutorPresencial()
     {
-      $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class,10)->create();
+        $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class, 10)->create();
 
-      $retorno = $this->repo->verifyTutorPresencial(1, 'presencial');
+        $retorno = $this->repo->verifyTutorPresencial(1, 'presencial');
 
-      $this->assertEquals($retorno, null);
+        $this->assertEquals($retorno, null);
     }
 
     public function tearDown()
@@ -66,5 +66,4 @@ class TutorGrupoRepositoryTest extends TestCase
         Artisan::call('migrate:reset');
         parent::tearDown();
     }
-
 }

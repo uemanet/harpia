@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Listeners;
 
 use Moodle;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
@@ -56,13 +57,19 @@ class DeleteGrupoListener
                 ));
             }
         } catch (ConnectException $exception) {
-            if (config('app.debug')) {
+            if (env('app.debug')) {
+                throw $exception;
+            }
+
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
+        } catch (ClientException $exception) {
+            if (env('app.debug')) {
                 throw $exception;
             }
 
             event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
-            if (config('app.debug')) {
+            if (env('app.debug')) {
                 throw $exception;
             }
 

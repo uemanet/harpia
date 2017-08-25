@@ -52,7 +52,7 @@ class DiplomasController
         }
         define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
         $mpdf = new \mPDF();
-        $mpdf->addPage('L', '', '', '', '','','');
+        $mpdf->addPage('L', '', '', '', '', '', '');
 
         $mpdf->WriteHTML(view('Academico::diplomas.print', ['retorno' => $retorno])->render());
         $mpdf->Output();

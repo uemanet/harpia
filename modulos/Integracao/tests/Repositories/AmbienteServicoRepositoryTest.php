@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
+use Modulos\Integracao\Repositories\AmbienteServicoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class AmbienteTurmaRepositoryTest extends TestCase
+class AmbienteServicoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -18,7 +18,7 @@ class AmbienteTurmaRepositoryTest extends TestCase
     {
         putenv('DB_CONNECTION=sqlite_testing');
 
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app = require __DIR__ . '/../../../../bootstrap/app.php';
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
@@ -31,7 +31,7 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(AmbienteTurmaRepository::class);
+        $this->repo = $this->app->make(AmbienteServicoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +44,7 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\AmbienteTurma::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,10 +55,10 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\AmbienteTurma::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
 
         $sort = [
-            'field' => 'atr_id',
+            'field' => 'asr_id',
             'sort' => 'desc'
         ];
 
@@ -66,22 +66,22 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertEquals(2, $response[0]->atr_id);
+        $this->assertEquals(2, $response[0]->asr_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\AmbienteTurma::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
 
-        factory(Modulos\Integracao\Models\AmbienteTurma::class)->create([
-            'atr_amb_id' => 1,
+        factory(Modulos\Integracao\Models\AmbienteServico::class)->create([
+            'asr_token' => 'kjh231kjagJAsuihsauigsakj',
         ]);
 
         $search = [
             [
-                'field' => 'atr_amb_id',
-                'type' => '=',
-                'term' => 1
+                'field' => 'asr_token',
+                'type' => 'like',
+                'term' => 'kjh231kjagJAsuihsauigsakj'
             ]
         ];
 
@@ -91,21 +91,21 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
 
-        $this->assertEquals(1, $response[0]->atr_amb_id);
+        $this->assertEquals('kjh231kjagJAsuihsauigsakj', $response[0]->asr_token);
     }
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Integracao\Models\AmbienteTurma::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
 
         $sort = [
-            'field' => 'atr_id',
+            'field' => 'asr_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'atr_id',
+                'field' => 'asr_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -117,16 +117,16 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
 
-        $this->assertEquals(2, $response[0]->atr_id);
+        $this->assertEquals(2, $response[0]->asr_id);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\AmbienteTurma::class, 2)->create();
+        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'atr_id',
+            'field' => 'asr_id',
             'sort' => 'asc'
         ];
 
@@ -139,42 +139,41 @@ class AmbienteTurmaRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create();
+        $response = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteTurma::class, $response);
+        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteServico::class, $response);
 
-        $this->assertArrayHasKey('atr_id', $response->toArray());
+        $this->assertArrayHasKey('asr_id', $response->toArray());
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
 
-        $this->seeInDatabase('int_ambientes_turmas', $data->toArray());
+        $this->seeInDatabase('int_ambientes_servicos', $data->toArray());
     }
 
     public function testUpdate()
     {
-        $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
-        $data = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create();
+        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['atr_amb_id'] = $ambiente->amb_id;
+        $updateArray['asr_token'] = 'asd5weAse78r54asskhae';
 
-        $ambientevirtualdId = $updateArray['atr_id'];
-        unset($updateArray['atr_id']);
+        $ambienteServicoId = $updateArray['asr_id'];
+        unset($updateArray['asr_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'atr_id');
+        $response = $this->repo->update($updateArray, $ambienteServicoId, 'asr_id');
 
         $this->assertEquals(1, $response);
     }
 
     public function testDelete()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create();
-        $ambientevirtualId = $data->atr_id;
+        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
+        $ambienteServicoId = $data->asr_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($ambienteServicoId);
 
         $this->assertEquals(1, $response);
     }

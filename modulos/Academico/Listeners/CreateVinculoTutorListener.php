@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Listeners;
 
 use Moodle;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
@@ -78,13 +79,19 @@ class CreateVinculoTutorListener
                 event(new UpdateSincronizacaoEvent($tutorGrupo, $status, $response['message']));
             }
         } catch (ConnectException $exception) {
-            if (config('app.debug')) {
+            if (env('app.debug')) {
                 throw $exception;
             }
 
             event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage()));
+        } catch (ClientException $exception) {
+            if (env('app.debug')) {
+                throw $exception;
+            }
+
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
         } catch (\Exception $exception) {
-            if (config('app.debug')) {
+            if (env('app.debug')) {
                 throw $exception;
             }
 

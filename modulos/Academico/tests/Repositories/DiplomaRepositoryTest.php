@@ -113,5 +113,4 @@ class DiplomaRepositoryTest extends TestCase
 
         $this->assertGreaterThan(1, $response[0]->dip_id);
     }
-
 }

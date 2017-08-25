@@ -23,7 +23,7 @@ class MapeamentoNotasRepositoryTest extends TestCase
     {
         putenv('DB_CONNECTION=sqlite_testing');
 
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app = require __DIR__ . '/../../../../bootstrap/app.php';
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
