@@ -7,8 +7,8 @@ use Harpia\Event\SincronizacaoEvent;
 
 class UpdateGrupoEvent extends SincronizacaoEvent
 {
-    public function __construct(Grupo $entry)
+    public function __construct(Grupo $entry, $extra = null)
     {
-        parent::__construct($entry, "UPDATE");
+        parent::__construct($entry, "UPDATE", $extra);
     }
 }

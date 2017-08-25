@@ -17,19 +17,21 @@ class SincronizacaoListener
     public function handle(SincronizacaoEvent $event)
     {
         try {
-            $entry = $event->getData();
+            if ($event->isFirstAttempt()) {
+                $entry = $event->getData();
 
-            $data = [
-                'sym_table' => $entry->getTable(),
-                'sym_table_id' => $entry->getKey(),
-                'sym_action' => $event->getAction(),
-                'sym_status' => 1,
-                'sym_mensagem' => null,
-                'sym_data_envio' => null,
-                'sym_extra' => $event->getExtra()
-            ];
+                $data = [
+                    'sym_table' => $entry->getTable(),
+                    'sym_table_id' => $entry->getKey(),
+                    'sym_action' => $event->getAction(),
+                    'sym_status' => 1,
+                    'sym_mensagem' => null,
+                    'sym_data_envio' => null,
+                    'sym_extra' => $event->getExtra()
+                ];
 
-            $this->sincronizacaoRepository->create($data);
+                $this->sincronizacaoRepository->create($data);
+            }
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

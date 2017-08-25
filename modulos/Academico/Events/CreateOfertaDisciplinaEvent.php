@@ -7,8 +7,8 @@ use Modulos\Academico\Models\OfertaDisciplina;
 
 class CreateOfertaDisciplinaEvent extends SincronizacaoEvent
 {
-    public function __construct(OfertaDisciplina $entry)
+    public function __construct(OfertaDisciplina $entry, $extra = null)
     {
-        parent::__construct($entry, "CREATE");
+        parent::__construct($entry, "CREATE", $extra);
     }
 }

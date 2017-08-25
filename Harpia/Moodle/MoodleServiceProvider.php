@@ -25,7 +25,7 @@ class MoodleServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['Moodle'] = $this->app->share(function ($app) {
+        $this->app->singleton('Moodle', function ($app) {
             return new Moodle();
         });
     }

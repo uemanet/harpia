@@ -7,8 +7,8 @@ use Harpia\Event\SincronizacaoEvent;
 
 class UpdateTurmaEvent extends SincronizacaoEvent
 {
-    public function __construct(Turma $entry)
+    public function __construct(Turma $entry, $extra = null)
     {
-        parent::__construct($entry, "UPDATE");
+        parent::__construct($entry, "UPDATE", $extra);
     }
 }

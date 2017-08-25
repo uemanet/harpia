@@ -7,8 +7,8 @@ use Modulos\Academico\Models\Turma;
 
 class TurmaMapeadaEvent extends SincronizacaoEvent
 {
-    public function __construct(Turma $entry)
+    public function __construct(Turma $entry, $extra = null)
     {
-        parent::__construct($entry, "CREATE");
+        parent::__construct($entry, "CREATE", $extra);
     }
 }

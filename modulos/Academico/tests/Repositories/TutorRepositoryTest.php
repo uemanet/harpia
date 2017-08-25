@@ -150,47 +150,47 @@ class TutorRepositoryTest extends TestCase
 
     public function testListsTutorPessoa()
     {
-      $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
-      $response = factory(Modulos\Academico\Models\Tutor::class)->create();
+        $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(Modulos\Academico\Models\Tutor::class)->create();
 
-      $tutorgrupo = new TutorGrupo();
-      $TutorRepository = new TutorRepository(new Tutor());
+        $tutorgrupo = new TutorGrupo();
+        $TutorRepository = new TutorRepository(new Tutor());
 
-      $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
+        $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
 
-      $tutores = $TutorRepository->listsTutorPessoa($grupo->grp_id);
+        $tutores = $TutorRepository->listsTutorPessoa($grupo->grp_id);
 
-      $this->assertEmpty($tutores, '');
+        $this->assertEmpty($tutores, '');
     }
 
     public function testFindAllByGrupo()
     {
-      $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
-      $response = factory(Modulos\Academico\Models\Tutor::class)->create();
+        $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(Modulos\Academico\Models\Tutor::class)->create();
 
-      $tutorgrupo = new TutorGrupo();
-      $TutorRepository = new TutorRepository(new Tutor());
+        $tutorgrupo = new TutorGrupo();
+        $TutorRepository = new TutorRepository(new Tutor());
 
-      $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
+        $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
 
-      $tutores = $TutorRepository->findAllByGrupo($grupo->grp_id);
+        $tutores = $TutorRepository->findAllByGrupo($grupo->grp_id);
 
-      $this->assertNotEmpty($tutores, '');
+        $this->assertNotEmpty($tutores, '');
     }
 
     public function testFindallbyTurmaTipoTutoria()
     {
-      $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
-      $response = factory(Modulos\Academico\Models\Tutor::class)->create();
+        $grupo = factory(Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(Modulos\Academico\Models\Tutor::class)->create();
 
-      $tutorgrupo = new TutorGrupo();
-      $TutorRepository = new TutorRepository(new Tutor());
+        $tutorgrupo = new TutorGrupo();
+        $TutorRepository = new TutorRepository(new Tutor());
 
-      $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
+        $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
 
-      $tutores = $TutorRepository->FindallbyTurmaTipoTutoria($grupo->turma->trm_id, 'presencial');
+        $tutores = $TutorRepository->FindallbyTurmaTipoTutoria($grupo->turma->trm_id, 'presencial');
       
-      $this->assertNotEmpty($tutores, '');
+        $this->assertNotEmpty($tutores, '');
     }
 
     public function testFind()
@@ -216,5 +216,4 @@ class TutorRepositoryTest extends TestCase
         Artisan::call('migrate:reset');
         parent::tearDown();
     }
-
 }

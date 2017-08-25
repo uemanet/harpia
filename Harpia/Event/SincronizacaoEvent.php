@@ -10,11 +10,13 @@ use Modulos\Core\Model\BaseModel;
  */
 abstract class SincronizacaoEvent extends Event
 {
+    protected $firstAttempt = true;
+
     /**
      * Array com os endpoints do plugin de integração ( [tabela][acao] => endpoint )
      * @var array
      */
-    protected $endpoints = [
+    const ENDPOINTS = [
         'acd_turmas' => [
             'CREATE' => 'local_integracao_create_course',
             'UPDATE' => 'local_integracao_update_course',
@@ -57,12 +59,29 @@ abstract class SincronizacaoEvent extends Event
      * Retorna o endpoint correspondente ao evento de sincronizacao
      * @return string
      */
-    public function getEndpoint()
+    final public function getEndpoint()
     {
-        if (isset($this->endpoints[$this->entry->getTable()][$this->action])) {
-            return $this->endpoints[$this->entry->getTable()][$this->action];
+        if (isset(self::ENDPOINTS[$this->entry->getTable()][$this->action])) {
+            return self::ENDPOINTS[$this->entry->getTable()][$this->action];
         }
 
         return "";
+    }
+
+    /**
+     * Primeira tentativa de migracao ?
+     * @return bool
+     */
+    final public function isFirstAttempt()
+    {
+        return $this->firstAttempt;
+    }
+
+    /**
+     * Configura o evento como uma nova tentativa de sincronizacao
+     */
+    final public function setAttemptAsNew()
+    {
+        $this->firstAttempt = false;
     }
 }

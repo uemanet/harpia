@@ -2,12 +2,12 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
 
-class AmbienteVirtualRepositoryTest extends TestCase
+class SincronizacaoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -18,7 +18,7 @@ class AmbienteVirtualRepositoryTest extends TestCase
     {
         putenv('DB_CONNECTION=sqlite_testing');
 
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app = require __DIR__ . '/../../../../bootstrap/app.php';
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
@@ -31,7 +31,7 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->repo = $this->app->make(AmbienteVirtualRepository::class);
+        $this->repo = $this->app->make(SincronizacaoRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,7 +44,7 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -55,10 +55,10 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $sort = [
-            'field' => 'amb_id',
+            'field' => 'sym_id',
             'sort' => 'desc'
         ];
 
@@ -66,20 +66,20 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertEquals(2, $response[0]->amb_id);
+        $this->assertEquals(2, $response[0]->sym_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
-        factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create([
-            'amb_nome' => 'icatu',
+        factory(Modulos\Integracao\Models\Sincronizacao::class)->create([
+            'sym_mensagem' => 'icatu',
         ]);
 
         $search = [
             [
-                'field' => 'amb_nome',
+                'field' => 'sym_mensagem',
                 'type' => 'like',
                 'term' => 'icatu'
             ]
@@ -91,21 +91,21 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
 
-        $this->assertEquals('icatu', $response[0]->amb_nome);
+        $this->assertEquals('icatu', $response[0]->sym_mensagem);
     }
 
     public function testPaginateWithSearchAndOrder()
     {
-        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $sort = [
-            'field' => 'amb_id',
+            'field' => 'sym_id',
             'sort' => 'desc'
         ];
 
         $search = [
             [
-                'field' => 'amb_id',
+                'field' => 'sym_id',
                 'type' => '>',
                 'term' => '1'
             ]
@@ -117,16 +117,16 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
 
-        $this->assertEquals(2, $response[0]->amb_id);
+        $this->assertEquals(2, $response[0]->sym_id);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\AmbienteVirtual::class, 2)->create();
+        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'amb_id',
+            'field' => 'sym_id',
             'sort' => 'asc'
         ];
 
@@ -139,41 +139,73 @@ class AmbienteVirtualRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+        $response = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteVirtual::class, $response);
+        $this->assertInstanceOf(\Modulos\Integracao\Models\Sincronizacao::class, $response);
 
-        $this->assertArrayHasKey('amb_id', $response->toArray());
+        $this->assertArrayHasKey('sym_id', $response->toArray());
     }
 
     public function testFind()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
-        $this->seeInDatabase('int_ambientes_virtuais', $data->toArray());
+        $this->seeInDatabase('int_sync_moodle', $data->toArray());
+    }
+
+
+    public function testFindBy()
+    {
+        $data = [
+            'sym_table' => 'gra_pessoas',
+            'sym_action' => 'UPDATE',
+        ];
+
+        $sync = factory(Modulos\Integracao\Models\Sincronizacao::class)->create($data);
+
+        $recovered = $this->repo->findBy($data)->last();
+
+        $this->seeInDatabase('int_sync_moodle', $sync->toArray());
+        $this->assertEquals($sync->toArray(), $recovered->toArray());
     }
 
     public function testUpdate()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
         $updateArray = $data->toArray();
-        $updateArray['amb_nome'] = 'abcde_edcba';
+        $updateArray['sym_mensagem'] = 'abcde_edcba';
 
-        $ambientevirtualdId = $updateArray['amb_id'];
-        unset($updateArray['amb_id']);
+        $syncId = $updateArray['sym_id'];
+        unset($updateArray['sym_id']);
 
-        $response = $this->repo->update($updateArray, $ambientevirtualdId, 'amb_id');
+        $response = $this->repo->update($updateArray, $syncId, 'sym_id');
 
         $this->assertEquals(1, $response);
     }
 
+    public function testUpdateSyncMoodle()
+    {
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create([
+            'sym_table' => 'gra_pessoas',
+            'sym_table_id' => 1,
+            'sym_action' => 'UPDATE',
+        ]);
+
+        $updateArray = $data->toArray();
+        $updateArray['sym_mensagem'] = 'abcde_edcba';
+
+        $response = $this->repo->updateSyncMoodle($updateArray);
+
+        $this->assertEquals($data->sym_id, $response);
+    }
+
     public function testDelete()
     {
-        $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
-        $ambientevirtualId = $data->amb_id;
+        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
+        $syncId = $data->sym_id;
 
-        $response = $this->repo->delete($ambientevirtualId);
+        $response = $this->repo->delete($syncId);
 
         $this->assertEquals(1, $response);
     }
