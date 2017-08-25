@@ -12,5 +12,5 @@ interface SincronizacaoFactoryInterface
      * @throws \Exception
      * @return \Harpia\Event\SincronizacaoEvent
      */
-    public static function factorySincronizacao(Sincronizacao $sincronizacao);
+    public static function factory(Sincronizacao $sincronizacao);
 }

@@ -3,15 +3,18 @@
 use Harpia\Event\SincronizacaoFactory;
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
+use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 
 class SincronizacaoFactoryTest extends TestCase
 {
+    protected $tutor;
     protected $turma;
     protected $grupo;
     protected $ambiente;
+    protected $tutorGrupo;
     protected $matriculaCurso;
     protected $ofertaDisciplina;
     protected $matriculaDisciplina;
@@ -140,6 +143,7 @@ class SincronizacaoFactoryTest extends TestCase
         $createMatriculaTurmaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaTurmaListener::class);
         $createMatriculaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener::class);
         $createOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateOfertaDisciplinaListener::class);
+        $createVinculoListener = $this->app->make(\Modulos\Academico\Listeners\CreateVinculoTutorListener::class);
 
         // Eventos de turma
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
@@ -159,6 +163,15 @@ class SincronizacaoFactoryTest extends TestCase
 
         $sincronizacaoListener->handle($createGroupEvent);
         $createGroupListener->handle($createGroupEvent);
+
+        // Criar o tutor
+        $this->tutor = factory(\Modulos\Academico\Models\Tutor::class)->create();
+
+        // Vinculo
+        $this->tutorGrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create([
+            'ttg_tut_id' => $this->tutor->tut_id,
+            'ttg_grp_id' => $this->grupo->grp_id,
+        ]);
 
         // Cria a matricula no curso
         $this->matriculaCurso = factory(\Modulos\Academico\Models\Matricula::class)->create([
@@ -186,6 +199,12 @@ class SincronizacaoFactoryTest extends TestCase
         $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
         $createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
+
+        // Eventos de vincular tutor ao grupo
+        $createVinculoEvent = new CreateVinculoTutorEvent($this->tutorGrupo);
+
+        $sincronizacaoListener->handle($createVinculoEvent);
+        $createVinculoListener->handle($createVinculoEvent);
     }
 
     public function testFactoryTurmaMapeadaEvent()
@@ -195,7 +214,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Integracao\Events\TurmaMapeadaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -222,7 +241,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(\Modulos\Academico\Events\UpdateTurmaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -245,7 +264,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(\Modulos\Integracao\Events\TurmaRemovidaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -258,7 +277,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\CreateGrupoEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -285,7 +304,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\UpdateGrupoEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -308,7 +327,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\DeleteGrupoEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -322,7 +341,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\CreateOfertaDisciplinaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -352,7 +371,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\UpdateProfessorDisciplinaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -375,7 +394,7 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\DeleteOfertaDisciplinaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
@@ -388,9 +407,34 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\CreateMatriculaDisciplinaEvent::class, $event);
+        $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+    }
+
+    public function testFactoryUpdatePessoaEvent()
+    {
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $updatePessoaListener = $this->app->make(\Modulos\Geral\Listeners\UpdatePessoaListener::class);
+
+        // Eventos de atualizacao de pessoa
+        $pessoa = \Modulos\Geral\Models\Pessoa::all()->first();
+
+        $updatePessoaEvent = new \Modulos\Geral\Events\UpdatePessoaEvent($pessoa, $this->ambiente->amb_id);
+
+        $sincronizacaoListener->handle($updatePessoaEvent);
+        $updatePessoaListener->handle($updatePessoaEvent);
+
+        // Verifica o factory
+        $sincronizacao = \Modulos\Integracao\Models\Sincronizacao::where('sym_table', '=', 'gra_pessoas')
+            ->where('sym_action', '=', 'UPDATE')
+            ->get()
+            ->first();
+
+        $event = SincronizacaoFactory::factory($sincronizacao);
+
+        $this->assertInstanceOf(Modulos\Geral\Events\UpdatePessoaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
     }
 
@@ -401,9 +445,134 @@ class SincronizacaoFactoryTest extends TestCase
             ->get()
             ->first();
 
-        $event = SincronizacaoFactory::factorySincronizacao($sincronizacao);
+        $event = SincronizacaoFactory::factory($sincronizacao);
 
         $this->assertInstanceOf(Modulos\Academico\Events\CreateMatriculaTurmaEvent::class, $event);
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+    }
+
+    public function testFactoryUpdateSituacaoMatriculaEvent()
+    {
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $updateSituacaoMatriculaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateSituacaoMatriculaListener::class);
+        $matriculaRepository = $this->app->make(\Modulos\Academico\Repositories\MatriculaCursoRepository::class);
+
+        // Atualiza a situacao da matricula
+        $matriculaRepository->update(['mat_situacao' => 'trancado'], $this->matriculaCurso->mat_id);
+
+        $updateSituacaoMatriculaEvent = new \Modulos\Academico\Events\UpdateSituacaoMatriculaEvent($this->matriculaCurso);
+        $sincronizacaoListener->handle($updateSituacaoMatriculaEvent);
+        $updateSituacaoMatriculaListener->handle($updateSituacaoMatriculaEvent);
+
+        // Verifica o factory
+        $sincronizacao = \Modulos\Integracao\Models\Sincronizacao::where('sym_table', '=', 'acd_matriculas')
+            ->where('sym_action', '=', 'UPDATE_SITUACAO_MATRICULA')
+            ->get()
+            ->first();
+
+        $event = SincronizacaoFactory::factory($sincronizacao);
+
+        $this->assertInstanceOf(Modulos\Academico\Events\UpdateSituacaoMatriculaEvent::class, $event);
+        $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+    }
+
+    public function testFactoryUpdateGrupoAlunoEvent()
+    {
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $updateGrupoAlunoListener = $this->app->make(\Modulos\Academico\Listeners\UpdateGrupoAlunoListener::class);
+        $matriculaCursoRepository = $this->app->make(\Modulos\Academico\Repositories\MatriculaCursoRepository::class);
+
+        // Cria novo grupo
+        $novoGrupo = factory(\Modulos\Academico\Models\Grupo::class)->create([
+            'grp_trm_id' => $this->turma->trm_id,
+            'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
+            'grp_nome' => "Group B"
+        ]);
+
+        // Atualiza a matricula para novo grupo
+        $oldGrupo = $this->matriculaCurso->mat_grp_id;
+
+        $matriculaCursoRepository->update([
+            'mat_grp_id' => $novoGrupo->grp_id
+        ], $this->matriculaCurso->mat_id);
+
+        // Eventos de atualizacao de grupo
+        $updateGrupoAlunoEvent = new \Modulos\Academico\Events\UpdateGrupoAlunoEvent($this->matriculaCurso, $oldGrupo);
+
+        $sincronizacaoListener->handle($updateGrupoAlunoEvent);
+        $updateGrupoAlunoListener->handle($updateGrupoAlunoEvent);
+
+        // Verifica o factory
+        $sincronizacao = \Modulos\Integracao\Models\Sincronizacao::where('sym_table', '=', 'acd_matriculas')
+            ->where('sym_action', '=', 'UPDATE_GRUPO_ALUNO')
+            ->get()
+            ->first();
+
+        $event = SincronizacaoFactory::factory($sincronizacao);
+
+        $this->assertInstanceOf(Modulos\Academico\Events\UpdateGrupoAlunoEvent::class, $event);
+        $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+    }
+
+    public function testFactoryDeleteGrupoAlunoEvent()
+    {
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $deleteGrupoAlunoListener = $this->app->make(\Modulos\Academico\Listeners\DeleteGrupoAlunoListener::class);
+
+        $oldGrupo = $this->matriculaCurso->mat_grp_id;
+
+        // Dispara evento e remocao de grupo
+        $deleteGrupoAlunoEvent = new \Modulos\Academico\Events\DeleteGrupoAlunoEvent($this->matriculaCurso, $oldGrupo);
+
+        $sincronizacaoListener->handle($deleteGrupoAlunoEvent);
+        $deleteGrupoAlunoListener->handle($deleteGrupoAlunoEvent);
+
+        // Verifica o factory
+        $sincronizacao = \Modulos\Integracao\Models\Sincronizacao::where('sym_table', '=', 'acd_matriculas')
+            ->where('sym_action', '=', 'DELETE_GRUPO_ALUNO')
+            ->get()
+            ->first();
+
+        $event = SincronizacaoFactory::factory($sincronizacao);
+
+        $this->assertInstanceOf(Modulos\Academico\Events\DeleteGrupoAlunoEvent::class, $event);
+        $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+    }
+
+    public function testFactoryCreateVinculoTutorEvent()
+    {
+        $sincronizacao = \Modulos\Integracao\Models\Sincronizacao::where('sym_table', '=', 'acd_tutores_grupos')
+            ->where('sym_action', '=', 'CREATE')
+            ->get()
+            ->first();
+
+        $event = SincronizacaoFactory::factory($sincronizacao);
+
+        $this->assertInstanceOf(Modulos\Academico\Events\CreateVinculoTutorEvent::class, $event);
+        $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+    }
+
+    public function testFactoryDeleteVinculoTutorEvent()
+    {
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $deleteVinculoListener = $this->app->make(\Modulos\Academico\Listeners\DeleteVinculoTutorListener::class);
+
+        // Evento de exclusao de vinculo de tutor
+        $deleteVinculoEvent = new \Modulos\Academico\Events\DeleteVinculoTutorEvent($this->tutorGrupo);
+
+        $sincronizacaoListener->handle($deleteVinculoEvent);
+        $deleteVinculoListener->handle($deleteVinculoEvent);
+
+        // Verifica o factory
+        $sincronizacao = \Modulos\Integracao\Models\Sincronizacao::where('sym_table', '=', 'acd_tutores_grupos')
+            ->where('sym_action', '=', 'DELETE')
+            ->get()
+            ->first();
+
+        $event = SincronizacaoFactory::factory($sincronizacao);
+
+        $this->assertInstanceOf(Modulos\Academico\Events\DeleteVinculoTutorEvent::class, $event);
+        $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
+
     }
 }

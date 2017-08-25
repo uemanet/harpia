@@ -3,13 +3,7 @@
 use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Events\UpdatePessoaEvent;
 use Modulos\Integracao\Models\Sincronizacao;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Geral\Repositories\PessoaRepository;
-use Modulos\Geral\Listeners\UpdatePessoaListener;
-use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class UpdatePessoaListenerTest extends TestCase
 {
@@ -34,7 +28,7 @@ class UpdatePessoaListenerTest extends TestCase
 
         Artisan::call('modulos:migrate');
 
-        $this->sincronizacaoRepository = new SincronizacaoRepository(new Sincronizacao());
+        $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
 
@@ -129,7 +123,7 @@ class UpdatePessoaListenerTest extends TestCase
         ]);
 
         // Mapeia a turma
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
         $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
         $sincronizacaoListener->handle($turmaMapeadaEvent);
@@ -137,7 +131,7 @@ class UpdatePessoaListenerTest extends TestCase
 
     public function testHandle()
     {
-        $sincronizacaoListener = new SincronizacaoListener($this->sincronizacaoRepository);
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
         $this->assertEquals(1, Sincronizacao::all()->count());
 
@@ -148,11 +142,7 @@ class UpdatePessoaListenerTest extends TestCase
 
         $this->assertEquals(2, Sincronizacao::all()->count());
 
-        $updatePessoaListener = new UpdatePessoaListener(
-            $this->sincronizacaoRepository,
-            new PessoaRepository(new Pessoa()),
-            new AmbienteVirtualRepository(new AmbienteVirtual())
-        );
+        $updatePessoaListener = $this->app->make(\Modulos\Geral\Listeners\UpdatePessoaListener::class);
 
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $updatePessoaListener->handle($updatePessoaEvent);

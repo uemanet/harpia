@@ -47,7 +47,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
         ],
     ];
 
-    final public static function factorySincronizacao(Sincronizacao $sincronizacao)
+    final public static function factory(Sincronizacao $sincronizacao)
     {
         $entry = $sincronizacao;
 
@@ -145,7 +145,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
     }
 
     /**
-     * Retorna a classe correspondent ao evento
+     * Retorna a classe correspondente ao evento
      * @param $endpoint
      * @throws \Exception
      * @return string

@@ -158,14 +158,6 @@ class DeleteGrupoAlunoListenerTest extends TestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        // Cria novo grupo
-        $novoGrupo = factory(\Modulos\Academico\Models\Grupo::class)->create([
-            'grp_trm_id' => $this->turma->trm_id,
-            'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
-            'grp_nome' => "Group B"
-        ]);
-
-        // Atualiza a matricula para novo grupo
         $oldGrupo = $this->matricula->mat_grp_id;
 
         // Dispara evento
