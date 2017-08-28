@@ -78,24 +78,12 @@ class CreateVinculoTutorListener
 
                 event(new UpdateSincronizacaoEvent($tutorGrupo, $status, $response['message']));
             }
-        } catch (ConnectException $exception) {
+        } catch (ConnectException | ClientException | \Exception $exception) {
             if (env('app.debug')) {
                 throw $exception;
             }
 
-            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage()));
-        } catch (ClientException $exception) {
-            if (env('app.debug')) {
-                throw $exception;
-            }
-
-            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage(), $event->getAction()));
-        } catch (\Exception $exception) {
-            if (env('app.debug')) {
-                throw $exception;
-            }
-
-            event(new UpdateSincronizacaoEvent($event->getData(), 3, $exception->getMessage()));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, get_class($exception), $event->getAction()));
         } finally {
             return true;
         }

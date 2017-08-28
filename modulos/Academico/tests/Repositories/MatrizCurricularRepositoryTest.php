@@ -176,7 +176,6 @@ class MatrizCurricularRepositoryTest extends TestCase
 
     public function testFindAllByCurso()
     {
-
         $matriz = factory(MatrizCurricular::class)->create();
         $response = $this->repo->findAllByCurso($matriz->curso->crs_id);
 
@@ -208,7 +207,6 @@ class MatrizCurricularRepositoryTest extends TestCase
         $response = $this->repo->listsAllByCurso($matriz->mtc_id);
 
         $this->assertNotEmpty($response, '');
-
     }
 
     public function testGetDisciplinasByMatrizId()
@@ -218,7 +216,6 @@ class MatrizCurricularRepositoryTest extends TestCase
         $response = $this->repo->getDisciplinasByMatrizId($modulodisciplina->modulo->matriz->mtc_id);
 
         $this->assertNotEmpty($response, '');
-
     }
 
     public function testVerifyIfDisciplinaExistsInMatriz()
@@ -228,7 +225,6 @@ class MatrizCurricularRepositoryTest extends TestCase
         $response = $this->repo->verifyIfDisciplinaExistsInMatriz($modulodisciplina->modulo->matriz->mtc_id, $modulodisciplina->disciplina->dis_id);
 
         $this->assertNotEmpty($response, '');
-
     }
 
     public function testVerifyIfNomeDisciplinaExistsInMatriz()

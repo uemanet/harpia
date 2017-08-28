@@ -84,7 +84,6 @@ class ModuloDisciplinaRepositoryTest extends TestCase
         $response = $this->repo->getDisciplinasPreRequisitos($modulodisciplina->mdc_id);
 
         $this->assertEmpty($response, '');
-
     }
 
     public function testRepositoryCreate()
@@ -103,7 +102,6 @@ class ModuloDisciplinaRepositoryTest extends TestCase
         $response = $this->repo->create($arraydata);
 
         $this->assertEquals($response['type'], 'success');
-
     }
 
     public function testUpdate()
