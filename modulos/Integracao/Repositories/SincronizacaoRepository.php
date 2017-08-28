@@ -17,6 +17,12 @@ class SincronizacaoRepository extends BaseRepository
         $this->model = $sincronizacao;
     }
 
+    public function all()
+    {
+        $result = $this->model;
+        return $result->orderBy('created_at', 'DESC')->get();
+    }
+
     public function updateSyncMoodle(array $data)
     {
         $keysSearch = [

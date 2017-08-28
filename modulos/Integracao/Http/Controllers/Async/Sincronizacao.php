@@ -11,10 +11,23 @@ class Sincronizacao extends BaseController
 {
     protected $sincronizacaoRepository;
 
-    public function __construct(
-        SincronizacaoRepository $sincronizacaoRepository
-    ) {
+    public function __construct(SincronizacaoRepository $sincronizacaoRepository)
+    {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
+    }
+
+    public function getAll()
+    {
+        try {
+            $headers = ["content-type" => "application/json"];
+            return new JsonResponse($this->sincronizacaoRepository->all(), 200, $headers,JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $exception) {
+            if (env('app.debug')) {
+                throw $exception;
+            }
+
+            return new JsonResponse("Erro ao processar requisicao", 500, [], JSON_UNESCAPED_UNICODE);
+        }
     }
 
     public function postSincronizar(Request $request)
@@ -37,6 +50,7 @@ class Sincronizacao extends BaseController
             if ($sincronizacao->sym_status != 2) {
                 $todasmigradas = false;
             }
+
             if ($sincronizacao->sym_status == 2) {
                 $nenhumamigrada = false;
             }
