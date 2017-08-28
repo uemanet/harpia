@@ -7,7 +7,7 @@ use Harpia\Event\Contracts\SincronizacaoFactoryInterface;
 
 abstract class SincronizacaoFactory extends SincronizacaoEvent implements SincronizacaoFactoryInterface
 {
-    const EVENTS = [
+    protected const EVENTS = [
         'Turma' => [
             'local_integracao_create_course' => \Modulos\Integracao\Events\TurmaMapeadaEvent::class,
             'local_integracao_update_course' => \Modulos\Academico\Events\UpdateTurmaEvent::class,

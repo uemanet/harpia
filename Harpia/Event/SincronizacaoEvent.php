@@ -10,13 +10,11 @@ use Modulos\Core\Model\BaseModel;
  */
 abstract class SincronizacaoEvent extends Event
 {
-    protected $firstAttempt = true;
-
     /**
      * Array com os endpoints do plugin de integração ( [tabela][acao] => endpoint )
      * @var array
      */
-    const ENDPOINTS = [
+    protected const ENDPOINTS = [
         'acd_turmas' => [
             'CREATE' => 'local_integracao_create_course',
             'UPDATE' => 'local_integracao_update_course',
@@ -49,6 +47,8 @@ abstract class SincronizacaoEvent extends Event
             'UPDATE' => 'local_integracao_update_user'
         ]
     ];
+
+    protected $firstAttempt = true;
 
     public function __construct(BaseModel $entry, $action, $extra = null)
     {
