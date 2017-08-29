@@ -274,9 +274,18 @@ $factory->define(Modulos\Academico\Models\TutorGrupo::class, function (Faker\Gen
     ];
 });
 
-$factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
+$factory->define(Modulos\Academico\Models\NivelCurso::class, function (Faker\Generator $faker) {
     return [
-        'dis_nvc_id' => $faker->randomElement([1, 2, 3, 4, 5]),
+        'nvc_nome' => $faker->sentence(3)
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
+
+    $nivel = factory(Modulos\Academico\Models\NivelCurso::class)->create();
+
+    return [
+        'dis_nvc_id' => $nivel->nvc_id,
         'dis_nome' => $faker->sentence(3),
         'dis_carga_horaria' => $faker->randomNumber(2),
         'dis_bibliografia' => $faker->text(),
@@ -410,6 +419,23 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
         'mof_ofd_id' => $ofertaDisciplina->ofd_id,
         'mof_tipo_matricula' => 'matriculacomum',
         'mof_situacao_matricula' => 'cursando'
+    ];
+});
+
+$factory->define(Modulos\Academico\Models\LancamentoTcc::class, function (Faker\Generator $faker) {
+
+    $matriculaoferta = factory(Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create();
+    $professor = factory(Modulos\Academico\Models\Professor::class)->create();
+    $anexo = factory(Modulos\Geral\Models\Anexo::class)->create();
+
+    return [
+      'ltc_mof_id' => $matriculaoferta->mof_id,
+      'ltc_prf_id' => $professor->prf_id,
+      'ltc_anx_tcc' => $anexo->anx_id,
+      'ltc_titulo' => $faker->sentence(3),
+      'ltc_tipo' => 'artigo',
+      'ltc_data_apresentacao' => '15/11/2015',
+      'ltc_observacao' => $faker->sentence(3)
     ];
 });
 

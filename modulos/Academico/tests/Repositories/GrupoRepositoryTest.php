@@ -11,9 +11,9 @@ class GrupoRepositoryTest extends TestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
-    
+
     protected $repo;
-    
+
     public function createApplication()
     {
         putenv('DB_CONNECTION=sqlite_testing');
@@ -175,6 +175,47 @@ class GrupoRepositoryTest extends TestCase
 
         $this->assertEquals(1, $response);
     }
+
+    public function testPaginateRequestByTurma()
+    {
+      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+
+      $response = $this->repo->paginateRequestByTurma($response->turma->trm_id);
+
+      $this->assertNotEmpty($response, '');
+
+      $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+
+      $this->assertGreaterThan(0, $response->total());
+    }
+
+    public function testListsAllById()
+    {
+      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+
+      $response = $this->repo->listsAllById($response->grp_id);
+
+      $this->assertNotEmpty($response, '');
+    }
+
+    public function testFindAllByTurma()
+    {
+      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+
+      $response = $this->repo->listsAllById($response->turma->trm_id);
+
+      $this->assertNotEmpty($response, '');
+    }
+
+    public function testVerifyNameGrupo()
+    {
+      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+
+      $response = $this->repo->verifyNameGrupo('Grupo', $response->turma->trm_id);
+
+      $this->assertEquals($response, false);
+    }
+
 
     public function tearDown()
     {
