@@ -575,4 +575,22 @@ class SincronizacaoFactoryTest extends TestCase
         $this->assertFalse($event->isFirstAttempt(), "Evento não corresponde a primeira tentativa");
 
     }
+
+    public function testFactoryThrowException()
+    {
+        $date = new \DateTime();
+
+        $sincronizacao = factory(\Modulos\Integracao\Models\Sincronizacao::class)->create([
+            'sym_table' => "any_tables",
+            'sym_table_id' => 10,
+            'sym_action' => "ANY_ACTION",
+            'sym_status' => 3,
+            'sym_mensagem' => "Message",
+            'sym_data_envio' => $date->format("Y-m-d H:i:s"),
+            'sym_extra' => "any"
+        ]);
+
+        $this->expectException(\Exception::class);
+        $event = SincronizacaoFactory::factory($sincronizacao);
+    }
 }

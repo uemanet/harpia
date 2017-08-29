@@ -605,13 +605,4 @@ $factory->define(Modulos\Integracao\Models\Sincronizacao::class, function (Faker
         'sym_data_envio' => $faker->dateTime->format("Y-m-d H:i:s"),
         'sym_extra' => $faker->word
     ];
-
-    $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
-    $servico = factory(Modulos\Integracao\Models\Servico::class)->create();
-
-    return [
-       'asr_amb_id' => $ambiente->amb_id,
-       'asr_ser_id' => $servico->amb_id,
-       'asr_token' => $faker->uuid
-   ];
 });
