@@ -29,7 +29,27 @@ class DiplomaRepository extends BaseRepository
                            ->orderBy('pes_nome', 'asc')
                            ->get();
 
-        return $diplomados;
+        $diplomadosIds = [];
+        foreach ($diplomados as $key => $diplomado) {
+          $diplomadosIds[] = $diplomado->mat_id;
+        }
+
+        $aptos = DB::table('acd_matriculas')
+                           ->join('acd_turmas', 'mat_trm_id', 'trm_id')
+                           ->join('acd_alunos', 'mat_alu_id', 'alu_id')
+                           ->join('gra_pessoas', 'alu_pes_id', 'pes_id')
+                           ->where('mat_trm_id', $turmaId)
+                           ->whereNotNull('mat_data_conclusao')
+                           ->whereNotIn('mat_id', $diplomadosIds)
+                           ->orderBy('pes_nome', 'asc')
+                           ->get();
+
+        $returnData = [
+          'diplomados' => $diplomados,
+          'aptos' => $aptos
+        ];
+        
+        return $returnData;
     }
 
     public function getPrintData($diplomas)

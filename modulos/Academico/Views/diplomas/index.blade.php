@@ -120,58 +120,130 @@
                     $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma)
                         .done(function (data) {
 
-                            renderTable(data);
+                            renderTable(data.aptos, data.diplomados);
                         });
                 }
             });
-            renderTable = function (data) {
+            renderTable = function (aptos, diplomados) {
+                var html = '<div class="row"><div class="col-md-12">';
+                // criando a estrutura das tabs
+                var tabs = '<div class="nav-tabs-custom">';
+                tabs += '<ul class="nav nav-tabs">';
+                tabs += '<li class="active">' +
+                    '<a href="#tab_1" data-toggle="tab">' +
+                    'Aptos ' +
+                    '<span data-toggle="tooltip" class="badge bg-blue">' + aptos.length + '</span>' +
+                    '</a></li>';
+                tabs += '<li>' +
+                    '<a href="#tab_2" data-toggle="tab">' +
+                    'Diplomados <span data-toggle="tooltip" class="badge bg-blue">' + diplomados.length + '</span>' +
+                    '</a></li>';
+                tabs += '</ul>';
+                tabs += '<div class="tab-content">';
 
-              $('#boxAlunos').removeClass('hidden');
 
-              var boxAlunos = $('#boxAlunos .box-body');
-              boxAlunos.empty();
+                // Criacao da Tab de Alunos nao matriculados para aptos
+                var tab1 = '<div class="tab-pane active" id="tab_1">';
 
-              if(!$.isEmptyObject(data)) {
-                  var table = '';
-                  table = '<div class="row">';
-                  table += '<form action="{{route('academico.diplomas.imprimirdiplomas')}}" method="POST">';
-                  table += '<div class="col-md-12">';
-                  table += '{{csrf_field()}}';
-                  table += '<table class="table table-bordered table-hover">';
+                if (!$.isEmptyObject(aptos)) {
+                    var div = '<div class="row"><div class="col-md-12">';
+                    var table1 = '<table class="table table-bordered table-striped">';
 
-                  table += '<tr>';
-                  table += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
-                  table += '<th width="1%">#</th>';
-                  table += '<th>Aluno</th>';
-                  table += '</tr>';
+                    // cabeçalho da tabela
+                    table1 += '<tr>';
+                    table1 += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
+                    table1 += '<th>Nome</th>';
+                    table1 += '<th width="20%">Situacao </th>';
+                    table1 += '</tr>';
 
-                  $.each(data, function (key, obj) {
-                      table += '<tr>';
-                      table += '<td><label><input type="checkbox" name="diplomas[]" class="diplomas" value="'+obj.dip_id+'"></label></td>';
-                      table += '<td>'+obj.dip_id+'</td>';
-                      table += '<td>'+obj.pes_nome+'</td>';
-                      table += '</tr>';
-                  });
+                    // corpo da tabela
+                    $.each(aptos, function (key, obj) {
+                        table1 += '<tr>';
+                        if (obj.mof_situacao_matricula == 'no_pre_requisitos') {
+                            table1 += '<td></td>';
+                        } else {
+                            table1 += '<td><label><input class="aptos" type="checkbox" value="' + obj.mat_id + '"></label></td>';
+                        }
 
-                  table += '</table>';
+                        table1 += '<td>' + obj.pes_nome + '</td>';
+                        if (obj.mof_situacao_matricula == 'no_pre_requisitos') {
+                            table1 += '<td><span class="label label-warning">Pré-requisitos não satisfeitos</span></td>';
+                        } else {
+                            table1 += '<td><span class="label label-success">Apto para diplomação</span></td>';
+                        }
 
-                  table += "<div class='form-group'>";
-                  table += "<button type='submit' class='btn btn-primary btnImprimirDiplomas hidden' formtarget='_blank'><i class='fa fa-file-pdf-o'></i> Imprimir Diplomas</button>";
-                  table += "</div>";
-                  table += "</div>";
-                  table += "</form>";
-                  table += "</div>";
+                        table1 += '</tr>';
+                    });
 
-                  boxAlunos.append(table);
-                  hiddenButton();
-              } else {
-                  boxAlunos.append('<p>Sem registros para apresentar</p>');
-              }
+                    table1 += '</table>';
+                    div += table1;
+                    div += '</div></div>';
+
+                    // criacao do botao de diplomar alunos
+                    div += '<div class="row"><div class="col-md-12">';
+                    div += '<button class="btn btn-success hidden btnDiplomar">Diplomar Alunos</button>';
+                    div += '</div></div>';
+
+                    tab1 += div;
+                } else {
+                    tab1 += '<p>Sem alunos para diplomar</p>';
+                }
+
+                tab1 += '</div>';
+
+                // Criacao da Tab de Alunos diplomados
+                var tab2 = '<div class="tab-pane" id="tab_2">';
+
+                if (!$.isEmptyObject(diplomados)) {
+                  var table2 = '';
+                                    table2 = '<div class="row">';
+                                    table2 += '<form action="{{route('academico.diplomas.imprimirdiplomas')}}" method="POST">';
+                                    table2 += '<div class="col-md-12">';
+                                    table2 += '{{csrf_field()}}';
+                                    table2 += '<table class="table table-bordered table-hover">';
+
+                                    table2 += '<tr>';
+                                    table2 += '<th width="1%"><label><input id="select_all" type="checkbox"></label></th>';
+                                    table2 += '<th width="1%">#</th>';
+                                    table2 += '<th>Aluno</th>';
+                                    table2 += '</tr>';
+
+                                    $.each(diplomados, function (key, obj) {
+                                        table2 += '<tr>';
+                                        table2 += '<td><label><input type="checkbox" name="diplomas[]" class="diplomas" value="'+obj.dip_id+'"></label></td>';
+                                        table2 += '<td>'+obj.dip_id+'</td>';
+                                        table2 += '<td>'+obj.pes_nome+'</td>';
+                                        table2 += '</tr>';
+                                    });
+
+                                    table2 += '</table>';
+
+                                    table2 += "<div class='form-group'>";
+                                    table2 += "<button type='submit' class='btn btn-primary btnImprimirDiplomas hidden' formtarget='_blank'><i class='fa fa-file-pdf-o'></i> Imprimir Diplomas</button>";
+                                    table2 += "</div>";
+                                    table2 += "</div>";
+                                    table2 += "</form>";
+                                    table2 += "</div>";
+                    tab2 += table2;
+                } else {
+                    tab2 += '<p>Sem alunos diplomados</p>';
+                }
+
+                tab2 += '</div>';
+
+                tabs += tab1;
+                tabs += tab2;
+
+                tabs += '</div></div>';
+
+                html += tabs;
+                html += '</div></div>';
 
                 $('#boxAlunos').removeClass('hidden');
-                $('#boxAlunos .box-body').empty().append(table);
+                $('#boxAlunos .box-body').empty().append(html);
             }
         });
+
 
         // evento para selecionar todos os checkboxes
         $(document).on('click', '#select_all', function (event) {
@@ -196,7 +268,75 @@
             }
         };
 
+        var hiddenButtonDiplomar = function () {
+            var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
+
+            if (checkboxes.is(':checked')) {
+                $(document).find('.btnDiplomar').removeClass('hidden');
+            } else {
+                $(document).find('.btnDiplomar').addClass('hidden');
+            }
+        };
+
+        $(document).on('click', '.btnDiplomar', function () {
+            var quant = $('.aptos:checked').length;
+
+            if ((!(quant > 0))) {
+                return false;
+            }
+
+            var aptosIds = new Array();
+
+            $('.aptos:checked').each(function () {
+                aptosIds.push($(this).val());
+            });
+
+            sendMatriculas(aptosIds);
+        });
+
+        var sendMatriculas = function (matriculasIds) {
+            var token = "{{csrf_token()}}";
+
+            var dados = {
+                matriculas: matriculasIds,
+                _token: token
+            };
+
+            $.harpia.showloading();
+
+            $.ajax({
+                type: 'POST',
+                url: '/academico/async/diplomas/diplomaralunos',
+                data: dados,
+                success: function (data) {
+                    $.harpia.hideloading();
+
+                    toastr.success('Alunos diplomados com sucesso!', null, {progressBar: true});
+
+                    var turma = selectTurmas.val();
+
+                    $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma)
+                        .done(function (data) {
+
+                            renderTable(data.aptos, data.diplomados);
+                        });
+                },
+                error: function (xhr, textStatus, error) {
+                    $.harpia.hideloading();
+
+                    switch (xhr.status) {
+                        case 400:
+                            toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
+                            break;
+                        default:
+                            toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
+                    }
+                }
+            });
+        };
+
         $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButton);
+        $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButtonDiplomar);
 
     </script>
 @stop

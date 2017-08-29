@@ -95,7 +95,7 @@ class RegistroRepository extends BaseRepository
 
             $this->livroRepository->create([
                 'liv_numero' => $numero,
-                'liv_tipo_livro' => 'DIPLOMA'
+                'liv_tipo_livro' => 'CERTIFICADO'
             ]);
 
             $ultimoLivro = $this->ultimoLivro();
@@ -157,8 +157,6 @@ class RegistroRepository extends BaseRepository
         $diploma = new Diploma();
         $diploma->dip_reg_id = $registro->reg_id;
         $diploma->dip_mat_id = $data['matricula'];
-        $diploma->dip_processo = $data['processo'];
-        $diploma->dip_codigo_autenticidade_externo = $data['codigo_externo'];
         $diploma->save();
 
         return $registro;
