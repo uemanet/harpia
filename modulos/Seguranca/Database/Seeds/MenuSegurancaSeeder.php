@@ -70,5 +70,14 @@ class MenuSegurancaSeeder extends Seeder
             'mit_rota' => 'seguranca.permissoes.index',
             'mit_ordem' => 3
         ]);
+
+        MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_item_pai' => $cadastros->mit_id,
+            'mit_nome' => 'Itens de Menu',
+            'mit_icone' => 'fa fa-gear',
+            'mit_rota' => 'seguranca.menuitens.index',
+            'mit_ordem' => 4
+        ]);
     }
 }
