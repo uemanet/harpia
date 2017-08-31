@@ -6,7 +6,7 @@ use Modulos\Core\Model\BaseModel;
 
 class Diploma extends BaseModel
 {
-    protected $table = 'acd_certificados';
+    protected $table = 'acd_diplomas';
 
     protected $primaryKey = 'dip_id';
 
@@ -20,5 +20,10 @@ class Diploma extends BaseModel
     public function registro()
     {
         return $this->belongsTo('Modulos\Academico\Models\Registro', 'dip_reg_id');
+    }
+
+    public function matricula()
+    {
+        return $this->belongsTo('Modulos\Academico\Models\Matricula', 'dip_mat_id');
     }
 }

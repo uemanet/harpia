@@ -19,7 +19,7 @@
             <h4 class="box-title">
                 Dados de Pessoa
             </h4>
-            @include('Geral::pessoas.includes.formulario', ['pessoa' => $pessoa])
+            @include('Academico::professores.includes.formulario', ['pessoa' => $pessoa])
 
             <div class="row">
                 <div class="form-group col-md-12">

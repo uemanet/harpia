@@ -90,6 +90,13 @@ class TutoresController extends BaseController
     {
         $pessoaId = $request->get('id');
 
+        $tutor = $this->tutorRepository->search(array(['tut_pes_id', '=', $pessoaId]));
+
+        if (!$tutor->isEmpty()) {
+            flash()->error('Este CPF já tem um tutor cadastrado!');
+            return redirect()->route('academico.tutores.index');
+        }
+
         if (!is_null($pessoaId)) {
             $pessoa = $this->pessoaRepository->findById($pessoaId);
 

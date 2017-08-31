@@ -2,11 +2,15 @@
 namespace Modulos\Integracao\Repositories;
 
 use Modulos\Core\Repository\BaseRepository;
+use Modulos\Integracao\Events\SincronizacaoEvent;
 use Modulos\Integracao\Models\Sincronizacao;
 use DB;
 
 class SincronizacaoRepository extends BaseRepository
 {
+    protected $tabelasSincronizacao = [
+        'acd_turmas', 'acd_matriculas', ''
+    ];
     public function __construct(Sincronizacao $sincronizacao)
     {
         $this->model = $sincronizacao;
@@ -15,6 +19,7 @@ class SincronizacaoRepository extends BaseRepository
     public function updateSyncMoodle(array $data)
     {
         $keysSearch = [
+            'sym_id',
             'sym_table',
             'sym_table_id',
             'sym_action',
@@ -52,6 +57,34 @@ class SincronizacaoRepository extends BaseRepository
         }
         return $query->all();
     }
+
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->model;
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (empty($sort)) {
+            $result = $result->orderBy('created_at', 'DESC');
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        return $result->paginate(15);
+    }
+
     /**
      * Verifica se dado registro foi excluido do Moodle
      * @param $table
@@ -70,5 +103,14 @@ class SincronizacaoRepository extends BaseRepository
             return true;
         }
         return false;
+    }
+
+    public function migrar($id)
+    {
+        $sincronizacao = $this->find($id);
+
+        if ($sincronizacao) {
+            event(new SincronizacaoEvent($sincronizacao));
+        }
     }
 }

@@ -121,48 +121,9 @@ class OfertaDisciplina extends BaseController
         }
     }
 
-    public function postDeletarofertadisciplina(Request $request)
-    {
-        $ofertaId = $request->input('ofd_id');
-
-        $qtdMatriculas = $this->matriculaOfertaDisciplinaRepository->getQuantMatriculasByOfertaDisciplina($ofertaId);
-
-        if ($qtdMatriculas) {
-            return new JsonResponse('Não foi possivel deletar oferta. A mesma já possui alunos matriculados', Response::HTTP_BAD_GATEWAY, [], JSON_UNESCAPED_UNICODE);
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
-            $turma = $this->turmaRepository->find($oferta->ofd_trm_id);
-
-            $this->ofertaDisciplinaRepository->delete($ofertaId);
-
-            $ambiente = $this->ambienteRepository->getAmbienteByTurma($turma->trm_id);
-
-            if ($ambiente) {
-                event(new DeleteOfertaDisciplinaEvent($oferta, "DELETE", $ambiente->id));
-            }
-
-            DB::commit();
-            return new JsonResponse('Disciplina excluída com sucesso', JsonResponse::HTTP_OK,  [], JSON_UNESCAPED_UNICODE);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            return new JsonResponse('Não foi possível excluir a disciplina', JsonResponse::HTTP_INTERNAL_SERVER_ERROR, [], JSON_UNESCAPED_UNICODE);
-        }
-    }
-
     public function getTableOfertasDisciplinas(Request $request)
     {
         $dados = $request->all();
-        $buttonDelete = (int)$dados['button_delete'];
-        unset($dados['button_delete']);
 
         $busca = [];
         foreach ($dados as $key => $value) {
@@ -196,7 +157,6 @@ class OfertaDisciplina extends BaseController
 
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
 
-//        dd($disciplinas);
         $html = view('Academico::ofertasdisciplinas.ajax.table_disciplinas_nao_ofertadas', compact('disciplinas', 'professores'))->render();
 
         return new JsonResponse(['html' => $html], 200);

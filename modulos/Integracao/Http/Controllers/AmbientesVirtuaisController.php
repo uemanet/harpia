@@ -278,6 +278,19 @@ class AmbientesVirtuaisController extends BaseController
 
             flash()->error('Esse ambiente já possui este serviço!');
             return redirect()->back();
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            if ($e->getCode() == 403) {
+                flash()->error('Protocolos REST não estão habilitados no ambiente.');
+                return redirect()->back();
+            }
+
+            if ($e->getCode() == 404) {
+                flash()->error('URL incorreta!');
+                return redirect()->back();
+            }
+
+            flash()->error('Erro de Conexão!');
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

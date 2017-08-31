@@ -798,8 +798,10 @@ class MatriculaCursoRepository extends BaseRepository
             ->select('mat_pol_id', 'mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
             ->where('mat_trm_id', $requestParameters['trm_id']);
 
-        if ($requestParameters['pol_id']) {
-            $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+        if (array_key_exists('pol_id', $requestParameters)) {
+            if ($requestParameters['pol_id']) {
+                $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+            }
         }
 
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
@@ -827,7 +829,6 @@ class MatriculaCursoRepository extends BaseRepository
             ->leftJoin('acd_grupos', 'mat_grp_id', '=', 'grp_id')
             ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
             ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->select('mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
             ->where('mat_trm_id', $requestParameters['trm_id'])
             ->orderBy('pes_nome', 'asc');
 
@@ -839,7 +840,35 @@ class MatriculaCursoRepository extends BaseRepository
             $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
         }
 
-        return $query->get();
+        $matriculas =  $query->get();
+
+        foreach ($matriculas as $key => $matricula) {
+            $rg = DB::table('gra_documentos')
+            ->where('doc_pes_id', '=', $matricula->pes_id)
+            ->where('doc_tpd_id', 1)
+            ->first();
+
+            if ($rg) {
+                $matricula['rg'] = $rg->doc_conteudo;
+            } else {
+                $matricula['rg'] = null;
+            }
+
+            $cpf = DB::table('gra_documentos')
+                ->where('doc_pes_id', '=', $matricula->pes_id)
+                ->where('doc_tpd_id', 2)
+                ->first();
+
+            if ($rg) {
+                $matricula['cpf'] = $cpf->doc_conteudo;
+            } else {
+                $matricula['cpf'] = null;
+            }
+
+            $matricula->pes_nascimento = date("d/m/Y", strtotime($matricula->pes_nascimento));
+        }
+
+        return $matriculas;
     }
 
     public function getPrintData($IdMatricula, $IdModulo)

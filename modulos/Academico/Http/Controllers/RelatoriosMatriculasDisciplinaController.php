@@ -177,21 +177,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
         $date = new Carbon();
 
-        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
-
-        $mpdf->mirrorMargins = 1;
-        $mpdf->SetTitle('Relatório de alunos da Disciplina: ' . $disciplina[0]);
-        $mpdf->SetHeader('{PAGENO} / {nb}');
-        $mpdf->SetFooter('Emitido em : ' . $date->format('d/m/Y H:i:s'));
-        $mpdf->defaultheaderfontsize = 10;
-        $mpdf->defaultheaderfontstyle = 'B';
-        $mpdf->defaultheaderline = 0;
-        $mpdf->defaultfooterfontsize = 10;
-        $mpdf->defaultfooterfontstyle = 'BI';
-        $mpdf->defaultfooterline = 0;
-        $mpdf->addPage('L');
-
-        $html = view('Academico::relatoriosmatriculasdisciplina.relatorioalunos', compact('alunos', 'disciplina', 'date', 'turma'))->render();
+        $html = view('Academico::relatoriosmatriculasdisciplina.relatorioalunosxls', compact('alunos', 'disciplina', 'date', 'turma'))->render();
 
         $arquivo = 'Matriculados na disciplina '.$disciplina.'.xls';
         header("Content-Type: application/xls");

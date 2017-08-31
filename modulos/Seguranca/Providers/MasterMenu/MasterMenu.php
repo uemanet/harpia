@@ -30,20 +30,11 @@ class MasterMenu
 
         $menu = Cache::get('MENU_' . $userId);
         $menuTree = $menu[$moduloSlug];
-
-        $render = '<ul class="sidebar-menu">';
-
         $root = $menuTree->getRoot();
 
-        if ($root->hasChildren()) {
-            foreach ($root->getChilds() as $child) {
-                $render .= $this->buildMenu($child);
-            }
-        }
+        $html = view('Seguranca::mastermenu.menu', compact('root'));
 
-        $render .= "</ul>";
-
-        return $render;
+        return $html;
     }
 
     private function isActive($rota, $permissao)
@@ -61,7 +52,7 @@ class MasterMenu
         return false;
     }
 
-    private function checkLeafIsActive($node)
+    public function checkLeafIsActive($node)
     {
         $result = false;
 
@@ -83,78 +74,5 @@ class MasterMenu
         }
 
         return $result;
-    }
-
-    private function buildMenu($node, $html = '')
-    {
-
-        // Verifica se uma categoria
-        if (!$node->getFather() && !$node->isLeaf() && $node->getChilds()) {
-            $isActive = $this->checkLeafIsActive($node);
-
-            $data = $node->getData();
-
-            $html .= '<li class="treeview';
-            if ($isActive) {
-                $html .= ' active';
-            }
-            $html .= '">';
-            $html .= '<a href="#">';
-            $html .= '<i class="'.$data->mit_icone.'"></i>';
-            $html .= '<span>'.$data->mit_nome.'</span>';
-            $html .= '<span class="pull-right-container">';
-            $html .= '<i class="fa fa-angle-left pull-right"></i>';
-            $html .= '</span></a>';
-            $html .= '<ul class="treeview-menu">';
-
-            if ($node->hasChildren()) {
-                foreach ($node->getChilds() as $child) {
-                    $html .= $this->buildMenu($child);
-                }
-            }
-
-            $html .= "</ul></li>";
-        }
-
-        // Verifica se é uma subcategoria
-        if ($node->getFather() && !$node->isLeaf() && $node->getChilds()) {
-            $data = $node->getData();
-
-            $isActive = $this->checkLeafIsActive($node);
-
-            $html .= '<li';
-            if ($isActive) {
-                $html .= ' class="active"';
-            }
-            $html .= '>';
-            $html .= '<a href="#"><i class="'.$data->mit_icone.'"></i> '.$data->mit_nome;
-            $html .= '<span class="pull-right-container">';
-            $html .= '<i class="fa fa-angle-left pull-right"></i>';
-            $html .= '</span></a>';
-
-            $html .= '<ul class="treeview-menu">';
-
-            foreach ($node->getChilds() as $child) {
-                $html .= $this->buildMenu($child);
-            }
-
-            $html .= '</ul></li>';
-        }
-
-        // Verifica se é uma folha
-        if ($node->getFather() && $node->isLeaf()) {
-            $data = $node->getData();
-
-            $isActive = $this->checkLeafIsActive($node);
-
-            $html .= '<li';
-            if ($isActive) {
-                $html .= ' class="active"';
-            }
-            $html .= '>';
-            $html .= '<a href="'.route($data->mit_rota).'"><i class="'.$data->mit_icone.'"></i> '.$data->mit_nome.'</a></li>';
-        }
-
-        return $html;
     }
 }

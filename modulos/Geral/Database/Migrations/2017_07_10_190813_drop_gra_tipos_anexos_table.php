@@ -22,9 +22,9 @@ class DropGraTiposAnexosTable extends Migration
      */
     public function down()
     {
-        Schema::create('gra_tipos_documentos', function (Blueprint $table) {
-            $table->increments('tpd_id');
-            $table->string('tpd_nome', 45);
+        Schema::create('gra_tipos_anexos', function (Blueprint $table) {
+            $table->increments('tax_id');
+            $table->string('tax_nome', 45);
 
             $table->timestamps();
         });

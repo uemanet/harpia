@@ -16,7 +16,7 @@
     <div class="form-group col-md-4 @if ($errors->has('ttg_grp_id')) has-error @endif">
         {!! Form::label('ttg_grp_id', 'Grupo*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('ttg_grp_id', $grupo, $grupo, ['class' => 'form-control', 'disabled', 'id' => 'ttg_grp_id']) !!}
+            {!! Form::select('ttg_grp_id', $grupo, $grupo, ['class' => 'form-control', 'id' => 'ttg_grp_id']) !!}
             @if ($errors->has('ttg_grp_id')) <p class="help-block">{{ $errors->first('ttg_grp_id') }}</p> @endif
         </div>
     </div>
@@ -33,10 +33,10 @@
         {!! Form::label('ttg_tipo_tutoria', 'Tipo de tutoria*', ['class' => 'control-label']) !!}
         <div class="controls">
           @if ($tutorgrupo->getOriginal('ttg_tipo_tutoria') === "presencial")
-            {!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial'), $tutores, ['class' => 'form-control', 'disabled', 'id' => 'ttg_tipo_tutoria']) !!}
+            {!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
           @endif
           @if ($tutorgrupo->getOriginal('ttg_tipo_tutoria') === "distancia")
-            {!! Form::select('ttg_tipo_tutoria', array('distancia' => 'À Distância'), $tutores, ['class' => 'form-control', 'disabled', 'id' => 'ttg_tipo_tutoria']) !!}
+            {!! Form::select('ttg_tipo_tutoria', array('distancia' => 'À Distância'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
           @endif
             @if ($errors->has('ttg_tipo_tutoria')) <p class="help-block">{{ $errors->first('ttg_tipo_tutoria') }}</p> @endif
         </div>

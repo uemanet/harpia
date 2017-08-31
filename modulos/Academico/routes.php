@@ -149,6 +149,9 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'ofertasdisciplinas'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getIndex')->name('academico.ofertasdisciplinas.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getCreate')->name('academico.ofertasdisciplinas.create');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@getEdit')->name('academico.ofertasdisciplinas.edit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@putEdit')->name('academico.ofertasdisciplinas.edit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\OfertasDisciplinasController@postDelete')->name('academico.ofertasdisciplinas.delete');
     });
 
     Route::group(['prefix' => 'matricularalunocurso'], function () {
@@ -195,6 +198,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'certificacao'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
+    });
+
+    Route::group(['prefix' => 'diplomas'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\DiplomasController@getIndex')->name('academico.diplomas.index');
+        Route::post('/imprimirdiplomas', '\Modulos\Academico\Http\Controllers\DiplomasController@postPrint')->name('academico.diplomas.imprimirdiplomas');
     });
 
     Route::group(['prefix' => 'relatoriosmatriculascurso'], function () {
@@ -267,7 +275,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertasdisciplinas'], function () {
             Route::get('/findall', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getFindall')->name('academico.async.ofertasdisciplinas.findall');
             Route::post('/oferecerdisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postOferecerdisciplina')->name('academico.async.ofertasdisciplinas.oferecerdisciplina');
-            Route::post('/deletarofertadisciplina', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@postDeletarofertadisciplina')->name('academico.async.ofertasdisciplinas.deletarofertadisciplina');
             Route::get('/gettableofertasdisciplinas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getTableOfertasDisciplinas')->name('academico.async.ofertasdisciplinas.gettableofertasdisciplinas');
             Route::get('/gettabledisciplinasnaoofertadas', '\Modulos\Academico\Http\Controllers\Async\OfertaDisciplina@getTableDisciplinasNaoOfertadas')->name('academico.async.ofertasdisciplinas.gettabledisciplinasnaoofertadas');
         });
@@ -313,6 +320,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/getalunosaptos/{turma}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos')->name('academico.async.cursos.getalunosaptos');
             Route::post('/certificaralunos', '\Modulos\Academico\Http\Controllers\Async\Cursos@postCertificarAlunos')->name('academico.async.cursos.certificaralunos');
             Route::get('/printCertificado/{idMatricula}/{idModulo}', '\Modulos\Academico\Http\Controllers\CertificacaoController@getPrint')->name('academico.async.cursos.printcertificado');
+        });
+
+        Route::group(['prefix' => 'diplomas'], function () {
+            Route::get('/getalunosdiplomados/{turmaId}/', '\Modulos\Academico\Http\Controllers\Async\Diplomas@getAlunosDiplomados')->name('academico.async.diplomas.getalunosdiplomados');
+            Route::post('/diplomaralunos', '\Modulos\Academico\Http\Controllers\Async\Diplomas@postDiplomarAlunos')->name('academico.async.diplomas.diplomaralunos');
         });
 
         Route::group(['prefix' => 'matricula'], function () {

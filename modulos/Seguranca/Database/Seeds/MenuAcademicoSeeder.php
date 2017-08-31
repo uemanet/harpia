@@ -324,6 +324,15 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 1
       ]);
 
+        $certificados = MenuItem::create([
+          'mit_mod_id' => 3,
+          'mit_item_pai' => $historicoconclusao->mit_id,
+          'mit_nome' => 'Diplomas',
+          'mit_rota' => 'academico.diplomas.index',
+          'mit_icone' => 'fa fa-ellipsis-h',
+          'mit_ordem' => 2
+      ]);
+
       // Categoria Relatórios
       $relatorios = MenuItem::create([
           'mit_mod_id' => 3,

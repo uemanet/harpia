@@ -470,6 +470,17 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'academico.ofertasdisciplinas.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.ofertasdisciplinas.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
 
 
         //permissões do recurso matricularalunocurso
@@ -602,6 +613,19 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso diplomas
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.diplomas.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'imprimirdiplomas',
+            'prm_rota' => 'academico.diplomas.imprimirdiplomas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         //permissões do recurso controlederegistro
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -641,6 +665,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'print',
             'prm_rota' => 'academico.historicodefinitivo.print'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'print',
+            'prm_rota' => 'academico.controlederegistro.show'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 

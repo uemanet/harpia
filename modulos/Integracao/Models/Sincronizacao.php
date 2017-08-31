@@ -23,5 +23,6 @@ class Sincronizacao extends BaseModel
     protected $searchable = [
         'sym_table' => 'like',
         'sym_table_id' => '=',
+        'sym_status' => '=',
     ];
 }

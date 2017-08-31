@@ -3,12 +3,12 @@
 namespace Modulos\Integracao\Repositories;
 
 use Harpia\Moodle\Moodle;
+use Modulos\Academico\Models\MatriculaOfertaDisciplina;
+use Modulos\Academico\Models\OfertaDisciplina;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Core\Repository\BaseRepository;
-use Modulos\Integracao\Events\AtualizarSyncEvent;
-use Modulos\Integracao\Events\MapearNotasEvent;
 use Modulos\Integracao\Models\MapeamentoNota;
 use DB;
 
@@ -115,28 +115,20 @@ class MapeamentoNotasRepository extends BaseRepository
         }
     }
 
-    public function mapearNotasAluno($mof_id)
+    public function mapearNotasAluno(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, $configuracoesCurso)
     {
-        // busca o objeto da matricula na oferta de disciplina
-        $matriculaOfertaDisciplina = $this->matriculaOfertaDisciplinaRepository->find($mof_id);
-
-        // caso não exista, envia mensagem de erro
-        if (!$matriculaOfertaDisciplina) {
-            return array('status' => 'error', 'message' => 'Matricula na Oferta de Disciplina não existe.');
-        }
-
         $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
 
-        // buscar tipo de avaliacao da disciplina
-        $tipoAvaliacao = $matriculaOfertaDisciplina->ofertaDisciplina->ofd_tipo_avaliacao;
+        // Buscar tipo de avaliacao da disciplina.
+        $tipoAvaliacao = $ofertaDisciplina->ofd_tipo_avaliacao;
         if ($tipoAvaliacao == 'Conceitual') {
             $select = ['min_id_conceito'];
         }
 
-        // dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas
+        // Dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas
         // necessários
         $itensNota = DB::table('int_mapeamento_itens_nota')
-                        ->where('min_ofd_id', $matriculaOfertaDisciplina->mof_ofd_id)
+                        ->where('min_ofd_id', $ofertaDisciplina->ofd_id)
                         ->select($select)
                         ->first();
 
@@ -149,7 +141,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
         $pes_id = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
 
-        // prepara o array com as informações que seram enviadas para o moodle
+        // Prepara o array com as informações que serão enviadas para o moodle.
         $itens = [];
         foreach ($itensNota as $key => $value) {
             if ($value) {
@@ -161,45 +153,36 @@ class MapeamentoNotasRepository extends BaseRepository
             }
         }
 
-        // faz outra checagem pra evitar de mandar dados de itens de nota vazio
+        // Faz outra checagem pra evitar de mandar dados de itens de nota vazio.
         if (empty($itens)) {
             return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
         }
 
-        // dados dos itens de notas são encapsulados em uma string json
+        // Dados dos itens de notas são encapsulados em uma string json.
         $data = [
             'pes_id' => $pes_id,
             'itens' => json_encode($itens)
         ];
-
-        $trm_id = $matriculaOfertaDisciplina->matriculaCurso->mat_trm_id;
-
-        // chama o evento para registra ocorrencia no tabela de sincronização
-        event(new MapearNotasEvent($matriculaOfertaDisciplina, 'MAPEAR_NOTAS_ALUNO'));
 
         $tiposenviados = [];
         foreach ($itens as $key => $tipo) {
             $tiposenviados[] = $tipo['tipo'];
         }
 
-        $response = $this->sendDataMoodle($data, $trm_id);
+        $response = $this->sendDataMoodle($data, $ofertaDisciplina->ofd_trm_id);
 
-        // verifica se veio alguma resposta do moodle, e qual status ela será encaixada
+        // Verifica se veio alguma resposta do moodle e qual status ela será encaixada.
         $status = 3;
         if ($response) {
             $status = (array_key_exists('status', $response) &&
                 $response['status'] == 'success') ? 2 : 3;
-
-            event(new AtualizarSyncEvent($matriculaOfertaDisciplina, $status, $response['message'], 'MAPEAR_NOTAS_ALUNO'));
         }
 
-        // caso tenha trago as notas
+        // Caso tenha trazido as notas.
         if ($status == 2) {
             $arrayNotas = json_decode($response['grades'], true);
 
-
             $tiposrecebidos = [];
-
 
             foreach ($arrayNotas as $recebido) {
                 if (array_key_exists('tipo', $recebido)) {
@@ -217,18 +200,10 @@ class MapeamentoNotasRepository extends BaseRepository
             }
 
             foreach ($tiposenviados as $enviado) {
-                if (!in_array($enviado, $tiposrecebidos)) {
+                if (!in_array($enviado, $tiposrecebidos) && $enviado != 'final') {
                     $notas['mof_'.$enviado] = 0;
                 }
             }
-
-            // Caso o aluno não possua nenhuma nota no moodle, envia uma mensagem de erro
-            if (empty($arrayNotas)) {
-            }
-
-            // busca as configurações de notas do curso
-            $cursoId = $matriculaOfertaDisciplina->matriculaCurso->turma->ofertaCurso->ofc_crs_id;
-            $configuracoesCurso = $this->getConfiguracoesCurso($cursoId);
 
             // calcula a media final e o status de matricula do aluno
             $notas = $this->calcularMedia($notas, $configuracoesCurso, $tipoAvaliacao);
@@ -237,6 +212,7 @@ class MapeamentoNotasRepository extends BaseRepository
             foreach ($notas as $key => $value) {
                 $matriculaOfertaDisciplina->{$key} = $value;
             }
+
             $matriculaOfertaDisciplina->save();
 
             return array('status' => 'success', 'message' => 'Notas mapeadas com sucesso.');
@@ -305,7 +281,6 @@ class MapeamentoNotasRepository extends BaseRepository
         $mediaAprovacao = (float)$configuracoesCurso['media_min_aprovacao'];
 
         $mediaParcial = array_sum($conjuntoNotas) / count($conjuntoNotas);
-        $mediaParcial = round($mediaParcial, 1);
 
         // 1º Caso - Aluno Aprovado por Media e sem recuperacao
         if ($mediaParcial >= $mediaAprovacao) {
@@ -329,7 +304,6 @@ class MapeamentoNotasRepository extends BaseRepository
 
                 // recalcula a media parcial
                 $mediaParcial = array_sum($conjuntoNotas) / count($conjuntoNotas);
-                $mediaParcial = round($mediaParcial, 1);
             }
 
             if ($mediaParcial >= $mediaAprovacao) {
@@ -347,7 +321,6 @@ class MapeamentoNotasRepository extends BaseRepository
             $notaFinal = $notas['mof_final'];
 
             $mediaFinal = ($mediaParcial + $notaFinal) / 2;
-            $mediaFinal = round($mediaFinal, 1);
 
             $status = 'reprovado_final';
             if ($mediaFinal >= $mediaAprovacaoFinal) {

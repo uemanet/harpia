@@ -12,6 +12,7 @@ class Professor extends BaseModel
 
     protected $fillable = [
         'prf_pes_id',
+        'prf_codigo'
     ];
 
     protected $searchable = [
