@@ -200,6 +200,15 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
     });
 
+    Route::group(['prefix' => 'carteirasestudantis'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\ListaSemturController@getIndex')->name('academico.carteirasestudantis.index');
+        Route::get('/create', '\Modulos\Academico\Http\Controllers\ListaSemturController@getCreate')->name('academico.carteirasestudantis.create');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\ListaSemturController@postCreate')->name('academico.carteirasestudantis.create');
+        Route::get('/{id}/edit', '\Modulos\Academico\Http\Controllers\ListaSemturController@getEdit')->name('academico.carteirasestudantis.edit');
+        Route::post('/{id}/edit', '\Modulos\Academico\Http\Controllers\ListaSemturController@postEdit')->name('academico.carteirasestudantis.edit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\ListaSemturController@postDelete')->name('academico.carteirasestudantis.delete');
+    });
+
     Route::group(['prefix' => 'diplomas'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\DiplomasController@getIndex')->name('academico.diplomas.index');
         Route::post('/imprimirdiplomas', '\Modulos\Academico\Http\Controllers\DiplomasController@postPrint')->name('academico.diplomas.imprimirdiplomas');
