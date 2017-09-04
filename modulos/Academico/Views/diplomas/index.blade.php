@@ -26,17 +26,25 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
                     {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha um curso']) !!}
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     {!! Form::label('ofc_id', 'Oferta*', ['class' => 'control-label']) !!}
                     {{ Form::select('ofc_id', [], null, ['class' => 'form-control', 'id' => 'ofc_id', 'value' => Input::get('ofc_id'), 'placeholder' => 'Oferta']) }}
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
                     {{ Form::select('trm_id', [], null, ['class' => 'form-control', 'id' => 'trm_id', 'value' => Input::get('trm_id'), 'placeholder' => 'Turma']) }}
+                </div>
+                <div class="form-group col-md-2">
+                    {!! Form::label('pol_id', 'Polo*', ['class' => 'control-label']) !!}
+                    {{ Form::select('pol_id', [], null, ['class' => 'form-control', 'id' => 'pol_id', 'value' => Input::get('pol_id'), 'placeholder' => 'Polo']) }}
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="" class="control-label"></label>
+                    <button class="btn btn-primary form-control" id="btnLocalizar"><i class="fa fa-search"></i></button>
                 </div>
             </div>
         </div>
@@ -67,6 +75,7 @@
             selectCursos = $('#crs_id');
             selectOfertas = $('#ofc_id');
             selectTurmas = $('#trm_id');
+            selectPolos = $('#pol_id');
 
 
             // Busca ofertas de curso
@@ -110,20 +119,42 @@
                         });
 
                 }
-            });
 
-            $('#trm_id').change(function () {
+                if (oferta) {
+                    selectPolos.empty();
 
-                var turma = $('#trm_id').val();
-
-                if (turma) {
-                    $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma)
+                    $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + oferta)
                         .done(function (data) {
-
-                            renderTable(data.aptos, data.diplomados);
+                            if (!$.isEmptyObject(data)) {
+                                selectPolos.append('<option value="0">Selecione um polo</option>');
+                                $.each(data, function (key, obj) {
+                                    selectPolos.append("<option value='" + obj.pol_id + "'>" + obj.pol_nome + "</option>");
+                                });
+                            } else {
+                                selectPolos.append('<option value="">Sem turmas cadastradas</option>');
+                            }
                         });
+
                 }
             });
+
+            $('#btnLocalizar').click(function () {
+              var turma = $('#trm_id').val();
+              var polo = $('#pol_id').val();
+
+              if (polo == null) {
+                polo = 0;
+              }
+
+              if (turma) {
+                  $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma + "/" + polo)
+                      .done(function (data) {
+
+                          renderTable(data.aptos, data.diplomados);
+                      });
+              }
+            });
+
             renderTable = function (aptos, diplomados) {
                 var html = '<div class="row"><div class="col-md-12">';
                 // criando a estrutura das tabs
@@ -314,8 +345,9 @@
                     toastr.success('Alunos diplomados com sucesso!', null, {progressBar: true});
 
                     var turma = selectTurmas.val();
+                    var polo = selectPolos.val();
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma)
+                    $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma + "/" + polo)
                         .done(function (data) {
 
                             renderTable(data.aptos, data.diplomados);
