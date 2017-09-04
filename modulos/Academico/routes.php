@@ -323,7 +323,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'diplomas'], function () {
-            Route::get('/getalunosdiplomados/{turmaId}/', '\Modulos\Academico\Http\Controllers\Async\Diplomas@getAlunosDiplomados')->name('academico.async.diplomas.getalunosdiplomados');
+            Route::get('/getalunosdiplomados/{turmaId}/{poloId}', '\Modulos\Academico\Http\Controllers\Async\Diplomas@getAlunosDiplomados')->name('academico.async.diplomas.getalunosdiplomados');
             Route::post('/diplomaralunos', '\Modulos\Academico\Http\Controllers\Async\Diplomas@postDiplomarAlunos')->name('academico.async.diplomas.diplomaralunos');
         });
 

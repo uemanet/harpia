@@ -15,9 +15,8 @@ class DiplomaRepository extends BaseRepository
         $this->model = $diploma;
     }
 
-    public function getAlunosDiplomados($turmaId)
+    public function getAlunosDiplomados($turmaId, $poloId)
     {
-
         //recebe os alunos diplomados em deteminada turma
         $diplomados = $this->model
                            ->join('acd_matriculas', 'dip_mat_id', 'mat_id')
@@ -26,13 +25,17 @@ class DiplomaRepository extends BaseRepository
                            ->join('gra_pessoas', 'alu_pes_id', 'pes_id')
                            ->where('mat_trm_id', $turmaId)
                            ->whereNotNull('mat_data_conclusao')
-                           ->orderBy('pes_nome', 'asc')
-                           ->get();
+                           ->orderBy('pes_nome', 'asc');
 
-        $diplomadosIds = [];
-        foreach ($diplomados as $key => $diplomado) {
-          $diplomadosIds[] = $diplomado->mat_id;
+       $diplomadosIds = [];
+       foreach ($diplomados->get() as $key => $diplomado) {
+         $diplomadosIds[] = $diplomado->mat_id;
+       }
+
+        if ($poloId != 0) {
+          $diplomados = $diplomados->where('mat_pol_id', '=', $poloId);
         }
+        $diplomados = $diplomados->get();
 
         $aptos = DB::table('acd_matriculas')
                            ->join('acd_turmas', 'mat_trm_id', 'trm_id')
@@ -41,14 +44,18 @@ class DiplomaRepository extends BaseRepository
                            ->where('mat_trm_id', $turmaId)
                            ->whereNotNull('mat_data_conclusao')
                            ->whereNotIn('mat_id', $diplomadosIds)
-                           ->orderBy('pes_nome', 'asc')
-                           ->get();
+                           ->orderBy('pes_nome', 'asc');
+        if ($poloId != 0) {
+          $aptos = $aptos->where('mat_pol_id', '=', $poloId);
+        }
+
+        $aptos = $aptos->get();
 
         $returnData = [
           'diplomados' => $diplomados,
           'aptos' => $aptos
         ];
-        
+
         return $returnData;
     }
 
