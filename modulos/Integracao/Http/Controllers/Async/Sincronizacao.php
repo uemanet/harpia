@@ -32,6 +32,10 @@ class Sincronizacao extends BaseController
 
             $sincronizacao = $this->sincronizacaoRepository->find($sync);
 
+            if ($sincronizacao->sym_status == 2){
+                continue;
+            }
+
             $this->sincronizacaoRepository->migrar($sync);
 
             $sincronizacao = $this->sincronizacaoRepository->find($sync);
