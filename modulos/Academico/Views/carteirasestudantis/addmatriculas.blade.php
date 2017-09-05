@@ -178,7 +178,7 @@
             var renderTable = function(parameters) {
                 $('.listas').empty();
 
-                var url = "{{url('/')}}/academico/async/carteirasestudantis/gettablematriculas?" + $.param(parameters);
+                var url = "{{url('/')}}/academico/async/carteirasestudantis/gettableaddmatriculas?" + $.param(parameters);
 
                 $.harpia.httpget(url).done(function (response) {
                     if(!$.isEmptyObject(response)) {

@@ -124,7 +124,7 @@
                         </div>
                     </div>
                 @else
-                    <p>Não há alunos matriculados na turma/polo</p>
+                    <p>Não há matrículas aptas para a inclusão</p>
                 @endif
             </div>
         </div>

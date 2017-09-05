@@ -19,7 +19,7 @@ class ListaSemtur extends BaseController
         $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
-    public function getTableMatriculas(Request $request)
+    public function getTableAddMatriculas(Request $request)
     {
         $lista = $this->listaSemturRepository->find($request->get('lst_id'));
 
@@ -32,6 +32,26 @@ class ListaSemtur extends BaseController
         $matriculasOutLista = $this->listaSemturRepository->getMatriculasOutOfLista($request->get('lst_id'), $request->get('mat_trm_id'), $request->get('mat_pol_id'));
 
         $html = view('Academico::carteirasestudantis.ajax.matriculas', compact('lista', 'matriculasLista', 'matriculasOutLista'))->render();
+
+        return new JsonResponse($html, 200);
+    }
+
+    public function getTableShowMatriculas($listaId, $turmaId)
+    {
+        $lista = $this->listaSemturRepository->find($listaId);
+
+        if (!$lista) {
+            return new JsonResponse('Lista de Carteiras Estudantis não encontrada.', 404, [], JSON_UNESCAPED_UNICODE);
+        }
+
+        $matriculas = $this->listaSemturRepository->findAll([
+            'lst_id' => $listaId,
+            'mat_trm_id' => $turmaId
+        ], ['pes_nome' => 'asc'], ['mat_id', 'pes_nome', 'trm_nome', 'pol_nome']);
+
+        $turma = \Modulos\Academico\Models\Turma::find($turmaId);
+
+        $html = view('Academico::carteirasestudantis.ajax.show', compact('lista', 'matriculas', 'turma'))->render();
 
         return new JsonResponse($html, 200);
     }
@@ -54,7 +74,7 @@ class ListaSemtur extends BaseController
         foreach ($matriculas as $id) {
             $matricula = $this->matriculaCursoRepository->find($id);
 
-            if ($matricula && $matricula->mat_situacao == 'cursando') {
+            if ($matricula && $this->listaSemturRepository->validateMatricula($matricula)) {
                 $lista->matriculas()->attach($matricula->mat_id);
             }
         }

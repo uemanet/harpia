@@ -197,4 +197,39 @@ class ListaSemturRepository extends BaseRepository
 
         return $query->get();
     }
+
+    public function validateMatricula(\Modulos\Academico\Models\Matricula $matricula)
+    {
+        if ($matricula->mat_situacao != 'cursando') {
+            return false;
+        }
+
+        $pessoa = $matricula->aluno->pessoa;
+
+        if (empty($pessoa->pes_mae)) {
+            return false;
+        }
+
+        if (empty($pessoa->pes_nascimento) || $pessoa->pes_nascimento == '00/00/0000') {
+            return false;
+        }
+
+        if (empty($pessoa->pes_cidade)) {
+            return false;
+        }
+
+        $rg = $pessoa->documentos()->where('doc_tpd_id', 1)->first();
+
+        if (!$rg || empty($rg->doc_conteudo)) {
+            return false;
+        }
+
+        $cpf = $pessoa->documentos()->where('doc_tpd_id', 2)->first();
+
+        if (!$cpf || empty($cpf->doc_conteudo)) {
+            return false;
+        }
+
+        return true;
+    }
 }

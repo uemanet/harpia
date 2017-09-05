@@ -30,38 +30,18 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('academico.carteirasestudantis.showmatriculas', $lista->lst_id) }}">
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Input::get('pes_nome')}}" placeholder="Nome do Aluno">
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::select('mat_trm_id', $turmas, Input::get('mat_trm_id'), ['class' => 'form-control', 'placeholder' => 'Turma']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::select('mat_pol_id', $polos, Input::get('mat_pol_id'), ['class' => 'form-control', 'placeholder' => 'Polo']) !!}
-                    </div>
-                    <div class="col-md-1">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
-                    </div>
-                </form>
+                {!! Form::hidden('lst_id', $lista->lst_id, ['id' => 'lst_id']) !!}
+                <div class="col-md-5">
+                    {!! Form::select('trm_id', $turmas, old('trm_id'), ['id' => 'trm_id', 'class' => 'form-control', 'placeholder' => 'Turma']) !!}
+                </div>
+                <div class="col-md-1">
+                    <button class="form-control btn-primary btnBuscar">Buscar</button>
+                </div>
             </div>
         </div>
         <!-- /.box-body -->
     </div>
-    @if(!is_null($tabela))
-        <div class="box box-primary">
-            <div class="box-header">
-                {!! $tabela->render() !!}
-            </div>
-        </div>
-
-        <div class="text-center">{!! $paginacao->links() !!}</div>
-
-    @else
-        <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
-        </div>
-    @endif
+    <div class="tabela"></div>
 @stop
 
 @section('scripts')
@@ -70,6 +50,28 @@
     <script type="text/javascript">
         $(function () {
             $('select').select2();
+
+            $('.btnBuscar').click(function (e) {
+                $('.tabela').empty();
+
+                 var lista = $('#lst_id').val();
+                 var turma = $('#trm_id').val();
+
+                 if (!lista || !turma) {
+                     return false;
+                 }
+
+                 $.ajax({
+                     method: 'GET',
+                     url: '/academico/async/carteirasestudantis/gettableshowmatriculas/'+lista+'/'+turma,
+                     success: function (res) {
+                         $('.tabela').append(res);
+                     },
+                     error: function (res) {
+                         toastr.error(res.responseText.replace(/\"/g, ''), null, {progressBar: true});
+                     }
+                 });
+            });
         });
     </script>
 @stop

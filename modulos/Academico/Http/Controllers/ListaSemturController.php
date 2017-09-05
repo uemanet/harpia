@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Modulos\Academico\Http\Requests\ListaSemturRequest;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\ListaSemturRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -14,11 +15,13 @@ class ListaSemturController extends BaseController
 {
     protected $listaSemturRepository;
     protected $cursoRepository;
+    protected $turmaRepository;
 
-    public function __construct(ListaSemturRepository $listaSemturRepository, CursoRepository $cursoRepository)
+    public function __construct(ListaSemturRepository $listaSemturRepository, CursoRepository $cursoRepository, TurmaRepository $turmaRepository)
     {
         $this->listaSemturRepository = $listaSemturRepository;
         $this->cursoRepository = $cursoRepository;
+        $this->turmaRepository = $turmaRepository;
     }
 
     /**
@@ -187,9 +190,9 @@ class ListaSemturController extends BaseController
         }
     }
 
-    public function getShowMatriculas(Request $request)
+    public function getShowMatriculas($id)
     {
-        $lista = $this->listaSemturRepository->find($request->id);
+        $lista = $this->listaSemturRepository->find($id);
 
         if (!$lista) {
             flash()->error('Lista de Carteiras de Estudantes não encontrada.');
@@ -201,68 +204,9 @@ class ListaSemturController extends BaseController
 
         $actionButton[] = $btnNovo;
 
-        $paginacao = null;
-        $tabela = null;
-
-        $parameters = $request->all();
-        $parameters['lst_id'] = $lista->lst_id;
-        $tableData = $this->listaSemturRepository->paginateRequest($parameters);
-
-        if ($tableData->count()) {
-            $tabela = $tableData->columns(array(
-                'mat_id' => '#',
-                'pes_nome' => 'Aluno',
-                'trm_nome' => 'Turma',
-                'pol_nome' => 'Polo',
-                'lst_action' => 'Ações',
-            ))
-            ->modifyCell('lst_action', function () {
-                return array('style' => 'width: 15%;');
-            })
-            ->modify('lst_action', function ($obj) {
-                return ActionButton::grid([
-                    'type' => 'SELECT',
-                    'config' => [
-                        'classButton' => 'btn-default',
-                        'label' => 'Selecione'
-                    ],
-                    'buttons' => [
-//                        [
-//                            'classButton' => '',
-//                            'icon' => 'fa fa-pencil',
-//                            'route' => 'academico.carteirasestudantis.edit',
-//                            'parameters' => ['id' => $obj->lst_id],
-//                            'label' => 'Editar',
-//                            'method' => 'get'
-//                        ],
-//                        [
-//                            'classButton' => 'btn-delete text-red',
-//                            'icon' => 'fa fa-trash',
-//                            'route' => 'academico.carteirasestudantis.delete',
-//                            'id' => $obj->lst_id,
-//                            'label' => 'Excluir',
-//                            'method' => 'post'
-//                        ],
-//                        [
-//                            'classButton' => '',
-//                            'icon' => 'fa fa-eye',
-//                            'route' => 'academico.carteirasestudantis.showmatriculas',
-//                            'parameters' => ['id' => $obj->lst_id],
-//                            'label' => 'Gerenciar Matrículas',
-//                            'method' => 'get'
-//                        ],
-                    ]
-                ]);
-            })
-            ->sortable(array('mat_id', 'pes_nome'));
-
-            $paginacao = $tableData->appends($request->except('page'));
-        }
-
         $turmas = $this->listaSemturRepository->getTurmasByLista($lista->lst_id);
-        $polos = $this->listaSemturRepository->getPolosByLista($lista->lst_id);
 
-        return view('Academico::carteirasestudantis.show', compact('lista', 'tabela', 'paginacao','actionButton', 'turmas', 'polos'));
+        return view('Academico::carteirasestudantis.show', compact('lista','actionButton', 'turmas'));
     }
 
     public function getAddMatriculas($id)
@@ -278,5 +222,79 @@ class ListaSemturController extends BaseController
 
         return view('Academico::carteirasestudantis.addmatriculas', compact('lista', 'cursos'));
 
+    }
+
+    public function exportFile($listaId, $turmaId)
+    {
+        $lista = $this->listaSemturRepository->find($listaId);
+
+        if (!$lista) {
+            flash()->error('Lista de Carteiras de Estudantes não encontrada.');
+            return redirect()->back();
+        }
+
+        $turma = $this->turmaRepository->find($turmaId);
+
+        if (!$turma) {
+            flash()->error('Turma não encontrada.');
+            return redirect()->back();
+        }
+
+        $matriculas = $lista->matriculas()->where('mat_trm_id', $turmaId)->get();
+
+        if ($matriculas->count()) {
+            $filename = $turma->ofertacurso->curso->crs_nome . ' - '. $turma->trm_nome.'.txt';
+
+            $content = '';
+
+            foreach ($matriculas as $matricula) {
+                if (!$matricula || !$this->listaSemturRepository->validateMatricula($matricula)) {
+                    continue;
+                }
+
+                $line = '7201';
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_nome), 50),0,50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_mae), 50),0,50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_pai), 50),0,50);
+                $line .= $matricula->aluno->pessoa->pes_sexo;
+                $line .= substr(str_pad(utf8_decode($turma->ofertacurso->curso->crs_nome), 25),0,25);
+                $line .= '2'; // grau
+                $line .= '1'; // serie
+                $line .= 'I'; // turno
+                $line .= substr(str_pad(utf8_decode($turma->trm_nome), 5),0,5);
+                $line .= substr(str_pad($matricula->mat_id, 12),0,12);
+                $line .= $matricula->aluno->pessoa->pes_nascimento;
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_endereco), 50),0,50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_bairro), 30),0,30);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_cidade), 20),0,20);
+                $line .= substr(str_pad($matricula->aluno->pessoa->pes_cep, 8),0,8);
+                $line .= substr(str_pad($matricula->aluno->pessoa->pes_celular, 10),0,10);
+
+                $rg = $matricula->aluno->pessoa->documentos()->where('doc_tpd_id', 1)->first();
+
+                $line .= substr(str_pad($rg->doc_conteudo, 20),0,20);
+                $line .= substr(str_pad($rg->doc_orgao, 10),0,10);
+                $line .= $rg->doc_data_expedicao;
+
+                $cpf = $matricula->aluno->pessoa->documentos()->where('doc_tpd_id', 2)->first();
+                $line .= $cpf->doc_conteudo;
+
+                $content .= $line . PHP_EOL;
+            }
+
+            header("Content-Description: File Transfer");
+            header("Content-Type: application/octet-stream");
+            header("Content-disposition: attachment; filename={$filename}");
+            header("Content-Length: ".strlen($content));
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Expires: 0");
+            header("Pragma: public");
+
+            echo $content;
+            exit;
+        }
+
+        flash()->error('Não há matrículas nessa lista');
+        return redirect()->back();
     }
 }
