@@ -204,9 +204,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\ListaSemturController@getIndex')->name('academico.carteirasestudantis.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\ListaSemturController@getCreate')->name('academico.carteirasestudantis.create');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\ListaSemturController@postCreate')->name('academico.carteirasestudantis.create');
-        Route::get('/{id}/edit', '\Modulos\Academico\Http\Controllers\ListaSemturController@getEdit')->name('academico.carteirasestudantis.edit');
-        Route::post('/{id}/edit', '\Modulos\Academico\Http\Controllers\ListaSemturController@postEdit')->name('academico.carteirasestudantis.edit');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\ListaSemturController@getEdit')->name('academico.carteirasestudantis.edit');
+        Route::post('/edit/{id}', '\Modulos\Academico\Http\Controllers\ListaSemturController@postEdit')->name('academico.carteirasestudantis.edit');
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\ListaSemturController@postDelete')->name('academico.carteirasestudantis.delete');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\ListaSemturController@getShowMatriculas')->name('academico.carteirasestudantis.showmatriculas');
+        Route::get('/addmatriculas/{id}', '\Modulos\Academico\Http\Controllers\ListaSemturController@getAddMatriculas')->name('academico.carteirasestudantis.addmatriculas');
     });
 
     Route::group(['prefix' => 'diplomas'], function () {
@@ -339,6 +341,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'matricula'], function () {
             Route::post('/alterarsituacao', '\Modulos\Academico\Http\Controllers\Async\Matricula@postUpdateSituacao')->name('academico.async.matricula.alterarsituacao');
             Route::get('/getmatriculasconcluidas', '\Modulos\Academico\Http\Controllers\Async\Matricula@getMatriculasConcluidas')->name('academico.async.matricula.getmatriculasconcluidas');
+        });
+
+        Route::group(['prefix' => 'carteirasestudantis'], function () {
+            Route::get('/gettablematriculas', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableMatriculas')->name('academico.async.carteirasestudantis.gettablematriculas');
+            Route::post('/incluirmatriculas', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@postIncluirMatriculasLista')->name('academico.async.carteirasestudantis.incluirmatriculas');
         });
     });
 });
