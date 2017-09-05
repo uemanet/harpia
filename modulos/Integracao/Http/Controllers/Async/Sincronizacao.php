@@ -20,7 +20,7 @@ class Sincronizacao extends BaseController
     {
         try {
             $headers = ["content-type" => "application/json"];
-            return new JsonResponse($this->sincronizacaoRepository->all(), 200, $headers,JSON_UNESCAPED_UNICODE);
+            return new JsonResponse($this->sincronizacaoRepository->all(), 200, $headers, JSON_UNESCAPED_UNICODE);
         } catch (\Exception $exception) {
             if (env('app.debug')) {
                 throw $exception;
