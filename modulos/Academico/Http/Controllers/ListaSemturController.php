@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Harpia\Format\Format;
 use Illuminate\Http\Request;
 use Modulos\Academico\Http\Requests\ListaSemturRequest;
 use Modulos\Academico\Repositories\CursoRepository;
@@ -296,5 +297,39 @@ class ListaSemturController extends BaseController
 
         flash()->error('Não há matrículas nessa lista');
         return redirect()->back();
+    }
+
+    public function getPrint($listaId, $turmaId)
+    {
+        $lista = $this->listaSemturRepository->find($listaId);
+
+        if (!$lista) {
+            flash()->error('Lista de Carteiras de Estudantes não encontrada.');
+            return redirect()->back();
+        }
+
+        $turma = $this->turmaRepository->find($turmaId);
+
+        if (!$turma) {
+            flash()->error('Turma não encontrada.');
+            return redirect()->back();
+        }
+
+        $matriculas = $lista->matriculas()->where('mat_trm_id', $turmaId)->get();
+
+        if (!$matriculas->count()) {
+            flash()->error('Não há matrículas dessa turma incluídas nesta lista.');
+            return redirect()->route('academico.carteirasestudantis.showmatriculas', $listaId);
+        }
+
+        $mpdf = new \mPDF();
+        $mpdf->mirrorMargins = 1;
+
+        $title = $turma->ofertacurso->curso->crs_nome . ' - '. $turma->trm_nome;
+        $mpdf->SetTitle($title);
+        $mpdf->addPage('L');
+
+        $mpdf->WriteHTML(view('Academico::carteirasestudantis.print', compact('matriculas', 'lista'))->render());
+        $mpdf->Output($title.'.pdf', 'I');
     }
 }

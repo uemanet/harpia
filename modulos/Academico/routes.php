@@ -210,6 +210,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\ListaSemturController@getShowMatriculas')->name('academico.carteirasestudantis.showmatriculas');
         Route::get('/addmatriculas/{id}', '\Modulos\Academico\Http\Controllers\ListaSemturController@getAddMatriculas')->name('academico.carteirasestudantis.addmatriculas');
         Route::get('/exportfile/{lista}/{turma}', '\Modulos\Academico\Http\Controllers\ListaSemturController@exportFile')->name('academico.carteirasestudantis.exportfile');
+        Route::get('/print/{lista}/{turma}', '\Modulos\Academico\Http\Controllers\ListaSemturController@getPrint')->name('academico.carteirasestudantis.print');
     });
 
     Route::group(['prefix' => 'diplomas'], function () {

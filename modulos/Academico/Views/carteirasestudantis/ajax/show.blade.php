@@ -12,9 +12,14 @@
         @if($matriculas->count())
             <div class="row">
                 <div class="col-md-12">
-                    <a href="{{route('academico.carteirasestudantis.exportfile', ['lista' => $lista->lst_id, 'turma' => $turma->trm_id])}}" class="btn btn-success pull-right" style="margin-bottom: 10px;">
-                        <i class="fa fa-download"></i> Exportar Arquivo
-                    </a>
+                    <p class="pull-right">
+                        <a href="{{route('academico.carteirasestudantis.print', ['lista' => $lista->lst_id, 'turma' => $turma->trm_id])}}" class="btn btn-primary" target="_blank">
+                            <i class="fa fa-print"></i> Imprimir Lista
+                        </a>
+                        <a href="{{route('academico.carteirasestudantis.exportfile', ['lista' => $lista->lst_id, 'turma' => $turma->trm_id])}}" class="btn btn-success">
+                            <i class="fa fa-download"></i> Exportar Arquivo
+                        </a>
+                    </p>
                 </div>
             </div>
             <div class="row">
