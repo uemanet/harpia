@@ -47,7 +47,7 @@ class MenuItensController extends BaseController
             ->modifyCell('pes_action', function () {
                 return array('style' => 'width: 140px;');
             })
-            ->modify('mit_mod_id', function($obj) {
+            ->modify('mit_mod_id', function ($obj) {
                 return $obj->modulo->mod_nome;
             })
             ->means('mit_action', 'mit_id')
@@ -166,7 +166,6 @@ class MenuItensController extends BaseController
 
             return redirect()->back();
         }
-
     }
 
     public function postDelete(Request $request)
@@ -185,7 +184,6 @@ class MenuItensController extends BaseController
             flash()->error('Erro ao tentar deletar. O item contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
@@ -194,5 +192,4 @@ class MenuItensController extends BaseController
             return redirect()->back();
         }
     }
-
 }

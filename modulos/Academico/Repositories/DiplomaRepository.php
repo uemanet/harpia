@@ -27,13 +27,13 @@ class DiplomaRepository extends BaseRepository
                            ->whereNotNull('mat_data_conclusao')
                            ->orderBy('pes_nome', 'asc');
 
-       $diplomadosIds = [];
-       foreach ($diplomados->get() as $key => $diplomado) {
-         $diplomadosIds[] = $diplomado->mat_id;
-       }
+        $diplomadosIds = [];
+        foreach ($diplomados->get() as $key => $diplomado) {
+            $diplomadosIds[] = $diplomado->mat_id;
+        }
 
         if ($poloId != 0) {
-          $diplomados = $diplomados->where('mat_pol_id', '=', $poloId);
+            $diplomados = $diplomados->where('mat_pol_id', '=', $poloId);
         }
         $diplomados = $diplomados->get();
 
@@ -46,7 +46,7 @@ class DiplomaRepository extends BaseRepository
                            ->whereNotIn('mat_id', $diplomadosIds)
                            ->orderBy('pes_nome', 'asc');
         if ($poloId != 0) {
-          $aptos = $aptos->where('mat_pol_id', '=', $poloId);
+            $aptos = $aptos->where('mat_pol_id', '=', $poloId);
         }
 
         $aptos = $aptos->get();
@@ -121,8 +121,8 @@ class DiplomaRepository extends BaseRepository
               'ANO' => $diaatual->getAno(strtotime('today')),
             ];
 
-            $formata = str_replace ( 'CURSO TÉCNICO EM ' , '' , $curso->crs_nome );
-            $formata = str_replace ( 'CURSO TÉCNICO ' , '' , $formata );
+            $formata = str_replace('CURSO TÉCNICO EM ', '', $curso->crs_nome);
+            $formata = str_replace('CURSO TÉCNICO ', '', $formata);
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
 
 
@@ -156,9 +156,9 @@ class DiplomaRepository extends BaseRepository
             ];
 
             foreach ($returnData as $key => $dado) {
-              if(!$dado){
-                return array('type' => 'error' , 'dados' => $returnData, 'campo' => $key);
-              }
+                if (!$dado) {
+                    return array('type' => 'error' , 'dados' => $returnData, 'campo' => $key);
+                }
             }
 
             $retorno[] = $returnData;
@@ -166,9 +166,8 @@ class DiplomaRepository extends BaseRepository
 
         return $retorno;
     }
-    function ucwords_improved($s, $e = array())
+    public function ucwords_improved($s, $e = array())
     {
-      return join(' ',array_map(create_function('$s','return (!in_array($s, '.var_export($e, true) . ')) ? ucfirst($s) : $s;'),explode(' ',strtolower($s))));
+        return join(' ', array_map(create_function('$s', 'return (!in_array($s, '.var_export($e, true) . ')) ? ucfirst($s) : $s;'), explode(' ', strtolower($s))));
     }
-
 }

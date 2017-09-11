@@ -19,9 +19,8 @@ class Sincronizacao extends BaseController
 
     public function postSincronizar(Request $request)
     {
-
-        if(!array_key_exists('ids', $request->all())){
-          return new JsonResponse('Nenhum registro com erro foi enviado', 400, [], JSON_UNESCAPED_UNICODE);
+        if (!array_key_exists('ids', $request->all())) {
+            return new JsonResponse('Nenhum registro com erro foi enviado', 400, [], JSON_UNESCAPED_UNICODE);
         }
         $sincronizacaoIds = $request->all()['ids'];
 
@@ -29,10 +28,9 @@ class Sincronizacao extends BaseController
         $nenhumamigrada = true;
 
         foreach ($sincronizacaoIds as $sync) {
-
             $sincronizacao = $this->sincronizacaoRepository->find($sync);
 
-            if ($sincronizacao->sym_status == 2){
+            if ($sincronizacao->sym_status == 2) {
                 continue;
             }
 
@@ -40,22 +38,20 @@ class Sincronizacao extends BaseController
 
             $sincronizacao = $this->sincronizacaoRepository->find($sync);
 
-            if ($sincronizacao->sym_status != 2){
+            if ($sincronizacao->sym_status != 2) {
                 $todasmigradas = false;
             }
-            if ($sincronizacao->sym_status == 2){
+            if ($sincronizacao->sym_status == 2) {
                 $nenhumamigrada = false;
             }
-
         }
 
-        if($nenhumamigrada){
-          return new JsonResponse('Nenhum registro foi migrado', 400, [], JSON_UNESCAPED_UNICODE);
+        if ($nenhumamigrada) {
+            return new JsonResponse('Nenhum registro foi migrado', 400, [], JSON_UNESCAPED_UNICODE);
         }
         if (!$todasmigradas) {
-          return new JsonResponse('Alguns registros não foram migrados', 200, [], JSON_UNESCAPED_UNICODE);
+            return new JsonResponse('Alguns registros não foram migrados', 200, [], JSON_UNESCAPED_UNICODE);
         }
         return new JsonResponse('Todas os registros foram migrados', 200, [], JSON_UNESCAPED_UNICODE);
     }
-
 }
