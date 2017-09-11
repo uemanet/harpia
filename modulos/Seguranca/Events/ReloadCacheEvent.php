@@ -6,5 +6,4 @@ use App\Events\Event;
 
 class ReloadCacheEvent extends Event
 {
-
 }

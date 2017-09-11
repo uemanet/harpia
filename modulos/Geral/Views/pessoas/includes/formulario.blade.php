@@ -70,7 +70,7 @@
         </div>
     </div>
     <div class="form-group col-md-2 @if ($errors->has('pes_estado_civil')) has-error @endif">
-        {!! Form::label('pes_estado_civil', 'Estado civil*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_estado_civil', 'Estado civil', ['class' => 'control-label']) !!}
 
         <div class="controls">
             {!! Form::select('pes_estado_civil',
@@ -85,7 +85,7 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_raca')) has-error @endif">
-        {!! Form::label('pes_raca', 'Cor/Raça*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_raca', 'Cor/Raça', ['class' => 'control-label']) !!}
 
         <div class="controls">
             {!! Form::select('pes_raca',
@@ -118,7 +118,7 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_necessidade_especial')) has-error @endif">
-        {!! Form::label('pes_necessidade_especial', 'Necessidade especial?*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_necessidade_especial', 'Necessidade especial?', ['class' => 'control-label']) !!}
 
         <div class="controls">
             {!! Form::select('pes_necessidade_especial', ['N' => 'Não', 'S' => 'Sim'], isset($pessoa->pes_necessidade_especial) ? $pessoa->pes_necessidade_especial : old('pes_necessidade_especial'), ['class' => 'form-control']) !!}
@@ -126,7 +126,7 @@
         </div>
     </div>
     <div class="form-group col-md-3" @if ($errors->has('pes_estrangeiro')) has-error @endif>
-        {!! Form::label('pes_estrangeiro', 'Estrangeiro?*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_estrangeiro', 'Estrangeiro?', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('pes_estrangeiro', ['0' => 'Não', '1' => 'Sim'], isset($pessoa->pes_estrangeiro) ? $pessoa->pes_estrangeiro : old('pes_estrangeiro'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_estrangeiro')) <p class="help-block">{{ $errors->first('pes_estrangeiro') }}</p> @endif

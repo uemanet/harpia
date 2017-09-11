@@ -1,6 +1,7 @@
 <?php
 
 namespace Modulos\Seguranca\Listeners;
+
 use Illuminate\Foundation\Application;
 use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;

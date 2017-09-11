@@ -11,8 +11,7 @@ class Util
      */
     public function getDiaExtenso($date)
     {
-
-      $diaextenso = [
+        $diaextenso = [
                 0 => 'zero',
                 1 => 'um',
                 2 => 'dois',
@@ -47,9 +46,8 @@ class Util
                 31 => 'trinta e um'
             ];
 
-      $dia = $diaextenso[str_replace(' ', '', strftime('%e', $date))];
-      return $dia;
-
+        $dia = $diaextenso[str_replace(' ', '', strftime('%e', $date))];
+        return $dia;
     }
 
     /**
@@ -59,12 +57,11 @@ class Util
      */
     public function getMesExtenso($date)
     {
-      setlocale(LC_ALL, config('app.locale'), 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-      date_default_timezone_set(config('app.timezone'));
+        setlocale(LC_ALL, config('app.locale'), 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+        date_default_timezone_set(config('app.timezone'));
 
-      $mesextenso = strftime('%B', $date);
-      return $mesextenso;
-
+        $mesextenso = strftime('%B', $date);
+        return $mesextenso;
     }
 
     /**
@@ -74,9 +71,7 @@ class Util
      */
     public function getDia($date)
     {
-
-      return strftime('%d', $date);
-
+        return strftime('%d', $date);
     }
 
     /**
@@ -86,9 +81,7 @@ class Util
      */
     public function getMes($date)
     {
-
-      return strftime('%m', $date);
-
+        return strftime('%m', $date);
     }
     /**
      * Recebe um timestamp e retorna o ano.
@@ -97,9 +90,6 @@ class Util
      */
     public function getAno($date)
     {
-
-      return strftime('%Y', $date);
-
+        return strftime('%Y', $date);
     }
-
 }

@@ -18,10 +18,10 @@ class Diplomas
         $this->registroRepository = $registroRepository;
     }
 
-    public function getAlunosDiplomados($turmaId, Request $request)
+    public function getAlunosDiplomados($turmaId, $poloId, Request $request)
     {
         try {
-            $alunosdiplomados = $this->diplomaRepository->getAlunosDiplomados($turmaId);
+            $alunosdiplomados = $this->diplomaRepository->getAlunosDiplomados($turmaId, $poloId);
 
             return new JsonResponse($alunosdiplomados, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
