@@ -38,7 +38,9 @@
                                     <td>{{$matricula->trm_nome}}</td>
                                     <td>{{$matricula->pol_nome}}</td>
                                     <td>
-                                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        @haspermission('academico.carteirasestudantis.deletematricula')
+                                            <button class="btn btn-danger btnDelete" data-mat-id="{{$matricula->mat_id}}"><i class="fa fa-trash"></i></button>
+                                        @endhaspermission
                                     </td>
                                 </tr>
                             @endforeach

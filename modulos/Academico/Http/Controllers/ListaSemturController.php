@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Harpia\Format\Format;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modulos\Academico\Http\Requests\ListaSemturRequest;
 use Modulos\Academico\Repositories\CursoRepository;
@@ -331,5 +332,26 @@ class ListaSemturController extends BaseController
 
         $mpdf->WriteHTML(view('Academico::carteirasestudantis.print', compact('matriculas', 'lista'))->render());
         $mpdf->Output($title.'.pdf', 'I');
+    }
+
+    public function postDeleteMatricula(Request $request)
+    {
+        $lista = $this->listaSemturRepository->find($request->get('lst_id'));
+
+        if (!$lista) {
+            return new JsonResponse('Lista de Carteiras de Estudantes não encontrada.', 400, [], JSON_UNESCAPED_UNICODE);
+        }
+
+        try {
+            $lista->matriculas()->detach($request->get('mat_id'));
+
+            return new JsonResponse('Matrícula excluída da lista.', 200, [], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return new JsonResponse('Exception: '.$e->getMessage(), 400, [], JSON_UNESCAPED_UNICODE);
+            }
+
+            return new JsonResponse('Erro ao tentar deletar. Caso o problema persista, entre em contato com o suporte.', 400, [], JSON_UNESCAPED_UNICODE);
+        }
     }
 }
