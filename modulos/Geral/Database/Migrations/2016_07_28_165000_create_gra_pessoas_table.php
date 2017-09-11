@@ -22,7 +22,14 @@ class CreateGraPessoasTable extends Migration
             $table->date('pes_nascimento');
             $table->string('pes_mae', 150);
             $table->string('pes_pai', 150)->nullable();
-            $table->enum('pes_estado_civil', ['solteiro', 'casado', 'divorciado', 'viuvo(a)', 'uniao_estavel', 'outros']);
+            $table->enum('pes_estado_civil', [
+                'solteiro',
+                'casado',
+                'divorciado',
+                'viuvo(a)',
+                'uniao_estavel',
+                'outros'
+            ])->nullable();
             $table->string('pes_naturalidade', 45)->nullable();
             $table->string('pes_nacionalidade', 45)->nullable();
             $table->string('pes_raca', 45)->nullable();
