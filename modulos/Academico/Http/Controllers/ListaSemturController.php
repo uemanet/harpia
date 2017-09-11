@@ -250,7 +250,7 @@ class ListaSemturController extends BaseController
             $content = '';
 
             foreach ($matriculas as $matricula) {
-                if (!$matricula || !$this->listaSemturRepository->validateMatricula($matricula)) {
+                if (!$matricula || $matricula->mat_situacao != 'cursando' || !$this->listaSemturRepository->validateMatricula($matricula)) {
                     continue;
                 }
 
@@ -321,6 +321,12 @@ class ListaSemturController extends BaseController
         if (!$matriculas->count()) {
             flash()->error('Não há matrículas dessa turma incluídas nesta lista.');
             return redirect()->route('academico.carteirasestudantis.showmatriculas', $listaId);
+        }
+
+        foreach ($matriculas as $key => $value) {
+            if (!$this->listaSemturRepository->validateMatricula($value)) {
+                unset($matriculas[$key]);
+            }
         }
 
         $mpdf = new \mPDF();

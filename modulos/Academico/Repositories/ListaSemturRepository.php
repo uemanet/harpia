@@ -165,8 +165,7 @@ class ListaSemturRepository extends BaseRepository
 
     public function getMatriculasOutOfLista($listaId, $turmaId, $poloId = null)
     {
-        $query = DB::table('acd_matriculas')
-                        ->join('acd_turmas', function ($join) {
+        $query = \Modulos\Academico\Models\Matricula::join('acd_turmas', function ($join) {
                             $join->on('mat_trm_id', '=', 'trm_id');
                         })
                         ->join('acd_polos', function ($join) {
@@ -193,17 +192,23 @@ class ListaSemturRepository extends BaseRepository
             $query = $query->where('mat_pol_id', '=', $poloId);
         }
 
-        $query = $query->orderBy('pes_nome', 'asc');
+        $matriculas = $query->orderBy('pes_nome', 'asc')->get();
 
-        return $query->get();
+        if ($matriculas->count()) {
+            foreach ($matriculas as $matricula) {
+                $matricula->apto = 1;
+
+                if (!$this->validateMatricula($matricula)) {
+                    $matricula->apto = 0;
+                }
+            }
+        }
+
+        return $matriculas;
     }
 
     public function validateMatricula(\Modulos\Academico\Models\Matricula $matricula)
     {
-        if ($matricula->mat_situacao != 'cursando') {
-            return false;
-        }
-
         $pessoa = $matricula->aluno->pessoa;
 
         if (empty($pessoa->pes_mae)) {

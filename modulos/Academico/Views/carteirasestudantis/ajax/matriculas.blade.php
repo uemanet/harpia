@@ -49,15 +49,20 @@
                                                         <th>
                                                             Polo
                                                         </th>
+                                                        <th>
+                                                            Status
+                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                 @foreach ($matriculasOutLista as $matricula)
                                                     <tr>
                                                         <td>
-                                                            <label>
-                                                                <input class="matriculas" type="checkbox" value="{{$matricula->mat_id}}">
-                                                            </label>
+                                                            @if($matricula->apto)
+                                                                <label>
+                                                                    <input class="matriculas" type="checkbox" value="{{$matricula->mat_id}}">
+                                                                </label>
+                                                            @endif
                                                         </td>
                                                         <td>
                                                             {{$matricula->pes_nome}}
@@ -67,6 +72,17 @@
                                                         </td>
                                                         <td>
                                                             {{$matricula->pol_nome}}
+                                                        </td>
+                                                        <td>
+                                                            @if($matricula->apto)
+                                                                <span class="label label-success">
+                                                                    Apto
+                                                                </span>
+                                                            @else
+                                                                <span class="label label-warning">
+                                                                    Faltando informações pessoais e/ou documentos
+                                                                </span>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach

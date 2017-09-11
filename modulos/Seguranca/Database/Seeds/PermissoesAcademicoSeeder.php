@@ -674,8 +674,63 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        // permissões do recurso carteiras de estudante
 
-        // Atirbuir permissao index ao perfil de Administrador
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.carteirasestudantis.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.carteirasestudantis.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'academico.carteirasestudantis.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.carteirasestudantis.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'showmatriculas',
+            'prm_rota' => 'academico.carteirasestudantis.showmatriculas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'addmatriculas',
+            'prm_rota' => 'academico.carteirasestudantis.addmatriculas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'exportfile',
+            'prm_rota' => 'academico.carteirasestudantis.exportfile'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'print',
+            'prm_rota' => 'academico.carteirasestudantis.print'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'deletematricula',
+            'prm_rota' => 'academico.carteirasestudantis.deletematricula'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        // Atribuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 
         // Atribuir perfil de Administrador ao usuario criado

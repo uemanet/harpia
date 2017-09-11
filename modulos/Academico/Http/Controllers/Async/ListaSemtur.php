@@ -74,7 +74,7 @@ class ListaSemtur extends BaseController
         foreach ($matriculas as $id) {
             $matricula = $this->matriculaCursoRepository->find($id);
 
-            if ($matricula && $this->listaSemturRepository->validateMatricula($matricula)) {
+            if ($matricula && $matricula->mat_situacao == 'cursando' && $this->listaSemturRepository->validateMatricula($matricula)) {
                 $lista->matriculas()->attach($matricula->mat_id);
             }
         }
