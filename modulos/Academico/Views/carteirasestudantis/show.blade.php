@@ -30,13 +30,19 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                {!! Form::hidden('lst_id', $lista->lst_id, ['id' => 'lst_id']) !!}
-                <div class="col-md-5">
-                    {!! Form::select('trm_id', $turmas, old('trm_id'), ['id' => 'trm_id', 'class' => 'form-control', 'placeholder' => 'Turma']) !!}
-                </div>
-                <div class="col-md-1">
-                    <button class="form-control btn-primary btnBuscar">Buscar</button>
-                </div>
+                @if($turmas->count())
+                    {!! Form::hidden('lst_id', $lista->lst_id, ['id' => 'lst_id']) !!}
+                    <div class="col-md-5">
+                        {!! Form::select('trm_id', $turmas, old('trm_id'), ['id' => 'trm_id', 'class' => 'form-control', 'placeholder' => 'Turma']) !!}
+                    </div>
+                    <div class="col-md-1">
+                        <button class="form-control btn-primary btnBuscar">Buscar</button>
+                    </div>
+                @else
+                    <div class="col-md-12">
+                        <p>Não há matrículas nesta lista</p>
+                    </div>
+                @endif
             </div>
         </div>
         <!-- /.box-body -->
