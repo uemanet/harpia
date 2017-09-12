@@ -63,6 +63,14 @@ class ListaSemturController extends BaseController
                     'buttons' => [
                         [
                             'classButton' => '',
+                            'icon' => 'fa fa-eye',
+                            'route' => 'academico.carteirasestudantis.showmatriculas',
+                            'parameters' => ['id' => $obj->lst_id],
+                            'label' => 'Gerenciar Matrículas',
+                            'method' => 'get'
+                        ],
+                        [
+                            'classButton' => '',
                             'icon' => 'fa fa-pencil',
                             'route' => 'academico.carteirasestudantis.edit',
                             'parameters' => ['id' => $obj->lst_id],
@@ -76,14 +84,6 @@ class ListaSemturController extends BaseController
                             'id' => $obj->lst_id,
                             'label' => 'Excluir',
                             'method' => 'post'
-                        ],
-                        [
-                            'classButton' => '',
-                            'icon' => 'fa fa-eye',
-                            'route' => 'academico.carteirasestudantis.showmatriculas',
-                            'parameters' => ['id' => $obj->lst_id],
-                            'label' => 'Gerenciar Matrículas',
-                            'method' => 'get'
                         ],
                     ]
                 ]);
