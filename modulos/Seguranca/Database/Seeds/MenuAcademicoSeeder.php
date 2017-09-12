@@ -271,6 +271,15 @@ class MenuAcademicoSeeder extends Seeder
             'mit_ordem' => 3
         ]);
 
+        $carteirasestudantis = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_item_pai' => $processos->mit_id,
+            'mit_nome' => 'Carteiras de Estudante',
+            'mit_rota' => 'academico.carteirasestudantis.index',
+            'mit_icone' => 'fa fa-id-card-o',
+            'mit_ordem' => 4
+        ]);
+
       // Categoria Documentos
       $documentos = MenuItem::create([
           'mit_mod_id' => 3,
