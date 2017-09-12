@@ -78,9 +78,9 @@ class PermissaoController extends BaseController
             ->sortable(array('prm_id', 'prm_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
-
-            return view('Seguranca::permissoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
         }
+
+        return view('Seguranca::permissoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
