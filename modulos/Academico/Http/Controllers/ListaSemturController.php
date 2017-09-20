@@ -265,7 +265,7 @@ class ListaSemturController extends BaseController
                 $line .= 'I'; // turno
                 $line .= substr(str_pad(utf8_decode($turma->trm_nome), 5),0,5);
                 $line .= substr(str_pad($matricula->mat_id, 12),0,12);
-                $line .= $matricula->aluno->pessoa->pes_nascimento;
+                $line .= substr($matricula->aluno->pessoa->pes_nascimento, 0,2) . substr($matricula->aluno->pessoa->pes_nascimento, 3,2) . substr($matricula->aluno->pessoa->pes_nascimento, 6,4);
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_endereco), 50),0,50);
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_bairro), 30),0,30);
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_cidade), 20),0,20);
@@ -276,7 +276,7 @@ class ListaSemturController extends BaseController
 
                 $line .= substr(str_pad($rg->doc_conteudo, 20),0,20);
                 $line .= substr(str_pad($rg->doc_orgao, 10),0,10);
-                $line .= $rg->doc_data_expedicao;
+                $line .= substr($rg->doc_data_expedicao, 0,2) . substr($rg->doc_data_expedicao, 3,2) . substr($rg->doc_data_expedicao, 6,4);
 
                 $cpf = $matricula->aluno->pessoa->documentos()->where('doc_tpd_id', 2)->first();
                 $line .= $cpf->doc_conteudo;

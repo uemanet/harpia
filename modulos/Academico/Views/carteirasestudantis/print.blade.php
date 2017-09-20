@@ -50,6 +50,9 @@
                 <td><strong>INSTITUIÇÃO: 7201 - UEMA - UNIVERSIDADE ESTADUAL DO MARANHÃO/MATRIZ</strong></td>
             </tr>
             <tr>
+                <td><strong>CURSO: {{ $matriculas[0]->turma->ofertacurso->curso->crs_nome }}</strong></td>
+            </tr>
+            <tr>
                 <td><strong>REMESSA: {{$lista->lst_id}}</strong></td>
             </tr>
         </tbody>
