@@ -231,6 +231,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/xls', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasDisciplinaController@postXls')->name('academico.relatoriosmatriculasdisciplinas.xls');
     });
 
+    Route::group(['prefix' => 'relatoriosatasfinais'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\RelatoriosAtasFinaisController@getIndex')->name('academico.relatoriosatasfinais.index');
+        Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosAtasFinaisController@postPdf')->name('academico.relatoriosatasfinais.pdf');
+    });
+
     Route::group(['prefix' => 'controlederegistro'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\ControleRegistroController@getIndex')->name('academico.controlederegistro.index');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\ControleRegistroController@getShow')->name('academico.controlederegistro.show');

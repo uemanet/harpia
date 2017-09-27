@@ -6,4 +6,5 @@ use Modulos\Core\Http\Controller\BaseController;
 
 class RelatoriosAtasFinaisController extends BaseController
 {
+
 }
