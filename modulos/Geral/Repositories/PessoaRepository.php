@@ -166,16 +166,19 @@ class PessoaRepository extends BaseRepository
                         ->join('int_ambientes_turmas', 'atr_trm_id', '=', 'trm_id')
                         ->get();
 
-        $ambientesdapessoaId = [];
+        if ($pessoaturmas->count()) {
+            $ambientesdapessoaId = [];
 
-        foreach ($pessoaturmas as $key => $value) {
-            $ambientesdapessoaId[] = $value->atr_amb_id;
+            foreach ($pessoaturmas as $key => $value) {
+                $ambientesdapessoaId[] = $value->atr_amb_id;
+            }
+
+            $ambientesId = array_unique($ambientesdapessoaId);
+
+            foreach ($ambientesId as $id) {
+                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
+            }
         }
 
-        $ambientesId = array_unique($ambientesdapessoaId);
-
-        foreach ($ambientesId as $id) {
-            event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
-        }
     }
 }

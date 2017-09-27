@@ -3,6 +3,8 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\AlunoRequest;
 use Modulos\Academico\Repositories\AlunoRepository;
@@ -12,8 +14,6 @@ use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use ActionButton;
-use Validator;
-use DB;
 
 class AlunosController extends BaseController
 {
@@ -254,30 +254,7 @@ class AlunosController extends BaseController
                 return redirect()->back()->withInput($request->all())->withErrors($errors);
             }
 
-            $dataPessoa = array(
-                'pes_nome' => $request->input('pes_nome'),
-                'pes_sexo' => $request->input('pes_sexo'),
-                'pes_email' => $request->input('pes_email'),
-                'pes_telefone' => $request->input('pes_telefone'),
-                'pes_nascimento' => $request->input('pes_nascimento'),
-                'pes_mae' => $request->input('pes_mae'),
-                'pes_pai' => $request->input('pes_pai'),
-                'pes_estado_civil' => $request->input('pes_estado_civil'),
-                'pes_naturalidade' => $request->input('pes_naturalidade'),
-                'pes_nacionalidade' => $request->input('pes_nacionalidade'),
-                'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
-                'pes_endereco' => $request->input('pes_endereco'),
-                'pes_numero' => $request->input('pes_numero'),
-                'pes_complemento' => $request->input('pes_complemento'),
-                'pes_cep' => $request->input('pes_cep'),
-                'pes_bairro' => $request->input('pes_bairro'),
-                'pes_cidade' => $request->input('pes_cidade'),
-                'pes_estado' => $request->input('pes_estado')
-            );
-
-            $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');
+            $this->pessoaRepository->update($request->all(), $pessoaId, 'pes_id');
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoaId,
@@ -289,24 +266,24 @@ class AlunosController extends BaseController
 
             DB::commit();
 
-
             $pessoaAtt = $this->pessoaRepository->find($pessoaId);
 
             $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
 
             flash()->success('Aluno editado com sucesso!');
             return redirect()->route('academico.alunos.show', $pessoaAtt->aluno->alu_id);
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-            DB::rollback();
-            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
-
-            return redirect()->back();
         } catch (ValidationException $e) {
             DB::rollback();
             return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
         }
     }
 

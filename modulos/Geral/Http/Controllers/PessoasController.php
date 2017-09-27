@@ -2,6 +2,8 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -9,8 +11,6 @@ use Modulos\Geral\Repositories\PessoaRepository;
 use Illuminate\Http\Request;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
-use DB;
-use Validator;
 
 class PessoasController extends BaseController
 {
