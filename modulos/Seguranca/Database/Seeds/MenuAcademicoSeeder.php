@@ -359,7 +359,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 1
       ]);
 
-        $relatoriosmatriculascurso = MenuItem::create([
+      $relatoriosmatriculascurso = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_item_pai' => $relatoriosmatriculas->mit_id,
           'mit_nome' => 'Por Curso',
@@ -368,13 +368,23 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 1
       ]);
 
-        $relatoriosmatriculasdisciplina = MenuItem::create([
+      $relatoriosmatriculasdisciplina = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_item_pai' => $relatoriosmatriculas->mit_id,
           'mit_nome' => 'Por Disciplina',
           'mit_rota' => 'academico.relatoriosmatriculasdisciplinas.index',
           'mit_icone' => 'fa fa-file-text-o',
           'mit_ordem' => 2
+      ]);
+
+      // Atas finais
+      $relatoriosatasfinais = MenuItem::create([
+          'mit_mod_id' => 3,
+          'mit_item_pai' => $relatorios->mit_id,
+          'mit_nome' => 'Atas Finais',
+          'mit_rota' => 'academico.relatoriosatasfinais.index',
+          'mit_icone' => 'fa fa-file-pdf-o',
+          'mit_ordem' => 1
       ]);
     }
 }

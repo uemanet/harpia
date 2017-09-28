@@ -68,11 +68,22 @@ class CursoRepository extends BaseRepository
     /**
      * Traz somente os cursos tecnicos
      * @param int $nivelTecnicoId
+     * @param bool $all
      * @return mixed
      */
-    public function listsCursosTecnicos($nivelTecnicoId = 2)
+    public function listsCursosTecnicos($nivelTecnicoId = 2, $all = false)
     {
-        return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
+        if (!$all) {
+            return $this->model
+                ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
+                ->where('ucr_usr_id', '=', Auth::user()->usr_id)
+                ->where('crs_nvc_id', '=', $nivelTecnicoId)
+                ->pluck('crs_nome', 'crs_id')->toArray();
+        }
+
+        return $this->model
+            ->where('crs_nvc_id', '=', $nivelTecnicoId)
+            ->pluck('crs_nome', 'crs_id')->toArray();
     }
 
     public function create(array $data)
