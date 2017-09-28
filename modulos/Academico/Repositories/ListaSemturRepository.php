@@ -225,7 +225,7 @@ class ListaSemturRepository extends BaseRepository
 
         $rg = $pessoa->documentos()->where('doc_tpd_id', 1)->first();
 
-        if (!$rg || empty($rg->doc_conteudo)) {
+        if (!$rg || empty($rg->doc_conteudo) || empty($rg->doc_data_expedicao)) {
             return false;
         }
 
