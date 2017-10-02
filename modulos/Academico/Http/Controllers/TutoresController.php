@@ -3,9 +3,10 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\TutorRequest;
-use Validator;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
@@ -13,7 +14,6 @@ use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
-use DB;
 
 class TutoresController extends BaseController
 {
@@ -242,42 +242,29 @@ class TutoresController extends BaseController
             return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
         }
 
+        $pessoa = $this->pessoaRepository->find($pessoaId);
+
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe.');
+            return redirect()->route('academico.professores.index');
+        }
+
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
+        if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
+            $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
         DB::beginTransaction();
         try {
-            if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
-                $errors = ['pes_email' => 'Email já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
 
-            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
-                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
+            $oldPessoa = clone $pessoa;
 
-            $dataPessoa = array(
-                'pes_nome' => $request->input('pes_nome'),
-                'pes_sexo' => $request->input('pes_sexo'),
-                'pes_email' => $request->input('pes_email'),
-                'pes_telefone' => $request->input('pes_telefone'),
-                'pes_nascimento' => $request->input('pes_nascimento'),
-                'pes_mae' => $request->input('pes_mae'),
-                'pes_pai' => $request->input('pes_pai'),
-                'pes_estado_civil' => $request->input('pes_estado_civil'),
-                'pes_naturalidade' => $request->input('pes_naturalidade'),
-                'pes_nacionalidade' => $request->input('pes_nacionalidade'),
-                'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
-                'pes_endereco' => $request->input('pes_endereco'),
-                'pes_numero' => $request->input('pes_numero'),
-                'pes_complemento' => $request->input('pes_complemento'),
-                'pes_cep' => $request->input('pes_cep'),
-                'pes_bairro' => $request->input('pes_bairro'),
-                'pes_cidade' => $request->input('pes_cidade'),
-                'pes_estado' => $request->input('pes_estado')
-            );
-
-            $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');
+            $pessoa->fill($request->all())->save();
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoaId,
@@ -289,12 +276,15 @@ class TutoresController extends BaseController
 
             DB::commit();
 
-            $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-
-            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
+            if ($this->checkUpdateMigracao($oldPessoa, $pessoa)) {
+                $this->pessoaRepository->updatePessoaAmbientes($pessoa);
+            }
 
             flash()->success('Tutor editado com sucesso!');
             return redirect()->route('academico.tutores.index');
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -303,9 +293,6 @@ class TutoresController extends BaseController
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-        } catch (ValidationException $e) {
-            DB::rollback();
-            return redirect()->back()->withInput($request->all())->withErrors($e);
         }
     }
 
@@ -321,5 +308,15 @@ class TutoresController extends BaseController
         session(['last_acad_route' => 'academico.tutores.show', 'last_id' => $tutorId]);
 
         return view('Academico::tutores.show', ['pessoa' => $tutor->pessoa]);
+    }
+
+    private function checkUpdateMigracao($oldPessoa, $pessoa)
+    {
+        if (strcmp($oldPessoa->pes_nome, $pessoa->pes_nome) != 0 || strcmp($oldPessoa->pes_email, $pessoa->pes_email) != 0
+            || strcmp($oldPessoa->pes_cidade, $pessoa->pes_cidade) != 0) {
+            return true;
+        }
+
+        return false;
     }
 }

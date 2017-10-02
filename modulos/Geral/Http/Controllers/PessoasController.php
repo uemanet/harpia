@@ -139,22 +139,23 @@ class PessoasController extends BaseController
             return redirect()->route('geral.pessoas.index');
         }
 
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
+        if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $id)) {
+            $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
         DB::beginTransaction();
 
         try {
-            if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id)) {
-                $errors = ['pes_email' => 'Email já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
 
-            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $id)) {
-                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
+            $oldPessoa = clone $pessoa;
 
-            $dataPessoa = $request->only($this->pessoaRepository->getFillableModelFields());
-
-            $this->pessoaRepository->update($dataPessoa, $pessoa->pes_id, 'pes_id');
+            $pessoa->fill($request->all())->save();
 
             $dataDocumento = [
                 'doc_pes_id' => $id,
@@ -166,12 +167,12 @@ class PessoasController extends BaseController
 
             DB::commit();
 
-            $pessoaAtt = $this->pessoaRepository->find($id);
-
-            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
+            if ($this->checkUpdateMigracao($oldPessoa, $pessoa)) {
+                $this->pessoaRepository->updatePessoaAmbientes($pessoa);
+            }
 
             flash()->success('Pessoa editada com sucesso!');
-            return redirect()->route('geral.pessoas.show', ['id' =>$id ]);
+            return redirect()->route('geral.pessoas.show', ['id' => $id]);
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
@@ -228,5 +229,15 @@ class PessoasController extends BaseController
         }
 
         return redirect()->route($route)->with('validado', 'true')->withInput(['doc_conteudo' => $cpf]);
+    }
+
+    private function checkUpdateMigracao($oldPessoa, $pessoa)
+    {
+        if (strcmp($oldPessoa->pes_nome, $pessoa->pes_nome) != 0 || strcmp($oldPessoa->pes_email, $pessoa->pes_email) != 0
+            || strcmp($oldPessoa->pes_cidade, $pessoa->pes_cidade) != 0) {
+            return true;
+        }
+
+        return false;
     }
 }

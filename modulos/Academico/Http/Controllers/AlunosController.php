@@ -242,19 +242,29 @@ class AlunosController extends BaseController
             return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
         }
 
+        $pessoa = $this->pessoaRepository->find($pessoaId);
+
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe.');
+            return redirect()->route('academico.alunos.index');
+        }
+
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
+        if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
+            $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
         DB::beginTransaction();
         try {
-            if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
-                $errors = ['pes_email' => 'Email já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
 
-            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
-                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
+            $oldPessoa = clone $pessoa;
 
-            $this->pessoaRepository->update($request->all(), $pessoaId, 'pes_id');
+            $pessoa->fill($request->all())->save();
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoaId,
@@ -266,12 +276,12 @@ class AlunosController extends BaseController
 
             DB::commit();
 
-            $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-
-            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
+            if ($this->checkUpdateMigracao($oldPessoa, $pessoa)) {
+                $this->pessoaRepository->updatePessoaAmbientes($pessoa);
+            }
 
             flash()->success('Aluno editado com sucesso!');
-            return redirect()->route('academico.alunos.show', $pessoaAtt->aluno->alu_id);
+            return redirect()->route('academico.alunos.show', $pessoa->aluno->alu_id);
         } catch (ValidationException $e) {
             DB::rollback();
             return redirect()->back()->withInput($request->all())->withErrors($e);
@@ -306,5 +316,15 @@ class AlunosController extends BaseController
         ];
 
         return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'situacao' => $situacao]);
+    }
+
+    private function checkUpdateMigracao($oldPessoa, $pessoa)
+    {
+        if (strcmp($oldPessoa->pes_nome, $pessoa->pes_nome) != 0 || strcmp($oldPessoa->pes_email, $pessoa->pes_email) != 0
+            || strcmp($oldPessoa->pes_cidade, $pessoa->pes_cidade) != 0) {
+            return true;
+        }
+
+        return false;
     }
 }
