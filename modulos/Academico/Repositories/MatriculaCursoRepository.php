@@ -899,6 +899,7 @@ class MatriculaCursoRepository extends BaseRepository
         ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
         ->where('mdc_mdo_id', $IdModulo)
         ->where('mof_mat_id', $IdMatricula)
+        ->orderBy('dis_nome' , 'asc')
         ->get();
 
         $cargahoraria = 0;
@@ -939,9 +940,9 @@ class MatriculaCursoRepository extends BaseRepository
                         'CARGAHORARIAMODULO' => $cargahoraria,
                         'DISCIPLINAS' => $disciplinas,
                         'EIXOCURSO' => $curso->crs_eixo ,
-                        'LIVRO' => $livfolreg->liv_numero,
-                        'FOLHA' => $livfolreg->reg_folha,
-                        'REGISTRO'=> $livfolreg->reg_registro,
+                        'LIVRO' => str_pad($livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
+                        'FOLHA' => str_pad($livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
+                        'REGISTRO'=> str_pad($livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
                         'COEFICIENTEDOMODULO'=> $coeficiente,
                         'PESSOANOME'=> mb_strtoupper($nomepessoa, "UTF-8"),
                         'PESSOACPF'=> $cpfpessoaformatado
