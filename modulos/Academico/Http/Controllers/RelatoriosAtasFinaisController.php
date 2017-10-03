@@ -100,11 +100,13 @@ class RelatoriosAtasFinaisController extends BaseController
         // Estrutura do curso
         $matrizTree = new MatrizCurricularTree($ofertaCurso->matriz);
 
+        dd($matrizTree->toArray());
+        // Resultados das matriculas
         $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
 
-        // Buscar matriculas na oferta de curso e disciplinas correspondentes
-        dd([
+        return view('Academico::relatoriosatasfinais.relatorioatas', [
             'curso' => $curso,
+            'turma' => $turma,
             'oferta' => $ofertaCurso,
             'matriz' => $matrizTree->toArray(),
             'resultados' => $resultados

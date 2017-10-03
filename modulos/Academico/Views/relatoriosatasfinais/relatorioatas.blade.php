@@ -1,4 +1,4 @@
-<html>
+<html lang="pt-br">
 <style>
     table {
         margin-bottom: 5px;
@@ -50,6 +50,7 @@
             '11' => 'novembro',
             '12' => 'dezembro'
         ];
+
     @endphp
     </thead>
 </table>

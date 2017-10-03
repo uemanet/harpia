@@ -31,12 +31,25 @@ class MatrizCurricularTree extends Tree
     {
         $tree = [$this->root->getName() => []];
 
+        $cargaHorariaMatriz = 0;
         foreach ($this->root->getChilds() as $modulo) {
+
+            $cargaHorariaModulo = 0;
             foreach ($modulo->getChilds() as $disciplina) {
-                $tree[$this->root->getName()][$modulo->getName()][$disciplina->getName()] = $disciplina->getData()['dis_id'];
+                $cargaHorariaModulo += $disciplina->getData()['dis_carga_horaria'];
+
+                $tree[$this->root->getName()][$modulo->getName()]['disciplinas'][$disciplina->getName()] = [
+                    'id' => $disciplina->getData()['dis_id'],
+                    'carga_horaria' => $disciplina->getData()['dis_carga_horaria']
+                ];
+
+                $tree[$this->root->getName()][$modulo->getName()]['carga_horaria'] = $cargaHorariaModulo;
             }
+
+            $cargaHorariaMatriz += $cargaHorariaModulo;
         }
 
+        $tree[$this->root->getName()]['carga_horaria_matriz'] = $cargaHorariaMatriz;
         return $tree;
     }
 }
