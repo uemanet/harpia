@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Harpia\Matriz\MatrizCurricularTree;
 use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Repositories\PoloRepository;
@@ -9,27 +10,32 @@ use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Http\Requests\RelatoriosAtasFinaisRequest;
+use Modulos\Academico\Repositories\ResultadosFinaisRepository;
 
 class RelatoriosAtasFinaisController extends BaseController
 {
-    protected $matriculaCursoRepository;
+    protected $poloRepository;
     protected $cursoRepository;
     protected $turmaRepository;
-    protected $poloRepository;
-    private $ofertaCursoRepository;
+    protected $ofertaCursoRepository;
+    protected $matriculaCursoRepository;
+    protected $resultadosFinaisRepository;
 
     public function __construct(
-        MatriculaCursoRepository $matricula,
-        CursoRepository $curso,
+        MatriculaCursoRepository $matriculaCursoRepository,
+        CursoRepository $cursoRepository,
+        PoloRepository $poloRepository,
         TurmaRepository $turmaRepository,
         OfertaCursoRepository $ofertaCursoRepository,
-        PoloRepository $poloRepository)
-    {
-        $this->matriculaCursoRepository = $matricula;
-        $this->cursoRepository = $curso;
-        $this->turmaRepository = $turmaRepository;
-        $this->ofertaCursoRepository = $ofertaCursoRepository;
+        ResultadosFinaisRepository $resultadosFinaisRepository
+    ){
+        $this->cursoRepository = $cursoRepository;
         $this->poloRepository = $poloRepository;
+        $this->turmaRepository = $turmaRepository;
+        $this->matriculaCursoRepository = $matriculaCursoRepository;
+        $this->ofertaCursoRepository = $ofertaCursoRepository;
+        $this->resultadosFinaisRepository = $resultadosFinaisRepository;
     }
 
     public function getIndex(Request $request)
@@ -66,15 +72,13 @@ class RelatoriosAtasFinaisController extends BaseController
                 'pes_email' => 'Email',
                 'pol_nome' => 'Polo',
                 'situacao_matricula_curso' => 'Situação Matricula'
-            ))
-                ->sortable(array('pes_nome', 'mat_id'));
+            ))->sortable(array('pes_nome', 'mat_id'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
 
         $situacao = [
             "" => "Selecione a situação",
-            "cursando" => "Cursando",
             "concluido" => "Concluido",
             "reprovado" => "Reprovado",
             "evadido" => "Evadido",
@@ -82,5 +86,28 @@ class RelatoriosAtasFinaisController extends BaseController
             "desistente" => "Desistente"
         ];
         return view('Academico::relatoriosatasfinais.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'polos', 'situacao'));
+    }
+
+    public function postPdf(RelatoriosAtasFinaisRequest $request)
+    {
+        // Recuperar curso e matriz curricular correspondente a oferta
+        $curso = $this->cursoRepository->find($request->get('crs_id'));
+        $ofertaCurso = $this->ofertaCursoRepository->find($request->get('ofc_id'));
+        $turma = $this->turmaRepository->find($request->get('trm_id'));
+        $polo = $request->get('pol_id', null);
+        $situacao = $request->get('mat_situacao', "");
+
+        // Estrutura do curso
+        $matrizTree = new MatrizCurricularTree($ofertaCurso->matriz);
+
+        $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
+
+        // Buscar matriculas na oferta de curso e disciplinas correspondentes
+        dd([
+            'curso' => $curso,
+            'oferta' => $ofertaCurso,
+            'matriz' => $matrizTree->toArray(),
+            'resultados' => $resultados
+        ]);
     }
 }

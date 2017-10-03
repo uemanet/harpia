@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Matricula;
+use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
 
 class ResultadosFinaisRepository extends BaseRepository
@@ -26,4 +28,62 @@ class ResultadosFinaisRepository extends BaseRepository
     {
         throw new \Exception("Cannot delete entry for " . $id);
     }
+
+    public function getResultadosFinais(Turma $turma, $poloId = null, $situacao = "")
+    {
+        $resultados = [];
+
+        $matriculas = $turma->matriculas;
+
+        // Retira alunos que ainda estao cursando na turma
+        $matriculas = $matriculas->filter(function ($value, $key){
+            return $value->mat_situacao != "cursando";
+        });
+
+        // Filtra por polo
+        if($poloId){
+            $matriculas = $matriculas->filter(function ($value, $key) use ($poloId) {
+               return $value->mat_pol_id == $poloId;
+            });
+        }
+
+        // Filtra por situacao
+        if($situacao){
+            $matriculas = $matriculas->filter(function ($value, $key) use ($situacao) {
+                return $value->mat_situacao == $situacao;
+            });
+        }
+
+        // Resultados individuais dos alunos
+        foreach ($matriculas as $matricula) {
+            $resultados[$matricula->aluno->pessoa->pes_nome] = $this->getResultadosMatricula($matricula);
+        }
+
+        return $resultados;
+    }
+
+    private function getResultadosMatricula(Matricula $matricula) : array
+    {
+        $resultadosMatricula = [];
+
+        foreach ($matricula->matriculasOfertasDisciplinas as $matriculaOfertaDisciplina) {
+            $disciplina = $matriculaOfertaDisciplina->getDisciplina();
+            $resultado['idDisciplina'] = $disciplina->dis_id;
+            $resultado['idOferta'] = $matriculaOfertaDisciplina->mof_ofd_id;
+            $resultado['media'] = $matriculaOfertaDisciplina->mof_mediafinal;
+            $resultado['mof_situacao_matricula'] = $matriculaOfertaDisciplina->mof_mediafinal;
+
+            $modulo = $matriculaOfertaDisciplina->getModuloDisciplina()->modulo;
+            $resultadosMatricula[$modulo->mdo_nome][$disciplina->dis_nome] = $resultado;
+        }
+
+        // Ordenacao
+        foreach ($resultadosMatricula as $key => $resultadoModulo){
+            ksort($resultadoModulo);
+            $resultadosMatricula[$key] = $resultadoModulo;
+        }
+
+        return $resultadosMatricula;
+    }
+
 }

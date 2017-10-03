@@ -24,7 +24,7 @@
             <form id="form" method="POST" action="{{ route('academico.relatoriosatasfinais.pdf') }}">
                 {{ csrf_field() }}
                 <div class="row">
-                    <div class="col-md-3 @if ($errors->has('crs_id')) has-error @endif">
+                    <div class="col-md-2 @if ($errors->has('crs_id')) has-error @endif">
                         {!! Form::label('crs_id', 'Curso*') !!}
                         <div class="form-group">
                             {!! Form::select('crs_id', $cursos, Input::get('crs_id'), ['class' => 'form-control', 'placeholder' => 'Escolha o Curso']) !!}
@@ -62,7 +62,20 @@
                     <div class="col-md-1">
                         <label for="">&nbsp;</label>
                         <div class="form-group">
-                            <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
+                            {!! ActionButton::grid([
+                                    'type' => 'LINE',
+                                    'buttons' => [
+                                        [
+                                        'classButton' => 'btn btn-danger',
+                                        'icon' => 'fa fa-file-pdf-o',
+                                        'route' => 'academico.relatoriosatasfinais.pdf',
+                                        'label' => 'Exportar para PDF',
+                                        'method' => 'post',
+                                        'id' => '',
+                                        'attributes' => ['id' => 'formPdf','target' => '_blank']
+                                        ]
+                                    ]
+                            ]) !!}
                         </div>
                     </div>
                 </div>
