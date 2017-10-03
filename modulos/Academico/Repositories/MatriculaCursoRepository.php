@@ -939,7 +939,7 @@ class MatriculaCursoRepository extends BaseRepository
                         'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
                         'CARGAHORARIAMODULO' => $cargahoraria,
                         'DISCIPLINAS' => $disciplinas,
-                        'EIXOCURSO' => $curso->crs_eixo ,
+                        'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
                         'LIVRO' => str_pad($livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
                         'FOLHA' => str_pad($livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
                         'REGISTRO'=> str_pad($livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
