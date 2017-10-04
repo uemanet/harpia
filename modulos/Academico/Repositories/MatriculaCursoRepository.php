@@ -632,7 +632,7 @@ class MatriculaCursoRepository extends BaseRepository
         return false;
     }
 
-    public function getAlunosAptosCertificacao($turmaId, $moduloId)
+    public function getAlunosAptosCertificacao($turmaId, $moduloId, $poloId)
     {
         // busca todas as matriculas da turma
         $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
@@ -666,7 +666,21 @@ class MatriculaCursoRepository extends BaseRepository
             }
         }
 
-        return array('aptos' => $aptos, 'certificados' => $certificados);
+        if ($poloId > 0) {
+          foreach ($aptos as $key => $value) {
+            if ($value->mat_pol_id != $poloId) {
+              unset($aptos[$key]);
+            }
+          }
+
+          foreach ($certificados as $key => $value) {
+            if ($value->mat_pol_id != $poloId) {
+              unset($certificados[$key]);
+            }
+          }
+        }
+
+        return array('aptos' => $aptos, 'certificados' => $certificados, 'aptosq' => COUNT($aptos), 'certificadosq' => COUNT($certificados));
     }
 
     public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)

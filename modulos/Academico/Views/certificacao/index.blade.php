@@ -30,17 +30,25 @@
                     {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
                     {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha um curso']) !!}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {!! Form::label('ofc_id', 'Oferta*', ['class' => 'control-label']) !!}
                     {{ Form::select('ofc_id', [], null, ['class' => 'form-control', 'id' => 'ofc_id', 'value' => Input::get('ofc_id'), 'placeholder' => 'Oferta']) }}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
                     {{ Form::select('trm_id', [], null, ['class' => 'form-control', 'id' => 'trm_id', 'value' => Input::get('trm_id'), 'placeholder' => 'Turma']) }}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {!! Form::label('mdo_id', 'Módulo*', ['class' => 'control-label']) !!}
                     {{ Form::select('mdo_id', [], null, ['class' => 'form-control', 'id' => 'mdo_id', 'value' => Input::get('pes_email'), 'placeholder' => 'Módulo']) }}
+                </div>
+                <div class="form-group col-md-2">
+                    {!! Form::label('pol_id', 'Polo', ['class' => 'control-label']) !!}
+                    {{ Form::select('pol_id', [], null, ['class' => 'form-control', 'id' => 'pol_id', 'value' => Input::get('pol_id'), 'placeholder' => 'Polo']) }}
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="" class="control-label"></label>
+                    <button class="btn btn-primary form-control" id="btnLocalizar"><i class="fa fa-search"></i></button>
                 </div>
             </div>
         </div>
@@ -72,6 +80,7 @@
             selectOfertas = $('#ofc_id');
             selectTurmas = $('#trm_id');
             selectModulos = $('#mdo_id');
+            selectPolos = $('#pol_id');
 
             // Busca ofertas de curso
             $('#crs_id').change(function () {
@@ -128,21 +137,43 @@
                             }
                         });
                 }
-            });
 
-            $('#mdo_id').change(function () {
-                var modulo = $(this).val();
-                var turma = $('#trm_id').val();
+                if (oferta) {
+                    selectPolos.empty();
 
-                if (modulo) {
-                    $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
+                    $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + oferta)
                         .done(function (data) {
-
-                            renderTable(data.aptos, data.certificados);
+                            if (!$.isEmptyObject(data)) {
+                                selectPolos.append('<option value="0">Selecione um polo</option>');
+                                $.each(data, function (key, obj) {
+                                    selectPolos.append("<option value='" + obj.pol_id + "'>" + obj.pol_nome + "</option>");
+                                });
+                            } else {
+                                selectPolos.append('<option value="">Sem turmas cadastradas</option>');
+                            }
                         });
+
                 }
             });
-            renderTable = function (aptos, certificados) {
+
+            $('#btnLocalizar').click(function () {
+              var modulo = $('#mdo_id').val();
+              var turma = $('#trm_id').val();
+              var polo = $('#pol_id').val();
+
+              if (polo == null) {
+                polo = 0;
+              }
+
+              if (turma) {
+                  $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo + "/" + polo)
+                      .done(function (data) {
+                          renderTable(data.aptos, data.certificados, data.aptosq, data.certificadosq);
+                      });
+              }
+            });
+
+            renderTable = function (aptos, certificados, aptosq, certificadosq) {
                 var html = '<div class="row"><div class="col-md-12">';
                 // criando a estrutura das tabs
                 var tabs = '<div class="nav-tabs-custom">';
@@ -150,11 +181,11 @@
                 tabs += '<li class="active">' +
                     '<a href="#tab_1" data-toggle="tab">' +
                     'Aptos ' +
-                    '<span data-toggle="tooltip" class="badge bg-blue">' + aptos.length + '</span>' +
+                    '<span data-toggle="tooltip" class="badge bg-blue">' + aptosq + '</span>' +
                     '</a></li>';
                 tabs += '<li>' +
                     '<a href="#tab_2" data-toggle="tab">' +
-                    'Certificados <span data-toggle="tooltip" class="badge bg-blue">' + certificados.length + '</span>' +
+                    'Certificados <span data-toggle="tooltip" class="badge bg-blue">' + certificadosq + '</span>' +
                     '</a></li>';
                 tabs += '</ul>';
                 tabs += '<div class="tab-content">';

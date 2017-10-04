@@ -331,7 +331,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'cursos'], function () {
             Route::get('/findcursostecnicos', '\Modulos\Academico\Http\Controllers\Async\Cursos@getCursosTecnicos')->name('academico.async.cursos.findcursostecnicos');
             Route::get('/findmodulosbyoferta/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByOferta')->name('academico.async.cursos.findmodulosbyoferta');
-            Route::get('/getalunosaptos/{turma}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos')->name('academico.async.cursos.getalunosaptos');
+            Route::get('/getalunosaptos/{turma}/{modulo}/{polo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos')->name('academico.async.cursos.getalunosaptos');
             Route::post('/certificaralunos', '\Modulos\Academico\Http\Controllers\Async\Cursos@postCertificarAlunos')->name('academico.async.cursos.certificaralunos');
             Route::get('/printCertificado/{idMatricula}/{idModulo}', '\Modulos\Academico\Http\Controllers\CertificacaoController@getPrint')->name('academico.async.cursos.printcertificado');
         });
