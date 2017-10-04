@@ -40,10 +40,13 @@ class MatrizCurricularTree extends Tree
 
                 $tree[$this->root->getName()][$modulo->getName()]['disciplinas'][$disciplina->getName()] = [
                     'id' => $disciplina->getData()['dis_id'],
+                    'nome' => $disciplina->getData()['dis_nome'],
                     'carga_horaria' => $disciplina->getData()['dis_carga_horaria']
                 ];
 
+                // Carga horaria e descricao
                 $tree[$this->root->getName()][$modulo->getName()]['carga_horaria'] = $cargaHorariaModulo;
+                $tree[$this->root->getName()][$modulo->getName()]['descricao'] = $modulo->getData()->mdo_descricao;
             }
 
             $cargaHorariaMatriz += $cargaHorariaModulo;

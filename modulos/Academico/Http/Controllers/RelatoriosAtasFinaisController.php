@@ -22,6 +22,21 @@ class RelatoriosAtasFinaisController extends BaseController
     protected $matriculaCursoRepository;
     protected $resultadosFinaisRepository;
 
+    private $meses = [
+        '01' => 'janeiro',
+        '02' => 'fevereiro',
+        '03' => 'março',
+        '04' => 'abril',
+        '05' => 'maio',
+        '06' => 'junho',
+        '07' => 'julho',
+        '08' => 'agosto',
+        '09' => 'setembro',
+        '10' => 'outubro',
+        '11' => 'novembro',
+        '12' => 'dezembro'
+    ];
+
     public function __construct(
         MatriculaCursoRepository $matriculaCursoRepository,
         CursoRepository $cursoRepository,
@@ -94,22 +109,24 @@ class RelatoriosAtasFinaisController extends BaseController
         $curso = $this->cursoRepository->find($request->get('crs_id'));
         $ofertaCurso = $this->ofertaCursoRepository->find($request->get('ofc_id'));
         $turma = $this->turmaRepository->find($request->get('trm_id'));
-        $polo = $request->get('pol_id', null);
+        $polo = $this->poloRepository->find($request->get('pol_id', null));
         $situacao = $request->get('mat_situacao', "");
 
         // Estrutura do curso
         $matrizTree = new MatrizCurricularTree($ofertaCurso->matriz);
 
-        dd($matrizTree->toArray());
         // Resultados das matriculas
         $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
 
+        dd($resultados);
         return view('Academico::relatoriosatasfinais.relatorioatas', [
             'curso' => $curso,
+            'polo' => $polo,
             'turma' => $turma,
             'oferta' => $ofertaCurso,
             'matriz' => $matrizTree->toArray(),
-            'resultados' => $resultados
+            'resultados' => $resultados,
+            'meses' => $this->meses
         ]);
     }
 }
