@@ -359,7 +359,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 1
       ]);
 
-      $relatoriosmatriculascurso = MenuItem::create([
+        $relatoriosmatriculascurso = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_item_pai' => $relatoriosmatriculas->mit_id,
           'mit_nome' => 'Por Curso',
@@ -368,7 +368,7 @@ class MenuAcademicoSeeder extends Seeder
           'mit_ordem' => 1
       ]);
 
-      $relatoriosmatriculasdisciplina = MenuItem::create([
+        $relatoriosmatriculasdisciplina = MenuItem::create([
           'mit_mod_id' => 3,
           'mit_item_pai' => $relatoriosmatriculas->mit_id,
           'mit_nome' => 'Por Disciplina',

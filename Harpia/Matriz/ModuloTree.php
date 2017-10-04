@@ -23,7 +23,7 @@ class ModuloTree extends Tree
         # Ordena por ordem alfabetica
         $disciplinas = $disciplinas->sortBy('dis_nome');
 
-        foreach ($disciplinas as $disciplina){
+        foreach ($disciplinas as $disciplina) {
             $this->root->addChild(new Node($disciplina['dis_nome'], $disciplina));
             $this->nodes++;
         }

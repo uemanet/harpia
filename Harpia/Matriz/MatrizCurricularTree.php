@@ -33,7 +33,6 @@ class MatrizCurricularTree extends Tree
 
         $cargaHorariaMatriz = 0;
         foreach ($this->root->getChilds() as $modulo) {
-
             $cargaHorariaModulo = 0;
             foreach ($modulo->getChilds() as $disciplina) {
                 $cargaHorariaModulo += $disciplina->getData()['dis_carga_horaria'];

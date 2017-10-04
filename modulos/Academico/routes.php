@@ -352,7 +352,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'carteirasestudantis'], function () {
-            Route::get('/gettableshowmatriculas/{lista}/{turma}','\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableShowMatriculas')->name('academico.async.carteirasestudantis.gettableshowmatriculas');
+            Route::get('/gettableshowmatriculas/{lista}/{turma}', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableShowMatriculas')->name('academico.async.carteirasestudantis.gettableshowmatriculas');
             Route::get('/gettableaddmatriculas', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableAddMatriculas')->name('academico.async.carteirasestudantis.gettableaddmatriculas');
             Route::post('/incluirmatriculas', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@postIncluirMatriculasLista')->name('academico.async.carteirasestudantis.incluirmatriculas');
         });

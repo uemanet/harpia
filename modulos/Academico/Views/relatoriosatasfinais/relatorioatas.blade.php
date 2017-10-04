@@ -63,6 +63,8 @@
 
             $sub -= $divisao;
         }
+
+        foreach ($resultados as $nomePolo => $matriculasPolo):
     @endphp
     <table>
         <thead>
@@ -75,10 +77,10 @@
                 <td colspan="{{ $qtdColunas }}">{{ $data }}, foi concluído o processo de apuração das notas finais dos alunos do curso, módulos e turma abaixo relacionados, deste estabelecimento com os respectivos resultados:</td>
             </tr>
             <tr>
-                <td colspan="2"><strong>Ano letivo:</strong> {{ $turma->periodo->per_nome }}</td>
+                <td colspan="2"><strong>Ano letivo:</strong> {{ date('Y') }}</td>
                 <td colspan="{{ $colLinhaInf[1] }}"><strong>Curso:</strong> {{ $curso->crs_nome }}</td>
                 <td colspan="{{ $colLinhaInf[2] }}"><strong>Eixo:</strong> {{ $curso->crs_eixo }}</td>
-                <td colspan="{{ $colLinhaInf[3] }}"><strong>Polo:</strong> {{ !is_null($polo) ? $polo->pol_nome : "" }}</td>
+                <td colspan="{{ $colLinhaInf[3] }}"><strong>Polo:</strong> {{ $nomePolo }}</td>
                 <td colspan="{{ $colLinhaInf[4] }}"><strong>Turno:</strong> Integral</td>
             </tr>
             <tr>
@@ -87,6 +89,7 @@
                     $matrizCurricular = $matriz;
                     $modulos = array_pop($matrizCurricular);
                     unset($modulos["carga_horaria_matriz"]);
+                    unset($modulos["VIVÊNCIA PRÁTICA"]);
 
                     foreach($modulos as $nome => $modulo) {
                         $colspan = count($modulo['disciplinas']);
@@ -103,6 +106,7 @@
                     $matrizCurricular = $matriz;
                     $modulos = array_pop($matrizCurricular);
                     unset($modulos["carga_horaria_matriz"]);
+                    unset($modulos["VIVÊNCIA PRÁTICA"]);
 
                     foreach($modulos as $nome => $modulo) {
                         $colspan = count($modulo['disciplinas']);
@@ -118,6 +122,7 @@
                     $matrizCurricular = $matriz;
                     $modulos = array_pop($matrizCurricular);
                     unset($modulos["carga_horaria_matriz"]);
+                    unset($modulos["VIVÊNCIA PRÁTICA"]);
 
                     foreach($modulos as $nome => $modulo) {
                        foreach ($modulo['disciplinas'] as $disciplina){
@@ -145,7 +150,47 @@
                 <td><strong>Nome do aluno(a)</strong></td>
                 <td class="center" colspan="{{ $tamModulos + 1 }}"><strong>Notas</strong></td>
             </tr>
+            <tr>
+                @php
+                    $matrizCurricular = $matriz;
+                    $modulos = array_pop($matrizCurricular);
+                    unset($modulos["carga_horaria_matriz"]);
+
+                    $html = "";
+
+                    foreach ($matriculasPolo as $aluno => $modulosAluno) {
+                        $html .= "<tr>";
+                        $html .= '<td>' . $modulosAluno["idAluno"] . '</td>';
+                        $html .= '<td>' . $aluno . '</td>';
+
+                        foreach ($modulos as $nomeModulo => $modulo) {
+                            foreach ($modulo['disciplinas'] as $nomeDisciplina => $disciplinas) {
+                                if(isset($modulosAluno[$nomeModulo]) && isset($modulosAluno[$nomeModulo][$nomeDisciplina])){
+                                    $html .= '<td class="center">';
+                                    $nota = $modulosAluno[$nomeModulo][$nomeDisciplina]['media'];
+
+                                    if (is_numeric($modulosAluno[$nomeModulo][$nomeDisciplina]['media'])) {
+                                        $nota = number_format($modulosAluno[$nomeModulo][$nomeDisciplina]['media'], 2);
+                                    }
+
+                                    $html .= $nota .'</td>';
+                                    continue;
+                                }
+
+                                $html .= '<td class="center"> -- </td>';
+                            }
+                        }
+
+                        $html .= '<td class="center">'.$modulosAluno['situacao'].'</td>';
+                        $html .= '</tr>';
+                    }
+                @endphp
+            </tr>
         </tbody>
+        @php
+            echo $html;
+            endforeach;
+        @endphp
     </table>
     <script type="text/javascript">
         $(function() {

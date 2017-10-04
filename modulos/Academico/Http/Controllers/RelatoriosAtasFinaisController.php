@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Modulos\Academico\Http\Controllers;
 
 use Harpia\Matriz\MatrizCurricularTree;
@@ -44,7 +45,7 @@ class RelatoriosAtasFinaisController extends BaseController
         TurmaRepository $turmaRepository,
         OfertaCursoRepository $ofertaCursoRepository,
         ResultadosFinaisRepository $resultadosFinaisRepository
-    ){
+    ) {
         $this->cursoRepository = $cursoRepository;
         $this->poloRepository = $poloRepository;
         $this->turmaRepository = $turmaRepository;
@@ -118,7 +119,6 @@ class RelatoriosAtasFinaisController extends BaseController
         // Resultados das matriculas
         $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
 
-        dd($resultados);
         return view('Academico::relatoriosatasfinais.relatorioatas', [
             'curso' => $curso,
             'polo' => $polo,
