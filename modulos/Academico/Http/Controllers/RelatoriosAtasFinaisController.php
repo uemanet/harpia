@@ -38,6 +38,28 @@ class RelatoriosAtasFinaisController extends BaseController
         '12' => 'dezembro'
     ];
 
+    private $dataConclusaoTurma = [
+        1 => '2014-12-17',
+        2 => '2014-09-14',
+        3 => '2014-09-20',
+        4 => '2014-11-10',
+        5 => '2014-11-10',
+        6 => '2014-10-13',
+        7 => '2014-11-03',
+        8 => '2014-10-26',
+        9 => '2015-01-04',
+        10 => '2015-01-04',
+        11 => '2014-10-13',
+        12 => '2015-01-08',
+        13 => '2015-01-04',
+        14 => '2014-12-17',
+        15 => '2014-09-14',
+        16 => '2014-11-10',
+        17 => '2014-11-03',
+        34 => '2016-12-11',
+        35 => '2014-11-03',
+    ];
+
     public function __construct(
         MatriculaCursoRepository $matriculaCursoRepository,
         CursoRepository $cursoRepository,
@@ -119,15 +141,16 @@ class RelatoriosAtasFinaisController extends BaseController
         // Resultados das matriculas
         $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
 
-//        return view('Academico::relatoriosatasfinais.relatorioatas', [
-//            'curso' => $curso,
-//            'polo' => $polo,
-//            'turma' => $turma,
-//            'oferta' => $ofertaCurso,
-//            'matriz' => $matrizTree->toArray(),
-//            'resultados' => $resultados,
-//            'meses' => $this->meses
-//        ]);
+        $content = view('Academico::relatoriosatasfinais.relatorioatas', [
+            'curso' => $curso,
+            'polo' => $polo,
+            'turma' => $turma,
+            'dataConclusao' => isset($this->dataConclusaoTurma[$turma->trm_id]) ? $this->dataConclusaoTurma[$turma->trm_id] : '',
+            'oferta' => $ofertaCurso,
+            'matriz' => $matrizTree->toArray(),
+            'resultados' => $resultados,
+            'meses' => $this->meses
+        ])->render();
 
         // mpdf
         $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
@@ -142,15 +165,6 @@ class RelatoriosAtasFinaisController extends BaseController
         $mpdf->defaultfooterfontstyle = 'BI';
         $mpdf->defaultfooterline = 0;
         $mpdf->addPage('L');
-        $content = view('Academico::relatoriosatasfinais.relatorioatas', [
-            'curso' => $curso,
-            'polo' => $polo,
-            'turma' => $turma,
-            'oferta' => $ofertaCurso,
-            'matriz' => $matrizTree->toArray(),
-            'resultados' => $resultados,
-            'meses' => $this->meses
-        ])->render();
         $mpdf->WriteHTML($content);
         $mpdf->Output();
         exit;

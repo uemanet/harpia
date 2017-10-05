@@ -37,6 +37,12 @@
 </head>
 <body>
     @php
+        $conclusao = null;
+
+        if($dataConclusao) {
+            $conclusao = new \DateTime($dataConclusao);
+        }
+
         $colIniciais = 4;
         $colModulos = 0;
 
@@ -48,6 +54,12 @@
         }
 
         $data = "";
+
+        if($conclusao) {
+            $data .= 'Aos ' . $conclusao->format('d') . ' dias de ';
+            $data .= $meses[(int) $conclusao->format('m')] . ' de ' . $conclusao->format('Y');
+        }
+
         $qtdColunas = $colIniciais + $colModulos + 1;
 
         $colLinhaInf = array();
