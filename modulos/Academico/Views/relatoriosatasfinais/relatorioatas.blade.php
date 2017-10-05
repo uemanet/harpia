@@ -78,7 +78,7 @@
 
         foreach ($resultados as $nomePolo => $matriculasPolo):
     @endphp
-    <table>
+    <table  style="page-break-after: always;">
         <thead>
             <tr>
                 <th class="center" colspan="{{ $qtdColunas }}"><strong>ATAS DE RESULTADOS FINAIS</strong></th>
@@ -201,6 +201,7 @@
             </tr>
             @php
                 echo $html;
+                unset($html);
 
                 $n = (int) ($qtdColunas/3);
 
@@ -238,10 +239,10 @@
                 <td class="center" colspan="{{ $n3 }}" rowspan="3">
                 </td>
             </tr>
-            @php
-                endforeach;
-            @endphp
         </tbody>
     </table>
+    @php
+        endforeach;
+    @endphp
 </body>
 </html>
