@@ -1,6 +1,5 @@
 <html lang="pt-br">
 <head>
-    <script src="{{ asset('/js/jQuery-2.2.0.min.js')}}"></script>
     <style>
         table {
             margin-bottom: 5px;
@@ -27,6 +26,7 @@
 
         .center {
             text-align: center;
+            vertical-align: middle;
         }
 
         .pagebreak {
@@ -97,8 +97,8 @@
                         echo '<td class="center" colspan="' . $colspan . '"><strong>' . $nome . '</strong></td>';
                     }
                 @endphp
-                <td rowspan="3"><span style="bottom: 30%;"><strong>Prática Profissional</strong></span></td>
-                <td rowspan="5"><span style="bottom: 30%;"><strong>Resultado Final</strong></span></td>
+                <td rowspan="3" text-rotate="90" style="text-align: center;"><span style="bottom: 30%;"><strong>Prática Profissional</strong></span></td>
+                <td rowspan="5" text-rotate="90" style="text-align: center;"><span style="bottom: 30%;"><strong>Resultado Final</strong></span></td>
             </tr>
             <tr>
                 @php
@@ -126,7 +126,8 @@
 
                     foreach($modulos as $nome => $modulo) {
                        foreach ($modulo['disciplinas'] as $disciplina){
-                            echo '<td class="disciplina"><span>' . $disciplina['nome'] . '</span></td>';
+                            echo '<td class="disciplina" text-rotate="90" style="vertical-align: bottom; text-align: center; padding-top: 20px;">'.
+                                '<span>' . $disciplina['nome'] . '</span></td>';
                        }
                     }
                 @endphp
@@ -186,21 +187,49 @@
                     }
                 @endphp
             </tr>
-        </tbody>
-        @php
-            echo $html;
-            endforeach;
-        @endphp
-    </table>
-    <script type="text/javascript">
-        $(function() {
-            var header_height = 0;
-            $('table td span').each(function() {
-                if ($(this).outerWidth() > header_height) header_height = $(this).outerWidth();
-            });
+            @php
+                echo $html;
 
-            $('.disciplina').height(header_height);
-        });
-    </script>
+                $n = (int) ($qtdColunas/3);
+
+                $n1 = $n;
+
+                $delimitador = $n * 3;
+                if($delimitador < $qtdColunas) {
+                    $dif = $qtdColunas - $delimitador;
+                    $n1 = $n + $dif;
+                }
+
+                $n2 = $n;
+                $n3 = $n
+            @endphp
+            <tr lenght="20">
+                <td colspan="{{ $qtdColunas }}"></td>
+            </tr>
+            <tr>
+                <td class="center" colspan="{{ $n1 }}">
+                    <strong>Local/Data</strong>
+                </td>
+                <td class="center" colspan="{{ $n2 }}">
+                    <strong>Assinatura do Coordenador(a) Geral</strong>
+                </td>
+                <td class="center" colspan="{{ $n3 }}">
+                    <strong>Assinatura do Secretário(a) do Curso</strong>
+                </td>
+            </tr>
+            <tr lenght="70">
+                <td class="center" colspan="{{ $n1 }}" style="padding: 30px">
+                    <span>{{ strtoupper(date('d') . ' de ' . $meses[(int) date('m')] . ' de ' . date('Y')) }}</span>
+                </td>
+                <td class="center" colspan="{{ $n2 }}" rowspan="3">
+                </td>
+                <td class="center" colspan="{{ $n3 }}" rowspan="3">
+                </td>
+            </tr>
+            @php
+                endforeach;
+            @endphp
+        </tbody>
+    </table>
 </body>
 </html>

@@ -119,7 +119,30 @@ class RelatoriosAtasFinaisController extends BaseController
         // Resultados das matriculas
         $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
 
-        return view('Academico::relatoriosatasfinais.relatorioatas', [
+//        return view('Academico::relatoriosatasfinais.relatorioatas', [
+//            'curso' => $curso,
+//            'polo' => $polo,
+//            'turma' => $turma,
+//            'oferta' => $ofertaCurso,
+//            'matriz' => $matrizTree->toArray(),
+//            'resultados' => $resultados,
+//            'meses' => $this->meses
+//        ]);
+
+        // mpdf
+        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+        $mpdf->debug = true;
+
+        $mpdf->mirrorMargins = 0;
+        $mpdf->SetTitle('Relatório de Atas Finais '. $curso->crs_nome);
+        $mpdf->defaultheaderfontsize = 10;
+        $mpdf->defaultheaderfontstyle = 'B';
+        $mpdf->defaultheaderline = 0;
+        $mpdf->defaultfooterfontsize = 10;
+        $mpdf->defaultfooterfontstyle = 'BI';
+        $mpdf->defaultfooterline = 0;
+        $mpdf->addPage('L');
+        $content = view('Academico::relatoriosatasfinais.relatorioatas', [
             'curso' => $curso,
             'polo' => $polo,
             'turma' => $turma,
@@ -127,6 +150,9 @@ class RelatoriosAtasFinaisController extends BaseController
             'matriz' => $matrizTree->toArray(),
             'resultados' => $resultados,
             'meses' => $this->meses
-        ]);
+        ])->render();
+        $mpdf->WriteHTML($content);
+        $mpdf->Output();
+        exit;
     }
 }
