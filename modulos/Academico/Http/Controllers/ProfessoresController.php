@@ -3,17 +3,17 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\ProfessorRequest;
 use Modulos\Academico\Repositories\ProfessorRepository;
-use Validator;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
-use DB;
 
 class ProfessoresController extends BaseController
 {
@@ -233,18 +233,9 @@ class ProfessoresController extends BaseController
         return view('Academico::professores.edit', ['pessoa' => $pessoa]);
     }
 
-    public function putEdit($pessoaId, Request $request, ProfessorRequest $professorRequest)
+    public function putEdit($pessoaId, ProfessorRequest $request)
     {
         $pessoaRequest = new PessoaRequest();
-
-        $professor = $this->professorRepository->search(array(['prf_pes_id', '=', $pessoaId]))->first();
-
-        $dataProfessor = [
-          'prf_id' => $professor->prf_id,
-          'prf_pes_id' => $professor->prf_pes_id,
-          'prf_codigo' => $request->prf_codigo
-        ];
-
 
         $validation = Validator::make($request->all(), $pessoaRequest->rules());
 
@@ -252,50 +243,34 @@ class ProfessoresController extends BaseController
             return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
         }
 
-        $validation = Validator::make($dataProfessor, $professorRequest->rules());
+        $pessoa = $this->pessoaRepository->find($pessoaId);
 
-        if ($validation->fails()) {
-            return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
+        if (!$pessoa) {
+            flash()->error('Pessoa não existe.');
+            return redirect()->route('academico.professores.index');
+        }
+
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
+
+        if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
+            $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
         }
 
         DB::beginTransaction();
         try {
-            if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
-                $errors = ['pes_email' => 'Email já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
+            $oldPessoa = clone $pessoa;
+
+            $pessoa->fill($request->all())->save();
+
+            $professor = \Modulos\Academico\Models\Professor::where('prf_pes_id', $pessoaId)->first();
+
+            if (!empty($request->prf_codigo) && $professor) {
+                $professor->fill(['prf_codigo' => $request->input('prf_codigo')])->save();
             }
-
-            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
-                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
-
-            $dataPessoa = array(
-                'pes_nome' => $request->input('pes_nome'),
-                'pes_sexo' => $request->input('pes_sexo'),
-                'pes_email' => $request->input('pes_email'),
-                'pes_telefone' => $request->input('pes_telefone'),
-                'pes_nascimento' => $request->input('pes_nascimento'),
-                'pes_mae' => $request->input('pes_mae'),
-                'pes_pai' => $request->input('pes_pai'),
-                'pes_estado_civil' => $request->input('pes_estado_civil'),
-                'pes_naturalidade' => $request->input('pes_naturalidade'),
-                'pes_nacionalidade' => $request->input('pes_nacionalidade'),
-                'pes_raca' => $request->input('pes_raca'),
-                'pes_necessidade_especial' => $request->input('pes_necessidade_especial'),
-                'pes_estrangeiro' => $request->input('pes_estrangeiro'),
-                'pes_endereco' => $request->input('pes_endereco'),
-                'pes_numero' => $request->input('pes_numero'),
-                'pes_complemento' => $request->input('pes_complemento'),
-                'pes_cep' => $request->input('pes_cep'),
-                'pes_bairro' => $request->input('pes_bairro'),
-                'pes_cidade' => $request->input('pes_cidade'),
-                'pes_estado' => $request->input('pes_estado')
-            );
-
-            $this->pessoaRepository->update($dataPessoa, $pessoaId, 'pes_id');
-
-            $this->professorRepository->update($dataProfessor, $professor->prf_id, 'prf_id');
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoaId,
@@ -305,13 +280,17 @@ class ProfessoresController extends BaseController
 
             $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pessoaId, 'doc_tpd_id' => 2], $dataDocumento);
 
-            $pessoaAtt = $this->pessoaRepository->find($pessoaId);
-            $this->pessoaRepository->updatePessoaAmbientes($pessoaAtt);
-
             DB::commit();
 
+            if ($this->checkUpdateMigracao($oldPessoa, $pessoa)) {
+                $this->pessoaRepository->updatePessoaAmbientes($pessoa);
+            }
+
             flash()->success('Professor editado com sucesso!');
-            return redirect()->route('academico.professores.index');
+            return redirect()->route('academico.professores.show', $professor->prf_id);
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -320,9 +299,6 @@ class ProfessoresController extends BaseController
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
-        } catch (ValidationException $e) {
-            DB::rollback();
-            return redirect()->back()->withInput($request->all())->withErrors($e);
         }
     }
 
@@ -340,5 +316,15 @@ class ProfessoresController extends BaseController
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
         return view('Academico::professores.show', ['pessoa' => $professor->pessoa]);
+    }
+
+    private function checkUpdateMigracao($oldPessoa, $pessoa)
+    {
+        if (strcmp($oldPessoa->pes_nome, $pessoa->pes_nome) != 0 || strcmp($oldPessoa->pes_email, $pessoa->pes_email) != 0
+            || strcmp($oldPessoa->pes_cidade, $pessoa->pes_cidade) != 0) {
+            return true;
+        }
+
+        return false;
     }
 }

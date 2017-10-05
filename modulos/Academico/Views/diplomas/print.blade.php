@@ -73,7 +73,7 @@
 
     <pagebreak>
 
-        <br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p style="font-size:14pt; font-family: Arial;margin-left:0px; margin-right:50px; text-align:justify; line-height:1.5">
             A UNIVERSIDADE ESTADUAL DO MARANHÃO, por meio do {{$dados['CENTRO']}}, tendo em vista a conclusão do Curso Técnico de Nível Médio em {{$dados['CURSO']}}, em {{$dados['CONCLUSAO']['DIA']}} de {{$dados['CONCLUSAO']['MESEXTENSO']}} de {{$dados['CONCLUSAO']['ANO']}}, confere o título de <b>{{$dados['HABILITAÇÂO']}}</b> a <b>{{$dados['NOME']}}</b>, nascido(a) aos {{$dados['NASCIMENTO']['DIAEXTENSO']}} dias do mês de {{$dados['NASCIMENTO']['MESEXTENSO']}} de {{$dados['NASCIMENTO']['ANO']}}, nacionalidade {{$dados['NACIONALIDADE']}}, natural de {{$dados['NATURALIDADE']}}, carteira de identidade N° {{$dados['IDENTIDADE']}} / {{$dados['ORGAO']}}, outorga-lhe o  presente Diploma a fim de que possa gozar de todos os direitos e prerrogativas legais.
         </p>

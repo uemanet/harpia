@@ -84,7 +84,7 @@ class PessoaRepository extends BaseRepository
     {
         $result = $this->model->join('gra_documentos', function ($join) {
             $join->on('pes_id', '=', 'doc_pes_id')
-                                ->where('doc_tpd_id', '=', 2);
+                ->where('doc_tpd_id', '=', 2);
         })->where('doc_conteudo', '=', $cpf)->select('pes_id')->first();
 
         return $result;
@@ -93,13 +93,13 @@ class PessoaRepository extends BaseRepository
     public function findById($id)
     {
         $result = $this->model
-                        ->leftJoin('gra_documentos', function ($join) {
-                            $join->on('pes_id', '=', 'doc_pes_id')
-                                ->where('doc_tpd_id', '=', 2);
-                        })
-                        ->select('gra_pessoas.*', 'doc_conteudo')
-                        ->where('pes_id', '=', $id)
-                        ->first();
+            ->leftJoin('gra_documentos', function ($join) {
+                $join->on('pes_id', '=', 'doc_pes_id')
+                    ->where('doc_tpd_id', '=', 2);
+            })
+            ->select('gra_pessoas.*', 'doc_conteudo')
+            ->where('pes_id', '=', $id)
+            ->first();
 
         return $result;
     }
@@ -109,19 +109,19 @@ class PessoaRepository extends BaseRepository
 
         //verifica em quais turmas a pessoa está vinculada como professor
         $professorturmas = $this->model
-                        ->join('acd_professores', 'prf_pes_id', '=', 'pes_id')
-                        ->join('acd_ofertas_disciplinas', 'ofd_prf_id', '=', 'prf_id')
-                        ->where('pes_id', '=', $pessoaAtt->pes_id)
-                        ->groupby('ofd_trm_id')->distinct()
-                        ->get();
+            ->join('acd_professores', 'prf_pes_id', '=', 'pes_id')
+            ->join('acd_ofertas_disciplinas', 'ofd_prf_id', '=', 'prf_id')
+            ->where('pes_id', '=', $pessoaAtt->pes_id)
+            ->groupby('ofd_trm_id')->distinct()
+            ->get();
 
         //verifica em quais turmas a pessoa está vinculada como tutor
         $tutorgrupos = $this->model
-                        ->join('acd_tutores', 'tut_pes_id', '=', 'pes_id')
-                        ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
-                        ->where('pes_id', '=', $pessoaAtt->pes_id)
-                        ->groupby('ttg_grp_id')->distinct()
-                        ->get();
+            ->join('acd_tutores', 'tut_pes_id', '=', 'pes_id')
+            ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
+            ->where('pes_id', '=', $pessoaAtt->pes_id)
+            ->groupby('ttg_grp_id')->distinct()
+            ->get();
 
         $gruposdotutorId = [];
 
@@ -130,17 +130,17 @@ class PessoaRepository extends BaseRepository
         }
 
         $tutorturmas = DB::table('acd_grupos')
-                        ->whereIn('grp_id', $gruposdotutorId)
-                        ->groupby('grp_trm_id')->distinct()
-                        ->get();
+            ->whereIn('grp_id', $gruposdotutorId)
+            ->groupby('grp_trm_id')->distinct()
+            ->get();
 
         //verifica em quais turmas a pessoa está vinculada como aluno
         $alunoturmas = $this->model
-                        ->join('acd_alunos', 'alu_pes_id', '=', 'pes_id')
-                        ->join('acd_matriculas', 'mat_alu_id', '=', 'alu_id')
-                        ->where('pes_id', '=', $pessoaAtt->pes_id)
-                        ->groupby('mat_trm_id')->distinct()
-                        ->get();
+            ->join('acd_alunos', 'alu_pes_id', '=', 'pes_id')
+            ->join('acd_matriculas', 'mat_alu_id', '=', 'alu_id')
+            ->where('pes_id', '=', $pessoaAtt->pes_id)
+            ->groupby('mat_trm_id')->distinct()
+            ->get();
 
         //coloca todos os IDs de turmas que a pessoa está vinculada em um array
         $turmasdoprofessorId = [];
@@ -162,9 +162,9 @@ class PessoaRepository extends BaseRepository
         $turmasdapessoaId = array_merge($turmasdoprofessorId, $turmasdotutorId, $turmasdoalunoId);
 
         $pessoaturmas = DB::table('acd_turmas')
-                        ->whereIn('trm_id', $turmasdapessoaId)
-                        ->join('int_ambientes_turmas', 'atr_trm_id', '=', 'trm_id')
-                        ->get();
+            ->whereIn('trm_id', $turmasdapessoaId)
+            ->join('int_ambientes_turmas', 'atr_trm_id', '=', 'trm_id')
+            ->get();
 
         $ambientesdapessoaId = [];
 
