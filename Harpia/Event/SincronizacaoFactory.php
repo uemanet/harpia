@@ -49,8 +49,6 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
     final public static function factory(Sincronizacao $sincronizacao)
     {
-        $entry = $sincronizacao;
-
         $event = self::makeEvent($sincronizacao);
 
         // O evento equivale a uma nova tentativa de migracao
@@ -61,6 +59,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
     /**
      * Recria o evento correspodente para a classe passada
+     * @throws \Exception
      * @param Sincronizacao $sincronizacao
      * @return \Harpia\Event\SincronizacaoEvent
      */
@@ -76,6 +75,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
     /**
      * Resolve as dependencias para um evento especifico
+     * @throws \Exception
      * @param Sincronizacao $sincronizacao
      * @return array
      */
