@@ -24,18 +24,18 @@ class RelatoriosAtasFinaisController extends BaseController
     protected $resultadosFinaisRepository;
 
     private $meses = [
-        '01' => 'janeiro',
-        '02' => 'fevereiro',
-        '03' => 'março',
-        '04' => 'abril',
-        '05' => 'maio',
-        '06' => 'junho',
-        '07' => 'julho',
-        '08' => 'agosto',
-        '09' => 'setembro',
-        '10' => 'outubro',
-        '11' => 'novembro',
-        '12' => 'dezembro'
+        1 => 'janeiro',
+        2 => 'fevereiro',
+        3 => 'março',
+        4 => 'abril',
+        5 => 'maio',
+        6 => 'junho',
+        7 => 'julho',
+        8 => 'agosto',
+        9 => 'setembro',
+        10 => 'outubro',
+        11 => 'novembro',
+        12 => 'dezembro'
     ];
 
     private $dataConclusaoTurma = [

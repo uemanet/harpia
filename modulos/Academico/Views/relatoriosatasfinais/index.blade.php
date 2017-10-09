@@ -68,7 +68,7 @@
                                     'type' => 'LINE',
                                     'buttons' => [
                                         [
-                                        'classButton' => 'btn btn-danger',
+                                        'classButton' => 'btn btn-danger pdfButton',
                                         'icon' => 'fa fa-file-pdf-o',
                                         'route' => 'academico.relatoriosatasfinais.pdf',
                                         'label' => 'Exportar para PDF',
@@ -187,7 +187,8 @@
             $('#pcursoId').attr('value', cursoSelect.val());
             $('#psituacao').attr('value', situacaoSelect.val());
 
-            $(document).on('click', '#formPdf', function (event) {
+            $(document).on('click', '.pdfButton', function (event) {
+                $.harpia.showloading();
                 $('#exportPdf').submit();
             });
         });
