@@ -79,12 +79,10 @@
         foreach ($resultados as $nomePolo => $matriculasPolo):
     @endphp
     <table  style="page-break-after: always;">
-        <thead>
+        <tbody>
             <tr>
                 <th class="center" colspan="{{ $qtdColunas }}"><strong>ATAS DE RESULTADOS FINAIS</strong></th>
             </tr>
-        </thead>
-        <tbody>
             <tr>
                 <td colspan="{{ $qtdColunas }}">{{ $data }}, foi concluído o processo de apuração das notas finais dos alunos do curso, módulos e turma abaixo relacionados, deste estabelecimento com os respectivos resultados:</td>
             </tr>
