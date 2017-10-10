@@ -45,11 +45,11 @@ class Sincronizacao extends BaseController
             try {
                 $sincronizacao = $this->sincronizacaoRepository->find($sync);
 
-                if(!$sincronizacao) {
+                if (!$sincronizacao) {
                     continue;
                 }
 
-                if($sincronizacao->sym_status == 2) {
+                if ($sincronizacao->sym_status == 2) {
                     continue;
                 }
 
@@ -58,7 +58,6 @@ class Sincronizacao extends BaseController
 
                 $nenhumamigrada = false;
             } catch (\Exception $e) {
-
                 if (config('app.debug')) {
                     throw $e;
                 }

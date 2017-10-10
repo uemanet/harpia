@@ -121,13 +121,11 @@ class SincronizacaoController extends BaseController
         }
 
         try {
-
             $event = SincronizacaoFactory::factory($sincronizacao);
             event($event); // Dispara event
 
             return redirect()->route('integracao.sincronizacao.index');
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
