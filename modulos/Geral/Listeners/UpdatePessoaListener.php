@@ -13,17 +13,17 @@ use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
 class UpdatePessoaListener
 {
+    protected $pessoaRepository;
     protected $sincronizacaoRepository;
     protected $ambienteVirtualRepository;
-    protected $pessoaRepository;
 
     public function __construct(
-        SincronizacaoRepository $sincronizacaoRepository,
         PessoaRepository $pessoaRepository,
+        SincronizacaoRepository $sincronizacaoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
     ) {
-        $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->pessoaRepository = $pessoaRepository;
+        $this->sincronizacaoRepository = $sincronizacaoRepository;
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 

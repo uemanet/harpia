@@ -26,8 +26,7 @@ class AlterGraAnexosTable extends Migration
     public function down()
     {
         Schema::table('gra_anexos', function (Blueprint $table) {
-            $table->integer('anx_tax_id')->nullable()->unsigned();
-            $table->foreign('anx_tax_id')->references('tax_id')->on('gra_tipos_anexos');
+            //
         });
     }
 }
