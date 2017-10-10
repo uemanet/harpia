@@ -2,8 +2,9 @@
 
 namespace Modulos\Integracao\Http\Controllers\Async;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Harpia\Event\SincronizacaoFactory;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
@@ -41,18 +42,29 @@ class Sincronizacao extends BaseController
         $nenhumamigrada = true;
 
         foreach ($sincronizacaoIds as $sync) {
-            $sincronizacao = $this->sincronizacaoRepository->find($sync);
+            try {
+                $sincronizacao = $this->sincronizacaoRepository->find($sync);
 
-            $this->sincronizacaoRepository->migrar($sync);
+                if(!$sincronizacao) {
+                    continue;
+                }
 
-            $sincronizacao = $this->sincronizacaoRepository->find($sync);
+                if($sincronizacao->sym_status == 2) {
+                    continue;
+                }
 
-            if ($sincronizacao->sym_status != 2) {
-                $todasmigradas = false;
-            }
+                $event = SincronizacaoFactory::factory($sincronizacao);
+                event($event); // Dispara event
 
-            if ($sincronizacao->sym_status == 2) {
                 $nenhumamigrada = false;
+            } catch (\Exception $e) {
+
+                if (config('app.debug')) {
+                    throw $e;
+                }
+
+                $todasmigradas = false;
+                continue;
             }
         }
 

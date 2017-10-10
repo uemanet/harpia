@@ -2,6 +2,7 @@
 
 namespace Modulos\Integracao\Http\Controllers;
 
+use Harpia\Event\SincronizacaoFactory;
 use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
@@ -119,7 +120,20 @@ class SincronizacaoController extends BaseController
             return redirect()->route('integracao.sincronizacao.index');
         }
 
-        $this->sincronizacaoRepository->migrar($id);
-        return redirect()->route('integracao.sincronizacao.index');
+        try {
+
+            $event = SincronizacaoFactory::factory($sincronizacao);
+            event($event); // Dispara event
+
+            return redirect()->route('integracao.sincronizacao.index');
+        } catch (\Exception $e) {
+
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Não foi possível migrar esta sincronização.');
+            return redirect()->route('integracao.sincronizacao.index');
+        }
     }
 }
