@@ -24,7 +24,7 @@ class UtilServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['Util'] = $this->app->share(function ($app) {
+        $this->app->singleton('Util', function ($app) {
             return new Util();
         });
     }
