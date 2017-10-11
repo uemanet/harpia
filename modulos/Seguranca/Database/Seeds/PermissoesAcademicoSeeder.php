@@ -730,6 +730,21 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+
+        // Permissoes do recurso relatorio atas finais
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.relatoriosatasfinais.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'pdf',
+            'prm_rota' => 'academico.relatoriosatasfinais.pdf'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
         // Atribuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 

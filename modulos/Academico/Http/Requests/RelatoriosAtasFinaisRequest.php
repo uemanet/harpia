@@ -4,7 +4,7 @@ namespace Modulos\Academico\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
 
-class ListaSemturRequest extends BaseRequest
+class RelatoriosAtasFinaisRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,11 @@ class ListaSemturRequest extends BaseRequest
     public function rules()
     {
         return [
-            'lst_nome' => 'required|min:3',
-            'lst_descricao' => 'required|min:3',
-            'lst_data_bloqueio' => 'required'
+            'crs_id' => 'required|integer',
+            'ofc_id' => 'required|integer',
+            'trm_id' => 'required|integer',
+            'pol_id' => 'integer',
+            'mat_situacao' => 'string|nullable'
         ];
     }
 }

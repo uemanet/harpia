@@ -115,7 +115,6 @@ class ListaSemturController extends BaseController
 
             return redirect()->route('academico.carteirasestudantis.index');
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
@@ -157,7 +156,6 @@ class ListaSemturController extends BaseController
 
             return redirect()->route('academico.carteirasestudantis.index');
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
@@ -165,7 +163,6 @@ class ListaSemturController extends BaseController
             flash()->error('Erro ao tentar salvar. Entra em contato com o Administrador');
             return redirect()->back();
         }
-
     }
 
     public function postDelete(Request $request)
@@ -182,7 +179,6 @@ class ListaSemturController extends BaseController
             flash()->error('Erro ao tentar deletar. A lista contém dependências no sistema.');
             return redirect()->back();
         } catch (\Exception $e) {
-
             if (config('app.debug')) {
                 throw $e;
             }
@@ -208,7 +204,7 @@ class ListaSemturController extends BaseController
 
         $turmas = $this->listaSemturRepository->getTurmasByLista($lista->lst_id);
 
-        return view('Academico::carteirasestudantis.show', compact('lista','actionButton', 'turmas'));
+        return view('Academico::carteirasestudantis.show', compact('lista', 'actionButton', 'turmas'));
     }
 
     public function getAddMatriculas($id)
@@ -223,7 +219,6 @@ class ListaSemturController extends BaseController
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
         return view('Academico::carteirasestudantis.addmatriculas', compact('lista', 'cursos'));
-
     }
 
     public function exportFile($listaId, $turmaId)
@@ -255,28 +250,28 @@ class ListaSemturController extends BaseController
                 }
 
                 $line = '7201';
-                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_nome), 50),0,50);
-                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_mae), 50),0,50);
-                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_pai), 50),0,50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_nome), 50), 0, 50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_mae), 50), 0, 50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_pai), 50), 0, 50);
                 $line .= $matricula->aluno->pessoa->pes_sexo;
-                $line .= substr(str_pad(utf8_decode($turma->ofertacurso->curso->crs_nome), 25),0,25);
+                $line .= substr(str_pad(utf8_decode($turma->ofertacurso->curso->crs_nome), 25), 0, 25);
                 $line .= '2'; // grau
                 $line .= '1'; // serie
                 $line .= 'I'; // turno
-                $line .= substr(str_pad(utf8_decode($turma->trm_nome), 5),0,5);
-                $line .= substr(str_pad($matricula->mat_id, 12),0,12);
-                $line .= substr($matricula->aluno->pessoa->pes_nascimento, 0,2) . substr($matricula->aluno->pessoa->pes_nascimento, 3,2) . substr($matricula->aluno->pessoa->pes_nascimento, 6,4);
-                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_endereco), 50),0,50);
-                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_bairro), 30),0,30);
-                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_cidade), 20),0,20);
-                $line .= substr(str_pad($matricula->aluno->pessoa->pes_cep, 8),0,8);
-                $line .= substr(str_pad($matricula->aluno->pessoa->pes_celular, 10),0,10);
+                $line .= substr(str_pad(utf8_decode($turma->trm_nome), 5), 0, 5);
+                $line .= substr(str_pad($matricula->mat_id, 12), 0, 12);
+                $line .= substr($matricula->aluno->pessoa->pes_nascimento, 0, 2) . substr($matricula->aluno->pessoa->pes_nascimento, 3, 2) . substr($matricula->aluno->pessoa->pes_nascimento, 6, 4);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_endereco), 50), 0, 50);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_bairro), 30), 0, 30);
+                $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_cidade), 20), 0, 20);
+                $line .= substr(str_pad($matricula->aluno->pessoa->pes_cep, 8), 0, 8);
+                $line .= substr(str_pad($matricula->aluno->pessoa->pes_celular, 10), 0, 10);
 
                 $rg = $matricula->aluno->pessoa->documentos()->where('doc_tpd_id', 1)->first();
 
-                $line .= substr(str_pad($rg->doc_conteudo, 20),0,20);
-                $line .= substr(str_pad($rg->doc_orgao, 10),0,10);
-                $line .= substr($rg->doc_data_expedicao, 0,2) . substr($rg->doc_data_expedicao, 3,2) . substr($rg->doc_data_expedicao, 6,4);
+                $line .= substr(str_pad($rg->doc_conteudo, 20), 0, 20);
+                $line .= substr(str_pad($rg->doc_orgao, 10), 0, 10);
+                $line .= substr($rg->doc_data_expedicao, 0, 2) . substr($rg->doc_data_expedicao, 3, 2) . substr($rg->doc_data_expedicao, 6, 4);
 
                 $cpf = $matricula->aluno->pessoa->documentos()->where('doc_tpd_id', 2)->first();
                 $line .= $cpf->doc_conteudo;
