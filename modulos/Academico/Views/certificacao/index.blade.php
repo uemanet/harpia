@@ -162,7 +162,7 @@
               var polo = $('#pol_id').val();
 
               if (polo == null) {
-                polo = 0;
+                polo = '';
               }
 
               if (turma) {
