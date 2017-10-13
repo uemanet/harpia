@@ -10,7 +10,7 @@ class LancamentoNotas extends BaseController
     {
     }
 
-    public function getIndex()
+    public function getTable()
     {
         return "Nothing";
     }

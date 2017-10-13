@@ -356,6 +356,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'lancamentodenotas'], function () {
+            Route::get('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@getTable')->name('academico.async.lancamentonotas.table');
             Route::post('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@postCreate')->name('academico.async.lancamentonotas.create');
             Route::put('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@putEdit')->name('academico.async.lancamentonotas.edit');
         });

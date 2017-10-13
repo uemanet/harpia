@@ -672,6 +672,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
+           'prm_nome' =>  'table',
+           'prm_rota' =>  'academico.async.lancamentonotas.table'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
            'prm_nome' =>  'create',
            'prm_rota' =>  'academico.async.lancamentonotas.create'
         ]);
