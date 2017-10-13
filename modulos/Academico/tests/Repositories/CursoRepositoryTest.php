@@ -198,6 +198,52 @@ class CursoRepositoryTest extends TestCase
         $this->assertEquals($response['message'], 'Curso excluído com sucesso.');
     }
 
+    public function testListsByCursoId()
+    {
+        $curso = factory(Curso::class)->create();
+        $cursoId = $curso->crs_id;
+
+        $response = $this->repo->listsByCursoId($cursoId);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testListsCursoByOferta()
+    {
+        $oferta = factory(\Modulos\Academico\Models\OfertaCurso::class)->create();
+
+        $response = $this->repo->listsCursoByOferta($oferta->curso->crs_id);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testListsCursoByMatriz()
+    {
+      $matriz = factory(\Modulos\Academico\Models\MatrizCurricular::class)->create();
+
+      $response = $this->repo->listsCursoByMatriz($matriz->mtc_id);
+
+      $this->assertNotEmpty($response, '');
+    }
+
+    public function testListsCursosTecnicos()
+    {
+      $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+
+      $response = $this->repo->listsCursosTecnicos();
+
+      $this->assertNotEmpty($response, '');
+    }
+
+    public function testGetCursosPorNivel()
+    {
+      $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+
+      $response = $this->repo->getCursosPorNivel();
+
+      $this->assertEmpty($response, '');
+    }
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');
