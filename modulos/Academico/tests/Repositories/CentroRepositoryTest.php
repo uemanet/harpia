@@ -149,7 +149,7 @@ class CentroRepositoryTest extends TestCase
     {
         $data = factory(Centro::class)->create();
 
-        $this->seeInDatabase('acd_centros', $data->toArray());
+        $this->assertDatabaseHas('acd_centros', $data->toArray());
     }
 
     public function testUpdate()

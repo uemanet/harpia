@@ -158,7 +158,7 @@ class VinculoRepositoryTest extends TestCase
     {
         $data = factory(Vinculo::class)->create();
 
-        $this->seeInDatabase('acd_usuarios_cursos', $data->toArray());
+        $this->assertDatabaseHas('acd_usuarios_cursos', $data->toArray());
     }
 
     public function testUpdate()

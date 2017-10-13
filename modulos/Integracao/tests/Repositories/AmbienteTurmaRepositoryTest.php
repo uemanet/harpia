@@ -150,7 +150,7 @@ class AmbienteTurmaRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create();
 
-        $this->seeInDatabase('int_ambientes_turmas', $data->toArray());
+        $this->assertDatabaseHas('int_ambientes_turmas', $data->toArray());
     }
 
     public function testUpdate()

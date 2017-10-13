@@ -151,7 +151,7 @@ class ProfessorRepositoryTest extends TestCase
     {
         $data = factory(Professor::class)->create();
 
-        $this->seeInDatabase('acd_professores', $data->toArray());
+        $this->assertDatabaseHas('acd_professores', $data->toArray());
     }
 
     public function testUpdate()

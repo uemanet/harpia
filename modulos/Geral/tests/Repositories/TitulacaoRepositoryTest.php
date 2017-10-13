@@ -149,7 +149,7 @@ class TitulacaoRepositoryTest extends TestCase
     {
         $data = factory(Titulacao::class)->create();
 
-        $this->seeInDatabase('gra_titulacoes', $data->toArray());
+        $this->assertDatabaseHas('gra_titulacoes', $data->toArray());
     }
 
     public function testUpdate()

@@ -70,7 +70,7 @@ class UpdatePessoaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 

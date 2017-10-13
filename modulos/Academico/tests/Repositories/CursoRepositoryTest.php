@@ -166,7 +166,7 @@ class CursoRepositoryTest extends TestCase
         // Retorna para date format americano antes de comparar com o banco
         $data['crs_data_autorizacao'] = Carbon::createFromFormat('d/m/Y', $data['crs_data_autorizacao'])->toDateString();
 
-        $this->seeInDatabase('acd_cursos', $data);
+        $this->assertDatabaseHas('acd_cursos', $data);
     }
 
     public function testUpdate()

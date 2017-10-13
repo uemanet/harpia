@@ -149,7 +149,7 @@ class DepartamentoRepositoryTest extends TestCase
     {
         $data = factory(Departamento::class)->create();
 
-        $this->seeInDatabase('acd_departamentos', $data->toArray());
+        $this->assertDatabaseHas('acd_departamentos', $data->toArray());
     }
 
     public function testUpdate()

@@ -154,7 +154,7 @@ class PessoaRepositoryTest extends TestCase
         $data['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $data['pes_nascimento'])->toDateString();
         unset($data['pes_estado_civil']);
 
-        $this->seeInDatabase('gra_pessoas', $data);
+        $this->assertDatabaseHas('gra_pessoas', $data);
     }
 
     public function testUpdate()

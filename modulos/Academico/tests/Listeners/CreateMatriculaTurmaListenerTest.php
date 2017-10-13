@@ -71,7 +71,7 @@ class CreateMatriculaTurmaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -161,7 +161,7 @@ class CreateMatriculaTurmaListenerTest extends TestCase
         $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matricula);
         $sincronizacaoListener->handle($createMatriculaTurmaEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $createMatriculaTurmaEvent->getData()->getTable(),
             'sym_table_id' => $createMatriculaTurmaEvent->getData()->getKey(),
             'sym_action' => $createMatriculaTurmaEvent->getAction(),

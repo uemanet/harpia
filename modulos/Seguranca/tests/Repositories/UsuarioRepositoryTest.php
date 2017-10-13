@@ -151,7 +151,7 @@ class UsuarioRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Seguranca\Models\Usuario::class)->create();
 
-        $this->seeInDatabase('seg_usuarios', $data->toArray());
+        $this->assertDatabaseHas('seg_usuarios', $data->toArray());
     }
 
     public function testUpdate()

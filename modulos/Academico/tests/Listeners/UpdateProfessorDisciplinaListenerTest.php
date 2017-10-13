@@ -70,7 +70,7 @@ class UpdateProfessorDisciplinaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -153,7 +153,7 @@ class UpdateProfessorDisciplinaListenerTest extends TestCase
             'ofd_prf_id' => $novoProfessor->prf_id
         ], $this->ofertaDisciplina->ofd_id);
 
-        $this->seeInDatabase('acd_ofertas_disciplinas', [
+        $this->assertDatabaseHas('acd_ofertas_disciplinas', [
             'ofd_prf_id' => $novoProfessor->prf_id
         ]);
 
@@ -163,7 +163,7 @@ class UpdateProfessorDisciplinaListenerTest extends TestCase
         $updateProfessorDisciplinaEvent = new UpdateProfessorDisciplinaEvent($this->ofertaDisciplina);
         $sincronizacaoListener->handle($updateProfessorDisciplinaEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $updateProfessorDisciplinaEvent->getData()->getTable(),
             'sym_table_id' => $updateProfessorDisciplinaEvent->getData()->getKey(),
             'sym_action' => $updateProfessorDisciplinaEvent->getAction(),

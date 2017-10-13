@@ -150,7 +150,7 @@ class AmbienteVirtualRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
 
-        $this->seeInDatabase('int_ambientes_virtuais', $data->toArray());
+        $this->assertDatabaseHas('int_ambientes_virtuais', $data->toArray());
     }
 
     public function testUpdate()

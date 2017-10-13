@@ -160,7 +160,7 @@ class LancamentoTccRepositoryTest extends TestCase
         // Retorna para date format americano antes de comparar com o banco
         $data['ltc_data_apresentacao'] = Carbon::createFromFormat('d/m/Y', $data['ltc_data_apresentacao'])->toDateString();
 
-        $this->seeInDatabase('acd_lancamentos_tccs', $data);
+        $this->assertDatabaseHas('acd_lancamentos_tccs', $data);
     }
 
     public function testUpdate()

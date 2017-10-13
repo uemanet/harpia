@@ -69,7 +69,7 @@ class CreateGrupoListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -146,7 +146,7 @@ class CreateGrupoListenerTest extends TestCase
         $createGroupEvent = new CreateGrupoEvent($this->grupo);
         $sincronizacaoListener->handle($createGroupEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $createGroupEvent->getData()->getTable(),
             'sym_table_id' => $createGroupEvent->getData()->getKey(),
             'sym_action' => $createGroupEvent->getAction(),

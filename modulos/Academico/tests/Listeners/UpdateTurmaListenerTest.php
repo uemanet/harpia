@@ -68,7 +68,7 @@ class UpdateTurmaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -143,7 +143,7 @@ class UpdateTurmaListenerTest extends TestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $updateTurmaEvent->getData()->getTable(),
             'sym_table_id' => $updateTurmaEvent->getData()->getKey(),
             'sym_action' => $updateTurmaEvent->getAction(),

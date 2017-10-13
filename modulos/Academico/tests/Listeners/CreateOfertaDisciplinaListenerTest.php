@@ -69,7 +69,7 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -147,7 +147,7 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
         $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $createOfertaDisciplinaEvent->getData()->getTable(),
             'sym_table_id' => $createOfertaDisciplinaEvent->getData()->getKey(),
             'sym_action' => $createOfertaDisciplinaEvent->getAction(),

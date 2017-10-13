@@ -69,7 +69,7 @@ class DeleteGrupoListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -146,7 +146,7 @@ class DeleteGrupoListenerTest extends TestCase
         $deleteGroupEvent = new DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id);
         $sincronizacaoListener->handle($deleteGroupEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $deleteGroupEvent->getData()->getTable(),
             'sym_table_id' => $deleteGroupEvent->getData()->getKey(),
             'sym_action' => $deleteGroupEvent->getAction(),

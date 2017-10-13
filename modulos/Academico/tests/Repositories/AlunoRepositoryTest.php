@@ -155,7 +155,7 @@ class AlunoRepositoryTest extends TestCase
     {
         $data = factory(Aluno::class)->create();
 
-        $this->seeInDatabase('acd_alunos', $data->toArray());
+        $this->assertDatabaseHas('acd_alunos', $data->toArray());
     }
 
     public function testUpdate()

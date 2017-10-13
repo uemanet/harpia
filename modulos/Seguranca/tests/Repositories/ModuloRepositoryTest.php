@@ -148,7 +148,7 @@ class ModuloRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
 
-        $this->seeInDatabase('seg_modulos', $data->toArray());
+        $this->assertDatabaseHas('seg_modulos', $data->toArray());
     }
 
     public function testUpdate()

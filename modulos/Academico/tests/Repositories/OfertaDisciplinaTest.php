@@ -61,7 +61,7 @@ class OfertaDisciplinaTest extends TestCase
         
         unset($data['ofd_tipo_avaliacao']);
 
-        $this->seeInDatabase('acd_ofertas_disciplinas', $data);
+        $this->assertDatabaseHas('acd_ofertas_disciplinas', $data);
     }
 
     public function tearDown()

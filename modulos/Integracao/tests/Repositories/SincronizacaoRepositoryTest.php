@@ -150,7 +150,7 @@ class SincronizacaoRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
 
-        $this->seeInDatabase('int_sync_moodle', $data->toArray());
+        $this->assertDatabaseHas('int_sync_moodle', $data->toArray());
     }
 
 
@@ -165,7 +165,7 @@ class SincronizacaoRepositoryTest extends TestCase
 
         $recovered = $this->repo->findBy($data)->last();
 
-        $this->seeInDatabase('int_sync_moodle', $sync->toArray());
+        $this->assertDatabaseHas('int_sync_moodle', $sync->toArray());
         $this->assertEquals($sync->toArray(), $recovered->toArray());
     }
 

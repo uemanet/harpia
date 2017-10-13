@@ -156,7 +156,7 @@ class MatrizCurricularRepositoryTest extends TestCase
         $data = $dados->first()->toArray();
         // Retorna para date format americano antes de comparar com o banco
         $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
-        $this->seeInDatabase('acd_matrizes_curriculares', $data);
+        $this->assertDatabaseHas('acd_matrizes_curriculares', $data);
     }
 
     public function testUpdate()

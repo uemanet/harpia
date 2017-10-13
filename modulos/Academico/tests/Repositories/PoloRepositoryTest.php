@@ -150,7 +150,7 @@ class PoloRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Academico\Models\Polo::class)->create();
 
-        $this->seeInDatabase('acd_polos', $data->toArray());
+        $this->assertDatabaseHas('acd_polos', $data->toArray());
     }
 
     public function testUpdate()

@@ -149,7 +149,7 @@ class AnexoRepositoryTest extends TestCase
     {
         $data = factory(Anexo::class)->create();
 
-        $this->seeInDatabase('gra_anexos', $data->toArray());
+        $this->assertDatabaseHas('gra_anexos', $data->toArray());
     }
 
     public function testUpdate()

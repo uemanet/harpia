@@ -148,7 +148,7 @@ class DisciplinaRepositoryTest extends TestCase
     {
         $data = factory(\Modulos\Academico\Models\Disciplina::class)->create();
 
-        $this->seeInDatabase('acd_disciplinas', $data->toArray());
+        $this->assertDatabaseHas('acd_disciplinas', $data->toArray());
     }
 
     public function testUpdate()

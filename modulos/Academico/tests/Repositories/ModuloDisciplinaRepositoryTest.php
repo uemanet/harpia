@@ -74,7 +74,7 @@ class ModuloDisciplinaRepositoryTest extends TestCase
         ];
         $data['mdc_tipo_disciplina'] = $values[$data['mdc_tipo_disciplina']];
 
-        $this->seeInDatabase('acd_modulos_disciplinas', $data);
+        $this->assertDatabaseHas('acd_modulos_disciplinas', $data);
     }
 
     public function testGetDisciplinasPreRequisitos()

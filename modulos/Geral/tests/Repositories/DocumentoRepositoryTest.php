@@ -155,7 +155,7 @@ class DocumentoRepositoryTest extends TestCase
         // Retorna para date format americano antes de comparar com o banco
         $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
 
-        $this->seeInDatabase('gra_documentos', $data);
+        $this->assertDatabaseHas('gra_documentos', $data);
     }
 
     public function testUpdate()

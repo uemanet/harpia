@@ -150,7 +150,7 @@ class AmbienteServicoRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
 
-        $this->seeInDatabase('int_ambientes_servicos', $data->toArray());
+        $this->assertDatabaseHas('int_ambientes_servicos', $data->toArray());
     }
 
     public function testUpdate()

@@ -211,7 +211,7 @@ class OfertaCursoRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
 
-        $this->seeInDatabase('acd_ofertas_cursos', $data->toArray());
+        $this->assertDatabaseHas('acd_ofertas_cursos', $data->toArray());
     }
 
     public function testUpdate()

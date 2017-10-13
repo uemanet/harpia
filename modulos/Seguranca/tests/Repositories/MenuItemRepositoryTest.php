@@ -148,7 +148,7 @@ class MenuItemRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Seguranca\Models\MenuItem::class)->create();
 
-        $this->seeInDatabase('seg_menu_itens', $data->toArray());
+        $this->assertDatabaseHas('seg_menu_itens', $data->toArray());
     }
 
     public function testUpdate()

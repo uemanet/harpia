@@ -69,7 +69,7 @@ class UpdateGrupoListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -147,7 +147,7 @@ class UpdateGrupoListenerTest extends TestCase
         // Atualiza o grupo
         $grupoRepository->update(["grp_nome" => "Grupo B"], $this->grupo->grp_id);
 
-        $this->seeInDatabase('acd_grupos', [
+        $this->assertDatabaseHas('acd_grupos', [
             "grp_id" => $this->grupo->grp_id,
             "grp_trm_id" => $this->turma->trm_id,
             "grp_pol_id" => $this->grupo->grp_pol_id,
@@ -157,7 +157,7 @@ class UpdateGrupoListenerTest extends TestCase
         $updateGrupoEvent = new UpdateGrupoEvent($this->grupo);
         $sincronizacaoListener->handle($updateGrupoEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $updateGrupoEvent->getData()->getTable(),
             'sym_table_id' => $updateGrupoEvent->getData()->getKey(),
             'sym_action' => $updateGrupoEvent->getAction(),

@@ -197,7 +197,7 @@ class TutorRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Academico\Models\Tutor::class)->create();
 
-        $this->seeInDatabase('acd_tutores', $data->toArray());
+        $this->assertDatabaseHas('acd_tutores', $data->toArray());
     }
 
     public function testDelete()

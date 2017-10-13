@@ -149,7 +149,7 @@ class ModuloMatrizRepositoryTest extends TestCase
     {
         $data = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create();
 
-        $this->seeInDatabase('acd_modulos_matrizes', $data->toArray());
+        $this->assertDatabaseHas('acd_modulos_matrizes', $data->toArray());
     }
 
     public function testUpdate()

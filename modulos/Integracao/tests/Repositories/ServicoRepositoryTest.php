@@ -150,7 +150,7 @@ class ServicoRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Integracao\Models\Servico::class)->create();
 
-        $this->seeInDatabase('int_servicos', $data->toArray());
+        $this->assertDatabaseHas('int_servicos', $data->toArray());
     }
 
     public function testUpdate()

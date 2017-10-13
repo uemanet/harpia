@@ -148,7 +148,7 @@ class PerfilRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
 
-        $this->seeInDatabase('seg_perfis', $data->toArray());
+        $this->assertDatabaseHas('seg_perfis', $data->toArray());
     }
 
     public function testUpdate()

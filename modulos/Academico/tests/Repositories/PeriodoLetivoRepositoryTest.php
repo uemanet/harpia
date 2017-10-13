@@ -155,7 +155,7 @@ class PeriodoLetivoRepositoryTest extends TestCase
         $data['per_inicio'] = Carbon::createFromFormat('d/m/Y', $data['per_inicio'])->toDateString();
         $data['per_fim'] = Carbon::createFromFormat('d/m/Y', $data['per_fim'])->toDateString();
 
-        $this->seeInDatabase('acd_periodos_letivos', $data);
+        $this->assertDatabaseHas('acd_periodos_letivos', $data);
     }
 
     public function testUpdate()

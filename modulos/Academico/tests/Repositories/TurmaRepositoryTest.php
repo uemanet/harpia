@@ -150,7 +150,7 @@ class TurmaRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Academico\Models\Turma::class)->create();
 
-        $this->seeInDatabase('acd_turmas', $data->toArray());
+        $this->assertDatabaseHas('acd_turmas', $data->toArray());
     }
 
     public function testUpdate()

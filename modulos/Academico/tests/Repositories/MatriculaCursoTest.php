@@ -61,7 +61,7 @@ class MatriculaCursoTest extends TestCase
         unset($data['mat_modo_entrada']);
         $data['mat_data_conclusao'] = Carbon::createFromFormat('d/m/Y', $data['mat_data_conclusao'])->toDateString();
 
-        $this->seeInDatabase('acd_matriculas', $data);
+        $this->assertDatabaseHas('acd_matriculas', $data);
     }
 
     public function tearDown()

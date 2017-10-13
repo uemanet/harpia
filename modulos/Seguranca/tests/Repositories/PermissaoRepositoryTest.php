@@ -148,7 +148,7 @@ class PermissaoRepositoryTest extends TestCase
     {
         $data = factory(Modulos\Seguranca\Models\Permissao::class)->create();
 
-        $this->seeInDatabase('seg_permissoes', $data->toArray());
+        $this->assertDatabaseHas('seg_permissoes', $data->toArray());
     }
 
     public function testUpdate()

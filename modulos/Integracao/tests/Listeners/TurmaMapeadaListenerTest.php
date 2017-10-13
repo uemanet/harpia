@@ -67,7 +67,7 @@ class TurmaMapeadaListenerTest extends TestCase
         $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
-            'asr_token' => env("MOODLE_INTEGRACAO_TEST_TOKEN")
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
         ]);
     }
 
@@ -127,7 +127,7 @@ class TurmaMapeadaListenerTest extends TestCase
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
 
-        $this->seeInDatabase('int_sync_moodle', [
+        $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $turmaMapeadaEvent->getData()->getTable(),
             'sym_table_id' => $turmaMapeadaEvent->getData()->getKey(),
             'sym_action' => $turmaMapeadaEvent->getAction(),

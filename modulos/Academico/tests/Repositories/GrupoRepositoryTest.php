@@ -148,7 +148,7 @@ class GrupoRepositoryTest extends TestCase
     {
         $data = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-        $this->seeInDatabase('acd_grupos', $data->toArray());
+        $this->assertDatabaseHas('acd_grupos', $data->toArray());
     }
 
     public function testUpdate()
