@@ -179,7 +179,11 @@
                         <td>{{$obj->mof_id}}</td>
                         <td>{{$obj->dis_nome}}</td>
                         <td>{{$obj->dis_carga_horaria}}</td>
-                        <td>{{number_format($obj->mof_mediafinal, 2)}}</td>
+                        <td>@if($obj->ofd_tipo_avaliacao == numerica)
+                              {{number_format($obj->mof_mediafinal, 2)}}
+                            @else
+                              {{$obj->mof_conceito}}
+                            @endif</td>
                         <td>
                             @php
                                 if ($obj->mof_situacao_matricula == 'aprovado_media') {

@@ -67,10 +67,10 @@ class Cursos
         }
     }
 
-    public function getAlunosAptos($turma, $modulo)
+    public function getAlunosAptos($turma, $modulo, $polo)
     {
         try {
-            $alunos = $this->matriculaCursoRepository->getAlunosAptosCertificacao($turma, $modulo);
+            $alunos = $this->matriculaCursoRepository->getAlunosAptosCertificacao($turma, $modulo, $polo);
             return new JsonResponse($alunos, JsonResponse::HTTP_OK, $this->defaultHeaders);
         } catch (\Exception $e) {
             if (config('app.debug')) {
