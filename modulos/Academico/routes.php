@@ -200,6 +200,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
     });
 
+    Route::group(['prefix' => 'lancamentodenotas'], function (){
+        Route::get('/', '\Modulos\Academico\Http\Controllers\LancamentoNotas@getIndex')->name('academico.lancamentonotas.index');
+    });
+
     Route::group(['prefix' => 'carteirasestudantis'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\ListaSemturController@getIndex')->name('academico.carteirasestudantis.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\ListaSemturController@getCreate')->name('academico.carteirasestudantis.create');
@@ -349,6 +353,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'matricula'], function () {
             Route::post('/alterarsituacao', '\Modulos\Academico\Http\Controllers\Async\Matricula@postUpdateSituacao')->name('academico.async.matricula.alterarsituacao');
             Route::get('/getmatriculasconcluidas', '\Modulos\Academico\Http\Controllers\Async\Matricula@getMatriculasConcluidas')->name('academico.async.matricula.getmatriculasconcluidas');
+        });
+
+        Route::group(['prefix' => 'lancamentodenotas'], function () {
+            Route::post('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@postCreate')->name('academico.async.lancamentonotas.create');
+            Route::put('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@putEdit')->name('academico.async.lancamentonotas.edit');
         });
 
         Route::group(['prefix' => 'carteirasestudantis'], function () {
