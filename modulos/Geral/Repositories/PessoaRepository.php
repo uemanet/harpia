@@ -164,6 +164,5 @@ class PessoaRepository extends BaseRepository
                 event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
             }
         }
-
     }
 }

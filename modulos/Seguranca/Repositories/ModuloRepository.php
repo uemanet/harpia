@@ -8,7 +8,7 @@ use Modulos\Seguranca\Models\Modulo;
 
 class ModuloRepository
 {
-    public function getByUser($userId)
+    public function getByUser($userId, $isMenu = false)
     {
         $modulos = DB::table('seg_modulos')
             ->join('seg_perfis', 'prf_mod_id', '=', 'mod_id')
@@ -16,6 +16,10 @@ class ModuloRepository
             ->select('seg_modulos.*')
             ->where('pru_usr_id', '=', $userId)
             ->get();
+
+        if ($isMenu) {
+            return $modulos;
+        }
 
         $permissoes = Cache::get('PERMISSOES_'.$userId);
 
