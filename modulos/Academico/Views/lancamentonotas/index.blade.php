@@ -55,7 +55,7 @@
         <!-- /.box-body -->
     </div>
 
-    <div class="table-ofertas"></div>
+    <div class="table-notas"></div>
 @stop
 
 @section('scripts')
@@ -163,19 +163,21 @@
             $('#btnLocalizar').click(function () {
                 var turma = selectTurmas.val();
                 var periodo = selectPeriodos.val();
+                var ofertaDisciplina = selectOfertasDisciplinas.val();
 
-                if (turma == '' || periodo == '') {
+                if (turma == '' || periodo == '' || ofertaDisciplina == '') {
                     return false;
                 }
 
                 var url = "{{ route('academico.async.lancamentonotas.table') }}?"+
-                    "ofd_trm_id=" + turma + "&ofd_per_id=" + periodo;
+                    "ofd_id=" + ofertaDisciplina;
 
                 $.ajax({
                     method: 'GET',
                     url: url,
                     success: function(response) {
-                        console.log(response);
+                        $(".table-notas").empty();
+                        $(".table-notas").append(response);
                     },
                     error: function(response) {
                         $.harpia.hideloading();
