@@ -30,17 +30,21 @@
                     {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
                     {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha um curso']) !!}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {!! Form::label('ofc_id', 'Oferta do Curso*', ['class' => 'control-label']) !!}
                     {!! Form::select('ofc_id', [], null, ['class' => 'form-control']) !!}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
                     {!! Form::select('trm_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
                     {!! Form::select('per_id', [], null, ['class' => 'form-control']) !!}
+                </div>
+                <div class="form-group col-md-2">
+                    {!! Form::label('ofd_id', 'Oferta de Disciplina*', ['class' => 'control-label']) !!}
+                    {!! Form::select('ofd_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>
@@ -64,6 +68,7 @@
             var selectOfertas = $('#ofc_id');
             var selectTurmas = $('#trm_id');
             var selectPeriodos = $("#per_id");
+            var selectOfertasDisciplinas = $("#ofd_id");
 
             var boxDisciplinas = $('#boxDisciplinas');
 
@@ -133,7 +138,28 @@
                 }
             });
 
-            // evento click no botão de pesquisar ofertas
+            selectPeriodos.change(function () {
+               var periodoId = $(this).val();
+               var turma = selectTurmas.val();
+
+               if(periodoId) {
+                   selectOfertasDisciplinas.empty();
+
+                   $.harpia.httpget("{{route("academico.async.ofertasdisciplinas.findall")}}" + "?" + "ofd_trm_id=" + turma + "&ofd_per_id=" + periodoId)
+                       .done(function (response) {
+                           if(!$.isEmptyObject(response)){
+                               selectOfertasDisciplinas.append("<option value=''>Selecione um oferta de disciplina</option>");
+                               $.each(response, function (key, obj) {
+                                   selectOfertasDisciplinas.append("<option value='" + obj.ofd_id + "'>" + obj.dis_nome + "</option>");
+                               });
+                           } else {
+                               selectOfertasDisciplinas.append("<option value=''>Sem ofertas disponíveis</option>");
+                           }
+                       })
+               }
+            });
+
+            // evento click no botão de pesquisar
             $('#btnLocalizar').click(function () {
                 var turma = selectTurmas.val();
                 var periodo = selectPeriodos.val();
@@ -142,7 +168,7 @@
                     return false;
                 }
 
-                var url = "{{ route('academico.async.ofertasdisciplinas.findall') }}?"+
+                var url = "{{ route('academico.async.lancamentonotas.table') }}?"+
                     "ofd_trm_id=" + turma + "&ofd_per_id=" + periodo;
 
                 $.ajax({
