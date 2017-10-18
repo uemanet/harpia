@@ -11,8 +11,9 @@ class LancamentoNotas extends BaseController
 {
     protected $ofertaDisciplinaRepository;
 
-    public function __construct(OfertaDisciplinaRepository $ofertaDisciplinaRepository)
-    {
+    public function __construct(
+        OfertaDisciplinaRepository $ofertaDisciplinaRepository
+    ){
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
     }
 
@@ -25,9 +26,19 @@ class LancamentoNotas extends BaseController
             $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($ofertaId);
             $matriculas = $ofertaDisciplina->matriculasOfertasDisciplinas;
 
+
+            $configsCurso = $ofertaDisciplina->turma->ofertaCurso->curso->configuracoes;
+
+            $configuracoesCurso = $configsCurso->mapWithKeys(function ($item) {
+               return [$item->cfc_nome => $item->cfc_valor];
+            });
+
+            $configuracoesCurso = json_encode($configuracoesCurso, JSON_UNESCAPED_SLASHES & JSON_UNESCAPED_LINE_TERMINATORS & JSON_UNESCAPED_UNICODE);
+
             $html = view('Academico::lancamentonotas.ajax.table_notas', [
                 'matriculas' => $matriculas,
-                'tipoNota' => $ofertaDisciplina->ofd_tipo_avaliacao
+                'tipoNota' => $ofertaDisciplina->ofd_tipo_avaliacao,
+                'configuracoesCurso' => $configuracoesCurso,
             ]);
 
             return $html;
