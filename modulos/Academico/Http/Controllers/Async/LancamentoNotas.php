@@ -46,4 +46,9 @@ class LancamentoNotas extends BaseController
 
         return new JsonResponse([], 200);
     }
+
+    public function postNotas(Request $request)
+    {
+        dd($request->all());
+    }
 }
