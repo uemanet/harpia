@@ -21,7 +21,7 @@
                         @include('Academico::lancamentonotas.ajax.table_conceitual')
                     @endif
                 @else
-                    <p>Não há disciplinas ofertadas para o período requerido</p>
+                    <p>Não há matrículas nesta oferta de disciplina</p>
                 @endif
             </div>
         </div>

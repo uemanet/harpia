@@ -124,7 +124,7 @@
             }
 
             // Recuperacao
-            if (!isNaN(inputs[3].valueAsNumber)) {
+            if (!isNaN(inputs[3].valueAsNumber) && inputs[3].valueAsNumber !== 0) {
                 if (configuracoesCurso.modo_recuperacao === "substituir_media_final") {
                     media = inputs[3].valueAsNumber;
                 }
@@ -149,7 +149,7 @@
             }
 
             // Final
-            if (!isNaN(inputs[4].valueAsNumber)) {
+            if (!isNaN(inputs[4].valueAsNumber) && inputs[3].valueAsNumber !== 0) {
                 media = (media + inputs[4].valueAsNumber) / 2;
 
                 if (media >= parseFloat(configuracoesCurso.media_min_aprovacao_final)) {
@@ -162,9 +162,9 @@
             }
 
             data = {
-                mof_nota_1: isNaN(inputs[0].valueAsNumber) ? 0 : inputs[0].valueAsNumber,
-                mof_nota_2: isNaN(inputs[1].valueAsNumber) ? 0 : inputs[1].valueAsNumber,
-                mof_nota_3: isNaN(inputs[2].valueAsNumber) ? 0 : inputs[2].valueAsNumber,
+                mof_nota1: isNaN(inputs[0].valueAsNumber) ? 0 : inputs[0].valueAsNumber,
+                mof_nota2: isNaN(inputs[1].valueAsNumber) ? 0 : inputs[1].valueAsNumber,
+                mof_nota3: isNaN(inputs[2].valueAsNumber) ? 0 : inputs[2].valueAsNumber,
                 mof_recuperacao: isNaN(inputs[3].valueAsNumber) ? null : inputs[3].valueAsNumber,
                 mof_final: isNaN(inputs[4].valueAsNumber) ? null : inputs[4].valueAsNumber,
                 mof_mediafinal: media,

@@ -4,17 +4,22 @@ namespace Modulos\Academico\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 
 class LancamentoNotas extends BaseController
 {
     protected $ofertaDisciplinaRepository;
+    protected $matriculaOfertaDisciplinaRepository;
 
     public function __construct(
-        OfertaDisciplinaRepository $ofertaDisciplinaRepository
+        OfertaDisciplinaRepository $ofertaDisciplinaRepository,
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     ){
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
+        $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
+
     }
 
 
@@ -49,6 +54,14 @@ class LancamentoNotas extends BaseController
 
     public function postNotas(Request $request)
     {
-        dd($request->all());
+        $matricula = $this->matriculaOfertaDisciplinaRepository->find($request->get('mof_id'));
+
+        if($matricula){
+            $this->matriculaOfertaDisciplinaRepository->update($request->except('_token'), $matricula->mof_id);
+            $matricula = $this->matriculaOfertaDisciplinaRepository->find($request->get('mof_id'));
+            return new JsonResponse($matricula, 200, ['content-type' => 'application/json']);
+        }
+
+        return new JsonResponse(['message' => 'Matrícula não encontrada'], 204, ['content-type' => 'application/json']);
     }
 }
