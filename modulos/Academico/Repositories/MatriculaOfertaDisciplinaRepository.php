@@ -666,8 +666,15 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     private function calculaNotas(array $data, array $configuracoesCurso)
     {
+        // Se a disciplina for avaliada por conceito
         if (isset($data['mof_conceito']) && !is_null($data['mof_conceito'])) {
-            // Retornar conceito e situacao
+            $data['mof_situacao_matricula'] = 'reprovado_media';
+
+            if(str_contains($configuracoesCurso['conceitos_aprovacao'], $data['mof_conceito'])){
+                $data['mof_situacao_matricula'] = 'aprovado_media';
+            }
+
+            return $data;
         }
 
         $somaNotas = (float) $data['mof_nota1'] + (float) $data['mof_nota2'] + (float) $data['mof_nota3'];
