@@ -6,7 +6,7 @@
 @endsection
 
 @section('title')
-   Tempo Online
+   Monitoramento de Respostas nos Fóruns
 @stop
 
 @section('subtitle')
@@ -30,7 +30,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <div class="box box-primary hidden" id="boxAlunos">
+        <div class="box box-primary hidden" id="boxTutores">
           <!-- /.box-header -->
           <div class="box-body">
 

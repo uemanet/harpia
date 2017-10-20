@@ -19,15 +19,7 @@
 <div class="row">
     <div class="form-group col-md-3">
         {!! Form::label('tut_id', 'Tutor*', ['class' => 'control-label']) !!}
-        {!! Form::select('tut_id', [], null, ['class' => 'form-control', 'multiple' => 'multiple']) !!}
-    </div>
-    <div class="form-group col-md-3">
-        {!! Form::label('date_ini', 'Data de início*', ['class' => 'control-label']) !!}
-        {!! Form::text('date_ini', old('date_ini'), ['class' => 'form-control datepicker2', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
-    </div>
-    <div class="form-group col-md-3">
-        {!! Form::label('date_fim', 'Data de fim*', ['class' => 'control-label']) !!}
-        {!! Form::text('date_fim', old('date_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+        {!! Form::select('tut_id', [], null, ['class' => 'form-control']) !!}
     </div>
     <div class="form-group col-md-1">
         <label for="" class="control-label"></label>
@@ -146,88 +138,105 @@ $('#grp_id').change(function (e) {
         var moodlewsformat = "json";
         var wsfunction = "monitor_tutor_answers";
         var url = "{{$ambiente->amb_url}}";
-        // console.log(url);
+        var turmaId = $('#trm_id').val();
+        var tutorId = $('#tut_id').val();
+
         $.harpia.showloading();
-            var request = $.ajax({
-                url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&pes_id=" + 12794 +  "&trm_id=" + 32 +  "&moodlewsrestformat=" + moodlewsformat,
-                type: "POST",
-                dataType: "json",
-                async: false,
-                success: function (moodledata) {
-                    $.harpia.hideloading();
-                    // console.log(moodledata);
-                    renderTable(moodledata);
-                },
-                error: function (error) {
-                    $.harpia.hideloading();
-                    // console.log(error);
-                    toastr.error('Erro ao tentar se comunicar com o Ambiente Virtual.', null, {progressBar: true});
+        var request = $.ajax({
+            url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&pes_id=" + tutorId +  "&trm_id=" + turmaId +  "&moodlewsrestformat=" + moodlewsformat,
+            type: "POST",
+            dataType: "json",
+            async: false,
+            success: function (moodledata) {
+                console.log(moodledata.itens.length);
+                if (moodledata.itens.length > 0) {
+                  renderTable(moodledata);
+                }else{
+                  showEmptyTable();
                 }
-            });
+                $.harpia.hideloading();
+            },
+            error: function (error) {
+                $.harpia.hideloading();
+
+                toastr.error('Erro ao tentar se comunicar com o Ambiente Virtual.', null, {progressBar: true});
+            }
+        });
     })
 
     renderTable = function (moodledata) {
-      html = '';
-      var grupoatual = console.log(moodledata.itens[0].grupo);
+      html = '<div class="row"><div class="col-md-12"><h3>'+moodledata.course+'</h3>';
+      html += '</div></div>';
+
+      var grupoatual = moodledata.itens[0].idgrupo;
       $.each(moodledata.itens, function (chave, objeto) {
 
+        if (grupoatual == objeto.idgrupo && chave != 0) {
+          return true;
 
+        }
+        if (grupoatual != objeto.idgrupo) {
+            grupoatual = objeto.idgrupo;
+
+        }
          html += '<div class="row"><div class="col-md-12">';
          html += '<div class="box">';
             html += '<div class="box-header">';
-              html += '<h3 class="box-title">'+grupoatual+'</h3>';
+              html += '<h3 class="box-title">Grupo: '+objeto.grupo+'</h3>';
             html += '</div>';
             html += '<div class="box-body no-padding">';
               html += '<table class="table table-condensed">';
                 html += '<tr>';
-                  html += '<th style="width: 10px">#</th>';
-                  html += '<th style="width: 30%">Discussão</th>';
+                  html += '<th style="width: 50%">Discussão</th>';
                   html += '<th>Participação</th>';
                   html += '<th style="width: 20%">Porcentagem de respostas</th>';
                 html += '</tr>';
                 $.each(moodledata.itens, function (key, obj) {
 
-                  if (obj.grupo != grupoatual){
-                    grupoatual = obj.grupo;
-                    return false;
+                  if (obj.idgrupo == grupoatual) {
+                    html += '<tr>';
+                    html += '<td>'+obj.discussion+'</td>';
+                    html += '<td>';
+                    html += '<div class="progress progress-xs">';
+
+                    if (obj.percentual > 0.7) {
+                      html += '<div class="progress-bar progress-bar-success" style="width: '+obj.percentual*100+'%"></div>';
+
+                    } else if(obj.percentual>0.4 && obj.percentual<0.7) {
+                      html += '<div class="progress-bar progress-bar-yellow" style="width: '+obj.percentual*100+'%"></div>';
+                    } else {
+                      html += '<div class="progress-bar progress-bar-danger" style="width: '+obj.percentual*100+'%"></div>';
+                    }
+                    html += '</div>';
+                    html += '</td>';
+                    if (obj.percentual > 0.7) {
+                      html += '<td><span class="badge bg-green">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
+                    } else if(obj.percentual>0.4 && obj.percentual<0.7) {
+                      html += '<td><span class="badge bg-yellow">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
+                    }else {
+                      html += '<td><span class="badge bg-red">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
+
+                    }
+                    html += '</tr>';
                   }
-
-                  html += '<tr>';
-                  html += '<td>1.</td>';
-                  html += '<td>'+obj.discussion+'</td>';
-                  html += '<td>';
-                  html += '<div class="progress progress-xs">';
-
-                  if (obj.percentual > 0.7) {
-                    html += '<div class="progress-bar progress-bar-success" style="width: '+obj.percentual*100+'%"></div>';
-
-                  } else if(obj.percentual>0.4 && obj.percentual<0.7) {
-                    html += '<div class="progress-bar progress-bar-yellow" style="width: '+obj.percentual*100+'%"></div>';
-                  } else {
-                    html += '<div class="progress-bar progress-bar-danger" style="width: '+obj.percentual*100+'%"></div>';
-                  }
-
-                  html += '</div>';
-                  html += '</td>';
-                  if (obj.percentual > 0.7) {
-                    html += '<td><span class="badge bg-green">'+(obj.percentual*100).toPrecision(2)+'%</span></td>';
-
-                  } else if(obj.percentual>0.4 && obj.percentual<0.7) {
-                    html += '<td><span class="badge bg-yellow">'+(obj.percentual*100).toPrecision(2)+'%</span></td>';
-                  }else {
-                    html += '<td><span class="badge bg-red">'+(obj.percentual*100).toPrecision(2)+'%</span></td>';
-
-                  }
-                  html += '</tr>';
-
                 });
 
               html += '</table>';
             html += '</div>';
           html += '</div>';
           });
-                $('#boxAlunos').removeClass('hidden');
-                $('#boxAlunos .box-body').empty().append(html);
+
+          $('#boxTutores').removeClass('hidden');
+          $('#boxTutores .box-body').empty().append(html);
+    }
+
+
+    showEmptyTable = function () {
+          html = '<div class="row"><div class="col-md-12"><h3>Este tutor não está vinculado a nenhum fórum</h3>';
+          html += '</div></div>';
+          
+          $('#boxTutores').removeClass('hidden');
+          $('#boxTutores .box-body').empty().append(html);
     }
 
 
