@@ -125,7 +125,7 @@
 
             // Recuperacao
             if (!isNaN(inputs[3].valueAsNumber) && inputs[3].valueAsNumber !== 0) {
-                if (configuracoesCurso.modo_recuperacao === "substituir_media_final") {
+                if (configuracoesCurso.modo_recuperacao === "substituir_media_final" && inputs[3].valueAsNumber > media) {
                     media = inputs[3].valueAsNumber;
                 }
 

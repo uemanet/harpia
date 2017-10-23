@@ -690,12 +690,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
         $media = $somaNotas / 3;
 
-        // Media
-        $data['mof_mediafinal'] = $media;
-
+        // Recuperacao
         if ($media < (float) $configuracoesCurso['media_min_aprovacao']  && isset($data['mof_recuperacao'])) {
-            if ($configuracoesCurso['modo_recuperacao'] == 'substituir_media_final') {
+            if ($configuracoesCurso['modo_recuperacao'] == 'substituir_media_final' && (float) $data['mof_recuperacao'] > $media) {
                 $data['mof_mediafinal'] = (float) $data['mof_recuperacao'];
+                $media = (float) $data['mof_recuperacao'];
             }
 
             if ($configuracoesCurso['modo_recuperacao'] == 'substituir_menor_nota') {
@@ -711,14 +710,14 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         }
 
         // Final
-        if ($media < (float) $configuracoesCurso['media_min_aprovacao_final'] && isset($data['mof_final'])) {
+        if ($media < (float) $configuracoesCurso['media_min_aprovacao'] && isset($data['mof_final'])) {
             $media = ($media + (float) $data['mof_final']) / 2;
 
             $data['mof_mediafinal'] = $media;
-            $data['mof_situacao_matricula'] = 'aprovado_final';
+            $data['mof_situacao_matricula'] = 'reprovado_final';
 
-            if ($media < (float) $configuracoesCurso['media_min_aprovacao_final']) {
-                $data['mof_situacao_matricula'] = 'reprovado_final';
+            if ($media >= (float) $configuracoesCurso['media_min_aprovacao_final']) {
+                $data['mof_situacao_matricula'] = 'aprovado_final';
             }
         }
 
