@@ -666,19 +666,19 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     private function calculaNotas(array $data, array $configuracoesCurso)
     {
-        if(isset($data['mof_final']) && ($data['mof_final'] == '' || $data['mof_final'] == null)) {
-          unset($data['mof_final']);
+        if (isset($data['mof_final']) && ($data['mof_final'] == '' || $data['mof_final'] == null)) {
+            unset($data['mof_final']);
         }
 
-        if(isset($data['mof_final']) && ($data['mof_recuperacao'] == '' || $data['mof_recuperacao'] == null)) {
-          unset($data['mof_recuperacao']);
+        if (isset($data['mof_final']) && ($data['mof_recuperacao'] == '' || $data['mof_recuperacao'] == null)) {
+            unset($data['mof_recuperacao']);
         }
 
         // Se a disciplina for avaliada por conceito
         if (isset($data['mof_conceito']) && !is_null($data['mof_conceito'])) {
             $data['mof_situacao_matricula'] = 'reprovado_media';
 
-            if(str_contains($configuracoesCurso['conceitos_aprovacao'], $data['mof_conceito'])){
+            if (str_contains($configuracoesCurso['conceitos_aprovacao'], $data['mof_conceito'])) {
                 $data['mof_situacao_matricula'] = 'aprovado_media';
             }
 
@@ -694,18 +694,18 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $data['mof_mediafinal'] = $media;
 
         if ($media < (float) $configuracoesCurso['media_min_aprovacao']  && isset($data['mof_recuperacao'])) {
-            if($configuracoesCurso['modo_recuperacao'] == 'substituir_media_final'){
+            if ($configuracoesCurso['modo_recuperacao'] == 'substituir_media_final') {
                 $data['mof_mediafinal'] = (float) $data['mof_recuperacao'];
             }
 
-            if($configuracoesCurso['modo_recuperacao'] == 'substituir_menor_nota'){
+            if ($configuracoesCurso['modo_recuperacao'] == 'substituir_menor_nota') {
                 $media = (($somaNotas - $menorNota) + (float) $data['mof_recuperacao']) / 3;
                 $data['mof_mediafinal'] = $media;
             }
 
             $data['mof_situacao_matricula'] = 'aprovado_media';
 
-            if($data['mof_mediafinal'] < (float) $configuracoesCurso['media_min_aprovacao']) {
+            if ($data['mof_mediafinal'] < (float) $configuracoesCurso['media_min_aprovacao']) {
                 $data['mof_situacao_matricula'] = 'reprovado_media';
             }
         }
@@ -717,7 +717,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $data['mof_mediafinal'] = $media;
             $data['mof_situacao_matricula'] = 'aprovado_final';
 
-            if($media < (float) $configuracoesCurso['media_min_aprovacao_final']){
+            if ($media < (float) $configuracoesCurso['media_min_aprovacao_final']) {
                 $data['mof_situacao_matricula'] = 'reprovado_final';
             }
         }

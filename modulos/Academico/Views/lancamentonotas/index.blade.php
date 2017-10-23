@@ -77,7 +77,7 @@
                     selectTurmas.empty();
                     selectPeriodos.empty();
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycursowithoutead/" + curso)
+                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
                         .done(function (data) {
                             if (!$.isEmptyObject(data)) {
                                 selectOfertas.append('<option value="">Selecione uma oferta</option>');
@@ -100,7 +100,7 @@
                     selectTurmas.empty();
                     selectPeriodos.empty();
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + oferta)
+                    $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacursonaointegrada/" + oferta)
                         .done(function (data) {
                             if (!$.isEmptyObject(data)) {
                                 selectTurmas.append('<option value="">Selecione uma turma</option>');

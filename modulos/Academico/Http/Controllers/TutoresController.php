@@ -261,7 +261,6 @@ class TutoresController extends BaseController
 
         DB::beginTransaction();
         try {
-
             $oldPessoa = clone $pessoa;
 
             $pessoa->fill($request->all())->save();

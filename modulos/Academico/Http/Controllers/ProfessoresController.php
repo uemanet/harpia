@@ -262,7 +262,6 @@ class ProfessoresController extends BaseController
 
         DB::beginTransaction();
         try {
-
             $oldPessoa = clone $pessoa;
 
             $pessoa->fill($request->all())->save();
