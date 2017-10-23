@@ -151,7 +151,7 @@
                            } else {
                                selectOfertasDisciplinas.append("<option value=''>Sem ofertas disponíveis</option>");
                            }
-                       })
+                       });
                }
             });
 
@@ -165,21 +165,17 @@
                     return false;
                 }
 
-                var url = "{{ route('academico.async.lancamentonotas.table') }}?"+
-                    "ofd_id=" + ofertaDisciplina;
-
-                $.ajax({
-                    method: 'GET',
-                    url: url,
-                    success: function(response) {
-                        $(".table-notas").empty();
-                        $(".table-notas").append(response);
-                    },
-                    error: function(response) {
-                        $.harpia.hideloading();
-                        toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
-                    }
-                });
+                $.harpia.httpget("{{ route('academico.async.lancamentonotas.table') }}?"+ "ofd_id=" + ofertaDisciplina)
+                    .done(function (response) {
+                        if(!$.isEmptyObject(response)){
+                            console.log(response);
+                            $(".table-notas").empty();
+                            $(".table-notas").append(response);
+                        } else {
+                            $.harpia.hideloading();
+                            toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
+                        }
+                    });
             });
         });
     </script>
