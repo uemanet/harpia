@@ -273,6 +273,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertascursos'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycurso')->name('academico.async.ofertascursos.findallbycurso');
             Route::get('/findallbycursowithoutpresencial/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycursowithoutpresencial')->name('academico.async.ofertascursos.findallbycursowithoutpresencial');
+            Route::get('/findallbycursowithoutead/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindAllByCursoWithoutEad')->name('academico.async.ofertascursos.findallbycursowithoutead');
         });
 
         Route::group(['prefix' => 'disciplinas'], function () {
@@ -358,7 +359,6 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'lancamentodenotas'], function () {
             Route::get('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@getTable')->name('academico.async.lancamentonotas.table');
             Route::post('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@postNotas')->name('academico.async.lancamentonotas.create');
-            Route::put('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@putEdit')->name('academico.async.lancamentonotas.edit');
         });
 
         Route::group(['prefix' => 'carteirasestudantis'], function () {

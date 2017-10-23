@@ -42,13 +42,9 @@
                     {!! Form::label('per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
                     {!! Form::select('per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     {!! Form::label('ofd_id', 'Oferta de Disciplina*', ['class' => 'control-label']) !!}
                     {!! Form::select('ofd_id', [], null, ['class' => 'form-control']) !!}
-                </div>
-                <div class="form-group col-md-1">
-                    <label for="" class="control-label"></label>
-                    <button class="btn btn-primary form-control" id="btnLocalizar"><i class="fa fa-search"></i></button>
                 </div>
             </div>
         </div>
@@ -81,7 +77,7 @@
                     selectTurmas.empty();
                     selectPeriodos.empty();
 
-                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
+                    $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycursowithoutead/" + curso)
                         .done(function (data) {
                             if (!$.isEmptyObject(data)) {
                                 selectOfertas.append('<option value="">Selecione uma oferta</option>');
@@ -160,7 +156,7 @@
             });
 
             // evento click no botão de pesquisar
-            $('#btnLocalizar').click(function () {
+            $("#ofd_id").change(function () {
                 var turma = selectTurmas.val();
                 var periodo = selectPeriodos.val();
                 var ofertaDisciplina = selectOfertasDisciplinas.val();
@@ -184,7 +180,6 @@
                         toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
                     }
                 });
-
             });
         });
     </script>

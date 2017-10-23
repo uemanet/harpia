@@ -200,12 +200,11 @@
                 data: data,
                 url: "{{ route('academico.async.lancamentonotas.create') }}",
                 success: function (response) {
-                    console.log(response);
+                  toastr.success('Notas atualizadas com sucesso.', null, {progressBar: true});
                 },
                 error: function (response) {
-                    console.log(response);
-                    // $.harpia.hideloading();
-                    // toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
+                    $.harpia.hideloading();
+                    toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});
                 }
             });
         });

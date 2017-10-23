@@ -671,24 +671,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-        $permissao = Permissao::create([
-           'prm_nome' =>  'table',
-           'prm_rota' =>  'academico.async.lancamentonotas.table'
-        ]);
-        $arrPermissoes[] = $permissao->prm_id;
-
-        $permissao = Permissao::create([
-           'prm_nome' =>  'create',
-           'prm_rota' =>  'academico.async.lancamentonotas.create'
-        ]);
-        $arrPermissoes[] = $permissao->prm_id;
-
-        $permissao = Permissao::create([
-           'prm_nome' =>  'edit',
-           'prm_rota' =>  'academico.async.lancamentonotas.edit'
-        ]);
-        $arrPermissoes[] = $permissao->prm_id;
-
         // permissões do recurso carteiras de estudante
         $permissao = Permissao::create([
             'prm_nome' => 'index',
