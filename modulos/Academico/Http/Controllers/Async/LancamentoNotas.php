@@ -16,10 +16,9 @@ class LancamentoNotas extends BaseController
     public function __construct(
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
-    ){
+    ) {
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
-
     }
 
 
@@ -35,7 +34,7 @@ class LancamentoNotas extends BaseController
             $configsCurso = $ofertaDisciplina->turma->ofertaCurso->curso->configuracoes;
 
             $configuracoesCurso = $configsCurso->mapWithKeys(function ($item) {
-               return [$item->cfc_nome => $item->cfc_valor];
+                return [$item->cfc_nome => $item->cfc_valor];
             });
 
             $configuracoesCurso = json_encode($configuracoesCurso, JSON_UNESCAPED_SLASHES & JSON_UNESCAPED_LINE_TERMINATORS & JSON_UNESCAPED_UNICODE);
@@ -56,7 +55,7 @@ class LancamentoNotas extends BaseController
     {
         $matricula = $this->matriculaOfertaDisciplinaRepository->find($request->get('mof_id'));
 
-        if($matricula){
+        if ($matricula) {
             $this->matriculaOfertaDisciplinaRepository->update($request->except('_token'), $matricula->mof_id);
             $matricula = $this->matriculaOfertaDisciplinaRepository->find($request->get('mof_id'));
             return new JsonResponse($matricula, 200, ['content-type' => 'application/json']);

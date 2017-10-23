@@ -200,7 +200,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
     });
 
-    Route::group(['prefix' => 'lancamentodenotas'], function (){
+    Route::group(['prefix' => 'lancamentodenotas'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\LancamentoNotas@getIndex')->name('academico.lancamentonotas.index');
     });
 
@@ -262,6 +262,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'turmas'], function () {
             Route::get('/findallbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacurso')->name('academico.async.turmas.findallbyofertacurso');
             Route::get('/findallbyofertacursointegrada/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoIntegrada')->name('academico.async.turmas.findallbyofertacursointegrada');
+            Route::get('/findallbyofertacursonaointegrada/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoNaoIntegrada')->name('academico.async.turmas.findallbyofertacursonaointegrada');
             Route::get('/findallwithvagasdisponiveis/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallwithvagasdisponiveis')->name('academico.async.turmas.findallwithvagasdisponiveis');
             Route::get('/findallbyofertacursowithoutambiente/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoWithoutAmbiente')->name('academico.async.turmas.findallbyofertacursowithoutambiente');
         });
