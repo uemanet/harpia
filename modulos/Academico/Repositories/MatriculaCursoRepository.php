@@ -903,21 +903,23 @@ class MatriculaCursoRepository extends BaseRepository
         ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
         ->where('mdc_mdo_id', $IdModulo)
         ->where('mof_mat_id', $IdMatricula)
-        ->orderBy('dis_nome' , 'asc')
+        ->orderBy('dis_nome', 'asc')
         ->get();
 
         $cargahoraria = 0;
         $disciplinas = [];
         $numerador = 0;
+        $denominador = 0;
 
         foreach ($ofertasdisciplinas as $modulodisciplina) {
             $disciplinas[] = $modulodisciplina->dis_nome;
             $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
-            $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
+            $numerador = $modulodisciplina->mof_mediafinal + $numerador;
+            $denominador++;
         }
 
         //formata o coeficiente do módulo
-        $coeficiente = $numerador/$cargahoraria;
+        $coeficiente = $numerador/$denominador;
         $coeficiente = number_format($coeficiente, 2, '.', '');
 
         $descricaomodulo = $modulo->mdo_descricao;

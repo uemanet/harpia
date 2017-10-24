@@ -101,7 +101,7 @@
     <p style="font-family: Arial;text-align:center; font-size:16px;">
       <b style="font-size:24px;">{{$dados['PESSOANOME']}}</b><br><br>
             portador do CPF de número {{$dados['PESSOACPF']}}<br>
-            concluiu o módulo <b>{{$dados['DESCRICAOMODULO']}}</b><br>
+            concluiu o Módulo <b>{{$dados['DESCRICAOMODULO']}}</b><br>
             assegurando a qualificação em <b>{{$dados['QUALIFICACAOMODULO']}}</b><br>
             com duração de <b>{{$dados['CARGAHORARIAMODULO']}} horas</b>.<br>
             <br>
