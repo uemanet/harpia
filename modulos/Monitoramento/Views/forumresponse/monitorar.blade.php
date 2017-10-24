@@ -20,11 +20,7 @@
         </div>
         <div class="box-body">
           @include('Monitoramento::forumresponse.includes.formulario')
-
         </div>
-
-
-
         <div class="text-center margin" id="grafico"></div>
     </div>
 

@@ -30,7 +30,7 @@ class ForumController extends Controller
     public function getIndex()
     {
         $ambientes = $this->ambientevirtualRepository->findAmbientesWithMonitor();
-        // dd($ambientes);
+
         return view('Monitoramento::forumresponse.index', compact('ambientes'));
     }
 
@@ -44,11 +44,7 @@ class ForumController extends Controller
 
         $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
 
-        // $timeclicks = 60;
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
-
-        // $wsfunction = $ambiente->ser_slug;
-        // dd($cursos);
 
         return view('Monitoramento::forumresponse.monitorar', compact('cursos', 'ambiente'));
     }

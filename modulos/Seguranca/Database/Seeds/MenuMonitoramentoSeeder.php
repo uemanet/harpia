@@ -41,5 +41,14 @@ class MenuMonitoramentoSeeder extends Seeder
             'mit_rota' => 'monitoramento.tempoonline.index',
             'mit_ordem' => 2
         ]);
+
+        $respostasForuns = MenuItem::create([
+            'mit_mod_id' => 5,
+            'mit_item_pai' => $monitoramento->mit_id,
+            'mit_nome' => 'Respostas a Fóruns',
+            'mit_icone' => 'fa fa-envelope-open',
+            'mit_rota' => 'monitoramento.forumresponse.index',
+            'mit_ordem' => 3
+        ]);
     }
 }

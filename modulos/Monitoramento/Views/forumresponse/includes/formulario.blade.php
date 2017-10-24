@@ -28,7 +28,7 @@
 </div>
 
 @section('scripts')
-@parent
+
 
 <script type="application/javascript">
 $(document).ready(function () {
@@ -131,7 +131,7 @@ $('#grp_id').change(function (e) {
         $("select").select2();
     });
 
-    $('#btnLocalizar').click(function () {
+    $(document).on('click', '#btnLocalizar', function () {
         event.preventDefault();
 
         var token = '{{$ambiente->asr_token}}';
@@ -141,14 +141,16 @@ $('#grp_id').change(function (e) {
         var turmaId = $('#trm_id').val();
         var tutorId = $('#tut_id').val();
 
+        if (!tutorId) {
+          return false;
+        }
         $.harpia.showloading();
         var request = $.ajax({
             url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&pes_id=" + tutorId +  "&trm_id=" + turmaId +  "&moodlewsrestformat=" + moodlewsformat,
             type: "POST",
             dataType: "json",
-            async: false,
+            async: true,
             success: function (moodledata) {
-                console.log(moodledata.itens.length);
                 if (moodledata.itens.length > 0) {
                   renderTable(moodledata);
                 }else{
@@ -165,6 +167,7 @@ $('#grp_id').change(function (e) {
     })
 
     renderTable = function (moodledata) {
+
       html = '<div class="row"><div class="col-md-12"><h3>'+moodledata.course+'</h3>';
       html += '</div></div>';
 
@@ -189,7 +192,8 @@ $('#grp_id').change(function (e) {
                 html += '<tr>';
                   html += '<th style="width: 50%">Discussão</th>';
                   html += '<th>Participação</th>';
-                  html += '<th style="width: 20%">Porcentagem de respostas</th>';
+                  html += '<th style="width: 15%">Participação</th>';
+                  html += '<th style="width: 15%">Respostas a posts</th>';
                 html += '</tr>';
                 $.each(moodledata.itens, function (key, obj) {
 
@@ -199,24 +203,36 @@ $('#grp_id').change(function (e) {
                     html += '<td>';
                     html += '<div class="progress progress-xs">';
 
-                    if (obj.percentual > 0.7) {
-                      html += '<div class="progress-bar progress-bar-success" style="width: '+obj.percentual*100+'%"></div>';
+                    if (obj.participacaototal > 0.7) {
+                      html += '<div class="progress-bar progress-bar-success" style="width: '+obj.participacaototal*100+'%"></div>';
 
-                    } else if(obj.percentual>0.4 && obj.percentual<0.7) {
-                      html += '<div class="progress-bar progress-bar-yellow" style="width: '+obj.percentual*100+'%"></div>';
+                    } else if(obj.participacaototal>0.4 && obj.participacaototal<0.7) {
+                      html += '<div class="progress-bar progress-bar-yellow" style="width: '+obj.participacaototal*100+'%"></div>';
                     } else {
-                      html += '<div class="progress-bar progress-bar-danger" style="width: '+obj.percentual*100+'%"></div>';
+                      html += '<div class="progress-bar progress-bar-danger" style="width: '+obj.participacaototal*100+'%"></div>';
                     }
                     html += '</div>';
                     html += '</td>';
+                    if (obj.participacaototal > 0.7) {
+                      html += '<td><span class="badge bg-green">'+(obj.participacaototal*100).toPrecision(3)+'%</span></td>';
+                    } else if(obj.participacaototal>0.4 && obj.participacaototal<0.7) {
+                      html += '<td><span class="badge bg-yellow">'+(obj.participacaototal*100).toPrecision(3)+'%</span></td>';
+                    } else if(obj.participacaototal>0.0 && obj.participacaototal<=0.4) {
+                      html += '<td><span class="badge bg-red">'+(obj.participacaototal*100).toPrecision(3)+'%</span></td>';
+                    }else {
+                      html += '<td><span class="badge bg-red">0%</span></td>';
+                    }
+
                     if (obj.percentual > 0.7) {
                       html += '<td><span class="badge bg-green">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
                     } else if(obj.percentual>0.4 && obj.percentual<0.7) {
                       html += '<td><span class="badge bg-yellow">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
-                    }else {
+                    }else if(obj.percentual>0.0 && obj.percentual<=0.4){
                       html += '<td><span class="badge bg-red">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
-
+                    } else {
+                      html += '<td><span class="badge bg-red">0%</span></td>';
                     }
+
                     html += '</tr>';
                   }
                 });
@@ -234,7 +250,7 @@ $('#grp_id').change(function (e) {
     showEmptyTable = function () {
           html = '<div class="row"><div class="col-md-12"><h3>Este tutor não está vinculado a nenhum fórum</h3>';
           html += '</div></div>';
-          
+
           $('#boxTutores').removeClass('hidden');
           $('#boxTutores .box-body').empty().append(html);
     }
