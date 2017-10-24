@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterGraAnexosTable extends Migration
+class AlterAcdMatrizesCurricularesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,8 @@ class AlterGraAnexosTable extends Migration
      */
     public function up()
     {
-        Schema::table('gra_anexos', function (Blueprint $table) {
-            $table->dropForeign(['anx_tax_id']);
-            $table->dropColumn(['anx_tax_id']);
+        Schema::table('acd_matrizes_curriculares', function (Blueprint $table) {
+            $table->integer('mtc_anx_projeto_pedagogico')->nullable()->unsigned()->change();
         });
     }
 
@@ -25,8 +24,5 @@ class AlterGraAnexosTable extends Migration
      */
     public function down()
     {
-        Schema::table('gra_anexos', function (Blueprint $table) {
-            //
-        });
     }
 }

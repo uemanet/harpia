@@ -41,6 +41,21 @@ class MatriculaOfertaDisciplina extends BaseModel
         return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'mof_ofd_id', 'ofd_id');
     }
 
+    public function getAluno()
+    {
+        return $this->matriculaCurso->aluno();
+    }
+
+    public function getDisciplina()
+    {
+        return $this->ofertaDisciplina->moduloDisciplina->disciplina;
+    }
+
+    public function getModuloDisciplina()
+    {
+        return $this->ofertaDisciplina->moduloDisciplina;
+    }
+
     public function tcc()
     {
         return $this->hasOne('Modulos\Academico\Models\LancamentoTcc', 'ltc_mof_id', 'mof_id');

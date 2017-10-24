@@ -6,9 +6,9 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
-        "laravel/framework": "5.3.*",
+        "laravel/framework": "5.4.*",
         "filp/whoops": "^2.1",
-        "laravelcollective/html": "5.3.*",
+        "laravelcollective/html": "5.4.*",
         "stevebauman/eloquenttable": "1.1.*",
         "guzzlehttp/guzzle": "^6.2",
         "mpdf/mpdf": "^6.1",
@@ -20,8 +20,8 @@
         "mockery/mockery": "0.9.*",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
-        "phpunit/phpunit": "~5.0",
-        "phpunit/php-code-coverage": "~3.0",
+        "phpunit/phpunit": "~5.7",
+        "phpunit/php-code-coverage": "^4.0",
         "squizlabs/php_codesniffer": "~2.6",
         "friendsofphp/php-cs-fixer": "^1.11",
         "symfony/console": "~3.1"

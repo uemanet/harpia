@@ -121,15 +121,15 @@ class ListaSemturRepository extends BaseRepository
         return $result;
     }
 
-    public function findAll(array $parameters, array $sort = [],array $select = [])
+    public function findAll(array $parameters, array $sort = [], array $select = [])
     {
         if (empty($parameters)) {
             return [];
         }
 
         $query = $this->model->join('acd_matriculas_listas_semtur', function ($join) {
-                            $join->on('mls_lst_id', '=', 'lst_id');
-                        })
+            $join->on('mls_lst_id', '=', 'lst_id');
+        })
                         ->join('acd_matriculas', function ($join) {
                             $join->on('mls_mat_id', '=', 'mat_id');
                         })
@@ -166,8 +166,8 @@ class ListaSemturRepository extends BaseRepository
     public function getMatriculasOutOfLista($listaId, $turmaId, $poloId = null)
     {
         $query = \Modulos\Academico\Models\Matricula::join('acd_turmas', function ($join) {
-                            $join->on('mat_trm_id', '=', 'trm_id');
-                        })
+            $join->on('mat_trm_id', '=', 'trm_id');
+        })
                         ->join('acd_polos', function ($join) {
                             $join->on('mat_pol_id', '=', 'pol_id');
                         })

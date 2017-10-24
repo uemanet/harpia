@@ -30,7 +30,14 @@ class CreateAcdMatriculasTable extends Migration
                 'vestibular',
                 'transferencia_externa',
                 'transferencia_interna_de',
-                'transferencia_interna_para'
+                'transferencia_interna_para',
+                'outros_tipos_selecao',
+                'outras_formas_ingresso',
+                'transferencia_obrigatoria',
+                'transferencia_ex_oficio',
+                'graduando_interno',
+                'graduando_externo',
+                'graduado'
             ]);
             $table->date('mat_data_conclusao')->nullable();
 

@@ -200,6 +200,10 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\CertificacaoController@getIndex')->name('academico.certificacao.index');
     });
 
+    Route::group(['prefix' => 'lancamentodenotas'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\LancamentoNotas@getIndex')->name('academico.lancamentonotas.index');
+    });
+
     Route::group(['prefix' => 'carteirasestudantis'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\ListaSemturController@getIndex')->name('academico.carteirasestudantis.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\ListaSemturController@getCreate')->name('academico.carteirasestudantis.create');
@@ -231,6 +235,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/xls', '\Modulos\Academico\Http\Controllers\RelatoriosMatriculasDisciplinaController@postXls')->name('academico.relatoriosmatriculasdisciplinas.xls');
     });
 
+    Route::group(['prefix' => 'relatoriosatasfinais'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\RelatoriosAtasFinaisController@getIndex')->name('academico.relatoriosatasfinais.index');
+        Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosAtasFinaisController@postPdf')->name('academico.relatoriosatasfinais.pdf');
+    });
+
     Route::group(['prefix' => 'controlederegistro'], function () {
         Route::get('/index', '\Modulos\Academico\Http\Controllers\ControleRegistroController@getIndex')->name('academico.controlederegistro.index');
         Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\ControleRegistroController@getShow')->name('academico.controlederegistro.show');
@@ -253,6 +262,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'turmas'], function () {
             Route::get('/findallbyofertacurso/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacurso')->name('academico.async.turmas.findallbyofertacurso');
             Route::get('/findallbyofertacursointegrada/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoIntegrada')->name('academico.async.turmas.findallbyofertacursointegrada');
+            Route::get('/findallbyofertacursonaointegrada/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoNaoIntegrada')->name('academico.async.turmas.findallbyofertacursonaointegrada');
             Route::get('/findallwithvagasdisponiveis/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallwithvagasdisponiveis')->name('academico.async.turmas.findallwithvagasdisponiveis');
             Route::get('/findallbyofertacursowithoutambiente/{id}', '\Modulos\Academico\Http\Controllers\Async\Turmas@getFindallbyofertacursoWithoutAmbiente')->name('academico.async.turmas.findallbyofertacursowithoutambiente');
         });
@@ -264,6 +274,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'ofertascursos'], function () {
             Route::get('/findallbycurso/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycurso')->name('academico.async.ofertascursos.findallbycurso');
             Route::get('/findallbycursowithoutpresencial/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindallbycursowithoutpresencial')->name('academico.async.ofertascursos.findallbycursowithoutpresencial');
+            Route::get('/findallbycursowithoutead/{id}', '\Modulos\Academico\Http\Controllers\Async\OfertasCursos@getFindAllByCursoWithoutEad')->name('academico.async.ofertascursos.findallbycursowithoutead');
         });
 
         Route::group(['prefix' => 'disciplinas'], function () {
@@ -331,7 +342,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'cursos'], function () {
             Route::get('/findcursostecnicos', '\Modulos\Academico\Http\Controllers\Async\Cursos@getCursosTecnicos')->name('academico.async.cursos.findcursostecnicos');
             Route::get('/findmodulosbyoferta/{id}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getModulosByOferta')->name('academico.async.cursos.findmodulosbyoferta');
-            Route::get('/getalunosaptos/{turma}/{modulo}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos')->name('academico.async.cursos.getalunosaptos');
+            Route::get('/getalunosaptos/{turma}/{modulo}/{polo?}', '\Modulos\Academico\Http\Controllers\Async\Cursos@getAlunosAptos')->name('academico.async.cursos.getalunosaptos');
             Route::post('/certificaralunos', '\Modulos\Academico\Http\Controllers\Async\Cursos@postCertificarAlunos')->name('academico.async.cursos.certificaralunos');
             Route::get('/printCertificado/{idMatricula}/{idModulo}', '\Modulos\Academico\Http\Controllers\CertificacaoController@getPrint')->name('academico.async.cursos.printcertificado');
         });
@@ -346,8 +357,13 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/getmatriculasconcluidas', '\Modulos\Academico\Http\Controllers\Async\Matricula@getMatriculasConcluidas')->name('academico.async.matricula.getmatriculasconcluidas');
         });
 
+        Route::group(['prefix' => 'lancamentodenotas'], function () {
+            Route::get('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@getTable')->name('academico.async.lancamentonotas.table');
+            Route::post('/', '\Modulos\Academico\Http\Controllers\Async\LancamentoNotas@postNotas')->name('academico.async.lancamentonotas.create');
+        });
+
         Route::group(['prefix' => 'carteirasestudantis'], function () {
-            Route::get('/gettableshowmatriculas/{lista}/{turma}','\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableShowMatriculas')->name('academico.async.carteirasestudantis.gettableshowmatriculas');
+            Route::get('/gettableshowmatriculas/{lista}/{turma}', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableShowMatriculas')->name('academico.async.carteirasestudantis.gettableshowmatriculas');
             Route::get('/gettableaddmatriculas', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@getTableAddMatriculas')->name('academico.async.carteirasestudantis.gettableaddmatriculas');
             Route::post('/incluirmatriculas', '\Modulos\Academico\Http\Controllers\Async\ListaSemtur@postIncluirMatriculasLista')->name('academico.async.carteirasestudantis.incluirmatriculas');
         });

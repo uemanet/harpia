@@ -428,7 +428,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
         //permissões do recurso professores
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -454,9 +453,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
-
-
         //permissões do recurso ofertasdisciplinas
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -481,7 +477,6 @@ class PermissoesAcademicoSeeder extends Seeder
             'prm_rota' => 'academico.ofertasdisciplinas.delete'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
-
 
         //permissões do recurso matricularalunocurso
         $permissao = Permissao::create([
@@ -566,7 +561,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
         //permissões do recurso lancamentostccs
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -605,7 +599,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
         //permissões do recurso certificacao
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -633,7 +626,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
         //permissões do recurso historicoparcial
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -652,8 +644,6 @@ class PermissoesAcademicoSeeder extends Seeder
             'prm_rota' => 'academico.historicoparcial.print'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
-
-
 
         //permissões do recurso historicodefinitivo
         $permissao = Permissao::create([
@@ -674,8 +664,14 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-        // permissões do recurso carteiras de estudante
+        // Permissoes do recurso lancamento de nota
+        $permissao = Permissao::create([
+           'prm_nome' =>  'index',
+           'prm_rota' =>  'academico.lancamentonotas.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
 
+        // permissões do recurso carteiras de estudante
         $permissao = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'academico.carteirasestudantis.index'
@@ -727,6 +723,20 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'deletematricula',
             'prm_rota' => 'academico.carteirasestudantis.deletematricula'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
+        // Permissoes do recurso relatorio atas finais
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.relatoriosatasfinais.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'pdf',
+            'prm_rota' => 'academico.relatoriosatasfinais.pdf'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
