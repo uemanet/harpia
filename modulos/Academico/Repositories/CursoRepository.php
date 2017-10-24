@@ -62,7 +62,10 @@ class CursoRepository extends BaseRepository
      */
     public function listsCursoByMatriz($matrizId)
     {
-        return $this->model->where('crs_id', $matrizId)->pluck('crs_nome', 'crs_id');
+        return DB::table('acd_matrizes_curriculares')
+                      ->join('acd_cursos', 'mtc_crs_id', 'crs_id')
+                      ->where('mtc_id', $matrizId)
+                      ->pluck('crs_nome', 'crs_id');
     }
 
     /**

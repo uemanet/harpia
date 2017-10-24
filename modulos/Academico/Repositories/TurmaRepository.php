@@ -42,6 +42,17 @@ class TurmaRepository extends BaseRepository
         return $entries;
     }
 
+    public function findAllByOfertaCursoNaoIntegrada($ofertaCursoId)
+    {
+        $entries = $this->model
+            ->where('trm_ofc_id', $ofertaCursoId)
+            ->where('trm_integrada', '=', 0)
+            ->select('trm_id', 'trm_nome')
+            ->get();
+
+        return $entries;
+    }
+
     public function findAllWithVagasDisponiveisByOfertaCurso($ofertaCursoId)
     {
         $entries = $this->model
