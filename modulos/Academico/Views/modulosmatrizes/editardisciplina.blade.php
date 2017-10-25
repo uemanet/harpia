@@ -67,20 +67,11 @@
                     </div>
                 </div>
             </div>
-            {{--<div class="row">--}}
-                {{--<div class="form-group col-md-6">--}}
-                    {{--{!! Form::label('dis_ementa', 'Ementa', ['class' => 'control-label']) !!}--}}
-                    {{--<div class="controls">--}}
-                        {{--{!! Form::textarea('dis_ementa', $disciplina->disciplina->dis_ementa, ['class' => 'form-control', 'disabled']) !!}--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                {{--<div class="form-group col-md-6">--}}
-                    {{--{!! Form::label('dis_bibliografia', 'Bibliografia', ['class' => 'control-label']) !!}--}}
-                    {{--<div class="controls">--}}
-                        {{--{!! Form::textarea('dis_bibliografia', $disciplina->disciplina->dis_bibliografia, ['class' => 'form-control', 'disabled']) !!}--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
+            <div class="row">
+                <div class="form-group col-md-12">
+                    {!! Form::submit('Atualizar dados', ['class' => 'btn btn-primary pull-right', 'id' => 'btnSubmit']) !!}
+                </div>
+            </div>
         </div>
     </div>
 @stop
@@ -91,6 +82,21 @@
     <script type="application/javascript">
         $(function(){
             $(document).find('select').select2();
+
+            $('#btnSubmit').on('click', function (event) {
+                event.preventDefault();
+
+                data = {
+                    mdc_id: "{{ $disciplina->mdc_id }}",
+                    tipo_disciplina: $('#tipo_disciplina').val(),
+                    pre_requisitos: $('#pre_requisitos').val(),
+                    _token: "{{ csrf_token() }}"
+                };
+
+                // Ajax request
+
+
+            });
         });
     </script>
 @endsection
