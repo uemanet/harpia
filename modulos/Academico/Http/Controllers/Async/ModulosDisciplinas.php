@@ -94,4 +94,25 @@ class ModulosDisciplinas extends BaseController
 
         return new JsonResponse($disciplina, 200);
     }
+
+    public function getDisciplina($id)
+    {
+        $disciplina = [];
+        $prerequisitos = [];
+
+        if ($this->moduloDisciplinaRepository->find($id)) {
+            $disciplina = $this->moduloDisciplinaRepository->find($id);
+
+            if ($disciplina->mdc_pre_requisitos) {
+                $prerequisitos = $this->moduloDisciplinaRepository->getDisciplinasPreRequisitos($id);
+                $disciplina = $disciplina->toArray();
+
+                $disciplina['mdc_pre_requisitos'] = $prerequisitos;
+            }
+        }
+
+        return new JsonResponse($disciplina, 200, [
+           'content-type' => 'application/json'
+        ]);
+    }
 }

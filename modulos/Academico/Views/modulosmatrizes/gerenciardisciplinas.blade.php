@@ -109,10 +109,10 @@
                                             [
                                                 'classButton' => 'btnEdit',
                                                 'icon' => 'fa fa-pencil',
-                                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.edit',
-                                                'parameters' => ['id' => $modulo->mdo_id],
+                                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.editardisciplinas',
+                                                'parameters' => ['id' => $disciplina->mdc_id],
                                                 'label' => 'Editar',
-                                                'id' => 'edit_'.$disciplina->mdc_id,
+                                                'id' => $disciplina->mdc_id,
                                                 'method' => 'get'
                                             ],
                                             [
@@ -316,7 +316,6 @@
                         boxBody.append('<p>Sem registros</p>');
                     }
                 });
-
             };
 
             var addDisciplina = function (linha) {
@@ -389,7 +388,7 @@
                         table += '</thead>';
 
                         table += '<tbody>';
-                        $.each(response, function (key, obj) {
+                         $.each(response, function (key, obj) {
                             table += '<tr>';
                             table += '<td>' + obj.mdc_id + '</td>';
                             table += '<td>' + obj.dis_nome + '</td>';
@@ -410,7 +409,7 @@
                                 table += '<td>Sem pré-requisitos</td>';
                             }
                             table += '<td>';
-                            table += '<form action="">'
+                            table += '<form action="">';
                             table += '<input type="hidden" name="id" value="' + obj.mdc_id + '">';
                             table += '<input type="hidden" name="mtc_id" value="' + matriz + '">';
                             table += '<input type="hidden" name="_token" value="' + csrf_token + '">';
