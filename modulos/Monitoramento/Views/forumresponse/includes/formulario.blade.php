@@ -42,11 +42,14 @@ $('#crs_id').change(function (e) {
 
     var selectOfertas = $('#ofc_id');
     var selectTurmas = $('#trm_id');
+    var selectTutores = $('#tut_id');
+    
     if (crsId) {
 
         // Populando o select de ofertas de cursos
         selectOfertas.empty();
         selectTurmas.empty();
+        selectTutores.empty();
 
         $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
         .done(function (data) {
@@ -67,9 +70,11 @@ $('#ofc_id').change(function (e) {
     var ofertaId = $(this).val();
 
     var selectTurmas = $('#trm_id');
+    var selectTutores = $('#tut_id');
 
     if (ofertaId) {
         selectTurmas.empty();
+        selectTutores.empty();
 
         $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacursointegrada/' + ofertaId)
         .done(function (data) {
@@ -89,9 +94,11 @@ $('#ofc_id').change(function (e) {
 $('#trm_id').change(function (e) {
     var turmaId = $(this).val();
     var selectGrupos = $('#grp_id');
+    var selectTutores = $('#tut_id');
 
     if (turmaId) {
         selectGrupos.empty();
+        selectTutores.empty();
         selectGrupos.append('<option>Selecione o grupo</option>');
         selectGrupos.append('<option value="presencial">Presencial</option>')
         selectGrupos.append('<option value="distancia">Distância</option>')
@@ -106,7 +113,6 @@ $('#grp_id').change(function (e) {
     var selectTutores = $('#tut_id');
 
     if (turmaId) {
-
         selectTutores.empty();
         $.harpia.httpget('{{url("/")}}/academico/async/tutores/findallbyturmatipotutoria/' + turmaId + '/' + tipotutoria)
         .done(function (data) {
@@ -116,7 +122,7 @@ $('#grp_id').change(function (e) {
                     selectTutores.append('<option value="' + obj.pes_id + '">' + obj.pes_nome + '</option>')
                 });
             } else {
-                selectTutores.append('<option>Sem tutores cadastrados nessa turma</option>')
+                selectTutores.append('<option value = "" >Sem tutores cadastrados nessa turma</option>')
             }
         });
     }
@@ -157,6 +163,15 @@ $('#grp_id').change(function (e) {
                   showEmptyTable();
                 }
                 $.harpia.hideloading();
+
+                $('.popover-dismiss').popover({
+                    trigger: 'focus'
+                })
+                $(function () {
+                  $('[data-toggle="popover"]').popover()
+                  console.log('algo');
+                })
+
             },
             error: function (error) {
                 $.harpia.hideloading();
@@ -191,35 +206,26 @@ $('#grp_id').change(function (e) {
               html += '<table class="table table-condensed">';
                 html += '<tr>';
                   html += '<th style="width: 50%">Discussão</th>';
-                  html += '<th>Participação</th>';
-                  html += '<th style="width: 15%">Participação</th>';
-                  html += '<th style="width: 15%">Respostas a posts</th>';
+                  html += '<th style="width: 15%">Participação ';
+                  html += '<a tabindex="0" class="badge bg-block" role="button" data-placement="top" data-toggle="popover" data-trigger="focus" title="Participação" data-content="Esta coluna contém a porcentagem total de respostas dos tutores em relação as todas as postagens dos alunos">?</a></th>';
+                  html += '<th style="width: 15%">Respostas a posts ';
+                  html += '<a tabindex="0" class="badge bg-block" role="button" data-placement="top" data-toggle="popover" data-trigger="focus" title="Respostas a posts" data-content="Esta coluna contém a porcentagem de respostas em relação aos posts dos alunos referentes a discussão no primeiro nível">?</a></th>';
+                  html += '<th style="width: 15%">Tempo resposta ';
+                  html += '<a tabindex="0" class="badge bg-block" role="button" data-placement="top" data-toggle="popover" data-trigger="focus" title="Tempo Médio de respostas" data-content="Esta coluna contém o tempo médio que o tutor demora para responder aos posts de primeiro nível">?</a></th>';
                 html += '</tr>';
                 $.each(moodledata.itens, function (key, obj) {
 
                   if (obj.idgrupo == grupoatual) {
                     html += '<tr>';
                     html += '<td>'+obj.discussion+'</td>';
-                    html += '<td>';
-                    html += '<div class="progress progress-xs">';
 
-                    if (obj.participacaototal > 0.7) {
-                      html += '<div class="progress-bar progress-bar-success" style="width: '+obj.participacaototal*100+'%"></div>';
-
-                    } else if(obj.participacaototal>0.4 && obj.participacaototal<0.7) {
-                      html += '<div class="progress-bar progress-bar-yellow" style="width: '+obj.participacaototal*100+'%"></div>';
-                    } else {
-                      html += '<div class="progress-bar progress-bar-danger" style="width: '+obj.participacaototal*100+'%"></div>';
-                    }
-                    html += '</div>';
-                    html += '</td>';
                     if (obj.participacaototal > 0.7) {
                       html += '<td><span class="badge bg-green">'+(obj.participacaototal*100).toPrecision(3)+'%</span></td>';
                     } else if(obj.participacaototal>0.4 && obj.participacaototal<0.7) {
                       html += '<td><span class="badge bg-yellow">'+(obj.participacaototal*100).toPrecision(3)+'%</span></td>';
                     } else if(obj.participacaototal>0.0 && obj.participacaototal<=0.4) {
                       html += '<td><span class="badge bg-red">'+(obj.participacaototal*100).toPrecision(3)+'%</span></td>';
-                    }else {
+                    } else {
                       html += '<td><span class="badge bg-red">0%</span></td>';
                     }
 
@@ -227,12 +233,13 @@ $('#grp_id').change(function (e) {
                       html += '<td><span class="badge bg-green">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
                     } else if(obj.percentual>0.4 && obj.percentual<0.7) {
                       html += '<td><span class="badge bg-yellow">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
-                    }else if(obj.percentual>0.0 && obj.percentual<=0.4){
+                    } else if(obj.percentual>0.0 && obj.percentual<=0.4){
                       html += '<td><span class="badge bg-red">'+(obj.percentual*100).toPrecision(3)+'%</span></td>';
                     } else {
                       html += '<td><span class="badge bg-red">0%</span></td>';
                     }
 
+                      html += '<td><span class="badge bg-blue">'+obj.tempo+'</span></td>';
                     html += '</tr>';
                   }
                 });
@@ -254,6 +261,8 @@ $('#grp_id').change(function (e) {
           $('#boxTutores').removeClass('hidden');
           $('#boxTutores .box-body').empty().append(html);
     }
+
+
 
 
 </script>

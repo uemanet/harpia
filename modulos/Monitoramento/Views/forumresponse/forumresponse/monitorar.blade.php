@@ -20,7 +20,7 @@
         </div>
         <div class="box-body">
           {!! Form::open(["url" => url('/') . "/monitoramento/ambientesvirtuais/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-          @include('Monitoramento::tempoonline.includes.formulario')
+          @include('Monitoramento::forumresponse.includes.formulario')
           {!! Form::close() !!}
         </div>
         <div class="text-center margin" id="grafico"></div>
