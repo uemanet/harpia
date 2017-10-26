@@ -168,65 +168,65 @@ class DisciplinaRepositoryTest extends TestCase
 
     public function testValidacaoReturnFalse()
     {
-      $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
 
-      $data = $response->toArray();
+        $data = $response->toArray();
 
-      $response = $this->repo->validacao($data);
+        $response = $this->repo->validacao($data);
 
-      $this->assertEquals($response, false);
+        $this->assertEquals($response, false);
     }
 
     public function testValidacaoReturnTrue()
     {
-      $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
 
-      $data = $response->toArray();
-      $data['dis_nome'] = 'Disciplina';
+        $data = $response->toArray();
+        $data['dis_nome'] = 'Disciplina';
 
-      $response = $this->repo->validacao($data);
+        $response = $this->repo->validacao($data);
 
-      $this->assertEquals($response, true);
+        $this->assertEquals($response, true);
     }
 
     public function testValidacaoWithId()
     {
-      $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
 
-      $data = $response->toArray();
+        $data = $response->toArray();
 
-      $response = $this->repo->validacao($data, $data['dis_id']);
+        $response = $this->repo->validacao($data, $data['dis_id']);
 
-      $this->assertEquals($response, true);
+        $this->assertEquals($response, true);
     }
 
     public function testBuscarDisciplinasDaMatriz()
     {
-      $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
 
-      $response = $this->repo->buscar($response->modulo->matriz->mtc_id, $response->disciplina->dis_nome);
+        $response = $this->repo->buscar($response->modulo->matriz->mtc_id, $response->disciplina->dis_nome);
 
-      $this->assertEmpty($response, '');
+        $this->assertEmpty($response, '');
     }
 
     public function testBuscarDisciplinas()
     {
-      $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
 
-      $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
 
-      $response = $this->repo->buscar($response->modulo->matriz->mtc_id, $disciplina->dis_nome);
+        $response = $this->repo->buscar($response->modulo->matriz->mtc_id, $disciplina->dis_nome);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
     public function testGetDisciplinasModulosAnteriores()
     {
-      $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
 
-      $response = $this->repo->getDisciplinasModulosAnteriores($response->modulo->matriz->mtc_id, $response->modulo->mdo_id);
+        $response = $this->repo->getDisciplinasModulosAnteriores($response->modulo->matriz->mtc_id, $response->modulo->mdo_id);
 
-      $this->assertEmpty($response, '');
+        $this->assertEmpty($response, '');
     }
 
     public function testDelete()

@@ -178,42 +178,42 @@ class GrupoRepositoryTest extends TestCase
 
     public function testPaginateRequestByTurma()
     {
-      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-      $response = $this->repo->paginateRequestByTurma($response->turma->trm_id);
+        $response = $this->repo->paginateRequestByTurma($response->turma->trm_id);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
 
-      $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-      $this->assertGreaterThan(0, $response->total());
+        $this->assertGreaterThan(0, $response->total());
     }
 
     public function testListsAllById()
     {
-      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-      $response = $this->repo->listsAllById($response->grp_id);
+        $response = $this->repo->listsAllById($response->grp_id);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
     public function testFindAllByTurma()
     {
-      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-      $response = $this->repo->listsAllById($response->turma->trm_id);
+        $response = $this->repo->listsAllById($response->turma->trm_id);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
     public function testVerifyNameGrupo()
     {
-      $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-      $response = $this->repo->verifyNameGrupo('Grupo', $response->turma->trm_id);
+        $response = $this->repo->verifyNameGrupo('Grupo', $response->turma->trm_id);
 
-      $this->assertEquals($response, false);
+        $this->assertEquals($response, false);
     }
 
 

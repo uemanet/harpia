@@ -73,6 +73,22 @@ class OfertaCursoRepository extends BaseRepository
     }
 
     /**
+     * Busca todas as ofertas de curso de acordo com o curso informado sem a modalidade semi-presencial ou ead
+     * @param $cursoid
+     * @return mixed
+     */
+    public function findAllByCursoWithoutEad($cursoid)
+    {
+        return $this->model
+                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                    ->where([
+                        ['ofc_crs_id', '=', $cursoid],
+                        ['ofc_mdl_id', '=', 1]
+                    ])
+                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+    }
+
+    /**
      * Busca todas as matrizes de acordo com o curso informado e
      * retorna como lists para popular um field select
      * @param $cursoid

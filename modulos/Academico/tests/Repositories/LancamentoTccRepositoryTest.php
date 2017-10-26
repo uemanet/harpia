@@ -180,10 +180,10 @@ class LancamentoTccRepositoryTest extends TestCase
 
     public function testFindDisciplinaByTurma()
     {
-      $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-      $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+        $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
 
-      $mdc = $this->modulodisciplinaRepository->create([
+        $mdc = $this->modulodisciplinaRepository->create([
         'dis_id' => $disciplina->dis_id,
         'mod_id' => $modulodisciplina->mdc_mdo_id,
         'mtc_id' => $modulodisciplina->modulo->matriz->mtc_id,
@@ -191,25 +191,25 @@ class LancamentoTccRepositoryTest extends TestCase
         'mdc_pre_requisitos' => null
       ]);
 
-      $mdc = $this->modulodisciplinaRepository->find($mdc['data']['mdc_id']);
+        $mdc = $this->modulodisciplinaRepository->find($mdc['data']['mdc_id']);
 
-      $OfertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+        $OfertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
         'ofc_crs_id' => $mdc->modulo->matriz->curso->crs_id
       ]);
 
-      $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
         'trm_ofc_id' => $OfertaCurso->ofc_id
       ]);
 
-      $oferta = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
+        $oferta = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
         'ofd_trm_id' => $turma->trm_id,
         'ofd_mdc_id' => $mdc->mdc_id,
 
       ]);
 
-      $response = $this->repo->findDisciplinaByTurma( $turma->trm_id);
+        $response = $this->repo->findDisciplinaByTurma($turma->trm_id);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
 

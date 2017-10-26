@@ -219,29 +219,29 @@ class CursoRepositoryTest extends TestCase
 
     public function testListsCursoByMatriz()
     {
-      $matriz = factory(\Modulos\Academico\Models\MatrizCurricular::class)->create();
+        $matriz = factory(\Modulos\Academico\Models\MatrizCurricular::class)->create();
 
-      $response = $this->repo->listsCursoByMatriz($matriz->mtc_id);
+        $response = $this->repo->listsCursoByMatriz($matriz->mtc_id);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
     public function testListsCursosTecnicos()
     {
-      $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
 
-      $response = $this->repo->listsCursosTecnicos();
+        $response = $this->repo->listsCursosTecnicos();
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
     public function testGetCursosPorNivel()
     {
-      $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
 
-      $response = $this->repo->getCursosPorNivel();
+        $response = $this->repo->getCursosPorNivel();
 
-      $this->assertEmpty($response, '');
+        $this->assertEmpty($response, '');
     }
 
     public function tearDown()

@@ -47,14 +47,14 @@ class HistoricoDefinitivoRepositorytTest extends TestCase
 
     public function testGetGradeCurricularByMatricula()
     {
-      $response = factory(\Modulos\Academico\Models\Matricula::class)->create();
+        $response = factory(\Modulos\Academico\Models\Matricula::class)->create();
 
-      $rg = $this->docrepo->create(['doc_pes_id' => $response->aluno->pessoa->pes_id,'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
-      $cpf = $this->docrepo->create(['doc_pes_id' => $response->aluno->pessoa->pes_id,'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
+        $rg = $this->docrepo->create(['doc_pes_id' => $response->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
+        $cpf = $this->docrepo->create(['doc_pes_id' => $response->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
 
-      $response = $this->repo->getGradeCurricularByMatricula($response->mat_id);
+        $response = $this->repo->getGradeCurricularByMatricula($response->mat_id);
 
-      $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response, '');
     }
 
     public function tearDown()

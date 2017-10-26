@@ -52,7 +52,7 @@ class Seguranca implements SegurancaContract
         $user = $this->getUser();
 
         // busca os modulos no qual o usuario tem permissao
-        $modulos = $modulosRepository->getByUser($user->usr_id);
+        $modulos = $modulosRepository->getByUser($user->usr_id, true);
 
         $menus = [];
 

@@ -635,10 +635,10 @@ class MatriculaCursoRepository extends BaseRepository
     public function getAlunosAptosCertificacao($turmaId, $moduloId, $poloId)
     {
         // busca todas as matriculas da turma
-        if($poloId){
-          $matriculas = $this->findAll(['mat_trm_id' => $turmaId, 'mat_pol_id' => $poloId], null, ['pes_nome' => 'asc']);
-        }else {
-          $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
+        if ($poloId) {
+            $matriculas = $this->findAll(['mat_trm_id' => $turmaId, 'mat_pol_id' => $poloId], null, ['pes_nome' => 'asc']);
+        } else {
+            $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
         }
 
         $aptos = [];
@@ -903,20 +903,23 @@ class MatriculaCursoRepository extends BaseRepository
         ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
         ->where('mdc_mdo_id', $IdModulo)
         ->where('mof_mat_id', $IdMatricula)
+        ->orderBy('dis_nome', 'asc')
         ->get();
 
         $cargahoraria = 0;
         $disciplinas = [];
         $numerador = 0;
+        $denominador = 0;
 
         foreach ($ofertasdisciplinas as $modulodisciplina) {
             $disciplinas[] = $modulodisciplina->dis_nome;
             $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
-            $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
+            $numerador = $modulodisciplina->mof_mediafinal + $numerador;
+            $denominador++;
         }
 
         //formata o coeficiente do módulo
-        $coeficiente = $numerador/$cargahoraria;
+        $coeficiente = $numerador/$denominador;
         $coeficiente = number_format($coeficiente, 2, '.', '');
 
         $descricaomodulo = $modulo->mdo_descricao;
@@ -942,10 +945,10 @@ class MatriculaCursoRepository extends BaseRepository
                         'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
                         'CARGAHORARIAMODULO' => $cargahoraria,
                         'DISCIPLINAS' => $disciplinas,
-                        'EIXOCURSO' => $curso->crs_eixo ,
-                        'LIVRO' => $livfolreg->liv_numero,
-                        'FOLHA' => $livfolreg->reg_folha,
-                        'REGISTRO'=> $livfolreg->reg_registro,
+                        'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
+                        'LIVRO' => str_pad($livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
+                        'FOLHA' => str_pad($livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
+                        'REGISTRO'=> str_pad($livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
                         'COEFICIENTEDOMODULO'=> $coeficiente,
                         'PESSOANOME'=> mb_strtoupper($nomepessoa, "UTF-8"),
                         'PESSOACPF'=> $cpfpessoaformatado

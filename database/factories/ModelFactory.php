@@ -281,7 +281,6 @@ $factory->define(Modulos\Academico\Models\NivelCurso::class, function (Faker\Gen
 });
 
 $factory->define(Modulos\Academico\Models\Disciplina::class, function (Faker\Generator $faker) {
-
     $nivel = factory(Modulos\Academico\Models\NivelCurso::class)->create();
 
     return [
@@ -423,7 +422,6 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
 });
 
 $factory->define(Modulos\Academico\Models\LancamentoTcc::class, function (Faker\Generator $faker) {
-
     $matriculaoferta = factory(Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create();
     $professor = factory(Modulos\Academico\Models\Professor::class)->create();
     $anexo = factory(Modulos\Geral\Models\Anexo::class)->create();
