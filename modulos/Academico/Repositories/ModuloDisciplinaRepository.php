@@ -206,7 +206,11 @@ class ModuloDisciplinaRepository extends BaseRepository
 
             // se existir, envia uma mensagem de erro
             if ($disciplinaTccExists) {
-                return array('type' => 'error', 'message' => 'Já existe uma disciplina do tipo TCC cadastrada nessa matriz');
+
+                // se a disciplina que esta sendo editada eh ela propria a de tcc, deixar passar
+                if (!$this->matrizCurricularRepository->verifyIfDisciplinaExistsInMatriz($matriz->mtc_id, $entry->disciplina->dis_id)) {
+                    return array('type' => 'error', 'message' => 'Já existe uma disciplina do tipo TCC cadastrada nessa matriz');
+                }
             }
         }
 
