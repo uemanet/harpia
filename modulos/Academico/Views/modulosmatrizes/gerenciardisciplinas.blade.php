@@ -119,7 +119,7 @@
                                                 'classButton' => 'btn btn-delete',
                                                 'icon' => 'fa fa-trash',
                                                 'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.delete',
-                                                'id' => $modulo->mdo_id,
+                                                'id' => $disciplina->mdc_id,
                                                 'label' => 'Excluir',
                                                 'method' => 'post'
                                             ]
@@ -409,12 +409,21 @@
                                 table += '<td>Sem pré-requisitos</td>';
                             }
                             table += '<td>';
-                            table += '<form action="">';
-                            table += '<input type="hidden" name="id" value="' + obj.mdc_id + '">';
-                            table += '<input type="hidden" name="mtc_id" value="' + matriz + '">';
-                            table += '<input type="hidden" name="_token" value="' + csrf_token + '">';
-                            table += '<input type="hidden" name="_method" value="POST">';
-                            table += '<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>';
+                            table += '<div class="btn-group">' +
+                                '<button type="button" class="btn btn-default">Selecione</button>' +
+                                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">' +
+                                '<span class="caret"></span><span class="sr-only"></span></button>' +
+                                '<ul class="dropdown-menu" role="menu">' +
+                                '<li><a href="http://localhost:8000/academico/modulosmatrizes/editardisciplina/' + obj.mdc_id + '" class="btnEdit" id="' + obj.mdc_id +'">' +
+                                '<i class="fa fa-pencil"></i> Editar</a></li><li>' +
+                                '<form action="http://localhost:8000/academico/modulosmatrizes/delete" method="POST" class="form-singlebutton">' +
+                                '<input name="id" value="'+ obj.mdc_id +'" type="hidden"><input name="_token" value="' + csrf_token + '" type="hidden">' +
+                                '<input type="hidden" name="mtc_id" value="' + matriz + '">' +
+                                '<input name="_method" value="POST" type="hidden"><button class="btn btn-delete"><i class="fa fa-trash"></i> Excluir</button>' +
+                                '</form>' +
+                                '</li>' +
+                                '</ul>' +
+                                '</div>';
                             table += '</form></td>';
                         });
                         table += '</tbody>';

@@ -192,6 +192,44 @@ class ModuloDisciplinaRepository extends BaseRepository
         return $result;
     }
 
+    public function update(array $data, $id, $attribute = null)
+    {
+        $entry = $this->find($id);
+
+        $modulo = $entry->modulo;
+        $matriz = $entry->modulo->matriz;
+
+        // Se alterada para tcc, verificar se ha disciplina de tcc na matriz
+        if ($data['mdc_tipo_disciplina'] == 'tcc') {
+            // caso seja, verifica se já existe alguma disciplina cadastrada como tcc na matriz
+            $disciplinaTccExists = $this->matrizCurricularRepository->verifyIfExistsDisciplinaTccInMatriz($matriz->mtc_id);
+
+            // se existir, envia uma mensagem de erro
+            if ($disciplinaTccExists) {
+                return array('type' => 'error', 'message' => 'Já existe uma disciplina do tipo TCC cadastrada nessa matriz');
+            }
+        }
+
+        // Pre-requisitos
+        if (!empty($data['mdc_pre_requisitos'])) {
+
+            // pega os id's da disciplinas que podem ser adicionadas como pré-requisitos
+            $disciplinasAptasPreRequisitos = $this->disciplinaRepository
+                ->getDisciplinasModulosAnteriores($matriz->mtc_id, $modulo->mdo_id)
+                ->pluck('mdc_id')->toArray();
+
+            // verifica, uma a uma, se existe alguma que não está apta a ser cadastrada como pré-requisito
+            foreach ($data['mdc_pre_requisitos'] as $preRequisito) {
+                if (!in_array($preRequisito, $disciplinasAptasPreRequisitos)) {
+                    return array('type' => 'error', 'message' => 'Disciplina(s) inválidas para pré-requisito(s)');
+                }
+            }
+        }
+
+        $data['mdc_pre_requisitos'] = (empty($data['mdc_pre_requisitos'])) ? null : json_encode($data['mdc_pre_requisitos']);
+        return parent::update($data, $id, $attribute);
+    }
+
     public function updatePreRequisitos($matrizId, $moduloDisciplinaId)
     {
         $registros = $this->model->join('acd_modulos_matrizes', 'mdc_mdo_id', '=', 'mdo_id')

@@ -287,6 +287,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
             Route::get('/getdisciplinasnotofertadasbymodulo/{modulo}/{turma}/{periodo}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@getDisciplinasNotOfertadasByModulo')->name('academico.async.modulosdisciplinas.getdisciplinasnotofertadasbymodulo');
             Route::get('/getdisciplina/{id}', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@getDisciplina')->name('academico.async.modulosdisciplinas.getdisciplina');
             Route::post('/adicionardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postAdicionarDisciplina')->name('academico.async.modulosdisciplinas.adicionardisciplina');
+            Route::put('/editardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@putEditDisciplina')->name('academico.async.modulosdisciplinas.editardisciplina');
             Route::post('/deletardisciplina/', '\Modulos\Academico\Http\Controllers\Async\ModulosDisciplinas@postDeletarDisciplina')->name('academico.async.modulosdisciplinas.deletardisciplina');
         });
 

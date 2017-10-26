@@ -80,23 +80,44 @@
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script type="application/javascript">
-        $(function(){
+        $(function () {
             $(document).find('select').select2();
 
-            $('#btnSubmit').on('click', function (event) {
+            document.getElementById('btnSubmit').onclick = function (event) {
                 event.preventDefault();
+
+                var btn = this;
+
+                btn.disabled = true;
 
                 data = {
                     mdc_id: "{{ $disciplina->mdc_id }}",
-                    tipo_disciplina: $('#tipo_disciplina').val(),
-                    pre_requisitos: $('#pre_requisitos').val(),
-                    _token: "{{ csrf_token() }}"
+                    mdc_tipo_disciplina: $('#tipo_disciplina').val(),
+                    mdc_pre_requisitos: $('#pre_requisitos').val(),
+                    _token: "{{ csrf_token() }}",
+                    _method: "PUT"
                 };
 
                 // Ajax request
+                url = "{{ route('academico.async.modulosdisciplinas.editardisciplina') }}";
 
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    success: function (response) {
+                        $.harpia.hideloading();
+                        document.location.href = "{{ route('academico.cursos.matrizescurriculares.modulosmatrizes.gerenciardisciplinas', ['id' => $modulo->mdo_id]) }}";
+                    },
+                    error: function (err) {
+                        $.harpia.hideloading();
+                        toastr.error(err.responseJSON.message, null, {progressBar: true});
 
-            });
+                        // Reabilita o botao
+                        btn.disabled = false;
+                    }
+                });
+            };
         });
     </script>
 @endsection
