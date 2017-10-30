@@ -117,6 +117,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'ofertascursos'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\OfertasCursosController@getIndex')->name('academico.ofertascursos.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\OfertasCursosController@getCreate')->name('academico.ofertascursos.create');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\OfertasCursosController@getEdit')->name('academico.ofertascursos.edit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\OfertasCursosController@putEdit')->name('academico.ofertascursos.edit');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\OfertasCursosController@postCreate')->name('academico.ofertascursos.create');
     });
 

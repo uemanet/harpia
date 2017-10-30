@@ -23,15 +23,28 @@ class OfertaCursoRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
-            'ofc_crs_id' => 'required',
-            'ofc_mtc_id' => 'required',
-            'ofc_mdl_id' => 'required',
-            'ofc_ano' => 'integer|required|min:1|max:9999',
-            'polos' => 'required'
-        ];
+        switch ($this->method()) {
+            case 'POST':
+                {
+                    return [
+                        'ofc_crs_id' => 'required',
+                        'ofc_mtc_id' => 'required',
+                        'ofc_mdl_id' => 'required',
+                        'ofc_ano' => 'integer|required|min:1|max:9999',
+                        'polos' => 'required'
+                    ];
 
-        return $rules;
+                }
+            case 'PUT':
+                {
+                    return [
+                        'ofc_mdl_id' => 'required',
+                        'ofc_ano' => 'integer|required|min:1|max:9999',
+                        'polos' => 'required'
+                    ];
+                }
+            default: return [];
+        }
     }
 
     public function messages()

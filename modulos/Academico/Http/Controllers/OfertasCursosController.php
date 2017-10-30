@@ -2,17 +2,17 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Academico\Http\Requests\OfertaCursoRequest;
-use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatrizCurricularRepository;
-use Modulos\Academico\Repositories\ModalidadeRepository;
-use Modulos\Academico\Repositories\PoloRepository;
 use DB;
+use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\PoloRepository;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Seguranca\Providers\ActionButton\TButton;
+use Modulos\Academico\Http\Requests\OfertaCursoRequest;
+use Modulos\Academico\Repositories\ModalidadeRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\MatrizCurricularRepository;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
 class OfertasCursosController extends BaseController
 {
@@ -22,12 +22,13 @@ class OfertasCursosController extends BaseController
     protected $modalidadeRepository;
     protected $poloRepository;
 
-    public function __construct(OfertaCursoRepository $ofertacursoRepository,
-                                CursoRepository $cursoRepository,
-                                MatrizCurricularRepository $matrizcurricularRepository,
-                                ModalidadeRepository $modalidadeRepository,
-                                PoloRepository $poloRepository)
-    {
+    public function __construct(
+        OfertaCursoRepository $ofertacursoRepository,
+        CursoRepository $cursoRepository,
+        MatrizCurricularRepository $matrizcurricularRepository,
+        ModalidadeRepository $modalidadeRepository,
+        PoloRepository $poloRepository
+    ) {
         $this->ofertacursoRepository = $ofertacursoRepository;
         $this->cursoRepository = $cursoRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
@@ -74,6 +75,14 @@ class OfertasCursosController extends BaseController
                             'label' => 'Selecione'
                         ],
                         'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-pencil',
+                                'route' => 'academico.ofertascursos.edit',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Editar',
+                                'method' => 'get'
+                            ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-plus',
@@ -130,6 +139,62 @@ class OfertasCursosController extends BaseController
             }
 
             flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function getEdit($id)
+    {
+        $ofertaCurso = $this->ofertacursoRepository->find($id);
+
+        if (!$ofertaCurso) {
+            flash()->error('Oferta de curso não encontrada.');
+            return redirect()->back();
+        }
+
+        $modalidades = $this->modalidadeRepository->lists('mdl_id', 'mdl_nome');
+        $polos = $this->poloRepository->lists('pol_id', 'pol_nome');
+
+        $polosOferta = $ofertaCurso->polos->pluck('pol_id')->toArray();
+
+        return view('Academico::ofertascursos.edit', [
+            'ofertaCurso' => $ofertaCurso,
+            'modalidades' => $modalidades,
+            'polos' => $polos,
+            'polosOferta' => $polosOferta
+        ]);
+    }
+
+    public function putEdit($id, OfertaCursoRequest $request)
+    {
+        try {
+            $ofertaCurso = $this->ofertacursoRepository->find($id);
+
+            if ($ofertaCurso) {
+                $data = $request->except(['_method', '_token']);
+                $data['ofc_crs_id'] = $ofertaCurso->ofc_crs_id;
+
+                $resultado = $this->ofertacursoRepository->update($data, $id);
+
+                if (!$resultado) {
+                    flash()->error('Não foi possivel atualizar a oferta de curso.');
+                    return redirect()->back();
+                }
+
+                if (is_array($resultado)) {
+                    flash()->warning($resultado['message']);
+                    return redirect()->route('academico.ofertascursos.index');
+                }
+
+                flash()->success('Oferta de curso atualizada com sucesso.');
+                return redirect()->route('academico.ofertascursos.index');
+            }
+        } catch (\Exception $exception) {
+            if (config('app.debug')) {
+                throw $exception;
+            }
+
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
