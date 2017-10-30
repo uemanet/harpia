@@ -38,7 +38,7 @@ class ModulosDisciplinas extends BaseController
             return new JsonResponse(['mdc_id' => $response['data']['mdc_id']], Response::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
-                return new JsonResponse('CODE: '.$e->getCode().' - Message: '.$e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -74,7 +74,7 @@ class ModulosDisciplinas extends BaseController
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
-                return new JsonResponse('CODE: '.$e->getCode().' - Message: '.$e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse('CODE: ' . $e->getCode() . ' - Message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             return new JsonResponse('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -93,5 +93,54 @@ class ModulosDisciplinas extends BaseController
         $disciplina = $this->moduloDisciplinaRepository->getAllDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId);
 
         return new JsonResponse($disciplina, 200);
+    }
+
+    public function getDisciplina($id)
+    {
+        $disciplina = [];
+        $prerequisitos = [];
+
+        if ($this->moduloDisciplinaRepository->find($id)) {
+            $disciplina = $this->moduloDisciplinaRepository->find($id);
+
+            if ($disciplina->mdc_pre_requisitos) {
+                $prerequisitos = $this->moduloDisciplinaRepository->getDisciplinasPreRequisitos($id);
+                $disciplina = $disciplina->toArray();
+
+                $disciplina['mdc_pre_requisitos'] = $prerequisitos;
+            }
+        }
+
+        return new JsonResponse($disciplina, 200, [
+            'content-type' => 'application/json'
+        ]);
+    }
+
+    public function putEditDisciplina(Request $request)
+    {
+        $id = $request->get('mdc_id');
+        $moduloDisciplina = $this->moduloDisciplinaRepository->find($id);
+
+        if (!$moduloDisciplina) {
+            return new JsonResponse([], JsonResponse::HTTP_NOT_MODIFIED, [
+                'content-type' => 'application/json'
+            ]);
+        }
+
+        $status = 200;
+        $data = $request->except(['_token', '_method']);
+        $result = $this->moduloDisciplinaRepository->update($data, $id);
+
+        if (is_array($result)) {
+            $status = 400;
+        }
+
+        if (is_int($result)) {
+            flash()->success('Disciplina alterada com sucesso!');
+        }
+
+        return new JsonResponse($result, $status, [
+            'content-type' => 'application/json'
+        ]);
     }
 }

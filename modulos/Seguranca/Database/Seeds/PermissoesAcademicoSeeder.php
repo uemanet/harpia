@@ -310,8 +310,6 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
-
-
         //permissões do recurso modulosmatrizes
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -346,6 +344,12 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'adicionardisciplinas',
             'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.adicionardisciplinas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'editardisciplinas',
+            'prm_rota' => 'academico.cursos.matrizescurriculares.modulosmatrizes.editardisciplinas'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
