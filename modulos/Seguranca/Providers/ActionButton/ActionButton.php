@@ -68,7 +68,13 @@ class ActionButton
 
                     if ($button['method'] == 'get') {
                         $render.= '<li>';
-                        $render .= '<a href="'.route($rota, $parameters).'" class="'.$button['classButton'].'">';
+                        $render .= '<a href="'.route($rota, $parameters).'" class="'.$button['classButton'].'"';
+
+                        if (isset($button['id'])) {
+                            $render .= ' id="' . $button['id'] . '"';
+                        }
+
+                        $render .= '>';
                         $render .= '<i class="'.$button['icon'].'"></i> '.$button['label'];
                         $render .= '</a></li>';
 
