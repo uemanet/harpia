@@ -21,8 +21,13 @@ class ModulosMatrizesController extends BaseController
     protected $cursoRepository;
     protected $disciplinaRepository;
 
-    public function __construct(ModuloMatrizRepository $modulomatrizRepository, ModuloDisciplinaRepository $modulodisciplinaRepository, MatrizCurricularRepository $matrizcurricularRepository, CursoRepository $cursoRepository, DisciplinaRepository $disciplinaRepository)
-    {
+    public function __construct(
+        ModuloMatrizRepository $modulomatrizRepository,
+        ModuloDisciplinaRepository $modulodisciplinaRepository,
+        MatrizCurricularRepository $matrizcurricularRepository,
+        CursoRepository $cursoRepository,
+        DisciplinaRepository $disciplinaRepository
+    ) {
         $this->modulomatrizRepository = $modulomatrizRepository;
         $this->modulodisciplinaRepository = $modulodisciplinaRepository;
         $this->matrizcurricularRepository = $matrizcurricularRepository;
@@ -215,9 +220,50 @@ class ModulosMatrizesController extends BaseController
 
         $curso = $this->cursoRepository->find($matriz->mtc_crs_id);
 
-        return view('Academico::modulosmatrizes.gerenciardisciplinas', ['modulo' => $modulo,
-                                                                        'disciplinas' => $disciplinas,
-                                                                        'matriz' => $matriz,
-                                                                        'curso' => $curso]);
+        return view('Academico::modulosmatrizes.gerenciardisciplinas', [
+            'modulo' => $modulo,
+            'disciplinas' => $disciplinas,
+            'matriz' => $matriz,
+            'curso' => $curso
+        ]);
+    }
+
+    public function getEditarDisciplinas($id)
+    {
+        $moduloDisciplina = $this->modulodisciplinaRepository->find($id);
+
+        if (!$moduloDisciplina) {
+            flash()->error('Disciplina não existe.');
+            return redirect()->back();
+        }
+
+        $modulo = $moduloDisciplina->modulo;
+        $matriz = $modulo->matriz;
+        $curso = $matriz->curso;
+
+        // Tipos disciplina
+        $tipos = [
+            'obrigatoria' => 'Obrigatória',
+            'optativa' => 'Optativa',
+            'eletiva' => 'Eletiva',
+            'tcc' => 'TCC'
+        ];
+
+        $disciplinasAnteriores = $this->disciplinaRepository->getDisciplinasModulosAnteriores($matriz->mtc_id, $modulo->mdo_id);
+        $prerequisitos = collect($this->modulodisciplinaRepository->getDisciplinasPreRequisitos($moduloDisciplina->mdc_id))->pluck('mdc_id');
+
+        $prerequisitosDisponiveis = $disciplinasAnteriores->mapWithKeys(function ($item) {
+            return [$item->mdc_id => $item->dis_nome];
+        });
+
+        return view('Academico::modulosmatrizes.editardisciplina', [
+            'disciplina' => $moduloDisciplina,
+            'prerequisitosdisponiveis' => $prerequisitosDisponiveis,
+            'prerequisitos' => $prerequisitos,
+            'modulo' => $modulo,
+            'matriz' => $matriz,
+            'curso' => $curso,
+            'tipos' => $tipos
+        ]);
     }
 }

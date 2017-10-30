@@ -30,6 +30,6 @@ class Disciplina extends BaseModel
 
     public function modulos()
     {
-        return $this->belongsToMany('Modulos\Academico\Models\ModuloMatriz', 'acd_modulos_disciplinas', 'mdc_dis_id', 'mdc_mdo_id');
+        return $this->belongsToMany('Modulos\Academico\Models\ModuloMatriz', 'acd_modulos_disciplinas', 'mdc_dis_id', 'mdc_dis_id');
     }
 }

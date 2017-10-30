@@ -90,6 +90,7 @@ class TutorRepository extends BaseRepository
             ->select('pes_id', 'pes_nome')
             ->where('trm_id', '=', $idTurma)
             ->where('ttg_tipo_tutoria', '=', $tipoTutoria)
+            ->distinct('ttg_tut_id')
             ->get();
 
         return $entries;
