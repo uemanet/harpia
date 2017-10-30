@@ -30,7 +30,6 @@ class PermissoesMonitoramentoSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
 
-
         //permissões do recurso tempoonline
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -44,6 +43,18 @@ class PermissoesMonitoramentoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso monitoramento dos fóruns
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'monitoramento.forumresponse.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'monitorar',
+            'prm_rota' => 'monitoramento.forumresponse.monitorar'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
 
 
         // Atirbuir permissao index ao perfil de Administrador
