@@ -35,8 +35,8 @@ class MenuItemRepository extends BaseRepository
             ['mit_item_pai', '=', $categoriaId],
             ['mit_visivel', '=', 1]
         ])
-            ->orderBy('mit_ordem', 'asc')
-            ->get();
+        ->orderBy('mit_ordem', 'asc')
+        ->get();
     }
 
     public function isCategoria($menuItemId)

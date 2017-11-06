@@ -62,7 +62,10 @@ class Seguranca implements SegurancaContract
             $categorias = $menuItemRepository->getCategorias($modulo->mod_id);
 
             foreach ($categorias as $categoria) {
-                $menu->addTree($this->makeCategoriaTree($modulo->mod_id, $categoria->mit_id));
+                $categoriaTree = $this->makeCategoriaTree($modulo->mod_id, $categoria->mit_id);
+                if ($categoriaTree->getRoot()->hasChildren()) {
+                    $menu->addTree($this->makeCategoriaTree($modulo->mod_id, $categoria->mit_id));
+                }
             }
 
             $menus[$modulo->mod_slug] = $menu;
