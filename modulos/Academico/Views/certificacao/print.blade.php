@@ -96,7 +96,7 @@
 
 <pagebreak>
 
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
     <p style="font-family: Arial;text-align:center; font-size:16px;">
       <b style="font-size:24px;">{{$dados['PESSOANOME']}}</b><br><br>

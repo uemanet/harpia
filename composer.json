@@ -5,10 +5,9 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
-        "laravel/framework": "5.4.*",
-        "filp/whoops": "^2.1",
-        "laravelcollective/html": "5.4.*",
+        "php": ">=7.0.0",
+        "laravel/framework": "5.5.*",
+        "laravelcollective/html": "5.5.*",
         "stevebauman/eloquenttable": "1.1.*",
         "guzzlehttp/guzzle": "^6.2",
         "mpdf/mpdf": "^6.1",
@@ -17,6 +16,7 @@
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
+        "filp/whoops": "^2.0",
         "mockery/mockery": "0.9.*",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
@@ -60,6 +60,10 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover"
         ]
     },
     "config": {

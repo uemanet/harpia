@@ -70,14 +70,14 @@
             @if($disciplinas->count())
                 <table class="table table-bordered table-hover" id="tableDisciplinasModulo">
                     <thead>
-                        <th>#</th>
-                        <th>Nome</th>
-                        <th>Nível</th>
-                        <th>Carga Horária</th>
-                        <th>Créditos</th>
-                        <th>Tipo da Disciplina</th>
-                        <th>Pré-Requisitos</th>
-                        <th>Ações</th>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Nível</th>
+                    <th>Carga Horária</th>
+                    <th>Créditos</th>
+                    <th>Tipo da Disciplina</th>
+                    <th>Pré-Requisitos</th>
+                    <th>Ações</th>
                     </thead>
                     <tbody>
                     @foreach($disciplinas as $disciplina)
@@ -98,13 +98,34 @@
                                 <td>Sem pré-requisitos</td>
                             @endif
                             <td>
-                                <form action="">
-                                    <input type="hidden" name="id" value="{{$disciplina->mdc_id}}">
-                                    <input type="hidden" name="mtc_id" value="{{ $matriz->mtc_id }}">
-                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <input type="hidden" name="_method" value="POST">
-                                    <button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>
-                                </form>
+                                {!!
+                                    ActionButton::grid([
+                                        'type' => 'SELECT',
+                                        'config' => [
+                                            'classButton' => 'btn-default',
+                                            'label' => 'Selecione'
+                                        ],
+                                        'buttons' => [
+                                            [
+                                                'classButton' => 'btnEdit',
+                                                'icon' => 'fa fa-pencil',
+                                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.editardisciplinas',
+                                                'parameters' => ['id' => $disciplina->mdc_id],
+                                                'label' => 'Editar',
+                                                'id' => $disciplina->mdc_id,
+                                                'method' => 'get'
+                                            ],
+                                            [
+                                                'classButton' => 'btn btn-delete',
+                                                'icon' => 'fa fa-trash',
+                                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.delete',
+                                                'id' => $disciplina->mdc_id,
+                                                'label' => 'Excluir',
+                                                'method' => 'post'
+                                            ]
+                                        ]
+                                    ])
+                                !!}
                             </td>
                         </tr>
                     @endforeach
@@ -122,7 +143,7 @@
 
     <script type="text/javascript">
 
-        $(function() {
+        $(function () {
 
             var matriz = "{{$matriz->mtc_id}}";
             var modulo = "{{$modulo->mdo_id}}";
@@ -134,7 +155,7 @@
 
                 var disciplina = $('#disciplina').val();
 
-                if(!disciplina) {
+                if (!disciplina) {
                     return false;
                 }
 
@@ -143,7 +164,7 @@
             });
 
             /* Pega o evento do botão de adicionar disciplina, e faz a adição via ajax */
-            $(document).on('click','.btn-add-disciplina', function (e) {
+            $(document).on('click', '.btn-add-disciplina', function (e) {
 
                 e.currentTarget.setAttribute("disabled", true);
 
@@ -170,13 +191,13 @@
                     confirmButtonText: "Sim, pode excluir!",
                     cancelButtonText: "Não, quero cancelar!",
                     closeOnConfirm: true
-                }, function(isConfirm){
+                }, function (isConfirm) {
                     if (isConfirm) {
 
                         var mdc_id = button.closest('form').find('input[name="id"]').val();
                         var linha = button.closest('tr');
 
-                        var data = {mdc_id : mdc_id,mtc_id: matriz, _token : csrf_token};
+                        var data = {mdc_id: mdc_id, mtc_id: matriz, _token: csrf_token};
 
                         $.harpia.showloading();
 
@@ -221,17 +242,17 @@
 
                 var boxBody = $('#boxDisciplinasLocalizadas .box-body');
 
-                $.harpia.httpget('{{url('/')}}/academico/async/disciplinas/findbynome/' + matrizId + '/' + disciplinaNome + '/' + moduloId).done(function(data) {
+                $.harpia.httpget('{{url('/')}}/academico/async/disciplinas/findbynome/' + matrizId + '/' + disciplinaNome + '/' + moduloId).done(function (data) {
 
                     boxBody.empty();
 
-                    if(!$.isEmptyObject(data.disciplinas)) {
+                    if (!$.isEmptyObject(data.disciplinas)) {
 
                         var table = '<table class="table table-bordered table-hover" id="tableDisciplinasLocalizadas">';
                         table += '<thead>';
                         table += '<tr>';
 
-                        if(!$.isEmptyObject(data.prerequisitos)) {
+                        if (!$.isEmptyObject(data.prerequisitos)) {
                             table += '<th width="1%">#</th>';
                             table += '<th width="20%">Nome</th>';
                             table += '<th width="5%">Carga Horária</th>';
@@ -255,10 +276,10 @@
                         $.each(data.disciplinas, function (key, value) {
                             table += '<tr>';
 
-                            table += '<td id="dis_id">'+value.dis_id+'</td>';
-                            table += '<td id="nome">'+value.dis_nome+'</td>';
-                            table += '<td id="cargahoraria">'+value.dis_carga_horaria+' horas</td>';
-                            table += '<td id="creditos">'+value.dis_creditos+'</td>';
+                            table += '<td id="dis_id">' + value.dis_id + '</td>';
+                            table += '<td id="nome">' + value.dis_nome + '</td>';
+                            table += '<td id="cargahoraria">' + value.dis_carga_horaria + ' horas</td>';
+                            table += '<td id="creditos">' + value.dis_creditos + '</td>';
 
                             table += '<td><div class="form-group">';
                             table += '<select class="form-control" id="mdc_tipo_disciplina">';
@@ -268,11 +289,11 @@
                             table += '<option value="tcc">TCC</option>';
                             table += '</select></div></td>';
 
-                            if(!$.isEmptyObject(data.prerequisitos)) {
+                            if (!$.isEmptyObject(data.prerequisitos)) {
                                 table += '<td><div class="form-group">';
                                 table += '<select class="form-control" id="prerequisitos" multiple>';
                                 $.each(data.prerequisitos, function (key, obj) {
-                                    table += '<option value="'+obj.mdc_id+'">'+obj.dis_nome+'</option>';
+                                    table += '<option value="' + obj.mdc_id + '">' + obj.dis_nome + '</option>';
                                 });
                                 table += '</select></div></td>';
                             }
@@ -295,14 +316,13 @@
                         boxBody.append('<p>Sem registros</p>');
                     }
                 });
-
             };
 
             var addDisciplina = function (linha) {
 
                 var prerequisitos = new Array();
 
-                if(linha.find('#prerequisitos').length) {
+                if (linha.find('#prerequisitos').length) {
                     prerequisitos = linha.find('#prerequisitos').val();
                 }
 
@@ -344,13 +364,13 @@
                 });
             };
 
-            var renderTableDisciplinasModulo = function(moduloId) {
+            var renderTableDisciplinasModulo = function (moduloId) {
                 var boxBody = $('#boxDisciplinasCadastradas .box-body');
 
                 $.harpia.httpget('{{url("/")}}/academico/async/modulosdisciplinas/getalldisciplinasbymodulo/' + moduloId).done(function (response) {
                     boxBody.empty();
 
-                    if(!$.isEmptyObject(response)) {
+                    if (!$.isEmptyObject(response)) {
                         var table = '<table class="table table-bordered table-hover" id="tableDisciplinasCadastradas">';
 
                         // cabeçalho da tabela
@@ -368,20 +388,20 @@
                         table += '</thead>';
 
                         table += '<tbody>';
-                        $.each(response, function (key, obj) {
+                         $.each(response, function (key, obj) {
                             table += '<tr>';
-                            table += '<td>'+obj.mdc_id+'</td>';
-                            table += '<td>'+obj.dis_nome+'</td>';
-                            table += '<td>'+obj.nvc_nome+'</td>';
-                            table += '<td>'+obj.dis_carga_horaria+' horas</td>';
-                            table += '<td>'+obj.dis_creditos+'</td>';
-                            table += '<td>'+obj.mdc_tipo_disciplina+'</td>';
+                            table += '<td>' + obj.mdc_id + '</td>';
+                            table += '<td>' + obj.dis_nome + '</td>';
+                            table += '<td>' + obj.nvc_nome + '</td>';
+                            table += '<td>' + obj.dis_carga_horaria + ' horas</td>';
+                            table += '<td>' + obj.dis_creditos + '</td>';
+                            table += '<td>' + obj.mdc_tipo_disciplina + '</td>';
                             var prerequisitos = obj.pre_requisitos;
-                            if(prerequisitos.length) {
+                            if (prerequisitos.length) {
                                 table += '<td>';
 
                                 $.each(prerequisitos, function (key, value) {
-                                   table += '<p>'+value.dis_nome+'</p>';
+                                    table += '<p>' + value.dis_nome + '</p>';
                                 });
 
                                 table += '</td>';
@@ -389,12 +409,21 @@
                                 table += '<td>Sem pré-requisitos</td>';
                             }
                             table += '<td>';
-                            table += '<form action="">'
-                            table += '<input type="hidden" name="id" value="'+obj.mdc_id+'">';
-                            table += '<input type="hidden" name="mtc_id" value="'+matriz+'">';
-                            table += '<input type="hidden" name="_token" value="'+csrf_token+'">';
-                            table += '<input type="hidden" name="_method" value="POST">';
-                            table += '<button class="btn-delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Excluir</button>';
+                            table += '<div class="btn-group">' +
+                                '<button type="button" class="btn btn-default">Selecione</button>' +
+                                '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">' +
+                                '<span class="caret"></span><span class="sr-only"></span></button>' +
+                                '<ul class="dropdown-menu" role="menu">' +
+                                '<li><a href="http://localhost:8000/academico/modulosmatrizes/editardisciplina/' + obj.mdc_id + '" class="btnEdit" id="' + obj.mdc_id +'">' +
+                                '<i class="fa fa-pencil"></i> Editar</a></li><li>' +
+                                '<form action="http://localhost:8000/academico/modulosmatrizes/delete" method="POST" class="form-singlebutton">' +
+                                '<input name="id" value="'+ obj.mdc_id +'" type="hidden"><input name="_token" value="' + csrf_token + '" type="hidden">' +
+                                '<input type="hidden" name="mtc_id" value="' + matriz + '">' +
+                                '<input name="_method" value="POST" type="hidden"><button class="btn btn-delete"><i class="fa fa-trash"></i> Excluir</button>' +
+                                '</form>' +
+                                '</li>' +
+                                '</ul>' +
+                                '</div>';
                             table += '</form></td>';
                         });
                         table += '</tbody>';
@@ -410,7 +439,7 @@
 
                 var linhas = $('#tableDisciplinasLocalizadas tbody tr').length;
 
-                if(!((linhas - 1) > 0)) {
+                if (!((linhas - 1) > 0)) {
                     $('#boxDisciplinasLocalizadas .box-body').empty();
                     $('#boxDisciplinasLocalizadas .box-body').append('<p>Sem registros</p>');
                 }
