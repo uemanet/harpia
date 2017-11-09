@@ -15,6 +15,7 @@ use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use DB;
 
 class TutoresGruposController extends BaseController
@@ -24,18 +25,21 @@ class TutoresGruposController extends BaseController
     protected $tutorRepository;
     protected $turmaRepository;
     protected $ofertacursoRepository;
+    protected $ambienteRepository;
 
     public function __construct(TutorGrupoRepository $tutorgrupoRepository,
                                 GrupoRepository $grupoRepository,
                                 TutorRepository $tutorRepository,
                                 TurmaRepository $turmaRepository,
-                                OfertaCursoRepository $ofertacursoRepository)
+                                OfertaCursoRepository $ofertacursoRepository,
+                                AmbienteVirtualRepository $ambienteRepository)
     {
         $this->tutorgrupoRepository = $tutorgrupoRepository;
         $this->grupoRepository = $grupoRepository;
         $this->tutorRepository = $tutorRepository;
         $this->turmaRepository = $turmaRepository;
         $this->ofertacursoRepository = $ofertacursoRepository;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function getIndex($grupoId, Request $request)
@@ -98,6 +102,14 @@ class TutoresGruposController extends BaseController
                                 'parameters' => ['id' => $id],
                                 'label' => 'Substituir tutor',
                                 'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.delete',
+                                'id' => $id,
+                                'label' => 'Desvincular',
+                                'method' => 'post'
                             ]
                         ]
                     ]);
@@ -263,6 +275,43 @@ class TutoresGruposController extends BaseController
             }
 
             flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function postDelete(Request $request)
+    {
+        try {
+            $tutorGrupoId = $request->get('id');
+
+            $tutorGrupo = $this->tutorgrupoRepository->find($tutorGrupoId);
+
+            DB::beginTransaction();
+
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($tutorGrupo->grupo->turma->trm_id);
+
+            $this->tutorgrupoRepository->delete($tutorGrupoId);
+            if ($ambiente) {
+                event(new DeleteTutorVinculadoEvent($tutorGrupo));
+            }
+
+            flash()->success('Tutor desvinculado com sucesso.');
+
+            DB::commit();
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            flash()->error('Erro ao tentar desvincular. O tutor contém dependências no sistema.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
