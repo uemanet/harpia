@@ -138,6 +138,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getEdit')->name('academico.ofertascursos.turmas.grupos.edit');
         Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\GruposController@putEdit')->name('academico.ofertascursos.turmas.grupos.edit');
         Route::post('/delete', '\Modulos\Academico\Http\Controllers\GruposController@postDelete')->name('academico.ofertascursos.turmas.grupos.delete');
+        Route::get('/movimentacoes/{id}', '\Modulos\Academico\Http\Controllers\GruposController@getMovimentacoes')->name('academico.ofertascursos.turmas.grupos.movimentacoes');
     });
 
     Route::group(['prefix' => 'tutoresgrupos', 'middleware' => ['vinculo']], function () {
