@@ -290,7 +290,10 @@ class TutoresGruposController extends BaseController
 
             $ambiente = $this->ambienteRepository->getAmbienteByTurma($tutorGrupo->grupo->turma->trm_id);
 
-            $this->tutorgrupoRepository->delete($tutorGrupoId);
+            //Atualiza o fim do vículo do tutor antigo
+            $dados['ttg_data_fim'] = date('Y-m-d');
+            $this->tutorgrupoRepository->update($dados, $tutorGrupo->ttg_id, 'ttg_id');
+
             if ($ambiente) {
                 event(new DeleteTutorVinculadoEvent($tutorGrupo));
             }
