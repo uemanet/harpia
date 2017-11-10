@@ -99,13 +99,21 @@ class GrupoRepository extends BaseRepository
         foreach ($movimentacoes as $movimentacao) {
             $entry = $movimentacao->toArray();
 
+            $entry["ttg_tut_id"] = $movimentacao->tutor->pessoa->pes_nome;
+            $entry["ttg_data_inicio"] = $movimentacao->getOriginal('ttg_data_inicio');
+            $entry["action"] = null;
+            $entry["usuario"] = null;
+
+            // Data hora default e a ultima modificacao
+            $entry["data_hora"] = $entry["updated_at"];
+
             // Consulta a tabela de auditoria para verificar o usuario responsavel pela alteracao
             $data = DB::table('seg_auditoria')
                 ->where('log_table', '=', 'acd_tutores_grupos')
                 ->where('log_table_id', '=', $entry['ttg_id'])
                 ->get();
 
-            if (!$data->count()) {
+            if (!$data) {
                 $result->push($entry);
                 continue;
             }
@@ -118,8 +126,8 @@ class GrupoRepository extends BaseRepository
                     $entry["action"] = "Tutor inserido no Grupo";
                 }
 
+                $entry["data_hora"] = $item->created_at;
                 $usuario = $usuarioRepository->find($item->log_usr_id);
-
                 $entry["usuario"] = $usuario->pessoa->pes_nome;
 
                 $result->push($entry);
