@@ -263,6 +263,12 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'movimentacoes',
+            'prm_rota' => 'academico.ofertascursos.turmas.grupos.movimentacoes'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
 
         //permissões do recurso tutoresgrupos
         $permissao = Permissao::create([
