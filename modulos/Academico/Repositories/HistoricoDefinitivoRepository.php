@@ -199,6 +199,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
             $arrModulo['nome'] = $modulo->mdo_nome;
             $arrModulo['descricao'] = $modulo->mdo_descricao;
             $arrModulo['qualificacao'] = $modulo->mdo_qualificacao;
+            $arrModulo['competencias'] = $modulo->mdo_competencias;
 
             $disciplinasModulo = $modulo->disciplinas()->orderBy('dis_nome', 'asc')->get();
 
