@@ -29,4 +29,9 @@ class Grupo extends BaseModel
     {
         return $this->belongsTo('Modulos\Academico\Models\Polo', 'grp_pol_id', 'pol_id');
     }
+
+    public function movimentacoes()
+    {
+        return $this->hasMany('Modulos\Academico\Models\TutorGrupo', 'ttg_grp_id', 'grp_id');
+    }
 }

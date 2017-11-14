@@ -1,4 +1,5 @@
 <?php
+
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -83,6 +84,14 @@ class GruposController extends BaseController
                             'label' => 'Selecione'
                         ],
                         'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-exchange',
+                                'route' => 'academico.ofertascursos.turmas.grupos.movimentacoes',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Histórico',
+                                'method' => 'get'
+                            ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-user',
@@ -197,7 +206,13 @@ class GruposController extends BaseController
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
 
-        return view('Academico::grupos.edit', ['grupo' => $grupo, 'curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
+        return view('Academico::grupos.edit', [
+            'grupo' => $grupo,
+            'curso' => $curso,
+            'oferta' => $oferta,
+            'turma' => $turma,
+            'polos' => $polos
+        ]);
     }
 
     public function putEdit($id, GrupoRequest $request)
@@ -282,5 +297,20 @@ class GruposController extends BaseController
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+    }
+
+    public function getMovimentacoes($id)
+    {
+        $grupo = $this->grupoRepository->find($id);
+
+        if (!$grupo) {
+            flash()->error('Grupo não existe.');
+            return redirect()->back();
+        }
+
+        return view('Academico::grupos.movimentacoes', [
+            'grupo' => $grupo,
+            'movimentacoes' => $this->grupoRepository->getMovimentacoes($grupo->grp_id)
+        ]);
     }
 }
