@@ -266,4 +266,17 @@ class CursoRepository extends BaseRepository
             ->join('acd_niveis_cursos', 'crs_nvc_id', '=', 'nvc_id')
             ->groupBy('crs_nvc_id')->get()->toArray();
     }
+
+    public function getCursosByAmbiente($ambienteId)
+    {
+        return
+         DB::table('int_ambientes_turmas')
+                  ->select('crs_nome', 'crs_id')
+                  ->join('acd_turmas', 'atr_trm_id', '=', 'trm_id')
+                  ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
+                  ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
+                  ->where('atr_amb_id', $ambienteId)
+                  ->orderBy('crs_nome')
+                  ->distinct('crs_nome')->pluck('crs_nome', 'crs_id');
+    }
 }

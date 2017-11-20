@@ -44,7 +44,7 @@ class ForumController extends Controller
 
         $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
 
-        $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
+        $cursos = $this->cursoRepository->getCursosByAmbiente($idAmbiente);
 
         return view('Monitoramento::forumresponse.monitorar', compact('cursos', 'ambiente'));
     }
