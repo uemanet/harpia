@@ -167,6 +167,7 @@ return [
          */
         Collective\Html\HtmlServiceProvider::class,
         Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
 
         Modulos\Seguranca\Providers\ActionButton\ActionButtonProvider::class,
@@ -253,6 +254,7 @@ return [
          */
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
         /*
          * Extra aliases
