@@ -13,7 +13,8 @@
         "mpdf/mpdf": "^6.1",
         "ramsey/uuid": "^3.6",
         "doctrine/dbal": "^2.5",
-        "maatwebsite/excel": "^2.1.0"
+        "maatwebsite/excel": "^2.1.0",
+        "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -34,7 +35,8 @@
         "psr-4": {
             "App\\": "app/",
             "Modulos\\": "modulos/",
-            "Harpia\\" : "Harpia/"
+            "Harpia\\" : "Harpia/",
+            "Tests\\" : "tests/"
         },
         "files": [
             "Harpia/FlashToastrAlert/functions.php"

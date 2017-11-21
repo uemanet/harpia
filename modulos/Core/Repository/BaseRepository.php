@@ -63,7 +63,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         if (!is_null($select)) {
-            $query = $query->select(implode(',', $select));
+            $query = $query->select($select);
         }
 
         return $query->get();

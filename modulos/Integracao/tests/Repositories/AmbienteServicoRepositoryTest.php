@@ -1,61 +1,155 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\AmbienteServicoRepository;
+use Tests\ModulosTestCase;
+use Modulos\Integracao\Models\AmbienteServico;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Integracao\Repositories\AmbienteServicoRepository;
 
-class AmbienteServicoRepositoryTest extends TestCase
+class AmbienteServicoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(AmbienteServicoRepository::class);
+        $this->table = 'int_ambientes_servicos';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(AmbienteServico::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(AmbienteServico::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(AmbienteServico::class)->create();
+        $id = $entry->asr_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(AmbienteServico::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(AmbienteServico::class)->create();
+        $id = $entry->asr_id;
+
+        $data = $entry->toArray();
+
+        $data['asr_token'] = "newToken";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(AmbienteServico::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(AmbienteServico::class)->create();
+        $id = $entry->asr_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(AmbienteServico::class, 2)->create();
+
+        $model = new AmbienteServico();
+        $expected = $model->pluck('asr_token', 'asr_id');
+        $fromRepository = $this->repo->lists('asr_id', 'asr_token');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(AmbienteServico::class, 10)->create();
+
+        factory(AmbienteServico::class)->create([
+            'asr_token' => 'findme'
+        ]);
+
+        $searchResult = $this->repo->search(array(['asr_token', '=', 'findme']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testWithSelect()
+    {
+        factory(AmbienteServico::class, 10)->create();
+
+        $entry = factory(AmbienteServico::class)->create([
+            'asr_token' => 'findme'
+        ]);
+
+        $expected = [
+            'asr_id' => $entry->asr_id,
+            'asr_token' => $entry->asr_token
+        ];
+
+        $searchResult = $this->repo->search(array(['asr_token', '=', 'findme']), ['asr_id', 'asr_token']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(AmbienteServico::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(AmbienteServico::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new AmbienteServico();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(AmbienteServico::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(AmbienteServico::class, 2)->create();
 
         $sort = [
             'field' => 'asr_id',
@@ -65,64 +159,33 @@ class AmbienteServicoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertEquals(2, $response[0]->asr_id);
+        $this->assertEquals(2, $response->first()->asr_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
-
-        factory(Modulos\Integracao\Models\AmbienteServico::class)->create([
-            'asr_token' => 'kjh231kjagJAsuihsauigsakj',
+        factory(AmbienteServico::class, 2)->create();
+        factory(AmbienteServico::class)->create([
+            'asr_ser_id' => 1,
         ]);
 
         $search = [
             [
-                'field' => 'asr_token',
-                'type' => 'like',
-                'term' => 'kjh231kjagJAsuihsauigsakj'
+                'field' => 'asr_ser_id',
+                'type' => '=',
+                'term' => 1
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals('kjh231kjagJAsuihsauigsakj', $response[0]->asr_token);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
-
-        $sort = [
-            'field' => 'asr_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'asr_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals(2, $response[0]->asr_id);
+        $this->assertEquals(1, $response->first()->asr_ser_id);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\AmbienteServico::class, 2)->create();
+        factory(AmbienteServico::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -131,56 +194,7 @@ class AmbienteServicoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
-
-        $this->assertInstanceOf(\Modulos\Integracao\Models\AmbienteServico::class, $response);
-
-        $this->assertArrayHasKey('asr_id', $response->toArray());
-    }
-
-    public function testFind()
-    {
-        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
-
-        $this->assertDatabaseHas('int_ambientes_servicos', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['asr_token'] = 'asd5weAse78r54asskhae';
-
-        $ambienteServicoId = $updateArray['asr_id'];
-        unset($updateArray['asr_id']);
-
-        $response = $this->repo->update($updateArray, $ambienteServicoId, 'asr_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Modulos\Integracao\Models\AmbienteServico::class)->create();
-        $ambienteServicoId = $data->asr_id;
-
-        $response = $this->repo->delete($ambienteServicoId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }
