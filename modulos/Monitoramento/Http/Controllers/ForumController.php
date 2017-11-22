@@ -4,7 +4,9 @@ namespace Modulos\Monitoramento\Http\Controllers;
 
 use Configuracao;
 use App\Http\Controllers\Controller;
+use function foo\func;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class ForumController extends Controller
@@ -20,23 +22,39 @@ class ForumController extends Controller
 
     public function getIndex()
     {
-        $ambientes = $this->ambientevirtualRepository->findAmbientesWithMonitor();
+        $ambientes = AmbienteVirtual::all()->filter(function ($value) {
+            $servicos = $value->ambienteservico;
+
+            // Retorna somente os ambientes com plugin de monitoramento configurado
+            foreach ($servicos as $servico) {
+                if ($servico->asr_ser_id == 1) {
+                    return $value;
+                }
+            }
+        });
 
         return view('Monitoramento::forumresponse.index', compact('ambientes'));
     }
 
     public function getMonitorar($idAmbiente)
     {
-        $ambientevirtual = $this->ambientevirtualRepository->find($idAmbiente);
-        if (is_null($ambientevirtual)) {
+        $ambiente = $this->ambientevirtualRepository->find($idAmbiente);
+
+        if (is_null($ambiente)) {
             flash()->error('Ambiente não existe!');
             return redirect()->back();
         }
 
-        $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
+        $servicos = $ambiente->ambienteservico;
+
+        $monitoramento = $servicos->filter(function ($value) {
+            if ($value->asr_ser_id == 1) {
+                return $value;
+            }
+        })->first();
 
         $cursos = $this->cursoRepository->getCursosByAmbiente($idAmbiente);
 
-        return view('Monitoramento::forumresponse.monitorar', compact('cursos', 'ambiente'));
+        return view('Monitoramento::forumresponse.monitorar', compact('cursos', 'ambiente', 'monitoramento'));
     }
 }

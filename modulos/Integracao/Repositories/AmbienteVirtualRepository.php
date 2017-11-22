@@ -46,36 +46,4 @@ class AmbienteVirtualRepository extends BaseRepository
 
         return $turmas;
     }
-
-    /**
-     * TODO 2 ocorrencias para refatorar
-     * @return mixed
-     */
-    public function findAmbientesWithMonitor()
-    {
-        $entries = DB::table('int_ambientes_virtuais')
-            ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
-            ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-            ->where('ser_id', '=', 1)
-            ->get();
-        
-        return $entries;
-    }
-
-    /**
-     * TODO 2 ocorrencias para refatorar
-     * @param $ambienteId
-     * @return mixed
-     */
-    public function findAmbienteWithMonitor($ambienteId)
-    {
-        $entries = DB::table('int_ambientes_virtuais')
-            ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
-            ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-            ->where('ser_id', '=', 1)
-            ->where('amb_id', '=', $ambienteId)
-            ->first();
-
-        return $entries;
-    }
 }
