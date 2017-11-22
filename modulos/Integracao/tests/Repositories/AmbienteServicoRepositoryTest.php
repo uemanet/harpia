@@ -89,7 +89,7 @@ class AmbienteServicoRepositoryTest extends ModulosTestCase
         $this->assertEquals(1, $searchResult->count());
     }
 
-    public function testWithSelect()
+    public function testSearchWithSelect()
     {
         factory(AmbienteServico::class, 10)->create();
 

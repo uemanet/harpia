@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
-use Illuminate\Support\Facades\DB;
-use Modulos\Academico\Models\Curso;
+use DB;
 use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
 
@@ -12,10 +12,11 @@ class TurmaRepository extends BaseRepository
     protected $cursoRepository;
     protected $periodoLetivoRepository;
 
-    public function __construct(Turma $turma,
-                                CursoRepository $cursoRepository,
-                                PeriodoLetivoRepository $periodoLetivoRepository)
-    {
+    public function __construct(
+        Turma $turma,
+        CursoRepository $cursoRepository,
+        PeriodoLetivoRepository $periodoLetivoRepository
+    ) {
         $this->model = $turma;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
@@ -146,7 +147,7 @@ class TurmaRepository extends BaseRepository
         $curso = $this->cursoRepository->find($cursoId);
         $periodoLetivo = $this->periodoLetivoRepository->find($turma->trm_per_id);
 
-        $shortName = $curso->crs_sigla .' ' . $turma->trm_nome . ' ' . $periodoLetivo->per_nome;
+        $shortName = $curso->crs_sigla . ' ' . $turma->trm_nome . ' ' . $periodoLetivo->per_nome;
         $shortName = str_replace(' ', '_', $shortName);
 
         return $shortName;
@@ -165,5 +166,31 @@ class TurmaRepository extends BaseRepository
         $fullname = $curso->crs_nome . ' - ' . $turma->trm_nome . ' - ' . $periodoLetivo->per_nome;
 
         return $fullname;
+    }
+
+    public function pendenciasTurma(int $turmaId): bool
+    {
+        $result = DB::table('acd_ofertas_disciplinas')
+            ->where('ofd_trm_id', $turmaId)->get();
+
+        if ($result->count()) {
+            return true;
+        }
+
+        $result = DB::table('acd_matriculas')
+            ->where('mat_trm_id', $turmaId)->get();
+
+        if ($result->count()) {
+            return true;
+        }
+
+        $result = DB::table('acd_grupos')
+            ->where('grp_trm_id', $turmaId)->get();
+
+        if ($result->count()) {
+            return true;
+        }
+
+        return false;
     }
 }

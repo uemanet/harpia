@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Integracao\Repositories;
 
+use DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\AmbienteVirtual;
-use DB;
 
 class AmbienteVirtualRepository extends BaseRepository
 {
@@ -13,11 +14,16 @@ class AmbienteVirtualRepository extends BaseRepository
         $this->model = $ambientevirtual;
     }
 
-    public function verifyIfExistsAmbienteTurma($ambienteId, $turmaId)
+    /**
+     * Verifica se a turma ja esta vinculada a algum ambiente
+     * @param int $turmaId
+     * @return bool
+     */
+    public function verifyIfTurmaIsLinked(int $turmaId): bool
     {
         $exists = DB::table('int_ambientes_turmas')
-                  ->where('atr_trm_id', '=', $turmaId)
-                  ->first();
+            ->where('atr_trm_id', '=', $turmaId)
+            ->first();
 
         if ($exists) {
             return true;
@@ -61,7 +67,7 @@ class AmbienteVirtualRepository extends BaseRepository
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')
-           ->get();
+            ->get();
 
         $turmasvinculadasId = [];
 
@@ -70,10 +76,10 @@ class AmbienteVirtualRepository extends BaseRepository
         }
 
         $turmas = DB::table('acd_turmas')
-           ->whereNotIn('trm_id', $turmasvinculadasId)
-           ->where('trm_ofc_id', '=', $ofertaId)
-           ->where('trm_integrada', '=', 1)
-           ->get();
+            ->whereNotIn('trm_id', $turmasvinculadasId)
+            ->where('trm_ofc_id', '=', $ofertaId)
+            ->where('trm_integrada', '=', 1)
+            ->get();
 
         return $turmas;
     }
@@ -81,10 +87,10 @@ class AmbienteVirtualRepository extends BaseRepository
     public function findAmbientesWithMonitor()
     {
         $entries = DB::table('int_ambientes_virtuais')
-                  ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
-                  ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-                  ->where('ser_id', '=', 1)
-                  ->get();
+            ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
+            ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
+            ->where('ser_id', '=', 1)
+            ->get();
 
 
         return $entries;
@@ -93,11 +99,11 @@ class AmbienteVirtualRepository extends BaseRepository
     public function findAmbienteWithMonitor($ambienteId)
     {
         $entries = DB::table('int_ambientes_virtuais')
-                  ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
-                  ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-                  ->where('ser_id', '=', 1)
-                  ->where('amb_id', '=', $ambienteId)
-                  ->first();
+            ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
+            ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
+            ->where('ser_id', '=', 1)
+            ->where('amb_id', '=', $ambienteId)
+            ->first();
 
         return $entries;
     }

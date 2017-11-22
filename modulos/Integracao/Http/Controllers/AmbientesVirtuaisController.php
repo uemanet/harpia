@@ -368,7 +368,7 @@ class AmbientesVirtuaisController extends BaseController
         $dados['atr_amb_id'] = $validate['atr_amb_id'];
 
         try {
-            if (!$this->ambienteVirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'], $dados['atr_trm_id'])) {
+            if (!$this->ambienteVirtualRepository->verifyIfTurmaIsLinked($dados['atr_trm_id'])) {
                 $ambienteturma = $this->ambienteTurmaRepository->create($dados);
 
                 if (!$ambienteturma) {
@@ -387,6 +387,7 @@ class AmbientesVirtuaisController extends BaseController
 
                 return redirect()->back();
             }
+
             flash()->error('Essa turma já está vinculada em um ambiente!');
             return redirect()->back();
         } catch (\Exception $e) {
@@ -409,7 +410,7 @@ class AmbientesVirtuaisController extends BaseController
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
             $ambiente = $turma->ambientes->first()->amb_id;
 
-            $deletar = $this->ambienteTurmaRepository->verificaPendenciasTurma($turma->trm_id);
+            $deletar = $this->turmaRepository->pendenciasTurma($turma->trm_id);
 
             if ($deletar) {
                 flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
