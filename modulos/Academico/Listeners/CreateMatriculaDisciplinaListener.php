@@ -40,7 +40,7 @@ class CreateMatriculaDisciplinaListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->first();
+            $ambServico = $ambiente->ambienteservico->last();
 
             if ($ambServico) {
                 $param = [];

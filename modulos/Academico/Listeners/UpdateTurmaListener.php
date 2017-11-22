@@ -35,7 +35,7 @@ class UpdateTurmaListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->first();
+            $ambServico = $ambiente->ambienteservico->last();
 
             if ($ambServico) {
                 $data['course']['trm_id'] = $turma->trm_id;

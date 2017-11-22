@@ -48,7 +48,7 @@ class TurmaMapeadaListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->first();
+            $ambServico = $ambiente->ambienteservico->last();
 
             if (!$ambServico) {
                 return;

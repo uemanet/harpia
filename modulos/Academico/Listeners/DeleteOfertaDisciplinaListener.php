@@ -23,13 +23,21 @@ class DeleteOfertaDisciplinaListener
         $oferta = $event->getData();
 
         try {
-            $ambiente = $this->ambienteVirtualRepository->getAmbienteWithToken($event->getExtra());
+            // ambiente virtual vinculado à turma do grupo
+            $ambiente = $this->ambienteVirtualRepository->find($event->getExtra());
 
-            if ($ambiente) {
+            if (!$ambiente) {
+                return;
+            }
+
+            // Web service de integracao
+            $ambServico = $ambiente->ambienteservico->last();
+
+            if ($ambServico) {
                 $data['discipline']['ofd_id'] = $oferta->ofd_id;
 
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
+                $param['url'] = $ambiente->amb_url;
+                $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
                 $param['functioname'] = $event->getEndpoint();
                 $param['data'] = $data;

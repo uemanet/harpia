@@ -50,7 +50,7 @@ class DeleteVinculoTutorListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->first();
+            $ambServico = $ambiente->ambienteservico->last();
 
             if ($ambServico) {
                 $pessoa = $this->pessoaRepository->find($tutor->tut_pes_id);

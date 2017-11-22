@@ -2,22 +2,13 @@
 
 namespace Modulos\Monitoramento\Http\Controllers;
 
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Modulos\Core\Http\Controller\BaseController;
+use Configuracao;
 use App\Http\Controllers\Controller;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Configuracao;
 
-/**
- * Class IndexController.
- */
 class ForumController extends Controller
 {
-    /**
-     * @return \Illuminate\View\View
-     */
     protected $cursoRepository;
     protected $ambientevirtualRepository;
 
