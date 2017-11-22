@@ -1,6 +1,8 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Modulos\Academico\Models\Turma;
+use Modulos\Integracao\Models\AmbienteTurma;
 use Modulos\Integracao\Models\AmbienteVirtual;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -197,4 +199,44 @@ class AmbienteVirtualRepositoryTest extends ModulosTestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
     }
+
+    public function testGetAmbienteByTurma()
+    {
+        $turma = factory(Turma::class)->create();
+        $ambienteVirtual = factory(AmbienteVirtual::class)->create();
+
+        factory(AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => $ambienteVirtual->amb_id
+        ]);
+
+        factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+            'asr_amb_id' => $ambienteVirtual->amb_id,
+        ]);
+
+        $fromRepository = $this->repo->getAmbienteByTurma($turma->trm_id);
+
+        $this->assertInstanceOf(AmbienteVirtual::class, $fromRepository);
+        $this->assertEquals($ambienteVirtual->amb_id, $fromRepository->amb_id);
+    }
+
+//    public function testGetAmbienteWithTokenWhithoutTurma()
+//    {
+//
+//    }
+//
+//    public function testFindTurmasWithoutAmbiente()
+//    {
+//
+//    }
+//
+//    public function testFindAmbientesWithMonitor()
+//    {
+//
+//    }
+//
+//    public function testFindAmbienteWithMonitor()
+//    {
+//
+//    }
 }

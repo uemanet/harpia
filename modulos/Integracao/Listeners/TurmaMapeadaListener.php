@@ -39,10 +39,19 @@ class TurmaMapeadaListener
     {
         try {
             $turma = $event->getData();
+
+            // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
             if (!$ambiente) {
-                return false;
+                return;
+            }
+
+            // Web service de integracao
+            $ambServico = $ambiente->ambienteservico->first();
+
+            if (!$ambServico) {
+                return;
             }
 
             $data['course']['trm_id'] = $turma->trm_id;
@@ -53,8 +62,8 @@ class TurmaMapeadaListener
             $data['course']['format'] = 'topics';
             $data['course']['numsections'] = 0;
 
-            $param['url'] = $ambiente->url;
-            $param['token'] = $ambiente->token;
+            $param['url'] = $ambiente->amb_url;
+            $param['token'] = $ambServico->asr_token;
             $param['action'] = 'post';
             $param['functioname'] = $event->getEndpoint();
             $param['data'] = $data;

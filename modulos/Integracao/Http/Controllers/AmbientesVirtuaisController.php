@@ -5,7 +5,6 @@ namespace Modulos\Integracao\Http\Controllers;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -68,8 +67,8 @@ class AmbientesVirtuaisController extends BaseController
             ))->modifyCell('amb_action', function () {
                 return array('style' => 'width: 140px;');
             })->means('amb_action', 'amb_id')
-              ->modify('amb_action', function ($id) {
-                  return ActionButton::grid([
+                ->modify('amb_action', function ($id) {
+                    return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
                             'classButton' => 'btn-default',
@@ -110,7 +109,7 @@ class AmbientesVirtuaisController extends BaseController
                             ]
                         ]
                     ]);
-              })
+                })
                 ->sortable(array('amb_id', 'amb_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
@@ -254,12 +253,12 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambiente = $this->ambienteVirtualRepository->find($dados['asr_amb_id']);
             $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
-            $url .= $dados['asr_token'] . '&wsfunction='.strtolower($servico->ser_nome).'_ping&moodlewsrestformat=json';
+            $url .= $dados['asr_token'] . '&wsfunction=' . strtolower($servico->ser_nome) . '_ping&moodlewsrestformat=json';
 
             $client = new Client();
             $response = $client->request('POST', $url, ['query' => null]);
 
-            $data = (array) json_decode($response->getBody());
+            $data = (array)json_decode($response->getBody());
 
             if (!array_key_exists('response', $data)) {
                 // Erro ao verificar token
@@ -368,7 +367,9 @@ class AmbientesVirtuaisController extends BaseController
         $dados['atr_amb_id'] = $validate['atr_amb_id'];
 
         try {
-            if (!$this->ambienteVirtualRepository->verifyIfTurmaIsLinked($dados['atr_trm_id'])) {
+            $turma = $this->turmaRepository->find($dados['atr_trm_id']);
+
+            if (!$turma->ambientes->count()) {
                 $ambienteturma = $this->ambienteTurmaRepository->create($dados);
 
                 if (!$ambienteturma) {

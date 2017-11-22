@@ -53,16 +53,11 @@ class Turma extends BaseModel
         return $this->belongsToMany('Modulos\Integracao\Models\AmbienteVirtual', 'int_ambientes_turmas', 'atr_trm_id', 'atr_amb_id');
     }
 
-    // Accessors
-    /**
-       * @param $value
-       * @return string
-       */
-      public function getTrmIntegradaStringAttribute()
-      {
-          if ($this->trm_integrada == 0) {
-              return 'Não';
-          }
-          return 'Sim';
-      }
+    public function getTrmIntegradaStringAttribute()
+    {
+        if ($this->trm_integrada == 0) {
+            return 'Não';
+        }
+        return 'Sim';
+    }
 }

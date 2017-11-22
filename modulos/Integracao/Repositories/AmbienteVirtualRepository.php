@@ -4,45 +4,36 @@ declare(strict_types=1);
 namespace Modulos\Integracao\Repositories;
 
 use DB;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\AmbienteVirtual;
 
 class AmbienteVirtualRepository extends BaseRepository
 {
-    public function __construct(AmbienteVirtual $ambientevirtual)
+    protected $turmaRepository;
+
+    public function __construct(AmbienteVirtual $ambientevirtual, TurmaRepository $turmaRepository)
     {
-        $this->model = $ambientevirtual;
+        parent::__construct($ambientevirtual);
+        $this->turmaRepository = $turmaRepository;
     }
 
     /**
-     * Verifica se a turma ja esta vinculada a algum ambiente
+     * TODO 17 ocorrencias para refatorar
      * @param int $turmaId
-     * @return bool
+     * @return mixed
      */
-    public function verifyIfTurmaIsLinked(int $turmaId): bool
+    public function getAmbienteByTurma(int $turmaId)
     {
-        $exists = DB::table('int_ambientes_turmas')
-            ->where('atr_trm_id', '=', $turmaId)
-            ->first();
-
-        if ($exists) {
-            return true;
-        }
-
-        return false;
+        $turma = $this->turmaRepository->find($turmaId);
+        return $turma->ambientes->first();
     }
 
-    public function getAmbienteByTurma($turmaId)
-    {
-        return DB::table('int_ambientes_virtuais')
-            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
-            ->join('int_ambientes_turmas', 'amb_id', '=', 'atr_amb_id')
-            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
-            ->where('atr_trm_id', '=', $turmaId)
-            ->where('asr_ser_id', '=', 2)
-            ->first();
-    }
-
+    /**
+     * TODO 3 ocorrencias para refatorar
+     * @param $ambienteId
+     * @return mixed
+     */
     public function getAmbienteWithToken($ambienteId)
     {
         return DB::table('int_ambientes_virtuais')
@@ -54,6 +45,11 @@ class AmbienteVirtualRepository extends BaseRepository
             ->first();
     }
 
+    /**
+     * TODO 1 ocorrencia para refatorar
+     * @param $ambienteId
+     * @return mixed
+     */
     public function getAmbienteWithTokenWhithoutTurma($ambienteId)
     {
         return DB::table('int_ambientes_virtuais')
@@ -64,6 +60,9 @@ class AmbienteVirtualRepository extends BaseRepository
             ->first();
     }
 
+    /**
+     * TODO 1 ocorrencia para refatorar
+     */
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')
@@ -84,6 +83,10 @@ class AmbienteVirtualRepository extends BaseRepository
         return $turmas;
     }
 
+    /**
+     * TODO 2 ocorrencias para refatorar
+     * @return mixed
+     */
     public function findAmbientesWithMonitor()
     {
         $entries = DB::table('int_ambientes_virtuais')
@@ -96,6 +99,11 @@ class AmbienteVirtualRepository extends BaseRepository
         return $entries;
     }
 
+    /**
+     * TODO 2 ocorrencias para refatorar
+     * @param $ambienteId
+     * @return mixed
+     */
     public function findAmbienteWithMonitor($ambienteId)
     {
         $entries = DB::table('int_ambientes_virtuais')
