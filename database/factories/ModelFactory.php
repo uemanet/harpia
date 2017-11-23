@@ -200,6 +200,7 @@ $factory->define(Modulos\Academico\Models\Modalidade::class, function (Faker\Gen
 $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
     $modalidade = factory(Modulos\Academico\Models\Modalidade::class)->create();
+
     return [
         'ofc_crs_id' => $curso->crs_id,
         'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create(['mtc_crs_id' => $curso->crs_id])->mtc_id,
@@ -211,8 +212,7 @@ $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Ge
 $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
     return [
         'mtc_crs_id' => factory(Modulos\Academico\Models\Curso::class)->create()->crs_id,
-        'mtc_anx_projeto_pedagogico' => $faker->randomNumber(2),
-        'mtc_titulo' => $faker->word,
+        'mtc_anx_projeto_pedagogico' => factory(Modulos\Geral\Models\Anexo::class)->create()->anx_id,
         'mtc_titulo' => ucfirst($faker->word),
         'mtc_descricao' => $faker->words(5, true),
         'mtc_data' => $faker->date('d/m/Y'),

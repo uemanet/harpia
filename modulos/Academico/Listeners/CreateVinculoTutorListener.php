@@ -42,9 +42,17 @@ class CreateVinculoTutorListener
             $tutor = $this->tutorRepository->find($tutorGrupo->ttg_tut_id);
             $grupo = $this->grupoRepository->find($tutorGrupo->ttg_grp_id);
 
+            // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
 
-            if ($ambiente) {
+            if (!$ambiente) {
+                return;
+            }
+
+            // Web service de integracao
+            $ambServico = $ambiente->ambienteservico->last();
+
+            if ($ambServico) {
                 $pessoa = $this->pessoaRepository->find($tutor->tut_pes_id);
 
                 $name = explode(" ", $pessoa->pes_nome);
@@ -63,8 +71,8 @@ class CreateVinculoTutorListener
                 $data['tutor']['password'] = "changeme";
                 $data['tutor']['city'] = "São Luís";
 
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
+                $param['url'] = $ambiente->amb_url;
+                $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
                 $param['functioname'] = $event->getEndpoint();
                 $param['data'] = $data;

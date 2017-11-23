@@ -31,12 +31,19 @@ class UpdateGrupoListener
             // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
 
-            if ($ambiente) {
+            if (!$ambiente) {
+                return;
+            }
+
+            // Web service de integracao
+            $ambServico = $ambiente->ambienteservico->last();
+
+            if ($ambServico) {
                 $param = [];
 
                 // url do ambiente
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
+                $param['url'] = $ambiente->amb_url;
+                $param['token'] = $ambServico->asr_token;
                 $param['functioname'] = $event->getEndpoint();
                 $param['action'] = 'UPDATE';
 

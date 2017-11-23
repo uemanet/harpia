@@ -30,13 +30,20 @@ class UpdateTurmaListener
 
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
-            if ($ambiente) {
+            if (!$ambiente) {
+                return;
+            }
+
+            // Web service de integracao
+            $ambServico = $ambiente->ambienteservico->last();
+
+            if ($ambServico) {
                 $data['course']['trm_id'] = $turma->trm_id;
                 $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
                 $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
 
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
+                $param['url'] = $ambiente->amb_url;
+                $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'UPDATE';
                 $param['functioname'] = $event->getEndpoint();
                 $param['data'] = $data;

@@ -9,6 +9,6 @@ class AmbienteServicoRepository extends BaseRepository
 {
     public function __construct(AmbienteServico $ambienteservico)
     {
-        $this->model = $ambienteservico;
+        parent::__construct($ambienteservico);
     }
 }

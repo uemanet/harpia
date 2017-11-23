@@ -295,7 +295,7 @@ class TutoresGruposController extends BaseController
             $this->tutorgrupoRepository->update($dados, $tutorGrupo->ttg_id, 'ttg_id');
 
             if ($ambiente) {
-                event(new DeleteTutorVinculadoEvent($tutorGrupo));
+                event(new DeleteVinculoTutorEvent($tutorGrupo));
             }
 
             flash()->success('Tutor desvinculado com sucesso.');

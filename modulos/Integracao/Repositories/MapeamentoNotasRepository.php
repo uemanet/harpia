@@ -226,12 +226,19 @@ class MapeamentoNotasRepository extends BaseRepository
         // buscar ambiente virtual vinculado à turma do aluno
         $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($trm_id);
 
-        if ($ambiente) {
+        if (!$ambiente) {
+            return null;
+        }
+
+        // Web service de integracao
+        $ambServico = $ambiente->ambienteservico->last();
+
+        if ($ambServico) {
             $parametros = [];
 
             // url do ambiente
-            $parametros['url'] = $ambiente->url;
-            $parametros['token'] = $ambiente->token;
+            $parametros['url'] = $ambiente->amb_url;
+            $parametros['token'] = $ambServico->asr_token;
             $parametros['functioname'] = 'local_integracao_get_grades_batch';
             $parametros['action'] = 'MAPEAR_NOTAS_ALUNO';
 

@@ -4,66 +4,29 @@ declare(strict_types=1);
 namespace Modulos\Integracao\Repositories;
 
 use DB;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\AmbienteVirtual;
 
 class AmbienteVirtualRepository extends BaseRepository
 {
-    public function __construct(AmbienteVirtual $ambientevirtual)
+    protected $turmaRepository;
+
+    public function __construct(AmbienteVirtual $ambientevirtual, TurmaRepository $turmaRepository)
     {
-        $this->model = $ambientevirtual;
+        parent::__construct($ambientevirtual);
+        $this->turmaRepository = $turmaRepository;
+    }
+
+    public function getAmbienteByTurma(int $turmaId)
+    {
+        $turma = $this->turmaRepository->find($turmaId);
+        return $turma->ambientes->first();
     }
 
     /**
-     * Verifica se a turma ja esta vinculada a algum ambiente
-     * @param int $turmaId
-     * @return bool
+     * TODO 1 ocorrencia para refatorar
      */
-    public function verifyIfTurmaIsLinked(int $turmaId): bool
-    {
-        $exists = DB::table('int_ambientes_turmas')
-            ->where('atr_trm_id', '=', $turmaId)
-            ->first();
-
-        if ($exists) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function getAmbienteByTurma($turmaId)
-    {
-        return DB::table('int_ambientes_virtuais')
-            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
-            ->join('int_ambientes_turmas', 'amb_id', '=', 'atr_amb_id')
-            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
-            ->where('atr_trm_id', '=', $turmaId)
-            ->where('asr_ser_id', '=', 2)
-            ->first();
-    }
-
-    public function getAmbienteWithToken($ambienteId)
-    {
-        return DB::table('int_ambientes_virtuais')
-            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
-            ->join('int_ambientes_turmas', 'amb_id', '=', 'atr_amb_id')
-            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
-            ->where('amb_id', '=', $ambienteId)
-            ->where('asr_ser_id', '=', 2)
-            ->first();
-    }
-
-    public function getAmbienteWithTokenWhithoutTurma($ambienteId)
-    {
-        return DB::table('int_ambientes_virtuais')
-            ->select(DB::raw('amb_id as id, amb_url as url, asr_token as token'))
-            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
-            ->where('amb_id', '=', $ambienteId)
-            ->where('asr_ser_id', '=', 2)
-            ->first();
-    }
-
     public function findTurmasWithoutAmbiente($ofertaId)
     {
         $turmasvinculadas = DB::table('int_ambientes_turmas')
@@ -82,29 +45,5 @@ class AmbienteVirtualRepository extends BaseRepository
             ->get();
 
         return $turmas;
-    }
-
-    public function findAmbientesWithMonitor()
-    {
-        $entries = DB::table('int_ambientes_virtuais')
-            ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
-            ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-            ->where('ser_id', '=', 1)
-            ->get();
-
-
-        return $entries;
-    }
-
-    public function findAmbienteWithMonitor($ambienteId)
-    {
-        $entries = DB::table('int_ambientes_virtuais')
-            ->join('int_ambientes_servicos', 'asr_amb_id', '=', 'amb_id')
-            ->join('int_servicos', 'asr_ser_id', '=', 'ser_id')
-            ->where('ser_id', '=', 1)
-            ->where('amb_id', '=', $ambienteId)
-            ->first();
-
-        return $entries;
     }
 }

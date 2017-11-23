@@ -33,18 +33,24 @@ class CreateMatriculaTurmaListener
             $matriculaTurma = $event->getData();
 
             $aluno = $this->alunoRepository->find($matriculaTurma->mat_alu_id);
-
             $pessoa = $this->pessoaRepository->find($aluno->alu_pes_id);
 
             // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matriculaTurma->mat_trm_id);
 
-            if ($ambiente) {
+            if (!$ambiente) {
+                return;
+            }
+
+            // Web service de integracao
+            $ambServico = $ambiente->ambienteservico->last();
+
+            if ($ambServico) {
                 $param = [];
 
                 // url do ambiente
-                $param['url'] = $ambiente->url;
-                $param['token'] = $ambiente->token;
+                $param['url'] = $ambiente->amb_url;
+                $param['token'] = $ambServico->asr_token;
                 $param['functioname'] = $event->getEndpoint();
                 $param['action'] = 'CREATE';
 
