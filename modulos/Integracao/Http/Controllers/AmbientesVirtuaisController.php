@@ -5,6 +5,8 @@ namespace Modulos\Integracao\Http\Controllers;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Integracao\Models\AmbienteServico;
+use Modulos\Integracao\Models\Servico;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -219,9 +221,15 @@ class AmbientesVirtuaisController extends BaseController
             return redirect()->back();
         }
 
-        $servicos = $this->servicoRepository->listsServicosWithoutAmbiente($ambienteId);
+        $ambServicos = new AmbienteServico();
+        $idsAmbientesAdicionados = $ambServicos
+            ->where("asr_amb_id", "=", $ambienteId)
+            ->get()->pluck("asr_ser_id")->toArray();
 
-        $servicosdoambiente = $ambiente->servicos()->get();
+        $servicoModel = new Servico();
+
+        $servicos = $servicoModel->whereNotIn("ser_id", $idsAmbientesAdicionados)->get();
+        $servicosdoambiente = $ambiente->servicos;
 
         return view('Integracao::ambientesvirtuais.adicionarservico', compact('ambiente', 'servicos', 'servicosdoambiente'));
     }

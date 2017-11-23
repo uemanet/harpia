@@ -1,61 +1,157 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\ServicoRepository;
+use Tests\ModulosTestCase;
+use Modulos\Integracao\Models\Servico;
+use Modulos\Integracao\Models\AmbienteVirtual;
+use Modulos\Integracao\Models\AmbienteServico;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Integracao\Repositories\ServicoRepository;
 
-class ServicoRepositoryTest extends TestCase
+class ServicoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(ServicoRepository::class);
+        $this->table = 'int_servicos';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Servico::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Servico::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Servico::class)->create();
+        $id = $entry->ser_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Servico::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Servico::class)->create();
+        $id = $entry->ser_id;
+
+        $data = $entry->toArray();
+
+        $data['ser_slug'] = "slug";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Servico::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Servico::class)->create();
+        $id = $entry->ser_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Servico::class, 2)->create();
+
+        $model = new Servico();
+        $expected = $model->pluck('ser_nome', 'ser_id');
+        $fromRepository = $this->repo->lists('ser_id', 'ser_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Servico::class, 2)->create();
+
+        factory(Servico::class)->create([
+            'ser_slug' => 'slug_name'
+        ]);
+
+        $searchResult = $this->repo->search(array(['ser_slug', '=', 'slug_name']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Servico::class, 2)->create();
+
+        $entry = factory(Servico::class)->create([
+            'ser_slug' => "slug_to_find"
+        ]);
+
+        $expected = [
+            'ser_id' => $entry->ser_id,
+            'ser_slug' => $entry->ser_slug
+        ];
+
+        $searchResult = $this->repo->search(array(['ser_slug', '=', "slug_to_find"]), ['ser_id', 'ser_slug']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Servico::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Servico::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Servico();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\Servico::class, 2)->create();
+        factory(Servico::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\Servico::class, 2)->create();
+        factory(Servico::class, 2)->create();
 
         $sort = [
             'field' => 'ser_id',
@@ -65,64 +161,33 @@ class ServicoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertEquals(2, $response[0]->ser_id);
+        $this->assertEquals(2, $response->first()->ser_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\Servico::class, 2)->create();
-
-        factory(Modulos\Integracao\Models\Servico::class)->create([
-            'ser_nome' => 'icatu',
+        factory(Servico::class, 2)->create();
+        factory(Servico::class)->create([
+            'ser_slug' => 'slug_to_search',
         ]);
 
         $search = [
             [
-                'field' => 'ser_nome',
-                'type' => 'like',
-                'term' => 'icatu'
+                'field' => 'ser_slug',
+                'type' => '=',
+                'term' => 'slug_to_search'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals('icatu', $response[0]->ser_nome);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Integracao\Models\Servico::class, 2)->create();
-
-        $sort = [
-            'field' => 'ser_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'ser_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals(2, $response[0]->ser_id);
+        $this->assertEquals('slug_to_search', $response->first()->ser_slug);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\Servico::class, 2)->create();
+        factory(Servico::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -131,56 +196,24 @@ class ServicoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
+    public function testVerifyIfExistsAmbienteServico()
     {
-        $response = factory(Modulos\Integracao\Models\Servico::class)->create();
+        $ambiente = factory(AmbienteVirtual::class)->create();
+        $servico = factory(Servico::class)->create();
 
-        $this->assertInstanceOf(\Modulos\Integracao\Models\Servico::class, $response);
+        // Test without service
+        $this->assertFalse($this->repo->verifyIfExistsAmbienteServico($ambiente->amb_id, $servico->ser_id));
 
-        $this->assertArrayHasKey('ser_id', $response->toArray());
-    }
+        // Test with service
+        factory(AmbienteServico::class)->create([
+            'asr_amb_id' => $ambiente->amb_id,
+            'asr_ser_id' => $servico->ser_id,
+        ]);
 
-    public function testFind()
-    {
-        $data = factory(Modulos\Integracao\Models\Servico::class)->create();
-
-        $this->assertDatabaseHas('int_servicos', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Integracao\Models\Servico::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['ser_nome'] = 'abcde_edcba';
-
-        $servicoId = $updateArray['ser_id'];
-        unset($updateArray['ser_id']);
-
-        $response = $this->repo->update($updateArray, $servicoId, 'ser_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Modulos\Integracao\Models\Servico::class)->create();
-        $servicoId = $data->ser_id;
-
-        $response = $this->repo->delete($servicoId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $this->assertTrue($this->repo->verifyIfExistsAmbienteServico($ambiente->amb_id, $servico->ser_id));
     }
 }

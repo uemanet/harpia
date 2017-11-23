@@ -5,6 +5,10 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 
+/**
+ * Class MapeamentoNotasRepositoryTest
+ * TODO refatorar
+ */
 class MapeamentoNotasRepositoryTest extends TestCase
 {
     use DatabaseTransactions, WithoutMiddleware;
