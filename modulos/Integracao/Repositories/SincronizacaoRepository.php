@@ -1,20 +1,16 @@
 <?php
+
 namespace Modulos\Integracao\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Integracao\Events\SincronizacaoEvent;
-use Modulos\Integracao\Models\Sincronizacao;
 use DB;
+use Modulos\Core\Repository\BaseRepository;
+use Modulos\Integracao\Models\Sincronizacao;
 
 class SincronizacaoRepository extends BaseRepository
 {
-    protected $tabelasSincronizacao = [
-        'acd_turmas', 'acd_matriculas', ''
-    ];
-
     public function __construct(Sincronizacao $sincronizacao)
     {
-        $this->model = $sincronizacao;
+        parent::__construct($sincronizacao);
     }
 
     public function all()
@@ -43,7 +39,7 @@ class SincronizacaoRepository extends BaseRepository
         $registros = $query->get();
 
         /*
-         * Atualiza o ultimo registro que com as especificacoes passadas
+         * Atualiza o ultimo registro com as especificacoes passadas
          * Os demais permanecerao com os dados anteriores
          */
         $registro = $registros->pop();
@@ -89,35 +85,5 @@ class SincronizacaoRepository extends BaseRepository
         }
 
         return $result->paginate(15);
-    }
-
-    /**
-     * Verifica se dado registro foi excluido do Moodle
-     * @param $table
-     * @param $tableId
-     * @return bool
-     */
-    public static function excludedFromMoodle($table, $tableId)
-    {
-        $result = DB::table('int_sync_moodle')
-            ->where('sym_table', '=', $table)
-            ->where('sym_table_id', '=', $tableId)
-            ->where('sym_action', '=', 'DELETE')
-            ->where('sym_status', '=', 2)
-            ->first();
-
-        if ($result) {
-            return true;
-        }
-        return false;
-    }
-
-    public function migrar($id)
-    {
-        $sincronizacao = $this->find($id);
-
-        if ($sincronizacao) {
-            event(new SincronizacaoEvent($sincronizacao));
-        }
     }
 }

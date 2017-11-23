@@ -1,61 +1,155 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use Tests\ModulosTestCase;
+use Modulos\Integracao\Models\Sincronizacao;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 
-class SincronizacaoRepositoryTest extends TestCase
+class SincronizacaoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(SincronizacaoRepository::class);
+        $this->table = 'int_sync_moodle';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Sincronizacao::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Sincronizacao::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Sincronizacao::class)->create();
+        $id = $entry->sym_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Sincronizacao::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Sincronizacao::class)->create();
+        $id = $entry->sym_id;
+
+        $data = $entry->toArray();
+
+        $data['sym_mensagem'] = "Message";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Sincronizacao::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Sincronizacao::class)->create();
+        $id = $entry->sym_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Sincronizacao::class, 2)->create();
+
+        $model = new Sincronizacao();
+        $expected = $model->pluck('sym_table', 'sym_id');
+        $fromRepository = $this->repo->lists('sym_id', 'sym_table');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Sincronizacao::class, 2)->create();
+
+        factory(Sincronizacao::class)->create([
+            'sym_status' => 4
+        ]);
+
+        $searchResult = $this->repo->search(array(['sym_status', '=', 4]));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Sincronizacao::class, 2)->create();
+
+        $entry = factory(Sincronizacao::class)->create([
+            'sym_mensagem' => "message_to_find"
+        ]);
+
+        $expected = [
+            'sym_id' => $entry->sym_id,
+            'sym_mensagem' => $entry->sym_mensagem
+        ];
+
+        $searchResult = $this->repo->search(array(['sym_mensagem', '=', "message_to_find"]), ['sym_id', 'sym_mensagem']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Sincronizacao::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Sincronizacao::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Sincronizacao();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
+        factory(Sincronizacao::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
+        factory(Sincronizacao::class, 2)->create();
 
         $sort = [
             'field' => 'sym_id',
@@ -65,64 +159,33 @@ class SincronizacaoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertEquals(2, $response[0]->sym_id);
+        $this->assertEquals(2, $response->first()->sym_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
-
-        factory(Modulos\Integracao\Models\Sincronizacao::class)->create([
-            'sym_mensagem' => 'icatu',
+        factory(Sincronizacao::class, 2)->create();
+        factory(Sincronizacao::class)->create([
+            'sym_table' => 'table_to_search',
         ]);
 
         $search = [
             [
-                'field' => 'sym_mensagem',
-                'type' => 'like',
-                'term' => 'icatu'
+                'field' => 'sym_table',
+                'type' => '=',
+                'term' => 'table_to_search'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals('icatu', $response[0]->sym_mensagem);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
-
-        $sort = [
-            'field' => 'sym_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'sym_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(0, $response->total());
-
-        $this->assertEquals(2, $response[0]->sym_id);
+        $this->assertEquals('table_to_search', $response->first()->sym_table);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Integracao\Models\Sincronizacao::class, 2)->create();
+        factory(Sincronizacao::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -131,57 +194,8 @@ class SincronizacaoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
-
-        $this->assertInstanceOf(\Modulos\Integracao\Models\Sincronizacao::class, $response);
-
-        $this->assertArrayHasKey('sym_id', $response->toArray());
-    }
-
-    public function testFind()
-    {
-        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
-
-        $this->assertDatabaseHas('int_sync_moodle', $data->toArray());
-    }
-
-
-    public function testFindBy()
-    {
-        $data = [
-            'sym_table' => 'gra_pessoas',
-            'sym_action' => 'UPDATE',
-        ];
-
-        $sync = factory(Modulos\Integracao\Models\Sincronizacao::class)->create($data);
-
-        $recovered = $this->repo->findBy($data)->last();
-
-        $this->assertDatabaseHas('int_sync_moodle', $sync->toArray());
-        $this->assertEquals($sync->toArray(), $recovered->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['sym_mensagem'] = 'abcde_edcba';
-
-        $syncId = $updateArray['sym_id'];
-        unset($updateArray['sym_id']);
-
-        $response = $this->repo->update($updateArray, $syncId, 'sym_id');
-
-        $this->assertEquals(1, $response);
     }
 
     public function testUpdateSyncMoodle()
@@ -198,21 +212,5 @@ class SincronizacaoRepositoryTest extends TestCase
         $response = $this->repo->updateSyncMoodle($updateArray);
 
         $this->assertEquals($data->sym_id, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Modulos\Integracao\Models\Sincronizacao::class)->create();
-        $syncId = $data->sym_id;
-
-        $response = $this->repo->delete($syncId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }
