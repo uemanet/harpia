@@ -81,29 +81,6 @@ class MatrizCurricularRepository extends BaseRepository
                     ->first();
     }
 
-    /**
-     * Busca todas as matrizes de acordo com o curso informado e retorna como lists para popular um field select
-     *
-     * @param $cursoid
-     *
-     * @return mixed
-     */
-    public function listsAllByCurso($cursoid)
-    {
-        return $this->model->where('mtc_crs_id', $cursoid)->pluck('mtc_titulo', 'mtc_id');
-    }
-
-    /**
-     * Lista a matriz pelo id
-     *
-     * @param $id
-     * @return mixed
-     */
-    public function listsAllById($id)
-    {
-        return $this->model->where('mtc_id', $id)->pluck('mtc_titulo', 'mtc_id');
-    }
-
     public function getDisciplinasByMatrizId($matrizCurricularId, array $options = [])
     {
         $query = $this->model

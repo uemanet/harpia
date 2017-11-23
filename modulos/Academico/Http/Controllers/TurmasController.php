@@ -120,7 +120,7 @@ class TurmasController extends BaseController
             return redirect()->back();
         }
 
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
 
         $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, date('Y'));
 
@@ -160,7 +160,7 @@ class TurmasController extends BaseController
 
         $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
 
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
 
         $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, $turma->trm_per_id);
 
