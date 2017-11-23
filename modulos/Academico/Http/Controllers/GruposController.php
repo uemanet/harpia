@@ -139,14 +139,10 @@ class GruposController extends BaseController
             return redirect()->back();
         }
 
-        $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
-
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-
+        $oferta = $turma->ofertacurso;
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
         $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
-
-        $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
-
+        $oferta = $oferta->where('ofc_id', $oferta->ofc_id)->pluck('ofc_ano', 'ofc_id');
         $turma = $this->turmaRepository->listsAllById($turmaId);
 
         return view('Academico::grupos.create', ['curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
@@ -200,9 +196,9 @@ class GruposController extends BaseController
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
         $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
-        $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
+        $oferta = $oferta->where('ofc_id', $oferta->ofc_id)->pluck('ofc_ano', 'ofc_id');
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
 

@@ -198,7 +198,7 @@ class DocumentoRepositoryTest extends TestCase
             'doc_conteudo' => '60721694315'
         ]);
 
-        $searchResult = $this->repo->search(array(['doc_conteudo', '=' ,'60721694315']));
+        $searchResult = $this->repo->search(array(['doc_conteudo', '=', '60721694315']));
 
         $this->assertEquals(1, $searchResult->count());
     }

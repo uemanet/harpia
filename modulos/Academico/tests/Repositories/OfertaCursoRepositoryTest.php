@@ -220,6 +220,7 @@ class OfertaCursoRepositoryTest extends TestCase
 
         $updateArray = $data->toArray();
         $updateArray['ofc_ano'] = 1999;
+        $updateArray['polos'] = null;
 
         $ofertacursodId = $updateArray['ofc_id'];
         unset($updateArray['ofc_id']);
@@ -247,14 +248,6 @@ class OfertaCursoRepositoryTest extends TestCase
         $this->assertNotEmpty($curso, '');
     }
 
-    public function testListsAllByCurso()
-    {
-        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class, 2)->create();
-
-        $curso = $this->repo->listsAllByCurso($ofertacurso[1]->curso->crs_id);
-
-        $this->assertNotEmpty($curso, '');
-    }
 
     public function testListsAllById()
     {
@@ -265,14 +258,6 @@ class OfertaCursoRepositoryTest extends TestCase
         $this->assertNotEmpty($curso, '');
     }
 
-    public function testListsOfertaByTurma()
-    {
-        $turma = factory(Modulos\Academico\Models\Turma::class)->create();
-
-        $curso = $this->repo->listsOfertaByTurma($turma->ofertacurso->curso->crs_id);
-
-        $this->assertNotEmpty($curso, '');
-    }
 
     public function testDelete()
     {
