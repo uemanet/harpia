@@ -219,24 +219,4 @@ class AmbienteVirtualRepositoryTest extends ModulosTestCase
         $this->assertInstanceOf(AmbienteVirtual::class, $fromRepository);
         $this->assertEquals($ambienteVirtual->amb_id, $fromRepository->amb_id);
     }
-
-//    public function testGetAmbienteWithTokenWhithoutTurma()
-//    {
-//
-//    }
-//
-//    public function testFindTurmasWithoutAmbiente()
-//    {
-//
-//    }
-//
-//    public function testFindAmbientesWithMonitor()
-//    {
-//
-//    }
-//
-//    public function testFindAmbienteWithMonitor()
-//    {
-//
-//    }
 }

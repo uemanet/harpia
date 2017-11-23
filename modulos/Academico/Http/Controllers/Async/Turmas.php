@@ -3,9 +3,10 @@
 namespace Modulos\Academico\Http\Controllers\Async;
 
 use Illuminate\Http\JsonResponse;
+use Modulos\Integracao\Models\AmbienteTurma;
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Modulos\Core\Http\Controller\BaseController;
 
 class Turmas extends BaseController
 {
@@ -48,8 +49,16 @@ class Turmas extends BaseController
 
     public function getFindallbyofertacursoWithoutAmbiente($idOfertaCurso)
     {
-        $turmas = $this->ambientevirtualRepository->findTurmasWithoutAmbiente($idOfertaCurso);
+        $turmas = $this->turmaRepository->all();
 
-        return new JsonResponse($turmas, 200);
+        $ids = AmbienteTurma::all()->pluck('atr_trm_id')->toArray();
+
+        $turmasSemAmbiente = $turmas->filter(function ($turma) use ($ids, $idOfertaCurso) {
+            if (in_array($turma->trm_id, $ids) && $turma->trm_ofc_id == $idOfertaCurso && $turma->trm_integrada == 1) {
+                return $turma;
+            }
+        });
+
+        return new JsonResponse($turmasSemAmbiente, 200);
     }
 }
