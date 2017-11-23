@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Geral\Repositories\DocumentoRepository;
+use Modulos\Geral\Models\Documento;
 use Carbon\Carbon;
 
 class DocumentoRepositoryTest extends TestCase
@@ -34,6 +35,7 @@ class DocumentoRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(DocumentoRepository::class);
+        $this->table = 'gra_documentos';
     }
 
     public function testAllWithEmptyDatabase()
@@ -155,6 +157,11 @@ class DocumentoRepositoryTest extends TestCase
         // Retorna para date format americano antes de comparar com o banco
         $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
 
+        $fromRepository = $this->repo->find($data['doc_id']);
+
+        $fromRepository->toArray();
+        $this->assertInstanceOf(Documento::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->getOriginal());
         $this->assertDatabaseHas('gra_documentos', $data);
     }
 
@@ -182,6 +189,46 @@ class DocumentoRepositoryTest extends TestCase
 
         $this->assertEquals(1, $response);
     }
+
+    public function testSearch()
+    {
+        $entries = factory(Documento::class, 10)->create();
+
+        factory(Documento::class)->create([
+            'doc_conteudo' => '60721694315'
+        ]);
+
+        $searchResult = $this->repo->search(array(['doc_conteudo', '=' ,'60721694315']));
+
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testverifyCpfReturnsFalse()
+    {
+        $entries = factory(Documento::class, 10)->create();
+
+        factory(Documento::class)->create([
+            'doc_conteudo' => '60721694315'
+        ]);
+
+        $cpf = $this->repo->verifyCpf($entries[0]->doc_conteudo, $entries[0]->pessoa->pes_id);
+
+        $this->assertEquals(false, $cpf);
+    }
+
+    public function testverifyCpfReturnsTrue()
+    {
+        $entries = factory(Documento::class, 10)->create();
+
+        factory(Documento::class)->create([
+            'doc_conteudo' => '60721694315'
+        ]);
+
+        $cpf = $this->repo->verifyCpf($entries[0]->doc_conteudo, $entries[2]->pessoa->pes_id);
+
+        $this->assertEquals(true, $cpf);
+    }
+
 
     public function testExistsTipoDocumento()
     {

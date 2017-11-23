@@ -93,7 +93,7 @@ class DocumentosController extends BaseController
 
             unset($dados['doc_file']);
 
-            $tipodocumento = $this->documentoRepository->verifyTipoExists($request->input('doc_tpd_id'), $request->input('doc_pes_id'));
+            $tipodocumento = $this->documentoRepository->search();
 
             if (!$tipodocumento) {
                 $errors = array('doc_tpd_id' => 'Essa pessoa já tem esse documento cadastrado');
