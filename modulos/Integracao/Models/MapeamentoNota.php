@@ -10,6 +10,10 @@ class MapeamentoNota extends BaseModel
 
     protected $primaryKey = 'min_id';
 
+    protected $searchable = [
+        'min_id_conceito'
+    ];
+
     protected $fillable = [
         'min_ofd_id',
         'min_id_nota1',

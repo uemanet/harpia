@@ -130,11 +130,11 @@ $factory->define(Modulos\Seguranca\Models\Auditoria::class, function (Faker\Gene
     $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
 
     return [
-      'log_usr_id' => $user->usr_id,
-      'log_action' => $faker->sentence(1),
-      'log_table' => $faker->sentence(1),
-      'log_table_id' => $faker->randomNumber(2),
-      'log_object' => $faker->sentence(1)
+        'log_usr_id' => $user->usr_id,
+        'log_action' => $faker->sentence(1),
+        'log_table' => $faker->sentence(1),
+        'log_table_id' => $faker->randomNumber(2),
+        'log_object' => $faker->sentence(1)
     ];
 });
 
@@ -427,13 +427,13 @@ $factory->define(Modulos\Academico\Models\LancamentoTcc::class, function (Faker\
     $anexo = factory(Modulos\Geral\Models\Anexo::class)->create();
 
     return [
-      'ltc_mof_id' => $matriculaoferta->mof_id,
-      'ltc_prf_id' => $professor->prf_id,
-      'ltc_anx_tcc' => $anexo->anx_id,
-      'ltc_titulo' => $faker->sentence(3),
-      'ltc_tipo' => 'artigo',
-      'ltc_data_apresentacao' => '15/11/2015',
-      'ltc_observacao' => $faker->sentence(3)
+        'ltc_mof_id' => $matriculaoferta->mof_id,
+        'ltc_prf_id' => $professor->prf_id,
+        'ltc_anx_tcc' => $anexo->anx_id,
+        'ltc_titulo' => $faker->sentence(3),
+        'ltc_tipo' => 'artigo',
+        'ltc_data_apresentacao' => '15/11/2015',
+        'ltc_observacao' => $faker->sentence(3)
     ];
 });
 
@@ -536,6 +536,20 @@ $factory->define(Modulos\Integracao\Models\AmbienteVirtual::class, function (Fak
         'amb_versao' => $faker->sentence(2),
         'amb_url' => $faker->sentence(3)
     ];
+});
+
+$factory->define(\Modulos\Integracao\Models\MapeamentoNota::class, function (Faker\Generator $faker) {
+    $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create();
+
+    return [
+       'min_ofd_id' => $ofertaDisciplina->ofd_id,
+       'min_id_nota1' => $faker->numberBetween(0, 10),
+       'min_id_nota2' => $faker->numberBetween(0, 10),
+       'min_id_nota3' => $faker->numberBetween(0, 10),
+       'min_id_recuperacao' => $faker->numberBetween(0, 5),
+       'min_id_conceito'  => $faker->randomElement(['aprovado', 'aprovado_final', 'reprovado', 'reprovado_final']),
+       'min_id_final' => $faker->numberBetween(0, 10)
+   ];
 });
 
 $factory->define(Modulos\Integracao\Models\Servico::class, function (Faker\Generator $faker) {

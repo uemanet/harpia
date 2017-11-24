@@ -26,7 +26,7 @@ class MapeamentoNotasRepository extends BaseRepository
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
     ) {
-        $this->model = $model;
+        parent::__construct($model);
         $this->periodoLetivoRepository = $periodoLetivoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
@@ -128,9 +128,9 @@ class MapeamentoNotasRepository extends BaseRepository
         // Dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas
         // necessários
         $itensNota = DB::table('int_mapeamento_itens_nota')
-                        ->where('min_ofd_id', $ofertaDisciplina->ofd_id)
-                        ->select($select)
-                        ->first();
+            ->where('min_ofd_id', $ofertaDisciplina->ofd_id)
+            ->select($select)
+            ->first();
 
         // caso não exista itens de notas cadastrados, envia uma mensagem de erro
         if (!$itensNota) {
@@ -196,12 +196,12 @@ class MapeamentoNotasRepository extends BaseRepository
                 if ($nota['tipo'] != 'conceito') {
                     $value = (float)$nota['nota'];
                 }
-                $notas['mof_'.$nota['tipo']] = $value;
+                $notas['mof_' . $nota['tipo']] = $value;
             }
 
             foreach ($tiposenviados as $enviado) {
                 if (!in_array($enviado, $tiposrecebidos) && $enviado != 'final') {
-                    $notas['mof_'.$enviado] = 0;
+                    $notas['mof_' . $enviado] = 0;
                 }
             }
 
@@ -254,14 +254,6 @@ class MapeamentoNotasRepository extends BaseRepository
         return null;
     }
 
-    private function getConfiguracoesCurso($cursoId)
-    {
-        return DB::table('acd_configuracoes_cursos')
-                        ->where('cfc_crs_id', '=', $cursoId)
-                        ->pluck('cfc_valor', 'cfc_nome')
-                        ->toArray();
-    }
-
     public function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'Numérica')
     {
         if ($tipoAvaliacao == 'Conceitual') {
@@ -299,7 +291,7 @@ class MapeamentoNotasRepository extends BaseRepository
         // 2º Caso - Aluno nao atinge a media minima, mas possui recuperacao
         if (($mediaParcial < $mediaAprovacao) && array_key_exists('mof_recuperacao', $notas)) {
             $recuperacao = $notas['mof_recuperacao'];
-            $mediaParcial =  ($recuperacao > $mediaParcial) ? $recuperacao : $mediaParcial;
+            $mediaParcial = ($recuperacao > $mediaParcial) ? $recuperacao : $mediaParcial;
 
             $modoRecuperacao = $configuracoesCurso['modo_recuperacao'];
 
