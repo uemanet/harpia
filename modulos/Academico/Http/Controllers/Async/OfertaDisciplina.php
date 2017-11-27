@@ -155,7 +155,7 @@ class OfertaDisciplina extends BaseController
         $disciplinas = $this->moduloDisciplinaRepository
                             ->getAllDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId);
 
-        $professores = $this->professorRepository->lists('prf_id', 'pes_nome');
+        $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
         $html = view('Academico::ofertasdisciplinas.ajax.table_disciplinas_nao_ofertadas', compact('disciplinas', 'professores'))->render();
 
