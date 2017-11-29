@@ -2,11 +2,12 @@
 
 namespace Modulos\Geral\Repositories;
 
-use League\Flysystem\FileExistsException;
-use Modulos\Core\Repository\BaseRepository;
+use Storage;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Response;
+use League\Flysystem\FileExistsException;
+use Modulos\Core\Repository\BaseRepository;
 
 class AnexoRepository extends BaseRepository
 {
@@ -14,8 +15,13 @@ class AnexoRepository extends BaseRepository
 
     public function __construct(Anexo $anexo)
     {
-        $this->model = $anexo;
-        $this->basePath = storage_path() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+        parent::__construct($anexo);
+
+        // Usa o driver default para armazenamento
+        $driver = Storage::disk()->getDriver();
+        $prefix = $driver->getAdapter()->getPathPrefix();
+
+        $this->basePath = $prefix . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
     }
 
     /**
