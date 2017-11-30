@@ -2,16 +2,16 @@
 
 namespace Modulos\Geral\Repositories;
 
+use DB;
+use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Events\UpdatePessoaEvent;
 use Modulos\Core\Repository\BaseRepository;
-use Modulos\Geral\Models\Pessoa;
-use DB;
 
 class PessoaRepository extends BaseRepository
 {
     public function __construct(Pessoa $pessoa)
     {
-        $this->model = $pessoa;
+        parent::__construct($pessoa);
     }
 
     public function paginate($sort = null, $search = null)
@@ -80,6 +80,11 @@ class PessoaRepository extends BaseRepository
         return 0;
     }
 
+    /**
+     * TODO refatorar 1 ocorrencia
+     * @param $cpf
+     * @return mixed
+     */
     public function findPessoaByCpf($cpf)
     {
         $result = $this->model->join('gra_documentos', function ($join) {
@@ -90,6 +95,12 @@ class PessoaRepository extends BaseRepository
         return $result;
     }
 
+
+    /**
+     * TODO refatorar 9 ocorrencias
+     * @param $id
+     * @return mixed
+     */
     public function findById($id)
     {
         $result = $this->model
