@@ -1,65 +1,172 @@
 <?php
 
-
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Artisan;
-use Modulos\Geral\Repositories\DocumentoRepository;
+use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Documento;
-use Carbon\Carbon;
+use Stevebauman\EloquentTable\TableCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modulos\Geral\Repositories\DocumentoRepository;
 
-class DocumentoRepositoryTest extends TestCase
+class DocumentoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(DocumentoRepository::class);
         $this->table = 'gra_documentos';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Documento::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        // Accessor
+        $checkData = $data;
+        $checkData['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+
+        $this->assertInstanceOf(Documento::class, $entry);
+        $this->assertDatabaseHas($this->table, $checkData);
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Documento::class)->create();
+        $id = $entry->doc_id;
+        $fromRepository = $this->repo->find($id);
+
+        $data = $entry->toArray();
+        // Accessor
+        $data['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+
+        $fromRepositoryArray = $fromRepository->toArray();
+        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getOriginal('doc_data_expedicao');
+
+        $this->assertInstanceOf(Documento::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepositoryArray);
+        $this->assertEquals($data, $fromRepositoryArray);
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Documento::class)->create();
+        $id = $entry->doc_id;
+
+        $data = $entry->toArray();
+
+        $data['doc_conteudo'] = "15648989878";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        // Accessor
+        $data['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+
+        $fromRepositoryArray = $fromRepository->toArray();
+        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getOriginal('doc_data_expedicao');
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Documento::class, $fromRepository);
+        $this->assertEquals($data, $fromRepositoryArray);
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Documento::class)->create();
+        $id = $entry->doc_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Documento::class, 2)->create();
+
+        $model = new Documento();
+        $expected = $model->pluck('doc_conteudo', 'doc_id');
+        $fromRepository = $this->repo->lists('doc_id', 'doc_conteudo');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Documento::class, 2)->create();
+
+        factory(Documento::class)->create([
+            'doc_conteudo' => '156455'
+        ]);
+
+        $searchResult = $this->repo->search(array(['doc_conteudo', '=', '156455']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Documento::class, 2)->create();
+
+        $entry = factory(Documento::class)->create([
+            'doc_conteudo' => "15648987"
+        ]);
+
+        $expected = [
+            'doc_id' => $entry->doc_id,
+            'doc_conteudo' => $entry->doc_conteudo
+        ];
+
+        $searchResult = $this->repo->search(array(['doc_conteudo', '=', "15648987"]), ['doc_id', 'doc_conteudo']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Documento::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Documento::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Documento();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Geral\Models\Documento::class, 2)->create();
+        factory(Documento::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Geral\Models\Documento::class, 2)->create();
+        factory(Documento::class, 2)->create();
 
         $sort = [
             'field' => 'doc_id',
@@ -69,60 +176,33 @@ class DocumentoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->doc_id);
+        $this->assertEquals(2, $response->first()->doc_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Geral\Models\Documento::class, 2)->create();
-
-        factory(Modulos\Geral\Models\Documento::class)->create([
-            'doc_conteudo' => '05545376506',
+        factory(Documento::class, 2)->create();
+        factory(Documento::class)->create([
+            'doc_conteudo' => '654897894',
         ]);
 
         $search = [
             [
                 'field' => 'doc_conteudo',
-                'type' => 'like',
-                'term' => '05545376506'
+                'type' => '=',
+                'term' => '654897894'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Geral\Models\Documento::class, 2)->create();
-
-        $sort = [
-            'field' => 'doc_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'doc_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('654897894', $response->first()->doc_conteudo);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Geral\Models\Documento::class, 2)->create();
+        factory(Documento::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -131,79 +211,11 @@ class DocumentoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
-    {
-        $response = factory(Modulos\Geral\Models\Documento::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(\Modulos\Geral\Models\Documento::class, $response);
-
-        $this->assertArrayHasKey('doc_id', $data);
-    }
-
-    public function testFind()
-    {
-        $dados = factory(Modulos\Geral\Models\Documento::class)->create();
-
-        $data = $dados->toArray();
-
-        // Retorna para date format americano antes de comparar com o banco
-        $data['doc_data_expedicao'] = Carbon::createFromFormat('d/m/Y', $data['doc_data_expedicao'])->toDateString();
-
-        $fromRepository = $this->repo->find($data['doc_id']);
-
-        $fromRepository->toArray();
-        $this->assertInstanceOf(Documento::class, $fromRepository);
-        $this->assertDatabaseHas($this->table, $fromRepository->getOriginal());
-        $this->assertDatabaseHas('gra_documentos', $data);
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Geral\Models\Documento::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['doc_conteudo'] = '123456';
-
-        $documentoId = $updateArray['doc_id'];
-        unset($updateArray['doc_id']);
-
-        $response = $this->repo->update($updateArray, $documentoId, 'doc_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Modulos\Geral\Models\Documento::class)->create();
-        $documentoId = $data->doc_id;
-
-        $response = $this->repo->delete($documentoId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testSearch()
-    {
-        $entries = factory(Documento::class, 10)->create();
-
-        factory(Documento::class)->create([
-            'doc_conteudo' => '60721694315'
-        ]);
-
-        $searchResult = $this->repo->search(array(['doc_conteudo', '=', '60721694315']));
-
-        $this->assertEquals(1, $searchResult->count());
-    }
-
-    public function testverifyCpfReturnsFalse()
+    public function testVerifyCpfReturnsFalse()
     {
         $entries = factory(Documento::class, 10)->create();
 
@@ -216,7 +228,7 @@ class DocumentoRepositoryTest extends TestCase
         $this->assertEquals(false, $cpf);
     }
 
-    public function testverifyCpfReturnsTrue()
+    public function testVerifyCpfReturnsTrue()
     {
         $entries = factory(Documento::class, 10)->create();
 
@@ -229,20 +241,32 @@ class DocumentoRepositoryTest extends TestCase
         $this->assertEquals(true, $cpf);
     }
 
-
     public function testExistsTipoDocumento()
     {
-        $data = factory(Modulos\Geral\Models\Documento::class)->create();
-        $documentoId = $data->doc_id;
-
+        $data = factory(Documento::class)->create();
         $response = $this->repo->verifyTipoExists($data->doc_tpd_id, $data->doc_pes_id);
 
         $this->assertEquals(false, $response);
     }
 
-    public function tearDown()
+    public function testDeleteDocumento()
     {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $entry = factory(Documento::class)->create();
+        $id = $entry->doc_id;
+
+        $return = (bool) $this->repo->deleteDocumento($id);
+
+        $fromRepository = $this->repo->find($id);
+
+        // Accessor
+        $data = $entry->toArray();
+        $data['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+
+        $fromRepositoryArray = $fromRepository->toArray();
+        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getOriginal('doc_data_expedicao');
+
+        $this->assertTrue($return);
+        $this->assertDatabaseMissing($this->table, $data);
+        $this->assertDatabaseHas($this->table, $fromRepositoryArray);
     }
 }

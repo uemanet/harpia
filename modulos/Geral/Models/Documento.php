@@ -2,8 +2,8 @@
 
 namespace Modulos\Geral\Models;
 
-use Modulos\Core\Model\BaseModel;
 use Carbon\Carbon;
+use Modulos\Core\Model\BaseModel;
 
 class Documento extends BaseModel
 {
@@ -41,7 +41,7 @@ class Documento extends BaseModel
         return $this->belongsTo('Modulos\Geral\Models\Anexo', 'anx_id');
     }
 
-    // // Accessors
+    // Accessors
     public function getDocDataExpedicaoAttribute($value)
     {
         if ($value === null) {

@@ -2,11 +2,10 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Illuminate\Support\Facades\DB;
-use Modulos\Core\Repository\BaseRepository;
+use DB;
 use Modulos\Geral\Models\Anexo;
 use Modulos\Geral\Models\Documento;
-use Carbon\Carbon;
+use Modulos\Core\Repository\BaseRepository;
 
 class DocumentoRepository extends BaseRepository
 {
@@ -14,8 +13,6 @@ class DocumentoRepository extends BaseRepository
     {
         $this->model = $documento;
     }
-
-
 
     public function verifyCpf($cpf, $idPessoa = null)
     {
@@ -80,14 +77,6 @@ class DocumentoRepository extends BaseRepository
         return $this->model->updateOrCreate($attributes, $data);
     }
 
-    /**
-     * Formata datas pt_BR para default MySQL
-     * para update de registros
-     * @param array $data
-     * @param $id
-     * @param string $attribute
-     * @return mixed
-     */
     public function update(array $data, $id, $attribute = null)
     {
         if (!$attribute) {
