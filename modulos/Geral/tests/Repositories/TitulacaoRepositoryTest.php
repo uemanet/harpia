@@ -1,46 +1,140 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Titulacao;
-use Modulos\Geral\Repositories\TitulacaoRepository;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Geral\Repositories\TitulacaoRepository;
 
-class TitulacaoRepositoryTest extends TestCase
+class TitulacaoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(TitulacaoRepository::class);
+        $this->table = 'gra_titulacoes';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Titulacao::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Titulacao::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->getOriginal());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Titulacao::class)->create();
+
+        $id = $entry->tit_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Titulacao::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Titulacao::class)->create();
+        $id = $entry->tit_id;
+
+        $data = $entry->toArray();
+        $data['tit_nome'] = "especialista";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Titulacao::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Titulacao::class)->create();
+        $id = $entry->tit_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Titulacao::class, 2)->create();
+
+        $model = new Titulacao();
+        $expected = $model->pluck('tit_nome', 'tit_id');
+        $fromRepository = $this->repo->lists('tit_id', 'tit_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Titulacao::class, 2)->create();
+
+        factory(Titulacao::class)->create([
+            'tit_nome' => 'doutorado'
+        ]);
+
+        $searchResult = $this->repo->search(array(['tit_nome', '=', 'doutorado']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Titulacao::class, 2)->create();
+
+        $entry = factory(Titulacao::class)->create([
+            'tit_nome' => "bachelor"
+        ]);
+
+        $expected = [
+            'tit_id' => $entry->tit_id,
+            'tit_nome' => $entry->tit_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['tit_nome', '=', "bachelor"]), ['tit_id', 'tit_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Titulacao::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Titulacao::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Titulacao();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
@@ -50,7 +144,6 @@ class TitulacaoRepositoryTest extends TestCase
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
@@ -66,55 +159,28 @@ class TitulacaoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->tit_id);
+        $this->assertEquals(2, $response->first()->tit_id);
     }
 
     public function testPaginateWithSearch()
     {
         factory(Titulacao::class, 2)->create();
-
         factory(Titulacao::class)->create([
-            'tit_nome' => 'graduacao',
+            'tit_nome' => 'bachelor',
         ]);
 
         $search = [
             [
                 'field' => 'tit_nome',
-                'type' => 'like',
-                'term' => 'graduacao'
+                'type' => '=',
+                'term' => 'bachelor'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Titulacao::class, 2)->create();
-
-        $sort = [
-            'field' => 'tit_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'tit_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('bachelor', $response->first()->tit_nome);
     }
 
     public function testPaginateRequest()
@@ -128,69 +194,20 @@ class TitulacaoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Titulacao::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(Titulacao::class, $response);
-
-        $this->assertArrayHasKey('tit_id', $data);
-    }
-
-    public function testFind()
-    {
-        $data = factory(Titulacao::class)->create();
-
-        $this->assertDatabaseHas('gra_titulacoes', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Titulacao::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['tit_nome'] = 'abcde_edcba';
-
-        $titulacaoId = $updateArray['tit_id'];
-        unset($updateArray['tit_id']);
-
-        $response = $this->repo->update($updateArray, $titulacaoId, 'tit_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Titulacao::class)->create();
-        $titulacaoId = $data->tit_id;
-
-        $response = $this->repo->delete($titulacaoId);
-
-        $this->assertEquals(1, $response);
     }
 
     public function testVerifyTitulacao()
     {
-        $data = factory(Titulacao::class)->create();
+        factory(Titulacao::class, 10)->create();
 
-        $titulacaoName = $data->tit_nome;
+        $this->assertEquals(null, $this->repo->verifyTitulacao('bachelor'));
 
-        $response = $this->repo->verifyTitulacao($titulacaoName);
+        factory(Titulacao::class)->create([
+            'tit_nome' => 'bachelor'
+        ]);
 
-        $this->assertNotEquals(null, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $this->assertInstanceOf(Titulacao::class, $this->repo->verifyTitulacao('bachelor'));
     }
 }

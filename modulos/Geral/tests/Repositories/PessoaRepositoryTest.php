@@ -94,8 +94,8 @@ class PessoaRepositoryTest extends ModulosTestCase
         $entries = factory(Pessoa::class, 2)->create();
 
         $model = new Pessoa();
-        $expected = $model->pluck('sym_table', 'pes_id');
-        $fromRepository = $this->repo->lists('pes_id', 'sym_table');
+        $expected = $model->pluck('pes_nome', 'pes_id');
+        $fromRepository = $this->repo->lists('pes_id', 'pes_nome');
 
         $this->assertEquals($expected, $fromRepository);
     }
