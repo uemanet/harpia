@@ -2,6 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Pessoa;
+use Modulos\Geral\Models\Documento;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -229,5 +230,44 @@ class PessoaRepositoryTest extends ModulosTestCase
         ]);
 
         $this->assertTrue($this->repo->verifyEmail('emailtofind@email.com'));
+    }
+
+    public function testFindPessoaByCpf()
+    {
+        factory(Pessoa::class, 2)->create();
+
+        $result = $this->repo->findPessoaByCpf('12345678901');
+
+        $this->assertEquals(null, $result);
+
+        $pessoa = factory(Pessoa::class)->create();
+
+        factory(Documento::class)->create([
+            'doc_pes_id' => $pessoa->pes_id,
+            'doc_conteudo' => '12345678901'
+        ]);
+
+        $result = $this->repo->findPessoaByCpf('12345678901');
+        $this->assertInstanceOf(Pessoa::class, $result);
+    }
+
+    public function testFindPessoaById()
+    {
+        factory(Pessoa::class, 2)->create();
+
+        $result = $this->repo->findById(random_int(10, 100));
+        $this->assertEquals(null, $result);
+
+        $pessoa = factory(Pessoa::class)->create();
+        $id = $pessoa->pes_id;
+
+        factory(Documento::class)->create([
+            'doc_pes_id' => $id,
+            'doc_conteudo' => '12345678901'
+        ]);
+
+        $result = $this->repo->findById($id);
+        $this->assertInstanceOf(Pessoa::class, $result);
+        $this->assertEquals('12345678901', $result->doc_conteudo);
     }
 }

@@ -2,10 +2,10 @@
 
 use Harpia\Event\SincronizacaoFactory;
 use Modulos\Academico\Events\CreateGrupoEvent;
-use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
-use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
+use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 
 class SincronizacaoFactoryTest extends TestCase

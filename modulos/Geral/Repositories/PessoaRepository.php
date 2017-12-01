@@ -81,7 +81,6 @@ class PessoaRepository extends BaseRepository
     }
 
     /**
-     * TODO refatorar 1 ocorrencia
      * @param $cpf
      * @return mixed
      */
@@ -97,7 +96,6 @@ class PessoaRepository extends BaseRepository
 
 
     /**
-     * TODO refatorar 9 ocorrencias
      * @param $id
      * @return mixed
      */
