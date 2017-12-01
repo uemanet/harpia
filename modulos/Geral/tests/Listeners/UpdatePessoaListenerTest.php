@@ -7,9 +7,9 @@ use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
 class UpdatePessoaListenerTest extends TestCase
 {
+    protected $turma;
     protected $ambiente;
     protected $sincronizacaoRepository;
-    protected $turma;
 
     public function createApplication()
     {

@@ -115,7 +115,6 @@ class PessoaRepository extends BaseRepository
 
     public function updatePessoaAmbientes($pessoaAtt)
     {
-
         //verifica em quais turmas a pessoa está vinculada como professor
         $professorturmas = $this->model
             ->join('acd_professores', 'prf_pes_id', '=', 'pes_id')

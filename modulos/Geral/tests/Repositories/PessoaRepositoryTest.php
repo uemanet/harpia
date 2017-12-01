@@ -2,9 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Pessoa;
+use Modulos\Academico\Models\Aluno;
 use Modulos\Geral\Models\Documento;
+use Modulos\Academico\Models\Matricula;
+use Modulos\Integracao\Models\Sincronizacao;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Geral\Repositories\PessoaRepository;
 
 class PessoaRepositoryTest extends ModulosTestCase
@@ -255,6 +259,7 @@ class PessoaRepositoryTest extends ModulosTestCase
     {
         factory(Pessoa::class, 2)->create();
 
+
         $result = $this->repo->findById(random_int(10, 100));
         $this->assertEquals(null, $result);
 
@@ -269,5 +274,74 @@ class PessoaRepositoryTest extends ModulosTestCase
         $result = $this->repo->findById($id);
         $this->assertInstanceOf(Pessoa::class, $result);
         $this->assertEquals('12345678901', $result->doc_conteudo);
+    }
+
+    public function testUpdatePessoaAmbientes()
+    {
+        // Cria ambiente
+        $moodle = [
+            'amb_nome' => 'Moodle',
+            'amb_versao' => '3.2+',
+            'amb_url' => "http://localhost:8080"
+        ];
+
+        $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
+
+        // Integracoes
+        $servico = factory(Modulos\Integracao\Models\Servico::class)->create([
+            'ser_id' => 2,
+            'ser_nome' => "Integração",
+            'ser_slug' => "local_integracao"
+        ]);
+
+        $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+            'asr_amb_id' => $ambiente->amb_id,
+            'asr_ser_id' => $servico->ser_id,
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
+        ]);
+
+        // Mock de turma
+        factory(\Modulos\Geral\Models\Pessoa::class, 10);
+
+        // Cria a turma
+        $data = [
+            'trm_id' => random_int(50, 100),
+            'trm_ofc_id' => factory(Modulos\Academico\Models\OfertaCurso::class)->create()->ofc_id,
+            'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
+            'trm_nome' => "Turma de Teste",
+            'trm_integrada' => 1,
+            'trm_qtd_vagas' => 50
+        ];
+
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
+
+        // Vincular com o ambiente
+        factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => $ambiente->amb_id
+        ]);
+
+        // Mapeia a turma
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($turma);
+        $sincronizacaoListener->handle($turmaMapeadaEvent);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+
+        $this->assertEquals(1, Sincronizacao::all()->count());
+
+        $pessoa = Pessoa::all()->first();
+        $aluno = factory(Aluno::class)->create([
+            'alu_pes_id' => $pessoa->pes_id
+        ]);
+
+        factory(Matricula::class)->create([
+            'mat_alu_id' => $aluno->alu_id,
+            'mat_trm_id' => $turma->trm_id,
+        ]);
+
+        // Verifica se p metodo esta disparando o evento de atualizacao de pessoa
+        $this->expectsEvents(\Modulos\Geral\Events\UpdatePessoaEvent::class);
+        $this->repo->updatePessoaAmbientes($pessoa);
     }
 }
