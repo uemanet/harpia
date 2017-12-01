@@ -67,8 +67,8 @@ $factory->define(Modulos\Geral\Models\Titulacao::class, function (Faker\Generato
 
 $factory->define(Modulos\Geral\Models\TitulacaoInformacao::class, function (Faker\Generator $faker) {
     return [
-        'tin_pes_id' => 1,
-        'tin_tit_id' => 1,
+        'tin_pes_id' => factory(\Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
+        'tin_tit_id' => factory(\Modulos\Geral\Models\Titulacao::class)->create()->tit_id,
         'tin_titulo' => $faker->word,
         'tin_instituicao' => $faker->word,
         'tin_instituicao_sigla' => $faker->word,
