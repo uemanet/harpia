@@ -73,6 +73,7 @@ class PessoaRepositoryTest extends ModulosTestCase
         $fromRepositoryArray['pes_nascimento'] = $fromRepository->getOriginal('pes_nascimento');
 
         $this->assertEquals(1, $return);
+        $this->assertEquals(0, $this->repo->update($data, 4));
         $this->assertDatabaseHas($this->table, $data);
         $this->assertInstanceOf(Pessoa::class, $fromRepository);
         $this->assertEquals($data, $fromRepositoryArray);
@@ -208,6 +209,37 @@ class PessoaRepositoryTest extends ModulosTestCase
         $this->assertEquals('fulano de tal', $response->first()->pes_nome);
     }
 
+    public function testPaginateWithSearchForCpf()
+    {
+        factory(Pessoa::class, 2)->create();
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'fulano de tal',
+        ]);
+
+        factory(Documento::class)->create([
+            'doc_pes_id' => $pessoa->pes_id,
+            'doc_conteudo' => '12345678965'
+        ]);
+
+        $search = [
+            [
+                'field' => 'pes_cpf',
+                'type' => '=',
+                'term' => '12345678965'
+            ],
+            [
+                'field' => 'pes_nome',
+                'type' => 'like',
+                'term' => 'fulano de tal'
+            ]
+        ];
+
+        $response = $this->repo->paginate(null, $search);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('fulano de tal', $response->first()->pes_nome);
+    }
+
     public function testPaginateRequest()
     {
         factory(Pessoa::class, 2)->create();
@@ -227,13 +259,23 @@ class PessoaRepositoryTest extends ModulosTestCase
     {
         factory(Pessoa::class, 2)->create();
 
+        // Email sem pessoa
         $this->assertFalse($this->repo->verifyEmail('findthisemail@email.com'));
 
-        factory(Pessoa::class)->create([
+        // Email com id de callback pessoa existente
+        $this->assertFalse($this->repo->verifyEmail('findthisemail@email.com', 2));
+
+        // Email com id de callback pessoa inexistente
+        $this->assertFalse($this->repo->verifyEmail('findthisemail@email.com', 39));
+
+        $pessoa = factory(Pessoa::class)->create([
             'pes_email' => 'emailtofind@email.com'
         ]);
 
+        $id = $pessoa->pes_id;
+
         $this->assertTrue($this->repo->verifyEmail('emailtofind@email.com'));
+        $this->assertTrue($this->repo->verifyEmail('emailtofind@email.com', $id));
     }
 
     public function testFindPessoaByCpf()

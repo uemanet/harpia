@@ -249,6 +249,29 @@ class DocumentoRepositoryTest extends ModulosTestCase
         $this->assertEquals(false, $response);
     }
 
+    public function testUpdateDocumento()
+    {
+        factory(Documento::class, 5)->create([
+            'doc_orgao' => 'TDD'
+        ]);
+
+        $data = [
+          'doc_conteudo' => '216752714'
+        ];
+
+        $return = $this->repo->updateDocumento($data, [
+            'doc_orgao' => 'TDD'
+        ]);
+
+        $this->assertEquals(5, $return);
+
+        $return = $this->repo->updateDocumento($data, [
+            'doc_orgao' => 'ANY'
+        ]);
+
+        $this->assertEquals(0, $return);
+    }
+
     public function testDeleteDocumento()
     {
         $entry = factory(Documento::class)->create();

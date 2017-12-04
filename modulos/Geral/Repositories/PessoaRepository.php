@@ -48,21 +48,16 @@ class PessoaRepository extends BaseRepository
 
     public function verifyEmail($email, $idPessoa = null)
     {
-        $result = $this->model->where('pes_email', $email)->get();
+        $result = $this->model->where('pes_email', '=', $email)->get();
 
-        if (!$result->isEmpty()) {
-            if (!is_null($idPessoa)) {
-                $result = $result->where('pes_id', $idPessoa);
-
-                if (!$result->isEmpty()) {
-                    return false;
-                }
-            }
-
-            return true;
+        if ($idPessoa) {
+            $result = $this->model
+                ->where('pes_id', '=', $idPessoa)
+                ->where('pes_email', '=', $email)
+                ->get();
         }
 
-        return false;
+        return (bool) $result->count();
     }
 
     public function update(array $data, $id, $attribute = "pes_id")

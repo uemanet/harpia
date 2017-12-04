@@ -29,8 +29,6 @@ class DocumentoRepository extends BaseRepository
 
             return true;
         }
-
-        return false;
     }
 
     public function updateDocumento(array $data, array $options)
