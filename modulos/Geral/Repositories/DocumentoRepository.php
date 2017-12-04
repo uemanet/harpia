@@ -97,18 +97,4 @@ class DocumentoRepository extends BaseRepository
 
         return 0;
     }
-
-    public function verifyTipoExists($tipodocumentoId, $pessoaId)
-    {
-        $tipo_exists = $this->model
-            ->where('doc_pes_id', '=', $pessoaId)
-            ->where('doc_tpd_id', '=', $tipodocumentoId)
-            ->get();
-
-        if ($tipo_exists->isEmpty()) {
-            return true;
-        }
-
-        return false;
-    }
 }

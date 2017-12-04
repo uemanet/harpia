@@ -241,14 +241,6 @@ class DocumentoRepositoryTest extends ModulosTestCase
         $this->assertEquals(true, $cpf);
     }
 
-    public function testExistsTipoDocumento()
-    {
-        $data = factory(Documento::class)->create();
-        $response = $this->repo->verifyTipoExists($data->doc_tpd_id, $data->doc_pes_id);
-
-        $this->assertEquals(false, $response);
-    }
-
     public function testUpdateDocumento()
     {
         factory(Documento::class, 5)->create([
