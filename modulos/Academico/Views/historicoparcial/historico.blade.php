@@ -69,10 +69,6 @@
             color: white;
         }
 
-        /*td, th {
-            border-bottom: 0.1mm solid;
-        }*/
-
     </style>
 </head>
 <body>
