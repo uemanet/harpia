@@ -11,7 +11,7 @@ class ModuloRepository extends BaseRepository
 {
     public function __construct(Modulo $modulo)
     {
-        $this->model = $modulo;
+        parent::__construct($modulo);
     }
 
     public function getByUser($userId, $isMenu = false)
@@ -27,10 +27,10 @@ class ModuloRepository extends BaseRepository
             return $modulos;
         }
 
-        $permissoes = Cache::get('PERMISSOES_'.$userId);
+        $permissoes = Cache::get('PERMISSOES_' . $userId);
 
         for ($i = 0; $i < $modulos->count(); $i++) {
-            if (!in_array($modulos[$i]->mod_slug.'.index.index', $permissoes)) {
+            if (!in_array($modulos[$i]->mod_slug . '.index.index', $permissoes)) {
                 unset($modulos[$i]);
             }
         }
