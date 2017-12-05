@@ -245,6 +245,31 @@ class AnexoRepositoryTest extends ModulosTestCase
         $this->assertTrue(file_exists($path));
     }
 
+    public function testSalvarAnexoExistente()
+    {
+        $prefix = Storage::disk()->getDriver()->getAdapter()->getPathPrefix();
+        $this->assertEquals(0, $this->repo->all()->count());
+
+        $uploaded = $this->mockUploaded();
+        $anexo = $this->repo->salvarAnexo($uploaded);
+
+        $this->assertInstanceOf(Anexo::class, $anexo);
+        $this->assertDatabaseHas($this->table, $anexo->toArray());
+
+        list($firstDir, $sndDir) = $this->mockHashDirectories($anexo->anx_localizacao);
+        $path = $prefix . 'uploads' . DIRECTORY_SEPARATOR .  $firstDir . DIRECTORY_SEPARATOR . $sndDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao;
+
+        $this->assertTrue(file_exists($path));
+
+        $uploaded = $this->mockUploaded();
+        // Tenta salvar novamente o mesmo arquivo - deve retornar um array com mensagem de erro
+        $return = $this->repo->salvarAnexo($uploaded);
+
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('type', $return);
+        $this->assertArrayHasKey('message', $return);
+    }
+
     public function testRecuperarAnexo()
     {
         // Mock de upload
@@ -257,6 +282,10 @@ class AnexoRepositoryTest extends ModulosTestCase
 
         $recuperado = $this->repo->recuperarAnexo($id);
         $this->assertInstanceOf(BinaryFileResponse::class, $recuperado);
+
+        // Anexo inexistente
+        $return = $this->repo->recuperarAnexo(random_int(10, 100));
+        $this->assertTrue(is_string($return));
     }
 
     public function testAtualizarAnexo()
@@ -265,6 +294,14 @@ class AnexoRepositoryTest extends ModulosTestCase
 
         // Mock de upload
         $uploaded = $this->mockUploaded();
+
+        // 1 - Atualizar anexo inexistente retorna um array com mensagem de erro
+        $return = $this->repo->atualizarAnexo(random_int(1, 10), $uploaded);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('type', $return);
+        $this->assertArrayHasKey('message', $return);
+
+        // 2 - Atualizar anexo existente com novo arquivo
         $anexo = $this->repo->salvarAnexo($uploaded);
 
         $id = $anexo->anx_id;
@@ -290,13 +327,29 @@ class AnexoRepositoryTest extends ModulosTestCase
 
         // Novo arquivo deve estar presente
         $this->assertTrue(file_exists($path));
+
+        // 3 - Atualizar um anexo com o mesmo arquivo repetido - deve retornar um array com mensagem de erro
+        $novoAnexo = factory(Anexo::class)->create();
+
+        $uploaded = $this->mockUploaded('alternative.png');
+        $return = $this->repo->atualizarAnexo($novoAnexo->anx_id, $uploaded);
+
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('type', $return);
+        $this->assertArrayHasKey('message', $return);
     }
 
     public function testDeletarAnexo()
     {
         $prefix = Storage::disk()->getDriver()->getAdapter()->getPathPrefix();
 
-        // Mock de upload
+        // 1 - Atualizar anexo inexistente retorna um array com mensagem de erro
+        $return = $this->repo->deletarAnexo(random_int(1, 10));
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('type', $return);
+        $this->assertArrayHasKey('message', $return);
+
+        // 2 - Deletar anexo
         $uploaded = $this->mockUploaded();
         $anexo = $this->repo->salvarAnexo($uploaded);
 

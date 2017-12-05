@@ -92,7 +92,7 @@ class AnexoRepository extends BaseRepository
 
         list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
 
-        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao;
 
         $headers = array('Content-Type: ' . $anexo->anx_mime);
         return Response::download($caminhoArquivo, $anexo->anx_nome, $headers);
@@ -126,6 +126,7 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
+
             return array(
                 'type' => 'error_exists',
                 'message' => 'Arquivo enviado já existe'

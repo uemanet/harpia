@@ -10,7 +10,6 @@
          syntaxCheck="false"
          verbose="true"
          bootstrap="../../bootstrap/autoload.php">
-
     <testsuites>
         <testsuite name="Geral Test Suite">
             <directory suffix="Test.php">./tests</directory>
