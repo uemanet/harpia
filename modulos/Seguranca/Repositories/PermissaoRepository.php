@@ -2,8 +2,8 @@
 
 namespace Modulos\Seguranca\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Seguranca\Models\Permissao;
+use Modulos\Core\Repository\BaseRepository;
 
 class PermissaoRepository extends BaseRepository
 {
