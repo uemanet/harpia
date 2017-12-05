@@ -69,6 +69,10 @@
             color: white;
         }
 
+        /*td, th {
+            border-bottom: 0.1mm solid;
+        }*/
+
     </style>
 </head>
 <body>
@@ -155,36 +159,47 @@
 
 @php $cargaHorariaTotal = 0; $coeficienteParcial = 0; @endphp
 @foreach($gradeCurricular as $periodo)
-    <table class="table-bordered" style="margin-top: 0.8em; page-break-inside: avoid;">
+    <table class="table-bordered" style="margin-top: 0.8em;">
         <thead>
             <tr class="thead-left thead-config background-thead">
                 <th colspan="12">Período: {{mb_strtoupper($periodo['per_nome'], 'UTF-8')}}</th>
             </tr>
             <tr class="thead-left thead-config thead-border">
-                <th width="10%">MD.</th>
-                <th>Disciplina</th>
-                <th>Tipo</th>
-                <th>Módulo</th>
+                <th width="25%">Disciplina</th>
+                <th width="10%">Tipo</th>
+                <th width="15%">Módulo</th>
                 <th width="8%">CH</th>
                 <th width="15%">Média Final</th>
-                <th width="25%">Situação</th>
+                <th width="27%">Situação</th>
             </tr>
         </thead>
         <tbody>
         @foreach($periodo['ofertas_disciplinas'] as $disciplina)
             <tr class="padding border-td">
-                <td>{{$disciplina->mof_id}}</td>
-                <td>{{$disciplina->dis_nome}}</td>
-                <td>{{$disciplina->mdc_tipo_disciplina}}</td>
-                <td>{{$disciplina->mdo_nome}}</td>
-                <td>{{$disciplina->dis_carga_horaria}} h</td>
-                <td>{{$disciplina->mof_mediafinal}}</td>
+                <td style="border-bottom: 0.1mm solid;">{{$disciplina->dis_nome}}</td>
+
+                <td style="border-bottom: 0.1mm solid;">
+                  @php
+                      if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                          echo "OBR";
+                      } elseif ($disciplina->mdc_tipo_disciplina == 'eletiva') {
+                          echo "ELT";
+                      } elseif ($disciplina->mdc_tipo_disciplina == 'tcc') {
+                          echo "TCC";
+                      } elseif ($disciplina->mdc_tipo_disciplina == 'optativa') {
+                          echo "OPT";
+                      }
+                  @endphp
+                </td>
+                <td style="border-bottom: 0.1mm solid;">{{$disciplina->mdo_nome}}</td>
+                <td style="border-bottom: 0.1mm solid;">{{$disciplina->dis_carga_horaria}} h</td>
+                <td style="border-bottom: 0.1mm solid;">{{$disciplina->mof_mediafinal}}</td>
                 @php
                     if ($disciplina->mof_mediafinal != '---'):
                         $coeficienteParcial += ($disciplina->dis_carga_horaria * $disciplina->mof_mediafinal);
                     endif;
                 @endphp
-                <td>
+                <td style="border-bottom: 0.1mm solid;">
                     @php
                         if ($disciplina->mof_situacao_matricula == 'aprovado_media') {
                             echo "APROVADO POR MÉDIA";
