@@ -18,9 +18,8 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./Http</directory>
-            <directory suffix=".php">./Models</directory>
             <directory suffix=".php">./Providers</directory>
+            <directory suffix=".php">./Listeners</directory>
             <directory suffix=".php">./Repositories</directory>
         </whitelist>
     </filter>
@@ -35,13 +34,13 @@
 
     <logging>
         <log type="coverage-html"
-             target="_reports/coverage"
+             target="../../../coverage/Integracao"
              title="Coverage"
              charset="UTF-8"
              yui="true"
              highlight="true"
              lowUpperBound="35"
              highLowerBound="70"/>
-        <log type="coverage-clover" target="_reports/logs/clover.xml"/>
+        <log type="coverage-clover" target="../../../coverage/Integracao/log/clover.xml"/>
     </logging>
 </phpunit>
