@@ -26,6 +26,12 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
     ];
 });
 
+$factory->define(Modulos\Geral\Models\TipoDocumento::class, function (Faker\Generator $faker) {
+    return [
+        'tpd_nome' => $faker->word
+    ];
+});
+
 $factory->define(Modulos\Geral\Models\Documento::class, function (Faker\Generator $faker) {
     $anexo = factory(Modulos\Geral\Models\Anexo::class)->create();
 
@@ -547,14 +553,14 @@ $factory->define(\Modulos\Integracao\Models\MapeamentoNota::class, function (Fak
     $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create();
 
     return [
-       'min_ofd_id' => $ofertaDisciplina->ofd_id,
-       'min_id_nota1' => $faker->numberBetween(0, 10),
-       'min_id_nota2' => $faker->numberBetween(0, 10),
-       'min_id_nota3' => $faker->numberBetween(0, 10),
-       'min_id_recuperacao' => $faker->numberBetween(0, 5),
-       'min_id_conceito'  => $faker->randomElement(['aprovado', 'aprovado_final', 'reprovado', 'reprovado_final']),
-       'min_id_final' => $faker->numberBetween(0, 10)
-   ];
+        'min_ofd_id' => $ofertaDisciplina->ofd_id,
+        'min_id_nota1' => $faker->numberBetween(0, 10),
+        'min_id_nota2' => $faker->numberBetween(0, 10),
+        'min_id_nota3' => $faker->numberBetween(0, 10),
+        'min_id_recuperacao' => $faker->numberBetween(0, 5),
+        'min_id_conceito' => $faker->randomElement(['aprovado', 'aprovado_final', 'reprovado', 'reprovado_final']),
+        'min_id_final' => $faker->numberBetween(0, 10)
+    ];
 });
 
 $factory->define(Modulos\Integracao\Models\Servico::class, function (Faker\Generator $faker) {

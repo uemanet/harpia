@@ -17,6 +17,7 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./Listeners</directory>
             <directory suffix=".php">./Repositories</directory>
         </whitelist>
     </filter>

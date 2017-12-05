@@ -1,8 +1,8 @@
 <?php
 
-use Modulos\Geral\Models\Titulacao;
 use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Pessoa;
+use Modulos\Geral\Models\Titulacao;
 use Modulos\Geral\Models\TitulacaoInformacao;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
