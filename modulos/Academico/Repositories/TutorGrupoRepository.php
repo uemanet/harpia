@@ -45,44 +45,30 @@ class TutorGrupoRepository extends BaseRepository
         }
     }
 
-    public function howManyTutors($grupoId)
+    public function getTiposTutoria($grupoId)
     {
-        $count = 0;
+        $distancia = $this->model
+            ->where('ttg_tipo_tutoria', 'distancia')
+            ->where('ttg_data_fim', null)
+            ->where('ttg_grp_id', $grupoId)
+            ->count();
+        $presencial = $this->model
+            ->where('ttg_tipo_tutoria', 'presencial')
+            ->where('ttg_grp_id', $grupoId)
+            ->where('ttg_data_fim', null)->count();
+        $returnArray = [];
 
-        if ($this->verifyTutorPresencial('presencial', $grupoId)) {
-            $count++;
+        if ($distancia<2) {
+            $returnArray['distancia'] = 'A Distancia';
         }
 
-        if ($this->verifyTutorDistancia('distancia', $grupoId)) {
-            $count++;
+        if ($presencial<2) {
+            $returnArray['presencial'] = 'Presencial';
         }
 
-        return $count;
+        return $returnArray;
     }
 
-    public function verifyTutorPresencial($tipoTutoria, $grupoTutor)
-    {
-        $result_presencial = $this->model
-          ->where('ttg_tipo_tutoria', 'presencial')
-          ->where('ttg_grp_id', '=', $grupoTutor)
-          ->get();
-
-        if (!($result_presencial->isEmpty()) && $tipoTutoria === "presencial") {
-            return true;
-        }
-    }
-
-    public function verifyTutorDistancia($tipoTutoria, $grupoTutor)
-    {
-        $result_distancia = $this->model
-          ->where('ttg_tipo_tutoria', 'distancia')
-          ->where('ttg_grp_id', '=', $grupoTutor)
-          ->get();
-
-        if (!($result_distancia->isEmpty()) && $tipoTutoria === "distancia") {
-            return true;
-        }
-    }
 
     public function getTipoTutoria($tutorId, $grupoId)
     {

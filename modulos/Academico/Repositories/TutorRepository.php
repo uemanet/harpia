@@ -64,6 +64,7 @@ class TutorRepository extends BaseRepository
         $tutores = DB::table('acd_tutores')
            ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
            ->whereNotIn('tut_id', $tutoresvinculadosId)
+           ->orderBy('pes_nome')
            ->pluck('pes_nome', 'tut_id');
         return $tutores;
     }
@@ -91,6 +92,7 @@ class TutorRepository extends BaseRepository
             ->where('trm_id', '=', $idTurma)
             ->where('ttg_tipo_tutoria', '=', $tipoTutoria)
             ->distinct('ttg_tut_id')
+            ->orderBy('pes_nome')
             ->get();
 
         return $entries;
