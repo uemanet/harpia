@@ -1,61 +1,158 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Seguranca\Repositories\PerfilRepository;
+use Tests\ModulosTestCase;
+use Modulos\Seguranca\Models\Modulo;
+use Modulos\Seguranca\Models\Perfil;
+use Modulos\Seguranca\Models\Usuario;
+use Modulos\Seguranca\Models\Permissao;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Seguranca\Repositories\PerfilRepository;
 
-class PerfilRepositoryTest extends TestCase
+class PerfilRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(PerfilRepository::class);
+        $this->table = 'seg_perfis';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Perfil::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Perfil::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Perfil::class)->create();
+        $id = $entry->prf_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Perfil::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Perfil::class)->create();
+        $id = $entry->prf_id;
+
+        $data = $entry->toArray();
+
+        $data['prf_nome'] = "profile";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Perfil::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Perfil::class)->create();
+        $id = $entry->prf_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Perfil::class, 2)->create();
+
+        $model = new Perfil();
+        $expected = $model->pluck('prf_nome', 'prf_id');
+        $fromRepository = $this->repo->lists('prf_id', 'prf_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Perfil::class, 2)->create();
+
+        factory(Perfil::class)->create([
+            'prf_nome' => "profile"
+        ]);
+
+        $searchResult = $this->repo->search(array(['prf_nome', '=', "profile"]));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Perfil::class, 2)->create();
+
+        $entry = factory(Perfil::class)->create([
+            'prf_nome' => "New name"
+        ]);
+
+        $expected = [
+            'prf_id' => $entry->prf_id,
+            'prf_nome' => $entry->prf_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['prf_nome', '=', "New name"]), ['prf_id', 'prf_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Perfil::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Perfil::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Perfil();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Perfil::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Perfil::class, 2)->create();
 
         $sort = [
             'field' => 'prf_id',
@@ -65,60 +162,33 @@ class PerfilRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->prf_id);
+        $this->assertEquals(2, $response->first()->prf_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
-
-        factory(Modulos\Seguranca\Models\Perfil::class)->create([
-            'prf_nome' => 'seguranca',
+        factory(Perfil::class, 2)->create();
+        factory(Perfil::class)->create([
+            'prf_nome' => 'permission',
         ]);
 
         $search = [
             [
                 'field' => 'prf_nome',
-                'type' => 'like',
-                'term' => 'seguranca'
+                'type' => '=',
+                'term' => 'permission'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
-
-        $sort = [
-            'field' => 'prf_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'prf_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('permission', $response->first()->prf_nome);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Seguranca\Models\Perfil::class, 2)->create();
+        factory(Perfil::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -127,58 +197,126 @@ class PerfilRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
+    public function testGetPerfilModulo()
     {
-        $response = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $usuario = factory(Usuario::class)->create();
+        factory(Modulo::class, 5)->create();
 
-        $data = $response->toArray();
+        $nomeModulo = str_random(7);
+        $modulo = factory(Modulo::class)->create([
+            'mod_nome' => $nomeModulo,
+            'mod_slug' => strtolower($nomeModulo),
+        ]);
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\Perfil::class, $response);
+        $perfil = factory(Perfil::class)->create([
+            'prf_mod_id' => $modulo->mod_id
+        ]);
 
-        $this->assertArrayHasKey('prf_id', $data);
+        $permissoes = [];
+
+        for ($i = 0; $i < 10; $i++) {
+            $permissoes[] = factory(Permissao::class)->create([
+                'prm_rota' => $nomeModulo . "." . str_random(5)
+            ]);
+        }
+
+        $result = $this->repo->getPerfilModulo($perfil);
+        $result = array_pop($result);
+
+        $this->assertTrue(is_array($result));
+        $this->assertArrayHasKey('permissoes', $result);
+        $this->assertEquals(10, count($result['permissoes']));
     }
 
-    public function testFind()
+    public function testSincronizarPermissoes()
     {
-        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $perfil = factory(Perfil::class)->create();
+        $id = $perfil->prf_id;
 
-        $this->assertDatabaseHas('seg_perfis', $data->toArray());
+        $before = $perfil->permissoes;
+
+        $this->assertEquals(0, $before->count());
+
+        $permissoes = factory(Permissao::class, 3)->create()->pluck('prm_id')->toArray();
+
+        // Sincroniza os perfis
+        $this->repo->sincronizarPermissoes($id, $permissoes);
+        $perfil = Perfil::find($id);
+
+        $after = $perfil->permissoes;
+        $toMatch = $after->pluck('prm_id')->toArray();
+
+        $this->assertEquals($permissoes, $toMatch);
+        $this->assertEquals(3, $after->count());
     }
 
-    public function testUpdate()
+    public function testGetAllByModulo()
     {
-        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
+        $modulo = factory(Modulo::class)->create();
+        $id = $modulo->mod_id;
 
-        $updateArray = $data->toArray();
-        $updateArray['prf_nome'] = 'abcde_edcba';
+        $perfis = factory(Perfil::class, 2)->create([
+            'prf_mod_id' => $id
+        ]);
 
-        $perfilId = $updateArray['prf_id'];
-        unset($updateArray['prf_id']);
+        $result = $this->repo->getAllByModulo($id);
 
-        $response = $this->repo->update($updateArray, $perfilId, 'prf_id');
-
-        $this->assertEquals(1, $response);
+        $this->assertInstanceOf(Perfil::class, $result->first());
+        $this->assertEquals($perfis->count(), $result->count());
     }
 
-    public function testDelete()
+    public function testGetModulosWithoutPerfis()
     {
-        $data = factory(Modulos\Seguranca\Models\Perfil::class)->create();
-        $perfilId = $data->prf_id;
+        $usuario = factory(Usuario::class)->create();
+        factory(Modulo::class, 2)->create();
 
-        $response = $this->repo->delete($perfilId);
+        // Modulo sem perfil
+        $modulo = factory(Modulo::class)->create();
+        $id = $modulo->mod_id;
 
-        $this->assertEquals(1, $response);
+        $perfilA = factory(Perfil::class)->create([
+            'prf_mod_id' => 1
+        ]);
+
+        $perfilB = factory(Perfil::class)->create([
+            'prf_mod_id' => 2
+        ]);
+
+        $usuario->perfis()->sync([$perfilA->prf_id, $perfilB->prf_id]);
+
+        $result = $this->repo->getModulosWithoutPerfis($usuario->usr_id);
+
+        $expected = [
+            $modulo->mod_id => $modulo->mod_nome
+        ];
+
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(1, count($result));
+        $this->assertEquals($expected, $result);
     }
 
-    public function tearDown()
+    public function testVerifyExistsPerfilModulo()
     {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $usuario = factory(Usuario::class)->create();
+        $id = $usuario->usr_id;
+
+        factory(Modulo::class, 2)->create();
+
+        $atribuido = factory(Perfil::class)->create([
+            'prf_mod_id' => 1
+        ]);
+
+        $naoAtribuido = factory(Perfil::class)->create([
+            'prf_mod_id' => 2
+        ]);
+
+        $usuario->perfis()->sync([$atribuido->prf_id]);
+
+        $this->assertTrue($this->repo->verifyExistsPerfilModulo(1, $id));
+        $this->assertFalse($this->repo->verifyExistsPerfilModulo(2, $id));
     }
 }

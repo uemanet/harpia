@@ -42,7 +42,7 @@ class PermissaoRepositoryTest extends ModulosTestCase
 
         $data = $entry->toArray();
 
-        $data['prm_nome'] = "username@unit.com";
+        $data['prm_nome'] = "permission";
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
@@ -80,10 +80,10 @@ class PermissaoRepositoryTest extends ModulosTestCase
         $entries = factory(Permissao::class, 2)->create();
 
         factory(Permissao::class)->create([
-            'prm_nome' => "username@unit.com"
+            'prm_nome' => "permission"
         ]);
 
-        $searchResult = $this->repo->search(array(['prm_nome', '=', "username@unit.com"]));
+        $searchResult = $this->repo->search(array(['prm_nome', '=', "permission"]));
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
