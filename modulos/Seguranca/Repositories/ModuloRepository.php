@@ -37,9 +37,4 @@ class ModuloRepository extends BaseRepository
 
         return $modulos;
     }
-
-    public function lists($identifier, $name)
-    {
-        return DB::table('seg_modulos')->pluck($name, $identifier)->toArray();
-    }
 }

@@ -1,61 +1,159 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Seguranca\Repositories\ModuloRepository;
+use Tests\ModulosTestCase;
+use Modulos\Seguranca\Models\Modulo;
+use Modulos\Seguranca\Models\Perfil;
+use Modulos\Seguranca\Models\Usuario;
+use Modulos\Seguranca\Models\Permissao;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Seguranca\Providers\Seguranca\Seguranca;
+use Modulos\Seguranca\Repositories\ModuloRepository;
 
-class ModuloRepositoryTest extends TestCase
+class ModuloRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(ModuloRepository::class);
+        $this->table = 'seg_modulos';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Modulo::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Modulo::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Modulo::class)->create();
+        $id = $entry->mod_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Modulo::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Modulo::class)->create();
+        $id = $entry->mod_id;
+
+        $data = $entry->toArray();
+
+        $data['mod_slug'] = "slugmodule";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Modulo::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Modulo::class)->create();
+        $id = $entry->mod_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Modulo::class, 2)->create();
+
+        $model = new Modulo();
+        $expected = $model->pluck('mod_slug', 'mod_id');
+        $fromRepository = $this->repo->lists('mod_id', 'mod_slug');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Modulo::class, 2)->create();
+
+        factory(Modulo::class)->create([
+            'mod_slug' => "slugmodule"
+        ]);
+
+        $searchResult = $this->repo->search(array(['mod_slug', '=', "slugmodule"]));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Modulo::class, 2)->create();
+
+        $entry = factory(Modulo::class)->create([
+            'mod_slug' => "New name"
+        ]);
+
+        $expected = [
+            'mod_id' => $entry->mod_id,
+            'mod_slug' => $entry->mod_slug
+        ];
+
+        $searchResult = $this->repo->search(array(['mod_slug', '=', "New name"]), ['mod_id', 'mod_slug']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Modulo::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Modulo::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Modulo();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulo::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulo::class, 2)->create();
 
         $sort = [
             'field' => 'mod_id',
@@ -65,60 +163,33 @@ class ModuloRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->mod_id);
+        $this->assertEquals(2, $response->first()->mod_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
-
-        factory(Modulos\Seguranca\Models\Modulo::class)->create([
-            'mod_nome' => 'seguranca',
+        factory(Modulo::class, 2)->create();
+        factory(Modulo::class)->create([
+            'mod_slug' => 'slugmodule',
         ]);
 
         $search = [
             [
-                'field' => 'mod_nome',
-                'type' => 'like',
-                'term' => 'seguranca'
+                'field' => 'mod_slug',
+                'type' => '=',
+                'term' => 'slugmodule'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
-
-        $sort = [
-            'field' => 'mod_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'mod_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('slugmodule', $response->first()->mod_slug);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Seguranca\Models\Modulo::class, 2)->create();
+        factory(Modulo::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -127,58 +198,73 @@ class ModuloRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
+    public function testGetByUser()
     {
-        $response = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        $usuario = factory(Usuario::class)->create();
+        $userId = $usuario->usr_id;
 
-        $data = $response->toArray();
+        // Modulos
+        factory(Modulo::class, 2)->create();
+        $nomeModulo = str_random(7);
+        $modulo = factory(Modulo::class)->create([
+            'mod_nome' => $nomeModulo,
+            'mod_slug' => strtolower($nomeModulo),
+        ]);
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\Modulo::class, $response);
+        // Perfis
+        factory(Perfil::class, 2)->create([
+            'prf_mod_id' => random_int(1, 2)
+        ]);
 
-        $this->assertArrayHasKey('mod_id', $data);
-    }
+        $perfil = factory(Perfil::class)->create([
+            'prf_mod_id' => $modulo->mod_id
+        ]);
 
-    public function testFind()
-    {
-        $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        $permissoes = [];
 
-        $this->assertDatabaseHas('seg_modulos', $data->toArray());
-    }
+        $permissoes[] = factory(Permissao::class)->create([
+            'prm_rota' => strtolower($nomeModulo) . ".index.index"
+        ])->prm_id;
 
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
+        for ($i = 0; $i < 10; $i++) {
+            $permissoes[] = factory(Permissao::class)->create([
+                'prm_rota' => strtolower($nomeModulo) . "." . str_random(5)
+            ])->prm_id;
+        }
 
-        $updateArray = $data->toArray();
-        $updateArray['mod_nome'] = 'abcde_edcba';
+        // Sincronizar perfil com permissoes
+        $perfil->permissoes()->sync($permissoes);
 
-        $moduloId = $updateArray['mod_id'];
-        unset($updateArray['mod_id']);
+        // Sincronizar perfil para usuario
+        $usuario->perfis()->sync($perfil->prf_id);
 
-        $response = $this->repo->update($updateArray, $moduloId, 'mod_id');
+        // Mockup login
+        $this->be($usuario);
 
-        $this->assertEquals(1, $response);
-    }
+        //Gera estrutura do menu em cache
+        $seguranca = $this->app[Seguranca::class];
+        $seguranca->makeCachePermissoes();
+        $seguranca->makeCacheMenu();
 
-    public function testDelete()
-    {
-        $data = factory(Modulos\Seguranca\Models\Modulo::class)->create();
-        $moduloId = $data->mod_id;
+        // Menu
+        $result = $this->repo->getByUser($userId, true);
 
-        $response = $this->repo->delete($moduloId);
+        $this->assertEquals(1, $result->count());
+        $this->assertEquals($modulo->mod_slug, $result->first()->mod_slug);
 
-        $this->assertEquals(1, $response);
-    }
+        /*
+         * Sem menu
+         *
+         * Os modulos sao deduzidos a partir do cache feito no login
+         * Em qualquer caso, os modulos retornados devem ser os mesmos
+         */
+        $result = $this->repo->getByUser($userId);
 
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $this->assertEquals(1, $result->count());
+        $this->assertEquals($modulo->mod_slug, $result->first()->mod_slug);
     }
 }

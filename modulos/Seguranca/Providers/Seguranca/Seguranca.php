@@ -2,18 +2,18 @@
 
 namespace Modulos\Seguranca\Providers\Seguranca;
 
-use Harpia\Menu\MenuTree;
-use Harpia\Tree\Node;
-use Harpia\Menu\MenuItem as MenuNode;
-use Illuminate\Contracts\Foundation\Application;
-use Modulos\Seguranca\Models\MenuItem;
-use Modulos\Seguranca\Models\Modulo;
-use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
-use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
-use Cache;
 use DB;
-use Modulos\Seguranca\Repositories\MenuItemRepository;
+use Cache;
+use Harpia\Tree\Node;
+use Harpia\Menu\MenuTree;
+use Modulos\Seguranca\Models\Modulo;
+use Harpia\Menu\MenuItem as MenuNode;
+use Modulos\Seguranca\Models\MenuItem;
+use Illuminate\Contracts\Foundation\Application;
 use Modulos\Seguranca\Repositories\ModuloRepository;
+use Modulos\Seguranca\Repositories\MenuItemRepository;
+use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
+use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
 
 class Seguranca implements SegurancaContract
 {
