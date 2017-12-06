@@ -75,7 +75,7 @@ class Seguranca implements SegurancaContract
         Cache::forever('MENU_'.$user->usr_id, $menus);
     }
 
-    public function makeCategoriaTree($moduloId, $categoriaId)
+    private function makeCategoriaTree($moduloId, $categoriaId)
     {
         $menuItemRepository = new MenuItemRepository(new MenuItem());
         $categoriaTree = new MenuTree();

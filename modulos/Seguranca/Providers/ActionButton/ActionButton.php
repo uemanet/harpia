@@ -21,7 +21,7 @@ class ActionButton
 
         foreach ($buttons as $key => $button) {
             if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($button->getRoute())) {
-                $render .= '<a href="'.route($button->getRoute(), $button->getParameters()).'" target="'.$button->getTarget().'" class="'.$button->getStyle().'"> <i class="'.$button->getIcon().'"></i> '.$button->getName().'</a>';
+                $render .= '<a href="' . route($button->getRoute(), $button->getParameters()) . '" target="' . $button->getTarget() . '" class="' . $button->getStyle() . '"> <i class="' . $button->getIcon() . '"></i> ' . $button->getName() . '</a>';
             }
         }
 
@@ -50,14 +50,14 @@ class ActionButton
         $flag = 0;
 
         $render = '<div class="btn-group">';
-        $render .= '<button type="button" class="btn '.$config['classButton'].'">'.$config['label'].'</button>';
-        $render .= '<button type="button" class="btn '.$config['classButton'].' dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
+        $render .= '<button type="button" class="btn ' . $config['classButton'] . '">' . $config['label'] . '</button>';
+        $render .= '<button type="button" class="btn ' . $config['classButton'] . ' dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
         $render .= '<span class="caret"></span>';
         $render .= '<span class="sr-only"></span>';
         $render .= '</button>';
 
         if (!empty($buttons)) {
-            $render.= '<ul class="dropdown-menu" role="menu">';
+            $render .= '<ul class="dropdown-menu" role="menu">';
 
             foreach ($buttons as $key => $button) {
                 $rota = $button['route'];
@@ -67,30 +67,30 @@ class ActionButton
                     $flag += 1;
 
                     if ($button['method'] == 'get') {
-                        $render.= '<li>';
-                        $render .= '<a href="'.route($rota, $parameters).'" class="'.$button['classButton'].'"';
+                        $render .= '<li>';
+                        $render .= '<a href="' . route($rota, $parameters) . '" class="' . $button['classButton'] . '"';
 
                         if (isset($button['id'])) {
                             $render .= ' id="' . $button['id'] . '"';
                         }
 
                         $render .= '>';
-                        $render .= '<i class="'.$button['icon'].'"></i> '.$button['label'];
+                        $render .= '<i class="' . $button['icon'] . '"></i> ' . $button['label'];
                         $render .= '</a></li>';
 
                         continue;
                     }
 
-                    $render.= '<li>';
-                    $render .= '<form action="'.route($rota, $parameters).'" method="'.strtoupper($button['method']).'" class="form-singlebutton">';
-                    $render .= '<input type="hidden" name="id" value="'.$button['id'].'">';
-                    $render .= '<input type="hidden" name="_token" value="'.csrf_token().'">';
-                    $render .= '<input type="hidden" name="_method" value="'.strtoupper($button['method']).'">';
-                    $render .= '<button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>';
+                    $render .= '<li>';
+                    $render .= '<form action="' . route($rota, $parameters) . '" method="' . strtoupper($button['method']) . '" class="form-singlebutton">';
+                    $render .= '<input type="hidden" name="id" value="' . $button['id'] . '">';
+                    $render .= '<input type="hidden" name="_token" value="' . csrf_token() . '">';
+                    $render .= '<input type="hidden" name="_method" value="' . strtoupper($button['method']) . '">';
+                    $render .= '<button class="' . $button['classButton'] . '"><i class="' . $button['icon'] . '"></i> ' . $button['label'] . '</button>';
                     $render .= '</form></li>';
                 }
             }
-            $render.= '</ul></div>';
+            $render .= '</ul></div>';
 
             if ($flag == 0) {
                 $render = '';
@@ -112,16 +112,16 @@ class ActionButton
 
             if (!env('IS_SECURITY_ENNABLED') || $seguranca->haspermission($rota)) {
                 if ($config['showLabel']) {
-                    $render .= '<a style="margin-right:5px" href="'.route($rota, $parameters).'" 
-                                class="btn '.$button['classButton'].'">';
-                    $render .= '<i class="'.$button['icon'].'"></i> '.$button['label'].'</a>';
+                    $render .= '<a style="margin-right:5px" href="' . route($rota, $parameters) . '" 
+                                class="btn ' . $button['classButton'] . '">';
+                    $render .= '<i class="' . $button['icon'] . '"></i> ' . $button['label'] . '</a>';
                     continue;
                 }
 
-                $render .= '<a style="margin-right:5px" title="'.$button['label'].'" 
-                            href="'.route($rota, $parameters).'" 
-                            class="btn '.$button['classButton'].'">';
-                $render .= '<i class="'.$button['icon'].'"></i></a>';
+                $render .= '<a style="margin-right:5px" title="' . $button['label'] . '" 
+                            href="' . route($rota, $parameters) . '" 
+                            class="btn ' . $button['classButton'] . '">';
+                $render .= '<i class="' . $button['icon'] . '"></i></a>';
             }
         }
 
@@ -149,16 +149,16 @@ class ActionButton
                     if ($button['method'] == 'get') {
                         $render .= '<td style="padding-right: 5px">';
                         $render .= '<div class="btn-group">';
-                        $render .= '<a href="'.route($rota, $parameters).'" class="'.$button['classButton'].'" ';
+                        $render .= '<a href="' . route($rota, $parameters) . '" class="' . $button['classButton'] . '" ';
 
                         if (array_key_exists('attributes', $button)) {
                             foreach ($button['attributes'] as $attr => $value) {
-                                $render .= $attr.'="'.$value.'" ';
+                                $render .= $attr . '="' . $value . '" ';
                             }
                         }
 
                         $render .= '>';
-                        $render .= '<i class="'.$button['icon'].'"></i> '.$button['label'];
+                        $render .= '<i class="' . $button['icon'] . '"></i> ' . $button['label'];
                         $render .= '</a></div>';
                         $render .= '</td>';
 
@@ -167,11 +167,11 @@ class ActionButton
 
                     $render .= '<td style="padding-right: 5px">';
                     $render .= '<div class="btn-group">';
-                    $render .= '<form action="'.route($rota, $parameters).'" method="'.strtoupper($button['method']).'" class="form-linebutton">';
-                    $render .= '<input type="hidden" name="id" value="'.$button['id'].'">';
-                    $render .= '<input type="hidden" name="_token" value="'.csrf_token().'">';
-                    $render .= '<input type="hidden" name="_method" value="'.strtoupper($button['method']).'">';
-                    $render .= '<button class="'.$button['classButton'].'"><i class="'.$button['icon'].'"></i> '.$button['label'].'</button>';
+                    $render .= '<form action="' . route($rota, $parameters) . '" method="' . strtoupper($button['method']) . '" class="form-linebutton">';
+                    $render .= '<input type="hidden" name="id" value="' . $button['id'] . '">';
+                    $render .= '<input type="hidden" name="_token" value="' . csrf_token() . '">';
+                    $render .= '<input type="hidden" name="_method" value="' . strtoupper($button['method']) . '">';
+                    $render .= '<button class="' . $button['classButton'] . '"><i class="' . $button['icon'] . '"></i> ' . $button['label'] . '</button>';
                     $render .= '</form></div>';
                     $render .= '</td>';
                 }
