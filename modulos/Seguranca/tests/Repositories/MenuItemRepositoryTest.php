@@ -1,61 +1,156 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Seguranca\Repositories\MenuItemRepository;
+use Tests\ModulosTestCase;
+use Modulos\Seguranca\Models\Modulo;
+use Modulos\Seguranca\Models\MenuItem;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Seguranca\Repositories\MenuItemRepository;
 
-class MenuItemRepositoryTest extends TestCase
+class MenuItemRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(MenuItemRepository::class);
+        $this->table = 'seg_menu_itens';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(MenuItem::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(MenuItem::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(MenuItem::class)->create();
+        $id = $entry->mit_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(MenuItem::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(MenuItem::class)->create();
+        $id = $entry->mit_id;
+
+        $data = $entry->toArray();
+
+        $data['mit_nome'] = "menuitem";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(MenuItem::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(MenuItem::class)->create();
+        $id = $entry->mit_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(MenuItem::class, 2)->create();
+
+        $model = new MenuItem();
+        $expected = $model->pluck('mit_nome', 'mit_id');
+        $fromRepository = $this->repo->lists('mit_id', 'mit_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(MenuItem::class, 2)->create();
+
+        factory(MenuItem::class)->create([
+            'mit_nome' => "menuitem"
+        ]);
+
+        $searchResult = $this->repo->search(array(['mit_nome', '=', "menuitem"]));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(MenuItem::class, 2)->create();
+
+        $entry = factory(MenuItem::class)->create([
+            'mit_nome' => "New name"
+        ]);
+
+        $expected = [
+            'mit_id' => $entry->mit_id,
+            'mit_nome' => $entry->mit_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['mit_nome', '=', "New name"]), ['mit_id', 'mit_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(MenuItem::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(MenuItem::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new MenuItem();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Seguranca\Models\MenuItem::class, 2)->create();
+        factory(MenuItem::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Seguranca\Models\MenuItem::class, 2)->create();
+        factory(MenuItem::class, 2)->create();
 
         $sort = [
             'field' => 'mit_id',
@@ -65,60 +160,33 @@ class MenuItemRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->mit_id);
+        $this->assertEquals(2, $response->first()->mit_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Seguranca\Models\MenuItem::class, 2)->create();
-
-        factory(Modulos\Seguranca\Models\MenuItem::class)->create([
-            'mit_nome' => 'seguranca',
+        factory(MenuItem::class, 2)->create();
+        factory(MenuItem::class)->create([
+            'mit_nome' => 'menuitem',
         ]);
 
         $search = [
             [
                 'field' => 'mit_nome',
-                'type' => 'like',
-                'term' => 'seguranca'
+                'type' => '=',
+                'term' => 'menuitem'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Seguranca\Models\MenuItem::class, 2)->create();
-
-        $sort = [
-            'field' => 'mit_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'mit_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('menuitem', $response->first()->mit_nome);
     }
 
     public function testPaginateRequest()
     {
-        factory(Modulos\Seguranca\Models\MenuItem::class, 2)->create();
+        factory(MenuItem::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -127,58 +195,146 @@ class MenuItemRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
+    public function testGetCategorias()
     {
-        $response = factory(Modulos\Seguranca\Models\MenuItem::class)->create();
+        $modulo = factory(Modulo::class)->create();
+        $moduloId = $modulo->mod_id;
 
-        $data = $response->toArray();
+        // Mock de items
+        $categorias = factory(MenuItem::class, 2)->create([
+            'mit_mod_id' => $moduloId
+        ]);
 
-        $this->assertInstanceOf(\Modulos\Seguranca\Models\MenuItem::class, $response);
+        $subItens = factory(MenuItem::class, 5)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => random_int(1, 2)
+        ]);
 
-        $this->assertArrayHasKey('mit_id', $data);
+        $fromRepository = $this->repo->getCategorias($moduloId);
+
+        $expected = $categorias->pluck('mit_nome', 'mit_id')->toArray();
+        $toMatch = $fromRepository->pluck('mit_nome', 'mit_id')->toArray();
+
+        $this->assertEquals($categorias->count(), $fromRepository->count());
+        $this->assertEquals($expected, $toMatch);
     }
 
-    public function testFind()
+    public function testGetItensFilhos()
     {
-        $data = factory(Modulos\Seguranca\Models\MenuItem::class)->create();
+        $modulo = factory(Modulo::class)->create();
+        $moduloId = $modulo->mod_id;
 
-        $this->assertDatabaseHas('seg_menu_itens', $data->toArray());
+        // Mock de items
+        $categoria = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId
+        ]);
+        $categoriaId = $categoria->mit_id;
+
+        // Filhos
+        $subItens = factory(MenuItem::class, 5)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => $categoriaId
+        ]);
+
+        $fromRepository = $this->repo->getItensFilhos($moduloId, $categoriaId);
+
+        $expected = $subItens->pluck('mit_nome', 'mit_id')->toArray();
+        $toMatch = $fromRepository->pluck('mit_nome', 'mit_id')->toArray();
+
+        $this->assertEquals($subItens->count(), $fromRepository->count());
+        $this->assertEquals($expected, $toMatch);
     }
 
-    public function testUpdate()
+    public function testIsCategoria()
     {
-        $data = factory(Modulos\Seguranca\Models\MenuItem::class)->create();
+        $modulo = factory(Modulo::class)->create();
+        $moduloId = $modulo->mod_id;
 
-        $updateArray = $data->toArray();
-        $updateArray['mit_nome'] = 'abcde_edcba';
+        // Mock de items
+        $categoria = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_rota' => null
+        ]);
 
-        $menuitemId = $updateArray['mit_id'];
-        unset($updateArray['mit_id']);
+        $categoriaInvalida = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_rota' => "any.given.route"
+        ]);
 
-        $response = $this->repo->update($updateArray, $menuitemId, 'mit_id');
+        $categoriaId = $categoria->mit_id;
 
-        $this->assertEquals(1, $response);
+        // Filho
+        $subItem = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => $categoriaId
+        ]);
+
+        $this->assertTrue($this->repo->isCategoria($categoria->mit_id));
+        $this->assertFalse($this->repo->isCategoria($categoriaInvalida->mit_id));
+        $this->assertFalse($this->repo->isCategoria($subItem->mit_id));
     }
 
-    public function testDelete()
+    public function testIsSubCategoria()
     {
-        $data = factory(Modulos\Seguranca\Models\MenuItem::class)->create();
-        $menuitemId = $data->mit_id;
+        $modulo = factory(Modulo::class)->create();
+        $moduloId = $modulo->mod_id;
 
-        $response = $this->repo->delete($menuitemId);
+        // Mock de items
+        $categoria = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_rota' => null
+        ]);
 
-        $this->assertEquals(1, $response);
+        $categoriaId = $categoria->mit_id;
+
+        // Filho
+        $subCategoria = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => $categoriaId,
+            'mit_rota' => null
+        ]);
+
+        $subItem = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => $subCategoria->mit_id
+        ]);
+
+        $this->assertFalse($this->repo->isSubCategoria($categoria->mit_id));
+        $this->assertFalse($this->repo->isSubCategoria($subItem->mit_id));
+        $this->assertTrue($this->repo->isSubCategoria($subCategoria->mit_id));
     }
 
-    public function tearDown()
+    public function testIsItem()
     {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $modulo = factory(Modulo::class)->create();
+        $moduloId = $modulo->mod_id;
+
+        // Mock de items
+        $categoria = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_rota' => null
+        ]);
+
+        $categoriaId = $categoria->mit_id;
+
+        // Filho
+        $subCategoria = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => $categoriaId,
+            'mit_rota' => null
+        ]);
+
+        $subItem = factory(MenuItem::class)->create([
+            'mit_mod_id' => $moduloId,
+            'mit_item_pai' => $subCategoria->mit_id
+        ]);
+
+        $this->assertFalse($this->repo->isItem($categoria->mit_id));
+        $this->assertFalse($this->repo->isItem($subCategoria->mit_id));
+        $this->assertTrue($this->repo->isItem($subItem->mit_id));
     }
 }
