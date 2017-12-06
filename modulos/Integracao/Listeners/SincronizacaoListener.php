@@ -36,7 +36,7 @@ class SincronizacaoListener
             if (config('app.debug')) {
                 throw $e;
             }
-
+        } finally {
             // Mantem a propagacao do evento
             return true;
         }
