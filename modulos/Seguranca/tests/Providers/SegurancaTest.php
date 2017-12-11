@@ -12,6 +12,12 @@ use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
 class SegurancaTest extends ModulosTestCase
 {
+    public function setUp()
+    {
+        putenv("IS_SECURITY_ENNABLED=TRUE");
+        parent::setUp();
+    }
+
     public function testGetUser()
     {
         $usuario = factory(Usuario::class)->create();

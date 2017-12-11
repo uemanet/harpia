@@ -28,6 +28,7 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="STORAGE_DISK" value="test"/>
+        <env name="IS_SECURITY_ENNABLED" value="true"/>
     </php>
 
     <logging>

@@ -72,7 +72,7 @@ class Seguranca implements SegurancaContract
             $menus[$modulo->mod_slug] = $menu;
         }
 
-        Cache::forever('MENU_'.$user->usr_id, $menus);
+        Cache::forever('MENU_' . $user->usr_id, $menus);
     }
 
     private function makeCategoriaTree($moduloId, $categoriaId)
@@ -125,7 +125,7 @@ class Seguranca implements SegurancaContract
 
         $permissions = $permissions->pluck('prm_rota')->toArray();
 
-        Cache::forever('PERMISSOES_'.$user->usr_id, $permissions);
+        Cache::forever('PERMISSOES_' . $user->usr_id, $permissions);
     }
 
     /**
@@ -205,7 +205,7 @@ class Seguranca implements SegurancaContract
      */
     private function verifyPermission($usr_id, $rota)
     {
-        $permissoes = Cache::get('PERMISSOES_'.$usr_id);
+        $permissoes = Cache::get('PERMISSOES_' . $usr_id);
 
         return in_array($rota, $permissoes);
     }
