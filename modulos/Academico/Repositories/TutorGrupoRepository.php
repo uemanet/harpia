@@ -28,22 +28,6 @@ class TutorGrupoRepository extends BaseRepository
         return $this->model->where('ttg_grp_id', '=', $grupoid)->where('ttg_data_fim', '=', null)->paginate(15);
     }
 
-    public function verifyTutorExists($grupoId)
-    {
-        $result_presencial = $this->model
-            ->where('ttg_tipo_tutoria', 'presencial')
-            ->where('ttg_grp_id', '=', $grupoId)
-            ->get();
-
-        $result_distancia = $this->model
-            ->where('ttg_tipo_tutoria', 'distancia')
-            ->where('ttg_grp_id', '=', $grupoId)
-            ->get();
-
-        if ($result_distancia->isEmpty() || $result_presencial->isEmpty()) {
-            return true;
-        }
-    }
 
     public function getTiposTutoria($grupoId)
     {
