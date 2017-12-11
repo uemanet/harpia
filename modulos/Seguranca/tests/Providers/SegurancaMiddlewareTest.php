@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Harpia\Mock\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\Usuario;
@@ -10,27 +11,6 @@ use Modulos\Seguranca\Models\Permissao;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 use Modulos\Seguranca\Providers\Seguranca\SegurancaMiddleware;
-
-/**
- * Classe para Mock de RouteResolver
- * @see \Illuminate\Http\Request::getRouteResolver()
- * @see \Illuminate\Http\Request::setRouteResolver()
- */
-class MockRouteResolver
-{
-    protected $name;
-
-    public function __construct($routeName)
-    {
-        $this->name = $routeName;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-}
-
 
 class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
 {
@@ -137,7 +117,7 @@ class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
         $request = Request::create($this->baseUrl . "/" . $routeUri, "GET");
 
         $request->setRouteResolver(function () use ($denied) {
-            return new MockRouteResolver($denied->prm_rota);
+            return new RouteResolver($denied->prm_rota);
         });
 
         $response = $middleware->handle($request, function (Request $request) {
@@ -152,7 +132,7 @@ class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
         $request = Request::create($this->baseUrl . "/" . $routeUri, "GET");
 
         $request->setRouteResolver(function () use ($granted) {
-            return new MockRouteResolver($granted->prm_rota);
+            return new RouteResolver($granted->prm_rota);
         });
 
         $response = $middleware->handle($request, function (Request $request) {
@@ -243,7 +223,7 @@ class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
         $request = Request::create($this->baseUrl . "/" . $routeUri, "GET");
 
         $request->setRouteResolver(function () use ($denied) {
-            return new MockRouteResolver($denied->prm_rota);
+            return new RouteResolver($denied->prm_rota);
         });
 
         $response = $middleware->handle($request, function (Request $request) {
@@ -257,7 +237,7 @@ class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
         $request = Request::create($this->baseUrl . "/" . $routeUri, "GET");
 
         $request->setRouteResolver(function () use ($granted) {
-            return new MockRouteResolver($granted->prm_rota);
+            return new RouteResolver($granted->prm_rota);
         });
 
         $response = $middleware->handle($request, function (Request $request) {
