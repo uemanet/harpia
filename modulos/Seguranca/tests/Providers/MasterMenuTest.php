@@ -5,6 +5,7 @@ use Tests\ModulosTestCase;
 use Harpia\Mock\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
+use Harpia\Menu\MenuItem as MenuNode;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Modulos\Seguranca\Models\Usuario;
@@ -56,7 +57,7 @@ class MasterMenuTest extends ModulosTestCase
             ])->prm_id;
 
             for ($i = 0; $i < 10; $i++) {
-                $routeName = strtolower($nomeModulo) . "." . str_replace(" ", "", str_random(5));
+                $routeName = strtolower($nomeModulo . "." . str_replace(" ", "", str_random(5)));
 
                 $permissoes[] = factory(Permissao::class)->create([
                     'prm_rota' => $routeName
@@ -88,7 +89,13 @@ class MasterMenuTest extends ModulosTestCase
             $subItem = factory(MenuItem::class)->create([
                 'mit_mod_id' => $moduloId,
                 'mit_item_pai' => $subCategoria->mit_id,
-                'mit_rota' => Permissao::find(random_int(1, 10))->prm_rota
+                'mit_rota' => Permissao::find(random_int(1, 9))->prm_rota
+            ]);
+
+            $subItem = factory(MenuItem::class)->create([
+                'mit_mod_id' => $moduloId,
+                'mit_item_pai' => $subCategoria->mit_id,
+                'mit_rota' => Permissao::find(10)->prm_rota
             ]);
 
             // Sincronizar perfil com permissoes
@@ -98,7 +105,6 @@ class MasterMenuTest extends ModulosTestCase
             $usuario->perfis()->sync($perfil->prf_id);
         }
     }
-
 
     public function testRender()
     {
@@ -126,5 +132,49 @@ class MasterMenuTest extends ModulosTestCase
         $result = $this->app['MasterMenu']->render();
 
         $this->assertInstanceOf(View::class, $result);
+    }
+
+    public function testCheckLeafIsActive()
+    {
+        $this->mockPermissoes();
+        $usuario = Usuario::all()->first();
+        $userId = $usuario->usr_id;
+
+        /*
+         * Login
+         */
+        $this->actingAs($usuario);
+        $this->app[Seguranca::class]->makeCachePermissoes();
+        $this->app[Seguranca::class]->makeCacheMenu();
+
+        $this->assertNotNull(Cache::get('MENU_' . $userId));
+        $this->assertNotNull(Cache::get('PERMISSOES_' . $userId));
+
+        $menus = Cache::get('MENU_' . $userId);
+        $tree = array_pop($menus);
+
+        $menuItem = MenuItem::where('mit_rota', '=', null)->get()->last();
+        $nonActive = new MenuNode(str_random(5), $menuItem, false);  // No nao eh folha
+
+        $childItem = MenuItem::where('mit_rota', '=', null)->get()->first();
+        $nonActive->addChild(new MenuNode(str_random(5), $childItem));
+
+        $this->app['request']->setRouteResolver(function () use ($userId) {
+            $resolver = new RouteResolver("");
+            $resolver->setPermissions(Cache::get('PERMISSOES_' . $userId));
+            return $resolver;
+        });
+
+        $this->assertFalse($this->app['MasterMenu']->checkLeafIsActive($nonActive));
+
+        $menuItem = MenuItem::where('mit_rota', '!=', null)->get()->last();
+        $active = new MenuNode(str_random(5), $menuItem);
+
+        $this->app['request']->setRouteResolver(function () use ($userId, $menuItem) {
+            $resolver = new RouteResolver($menuItem->mit_rota);
+            return $resolver;
+        });
+
+        $this->assertTrue($this->app['MasterMenu']->checkLeafIsActive($active));
     }
 }
