@@ -32,9 +32,7 @@
     <div class="form-group col-md-4 @if ($errors->has('ttg_tipo_tutoria')) has-error @endif">
         {!! Form::label('ttg_tipo_tutoria', 'Tipo de tutoria*', ['class' => 'control-label']) !!}
         <div class="controls">
-            @if($presencial === true){!! Form::select('ttg_tipo_tutoria', array('distancia' => 'À Distância'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria', 'placeholder' => 'Selecione o tipo de tutoria']) !!}@endif
-            @if($distancia === true){!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria', 'placeholder' => 'Selecione o tipo de tutoria']) !!}@endif
-            @if($presencial === null and $distancia==null){!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial', 'distancia' => 'À Distância'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria', 'placeholder' => 'Selecione o tipo de tutoria']) !!}@endif
+            {!! Form::select('ttg_tipo_tutoria', $tipostutoria, $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria', 'placeholder' => 'Selecione o tipo de tutoria']) !!}
             @if ($errors->has('ttg_tipo_tutoria')) <p class="help-block">{{ $errors->first('ttg_tipo_tutoria') }}</p> @endif
         </div>
     </div>

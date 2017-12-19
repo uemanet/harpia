@@ -30,7 +30,7 @@ class TutorGrupoRequest extends BaseRequest
             'ttg_data_inicio'=>'required|date_format:"d/m/Y"',
             'ttg_data_fim' => 'date_format:"d/m/Y"'
         ];
-        
+
 
         return $rules;
     }

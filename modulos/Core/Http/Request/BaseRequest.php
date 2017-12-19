@@ -20,4 +20,20 @@ abstract class BaseRequest extends FormRequest
             $this->formatErrors($validator)
         ));
     }
+
+    public function response(array $errors)
+    {
+        if ($this->ajax() || $this->wantsJson()) {
+            return new JsonResponse($errors, 422);
+        }
+
+        return $this->redirector->to($this->getRedirectUrl())
+                                        ->withInput($this->except($this->dontFlash))
+                                        ->withErrors($errors, $this->errorBag);
+    }
+
+    protected function formatErrors(Validator $validator)
+    {
+        return $validator->errors()->getMessages();
+    }
 }

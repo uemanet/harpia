@@ -43,7 +43,7 @@ $('#crs_id').change(function (e) {
     var selectOfertas = $('#ofc_id');
     var selectTurmas = $('#trm_id');
     var selectTutores = $('#tut_id');
-    
+
     if (crsId) {
 
         // Populando o select de ofertas de cursos
@@ -157,9 +157,14 @@ $('#grp_id').change(function (e) {
             dataType: "json",
             async: true,
             success: function (moodledata) {
-                if (moodledata.itens.length > 0) {
+
+                if (moodledata.exception) {
+                    toastr.error(moodledata.message, null, {progressBar: true});
+                }
+
+                if (moodledata.hasOwnProperty("itens") && moodledata.itens.length > 0) {
                   renderTable(moodledata);
-                }else{
+                }else if(moodledata.hasOwnProperty("itens")){
                   showEmptyTable();
                 }
                 $.harpia.hideloading();
@@ -169,7 +174,6 @@ $('#grp_id').change(function (e) {
                 })
                 $(function () {
                   $('[data-toggle="popover"]').popover()
-                  console.log('algo');
                 })
 
             },
@@ -261,9 +265,6 @@ $('#grp_id').change(function (e) {
           $('#boxTutores').removeClass('hidden');
           $('#boxTutores .box-body').empty().append(html);
     }
-
-
-
 
 </script>
 @stop
