@@ -199,6 +199,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
             $arrModulo['nome'] = $modulo->mdo_nome;
             $arrModulo['descricao'] = $modulo->mdo_descricao;
             $arrModulo['qualificacao'] = $modulo->mdo_qualificacao;
+            $arrModulo['competencias'] = $modulo->mdo_competencias;
 
             $disciplinasModulo = $modulo->disciplinas()->orderBy('dis_nome', 'asc')->get();
 
@@ -213,7 +214,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
                     ],
                     ['mof_id', 'mof_nota1', 'mof_nota2', 'mof_nota3', 'mof_conceito', 'mof_recuperacao', 'mof_final',
                         'mof_mediafinal', 'mof_situacao_matricula', 'mdo_id', 'mdo_nome', 'mdo_descricao', 'mdo_qualificacao',
-                        'dis_nome', 'dis_carga_horaria', 'dis_creditos', 'pes_id', 'pes_nome as professor']
+                        'dis_nome', 'dis_carga_horaria', 'dis_creditos', 'pes_id', 'pes_nome as professor', 'ofd_tipo_avaliacao']
                 )->last();
 
                 if ($result) {

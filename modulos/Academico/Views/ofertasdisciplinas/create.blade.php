@@ -249,59 +249,9 @@
                 });
             });
 
-            $(document).on('click', '.btn-delete', function (event) {
-                event.preventDefault();
-
-                var button = $(this);
-
-                swal({
-                    title: "Tem certeza que deseja excluir?",
-                    text: "Você não poderá recuperar essa informação!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Sim, pode excluir!",
-                    cancelButtonText: "Não, quero cancelar!",
-                    closeOnConfirm: true
-                }, function(isConfirm){
-                    if (isConfirm) {
-
-                        var ofd_id = button.closest('form').find('input[name="id"]').val();
-                        var turma = selectTurmas.val();
-                        var periodo = selectPeriodosLetivos.val();
-                        var modulo = selectModulosMatriz.val();
-
-                        var data = {ofd_id : ofd_id, _token : token};
-
-                        $.harpia.showloading();
-
-                        $.ajax({
-                            type: 'POST',
-                            url: '/academico/async/ofertasdisciplinas/deletarofertadisciplina',
-                            data: data,
-                            success: function (data) {
-                                $.harpia.hideloading();
-                                toastr.success('Oferta excluída com sucesso!', null, {progressBar: true});
-                                renderTables(turma, periodo, modulo);
-                            },
-                            error: function (xhr, textStatus, error) {
-                                $.harpia.hideloading();
-                                switch (xhr.status) {
-                                    case 400:
-                                        toastr.error('Erro ao tentar deletar a oferta de disciplina.', null, {progressBar: true});
-                                        break;
-                                    default:
-                                        toastr.error(xhr.responseText, null, {progressBar: true});
-                                }
-                            }
-                        });
-                    }
-                });
-            });
-
             var renderTableOfertasDisciplinas = function (turmaId, periodoId) {
                 var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?" +
-                        "ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId + "&button_delete=1";
+                        "ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId;
 
                 $.harpia.showloading();
                 $.ajax({

@@ -179,7 +179,11 @@
                         <td>{{$obj->mof_id}}</td>
                         <td>{{$obj->dis_nome}}</td>
                         <td>{{$obj->dis_carga_horaria}}</td>
-                        <td>{{number_format($obj->mof_mediafinal, 2)}}</td>
+                        <td>@if($obj->ofd_tipo_avaliacao == numerica)
+                              {{number_format($obj->mof_mediafinal, 2)}}
+                            @else
+                              {{$obj->mof_conceito}}
+                            @endif</td>
                         <td>
                             @php
                                 if ($obj->mof_situacao_matricula == 'aprovado_media') {
@@ -210,16 +214,18 @@
                     <td></td>
                     <td><strong>Carga Horária:</strong> {{$cargaHorariaModulo}} h</td>
                 </tr>
-                <tr class="padding-0_3">
-                    <td colspan="5" style="border-top: 0.1mm solid #000000;">
-                        <strong>QUALIFICAÇÃO:</strong> {{$modulo['qualificacao']}}
-                    </td>
-                </tr>
-                <tr class="padding-0_3">
-                    <td colspan="5">
-                        <strong>COMPETÊNCIAS:</strong> {{$modulo['descricao']}}
-                    </td>
-                </tr>
+                @if(!empty($modulo['qualificacao']) && !empty($modulo['competencias']))
+                    <tr class="padding-0_3">
+                        <td colspan="5" style="border-top: 0.1mm solid #000000;">
+                            <strong>QUALIFICAÇÃO:</strong> {{$modulo['qualificacao']}}
+                        </td>
+                    </tr>
+                    <tr class="padding-0_3">
+                        <td colspan="5">
+                            <strong>COMPETÊNCIAS:</strong> {{$modulo['competencias']}}
+                        </td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     @endforeach

@@ -75,6 +75,26 @@ class Format
         return $cpf;
     }
 
+    public function getMonth($key)
+    {
+        $months = [
+            'Janeiro',
+            'Fevereiro',
+            'Março',
+            'Abril',
+            'Maio',
+            'Junho',
+            'Julho',
+            'Agosto',
+            'Setembro',
+            'Outubro',
+            'Novembro',
+            'Dezembro'
+        ];
+
+        return $months[$key-1];
+    }
+
     private function mod($dividendo, $divisor)
     {
         return round($dividendo - (floor($dividendo/$divisor)*$divisor));

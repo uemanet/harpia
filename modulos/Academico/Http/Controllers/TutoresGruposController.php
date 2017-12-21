@@ -15,6 +15,7 @@ use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use DB;
 
 class TutoresGruposController extends BaseController
@@ -24,18 +25,21 @@ class TutoresGruposController extends BaseController
     protected $tutorRepository;
     protected $turmaRepository;
     protected $ofertacursoRepository;
+    protected $ambienteRepository;
 
     public function __construct(TutorGrupoRepository $tutorgrupoRepository,
                                 GrupoRepository $grupoRepository,
                                 TutorRepository $tutorRepository,
                                 TurmaRepository $turmaRepository,
-                                OfertaCursoRepository $ofertacursoRepository)
+                                OfertaCursoRepository $ofertacursoRepository,
+                                AmbienteVirtualRepository $ambienteRepository)
     {
         $this->tutorgrupoRepository = $tutorgrupoRepository;
         $this->grupoRepository = $grupoRepository;
         $this->tutorRepository = $tutorRepository;
         $this->turmaRepository = $turmaRepository;
         $this->ofertacursoRepository = $ofertacursoRepository;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function getIndex($grupoId, Request $request)
@@ -50,7 +54,9 @@ class TutoresGruposController extends BaseController
         $btnNovo = new TButton();
         $actionButtons = [];
 
-        if ($this->tutorgrupoRepository->howManyTutors($grupoId) < 2) {
+        $tipostutoria = $this->tutorgrupoRepository->getTiposTutoria($grupoId);
+
+        if (!empty($tipostutoria)) {
             $btnNovo->setName('Vincular Tutor')
                 ->setRoute('academico.ofertascursos.turmas.grupos.tutoresgrupos.create')
                 ->setParameters(['id' => $grupoId])->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
@@ -98,6 +104,14 @@ class TutoresGruposController extends BaseController
                                 'parameters' => ['id' => $id],
                                 'label' => 'Substituir tutor',
                                 'method' => 'get'
+                            ],
+                            [
+                                'classButton' => 'btn-delete text-red',
+                                'icon' => 'fa fa-trash',
+                                'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.delete',
+                                'id' => $id,
+                                'label' => 'Desvincular',
+                                'method' => 'post'
                             ]
                         ]
                     ]);
@@ -119,11 +133,9 @@ class TutoresGruposController extends BaseController
             return redirect()->back();
         }
 
-        $presencial = $this->tutorgrupoRepository->verifyTutorPresencial("presencial", $grupoId);
+        $tipostutoria = $this->tutorgrupoRepository->getTiposTutoria($grupoId);
 
-        $distancia = $this->tutorgrupoRepository->verifyTutorDistancia("distancia", $grupoId);
-
-        if (!is_null($presencial) && !is_null($distancia)) {
+        if (empty($tipostutoria)) {
             flash()->error('O grupo já tem um tutor presencial e um tutor à distância!');
             return redirect()->back();
         }
@@ -138,7 +150,7 @@ class TutoresGruposController extends BaseController
 
         $grupo = $this->grupoRepository->listsAllById($grupoId);
 
-        return view('Academico::tutoresgrupos.create', ['turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores, 'presencial' => $presencial, 'distancia' => $distancia]);
+        return view('Academico::tutoresgrupos.create', ['turma' => $turma, 'oferta' => $oferta, 'grupo' => $grupo, 'tutores' => $tutores, 'tipostutoria' => $tipostutoria]);
     }
 
     public function postCreate(TutorGrupoRequest $request)
@@ -148,15 +160,6 @@ class TutoresGruposController extends BaseController
             $tutorId = $request->input('ttg_tut_id');
             $grupoTutor = $request->input('ttg_grp_id');
 
-            if ($this->tutorgrupoRepository->verifyTutorPresencial($tipoTutoria, $grupoTutor)) {
-                $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor presencial');
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
-
-            if ($this->tutorgrupoRepository->verifyTutorDistancia($tipoTutoria, $grupoTutor)) {
-                $errors = array('ttg_tipo_tutoria' => 'Já existe um tutor à distância');
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
@@ -263,6 +266,46 @@ class TutoresGruposController extends BaseController
             }
 
             flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function postDelete(Request $request)
+    {
+        try {
+            $tutorGrupoId = $request->get('id');
+
+            $tutorGrupo = $this->tutorgrupoRepository->find($tutorGrupoId);
+
+            DB::beginTransaction();
+
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($tutorGrupo->grupo->turma->trm_id);
+
+            //Atualiza o fim do vículo do tutor antigo
+            $dados['ttg_data_fim'] = date('Y-m-d');
+            $this->tutorgrupoRepository->update($dados, $tutorGrupo->ttg_id, 'ttg_id');
+
+            if ($ambiente) {
+                event(new DeleteTutorVinculadoEvent($tutorGrupo));
+            }
+
+            flash()->success('Tutor desvinculado com sucesso.');
+
+            DB::commit();
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollback();
+            flash()->error('Erro ao tentar desvincular. O tutor contém dependências no sistema.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

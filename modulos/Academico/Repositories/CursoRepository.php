@@ -62,17 +62,31 @@ class CursoRepository extends BaseRepository
      */
     public function listsCursoByMatriz($matrizId)
     {
-        return $this->model->where('crs_id', $matrizId)->pluck('crs_nome', 'crs_id');
+        return DB::table('acd_matrizes_curriculares')
+                      ->join('acd_cursos', 'mtc_crs_id', 'crs_id')
+                      ->where('mtc_id', $matrizId)
+                      ->pluck('crs_nome', 'crs_id');
     }
 
     /**
      * Traz somente os cursos tecnicos
      * @param int $nivelTecnicoId
+     * @param bool $all
      * @return mixed
      */
-    public function listsCursosTecnicos($nivelTecnicoId = 2)
+    public function listsCursosTecnicos($nivelTecnicoId = 2, $all = false)
     {
-        return $this->model->where('crs_nvc_id', $nivelTecnicoId)->pluck('crs_nome', 'crs_id');
+        if (!$all) {
+            return $this->model
+                ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
+                ->where('ucr_usr_id', '=', Auth::user()->usr_id)
+                ->where('crs_nvc_id', '=', $nivelTecnicoId)
+                ->pluck('crs_nome', 'crs_id')->toArray();
+        }
+
+        return $this->model
+            ->where('crs_nvc_id', '=', $nivelTecnicoId)
+            ->pluck('crs_nome', 'crs_id')->toArray();
     }
 
     public function create(array $data)
@@ -251,5 +265,18 @@ class CursoRepository extends BaseRepository
             ->select('nvc_nome', 'crs_nvc_id', DB::raw("COUNT(*) as quantidade"))
             ->join('acd_niveis_cursos', 'crs_nvc_id', '=', 'nvc_id')
             ->groupBy('crs_nvc_id')->get()->toArray();
+    }
+
+    public function getCursosByAmbiente($ambienteId)
+    {
+        return
+         DB::table('int_ambientes_turmas')
+                  ->select('crs_nome', 'crs_id')
+                  ->join('acd_turmas', 'atr_trm_id', '=', 'trm_id')
+                  ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
+                  ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
+                  ->where('atr_amb_id', $ambienteId)
+                  ->orderBy('crs_nome')
+                  ->distinct('crs_nome')->pluck('crs_nome', 'crs_id');
     }
 }

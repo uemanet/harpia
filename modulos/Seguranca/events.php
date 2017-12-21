@@ -13,7 +13,7 @@
  */
 
 return [
-    'Modulos\Seguranca\Events\HelloSeguranca' => [
-        'Modulos\Seguranca\Listeners\SegurancaListener',
+    'Modulos\Seguranca\Events\ReloadCacheEvent' => [
+        'Modulos\Seguranca\Listeners\ReloadCacheListener',
     ],
 ];

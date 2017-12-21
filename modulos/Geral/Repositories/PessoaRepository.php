@@ -65,21 +65,6 @@ class PessoaRepository extends BaseRepository
         return false;
     }
 
-    public function update(array $data, $id, $attribute = "pes_id")
-    {
-        $registros = $this->model->where($attribute, '=', $id)->get();
-
-        if ($registros) {
-            foreach ($registros as $obj) {
-                $obj->fill($data)->save();
-            }
-
-            return $registros->count();
-        }
-
-        return 0;
-    }
-
     public function findPessoaByCpf($cpf)
     {
         $result = $this->model->join('gra_documentos', function ($join) {
@@ -166,16 +151,18 @@ class PessoaRepository extends BaseRepository
                         ->join('int_ambientes_turmas', 'atr_trm_id', '=', 'trm_id')
                         ->get();
 
-        $ambientesdapessoaId = [];
+        if ($pessoaturmas->count()) {
+            $ambientesdapessoaId = [];
 
-        foreach ($pessoaturmas as $key => $value) {
-            $ambientesdapessoaId[] = $value->atr_amb_id;
-        }
+            foreach ($pessoaturmas as $key => $value) {
+                $ambientesdapessoaId[] = $value->atr_amb_id;
+            }
 
-        $ambientesId = array_unique($ambientesdapessoaId);
+            $ambientesId = array_unique($ambientesdapessoaId);
 
-        foreach ($ambientesId as $id) {
-            event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
+            foreach ($ambientesId as $id) {
+                event(new AtualizarPessoaEvent($pessoaAtt, "UPDATE", $id));
+            }
         }
     }
 }

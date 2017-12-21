@@ -39,9 +39,31 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
         Route::put('/password/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@postUpdatepassword')->name('seguranca.profile.updatepassword');
     });
 
+    Route::group(['prefix' => 'permissoes'], function () {
+        Route::get('/', '\Modulos\Seguranca\Http\Controllers\PermissaoController@index')->name('seguranca.permissoes.index');
+        Route::get('/create', '\Modulos\Seguranca\Http\Controllers\PermissaoController@getCreate')->name('seguranca.permissoes.create');
+        Route::post('/create', '\Modulos\Seguranca\Http\Controllers\PermissaoController@postCreate')->name('seguranca.permissoes.create');
+        Route::get('/{id}/edit', '\Modulos\Seguranca\Http\Controllers\PermissaoController@getEdit')->name('seguranca.permissoes.edit');
+        Route::put('/{id}/edit', '\Modulos\Seguranca\Http\Controllers\PermissaoController@putEdit')->name('seguranca.permissoes.edit');
+        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\PermissaoController@postDelete')->name('seguranca.permissoes.delete');
+    });
+
+    Route::group(['prefix' => 'menuitens'], function () {
+        Route::get('/', '\Modulos\Seguranca\Http\Controllers\MenuItensController@getIndex')->name('seguranca.menuitens.index');
+        Route::get('/create', '\Modulos\Seguranca\Http\Controllers\MenuItensController@getCreate')->name('seguranca.menuitens.create');
+        Route::post('/create', '\Modulos\Seguranca\Http\Controllers\MenuItensController@postCreate')->name('seguranca.menuitens.create');
+        Route::get('/{id}/edit', '\Modulos\Seguranca\Http\Controllers\MenuItensController@getEdit')->name('seguranca.menuitens.edit');
+        Route::put('/{id}/edit', '\Modulos\Seguranca\Http\Controllers\MenuItensController@putEdit')->name('seguranca.menuitens.edit');
+        Route::post('/delete', '\Modulos\Seguranca\Http\Controllers\MenuItensController@postDelete')->name('seguranca.menuitens.delete');
+    });
+
     Route::group(['prefix' => 'async', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'perfis'], function () {
             Route::get('/findallbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\Perfis@getFindallbymodulo')->name('seguranca.async.perfis.findallbymodulo');
+        });
+
+        Route::group(['prefix' => 'menuitens'], function () {
+            Route::get('/getitenbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\MenuItem@getItensByModulo')->name('seguranca.async.menuitens.getitensbymodulo');
         });
     });
 });

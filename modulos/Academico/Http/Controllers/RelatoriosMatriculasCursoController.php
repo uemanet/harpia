@@ -2,15 +2,16 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Excel;
+use Validator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Core\Http\Controller\BaseController;
-use Validator;
+use Modulos\Academico\Repositories\PoloRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
 
 class RelatoriosMatriculasCursoController extends BaseController
 {
@@ -20,12 +21,13 @@ class RelatoriosMatriculasCursoController extends BaseController
     protected $poloRepository;
     private $ofertaCursoRepository;
 
-    public function __construct(MatriculaCursoRepository $matricula,
-                                CursoRepository $curso,
-                                TurmaRepository $turmaRepository,
-                                OfertaCursoRepository $ofertaCursoRepository,
-                                PoloRepository $poloRepository)
-    {
+    public function __construct(
+        MatriculaCursoRepository $matricula,
+        CursoRepository $curso,
+        TurmaRepository $turmaRepository,
+        OfertaCursoRepository $ofertaCursoRepository,
+        PoloRepository $poloRepository
+    ) {
         $this->matriculaCursoRepository = $matricula;
         $this->cursoRepository = $curso;
         $this->turmaRepository = $turmaRepository;
@@ -49,8 +51,9 @@ class RelatoriosMatriculasCursoController extends BaseController
             $sqlOfertas = $this->ofertaCursoRepository->findAllByCurso($crs_id);
             $turmas = $this->turmaRepository->findAllByOfertaCurso($ofc_id)->pluck('trm_nome', 'trm_id');
             foreach ($sqlOfertas as $oferta) {
-                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '('.$oferta->mdl_nome.')';
+                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
             }
+
             $polos = $this->poloRepository->findAllByOfertaCurso($ofc_id)->pluck('pol_nome', 'pol_id');
         }
 
@@ -73,15 +76,14 @@ class RelatoriosMatriculasCursoController extends BaseController
         }
 
         $situacao = [
-                      "" => "Selecione a situação",
-                      "cursando" => "Cursando",
-                      "aprovado_media" => "Aprovado por Média",
-                      "aprovado_final" => "Aprovado por Final",
-                      "reprovado_media" => "Reprovado por Média",
-                      "reprovado_final" => "Reprovado por Final",
-                      "cancelado" => "Cancelado"
-                   ];
-
+            "" => "Selecione a situação",
+            "cursando" => "Cursando",
+            "concluido" => "Concluido",
+            "reprovado" => "Reprovado",
+            "evadido" => "Evadido",
+            "trancado" => "Trancado",
+            "desistente" => "Desistente"
+        ];
         return view('Academico::relatoriosmatriculascurso.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'polos', 'situacao'));
     }
 
@@ -113,7 +115,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Relatório de alunos do Curso ' . $nomecurso->crs_nome);
         $mpdf->SetHeader('{PAGENO} / {nb}');
-        $mpdf->SetFooter('Emitdo em : '. $date->format('d/m/Y H:i:s'));
+        $mpdf->SetFooter('Emitido em : ' . $date->format('d/m/Y H:i:s'));
         $mpdf->defaultheaderfontsize = 10;
         $mpdf->defaultheaderfontstyle = 'B';
         $mpdf->defaultheaderline = 0;
@@ -140,26 +142,84 @@ class RelatoriosMatriculasCursoController extends BaseController
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
+
         $turmaId = $request->input('trm_id');
         $situacao = $request->input('mat_situacao');
         $poloId = $request->input('pol_id');
 
-        $matriculas = $this->matriculaCursoRepository->findAllBySitucao(
-            ['trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId]);
-        $nomecurso = $this->turmaRepository->findCursoByTurma($turmaId);
+        $matriculas = $this->matriculaCursoRepository->findAllBySitucao([
+            'trm_id' => $turmaId,
+            'mat_situacao' => $situacao,
+            'pol_id' => $poloId
+        ]);
+
+        $curso = $this->turmaRepository->findCursoByTurma($turmaId);
         $turma = $this->turmaRepository->find($turmaId);
 
         $date = new Carbon();
 
-        $html = view('Academico::relatoriosmatriculascurso.relatorioalunos', compact('matriculas', 'nomecurso', 'date', 'turma'))->render();
+        Excel::create('relatorio', function ($excel) use ($curso, $turma, $date, $matriculas) {
+            $excel->sheet($turma->trm_nome, function ($sheet) use ($curso, $turma, $date, $matriculas) {
+                // Cabecalho
+                $objDraw = new \PHPExcel_Worksheet_Drawing();
+                $objDraw->setPath(public_path('/img/logo_oficial.png'));
+                $objDraw->setCoordinates('A1');
+                $objDraw->setWidthAndHeight(230, 70);
+                $objDraw->setWorksheet($sheet);
 
-        $arquivo = 'Matriculados na turma '.$turma->trm_nome.'.xls';
+                $sheet->cell('B1', function ($cell) use ($curso) {
+                    $cell->setValue('Relatório de alunos do curso: ' . $curso->crs_nome);
+                });
 
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachment; filename=$arquivo");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        print chr(255) . chr(254) . mb_convert_encoding($html, 'UTF-16LE', 'UTF-8');
-        exit;
+                $sheet->cell('B2', function ($cell) use ($date) {
+                    $cell->setValue('Emitido em: ' . $date->format('d/m/Y H:i:s'));
+                });
+
+                $sheet->cell('B3', function ($cell) use ($turma) {
+                    $cell->setValue('Turma: ' . $turma->trm_nome);
+                });
+
+                // Dados
+                $sheet->appendRow(5, [
+                    'Matrícula',
+                    'Aluno',
+                    'Email',
+                    'Polo',
+                    'Grupo',
+                    'Data de Nascimento',
+                    'Identidade',
+                    'CPF',
+                    'Nome do Pai',
+                    'Nome da Mãe',
+                    'Situação',
+                ]);
+
+                foreach ($matriculas as $matricula) {
+                    $data = [
+                        $matricula->mat_id,
+                        $matricula->pes_nome,
+                        $matricula->pes_email,
+                        $matricula->pol_nome,
+                        $matricula->grp_nome,
+                        $matricula->pes_nascimento,
+                        $matricula->rg,
+                        $matricula->cpf,
+                        $matricula->pes_pai,
+                        $matricula->pes_mae,
+                        $matricula->situacao_matricula_curso
+                    ];
+
+                    $sheet->appendRow($data);
+                }
+
+                $sheet->mergeCells('B1:F1');
+                $sheet->mergeCells('B2:F2');
+                $sheet->mergeCells('B3:F3');
+
+                $sheet->cells('B1:B3', function ($cells) {
+                    $cells->setAlignment('center');
+                });
+            });
+        })->download('xls');
     }
 }

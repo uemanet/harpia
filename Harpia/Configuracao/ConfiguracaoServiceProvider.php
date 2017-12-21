@@ -27,7 +27,7 @@ class ConfiguracaoServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['Configuracao'] = $this->app->share(function ($app) {
+        $this->app->singleton('Configuracao', function ($app) {
             $config = new ConfiguracaoRepository(new Configuracao());
 
             return new Config($config);

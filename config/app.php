@@ -167,6 +167,7 @@ return [
          */
         Collective\Html\HtmlServiceProvider::class,
         Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
 
         Modulos\Seguranca\Providers\ActionButton\ActionButtonProvider::class,
@@ -182,6 +183,11 @@ return [
          * Format Service Provider
          */
         Harpia\Format\FormatServiceProvider::class,
+
+        /*
+         * Util Service Provider
+         */
+        Harpia\Util\UtilServiceProvider::class,
 
         /*
          * Configuracao Service Provider
@@ -248,6 +254,7 @@ return [
          */
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
         /*
          * Extra aliases
@@ -256,6 +263,7 @@ return [
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,
         'Format' => Harpia\Format\Facades\Format::class,
+        'Util' => Harpia\Util\Facades\Util::class,
         'Configuracao' => Harpia\Configuracao\Facades\Configuracao::class,
         'Moodle' => Harpia\Moodle\Facades\Moodle::class
     ],

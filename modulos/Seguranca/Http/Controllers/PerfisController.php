@@ -2,6 +2,7 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Http\Requests\PerfilRequest;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -213,9 +214,11 @@ class PerfisController extends BaseController
             $perfilId = $request->prf_id;
 
             if ($request->input('permissao') == "") {
-                flash()->success('Permissões atribuídas com sucesso.');
                 $permissoes = [];
                 $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
+
+                event(new ReloadCacheEvent());
+                flash()->success('Permissões atribuídas com sucesso.');
 
                 return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);
             }
@@ -224,6 +227,7 @@ class PerfisController extends BaseController
 
             $this->perfilRepository->sincronizarPermissoes($perfilId, $permissoes);
 
+            event(new ReloadCacheEvent());
             flash()->success('Permissões atribuídas com sucesso.');
 
             return redirect('seguranca/perfis/atribuirpermissoes/'.$perfilId);

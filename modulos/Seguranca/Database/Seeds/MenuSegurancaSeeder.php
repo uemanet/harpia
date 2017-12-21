@@ -25,7 +25,7 @@ class MenuSegurancaSeeder extends Seeder
         ]);
 
         // Item Dashboard
-        $dashboard = MenuItem::create([
+        MenuItem::create([
             'mit_mod_id' => 1,
             'mit_nome' => 'Dashboard',
             'mit_item_pai' => $seguranca->mit_id,
@@ -44,22 +44,40 @@ class MenuSegurancaSeeder extends Seeder
         ]);
 
         // Itens de cadastros
-        $perfis = MenuItem::create([
-        'mit_mod_id' => 1,
-        'mit_item_pai' => $cadastros->mit_id,
-        'mit_nome' => 'Perfis',
-        'mit_icone' => 'fa fa-user-secret',
-        'mit_rota' => 'seguranca.perfis.index',
-        'mit_ordem' => 1
+        MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_item_pai' => $cadastros->mit_id,
+            'mit_nome' => 'Perfis',
+            'mit_icone' => 'fa fa-user-secret',
+            'mit_rota' => 'seguranca.perfis.index',
+            'mit_ordem' => 1
         ]);
 
-        $usuarios = MenuItem::create([
-        'mit_mod_id' => 1,
-        'mit_item_pai' => $cadastros->mit_id,
-        'mit_nome' => 'Usuarios',
-        'mit_icone' => 'fa fa-users',
-        'mit_rota' => 'seguranca.usuarios.index',
-        'mit_ordem' => 2
+        MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_item_pai' => $cadastros->mit_id,
+            'mit_nome' => 'Usuarios',
+            'mit_icone' => 'fa fa-users',
+            'mit_rota' => 'seguranca.usuarios.index',
+            'mit_ordem' => 2
+        ]);
+
+        MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_item_pai' => $cadastros->mit_id,
+            'mit_nome' => 'Permissões',
+            'mit_icone' => 'fa fa-unlock',
+            'mit_rota' => 'seguranca.permissoes.index',
+            'mit_ordem' => 3
+        ]);
+
+        MenuItem::create([
+            'mit_mod_id' => 1,
+            'mit_item_pai' => $cadastros->mit_id,
+            'mit_nome' => 'Itens de Menu',
+            'mit_icone' => 'fa fa-gear',
+            'mit_rota' => 'seguranca.menuitens.index',
+            'mit_ordem' => 4
         ]);
     }
 }

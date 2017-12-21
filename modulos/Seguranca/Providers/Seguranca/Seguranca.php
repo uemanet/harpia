@@ -6,6 +6,7 @@ use Harpia\Menu\MenuTree;
 use Harpia\Tree\Node;
 use Harpia\Menu\MenuItem as MenuNode;
 use Illuminate\Contracts\Foundation\Application;
+use Modulos\Seguranca\Models\MenuItem;
 use Modulos\Seguranca\Providers\Seguranca\Contracts\Seguranca as SegurancaContract;
 use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
 use Cache;
@@ -44,13 +45,13 @@ class Seguranca implements SegurancaContract
      */
     public function makeCacheMenu()
     {
-        $menuItemRepository = new MenuItemRepository();
+        $menuItemRepository = new MenuItemRepository(new MenuItem());
         $modulosRepository = new ModuloRepository();
 
         $user = $this->getUser();
 
         // busca os modulos no qual o usuario tem permissao
-        $modulos = $modulosRepository->getByUser($user->usr_id);
+        $modulos = $modulosRepository->getByUser($user->usr_id, true);
 
         $menus = [];
 
@@ -61,7 +62,10 @@ class Seguranca implements SegurancaContract
             $categorias = $menuItemRepository->getCategorias($modulo->mod_id);
 
             foreach ($categorias as $categoria) {
-                $menu->addTree($this->makeCategoriaTree($modulo->mod_id, $categoria->mit_id));
+                $categoriaTree = $this->makeCategoriaTree($modulo->mod_id, $categoria->mit_id);
+                if ($categoriaTree->getRoot()->hasChildren()) {
+                    $menu->addTree($this->makeCategoriaTree($modulo->mod_id, $categoria->mit_id));
+                }
             }
 
             $menus[$modulo->mod_slug] = $menu;
@@ -72,7 +76,7 @@ class Seguranca implements SegurancaContract
 
     public function makeCategoriaTree($moduloId, $categoriaId)
     {
-        $menuItemRepository = new MenuItemRepository();
+        $menuItemRepository = new MenuItemRepository(new MenuItem());
         $categoriaTree = new MenuTree();
 
         // Categoria eh a raiz da subarvore atual
@@ -114,6 +118,10 @@ class Seguranca implements SegurancaContract
             ->where('pru_usr_id', '=', $user->usr_id)
             ->get();
 
+        if (!env('IS_SECURITY_ENNABLED')) {
+            $permissions = DB::table('seg_permissoes')->get();
+        }
+
         $permissions = $permissions->pluck('prm_rota')->toArray();
 
         Cache::forever('PERMISSOES_'.$user->usr_id, $permissions);
@@ -128,6 +136,10 @@ class Seguranca implements SegurancaContract
      */
     public function haspermission($rota)
     {
+        if (!env('IS_SECURITY_ENNABLED')) {
+            return true;
+        }
+
         // O usuario nao esta logado, porem a rota eh liberada para usuarios guest.
         if (is_null($this->getUser())) {
             if ($this->isPreLoginOpenRoutes($rota)) {

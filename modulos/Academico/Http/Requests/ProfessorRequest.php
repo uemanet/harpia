@@ -24,8 +24,15 @@ class ProfessorRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'prf_pes_id' => 'required|unique:acd_professores'
+            'prf_pes_id' => 'required|unique:acd_professores',
+            'prf_codigo' => 'max:11'
         ];
+
+        if ($this->method() == 'PUT') {
+            $rules = [
+                'prf_codigo' => 'integer|max:99999999999'
+            ];
+        }
 
         return $rules;
     }

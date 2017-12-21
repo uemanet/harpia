@@ -28,12 +28,7 @@
 <div class="wrapper">
 
     <header class="main-header">
-        <a href="{{url('/')}}" class="logo">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini" style="background-color:#E9F1F5"><img src="{{url('/')}}/img/logo-mini.png" style="height:38px" /></span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><img src="{{url('/')}}/img/logo.png" style="height:47px" /></span>
-        </a>
+        @include('layouts.includes.logo')
 
         @include('layouts.includes.header_rightmenu')
     </header>

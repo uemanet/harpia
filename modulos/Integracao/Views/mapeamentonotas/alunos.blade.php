@@ -92,7 +92,9 @@
 
                         var msg = response.msg;
 
-                        toastr.success(msg, null, {progressBar: true});
+                        toastr.success(msg, null, {timeOut: 3000, progressBar: true});
+
+                        setTimeout(function(){ location.reload(); }, 3000);
                     },
                     error: function (response) {
                         $.harpia.hideloading();

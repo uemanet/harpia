@@ -632,10 +632,14 @@ class MatriculaCursoRepository extends BaseRepository
         return false;
     }
 
-    public function getAlunosAptosCertificacao($turmaId, $moduloId)
+    public function getAlunosAptosCertificacao($turmaId, $moduloId, $poloId)
     {
         // busca todas as matriculas da turma
-        $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
+        if ($poloId) {
+            $matriculas = $this->findAll(['mat_trm_id' => $turmaId, 'mat_pol_id' => $poloId], null, ['pes_nome' => 'asc']);
+        } else {
+            $matriculas = $this->findAll(['mat_trm_id' => $turmaId], null, ['pes_nome' => 'asc']);
+        }
 
         $aptos = [];
         $certificados = [];
@@ -666,7 +670,7 @@ class MatriculaCursoRepository extends BaseRepository
             }
         }
 
-        return array('aptos' => $aptos, 'certificados' => $certificados);
+        return array('aptos' => $aptos, 'certificados' => $certificados, 'aptosq' => COUNT($aptos), 'certificadosq' => COUNT($certificados));
     }
 
     public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
@@ -798,8 +802,10 @@ class MatriculaCursoRepository extends BaseRepository
             ->select('mat_pol_id', 'mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
             ->where('mat_trm_id', $requestParameters['trm_id']);
 
-        if ($requestParameters['pol_id']) {
-            $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+        if (array_key_exists('pol_id', $requestParameters)) {
+            if ($requestParameters['pol_id']) {
+                $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
+            }
         }
 
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
@@ -827,7 +833,6 @@ class MatriculaCursoRepository extends BaseRepository
             ->leftJoin('acd_grupos', 'mat_grp_id', '=', 'grp_id')
             ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
             ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
-            ->select('mat_id', 'pes_nome', 'mat_situacao', 'trm_nome', 'pol_nome', 'pes_email')
             ->where('mat_trm_id', $requestParameters['trm_id'])
             ->orderBy('pes_nome', 'asc');
 
@@ -839,7 +844,35 @@ class MatriculaCursoRepository extends BaseRepository
             $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
         }
 
-        return $query->get();
+        $matriculas =  $query->get();
+
+        foreach ($matriculas as $key => $matricula) {
+            $rg = DB::table('gra_documentos')
+            ->where('doc_pes_id', '=', $matricula->pes_id)
+            ->where('doc_tpd_id', 1)
+            ->first();
+
+            if ($rg) {
+                $matricula['rg'] = $rg->doc_conteudo;
+            } else {
+                $matricula['rg'] = null;
+            }
+
+            $cpf = DB::table('gra_documentos')
+                ->where('doc_pes_id', '=', $matricula->pes_id)
+                ->where('doc_tpd_id', 2)
+                ->first();
+
+            if ($rg) {
+                $matricula['cpf'] = $cpf->doc_conteudo;
+            } else {
+                $matricula['cpf'] = null;
+            }
+
+            $matricula->pes_nascimento = date("d/m/Y", strtotime($matricula->pes_nascimento));
+        }
+
+        return $matriculas;
     }
 
     public function getPrintData($IdMatricula, $IdModulo)
@@ -870,20 +903,23 @@ class MatriculaCursoRepository extends BaseRepository
         ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
         ->where('mdc_mdo_id', $IdModulo)
         ->where('mof_mat_id', $IdMatricula)
+        ->orderBy('dis_nome', 'asc')
         ->get();
 
         $cargahoraria = 0;
         $disciplinas = [];
         $numerador = 0;
+        $denominador = 0;
 
         foreach ($ofertasdisciplinas as $modulodisciplina) {
             $disciplinas[] = $modulodisciplina->dis_nome;
             $cargahoraria = $cargahoraria + $modulodisciplina->dis_carga_horaria;
-            $numerador = $modulodisciplina->mof_mediafinal*$modulodisciplina->dis_carga_horaria + $numerador;
+            $numerador = $modulodisciplina->mof_mediafinal + $numerador;
+            $denominador++;
         }
 
         //formata o coeficiente do módulo
-        $coeficiente = $numerador/$cargahoraria;
+        $coeficiente = $numerador/$denominador;
         $coeficiente = number_format($coeficiente, 2, '.', '');
 
         $descricaomodulo = $modulo->mdo_descricao;
@@ -909,10 +945,10 @@ class MatriculaCursoRepository extends BaseRepository
                         'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
                         'CARGAHORARIAMODULO' => $cargahoraria,
                         'DISCIPLINAS' => $disciplinas,
-                        'EIXOCURSO' => $curso->crs_eixo ,
-                        'LIVRO' => $livfolreg->liv_numero,
-                        'FOLHA' => $livfolreg->reg_folha,
-                        'REGISTRO'=> $livfolreg->reg_registro,
+                        'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
+                        'LIVRO' => str_pad($livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
+                        'FOLHA' => str_pad($livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
+                        'REGISTRO'=> str_pad($livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
                         'COEFICIENTEDOMODULO'=> $coeficiente,
                         'PESSOANOME'=> mb_strtoupper($nomepessoa, "UTF-8"),
                         'PESSOACPF'=> $cpfpessoaformatado

@@ -80,5 +80,10 @@ return [
 
     'Modulos\Academico\Events\AtualizarMatriculaCursoEvent' => [
         'Modulos\Academico\Listeners\AtualizarMatriculaCursoListener'
-    ]
+    ],
+
+    'Modulos\Academico\Events\AlterarProfessorOfertaDisciplinaEvent' => [
+        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
+        'Modulos\Academico\Listeners\MigrarAlteracaoProfessorOfertaDisciplinaListener'
+    ],
 ];

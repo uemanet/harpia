@@ -147,7 +147,7 @@
                 }
 
                 var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?"+
-                "ofd_trm_id=" + turma + "&ofd_per_id=" + periodo + "&button_delete=0";
+                "ofd_trm_id=" + turma + "&ofd_per_id=" + periodo;
 
                 $.harpia.showloading();
                 $.ajax({

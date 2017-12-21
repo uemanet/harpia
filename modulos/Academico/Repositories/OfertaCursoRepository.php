@@ -2,9 +2,11 @@
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Academico\Models\OfertaCurso;
+use DB;
 use Auth;
+use Modulos\Academico\Models\OfertaCurso;
+use Modulos\Core\Repository\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 class OfertaCursoRepository extends BaseRepository
 {
@@ -22,7 +24,7 @@ class OfertaCursoRepository extends BaseRepository
     public function paginate($sort = null, $search = null)
     {
         $result = $this->model
-                        ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id');
+            ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id');
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
@@ -51,9 +53,9 @@ class OfertaCursoRepository extends BaseRepository
     public function findAllByCurso($cursoid)
     {
         return $this->model
-                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
-                    ->where('ofc_crs_id', $cursoid)
-                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+            ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+            ->where('ofc_crs_id', $cursoid)
+            ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
     }
 
     /**
@@ -64,12 +66,28 @@ class OfertaCursoRepository extends BaseRepository
     public function findAllByCursowithoutpresencial($cursoid)
     {
         return $this->model
-                    ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
-                    ->where([
-                        ['ofc_crs_id', '=', $cursoid],
-                        ['ofc_mdl_id', '<>', 1]
-                    ])
-                    ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+            ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+            ->where([
+                ['ofc_crs_id', '=', $cursoid],
+                ['ofc_mdl_id', '<>', 1]
+            ])
+            ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+    }
+
+    /**
+     * Busca todas as ofertas de curso de acordo com o curso informado sem a modalidade semi-presencial ou ead
+     * @param $cursoid
+     * @return mixed
+     */
+    public function findAllByCursoWithoutEad($cursoid)
+    {
+        return $this->model
+            ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+            ->where([
+                ['ofc_crs_id', '=', $cursoid],
+                ['ofc_mdl_id', '=', 1]
+            ])
+            ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
     }
 
     /**
@@ -113,11 +131,11 @@ class OfertaCursoRepository extends BaseRepository
     {
         // verifica se existe um registro com mesmo ano, modalidade e curso
         $entry = $this->model
-                        ->where([
-                            ['ofc_ano', '=', $data['ofc_ano']],
-                            ['ofc_mdl_id', '=', $data['ofc_mdl_id']],
-                            ['ofc_crs_id', '=', $data['ofc_crs_id']]
-                        ])->first();
+            ->where([
+                ['ofc_ano', '=', $data['ofc_ano']],
+                ['ofc_mdl_id', '=', $data['ofc_mdl_id']],
+                ['ofc_crs_id', '=', $data['ofc_crs_id']]
+            ])->first();
 
         if (!$entry) {
             $oferta = $this->model->create($data);
@@ -132,5 +150,71 @@ class OfertaCursoRepository extends BaseRepository
         }
 
         return null;
+    }
+
+    public function update(array $data, $id, $attribute = null)
+    {
+        $oferta = $this->find($id);
+
+        // Polos com grupos vinculados
+        $polosComGruposVinculados = $this->polosVinculadosGrupos($oferta->turmas)->toArray();
+
+        // Polos vinculados com a oferta
+        $polosVinculados = DB::table('acd_polos_ofertas_cursos')
+            ->where('poc_ofc_id', '=', $oferta->ofc_id)
+            ->pluck('poc_pol_id')->toArray();
+
+        $avisos = null;
+
+        if (!is_null($data['polos'])) {
+            // Polos que podem ser removidos da oferta
+            // Apenas polos sem grupos vinculados
+            $remover = array_diff($polosVinculados, $polosComGruposVinculados);
+
+            foreach ($polosComGruposVinculados as $polo) {
+                if (!in_array($polo, $data['polos'])) {
+                    $avisos = array('type' => 'warning', 'message' => 'Alguns polos contém grupos vinculados e não foram removidos');
+                    break;
+                }
+            }
+
+            foreach ($remover as $key => $polo) {
+                $oferta->polos()->detach($polo);
+            }
+
+            // Redefine os polos a serem vinculados
+            $revinculo = array_diff($data['polos'], $polosComGruposVinculados);
+
+            foreach ($revinculo as $polo) {
+                $oferta->polos()->attach($polo);
+            }
+        }
+
+        unset($data['polos']);
+        $update = $oferta->fill($data)->save();
+
+        if ($avisos) {
+            return $avisos;
+        }
+
+        return $update;
+    }
+
+    private function polosVinculadosGrupos(Collection $turmas)
+    {
+        $polos = [];
+
+        foreach ($turmas as $turma) {
+            $grupos = $turma->grupos;
+
+            foreach ($grupos as $grupo) {
+                $polos[] = $grupo->grp_pol_id;
+            }
+        }
+
+        $polos = collect($polos);
+
+        // Retorna os polos vinculados
+        return $polos->unique();
     }
 }

@@ -5,23 +5,24 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
-        "laravel/framework": "5.3.*",
-        "filp/whoops": "^2.1",
-        "laravelcollective/html": "5.3.*",
+        "php": ">=7.0.0",
+        "laravel/framework": "5.5.*",
+        "laravelcollective/html": "5.5.*",
         "stevebauman/eloquenttable": "1.1.*",
         "guzzlehttp/guzzle": "^6.2",
         "mpdf/mpdf": "^6.1",
         "ramsey/uuid": "^3.6",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "maatwebsite/excel": "^2.1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
+        "filp/whoops": "^2.0",
         "mockery/mockery": "0.9.*",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
-        "phpunit/phpunit": "~5.0",
-        "phpunit/php-code-coverage": "~3.0",
+        "phpunit/phpunit": "~5.7",
+        "phpunit/php-code-coverage": "^4.0",
         "squizlabs/php_codesniffer": "~2.6",
         "friendsofphp/php-cs-fixer": "^1.11",
         "symfony/console": "~3.1"
@@ -60,6 +61,10 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover"
         ]
     },
     "config": {

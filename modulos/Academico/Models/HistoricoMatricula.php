@@ -17,7 +17,6 @@ class HistoricoMatricula extends BaseModel
         'hmt_observacao'
     ];
 
-
     public function matricula()
     {
         return $this->belongsTo('Modulos\Academico\Models\Matricula', 'hmt_mat_id', 'mat_id');

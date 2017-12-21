@@ -57,7 +57,14 @@ class Matricula extends BaseModel
             'vestibular' => 'Vestibular',
             'transferencia_externa' => 'Transferência Externa',
             'transferencia_interna_de' => 'Transferência Interna De',
-            'transferencia_interna_para' => 'Transferência Interna Para'
+            'transferencia_interna_para' => 'Transferência Interna Para',
+            'outros_tipos_selecao' => 'Outros tipos de seleção',
+            'outras_formas_ingresso' => 'Outras formas de ingresso',
+            'transferencia_obrigatoria' => 'Transferência Obrigatória',
+            'transferencia_ex_oficio' => 'Transferência Ex-Ofício',
+            'graduando_interno' => 'Graduando Interno',
+            'graduando_externo' => 'Graduando Externo',
+            'graduado' => 'Graduado'
         ];
 
         return $values[$value];

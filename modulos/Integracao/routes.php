@@ -25,12 +25,23 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
         Route::get('/aluno/{id}', '\Modulos\Integracao\Http\Controllers\MapeamentoNotasController@mapearNotasAluno')->name('integracao.mapeamentonotas.aluno');
     });
 
+    Route::group(['prefix' => 'sincronizacao'], function () {
+        Route::get('/', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@index')->name('integracao.sincronizacao.index');
+        Route::get('/{id}', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@show')->name('integracao.sincronizacao.show');
+        Route::post('/sincronizar/{id}', '\Modulos\Integracao\Http\Controllers\SincronizacaoController@postSincronizar')->name('integracao.sincronizacao.sincronizar');
+    });
+
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'mapeamentonotas'], function () {
             Route::post('/setmapeamentonotas', '\Modulos\Integracao\Http\Controllers\Async\MapeamentoNotas@setMapeamentoNotas')
                 ->name('integracao.async.mapeamentonotas.setmapeamentonotas');
             Route::get('{id}/mapearnotasalunos', '\Modulos\Integracao\Http\Controllers\Async\MapeamentoNotas@mapearNotasTurma')
-                    ->name('integracao.async.mapeamentonotas.mapearnotasalunos');
+                ->name('integracao.async.mapeamentonotas.mapearnotasalunos');
+        });
+
+        Route::group(['prefix' => 'sincronizacao'], function () {
+            Route::post('/sincronizar', '\Modulos\Integracao\Http\Controllers\Async\Sincronizacao@postSincronizar')
+                ->name('integracao.async.sincronizacao.sincronizar');
         });
     });
 });

@@ -100,4 +100,12 @@ class OfertaDisciplinaRepository extends BaseRepository
 
         return $query->get();
     }
+
+    public function countMatriculadosByOferta($oferdaid)
+    {
+        return $this->model
+            ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
+            ->where('ofd_id', $oferdaid)
+            ->count();
+    }
 }

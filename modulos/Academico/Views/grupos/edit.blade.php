@@ -5,11 +5,11 @@
 @endsection
 
 @section('title')
-    Grupos
+    Edição de Grupo
 @stop
 
 @section('subtitle')
-    Alterar grupos :: {{$grupo->grp_nome}}
+    Alterar grupo :: {{$grupo->grp_nome}}
 @stop
 
 @section('content')

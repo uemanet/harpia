@@ -1,86 +1,109 @@
 <html>
 
 <style type="text/css">
-    table {
-        border: 0.2mm solid;
-        border-collapse: collapse;
-        width: 100%;
+
+    .tudo {
+      border: 0.4mm solid;
+      margin-right: 10px;
     }
-    td, th {
-        border: 0.2mm solid;
-        padding: 6px;
+    .divesquerda {
+      float: left;
+      width: 600px;
+      height: 390px;
+      border: 0.4mm solid;
+      border-top-style: none;
+      border-bottom-style: none;
+      border-left-style: none;
+      padding: 20px;
+
     }
-    .tg td {
-        padding: 20px 20px;
-    }
-    .celula_fixa {
-        width: 600px;
+    .divdireita {
+      /*border: 0.4mm solid;*/
+      height: 360px;
+      margin-left:0px;
+
     }
 </style>
 
-<br>
-<h4 style="text-align:center;">UNIVERSIDADE ESTADUAL DO MARANHÃO</h4>
-<h4 style="text-align:center;">NÚCLEO DE TECNOLOGIA PARA EDUCAÇÃO - UEMANET</h4>
-<h4 style="text-align:center;">EDUCAÇÃO PROFISSIONAL</h4>
+<h4 style="font-family: Arial; text-align:center;">UNIVERSIDADE ESTADUAL DO MARANHÃO - UEMA</h4>
+<h4 style="font-family: Arial; text-align:center;">NÚCLEO DE TECNOLOGIAS PARA EDUCAÇÃO - UEMANET</h4>
+<h4 style="font-family: Arial; text-align:center;">EDUCAÇÃO PROFISSIONAL</h4>
 
-<table class="tg">
-
-    <tr>
-        <td class="" colspan="15"><b>QUALIFICAÇÃO</b>: {{$dados['QUALIFICACAOMODULO']}}</td>
-    </tr>
-
-    <tr>
-        <td class="" colspan="15"><b>EIXO:</b> {{$dados['EIXOCURSO']}}</td>
-    </tr>
-
-    <tr>
-        <td class=" celula_fixa" colspan="9" rowspan="13">
-
-        <b>COMPONENTES CURRICULARES</b><br>
+<div class="tudo" style="font-family: Arial; font-size:12px">
+  <div style="font-size:16px; padding: 10px;border: 0.4mm solid;border-top-style:none;border-right-style: none;border-left-style: none;">
+    <b>QUALIFICAÇÃO</b>: {{$dados['QUALIFICACAOMODULO']}}
+  </div>
+  <div style="font-size:16px; padding: 10px;border: 0.4mm solid;border-top-style:none;border-right-style: none;border-left-style: none;">
+    <b>EIXO:</b> {{$dados['EIXOCURSO']}}
+  </div>
+  <div class="divesquerda" style="font-size:16px">
+    <b >COMPONENTES CURRICULARES</b><br>
+          <p style="margin-left:20px">
             @foreach($dados['DISCIPLINAS'] as $disciplina)
                     {{$disciplina}}<br>
             @endforeach
-        </td>
+          </p>
+  </div>
 
-        <td class="" colspan="6"><b>REGISTRO</b></td>
+  <div class="divdireita">
+    <div style="padding: 20px;border: 0.4mm solid;border-top-style:none;border-right-style: none;border-left-style: none;">
+          <b>REGISTRO</b>
+    </div>
 
-    </tr>
+    <div>
 
-    <tr>
-        <td class="" colspan="2"><b>Nº LIVRO</b></td>
-        <td class="" colspan="2"><b>Nº FOLHA</b></td>
-        <td class="" colspan="2"><b>Nº REGISTRO</b></td>
-    </tr>
+      <div style="height: 40px; float:left; width:115px; border: 0.4mm solid; border-top-style:none; border-left-style:none; border-bottom-style:none;">
+          <h4 style="text-align:center">Nº LIVRO</h4>
+      </div>
 
-    <tr>
-        <td style="text-align:center;" class="" colspan="2" rowspan="1">{{$dados['LIVRO']}}</td>
-        <td style="text-align:center;" class="" colspan="2" rowspan="1">{{$dados['FOLHA']}}</td>
-        <td style="text-align:center;" class="" colspan="2" rowspan="1">{{$dados['REGISTRO']}}</td>
-    </tr>
+      <div style="height: 40px; margin-left:0px; float:left; width:121px;border: 0.4mm solid;border-top-style:none;border-left-style: none;">
+          <h4 style="text-align:center">Nº FOLHA</h4>
+      </div>
 
-    <tr>
-    		<td style="width:200px;  height:190px;" colspan="6">
-    			  <div style="width:100%; overflow:auto;"></div>
-    		</td>
-    </tr>
+      <div style="height: 40px; margin-left:0px; border: 0.4mm solid; width:115px; border-top-style:none;border-right-style: none;border-left-style: none;">
+          <h4 style="text-align:center">Nº REGISTRO</h4>
+      </div>
 
-    <tr>
-        
-        <td class="" colspan="6" rowspan="2"><b>Observação:</b><br> Coeficiente: <b>{{$dados['COEFICIENTEDOMODULO']}}</b> </td>
-    </tr>
+    </div>
 
-</table>
+    <div>
+
+      <div style="height: 40px; float:left; width:115px; border: 0.4mm solid; border-top-style:none; border-left-style:none; border-bottom-style:none;">
+          <h4 style="text-align:center">{{$dados['LIVRO']}}</h4>
+      </div>
+
+      <div style="height: 40px; margin-left:0px; float:left; width:121px;border: 0.4mm solid;border-top-style:none;border-left-style: none;">
+          <h4 style="text-align:center">{{$dados['FOLHA']}}</h4>
+      </div>
+
+      <div style="height: 40px; margin-left:0px; border: 0.4mm solid; width:115px; border-top-style:none;border-right-style: none;border-left-style: none;">
+          <h4 style="text-align:center">{{$dados['REGISTRO']}}</h4>
+      </div>
+
+    </div>
+
+    <div style="height: 150px; padding: 20px;border: 0.4mm solid;border-top-style:none;border-right-style: none;border-left-style: none;">
+
+    </div>
+
+    <div style="padding: 10px;">
+        <b>Observação:</b><br>
+        <p style="font-size:14px; margin-left:40px">Coeficiente: <b>{{$dados['COEFICIENTEDOMODULO']}}</b></p>
+    </div>
+
+  </div>
+</div>
 
 <pagebreak>
 
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-    <p style="top:50%;text-align:center">
-      <b>{{$dados['PESSOANOME']}}</b><br><br>
+    <p style="font-family: Arial;text-align:center; font-size:16px;">
+      <b style="font-size:24px;">{{$dados['PESSOANOME']}}</b><br><br>
             portador do CPF de número {{$dados['PESSOACPF']}}<br>
-            concluiu o módulo <b>{{$dados['DESCRICAOMODULO']}}</b><br>
+            concluiu o Módulo <b>{{$dados['DESCRICAOMODULO']}}</b><br>
             assegurando a qualificação em <b>{{$dados['QUALIFICACAOMODULO']}}</b><br>
-            com duração de <b>{{$dados['CARGAHORARIAMODULO']}} horas</b><br>
+            com duração de <b>{{$dados['CARGAHORARIAMODULO']}} horas</b>.<br>
             <br>
             <br>
             <?php

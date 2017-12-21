@@ -10,11 +10,35 @@ class MenuItem extends BaseModel
 
     protected $primaryKey = 'mit_id';
 
-    protected $fillable = ['mit_mod_id', 'mit_nome', 'mit_icone'];
+    protected $fillable = [
+        'mit_mod_id',
+        'mit_item_pai',
+        'mit_nome',
+        'mit_icone',
+        'mit_visivel',
+        'mit_rota',
+        'mit_descricao',
+        'mit_ordem'
+    ];
+
+    protected $searchable = [
+        'mit_mod_id' => '=',
+        'mit_nome' => 'like'
+    ];
+
+    public function setMitVisivelAttribute($value)
+    {
+        $this->attributes['mit_visivel'] = (empty($value)) ? 0 : 1;
+    }
+
+    public function setMitRotaAttribute($value)
+    {
+        $this->attributes['mit_rota'] = (empty($value)) ? null : $value;
+    }
 
     public function modulo()
     {
-        return $this->belongsTo('Modulos\Seguranca\Models\Modulo', 'mod_id');
+        return $this->belongsTo('Modulos\Seguranca\Models\Modulo', 'mit_mod_id');
     }
 
     public function pai()
