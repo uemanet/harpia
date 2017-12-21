@@ -16,4 +16,8 @@ return [
     'Modulos\Seguranca\Events\ReloadCacheEvent' => [
         'Modulos\Seguranca\Listeners\ReloadCacheListener',
     ],
+
+    'Modulos\Seguranca\Events\LogoutOtherDevicesEvent' => [
+        'Modulos\Seguranca\Listeners\LogoutOtherDevicesListener'
+    ],
 ];
