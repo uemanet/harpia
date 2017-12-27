@@ -16,6 +16,7 @@ class AlunoRepositoryTest extends TestCase
         WithoutMiddleware;
 
     protected $repo;
+    protected $user;
 
     public function createApplication()
     {
@@ -35,6 +36,10 @@ class AlunoRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(AlunoRepository::class);
+
+        $this->user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+
+        $this->actingAs($this->user);
     }
 
     public function testAllWithEmptyDatabase()
@@ -182,6 +187,82 @@ class AlunoRepositoryTest extends TestCase
 
         $this->assertEquals(1, $response);
     }
+
+    public function testgetCursosNotEmpty()
+    {
+        $data = factory(Modulos\Academico\Models\Matricula::class)->create();
+        $alunoId = $data->aluno->alu_id;
+        $cursoId = $data->turma->ofertacurso->curso->crs_id;
+
+        $response = $this->repo->getCursos($alunoId);
+
+        $this->assertEquals($cursoId, $response[0]);
+    }
+
+    public function testgetCursosEmpty()
+    {
+        $data = factory(Modulos\Academico\Models\Aluno::class)->create();
+        $alunoId = $data->alu_id;
+        $response = $this->repo->getCursos($alunoId);
+
+        $this->assertEmpty($response);
+    }
+
+    public function testfindByNomeOrCpfFindByNome()
+    {
+        $pessoa = factory(Modulos\Geral\Models\Pessoa::class)->create();
+        $aluno = factory(Modulos\Academico\Models\Aluno::class)->create(['alu_pes_id' => $pessoa->pes_id]);
+
+        $response = $this->repo->findByNomeOrCpf(['pes_nome' => $pessoa->pes_nome]);
+        $this->assertEquals($response[0]->pes_nome, $pessoa->pes_nome);
+    }
+
+    public function testpaginateAllWithBonds()
+    {
+        factory(Aluno::class, 10)->create();
+
+        $response = $this->repo->paginateAllWithBonds();
+
+        $this->assertNotEmpty($response);
+        $this->assertEquals(COUNT($response), 10);
+    }
+
+    public function testpaginateAllWithBondsWithSort()
+    {
+        factory(Aluno::class, 10)->create();
+        $sort['field'] = 'pes_nome';
+        $sort['sort'] = 'asc';
+        $response = $this->repo->paginateAllWithBonds($sort);
+
+        $this->assertNotEmpty($response);
+        $this->assertEquals(COUNT($response), 10);
+    }
+
+    public function testpaginateAllWithBondsWithSearch()
+    {
+        $alunos = factory(Aluno::class, 20)->create();
+        $search[0]['field'] = 'pes_email';
+        $search[0]['type'] = 'like';
+        $search[0]['term'] = $alunos[0]->pessoa->pes_email;
+        $response = $this->repo->paginateAllWithBonds(null, $search);
+
+        $this->assertEquals(count($response), 1);
+    }
+
+    public function testpaginateAllWithBondsWithSearchAndSort()
+    {
+        $alunos = factory(Aluno::class, 20)->create();
+        $search[0]['field'] = 'pes_email';
+        $search[0]['type'] = 'like';
+        $search[0]['term'] = $alunos[0]->pessoa->pes_email;
+        $sort['field'] = 'pes_nome';
+        $sort['sort'] = 'asc';
+
+        $response = $this->repo->paginateAllWithBonds($sort, $search);
+
+        $this->assertEquals(count($response), 1);
+    }
+
 
     public function tearDown()
     {
