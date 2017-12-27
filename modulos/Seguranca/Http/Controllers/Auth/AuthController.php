@@ -3,15 +3,14 @@
 namespace Modulos\Seguranca\Http\Controllers\Auth;
 
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Cache;
+use Modulos\Seguranca\Events\LogoutOtherDevicesEvent;
+use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
-use App\User;
-use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Foundation\Application;
-use Modulos\Seguranca\Providers\Seguranca\Seguranca;
-use Cache;
 
 class AuthController extends Controller
 {
@@ -70,13 +69,8 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
 
         if ($this->auth->attempt($credentials, $request->has('remember'))) {
-
-            //Gera estrutura do menu em cache
-            $seguranca = $this->app[Seguranca::class];
-
-            $seguranca->makeCachePermissoes();
-
-            $seguranca->makeCacheMenu();
+            event(new LogoutOtherDevicesEvent($request));
+            event(new ReloadCacheEvent());
 
             return redirect()->intended('/');
         }
@@ -88,7 +82,7 @@ class AuthController extends Controller
             ]);
     }
 
-    public function getLogout()
+    public function getLogout(Request $request)
     {
         $usrId = $this->app['auth']->user()->usr_id;
 
@@ -96,6 +90,8 @@ class AuthController extends Controller
         Cache::forget('PERMISSOES_'.$usrId);
 
         $this->auth->logout();
+
+        $request->session()->flush();
 
         return redirect('/login');
     }

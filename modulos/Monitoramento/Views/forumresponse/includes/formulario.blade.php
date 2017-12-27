@@ -140,7 +140,7 @@
         $(document).on('click', '#btnLocalizar', function () {
             event.preventDefault();
 
-            var token = '{{$monitoramento->asr_token}}';
+            var token = '{{$ambiente->asr_token}}';
             var moodlewsformat = "json";
             var wsfunction = "monitor_tutor_answers";
             var url = "{{$ambiente->amb_url}}";
@@ -157,9 +157,14 @@
                 dataType: "json",
                 async: true,
                 success: function (moodledata) {
-                    if (moodledata.itens.length > 0) {
+
+                    if (moodledata.exception) {
+                        toastr.error(moodledata.message, null, {progressBar: true});
+                    }
+
+                    if (moodledata.hasOwnProperty("itens") && moodledata.itens.length > 0) {
                         renderTable(moodledata);
-                    } else {
+                    } else if (moodledata.hasOwnProperty("itens")) {
                         showEmptyTable();
                     }
                     $.harpia.hideloading();
@@ -169,7 +174,6 @@
                     })
                     $(function () {
                         $('[data-toggle="popover"]').popover()
-                        console.log('algo');
                     })
 
                 },
@@ -261,7 +265,6 @@
             $('#boxTutores').removeClass('hidden');
             $('#boxTutores .box-body').empty().append(html);
         }
-
 
     </script>
 @stop
