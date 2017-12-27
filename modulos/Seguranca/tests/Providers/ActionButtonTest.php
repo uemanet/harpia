@@ -137,6 +137,11 @@ class ActionButtonTest extends ModulosTestCase
             return "Passed!";
         };
 
+        /*
+         * Mockar rotas fake
+         */
+        $routeCollection = $this->app['router']->getRoutes();
+
         $usuario = factory(Usuario::class)->create();
         /*
          * Mockup da estrutura de permissoes do sistema
@@ -179,6 +184,8 @@ class ActionButtonTest extends ModulosTestCase
             $routeName = strtolower($nomeModulo . ".index.index");
             $routeUri = implode("/", explode(".", $routeName));
 
+            $routeCollection->add($this->app['router']->match(['GET', 'POST'], $routeUri, $action)->name($routeName)->middleware('web', 'auth'));
+
             $this->app['router']->match(['GET', 'POST'], $routeUri, $action)->name($routeName)->middleware('web', 'auth');
 
             for ($i = 0; $i < 10; $i++) {
@@ -190,7 +197,7 @@ class ActionButtonTest extends ModulosTestCase
 
                 $routeUri = implode("/", explode(".", $routeName));
 
-                $this->app['router']->match(['GET', 'POST'], $routeUri, $action)->name($routeName)->middleware('web', 'auth');
+                $routeCollection->add($this->app['router']->match(['GET', 'POST'], $routeUri, $action)->name($routeName)->middleware('web', 'auth'));
             }
 
             // Itens de Menu
@@ -227,6 +234,8 @@ class ActionButtonTest extends ModulosTestCase
             // Sincronizar perfil para usuario
             $usuario->perfis()->sync($perfil->prf_id);
         }
+
+        $this->app['router']->setRoutes($routeCollection);
     }
 
     public function testRender()
@@ -247,17 +256,21 @@ class ActionButtonTest extends ModulosTestCase
 
         $buttons = $this->mockTButtons();
 
-        $this->app['request']->setRouteResolver(function () use ($userId, $buttons) {
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
             $resolver = new RouteResolver($buttons[0]->getRoute());
-            $resolver->setPermissions(Cache::get('PERMISSOES_' . $userId));
             return $resolver;
         });
 
         $actionButton = new ActionButton($this->app);
 
-//        dd($buttons[0]->getRoute());
-        dd($this->app['router']->getRoutes()->hasNamedRoute($buttons[0]->getRoute()));
-        dd($actionButton->render($buttons));
+        # Individual
+        $renderized = $actionButton->render($buttons[0]);
+        $this->assertEquals("", $renderized);
+
+        # Array de Buttons
+        $renderized = $actionButton->render($buttons);
+        $this->assertTrue(is_string($actionButton->render($buttons)));
+        $this->assertStringStartsWith("<a href=", $renderized);
     }
 
     public function testGridSelect()
