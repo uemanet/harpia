@@ -33,6 +33,7 @@ class ActionButtonTest extends ModulosTestCase
                     'route' => $permissionGet->prm_rota,
                     'parameters' => ['id' => random_int(1, 100)],
                     'label' => 'Editar',
+                    'id' => 'btnIdentifier',
                     'method' => 'get'
                 ],
                 [
@@ -63,6 +64,9 @@ class ActionButtonTest extends ModulosTestCase
                     'route' => $permissionGet->prm_rota,
                     'parameters' => ['id' => random_int(1, 100)],
                     'label' => 'Editar',
+                    'attributes' => [
+                        'onClick' => 'anyFunction()'
+                    ],
                     'method' => 'get'
                 ],
                 [
@@ -321,7 +325,23 @@ class ActionButtonTest extends ModulosTestCase
         $this->assertNotNull(Cache::get('MENU_' . $userId));
         $this->assertNotNull(Cache::get('PERMISSOES_' . $userId));
 
+        # Com 'showLabel'
         $buttons = $this->mockGridButtons();
+
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
+            $resolver = new RouteResolver($buttons[0]->getRoute());
+            return $resolver;
+        });
+
+        $actionButton = new ActionButton($this->app);
+
+        # Array de Buttons
+        $renderized = $actionButton->grid($buttons);
+        $this->assertStringStartsWith("<a style=", $renderized);
+
+        # Sem 'showLabel'
+        $buttons = $this->mockGridButtons();
+        $buttons['config']['showLabel'] = false;
 
         $this->app['request']->setRouteResolver(function () use ($buttons) {
             $resolver = new RouteResolver($buttons[0]->getRoute());
@@ -337,6 +357,160 @@ class ActionButtonTest extends ModulosTestCase
 
     public function testGridLine()
     {
+        $this->mockPermissoes();
+        $usuario = Usuario::all()->first();
+        $userId = $usuario->usr_id;
+
+        /*
+         * Login
+         */
+        $this->actingAs($usuario);
+        $this->app[Seguranca::class]->makeCachePermissoes();
+        $this->app[Seguranca::class]->makeCacheMenu();
+
+        $this->assertNotNull(Cache::get('MENU_' . $userId));
+        $this->assertNotNull(Cache::get('PERMISSOES_' . $userId));
+
+        $buttons = $this->mockGridLine();
+
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
+            $resolver = new RouteResolver($buttons[0]->getRoute());
+            return $resolver;
+        });
+
+        $actionButton = new ActionButton($this->app);
+
+        # Array de Buttons
+        $renderized = $actionButton->grid($buttons);
+        $this->assertStringStartsWith("<table>", $renderized);
+    }
+
+    public function testRenderWithSecurity()
+    {
+        // Seguranca habilitada
+        putenv("IS_SECURITY_ENNABLED=TRUE");
+
+        $this->mockPermissoes();
+        $usuario = Usuario::all()->first();
+        $userId = $usuario->usr_id;
+
+        /*
+         * Login
+         */
+        $this->actingAs($usuario);
+        $this->app[Seguranca::class]->makeCachePermissoes();
+        $this->app[Seguranca::class]->makeCacheMenu();
+
+        $this->assertNotNull(Cache::get('MENU_' . $userId));
+        $this->assertNotNull(Cache::get('PERMISSOES_' . $userId));
+
+        $buttons = $this->mockTButtons();
+
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
+            $resolver = new RouteResolver($buttons[0]->getRoute());
+            return $resolver;
+        });
+
+        $actionButton = new ActionButton($this->app);
+
+        # Individual
+        $renderized = $actionButton->render($buttons[0]);
+        $this->assertEquals("", $renderized);
+
+        # Array de Buttons
+        $renderized = $actionButton->render($buttons);
+        $this->assertTrue(is_string($actionButton->render($buttons)));
+        $this->assertStringStartsWith("<a href=", $renderized);
+    }
+
+    public function testGridSelectWithSecurity()
+    {
+        // Seguranca habilitada
+        putenv("IS_SECURITY_ENNABLED=TRUE");
+
+        $this->mockPermissoes();
+        $usuario = Usuario::all()->first();
+        $userId = $usuario->usr_id;
+
+        /*
+         * Login
+         */
+        $this->actingAs($usuario);
+        $this->app[Seguranca::class]->makeCachePermissoes();
+        $this->app[Seguranca::class]->makeCacheMenu();
+
+        $this->assertNotNull(Cache::get('MENU_' . $userId));
+        $this->assertNotNull(Cache::get('PERMISSOES_' . $userId));
+
+        $buttons = $this->mockGridSelect();
+
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
+            $resolver = new RouteResolver($buttons[0]->getRoute());
+            return $resolver;
+        });
+
+        $actionButton = new ActionButton($this->app);
+
+        # Array de Buttons
+        $renderized = $actionButton->grid($buttons);
+        $this->assertStringStartsWith("<div", $renderized);
+        $this->assertTrue(strlen(strstr($renderized, "dropdown-menu")) > 0);
+    }
+
+    public function testGridButtonsWithSecurity()
+    {
+        // Seguranca habilitada
+        putenv("IS_SECURITY_ENNABLED=TRUE");
+
+        $this->mockPermissoes();
+        $usuario = Usuario::all()->first();
+        $userId = $usuario->usr_id;
+
+        /*
+         * Login
+         */
+        $this->actingAs($usuario);
+        $this->app[Seguranca::class]->makeCachePermissoes();
+        $this->app[Seguranca::class]->makeCacheMenu();
+
+        $this->assertNotNull(Cache::get('MENU_' . $userId));
+        $this->assertNotNull(Cache::get('PERMISSOES_' . $userId));
+
+        # Com 'showLabel'
+        $buttons = $this->mockGridButtons();
+
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
+            $resolver = new RouteResolver($buttons[0]->getRoute());
+            return $resolver;
+        });
+
+        $actionButton = new ActionButton($this->app);
+
+        # Array de Buttons
+        $renderized = $actionButton->grid($buttons);
+        $this->assertStringStartsWith("<a style=", $renderized);
+
+        # Sem 'showLabel'
+        $buttons = $this->mockGridButtons();
+        $buttons['config']['showLabel'] = false;
+
+        $this->app['request']->setRouteResolver(function () use ($buttons) {
+            $resolver = new RouteResolver($buttons[0]->getRoute());
+            return $resolver;
+        });
+
+        $actionButton = new ActionButton($this->app);
+
+        # Array de Buttons
+        $renderized = $actionButton->grid($buttons);
+        $this->assertStringStartsWith("<a style=", $renderized);
+    }
+
+    public function testGridLineWithSecurity()
+    {
+        // Seguranca habilitada
+        putenv("IS_SECURITY_ENNABLED=TRUE");
+
         $this->mockPermissoes();
         $usuario = Usuario::all()->first();
         $userId = $usuario->usr_id;
