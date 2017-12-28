@@ -144,6 +144,61 @@ class AlunoRepositoryTest extends TestCase
 
         $this->assertGreaterThan(0, $response->total());
     }
+    public function testPaginateRequestWithSearch()
+    {
+        $alunos = factory(Aluno::class, 2)->create();
+
+        $cpfs = [];
+        foreach ($alunos as $key => $aluno) {
+            $cpfs[] = factory(Modulos\Geral\Models\Documento::class)->create(['doc_pes_id' => $aluno->pessoa->pes_id, 'doc_tpd_id' => 2]);
+        }
+
+        $requestParameters = [
+            'pes_nome' => $alunos[0]->pessoa->pes_nome,
+            'pes_cpf' => $cpfs[0]->doc_conteudo
+        ];
+
+        $response = $this->repo->paginateRequest($requestParameters);
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+
+        $this->assertGreaterThan(0, $response->total());
+    }
+    public function testPaginateRequestOnlyBonds()
+    {
+        $alunos = factory(Aluno::class, 2)->create();
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+          'ofc_crs_id' => $curso->crs_id
+        ]);
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+          'trm_ofc_id' => $oferta->ofc_id
+        ]);
+        foreach ($alunos as $key => $aluno) {
+            # code...
+          factory(Modulos\Academico\Models\Matricula::class)->create([
+            'mat_alu_id' => $aluno->alu_id,
+            'mat_trm_id' => $turma->trm_id
+          ]);
+        }
+        factory(Modulos\Academico\Models\Vinculo::class)->create([
+          'ucr_crs_id' => $curso->crs_id,
+          'ucr_usr_id' => $this->user->usr_id
+        ]);
+
+
+        $requestParameters = [
+            'page' => '1',
+            'field' => 'alu_id',
+            'sort' => 'asc'
+        ];
+
+        $response = $this->repo->paginateRequest($requestParameters, false, true);
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+
+        $this->assertGreaterThan(1, $response->total());
+    }
 
     public function testCreate()
     {
@@ -208,15 +263,6 @@ class AlunoRepositoryTest extends TestCase
         $this->assertEmpty($response);
     }
 
-    public function testfindByNomeOrCpfFindByNome()
-    {
-        $pessoa = factory(Modulos\Geral\Models\Pessoa::class)->create();
-        $aluno = factory(Modulos\Academico\Models\Aluno::class)->create(['alu_pes_id' => $pessoa->pes_id]);
-
-        $response = $this->repo->findByNomeOrCpf(['pes_nome' => $pessoa->pes_nome]);
-        $this->assertEquals($response[0]->pes_nome, $pessoa->pes_nome);
-    }
-
     public function testpaginateAllWithBonds()
     {
         factory(Aluno::class, 10)->create();
@@ -238,7 +284,7 @@ class AlunoRepositoryTest extends TestCase
         $this->assertEquals(COUNT($response), 10);
     }
 
-    public function testpaginateAllWithBondsWithSearch()
+    public function testpaginateAllWithBondsWithSearchByNome()
     {
         $alunos = factory(Aluno::class, 20)->create();
         $search[0]['field'] = 'pes_email';
