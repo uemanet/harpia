@@ -15,6 +15,7 @@ class CursoRepositoryTest extends TestCase
         WithoutMiddleware;
 
     protected $repo;
+    protected $user;
 
     public function createApplication()
     {
@@ -27,21 +28,15 @@ class CursoRepositoryTest extends TestCase
         return $app;
     }
 
-    public function login()
-    {
-        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
-
-        $this->actingAs($user);
-    }
-
     public function setUp()
     {
         parent::setUp();
 
         Artisan::call('modulos:migrate');
 
+        $this->user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
         $this->repo = $this->app->make(CursoRepository::class);
-        $this->login();
+        $this->actingAs($this->user);
     }
 
     public function testAllWithEmptyDatabase()
@@ -148,14 +143,70 @@ class CursoRepositoryTest extends TestCase
 
     public function testCreate()
     {
-        $response = factory(Curso::class)->create();
+        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
+        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
+        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
 
-        $data = $response->toArray();
+        $data = [
+          'crs_cen_id' => $centro->cen_id,
+          'crs_nvc_id' => $nivel->nvc_id,
+          'crs_prf_diretor' => $professor->prf_id,
+          'crs_nome' => 'Curso de Teste',
+          'crs_sigla' => 'CDT',
+          'crs_data_autorizacao' => '06/12/2017',
+          'crs_descricao' => 'Descrição do curso',
+          'crs_resolucao' => 'resolução do curso',
+          'crs_autorizacao' => 'autorização do curso',
+          'crs_eixo' => 'eixo do curso',
+          'crs_habilitacao' => 'habilitação do curso',
+          'media_min_aprovacao' => '7',
+          'media_min_final' => '5',
+          'media_min_aprovacao_final' => '5',
+          'modo_recuperacao' => 'substituir_menor_nota',
+          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
+        ];
 
-        $this->assertInstanceOf(Curso::class, $response);
+        $response = $this->repo->create($data);
 
-        $this->assertArrayHasKey('crs_id', $data);
+        $this->assertEquals('success', $response['status']);
     }
+
+    public function testUpdate()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
+        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
+        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
+        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_final', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao_final', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'conceitos_aprovacao', 'cfc_valor' => '["Bom","Muito Bom","Excelente"]']);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id]);
+
+        $data = [
+          'crs_cen_id' => $centro->cen_id,
+          'crs_nvc_id' => $nivel->nvc_id,
+          'crs_prf_diretor' => $professor->prf_id,
+          'crs_nome' => 'Curso de Teste',
+          'crs_sigla' => 'CDT',
+          'crs_data_autorizacao' => '06/12/2017',
+          'crs_descricao' => 'Descrição do curso',
+          'crs_resolucao' => 'resolução do curso',
+          'crs_autorizacao' => 'autorização do curso',
+          'crs_eixo' => 'eixo do curso',
+          'crs_habilitacao' => 'habilitação do curso',
+          'media_min_aprovacao' => '7',
+          'media_min_final' => '5',
+          'media_min_aprovacao_final' => '5',
+          'modo_recuperacao' => 'substituir_menor_nota',
+          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
+        ];
+
+        $response = $this->repo->updateCurso($data, $curso->crs_id);
+
+        $this->assertEquals('success', $response['status']);
+    }
+
 
     public function testFind()
     {
@@ -169,20 +220,6 @@ class CursoRepositoryTest extends TestCase
         $this->assertDatabaseHas('acd_cursos', $data);
     }
 
-    public function testUpdate()
-    {
-        $data = factory(Curso::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['crs_nome'] = 'abcde_edcba';
-
-        $cursoId = $updateArray['crs_id'];
-        unset($updateArray['crs_id']);
-
-        $response = $this->repo->update($updateArray, $cursoId, 'crs_id');
-
-        $this->assertEquals(1, $response);
-    }
 
     public function testDelete()
     {
@@ -208,14 +245,6 @@ class CursoRepositoryTest extends TestCase
         $this->assertNotEmpty($response, '');
     }
 
-    public function testListsCursoByOferta()
-    {
-        $oferta = factory(\Modulos\Academico\Models\OfertaCurso::class)->create();
-
-        $response = $this->repo->listsCursoByOferta($oferta->curso->crs_id);
-
-        $this->assertNotEmpty($response, '');
-    }
 
     public function testListsCursoByMatriz()
     {
@@ -226,13 +255,46 @@ class CursoRepositoryTest extends TestCase
         $this->assertNotEmpty($response, '');
     }
 
-    public function testListsCursosTecnicos()
+    public function testListsCursosTecnicosWithVinculo()
     {
-        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create(['crs_nvc_id' => 2]);
+
+        $vinculo = factory(\Modulos\Academico\Models\Vinculo::class)
+                   ->create(['ucr_usr_id' => $this->user->usr_id,
+                             'ucr_crs_id' => $curso[0]->crs_id]);
+        $response = $this->repo->listsCursosTecnicos();
+
+        $this->assertEquals(count($response), 1);
+    }
+
+    public function testListsCursosTecnicosWithoutVinculo()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create(['crs_nvc_id' => 2]);
+
+        $response = $this->repo->listsCursosTecnicos(2, true);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testListsWithoutVinculo()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class, 20)->create();
+
+        $response = $this->repo->lists('crs_id', 'crs_nome', true);
+
+        $this->assertNotEmpty($response);
+    }
+
+    public function testListsWithVinculo()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create(['crs_nvc_id' => 2]);
+        $vinculo = factory(\Modulos\Academico\Models\Vinculo::class)
+                   ->create(['ucr_usr_id' => $this->user->usr_id,
+                             'ucr_crs_id' => $curso[0]->crs_id]);
 
         $response = $this->repo->listsCursosTecnicos();
 
-        $this->assertNotEmpty($response, '');
+        $this->assertNotEmpty($response);
     }
 
     public function testGetCursosPorNivel()
@@ -242,6 +304,24 @@ class CursoRepositoryTest extends TestCase
         $response = $this->repo->getCursosPorNivel();
 
         $this->assertEmpty($response, '');
+    }
+
+    public function testGetCursosByAmbiente()
+    {
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+        $ambienteturma = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create(['atr_trm_id' => $turma->trm_id]);
+
+        $response = $this->repo->getCursosByAmbiente($ambienteturma->atr_trm_id);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testdeleteConfiguracoesReturnFalse()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
+        $response = $this->repo->deleteConfiguracoes($curso->crs_id);
+
+        $this->assertEquals($response, false);
     }
 
     public function tearDown()

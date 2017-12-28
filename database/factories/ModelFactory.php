@@ -220,6 +220,16 @@ $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Ge
     ];
 });
 
+$factory->define(Modulos\Academico\Models\ConfiguracaoCurso::class, function (Faker\Generator $faker) {
+    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+    return [
+        'cfc_crs_id' => $curso->crs_id,
+        'cfc_nome' => 'modo_recuperacao',
+        'cfc_valor' => $faker->randomElement($array = array('substituir_menor_nota', 'substituir_media_final'))
+    ];
+});
+
 $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Faker\Generator $faker) {
     return [
         'mtc_crs_id' => factory(Modulos\Academico\Models\Curso::class)->create()->crs_id,

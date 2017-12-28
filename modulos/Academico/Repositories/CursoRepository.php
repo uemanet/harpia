@@ -238,7 +238,7 @@ class CursoRepository extends BaseRepository
     {
         $collection = ConfiguracaoCurso::where('cfc_crs_id', '=', $cursoId)->get();
 
-        if ($collection) {
+        if ($collection->count()) {
             foreach ($collection as $obj) {
                 $obj->delete();
             }
