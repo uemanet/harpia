@@ -220,6 +220,17 @@ class DisciplinaRepositoryTest extends TestCase
         $this->assertNotEmpty($response, '');
     }
 
+    public function testBuscarDisciplinasReturnNull()
+    {
+        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+
+        $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+
+        $response = $this->repo->buscar($response->modulo->matriz->mtc_id, 'Disciplina');
+
+        $this->assertEquals($response, null);
+    }
+
     public function testGetDisciplinasModulosAnteriores()
     {
         $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();

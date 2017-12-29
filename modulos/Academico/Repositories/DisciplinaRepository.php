@@ -76,7 +76,7 @@ class DisciplinaRepository extends BaseRepository
             ->get();
 
 
-        if ($result) {
+        if ($result->count()) {
             return $result;
         }
 
