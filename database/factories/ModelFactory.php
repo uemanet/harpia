@@ -245,8 +245,9 @@ $factory->define(Modulos\Academico\Models\MatrizCurricular::class, function (Fak
 });
 
 $factory->define(Modulos\Academico\Models\Grupo::class, function (Faker\Generator $faker) {
+    $turma = factory(Modulos\Academico\Models\Turma::class)->create();
     return [
-        'grp_trm_id' => factory(Modulos\Academico\Models\Turma::class)->create()->trm_id,
+        'grp_trm_id' => $turma->trm_id,
         'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
         'grp_nome' => $faker->name
     ];

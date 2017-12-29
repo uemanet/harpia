@@ -189,6 +189,21 @@ class GrupoRepositoryTest extends TestCase
         $this->assertGreaterThan(0, $response->total());
     }
 
+    public function testPaginateRequestByTurmaWithParameters()
+    {
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+
+        $requestParameters['field'] = 'grp_nome';
+        $requestParameters['sort'] = 'desc';
+        $response = $this->repo->paginateRequestByTurma($response->turma->trm_id, $requestParameters);
+
+        $this->assertNotEmpty($response, '');
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+
+        $this->assertGreaterThan(0, $response->total());
+    }
+
     public function testListsAllById()
     {
         $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
@@ -202,7 +217,16 @@ class GrupoRepositoryTest extends TestCase
     {
         $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
 
-        $response = $this->repo->listsAllById($response->turma->trm_id);
+        $response = $this->repo->findAllByTurma($response->turma->trm_id);
+
+        $this->assertNotEmpty($response, '');
+    }
+
+    public function testFindAllByTurmaAndPolo()
+    {
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create();
+
+        $response = $this->repo->getAllByTurmaAndPolo($response->turma->trm_id, $response->grp_pol_id);
 
         $this->assertNotEmpty($response, '');
     }
@@ -214,6 +238,33 @@ class GrupoRepositoryTest extends TestCase
         $response = $this->repo->verifyNameGrupo('Grupo', $response->turma->trm_id);
 
         $this->assertEquals($response, false);
+    }
+
+    public function testVerifyNameGrupoReturnFalse()
+    {
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create(['grp_nome' =>  'Grupo']);
+
+        $response = $this->repo->verifyNameGrupo('Grupo', $response->turma->trm_id, $response->grp_id);
+
+        $this->assertEquals($response, false);
+    }
+
+    public function testVerifyNameGrupoReturnTrue()
+    {
+        $response = factory(\Modulos\Academico\Models\Grupo::class)->create(['grp_nome' =>  'Grupo']);
+
+        $response = $this->repo->verifyNameGrupo('Grupo', $response->turma->trm_id, 10);
+
+        $this->assertEquals($response, true);
+    }
+
+    public function testgetMovimentacoesEmpty()
+    {
+        $response = factory(\Modulos\Academico\Models\TutorGrupo::class)->create();
+
+        $response = $this->repo->getMovimentacoes($response->ttg_grp_id);
+
+        $this->assertEmpty($response);
     }
 
 
