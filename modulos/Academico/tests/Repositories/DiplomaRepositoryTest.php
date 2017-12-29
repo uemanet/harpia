@@ -76,18 +76,20 @@ class DiplomaRepositoryTest extends TestCase
     {
         $diploma = factory(Diploma::class, 2)->create();
 
-        $diplomados = $this->repo->getAlunosDiplomados(3);
+        $diplomados = $this->repo->getAlunosDiplomados(1);
 
-        $sort = [
-            'field' => 'dip_id',
-            'sort' => 'desc'
-        ];
+        $this->assertNotEmpty($diplomados['diplomados']);
+        $this->assertEmpty($diplomados['aptos']);
+    }
 
-        $response = $this->repo->paginate($sort);
+    public function testGetAlunosDiplomadosWithPolo()
+    {
+        $diploma = factory(Diploma::class)->create();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $diplomados = $this->repo->getAlunosDiplomados($diploma->matricula->mat_trm_id, $diploma->matricula->mat_pol_id);
 
-        $this->assertGreaterThan(1, $response[0]->dip_id);
+        $this->assertNotEmpty($diplomados['diplomados']);
+        $this->assertEmpty($diplomados['aptos']);
     }
 
     public function testGetPrintData()
@@ -98,19 +100,33 @@ class DiplomaRepositoryTest extends TestCase
         $idPessoa = $diploma[0]->matricula->aluno->pessoa->pes_id;
 
         $docRepository = new DocumentoRepository(new Documento());
-        $documento = $docRepository->create(['doc_pes_id' => $idPessoa, 'doc_tpd_id' => 1, 'doc_conteudo' => 4653673163]);
+        $documento = $docRepository->create(['doc_pes_id' => $idPessoa, 'doc_tpd_id' => 1, 'doc_conteudo' => 4653673163, 'doc_orgao' => 'SSP']);
 
         $diplomados = $this->repo->getPrintData($id);
 
-        $sort = [
-            'field' => 'dip_id',
-            'sort' => 'desc'
-        ];
+        $this->assertNotEmpty($diplomados);
+    }
 
-        $response = $this->repo->paginate($sort);
+    public function testGetPrintDataReturnError()
+    {
+        $diploma = factory(Diploma::class, 2)->create();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $id = array(0 => $diploma[0]->dip_id );
+        $idPessoa = $diploma[0]->matricula->aluno->pessoa->pes_id;
 
-        $this->assertGreaterThan(1, $response[0]->dip_id);
+        $docRepository = new DocumentoRepository(new Documento());
+        //criado um documento sem orgao para fazer o teste. É esperado um documento um erro no campo órgão como retorno
+        $documento = $docRepository->create(['doc_pes_id' => $idPessoa, 'doc_tpd_id' => 1, 'doc_conteudo' => 4653673163]);
+        $diplomados = $this->repo->getPrintData($id);
+
+        $this->assertEquals($diplomados['type'], 'error');
+        $this->assertEquals($diplomados['campo'], 'ORGAO');
+    }
+
+    public function testGetPrintDataReturnNull()
+    {
+        $diplomados = $this->repo->getPrintData([1]);
+
+        $this->assertEquals(null, $diplomados);
     }
 }

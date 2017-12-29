@@ -15,7 +15,7 @@ class DiplomaRepository extends BaseRepository
         $this->model = $diploma;
     }
 
-    public function getAlunosDiplomados($turmaId, $poloId)
+    public function getAlunosDiplomados($turmaId, $poloId = 0)
     {
         //recebe os alunos diplomados em deteminada turma
         $diplomados = $this->model

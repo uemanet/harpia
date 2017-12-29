@@ -168,7 +168,8 @@ $factory->define(Modulos\Academico\Models\Centro::class, function (Faker\Generat
 
 $factory->define(Modulos\Academico\Models\Professor::class, function (Faker\Generator $faker) {
     return [
-        'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id
+        'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
+        'prf_codigo' => $faker->randomNumber(4)
     ];
 });
 
