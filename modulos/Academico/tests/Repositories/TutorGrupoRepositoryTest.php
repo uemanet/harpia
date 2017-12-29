@@ -36,29 +36,31 @@ class TutorGrupoRepositoryTest extends TestCase
         $this->repo = $this->app->make(TutorGrupoRepository::class);
     }
 
-
-    public function testVerifyTutorExists()
+    public function testgetTiposTutoria()
     {
-        $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class, 10)->create();
-        $retorno = $this->repo->verifyTutorExists(1);
+        $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create();
+        $response = $this->repo->getTiposTutoria($tutorgrupo->grupo->grp_id);
 
-        $this->assertEquals($retorno, true);
+        $this->assertNotEmpty($response);
     }
 
-    public function testHowManyTutors()
+    public function testpaginateRequestByGrupo()
     {
-        $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class, 10)->create();
-        $retorno = $this->repo->howManyTutors(1);
-        $this->assertEquals($retorno, 1);
+        $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create();
+        $response = $this->repo->paginateRequestByGrupo($tutorgrupo->grupo->grp_id);
+
+        $this->assertNotEmpty($response);
     }
 
-    public function testVerifyTutorPresencial()
+    public function testpaginateRequestByGrupoWithParameters()
     {
-        $tutorgrupo = factory(Modulos\Academico\Models\TutorGrupo::class, 10)->create();
+        $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create();
+        $requestParameters['field'] = 'ttg_tut_id';
+        $requestParameters['sort'] = 'desc';
 
-        $retorno = $this->repo->verifyTutorPresencial(1, 'presencial');
+        $response = $this->repo->paginateRequestByGrupo($tutorgrupo->grupo->grp_id, $requestParameters);
 
-        $this->assertEquals($retorno, null);
+        $this->assertNotEmpty($response);
     }
 
     public function tearDown()

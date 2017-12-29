@@ -289,7 +289,7 @@ $factory->define(Modulos\Academico\Models\TutorGrupo::class, function (Faker\Gen
     return [
         'ttg_tut_id' => $tutor->tut_id,
         'ttg_grp_id' => $grupo->grp_id,
-        'ttg_tipo_tutoria' => 'presencial',
+        'ttg_tipo_tutoria' => $faker->randomElement($array = array('presencial', 'distancia')),
         'ttg_data_inicio' => '10/11/2010',
         'ttg_data_fim' => null
     ];

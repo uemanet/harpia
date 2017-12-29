@@ -171,6 +171,36 @@ class CursoRepositoryTest extends TestCase
         $this->assertEquals('success', $response['status']);
     }
 
+    public function testCreateWithQueryException()
+    {
+        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
+        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
+        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
+        //nível de curso colocado como Null para que a resposta venha com erro
+        $data = [
+          'crs_cen_id' => $centro->cen_id,
+          'crs_nvc_id' => null,
+          'crs_prf_diretor' => $professor->prf_id,
+          'crs_nome' => 'Curso de Teste',
+          'crs_sigla' => 'CDT',
+          'crs_data_autorizacao' => '06/12/2017',
+          'crs_descricao' => 'Descrição do curso',
+          'crs_resolucao' => 'resolução do curso',
+          'crs_autorizacao' => 'autorização do curso',
+          'crs_eixo' => 'eixo do curso',
+          'crs_habilitacao' => 'habilitação do curso',
+          'media_min_aprovacao' => '7',
+          'media_min_final' => '5',
+          'media_min_aprovacao_final' => '5',
+          'modo_recuperacao' => 'substituir_menor_nota',
+          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
+        ];
+
+        $response = $this->repo->create($data);
+
+        $this->assertEquals('Erro ao criar curso. Parâmetros devem estar errados.', $response['message']);
+    }
+
     public function testUpdate()
     {
         $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
@@ -207,6 +237,41 @@ class CursoRepositoryTest extends TestCase
         $this->assertEquals('success', $response['status']);
     }
 
+    public function testUpdateWithQueryException()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
+        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
+        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
+        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_final', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao_final', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'conceitos_aprovacao', 'cfc_valor' => '["Bom","Muito Bom","Excelente"]']);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id]);
+
+        $data = [
+          'crs_cen_id' => $centro->cen_id,
+          'crs_nvc_id' => null,
+          'crs_prf_diretor' => $professor->prf_id,
+          'crs_nome' => 'Curso de Teste',
+          'crs_sigla' => 'CDT',
+          'crs_data_autorizacao' => '06/12/2017',
+          'crs_descricao' => 'Descrição do curso',
+          'crs_resolucao' => 'resolução do curso',
+          'crs_autorizacao' => 'autorização do curso',
+          'crs_eixo' => 'eixo do curso',
+          'crs_habilitacao' => 'habilitação do curso',
+          'media_min_aprovacao' => '7',
+          'media_min_final' => '5',
+          'media_min_aprovacao_final' => '5',
+          'modo_recuperacao' => 'substituir_menor_nota',
+          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
+        ];
+
+        $response = $this->repo->updateCurso($data, $curso->crs_id);
+
+        $this->assertEquals('Erro ao editar curso. Parâmetros devem estar errados.', $response['message']);
+    }
 
     public function testFind()
     {
@@ -292,7 +357,7 @@ class CursoRepositoryTest extends TestCase
                    ->create(['ucr_usr_id' => $this->user->usr_id,
                              'ucr_crs_id' => $curso[0]->crs_id]);
 
-        $response = $this->repo->listsCursosTecnicos();
+        $response = $this->repo->lists('crs_id', 'crs_nome', false);
 
         $this->assertNotEmpty($response);
     }
@@ -322,6 +387,20 @@ class CursoRepositoryTest extends TestCase
         $response = $this->repo->deleteConfiguracoes($curso->crs_id);
 
         $this->assertEquals($response, false);
+    }
+
+    public function testdeleteConfiguracoesReturnTrue()
+    {
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_final', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao_final', 'cfc_valor' => 7]);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'conceitos_aprovacao', 'cfc_valor' => '["Bom","Muito Bom","Excelente"]']);
+        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id]);
+
+        $response = $this->repo->deleteConfiguracoes($curso->crs_id);
+
+        $this->assertEquals($response, true);
     }
 
     public function tearDown()

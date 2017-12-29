@@ -127,7 +127,7 @@ class CursoRepository extends BaseRepository
             return array('status' => 'success', 'message' => 'Curso criado com sucesso.');
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollback();
-            return array('status' => 'error', 'message' => 'Erro ao criar curso. Parâmetros devem está errados.');
+            return array('status' => 'error', 'message' => 'Erro ao criar curso. Parâmetros devem estar errados.');
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -187,7 +187,7 @@ class CursoRepository extends BaseRepository
             return array('status' => 'success', 'message' => 'Curso atualizado com sucesso.');
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollback();
-            return array('status' => 'error', 'message' => 'Erro ao editar curso. Parâmetros devem está errados.');
+            return array('status' => 'error', 'message' => 'Erro ao editar curso. Parâmetros devem estar errados.');
         } catch (\Exception $e) {
             DB::rollback();
 
