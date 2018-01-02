@@ -188,9 +188,11 @@ $factory->define(Modulos\Academico\Models\Polo::class, function (Faker\Generator
 });
 
 $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generator $faker) {
+    $niveis = factory(\Modulos\Academico\Models\NivelCurso::class, 7)->create();
+
     return [
         'crs_cen_id' => factory(Modulos\Academico\Models\Centro::class)->create()->cen_id,
-        'crs_nvc_id' => 2,
+        'crs_nvc_id' => random_int(1, 7),
         'crs_prf_diretor' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'crs_nome' => $faker->name,
         'crs_sigla' => $faker->name,
@@ -377,6 +379,7 @@ $factory->define(Modulos\Academico\Models\Matricula::class, function () {
     $turma = factory(Modulos\Academico\Models\Turma::class)->create(['trm_ofc_id' => $oferta->ofc_id]);
     $polo = factory(Modulos\Academico\Models\Polo::class)->create();
     $oferta->polos()->attach($polo->pol_id);
+
     $grupo = factory(Modulos\Academico\Models\Grupo::class)->create([
         'grp_trm_id' => $turma->trm_id,
         'grp_pol_id' => $polo->pol_id
