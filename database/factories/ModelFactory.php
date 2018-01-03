@@ -207,7 +207,7 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
 
 $factory->define(Modulos\Academico\Models\Modalidade::class, function (Faker\Generator $faker) {
     return [
-        'mdl_nome' => 'distancia'
+        'mdl_nome' => $faker->randomElement($array = array('distancia', 'presencial'))
     ];
 });
 
