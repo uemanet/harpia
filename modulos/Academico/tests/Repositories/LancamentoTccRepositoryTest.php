@@ -178,6 +178,57 @@ class LancamentoTccRepositoryTest extends TestCase
         $this->assertEquals(1, $response);
     }
 
+    public function testUpdateReturn0()
+    {
+        $response = $this->repo->update([], 1, 'ltc_id');
+
+        $this->assertEquals(0, $response);
+    }
+
+    public function testfindBy()
+    {
+        $data = factory(\Modulos\Academico\Models\LancamentoTcc::class)->create();
+
+        $response = $this->repo->findBy(
+            ['ltc_mof_id' => $data->ltc_mof_id],
+            ['ltc_titulo', 'ltc_tipo', 'ltc_data_apresentacao', 'ltc_observacao', 'pes_nome', 'pes_id']
+        );
+        $this->assertEquals($data->ltc_titulo, $response[0]->ltc_titulo);
+        $this->assertEquals(1, count($response));
+        $this->assertNotEmpty($response);
+    }
+
+    public function testdeleteAnexoTcc()
+    {
+        $data = factory(\Modulos\Academico\Models\LancamentoTcc::class)->create();
+        $response = $this->repo->deleteAnexoTcc($data->ltc_id);
+
+        $this->assertNotEquals(false, $response);
+    }
+
+
+    public function testdeleteAnexoTccReturnFalse()
+    {
+        $response = $this->repo->deleteAnexoTcc(1);
+
+        $this->assertEquals(false, $response);
+    }
+
+    public function testUpdateWithoutAttribute()
+    {
+        $data = factory(\Modulos\Academico\Models\LancamentoTcc::class)->create();
+
+        $updateArray = $data->toArray();
+        $updateArray['ltc_nome'] = 'abcde_edcba';
+
+        $lancamentotccId = $updateArray['ltc_id'];
+        unset($updateArray['ltc_id']);
+
+        $response = $this->repo->update($updateArray, $lancamentotccId);
+
+        $this->assertEquals(1, $response);
+    }
+
     public function testFindDisciplinaByTurma()
     {
         $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
