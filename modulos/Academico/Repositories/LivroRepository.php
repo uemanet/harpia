@@ -12,7 +12,7 @@ class LivroRepository extends BaseRepository
         $this->model = $livro;
     }
 
-    public function findBy($options)
+    public function findBy(array $options = null)
     {
         $query = $this->model;
 
