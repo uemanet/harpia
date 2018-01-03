@@ -1,13 +1,12 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Modulos\Academico\Models\Matricula;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Support\Facades\Artisan;
-use Modulos\Academico\Repositories\HistoricoDefinitivoRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
-use Carbon\Carbon;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Modulos\Academico\Repositories\HistoricoDefinitivoRepository;
 
 class HistoricoDefinitivoRepositorytTest extends ModulosTestCase
 {
@@ -22,14 +21,6 @@ class HistoricoDefinitivoRepositorytTest extends ModulosTestCase
         parent::setUp();
         $this->repo = $this->app->make(HistoricoDefinitivoRepository::class);
         $this->docrepo = $this->app->make(DocumentoRepository::class);
-    }
-
-    public function testAllWithEmptyDatabase()
-    {
-        $response = $this->repo->all();
-
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
     }
 
     public function testGetGradeCurricularByMatricula()
@@ -84,9 +75,11 @@ class HistoricoDefinitivoRepositorytTest extends ModulosTestCase
             'ofd_qtd_vagas' => 500
         ]);
 
+        factory(\Modulos\Geral\Models\Titulacao::class, 7)->create();
+
         $titulacaoProfessor = factory(Modulos\Geral\Models\TitulacaoInformacao::class)->create([
             'tin_pes_id' => $professor->pessoa->pes_id,
-            'tin_tit_id' => factory(\Modulos\Geral\Models\Titulacao::class)->create()->tit_id,
+            'tin_tit_id' => random_int(2, 7),
         ]);
 
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create([

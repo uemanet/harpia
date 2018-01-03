@@ -3,11 +3,10 @@
 namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Matricula;
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Repositories\TitulacaoInformacaoRepository;
 use DB;
 
-class HistoricoDefinitivoRepository extends BaseRepository
+class HistoricoDefinitivoRepository
 {
     private $matriculaOfertaDisciplinaRepository;
     private $lancamentoTccRepository;
@@ -226,21 +225,20 @@ class HistoricoDefinitivoRepository extends BaseRepository
                     ['tit_peso' => 'desc']
                 );
 
+                $titulacoes = [
+                    2 => 'Graduado',
+                    3 => 'Especialista',
+                    4 => 'Mestre',
+                    5 => 'Doutor',
+                    6 => 'Pós-Doutor',
+                    7 => 'Pós-Graduado'
+                ];
+
                 if ($result) {
                     $titulacao = $result->where('tin_anofim', '<>', null)->first();
 
-                    if ($titulacao->tit_id == 2) {
-                        $arrDisciplinas[$i]->professor_titulacao = 'Graduado';
-                    } elseif ($titulacao->tit_id == 3) {
-                        $arrDisciplinas[$i]->professor_titulacao = 'Especialista';
-                    } elseif ($titulacao->tit_id == 4) {
-                        $arrDisciplinas[$i]->professor_titulacao = 'Mestre';
-                    } elseif ($titulacao->tit_id == 5) {
-                        $arrDisciplinas[$i]->professor_titulacao = 'Doutor';
-                    } elseif ($titulacao->tit_id == 6) {
-                        $arrDisciplinas[$i]->professor_titulacao = 'Pós-Doutor';
-                    } elseif ($titulacao->tit_id == 7) {
-                        $arrDisciplinas[$i]->professor_titulacao = 'Pós-Graduado';
+                    if ($titulacao && array_key_exists($titulacao->tit_id, $titulacoes)) {
+                        $arrDisciplinas[$i]->professor_titulacao = $titulacoes[$titulacao->tit_id];
                     }
                 }
             }
