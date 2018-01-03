@@ -69,7 +69,7 @@ class HistoricoDefinitivoRepository extends BaseRepository
         setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         date_default_timezone_set('America/Sao_Paulo');
 
-        $returndata['data'] = 'São Luís, '.strftime('%d de %B de %Y', strtotime('today'));
+        $returndata['data'] = 'São Luís, ' . strftime('%d de %B de %Y', strtotime('today'));
 
         if ($curso->crs_nvc_id == 2) {
             $returndata['modulos'] = $this->getDisciplinasTecnico($matricula->mat_id);
@@ -80,16 +80,16 @@ class HistoricoDefinitivoRepository extends BaseRepository
         $returndata['disciplinas'] = $this->getDisciplinasGraduacao($matricula->mat_id);
 
         $mof_tcc = DB::table('acd_matriculas_ofertas_disciplinas')
-                        ->join('acd_ofertas_disciplinas', function ($join) {
-                            $join->on('mof_ofd_id', '=', 'ofd_id');
-                        })
-                        ->join('acd_modulos_disciplinas', function ($join) {
-                            $join->on('ofd_mdc_id', '=', 'mdc_id');
-                        })
-                        ->where('mdc_tipo_disciplina', '=', 'tcc')
-                        ->where('mof_mat_id', '=', $matricula->mat_id)
-                        ->select('mof_id')
-                        ->first();
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
+            ->where('mof_mat_id', '=', $matricula->mat_id)
+            ->select('mof_id')
+            ->first();
 
         $tcc = $this->lancamentoTccRepository->findBy(
             ['ltc_mof_id' => $mof_tcc->mof_id],
@@ -149,35 +149,29 @@ class HistoricoDefinitivoRepository extends BaseRepository
             ['tit_peso' => 'desc']
         );
 
+        /*
+         * Titulacoes ID
+         * Graduação -> 1
+         * Mestrado -> 2
+         * Doutorado -> 3
+         * Pós-Doutorado -> 4
+         * Especialização -> 5
+         * Ensino Médio -> 6
+         */
+
+        $titulacoes = [
+            1 => 'Graduado',
+            2 => 'Mestre',
+            3 => 'Doutor',
+            4 => 'Pós-Doutor',
+            5 => 'Especialista'
+        ];
+
         if ($result) {
             $titulacao = $result->where('tin_anofim', '<>', null)->first();
 
-            /*
-             * Titulacoes ID
-             * Graduação -> 1
-             * Mestrado -> 2
-             * Doutorado -> 3
-             * Pós-Doutorado -> 4
-             * Especialização -> 5
-             * Ensino Médio -> 6
-             */
-
-            switch ($titulacao->tit_id) {
-                case 1:
-                    return 'Graduado';
-                    break;
-                case 2:
-                    return 'Mestre';
-                    break;
-                case 3:
-                    return 'Doutor';
-                    break;
-                case 4:
-                    return 'Pós-Doutor';
-                    break;
-                case 5:
-                    return 'Especialista';
-                    break;
+            if ($titulacao && array_key_exists($titulacao->tit_id, $titulacoes)) {
+                return $titulacoes[$titulacao->tit_id];
             }
         }
 
