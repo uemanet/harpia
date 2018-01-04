@@ -33,13 +33,10 @@ class ActionButton
         switch ($component['type']) {
             case 'SELECT':
                 return $this->renderButtonGridSelect($component['config'], $component['buttons']);
-                break;
             case 'BUTTONS':
                 return $this->renderButtonGrid($component['config'], $component['buttons']);
-                break;
             case 'LINE':
                 return $this->renderButtonGridLine($component['buttons']);
-                break;
         }
     }
 

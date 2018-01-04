@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -13,6 +14,7 @@ class TurmaRepositoryTest extends TestCase
         WithoutMiddleware;
 
     protected $repo;
+    protected $AmbienteTurmarepo;
 
     public function createApplication()
     {
@@ -32,6 +34,7 @@ class TurmaRepositoryTest extends TestCase
         Artisan::call('modulos:migrate');
 
         $this->repo = $this->app->make(TurmaRepository::class);
+        $this->AmbienteTurmarepo = $this->app->make(AmbienteTurmaRepository::class);
     }
 
     public function testAllWithEmptyDatabase()
@@ -44,9 +47,10 @@ class TurmaRepositoryTest extends TestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Academico\Models\Turma::class, 2)->create();
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $turmas = factory(Modulos\Academico\Models\Turma::class, 10)->create(['trm_ofc_id' => $oferta->ofc_id]);
 
-        $response = $this->repo->paginate();
+        $response = $this->repo->paginateRequestByOferta($oferta->ofc_id);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
@@ -55,18 +59,19 @@ class TurmaRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Academico\Models\Turma::class, 2)->create();
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $turmas = factory(Modulos\Academico\Models\Turma::class, 10)->create(['trm_ofc_id' => $oferta->ofc_id]);
 
         $sort = [
-            'field' => 'trm_id',
-            'sort' => 'desc'
-        ];
+          'field' => 'trm_nome',
+          'sort' => 'desc'
+      ];
 
-        $response = $this->repo->paginate($sort);
+        $response = $this->repo->paginateRequestByOferta($oferta->ofc_id, $sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        $this->assertEquals(2, $response[0]->trm_id);
+        $this->assertGreaterThan(2, $response[0]->trm_id);
     }
 
     public function testPaginateWithSearch()
@@ -131,25 +136,20 @@ class TurmaRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
     public function testCreate()
     {
         $response = factory(Modulos\Academico\Models\Turma::class)->create();
-
         $this->assertInstanceOf(\Modulos\Academico\Models\Turma::class, $response);
-
         $this->assertArrayHasKey('trm_id', $response->toArray());
     }
 
     public function testFind()
     {
         $data = factory(Modulos\Academico\Models\Turma::class)->create();
-
         $this->assertDatabaseHas('acd_turmas', $data->toArray());
     }
 
@@ -162,19 +162,84 @@ class TurmaRepositoryTest extends TestCase
 
         $turmadId = $updateArray['trm_id'];
         unset($updateArray['trm_id']);
-
         $response = $this->repo->update($updateArray, $turmadId, 'trm_id');
-
         $this->assertEquals(1, $response);
+    }
+
+    public function testfindAllByOfertaCurso()
+    {
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create();
+        $response = $this->repo->findAllByOfertaCurso($turma->ofertacurso->ofc_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testfindAllByOfertaCursoIntegrada()
+    {
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create(['trm_ofc_id' => $oferta->ofc_id, 'trm_integrada' => 1]);
+        $ambiente = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+        $dados['atr_trm_id'] = $turma->trm_id;
+        $dados['atr_amb_id'] = $ambiente->amb_id;
+
+        $this->AmbienteTurmarepo->create($dados);
+        $response = $this->repo->findAllByOfertaCursoIntegrada($oferta->ofc_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testfindAllByOfertaCursoNaoIntegrada()
+    {
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create(['trm_integrada' => 0]);
+        $response = $this->repo->findAllByOfertaCursoNaoIntegrada($turma->ofertacurso->ofc_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testfindCursoByTurma()
+    {
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create();
+        $response = $this->repo->findCursoByTurma($turma->trm_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testlistsAllById()
+    {
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create();
+        $response = $this->repo->listsAllById($turma->trm_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testgetTurmaPolosByMatriculas()
+    {
+        $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
+        $response = $this->repo->getTurmaPolosByMatriculas($matricula->turma->trm_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testfindAllWithVagasDisponiveisByOfertaCurso()
+    {
+        $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
+        $response = $this->repo->findAllWithVagasDisponiveisByOfertaCurso($matricula->turma->ofertacurso->ofc_id);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testpendenciasTurmaReturnTrue()
+    {
+        $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
+        $response = $this->repo->pendenciasTurma($matricula->mat_trm_id);
+        $this->assertEquals($response, true);
+    }
+
+    public function testpendenciasTurmaReturnFalse()
+    {
+        $response = $this->repo->pendenciasTurma(1);
+        $this->assertEquals($response, false);
     }
 
     public function testDelete()
     {
         $data = factory(Modulos\Academico\Models\Turma::class)->create();
+
         $turmaId = $data->trm_id;
-
         $response = $this->repo->delete($turmaId);
-
         $this->assertEquals(1, $response);
     }
 

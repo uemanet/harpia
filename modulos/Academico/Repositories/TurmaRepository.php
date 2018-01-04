@@ -170,24 +170,16 @@ class TurmaRepository extends BaseRepository
 
     public function pendenciasTurma(int $turmaId): bool
     {
-        $result = DB::table('acd_ofertas_disciplinas')
+        $ofertadisciplina = DB::table('acd_ofertas_disciplinas')
             ->where('ofd_trm_id', $turmaId)->get();
 
-        if ($result->count()) {
-            return true;
-        }
-
-        $result = DB::table('acd_matriculas')
+        $matriculas = DB::table('acd_matriculas')
             ->where('mat_trm_id', $turmaId)->get();
 
-        if ($result->count()) {
-            return true;
-        }
-
-        $result = DB::table('acd_grupos')
+        $grupos = DB::table('acd_grupos')
             ->where('grp_trm_id', $turmaId)->get();
 
-        if ($result->count()) {
+        if ($ofertadisciplina->count() || $matriculas->count() || $grupos->count()) {
             return true;
         }
 
