@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Pagination\LengthAwarePaginator;
-use Modulos\Academico\Models\Livro;
 use Modulos\Academico\Models\NivelCurso;
 use Modulos\Academico\Repositories\NivelCursoRepository;
 use Stevebauman\EloquentTable\TableCollection;
@@ -17,7 +16,6 @@ class NivelCursoRepositorytTest extends ModulosTestCase
         WithoutMiddleware;
 
     protected $repo;
-    protected $docrepo;
 
     public function setUp()
     {

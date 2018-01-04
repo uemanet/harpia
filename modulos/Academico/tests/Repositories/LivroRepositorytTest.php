@@ -15,7 +15,6 @@ class LivroRepositorytTest extends ModulosTestCase
         WithoutMiddleware;
 
     protected $repo;
-    protected $docrepo;
 
     public function setUp()
     {
