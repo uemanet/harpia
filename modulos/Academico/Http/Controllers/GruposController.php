@@ -141,7 +141,7 @@ class GruposController extends BaseController
 
         $oferta = $turma->ofertacurso;
         $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
+        $polos = $turma->ofertacurso->polos->pluck('pol_nome', 'pol_id');
         $oferta = $oferta->where('ofc_id', $oferta->ofc_id)->pluck('ofc_ano', 'ofc_id');
         $turma = $this->turmaRepository->listsAllById($turmaId);
 
@@ -197,7 +197,7 @@ class GruposController extends BaseController
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
         $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
+        $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
         $oferta = $oferta->where('ofc_id', $oferta->ofc_id)->pluck('ofc_ano', 'ofc_id');
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 

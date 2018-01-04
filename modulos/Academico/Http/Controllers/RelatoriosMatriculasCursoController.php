@@ -54,7 +54,8 @@ class RelatoriosMatriculasCursoController extends BaseController
                 $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
             }
 
-            $polos = $this->poloRepository->findAllByOfertaCurso($ofc_id)->pluck('pol_nome', 'pol_id');
+            $oferta = $this->ofertaCursoRepository->find($ofc_id);
+            $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
         }
 
         $paginacao = null;
