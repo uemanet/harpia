@@ -20,7 +20,7 @@ class AlunoRepository extends BaseRepository
      * @param null $search
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginateOnlyWithBonds($sort = null, $search = null)
+    private function paginateOnlyWithBonds($sort = null, $search = null)
     {
         $result = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')
             ->distinct()
@@ -64,13 +64,35 @@ class AlunoRepository extends BaseRepository
         return $this->model->paginateWithBonds($result->get(), 15);
     }
 
+    public function search(array $options, array $select = null)
+    {
+        $query = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')
+            ->leftJoin('acd_matriculas', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            })->leftJoin('gra_documentos', function ($join) {
+                $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+            })->where('mat_alu_id', '=', null);
+
+        foreach ($options as $op) {
+            $query = $query->where($op[0], $op[1], $op[2]);
+        }
+
+        if (!is_null($select)) {
+            $query = $query->select($select);
+        }
+
+        return $query->get();
+    }
+
     /**
      * Paginacao com os vinculos
      * @param null $sort
      * @param null $search
      * @return mixed
      */
-    public function paginateAllWithBonds($sort = null, $search = null)
+    private function paginateAllWithBonds($sort = null, $search = null)
     {
         $vinculados = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')
             ->join('acd_matriculas', function ($join) {
@@ -214,12 +236,12 @@ class AlunoRepository extends BaseRepository
     public function getCursos($alunoId)
     {
         $result = DB::table('acd_matriculas')
-                    ->select('crs_id')
-                    ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
-                    ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
-                    ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
-                    ->where('mat_alu_id', '=', $alunoId)
-                    ->get();
+            ->select('crs_id')
+            ->join('acd_turmas', 'mat_trm_id', '=', 'trm_id')
+            ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')
+            ->join('acd_cursos', 'ofc_crs_id', '=', 'crs_id')
+            ->where('mat_alu_id', '=', $alunoId)
+            ->get();
 
         if (!$result->isEmpty()) {
             $cursos = [];
