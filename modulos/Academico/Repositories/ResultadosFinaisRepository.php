@@ -5,28 +5,13 @@ namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Matricula;
 use Modulos\Academico\Models\Turma;
-use Modulos\Core\Repository\BaseRepository;
 
-class ResultadosFinaisRepository extends BaseRepository
+class ResultadosFinaisRepository
 {
+    protected $matricula;
     public function __construct(Matricula $matricula)
     {
-        parent::__construct($matricula);
-    }
-
-    public function create(array $data)
-    {
-        throw new \Exception("Cannot create entry for " . json_encode($data));
-    }
-
-    public function update(array $data, $id, $attribute = null)
-    {
-        throw new \Exception("Cannot update entry for " . json_encode([$data, $id, $attribute]));
-    }
-
-    public function delete($id)
-    {
-        throw new \Exception("Cannot delete entry for " . $id);
+        $this->matricula = $matricula;
     }
 
     public function getResultadosFinais(Turma $turma, $polo = null, $situacao = "")
@@ -62,7 +47,7 @@ class ResultadosFinaisRepository extends BaseRepository
         return $resultados;
     }
 
-    private function getResultadosMatricula(Matricula $matricula) : array
+    private function getResultadosMatricula($matricula) : array
     {
         $resultadosMatricula = [];
 
