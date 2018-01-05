@@ -1,38 +1,27 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\ProfessorRepository;
+use Tests\ModulosTestCase;
+use Modulos\Geral\Models\Pessoa;
+use Modulos\Geral\Models\Documento;
 use Modulos\Academico\Models\Professor;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Modulos\Academico\Repositories\ProfessorRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class ProfessorRepositoryTest extends TestCase
+class ProfessorRepositoryTest extends ModulosTestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
 
     protected $repo;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(ProfessorRepository::class);
+        $this->table = 'acd_professores';
     }
 
     public function testAllWithEmptyDatabase()
@@ -74,18 +63,30 @@ class ProfessorRepositoryTest extends TestCase
     {
         factory(Professor::class, 2)->create();
 
-        factory(Professor::class)->create([
-            'prf_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create([
-                'pes_nome' => 'abc123'
-            ])->pes_id
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Irineu',
+        ]);
+
+        $documento = factory(Documento::class)->create([
+            'doc_pes_id' => $pessoa->pes_id,
+            'doc_conteudo' => '123456789'
+        ]);
+
+        $entry = factory(Professor::class)->create([
+            'prf_pes_id' => $pessoa->pes_id
         ]);
 
         $search = [
             [
                 'field' => 'pes_nome',
                 'type' => 'like',
-                'term' => 'abc123'
-            ]
+                'term' => 'Irineu'
+            ],
+            [
+                'field' => 'pes_cpf',
+                'type' => '=',
+                'term' => '123456789'
+            ],
         ];
 
         $response = $this->repo->paginate(null, $search);
@@ -183,12 +184,15 @@ class ProfessorRepositoryTest extends TestCase
 
     public function testLists()
     {
-    }
+        $entries = factory(Professor::class, 2)->create();
 
+        $model = new Professor();
+        $result = $model->join('gra_pessoas', 'pes_id', '=', 'prf_pes_id');
 
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $expected = $result->pluck('pes_nome', 'prf_pes_id');
+
+        $fromRepository = $this->repo->lists('prf_id', 'pes_nome', false);
+
+        $this->assertEquals($expected, $fromRepository);
     }
 }

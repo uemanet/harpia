@@ -7,56 +7,158 @@ use Modulos\Academico\Models\ModuloMatriz;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Stevebauman\EloquentTable\TableCollection;
+use Tests\ModulosTestCase;
 
-class ModuloMatrizRepositoryTest extends TestCase
+class ModuloMatrizRepositoryTest extends ModulosTestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
 
     protected $repo;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(ModuloMatrizRepository::class);
+        $this->table = 'acd_modulos_matrizes';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(ModuloMatriz::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(ModuloMatriz::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(ModuloMatriz::class)->create();
+        $id = $entry->mdo_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(ModuloMatriz::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(ModuloMatriz::class)->create();
+        $id = $entry->mdo_id;
+
+        $data = $entry->toArray();
+
+        $data['mdo_nome'] = 'Módulo 1';
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(ModuloMatriz::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(ModuloMatriz::class)->create();
+        $id = $entry->mdo_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(ModuloMatriz::class, 2)->create();
+
+        $model = new ModuloMatriz();
+        $expected = $model->pluck('mdo_nome', 'mdo_id');
+        $fromRepository = $this->repo->lists('mdo_id', 'mdo_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(ModuloMatriz::class, 2)->create();
+
+        factory(ModuloMatriz::class)->create([
+            'mdo_nome' => 'search_mdo_nome'
+        ]);
+
+        $searchResult = $this->repo->search(array(['mdo_nome', '=', 'search_mdo_nome']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(ModuloMatriz::class, 2)->create();
+
+        $entry = factory(ModuloMatriz::class)->create([
+            'mdo_nome' => "mdo_nome_to_find"
+        ]);
+
+        $expected = [
+            'mdo_id' => $entry->mdo_id,
+            'mdo_nome' => $entry->mdo_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['mdo_nome', '=', "mdo_nome_to_find"]), ['mdo_id', 'mdo_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(ModuloMatriz::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(ModuloMatriz::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new ModuloMatriz();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(\Modulos\Academico\Models\ModuloMatriz::class, 2)->create();
+        factory(ModuloMatriz::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(\Modulos\Academico\Models\ModuloMatriz::class, 2)->create();
+        factory(ModuloMatriz::class, 2)->create();
 
         $sort = [
             'field' => 'mdo_id',
@@ -66,60 +168,33 @@ class ModuloMatrizRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->mdo_id);
+        $this->assertEquals(2, $response->first()->mdo_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(\Modulos\Academico\Models\ModuloMatriz::class, 2)->create();
-
-        factory(\Modulos\Academico\Models\ModuloMatriz::class)->create([
-            'mdo_nome' => 'Módulo 1',
+        factory(ModuloMatriz::class, 2)->create();
+        factory(ModuloMatriz::class)->create([
+            'mdo_nome' => 'mdo_nome_to_search',
         ]);
 
         $search = [
             [
                 'field' => 'mdo_nome',
-                'type' => 'like',
-                'term' => 'Módulo 1'
+                'type' => '=',
+                'term' => 'mdo_nome_to_search'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(\Modulos\Academico\Models\ModuloMatriz::class, 2)->create();
-
-        $sort = [
-            'field' => 'mdo_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'mdo_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('mdo_nome_to_search', $response->first()->mdo_nome);
     }
 
     public function testPaginateRequest()
     {
-        factory(\Modulos\Academico\Models\ModuloMatriz::class, 2)->create();
+        factory(ModuloMatriz::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -128,77 +203,66 @@ class ModuloMatrizRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(\Modulos\Academico\Models\ModuloMatriz::class, $response);
-
-        $this->assertArrayHasKey('mdo_id', $data);
-    }
-
-    public function testFind()
-    {
-        $data = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create();
-
-        $this->assertDatabaseHas('acd_modulos_matrizes', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['mdo_nome'] = 'abcde_edcba';
-
-        $moduloId = $updateArray['mdo_id'];
-        unset($updateArray['mdo_id']);
-
-        $response = $this->repo->update($updateArray, $moduloId, 'mdo_id');
-
-        $this->assertEquals(1, $response);
     }
 
     public function testVerifyNameMatriz()
     {
-        $ModuloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create();
-        $moduloMatrizRepository = new ModuloMatrizRepository(new ModuloMatriz());
-        $retorno = $moduloMatrizRepository->verifyNameMatriz($ModuloMatriz->mdo_nome, $ModuloMatriz->matriz->mtc_id);
+        $matriz = factory(Modulos\Academico\Models\MatrizCurricular::class)->create();
 
-        $this->assertEquals(true, $retorno);
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matriz->mtc_id,
+            'mdo_nome' => 'Módulo 1',
+        ]);
+
+        $result = $this->repo->verifyNameMatriz('Módulo 2', $matriz->mtc_id);
+
+        $this->assertFalse($result);
+    }
+
+    public function testVerifyNameMatrizWithNameEqual()
+    {
+        $matriz = factory(Modulos\Academico\Models\MatrizCurricular::class)->create();
+
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matriz->mtc_id,
+            'mdo_nome' => 'Módulo 1',
+        ]);
+
+        $result = $this->repo->verifyNameMatriz('Módulo 1', $matriz->mtc_id);
+
+        $this->assertTrue($result);
+    }
+
+    public function testVerifyNameMatrizWithModuloId()
+    {
+        $matriz = factory(Modulos\Academico\Models\MatrizCurricular::class)->create();
+
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matriz->mtc_id,
+            'mdo_nome' => 'Módulo 1',
+        ]);
+
+        factory(Modulos\Academico\Models\ModuloMatriz::class, 2)->create([
+            'mdo_mtc_id' => $matriz->mtc_id
+        ]);
+
+        $result = $this->repo->verifyNameMatriz('Módulo 1', $matriz->mtc_id, $moduloMatriz->mdo_id);
+
+        $this->assertFalse($result);
     }
 
     public function testGetAllModulosByMatriz()
     {
-        $ModuloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create();
-        $moduloMatrizRepository = new ModuloMatrizRepository(new ModuloMatriz());
-        $retorno = $moduloMatrizRepository->getAllModulosByMatriz($ModuloMatriz->matriz->mtc_id);
+        $matriz = factory(Modulos\Academico\Models\MatrizCurricular::class)->create();
 
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class, 2)->create([
+            'mdo_mtc_id' => $matriz->mtc_id,
+        ]);
 
-        $this->assertNotEmpty($retorno);
-    }
+        $result = $this->repo->getAllModulosByMatriz($matriz->mtc_id);
 
-    public function testDelete()
-    {
-        $data = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create();
-        $moduloId = $data->mdo_id;
-
-        $response = $this->repo->delete($moduloId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $this->assertNotEmpty($result);
     }
 }

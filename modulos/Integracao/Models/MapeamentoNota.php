@@ -23,4 +23,9 @@ class MapeamentoNota extends BaseModel
         'min_id_conceito',
         'min_id_final'
     ];
+
+    public function ofertadisciplina()
+    {
+        return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'min_ofd_id', 'ofd_id');
+    }
 }

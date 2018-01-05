@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Pagination\LengthAwarePaginator;
-use Modulos\Academico\Models\Livro;
+use Modulos\Academico\Models\NivelCurso;
+use Modulos\Academico\Repositories\NivelCursoRepository;
 use Stevebauman\EloquentTable\TableCollection;
 use Tests\ModulosTestCase;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,7 +10,7 @@ use Modulos\Academico\Repositories\LivroRepository;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class LivroRepositorytTest extends ModulosTestCase
+class NivelCursoRepositorytTest extends ModulosTestCase
 {
     use DatabaseTransactions,
         WithoutMiddleware;
@@ -19,52 +20,52 @@ class LivroRepositorytTest extends ModulosTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->repo = $this->app->make(LivroRepository::class);
-        $this->table = 'acd_livros';
+        $this->repo = $this->app->make(NivelCursoRepository::class);
+        $this->table = 'acd_niveis_cursos';
     }
 
     public function testCreate()
     {
-        $data = factory(Livro::class)->raw();
+        $data = factory(NivelCurso::class)->raw();
         $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Livro::class, $entry);
+        $this->assertInstanceOf(NivelCurso::class, $entry);
         $this->assertDatabaseHas($this->table, $entry->toArray());
     }
 
     public function testFind()
     {
-        $entry = factory(Livro::class)->create();
-        $id = $entry->liv_id;
+        $entry = factory(NivelCurso::class)->create();
+        $id = $entry->nvc_id;
         $fromRepository = $this->repo->find($id);
 
-        $this->assertInstanceOf(Livro::class, $fromRepository);
+        $this->assertInstanceOf(NivelCurso::class, $fromRepository);
         $this->assertDatabaseHas($this->table, $fromRepository->toArray());
         $this->assertEquals($entry->toArray(), $fromRepository->toArray());
     }
 
     public function testUpdate()
     {
-        $entry = factory(Livro::class)->create();
-        $id = $entry->liv_id;
+        $entry = factory(NivelCurso::class)->create();
+        $id = $entry->nvc_id;
 
         $data = $entry->toArray();
 
-        $data['liv_numero'] = 2;
+        $data['nvc_nome'] = 'Nome Nivel';
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);
-        $this->assertInstanceOf(Livro::class, $fromRepository);
+        $this->assertInstanceOf(NivelCurso::class, $fromRepository);
         $this->assertEquals($data, $fromRepository->toArray());
     }
 
     public function testDelete()
     {
-        $entry = factory(Livro::class)->create();
-        $id = $entry->liv_id;
+        $entry = factory(NivelCurso::class)->create();
+        $id = $entry->nvc_id;
 
         $return = $this->repo->delete($id);
 
@@ -74,24 +75,24 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(Livro::class, 2)->create();
+        $entries = factory(NivelCurso::class, 2)->create();
 
-        $model = new Livro();
-        $expected = $model->pluck('liv_tipo_livro', 'liv_id');
-        $fromRepository = $this->repo->lists('liv_id', 'liv_tipo_livro');
+        $model = new NivelCurso();
+        $expected = $model->pluck('nvc_nome', 'nvc_id');
+        $fromRepository = $this->repo->lists('nvc_id', 'nvc_nome');
 
         $this->assertEquals($expected, $fromRepository);
     }
 
     public function testSearch()
     {
-        $entries = factory(Livro::class, 2)->create();
+        $entries = factory(NivelCurso::class, 2)->create();
 
-        factory(Livro::class)->create([
-            'liv_tipo_livro' => 'search_tipo_livro'
+        factory(NivelCurso::class)->create([
+            'nvc_nome' => 'search_nvc_nome'
         ]);
 
-        $searchResult = $this->repo->search(array(['liv_tipo_livro', '=', 'search_tipo_livro']));
+        $searchResult = $this->repo->search(array(['nvc_nome', '=', 'search_nvc_nome']));
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -99,18 +100,18 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testSearchWithSelect()
     {
-        factory(Livro::class, 2)->create();
+        factory(NivelCurso::class, 2)->create();
 
-        $entry = factory(Livro::class)->create([
-            'liv_tipo_livro' => "tipo_livro_to_find"
+        $entry = factory(NivelCurso::class)->create([
+            'nvc_nome' => "nvc_nome_to_find"
         ]);
 
         $expected = [
-            'liv_id' => $entry->liv_id,
-            'liv_tipo_livro' => $entry->liv_tipo_livro
+            'nvc_id' => $entry->nvc_id,
+            'nvc_nome' => $entry->nvc_nome
         ];
 
-        $searchResult = $this->repo->search(array(['liv_tipo_livro', '=', "tipo_livro_to_find"]), ['liv_id', 'liv_tipo_livro']);
+        $searchResult = $this->repo->search(array(['nvc_nome', '=', "nvc_nome_to_find"]), ['nvc_id', 'nvc_nome']);
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -125,7 +126,7 @@ class LivroRepositorytTest extends ModulosTestCase
         $this->assertEquals(0, $collection->count());
 
         // Non-empty database
-        $created = factory(Livro::class, 10)->create();
+        $created = factory(NivelCurso::class, 10)->create();
         $collection = $this->repo->all();
 
         $this->assertEquals($created->count(), $collection->count());
@@ -133,7 +134,7 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testCount()
     {
-        $created = factory(Livro::class, 10)->create();
+        $created = factory(NivelCurso::class, 10)->create();
         $collection = $this->repo->all();
 
         $this->assertEquals($created->count(), $this->repo->count());
@@ -141,13 +142,13 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testGetFillableModelFields()
     {
-        $model = new Livro();
+        $model = new NivelCurso();
         $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Livro::class, 2)->create();
+        factory(NivelCurso::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -157,72 +158,52 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testPaginateWithSort()
     {
-        factory(Livro::class, 2)->create();
+        factory(NivelCurso::class, 2)->create();
 
         $sort = [
-            'field' => 'liv_id',
+            'field' => 'nvc_id',
             'sort' => 'desc'
         ];
 
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertEquals(2, $response->first()->liv_id);
+        $this->assertEquals(2, $response->first()->nvc_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Livro::class, 2)->create();
-        factory(Livro::class)->create([
-            'liv_tipo_livro' => 'livro_to_search',
+        factory(NivelCurso::class, 2)->create();
+        factory(NivelCurso::class)->create([
+            'nvc_nome' => 'nvc_nome_to_search',
         ]);
 
         $search = [
             [
-                'field' => 'liv_tipo_livro',
+                'field' => 'nvc_nome',
                 'type' => '=',
-                'term' => 'livro_to_search'
+                'term' => 'nvc_nome_to_search'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-        $this->assertEquals('livro_to_search', $response->first()->liv_tipo_livro);
+        $this->assertEquals('nvc_nome_to_search', $response->first()->nvc_nome);
     }
 
     public function testPaginateRequest()
     {
-        factory(Livro::class, 2)->create();
+        factory(NivelCurso::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'liv_id',
+            'field' => 'nvc_id',
             'sort' => 'asc'
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testFindByWithOptions()
-    {
-        factory(Modulos\Academico\Models\Livro::class)->create();
-
-        $result = $this->repo->findBy([
-            'liv_tipo_livro' => 'DIPLOMA'
-        ]);
-
-        $this->assertNotEmpty($result, '');
-    }
-
-    public function testFindByNoOptions()
-    {
-        factory(Modulos\Academico\Models\Livro::class)->create();
-
-        $result = $this->repo->findBy();
-
-        $this->assertNotEmpty($result, '');
     }
 }
