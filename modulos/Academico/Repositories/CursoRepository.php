@@ -17,7 +17,7 @@ class CursoRepository extends BaseRepository
         Curso $curso,
         VinculoRepository $vinculoRepository
     ) {
-        $this->model = $curso;
+        parent::__construct($curso);
         $this->vinculoRepository = $vinculoRepository;
     }
 
