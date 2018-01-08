@@ -104,8 +104,12 @@ class Pessoa extends BaseModel
     // Mutators
     public function setPesNascimentoAttribute($value)
     {
-        $this->attributes['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if ($value) {
+            $this->attributes['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
+
+
 
     public function setPesEmailAttribute($value)
     {

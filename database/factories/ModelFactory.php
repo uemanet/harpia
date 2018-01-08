@@ -205,6 +205,14 @@ $factory->define(Modulos\Academico\Models\Curso::class, function (Faker\Generato
     ];
 });
 
+$factory->define(Modulos\Academico\Models\ListaSemtur::class, function (Faker\Generator $faker) {
+    return [
+        'lst_nome' => $faker->name,
+        'lst_descricao' => $faker->sentence(3),
+        'lst_data_bloqueio' => $faker->date('d/m/Y')
+    ];
+});
+
 $factory->define(Modulos\Academico\Models\Modalidade::class, function (Faker\Generator $faker) {
     return [
         'mdl_nome' => $faker->randomElement($array = array('distancia', 'presencial'))
