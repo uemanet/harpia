@@ -5,6 +5,8 @@ use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Curso;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\Vinculo;
+use Modulos\Academico\Models\NivelCurso;
+use Modulos\Academico\Models\MatrizCurricular;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Models\ConfiguracaoCurso;
@@ -19,12 +21,12 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->table = 'acd_cursos';
     }
 
-    private function mockVinculo(int $qtdCursos = 1, $withBond = true)
+    private function mockVinculo(int $qtdCursos = 1, $withBond = true, $curso = [])
     {
         // Usuario, Curso e Vinculo
         $user = factory(Usuario::class)->create();
 
-        $cursos = factory(Curso::class, $qtdCursos)->create();
+        $cursos = factory(Curso::class, $qtdCursos)->create($curso);
 
         if ($withBond) {
             foreach ($cursos as $curso) {
@@ -119,8 +121,21 @@ class CursoRepositoryTest extends ModulosTestCase
 
     public function testDelete()
     {
-        $entry = factory(Curso::class)->create();
+        $user = factory(Usuario::class)->create();
+        $this->actingAs($user);
+
+        $curso = factory(Curso::class)->raw();
+        $configs = $this->mockConfigs();
+
+        $data = array_merge($curso, $configs);
+
+        $this->repo->create($data);
+        $entry = Curso::all()->first();
         $id = $entry->crs_id;
+
+        $entryData = $entry->toArray();
+        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+        $this->assertDatabaseHas($this->table, $entryData);
 
         $return = $this->repo->delete($id);
 
@@ -128,6 +143,33 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->assertArrayHasKey('status', $return);
         $this->assertEquals('success', $return['status']);
         $this->assertDatabaseMissing($this->table, $entry->toArray());
+
+        // Curso sem configs
+        $entry = factory(Curso::class)->create();
+        $id = $entry->crs_id;
+
+        $return = $this->repo->delete($id);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('success', $return['status']);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+
+        // Excluir curso inexistente
+        $return = $this->repo->delete(40);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('error', $return['status']);
+
+        // Curso com vinculos
+        list($user, $cursos) = $this->mockVinculo(1, true);
+        $this->assertEquals(1, Vinculo::all()->count());
+
+        $return = $this->repo->delete($cursos->first()->crs_id);
+
+        $this->assertEquals(0, Vinculo::all()->count());
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('success', $return['status']);
     }
 
     public function testLists()
@@ -271,5 +313,85 @@ class CursoRepositoryTest extends ModulosTestCase
         $response = $this->repo->paginateRequest($requestParameters);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
+    }
+
+    public function testListsByCursoId()
+    {
+        factory(Curso::class, 2);
+        $curso = factory(Curso::class)->create();
+        $id = $curso->crs_id;
+
+        $expected = $curso->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsByCursoId($id);
+
+        $this->assertEquals($expected, $fromRepository->toArray());
+    }
+
+    public function testListsByMatrizId()
+    {
+        factory(Curso::class, 2);
+        $matriz = factory(MatrizCurricular::class)->create();
+        $id = $matriz->mtc_id;
+
+        $curso = Curso::find($matriz->mtc_crs_id);
+
+        $expected = $curso->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsByMatrizId($id);
+
+        $this->assertEquals($expected, $fromRepository->toArray());
+    }
+
+    public function testGetCursosPorNivel()
+    {
+        $niveis = factory(NivelCurso::class, 3)->create();
+
+        foreach ($niveis as $nivel) {
+            factory(Curso::class)->create([
+                'crs_nvc_id' => $nivel->nvc_id
+            ]);
+        }
+
+        factory(Curso::class)->create([
+            'crs_nvc_id' => $nivel->nvc_id
+        ]);
+
+        $result = $this->repo->getCursosPorNivel();
+
+        $this->assertEquals(3, count($result));
+        $this->assertEquals(1, $result[0]->quantidade);
+        $this->assertEquals(1, $result[1]->quantidade);
+        $this->assertEquals(2, $result[2]->quantidade);
+    }
+
+    public function testListsCursosTecnicos()
+    {
+        $niveis = factory(NivelCurso::class, 3)->create();
+
+        foreach ($niveis as $nivel) {
+            factory(Curso::class)->create([
+                'crs_nvc_id' => $nivel->nvc_id
+            ]);
+        }
+
+        // Nivel tecnico
+        factory(Curso::class)->create([
+            'crs_nvc_id' => 2
+        ]);
+
+        // Mock de vinculo e login
+        list($user, $cursos) = $this->mockVinculo(2, true, ['crs_nvc_id' => 2]);
+        $this->actingAs($user);
+
+        // Todos os tecnicos
+        $expected = Curso::where('crs_nvc_id', '=', 2)->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsCursosTecnicos(2, true);
+
+        $this->assertEquals($expected, $fromRepository);
+
+        // Apenas com vinculos
+        $expected = $cursos->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsCursosTecnicos(2);
+
+        $this->assertEquals($expected, $fromRepository);
     }
 }
