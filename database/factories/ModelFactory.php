@@ -278,7 +278,11 @@ $factory->define(Modulos\Academico\Models\ModuloMatriz::class, function (Faker\G
         'mdo_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create()->mtc_id,
         'mdo_nome' => $faker->name,
         'mdo_descricao' => $faker->sentence(3),
-        'mdo_qualificacao' => $faker->sentence(3)
+        'mdo_qualificacao' => $faker->sentence(3),
+        "mdo_cargahoraria_min_eletivas" => null,
+        "mdo_creditos_min_eletivas" => null,
+        "mdo_competencias" => null
+
     ];
 });
 

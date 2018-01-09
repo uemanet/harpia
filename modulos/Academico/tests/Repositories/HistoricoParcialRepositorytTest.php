@@ -104,7 +104,7 @@ class HistoricoParcialRepositorytTest extends ModulosTestCase
             'mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'aprovado',
+            'mof_situacao_matricula' => 'aprovado_media',
             'mof_nota1' => 10,
             'mof_nota2' => 10,
             'mof_nota3' => 10,
