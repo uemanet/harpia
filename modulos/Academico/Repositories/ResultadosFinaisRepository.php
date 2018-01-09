@@ -3,18 +3,20 @@ declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Academico\Models\Matricula;
+use Modulos\Academico\Models\Polo;
 use Modulos\Academico\Models\Turma;
+use Modulos\Academico\Models\Matricula;
 
 class ResultadosFinaisRepository
 {
     protected $matricula;
+
     public function __construct(Matricula $matricula)
     {
         $this->matricula = $matricula;
     }
 
-    public function getResultadosFinais(Turma $turma, $polo = null, $situacao = "")
+    public function getResultadosFinais(Turma $turma, Polo $polo = null, string $situacao = "")
     {
         $resultados = [];
 
@@ -47,7 +49,7 @@ class ResultadosFinaisRepository
         return $resultados;
     }
 
-    private function getResultadosMatricula($matricula) : array
+    private function getResultadosMatricula(Matricula $matricula) : array
     {
         $resultadosMatricula = [];
 
