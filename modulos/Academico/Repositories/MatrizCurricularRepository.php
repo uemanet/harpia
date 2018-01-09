@@ -29,7 +29,7 @@ class MatrizCurricularRepository extends BaseRepository
 
         $collection = $this->model->where($attribute, '=', $id)->get();
 
-        if ($collection) {
+        if ($collection->count()) {
             foreach ($collection as $obj) {
                 $obj->fill($data)->save();
             }

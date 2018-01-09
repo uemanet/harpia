@@ -17,7 +17,7 @@ class CursoRepository extends BaseRepository
         Curso $curso,
         VinculoRepository $vinculoRepository
     ) {
-        $this->model = $curso;
+        parent::__construct($curso);
         $this->vinculoRepository = $vinculoRepository;
     }
 
@@ -50,7 +50,7 @@ class CursoRepository extends BaseRepository
      * @param $matrizId
      * @return mixed
      */
-    public function listsCursoByMatriz($matrizId)
+    public function listsByMatrizId($matrizId)
     {
         return DB::table('acd_matrizes_curriculares')
                       ->join('acd_cursos', 'mtc_crs_id', 'crs_id')

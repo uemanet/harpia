@@ -2,13 +2,13 @@
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Centro;
+use Modulos\Core\Repository\BaseRepository;
 
 class CentroRepository extends BaseRepository
 {
     public function __construct(Centro $centro)
     {
-        $this->model = $centro;
+        parent::__construct($centro);
     }
 }

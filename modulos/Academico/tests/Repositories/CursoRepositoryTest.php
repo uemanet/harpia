@@ -1,55 +1,262 @@
 <?php
+declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\CursoRepository;
+use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Curso;
+use Modulos\Seguranca\Models\Usuario;
+use Modulos\Academico\Models\Vinculo;
+use Modulos\Academico\Models\NivelCurso;
+use Modulos\Academico\Models\MatrizCurricular;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
-use Carbon\Carbon;
+use Modulos\Academico\Models\ConfiguracaoCurso;
+use Modulos\Academico\Repositories\CursoRepository;
 
-class CursoRepositoryTest extends TestCase
+class CursoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-    protected $user;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
-        $this->user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
         $this->repo = $this->app->make(CursoRepository::class);
-        $this->actingAs($this->user);
+        $this->table = 'acd_cursos';
     }
 
-    public function testAllWithEmptyDatabase()
+    private function mockVinculo(int $qtdCursos = 1, $withBond = true, $curso = [])
     {
-        $response = $this->repo->all();
+        // Usuario, Curso e Vinculo
+        $user = factory(Usuario::class)->create();
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $cursos = factory(Curso::class, $qtdCursos)->create($curso);
+
+        if ($withBond) {
+            foreach ($cursos as $curso) {
+                factory(Vinculo::class)->create([
+                    'ucr_usr_id' => $user->usr_id,
+                    'ucr_crs_id' => $curso->crs_id
+                ]);
+            }
+        }
+
+        return [$user, $cursos];
+    }
+
+    private function mockConfigs()
+    {
+        $modos = [
+            'substituir_menor_nota',
+            'substituir_media_final'
+        ];
+
+        return [
+            'media_min_aprovacao' => 7,
+            'media_min_final' => 5,
+            'media_min_aprovacao_final' => 5,
+            'modo_recuperacao' => $modos[random_int(0, 1)],
+            'conceitos_aprovacao' => json_encode(['Bom', 'Muito Bom'], JSON_UNESCAPED_UNICODE)
+        ];
+    }
+
+    public function testCreate()
+    {
+        // Necessario estar logado por conta do Vinculo
+        $user = factory(Usuario::class)->create();
+        $this->actingAs($user);
+
+        $curso = factory(Curso::class)->raw();
+        $configs = $this->mockConfigs();
+
+        $data = array_merge($curso, $configs);
+
+        $this->assertEquals(0, Curso::all()->count());
+        $this->assertEquals(0, ConfiguracaoCurso::all()->count());
+        $return = $this->repo->create($data);
+
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('success', $return['status']);
+        $this->assertEquals(1, Curso::all()->count());
+        $this->assertEquals(5, ConfiguracaoCurso::all()->count());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Curso::class)->create();
+        $id = $entry->crs_id;
+        $fromRepository = $this->repo->find($id);
+
+        $entryData = $entry->toArray();
+        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+
+        $data = $fromRepository->toArray();
+        $data['crs_data_autorizacao'] = $fromRepository->getOriginal('crs_data_autorizacao');
+
+        $this->assertInstanceOf(Curso::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertEquals($entryData, $data);
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Curso::class)->create();
+        $id = $entry->crs_id;
+
+        $data = $entry->toArray();
+        $data['crs_nome'] = "slug";
+
+        $return = $this->repo->update($data, $id);
+        $entry = Curso::find($id);
+        $fromRepository = $this->repo->find($id);
+
+        $entryData = $entry->toArray();
+        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+
+        $data = $fromRepository->toArray();
+        $data['crs_data_autorizacao'] = $fromRepository->getOriginal('crs_data_autorizacao');
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Curso::class, $fromRepository);
+        $this->assertEquals($entryData, $data);
+    }
+
+    public function testDelete()
+    {
+        $user = factory(Usuario::class)->create();
+        $this->actingAs($user);
+
+        $curso = factory(Curso::class)->raw();
+        $configs = $this->mockConfigs();
+
+        $data = array_merge($curso, $configs);
+
+        $this->repo->create($data);
+        $entry = Curso::all()->first();
+        $id = $entry->crs_id;
+
+        $entryData = $entry->toArray();
+        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+        $this->assertDatabaseHas($this->table, $entryData);
+
+        $return = $this->repo->delete($id);
+
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('success', $return['status']);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+
+        // Curso sem configs
+        $entry = factory(Curso::class)->create();
+        $id = $entry->crs_id;
+
+        $return = $this->repo->delete($id);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('success', $return['status']);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+
+        // Excluir curso inexistente
+        $return = $this->repo->delete(40);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('error', $return['status']);
+
+        // Curso com vinculos
+        list($user, $cursos) = $this->mockVinculo(1, true);
+        $this->assertEquals(1, Vinculo::all()->count());
+
+        $return = $this->repo->delete($cursos->first()->crs_id);
+
+        $this->assertEquals(0, Vinculo::all()->count());
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('success', $return['status']);
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Curso::class, 2)->create();
+
+        list($user, $cursos) = $this->mockVinculo(2);
+
+        $this->actingAs($user);
+
+        // Traz apenas os cursos com vinculo
+        $fromRepository = $this->repo->lists('crs_id', 'crs_nome');
+        $this->assertEquals($cursos->pluck('crs_nome', 'crs_id')->toArray(), $fromRepository);
+
+        // Traz todos os cursos
+        $model = new Curso();
+        $expected = $model->pluck('crs_nome', 'crs_id');
+        $fromRepository = $this->repo->lists('crs_id', 'crs_nome', true);
+
+        $this->assertEquals($expected->toArray(), $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Curso::class, 2)->create();
+
+        factory(Curso::class)->create([
+            'crs_nome' => 'centro'
+        ]);
+
+        $searchResult = $this->repo->search(array(['crs_nome', '=', 'centro']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Curso::class, 2)->create();
+
+        $entry = factory(Curso::class)->create([
+            'crs_nome' => "centro"
+        ]);
+
+        $expected = [
+            'crs_id' => $entry->crs_id,
+            'crs_nome' => $entry->crs_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['crs_nome', '=', "centro"]), ['crs_id', 'crs_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Curso::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Curso::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Curso();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        factory(Curso::class, 2)->create();
 
         $response = $this->repo->paginate();
 
@@ -59,7 +266,7 @@ class CursoRepositoryTest extends TestCase
 
     public function testPaginateWithSort()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        factory(Curso::class, 2)->create();
 
         $sort = [
             'field' => 'crs_id',
@@ -69,64 +276,33 @@ class CursoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertGreaterThan(1, $response->total());
+        $this->assertEquals(2, $response->first()->crs_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
-
-        $curso = factory(Curso::class)->create([
-            'crs_nome' => 'eletrônica',
-        ]);
-
-        // Cria vinculo
-        factory(\Modulos\Academico\Models\Vinculo::class)->create([
-            'ucr_usr_id' => Auth::user()->usr_id,
-            'ucr_crs_id' => $curso->crs_id
+        factory(Curso::class, 2)->create();
+        factory(Curso::class)->create([
+            'crs_nome' => 'centro',
         ]);
 
         $search = [
             [
                 'field' => 'crs_nome',
-                'type' => 'like',
-                'term' => 'eletrônica'
+                'type' => '=',
+                'term' => 'centro'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
-
-        $sort = [
-            'field' => 'crs_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'crs_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('centro', $response->first()->crs_nome);
     }
 
     public function testPaginateRequest()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        factory(Curso::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -135,277 +311,87 @@ class CursoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
-        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
-        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
-
-        $data = [
-          'crs_cen_id' => $centro->cen_id,
-          'crs_nvc_id' => $nivel->nvc_id,
-          'crs_prf_diretor' => $professor->prf_id,
-          'crs_nome' => 'Curso de Teste',
-          'crs_sigla' => 'CDT',
-          'crs_data_autorizacao' => '06/12/2017',
-          'crs_descricao' => 'Descrição do curso',
-          'crs_resolucao' => 'resolução do curso',
-          'crs_autorizacao' => 'autorização do curso',
-          'crs_eixo' => 'eixo do curso',
-          'crs_habilitacao' => 'habilitação do curso',
-          'media_min_aprovacao' => '7',
-          'media_min_final' => '5',
-          'media_min_aprovacao_final' => '5',
-          'modo_recuperacao' => 'substituir_menor_nota',
-          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
-        ];
-
-        $response = $this->repo->create($data);
-
-        $this->assertEquals('success', $response['status']);
-    }
-
-    public function testCreateWithQueryException()
-    {
-        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
-        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
-        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
-        //nível de curso colocado como Null para que a resposta venha com erro
-        $data = [
-          'crs_cen_id' => $centro->cen_id,
-          'crs_nvc_id' => null,
-          'crs_prf_diretor' => $professor->prf_id,
-          'crs_nome' => 'Curso de Teste',
-          'crs_sigla' => 'CDT',
-          'crs_data_autorizacao' => '06/12/2017',
-          'crs_descricao' => 'Descrição do curso',
-          'crs_resolucao' => 'resolução do curso',
-          'crs_autorizacao' => 'autorização do curso',
-          'crs_eixo' => 'eixo do curso',
-          'crs_habilitacao' => 'habilitação do curso',
-          'media_min_aprovacao' => '7',
-          'media_min_final' => '5',
-          'media_min_aprovacao_final' => '5',
-          'modo_recuperacao' => 'substituir_menor_nota',
-          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
-        ];
-
-        $response = $this->repo->create($data);
-
-        $this->assertEquals('Erro ao criar curso. Parâmetros devem estar errados.', $response['message']);
-    }
-
-    public function testUpdate()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
-        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
-        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
-        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_final', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao_final', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'conceitos_aprovacao', 'cfc_valor' => '["Bom","Muito Bom","Excelente"]']);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id]);
-
-        $data = [
-          'crs_cen_id' => $centro->cen_id,
-          'crs_nvc_id' => $nivel->nvc_id,
-          'crs_prf_diretor' => $professor->prf_id,
-          'crs_nome' => 'Curso de Teste',
-          'crs_sigla' => 'CDT',
-          'crs_data_autorizacao' => '06/12/2017',
-          'crs_descricao' => 'Descrição do curso',
-          'crs_resolucao' => 'resolução do curso',
-          'crs_autorizacao' => 'autorização do curso',
-          'crs_eixo' => 'eixo do curso',
-          'crs_habilitacao' => 'habilitação do curso',
-          'media_min_aprovacao' => '7',
-          'media_min_final' => '5',
-          'media_min_aprovacao_final' => '5',
-          'modo_recuperacao' => 'substituir_menor_nota',
-          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
-        ];
-
-        $response = $this->repo->updateCurso($data, $curso->crs_id);
-
-        $this->assertEquals('success', $response['status']);
-    }
-
-    public function testUpdateWithQueryException()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
-        $centro = factory(\Modulos\Academico\Models\Centro::class)->create();
-        $nivel = factory(\Modulos\Academico\Models\NivelCurso::class)->create();
-        $professor = factory(\Modulos\Academico\Models\Professor::class)->create();
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_final', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao_final', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'conceitos_aprovacao', 'cfc_valor' => '["Bom","Muito Bom","Excelente"]']);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id]);
-
-        $data = [
-          'crs_cen_id' => $centro->cen_id,
-          'crs_nvc_id' => null,
-          'crs_prf_diretor' => $professor->prf_id,
-          'crs_nome' => 'Curso de Teste',
-          'crs_sigla' => 'CDT',
-          'crs_data_autorizacao' => '06/12/2017',
-          'crs_descricao' => 'Descrição do curso',
-          'crs_resolucao' => 'resolução do curso',
-          'crs_autorizacao' => 'autorização do curso',
-          'crs_eixo' => 'eixo do curso',
-          'crs_habilitacao' => 'habilitação do curso',
-          'media_min_aprovacao' => '7',
-          'media_min_final' => '5',
-          'media_min_aprovacao_final' => '5',
-          'modo_recuperacao' => 'substituir_menor_nota',
-          'conceitos_aprovacao' => array("Bom", "Muito Bom" )
-        ];
-
-        $response = $this->repo->updateCurso($data, $curso->crs_id);
-
-        $this->assertEquals('Erro ao editar curso. Parâmetros devem estar errados.', $response['message']);
-    }
-
-    public function testFind()
-    {
-        $dados = factory(Curso::class)->create();
-
-        $data = $dados->toArray();
-
-        // Retorna para date format americano antes de comparar com o banco
-        $data['crs_data_autorizacao'] = Carbon::createFromFormat('d/m/Y', $data['crs_data_autorizacao'])->toDateString();
-
-        $this->assertDatabaseHas('acd_cursos', $data);
-    }
-
-
-    public function testDelete()
-    {
-        $data = factory(Curso::class)->create();
-        $cursoId = $data->crs_id;
-
-        $response = $this->repo->delete($cursoId);
-
-        $this->assertInternalType('array', $response);
-        $this->assertArrayHasKey('status', $response);
-        $this->assertArrayHasKey('message', $response);
-        $this->assertEquals($response['status'], 'success');
-        $this->assertEquals($response['message'], 'Curso excluído com sucesso.');
     }
 
     public function testListsByCursoId()
     {
+        factory(Curso::class, 2);
         $curso = factory(Curso::class)->create();
-        $cursoId = $curso->crs_id;
+        $id = $curso->crs_id;
 
-        $response = $this->repo->listsByCursoId($cursoId);
+        $expected = $curso->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsByCursoId($id);
 
-        $this->assertNotEmpty($response, '');
+        $this->assertEquals($expected, $fromRepository->toArray());
     }
 
-
-    public function testListsCursoByMatriz()
+    public function testListsByMatrizId()
     {
-        $matriz = factory(\Modulos\Academico\Models\MatrizCurricular::class)->create();
+        factory(Curso::class, 2);
+        $matriz = factory(MatrizCurricular::class)->create();
+        $id = $matriz->mtc_id;
 
-        $response = $this->repo->listsCursoByMatriz($matriz->mtc_id);
+        $curso = Curso::find($matriz->mtc_crs_id);
 
-        $this->assertNotEmpty($response, '');
-    }
+        $expected = $curso->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsByMatrizId($id);
 
-    public function testListsCursosTecnicosWithVinculo()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create(['crs_nvc_id' => 2]);
-
-        $vinculo = factory(\Modulos\Academico\Models\Vinculo::class)
-                   ->create(['ucr_usr_id' => $this->user->usr_id,
-                             'ucr_crs_id' => $curso[0]->crs_id]);
-        $response = $this->repo->listsCursosTecnicos();
-
-        $this->assertEquals(count($response), 1);
-    }
-
-    public function testListsCursosTecnicosWithoutVinculo()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create(['crs_nvc_id' => 2]);
-
-        $response = $this->repo->listsCursosTecnicos(2, true);
-
-        $this->assertNotEmpty($response, '');
-    }
-
-    public function testListsWithoutVinculo()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class, 20)->create();
-
-        $response = $this->repo->lists('crs_id', 'crs_nome', true);
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testListsWithVinculo()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create(['crs_nvc_id' => 2]);
-        $vinculo = factory(\Modulos\Academico\Models\Vinculo::class)
-                   ->create(['ucr_usr_id' => $this->user->usr_id,
-                             'ucr_crs_id' => $curso[0]->crs_id]);
-
-        $response = $this->repo->lists('crs_id', 'crs_nome', false);
-
-        $this->assertNotEmpty($response);
+        $this->assertEquals($expected, $fromRepository->toArray());
     }
 
     public function testGetCursosPorNivel()
     {
-        $curso = factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+        $niveis = factory(NivelCurso::class, 3)->create();
 
-        $response = $this->repo->getCursosPorNivel();
+        foreach ($niveis as $nivel) {
+            factory(Curso::class)->create([
+                'crs_nvc_id' => $nivel->nvc_id
+            ]);
+        }
 
-        $this->assertEmpty($response, '');
+        factory(Curso::class)->create([
+            'crs_nvc_id' => $nivel->nvc_id
+        ]);
+
+        $result = $this->repo->getCursosPorNivel();
+
+        $this->assertEquals(3, count($result));
+        $this->assertEquals(1, $result[0]->quantidade);
+        $this->assertEquals(1, $result[1]->quantidade);
+        $this->assertEquals(2, $result[2]->quantidade);
     }
 
-    public function testGetCursosByAmbiente()
+    public function testListsCursosTecnicos()
     {
-        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $ambienteturma = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create(['atr_trm_id' => $turma->trm_id]);
+        $niveis = factory(NivelCurso::class, 3)->create();
 
-        $response = $this->repo->getCursosByAmbiente($ambienteturma->atr_trm_id);
+        foreach ($niveis as $nivel) {
+            factory(Curso::class)->create([
+                'crs_nvc_id' => $nivel->nvc_id
+            ]);
+        }
 
-        $this->assertNotEmpty($response, '');
-    }
+        // Nivel tecnico
+        factory(Curso::class)->create([
+            'crs_nvc_id' => 2
+        ]);
 
-    public function testdeleteConfiguracoesReturnFalse()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
-        $response = $this->repo->deleteConfiguracoes($curso->crs_id);
+        // Mock de vinculo e login
+        list($user, $cursos) = $this->mockVinculo(2, true, ['crs_nvc_id' => 2]);
+        $this->actingAs($user);
 
-        $this->assertEquals($response, false);
-    }
+        // Todos os tecnicos
+        $expected = Curso::where('crs_nvc_id', '=', 2)->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsCursosTecnicos(2, true);
 
-    public function testdeleteConfiguracoesReturnTrue()
-    {
-        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_final', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'media_min_aprovacao_final', 'cfc_valor' => 7]);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id, 'cfc_nome' => 'conceitos_aprovacao', 'cfc_valor' => '["Bom","Muito Bom","Excelente"]']);
-        factory(\Modulos\Academico\Models\ConfiguracaoCurso::class)->create(['cfc_crs_id' => $curso->crs_id]);
+        $this->assertEquals($expected, $fromRepository);
 
-        $response = $this->repo->deleteConfiguracoes($curso->crs_id);
+        // Apenas com vinculos
+        $expected = $cursos->pluck('crs_nome', 'crs_id')->toArray();
+        $fromRepository = $this->repo->listsCursosTecnicos(2);
 
-        $this->assertEquals($response, true);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $this->assertEquals($expected, $fromRepository);
     }
 }
