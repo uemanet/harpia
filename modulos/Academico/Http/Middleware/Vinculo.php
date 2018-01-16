@@ -2,59 +2,62 @@
 
 namespace Modulos\Academico\Http\Middleware;
 
+use App;
 use Auth;
 use Closure;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Route;
+use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Academico\Repositories\GrupoRepository;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
-use Modulos\Academico\Repositories\MatrizCurricularRepository;
-use Modulos\Academico\Repositories\ModuloMatrizRepository;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
-use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\TutorGrupoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Academico\Repositories\AlunoRepository;
+use Modulos\Academico\Repositories\VinculoRepository;
+use Modulos\Academico\Repositories\TutorGrupoRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\ModuloMatrizRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Academico\Repositories\MatrizCurricularRepository;
 
 class Vinculo
 {
-    private $vinculoRepository;
-    private $matrizCurricularRepository;
-    private $ofertaCursoRepository;
     private $turmaRepository;
     private $grupoRepository;
-    private $moduloMatrizRepository;
-    private $tutorGrupoRepository;
     private $alunoRepository;
-    private $ofertaDisciplinaRepository;
+    private $vinculoRepository;
+    private $tutorGrupoRepository;
+    private $ofertaCursoRepository;
+    private $moduloMatrizRepository;
     private $matriculaCursoRepository;
+    private $matrizCurricularRepository;
+    private $ofertaDisciplinaRepository;
 
     private $defaultResponse;
 
-    public function __construct(VinculoRepository $vinculoRepository,
-                                MatrizCurricularRepository $matrizCurricularRepository,
-                                OfertaCursoRepository $ofertaCursoRepository,
-                                TurmaRepository $turmaRepository,
-                                GrupoRepository $grupoRepository,
-                                ModuloMatrizRepository $moduloMatrizRepository,
-                                TutorGrupoRepository $tutorGrupoRepository,
-                                AlunoRepository $alunoRepository,
-                                OfertaDisciplinaRepository $ofertaDisciplinaRepository,
-                                MatriculaCursoRepository $matriculaCursoRepository)
-    {
-        $this->vinculoRepository            = $vinculoRepository;
-        $this->matrizCurricularRepository   = $matrizCurricularRepository;
-        $this->ofertaCursoRepository        = $ofertaCursoRepository;
-        $this->turmaRepository              = $turmaRepository;
-        $this->grupoRepository              = $grupoRepository;
-        $this->moduloMatrizRepository       = $moduloMatrizRepository;
-        $this->tutorGrupoRepository         = $tutorGrupoRepository;
-        $this->alunoRepository              = $alunoRepository;
-        $this->ofertaDisciplinaRepository   = $ofertaDisciplinaRepository;
-        $this->matriculaCursoRepository     = $matriculaCursoRepository;
-        $this->defaultResponse              = "Você não tem autorização para acessar este recurso. Contate o Administrador.";
+    public function __construct(
+        TurmaRepository $turmaRepository,
+        GrupoRepository $grupoRepository,
+        AlunoRepository $alunoRepository,
+        VinculoRepository $vinculoRepository,
+        TutorGrupoRepository $tutorGrupoRepository,
+        OfertaCursoRepository $ofertaCursoRepository,
+        ModuloMatrizRepository $moduloMatrizRepository,
+        MatriculaCursoRepository $matriculaCursoRepository,
+        MatrizCurricularRepository $matrizCurricularRepository,
+        OfertaDisciplinaRepository $ofertaDisciplinaRepository
+    ) {
+        $this->turmaRepository = $turmaRepository;
+        $this->grupoRepository = $grupoRepository;
+        $this->alunoRepository = $alunoRepository;
+        $this->vinculoRepository = $vinculoRepository;
+        $this->tutorGrupoRepository = $tutorGrupoRepository;
+        $this->ofertaCursoRepository = $ofertaCursoRepository;
+        $this->moduloMatrizRepository = $moduloMatrizRepository;
+        $this->matriculaCursoRepository = $matriculaCursoRepository;
+        $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
+        $this->matrizCurricularRepository = $matrizCurricularRepository;
+        $this->defaultResponse = "Você não tem autorização para acessar este recurso. Contate o Administrador.";
     }
 
     public function handle($request, Closure $next)
@@ -271,7 +274,13 @@ class Vinculo
             return $next($request);
         }
 
-        if (($action == "edit") || ($action == "show")) {
+        if ($request->getMethod() == "POST" || $request->getMethod() == "PUT") {
+            $pessoaRepository = App::make(PessoaRepository::class);
+            $pessoa = $pessoaRepository->find($id);
+            $id = $pessoa->aluno->alu_id;
+        }
+
+        if ($action == "edit" || $action == "show") {
             $cursos = $this->alunoRepository->getCursos($id);
 
             // Aluno nao esta matriculado em curso algum
@@ -364,8 +373,8 @@ class Vinculo
 
         if ($request->getMethod() == "POST") {
             $parameters = $request->all();
-            $ofertas    = isset($parameters["ofertas"]) ? $parameters['ofertas'] : null;
-            $matriculaId  = isset($parameters["mof_mat_id"]) ? $parameters['mof_mat_id'] : null;
+            $ofertas = isset($parameters["ofertas"]) ? $parameters['ofertas'] : null;
+            $matriculaId = isset($parameters["mof_mat_id"]) ? $parameters['mof_mat_id'] : null;
 
             if ($routeName == 'academico.async.matriculasofertasdisciplinas.matriculaslote') {
                 $matriculaId = $parameters['matriculas'][0];
