@@ -274,7 +274,7 @@ class Vinculo
             return $next($request);
         }
 
-        if ($request->getMethod() == "POST" || $request->getMethod() == "PUT") {
+        if ($request->getMethod() == "PUT") {
             $pessoaRepository = App::make(PessoaRepository::class);
             $pessoa = $pessoaRepository->find($id);
             $id = $pessoa->aluno->alu_id;
