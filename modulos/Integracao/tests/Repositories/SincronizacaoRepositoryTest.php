@@ -162,14 +162,48 @@ class SincronizacaoRepositoryTest extends ModulosTestCase
         $this->assertEquals(2, $response->first()->sym_id);
     }
 
+    public function testFindBy()
+    {
+        factory(Sincronizacao::class, 2)->create([
+            'sym_status' => 2
+        ]);
+
+        factory(Sincronizacao::class)->create([
+            'sym_table' => 'table_to_search',
+            'sym_status' => 3
+        ]);
+
+        $result = $this->repo->findBy([
+            'sym_status' => 1
+        ]);
+
+        $this->assertEquals(0, $result->count());
+
+        $result = $this->repo->findBy([
+            'sym_table' => 'table_to_search',
+            'sym_status' => 3
+        ]);
+
+        $this->assertEquals(1, $result->count());
+
+        $result = $this->repo->findBy([]);
+        $this->assertEquals(3, $result->count());
+    }
+
     public function testPaginateWithSearch()
     {
         factory(Sincronizacao::class, 2)->create();
         factory(Sincronizacao::class)->create([
             'sym_table' => 'table_to_search',
+            'sym_status' => 3
         ]);
 
         $search = [
+            [
+                'field' => 'sym_table',
+                'type' => 'like',
+                'term' => 'table_to_search'
+            ],
             [
                 'field' => 'sym_table',
                 'type' => '=',
