@@ -1,46 +1,140 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\DepartamentoRepository;
+use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Departamento;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Academico\Repositories\DepartamentoRepository;
 
-class DepartamentoRepositoryTest extends TestCase
+class DepartamentoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(DepartamentoRepository::class);
+        $this->table = 'acd_departamento';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Departamento::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Departamento::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Departamento::class)->create();
+        $id = $entry->dep_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Departamento::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Departamento::class)->create();
+        $id = $entry->dep_id;
+
+        $data = $entry->toArray();
+
+        $data['dep_nome'] = "slug";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Departamento::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Departamento::class)->create();
+        $id = $entry->dep_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Departamento::class, 2)->create();
+
+        $model = new Departamento();
+        $expected = $model->pluck('dep_nome', 'dep_id');
+        $fromRepository = $this->repo->lists('dep_id', 'dep_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Departamento::class, 2)->create();
+
+        factory(Departamento::class)->create([
+            'dep_nome' => 'departamento'
+        ]);
+
+        $searchResult = $this->repo->search(array(['dep_nome', '=', 'departamento']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Departamento::class, 2)->create();
+
+        $entry = factory(Departamento::class)->create([
+            'dep_nome' => "departamento"
+        ]);
+
+        $expected = [
+            'dep_id' => $entry->dep_id,
+            'dep_nome' => $entry->dep_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['dep_nome', '=', "departamento"]), ['dep_id', 'dep_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Departamento::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Departamento::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Departamento();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
@@ -50,7 +144,6 @@ class DepartamentoRepositoryTest extends TestCase
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
@@ -66,55 +159,28 @@ class DepartamentoRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->dep_id);
+        $this->assertEquals(2, $response->first()->dep_id);
     }
 
     public function testPaginateWithSearch()
     {
         factory(Departamento::class, 2)->create();
-
         factory(Departamento::class)->create([
-            'dep_nome' => 'agronomia',
+            'dep_nome' => 'departamento',
         ]);
 
         $search = [
             [
                 'field' => 'dep_nome',
-                'type' => 'like',
-                'term' => 'agronomia'
+                'type' => '=',
+                'term' => 'departamento'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Departamento::class, 2)->create();
-
-        $sort = [
-            'field' => 'dep_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'dep_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('departamento', $response->first()->dep_nome);
     }
 
     public function testPaginateRequest()
@@ -128,58 +194,7 @@ class DepartamentoRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Departamento::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(Departamento::class, $response);
-
-        $this->assertArrayHasKey('dep_id', $data);
-    }
-
-    public function testFind()
-    {
-        $data = factory(Departamento::class)->create();
-
-        $this->assertDatabaseHas('acd_departamentos', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Departamento::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['dep_nome'] = 'abcde_edcba';
-
-        $departamentoId = $updateArray['dep_id'];
-        unset($updateArray['dep_id']);
-
-        $response = $this->repo->update($updateArray, $departamentoId, 'dep_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Departamento::class)->create();
-        $departamentoId = $data->dep_id;
-
-        $response = $this->repo->delete($departamentoId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }
