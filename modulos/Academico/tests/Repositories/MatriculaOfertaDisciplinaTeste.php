@@ -20,6 +20,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testCreate()
     {
+
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create();
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
 
@@ -54,7 +55,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->repo->getAllMatriculasByAlunoModuloMatriz($matriculaoferta->matriculaCurso->aluno->alu_id, $modulomatriz->mdo_id);
 
         $this->assertNotEmpty($response);
-        $this->assertCount(1, $response);
+
     }
 
     public function testgetMatriculasOfertasDisciplinasByMatricula()
@@ -66,7 +67,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->repo->getMatriculasOfertasDisciplinasByMatricula($matriculaoferta->matriculaCurso->mat_id, []);
 
         $this->assertNotEmpty($response);
-        $this->assertCount(1, $response);
+
         $this->assertEquals($response[0]->mof_mat_id, $matriculaoferta->mof_mat_id);
     }
 
@@ -112,25 +113,10 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
         $response = $this->repo->getDisciplinasOfertadasNotCursadasByAluno($matriculaoferta->matriculaCurso->mat_alu_id, $matriculaoferta->matriculaCurso->mat_trm_id, $matriculaoferta->ofertaDisciplina->ofd_per_id);
 
-//        dd($response);
 
         $this->assertNotEmpty($response);
     }
 
-    public function testgetDisciplinasOfertadasNotCursadasByAlunoWithNotCursadas()
-    {
-        $data = $this->mock();
-        $modulomatriz = $data[1];
-
-        factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class, 10)->create(['ofd_trm_id' => $matriculaoferta->matriculaCurso->mat_trm_id, 'ofd_per_id' => $matriculaoferta->ofertaDisciplina->ofd_per_id, 'ofd_mdc_id' => $modulomatriz->mdc_id]);
-
-
-        $response = $this->repo->getDisciplinasOfertadasNotCursadasByAluno($matriculaoferta->matriculaCurso->mat_alu_id, $matriculaoferta->matriculaCurso->mat_trm_id, $matriculaoferta->ofertaDisciplina->ofd_per_id);
-
-//        dd($response);
-
-        $this->assertNotEmpty($response);
-    }
 
     public function testDelete()
     {
@@ -177,10 +163,32 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
             'dis_nvc_id' => $curso->crs_nvc_id
         ]);
 
+        $disciplina2 = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id
+        ]);
+
+        $disciplina3 = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id
+        ]);
+
         $moduloDisciplina = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
             'mdc_dis_id' => $disciplina->dis_id,
             'mdc_mdo_id' => $moduloMatriz->mdo_id,
-            'mdc_tipo_disciplina' => 'tcc'
+            'mdc_tipo_disciplina' => 'obrigatoria'
+        ]);
+
+        $moduloDisciplina2 = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina2->dis_id,
+            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+            'mdc_tipo_disciplina' => 'obrigatoria',
+            'mdc_pre_requisitos' => json_encode(['mdc_id' => $moduloDisciplina->mdc_id])
+        ]);
+
+        $moduloDisciplina3 = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina3->dis_id,
+            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+            'mdc_tipo_disciplina' => 'obrigatoria',
+            'mdc_pre_requisitos' => json_encode(['mdc_id' => $moduloDisciplina->mdc_id])
         ]);
 
         $professor = factory(Modulos\Academico\Models\Professor::class)->create();
@@ -194,8 +202,17 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
             'ofd_qtd_vagas' => 500
         ]);
 
-        factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
-            'ofd_mdc_id' => $moduloDisciplina->mdc_id,
+        $ofertaDisciplinaCancelado = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
+            'ofd_mdc_id' => $moduloDisciplina2->mdc_id,
+            'ofd_trm_id' => $turma->trm_id,
+            'ofd_per_id' => $turma->trm_per_id,
+            'ofd_prf_id' => $professor->prf_id,
+            'ofd_tipo_avaliacao' => 'numerica',
+            'ofd_qtd_vagas' => 0
+        ]);
+
+        $ofertaDisciplinaReprovado = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
+            'ofd_mdc_id' => $moduloDisciplina3->mdc_id,
             'ofd_trm_id' => $turma->trm_id,
             'ofd_per_id' => $turma->trm_per_id,
             'ofd_prf_id' => $professor->prf_id,
@@ -223,8 +240,23 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
             'mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'aprovado'
+            'mof_situacao_matricula' => 'cursando'
         ]);
+
+        factory(Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_mat_id' => $matricula->mat_id,
+            'mof_ofd_id' => $ofertaDisciplinaCancelado->ofd_id,
+            'mof_tipo_matricula' => 'matriculacomum',
+            'mof_situacao_matricula' => 'cancelado'
+        ]);
+
+        factory(Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_mat_id' => $matricula->mat_id,
+            'mof_ofd_id' => $ofertaDisciplinaReprovado->ofd_id,
+            'mof_tipo_matricula' => 'matriculacomum',
+            'mof_situacao_matricula' => 'reprovado_media'
+        ]);
+
 
         $rg = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
         $cpf = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);

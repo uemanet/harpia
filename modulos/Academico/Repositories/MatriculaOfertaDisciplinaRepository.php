@@ -240,27 +240,11 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $matriculaOfertaDisciplina = $this->getLastMatriculaDisciplina($matricula->mat_id, $ofertasDisciplina->ofd_mdc_id);
 
             if ($matriculaOfertaDisciplina) {
-                if ($matriculaOfertaDisciplina->mof_situacao_matricula == 'cancelado') {
 
-                    // Se o aluno não satisfazer os pre-requisitos, seta o status com valor 2
-                    if (!$this->verifyIfAlunoAprovadoPreRequisitos($matricula->mat_id, $ofd_id)) {
-                        $status = 2;
-                    }
+                $cancelado = $matriculaOfertaDisciplina->mof_situacao_matricula == 'cancelado';
+                $reprovado = in_array($matriculaOfertaDisciplina->mof_situacao_matricula, ['reprovado_media', 'reprovado_final']) && ($matriculaOfertaDisciplina->mof_ofd_id != $ofd_id);
 
-                    // Se a disciplina não possuir vagas disponiveis, setar o status zero
-                    if (!$this->verifyHaveVagas($ofd_id)) {
-                        $status = 0;
-                    }
-
-                    $ofertasDisciplina->status = $status;
-                    $ofertasDisciplina->quant_matriculas = $this->getQuantMatriculasByOfertaDisciplina($ofd_id);
-                    $naomatriculadas[] = $ofertasDisciplina;
-                    continue;
-                }
-
-                if (in_array($matriculaOfertaDisciplina->mof_situacao_matricula, ['reprovado_media', 'reprovado_final'])
-                    && ($matriculaOfertaDisciplina->mof_ofd_id != $ofd_id)) {
-
+                if ($cancelado || $reprovado) {
                     // Se o aluno não satisfazer os pre-requisitos, seta o status com valor 2
                     if (!$this->verifyIfAlunoAprovadoPreRequisitos($matricula->mat_id, $ofd_id)) {
                         $status = 2;
@@ -315,19 +299,20 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function verifyHaveVagas($ofertaId)
     {
+
+        $oferta = DB::table('acd_ofertas_disciplinas')
+            ->where('ofd_id', '=', $ofertaId)
+            ->first();
+
         $query = $this->model
             ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
             ->where('mof_ofd_id', '=', $ofertaId)
             ->where('mof_situacao_matricula', '<>', 'cancelado')
             ->get();
 
-        if ($query->count()) {
-            $vagas = $query[0]->ofd_qtd_vagas;
-            $qtd = $query->count();
 
-            if (($qtd >= $vagas)) {
-                return false;
-            }
+        if ($query->count() >= $oferta->ofd_qtd_vagas) {
+            return false;
         }
 
         return true;
@@ -685,43 +670,43 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             return $data;
         }
 
-        $somaNotas = (float) $data['mof_nota1'] + (float) $data['mof_nota2'] + (float) $data['mof_nota3'];
-        $menorNota = min((float) $data['mof_nota1'], (float) $data['mof_nota2'], (float) $data['mof_nota3']);
+        $somaNotas = (float)$data['mof_nota1'] + (float)$data['mof_nota2'] + (float)$data['mof_nota3'];
+        $menorNota = min((float)$data['mof_nota1'], (float)$data['mof_nota2'], (float)$data['mof_nota3']);
 
         $media = $somaNotas / 3;
 
         // Recuperacao
-        if ($media < (float) $configuracoesCurso['media_min_aprovacao']  && isset($data['mof_recuperacao'])) {
-            if ($configuracoesCurso['modo_recuperacao'] == 'substituir_media_final' && (float) $data['mof_recuperacao'] > $media) {
-                $data['mof_mediafinal'] = (float) $data['mof_recuperacao'];
-                $media = (float) $data['mof_recuperacao'];
+        if ($media < (float)$configuracoesCurso['media_min_aprovacao'] && isset($data['mof_recuperacao'])) {
+            if ($configuracoesCurso['modo_recuperacao'] == 'substituir_media_final' && (float)$data['mof_recuperacao'] > $media) {
+                $data['mof_mediafinal'] = (float)$data['mof_recuperacao'];
+                $media = (float)$data['mof_recuperacao'];
             }
 
             if ($configuracoesCurso['modo_recuperacao'] == 'substituir_menor_nota') {
-                $media = (($somaNotas - $menorNota) + (float) $data['mof_recuperacao']) / 3;
+                $media = (($somaNotas - $menorNota) + (float)$data['mof_recuperacao']) / 3;
                 $data['mof_mediafinal'] = $media;
             }
 
             $data['mof_situacao_matricula'] = 'aprovado_media';
 
-            if ($data['mof_mediafinal'] < (float) $configuracoesCurso['media_min_aprovacao']) {
+            if ($data['mof_mediafinal'] < (float)$configuracoesCurso['media_min_aprovacao']) {
                 $data['mof_situacao_matricula'] = 'reprovado_media';
             }
         }
 
         // Final
-        if ($media < (float) $configuracoesCurso['media_min_aprovacao'] && isset($data['mof_final'])) {
-            $media = ($media + (float) $data['mof_final']) / 2;
+        if ($media < (float)$configuracoesCurso['media_min_aprovacao'] && isset($data['mof_final'])) {
+            $media = ($media + (float)$data['mof_final']) / 2;
 
             $data['mof_mediafinal'] = $media;
             $data['mof_situacao_matricula'] = 'reprovado_final';
 
-            if ($media >= (float) $configuracoesCurso['media_min_aprovacao_final']) {
+            if ($media >= (float)$configuracoesCurso['media_min_aprovacao_final']) {
                 $data['mof_situacao_matricula'] = 'aprovado_final';
             }
         }
 
-        $data['mof_mediafinal'] = (float) number_format($data['mof_mediafinal'], 3);
+        $data['mof_mediafinal'] = (float)number_format($data['mof_mediafinal'], 3);
         return $data;
     }
 }
