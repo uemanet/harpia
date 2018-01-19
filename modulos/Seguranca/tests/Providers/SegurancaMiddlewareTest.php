@@ -144,7 +144,7 @@ class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
 
     public function testHandleSecurityDisabled()
     {
-        // Seguranca habilitada
+        // Seguranca desabilitada
         putenv("IS_SECURITY_ENNABLED=FALSE");
         $usuario = factory(Usuario::class)->create();
         $userId = $usuario->usr_id;

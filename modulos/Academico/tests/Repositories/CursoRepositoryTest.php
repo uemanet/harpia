@@ -2,9 +2,13 @@
 declare(strict_types=1);
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Facades\DB;
 use Modulos\Academico\Models\Curso;
+use Modulos\Academico\Models\Turma;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\Vinculo;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\QueryException;
 use Modulos\Academico\Models\NivelCurso;
 use Modulos\Academico\Models\MatrizCurricular;
 use Stevebauman\EloquentTable\TableCollection;
@@ -72,15 +76,39 @@ class CursoRepositoryTest extends ModulosTestCase
         $return = $this->repo->create($data);
 
         $this->assertTrue(is_array($return));
-        $this->assertArrayHasKey('status', $return);
-        $this->assertEquals('success', $return['status']);
-        $this->assertEquals(1, Curso::all()->count());
         $this->assertEquals(5, ConfiguracaoCurso::all()->count());
+    }
+
+    public function testCreateWithException()
+    {
+        // Necessario estar logado por conta do Vinculo
+        $user = factory(Usuario::class)->create();
+        $this->actingAs($user);
+        
+        $curso = factory(Curso::class)->raw();
+        $configs = $this->mockConfigs();
+        
+        $data = array_merge($curso, $configs);
+        
+        $this->assertEquals(0, Curso::all()->count());
+        $this->assertEquals(0, ConfiguracaoCurso::all()->count());
+        
+        // Exclui uma coluna para produzir um erro ao salvar
+        Schema::table($this->table, function($table) {
+            $table->dropColumn('crs_descricao');
+        });
+
+        $return = $this->repo->create($data);
+
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('error', $return['status']);
     }
 
     public function testFind()
     {
         $entry = factory(Curso::class)->create();
+        $this->assertEquals(1, Curso::all()->count());
         $id = $entry->crs_id;
         $fromRepository = $this->repo->find($id);
 
@@ -393,5 +421,44 @@ class CursoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->listsCursosTecnicos(2);
 
         $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testGetCursosByAmbiente() 
+    {
+        // Mock de vinculo e login
+        list($user, $cursos) = $this->mockVinculo(2, true, ['crs_nvc_id' => 2]);
+        $this->actingAs($user);
+        
+        // Ofertas de cursos
+        $ofertas = [];
+        foreach($cursos as $curso) {
+            $ofertas[] = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+                'ofc_crs_id' => $curso->crs_id
+            ]);    
+        }
+
+        // Turmas
+        $turmas = [];
+        foreach($ofertas as $oferta) {
+            $turmas[] = factory(Modulos\Academico\Models\Turma::class)->create([
+                'trm_ofc_id' => $oferta->ofc_id
+            ]);
+        }
+
+        // Vinculo da turma com ambiente
+        $ambienteVirtual = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create();
+
+        $ambienteId = $ambienteVirtual->amb_id;
+        $ambienteTurmas = [];
+        foreach($turmas as $turma) {
+            $ambienteTurmas[] = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create([
+                'atr_trm_id' => $turma->trm_id,
+                'atr_amb_id' => $ambienteId
+            ]);
+        }
+
+        $expected = $cursos->pluck('crs_nome', 'crs_id');
+
+        $this->assertEquals($expected, $this->repo->getCursosByAmbiente($ambienteId));
     }
 }
