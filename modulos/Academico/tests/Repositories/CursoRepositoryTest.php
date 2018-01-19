@@ -147,6 +147,67 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->assertEquals($entryData, $data);
     }
 
+    public function testUpdateCurso()
+    {
+        // Necessario estar logado por conta do Vinculo
+        $user = factory(Usuario::class)->create();
+        $this->actingAs($user);
+
+        $curso = factory(Curso::class)->raw();
+        $configs = $this->mockConfigs();
+
+        $data = array_merge($curso, $configs);
+
+        $this->assertEquals(0, Curso::all()->count());
+        $this->assertEquals(0, ConfiguracaoCurso::all()->count());
+        $return = $this->repo->create($data);
+
+        $entry = $this->repo->all()->first();
+        $id = $entry->crs_id;
+
+        $data = $entry->toArray();
+        $data['crs_nome'] = "slug";
+
+        $configs = $this->mockConfigs();
+        $data = array_merge($data, $configs);
+
+        // Update 
+        $return = $this->repo->updateCurso($data, $id);
+        $entry = Curso::find($id);
+        $fromRepository = $this->repo->find($id);
+
+        $entryData = $entry->toArray();
+        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+
+        $data = $fromRepository->toArray();
+        $data['crs_data_autorizacao'] = $fromRepository->getOriginal('crs_data_autorizacao');
+
+        $this->assertTrue(is_array($return));
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Curso::class, $fromRepository);
+        $this->assertEquals($entryData, $data);
+
+        // Update - curso inexistente
+        $return = $this->repo->updateCurso($data, 40);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('error', $return['status']);
+        $this->assertEquals('Curso não existe.', $return['message']);
+
+        // Update - erro / exception
+
+        // Exclui uma coluna para produzir um erro ao atualizar
+        Schema::table($this->table, function ($table) {
+            $table->dropColumn('crs_descricao');
+        });
+        
+        $return = $this->repo->updateCurso($data, $id);
+        $this->assertTrue(is_array($return));
+        $this->assertArrayHasKey('status', $return);
+        $this->assertEquals('error', $return['status']);
+        $this->assertEquals('Erro ao editar curso. Parâmetros devem estar errados.', $return['message']);        
+    }
+
     public function testDelete()
     {
         $user = factory(Usuario::class)->create();
