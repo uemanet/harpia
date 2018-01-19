@@ -94,7 +94,7 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->assertEquals(0, ConfiguracaoCurso::all()->count());
         
         // Exclui uma coluna para produzir um erro ao salvar
-        Schema::table($this->table, function($table) {
+        Schema::table($this->table, function ($table) {
             $table->dropColumn('crs_descricao');
         });
 
@@ -423,7 +423,7 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->assertEquals($expected, $fromRepository);
     }
 
-    public function testGetCursosByAmbiente() 
+    public function testGetCursosByAmbiente()
     {
         // Mock de vinculo e login
         list($user, $cursos) = $this->mockVinculo(2, true, ['crs_nvc_id' => 2]);
@@ -431,15 +431,15 @@ class CursoRepositoryTest extends ModulosTestCase
         
         // Ofertas de cursos
         $ofertas = [];
-        foreach($cursos as $curso) {
+        foreach ($cursos as $curso) {
             $ofertas[] = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
                 'ofc_crs_id' => $curso->crs_id
-            ]);    
+            ]);
         }
 
         // Turmas
         $turmas = [];
-        foreach($ofertas as $oferta) {
+        foreach ($ofertas as $oferta) {
             $turmas[] = factory(Modulos\Academico\Models\Turma::class)->create([
                 'trm_ofc_id' => $oferta->ofc_id
             ]);
@@ -450,7 +450,7 @@ class CursoRepositoryTest extends ModulosTestCase
 
         $ambienteId = $ambienteVirtual->amb_id;
         $ambienteTurmas = [];
-        foreach($turmas as $turma) {
+        foreach ($turmas as $turma) {
             $ambienteTurmas[] = factory(Modulos\Integracao\Models\AmbienteTurma::class)->create([
                 'atr_trm_id' => $turma->trm_id,
                 'atr_amb_id' => $ambienteId

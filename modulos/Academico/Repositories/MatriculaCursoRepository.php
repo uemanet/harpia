@@ -86,7 +86,7 @@ class MatriculaCursoRepository extends BaseRepository
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
             ->where('mat_alu_id', '=', $alunoId)
-            ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
+            ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente', 'reprovado'])
             ->where('ofc_crs_id', '=', $cursoId)
             ->get();
 
