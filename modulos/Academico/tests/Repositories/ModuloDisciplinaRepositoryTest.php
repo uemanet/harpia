@@ -181,12 +181,6 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
             'mdc_tipo_disciplina' => 'obrigatoria'
         ]);
 
-        $response = factory(ModuloDisciplina::class)->create([
-            'mdc_dis_id' => $disciplina->dis_id,
-            'mdc_mdo_id' => $moduloMatriz->mdo_id,
-            'mdc_tipo_disciplina' => 'obrigatoria'
-        ]);
-
         $arraydata =  [
           'dis_id' => $disciplina->dis_id,
           'tipo_disciplina' => 'obrigatoria',
@@ -324,7 +318,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $this->assertEquals($response['type'], 'success');
     }
 
-    public function testUpdate()
+    public function testUpdateExistsDisciplinaTcc()
     {
         $data = $this->mock();
 
@@ -338,15 +332,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
             'mdc_dis_id' => $disciplina->dis_id,
             'mdc_mdo_id' => $moduloMatriz->mdo_id,
             'mdc_tipo_disciplina' => 'eletiva',
-//            'mdc_pre_requisitos' => json_encode(array($moduloDisciplina->mdc_id))
         ]);
-
-//        $moduloDis = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
-//            'mdc_dis_id' => $disciplina2->dis_id,
-//            'mdc_mdo_id' => $moduloMatriz->mdo_id,
-//            'mdc_tipo_disciplina' => 'tcc',
-////            'mdc_pre_requisitos' => json_encode(array($moduloDisciplina->mdc_id))
-//        ]);
 
         $updateArray = $moduloDis->toArray();
         $updateArray['mdc_tipo_disciplina'] = 'tcc';
@@ -356,7 +342,78 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
         $response = $this->repo->update($updateArray, $modulodisciplinaId);
 
+        $this->assertEquals($response['type'], 'error');
+    }
+
+    public function testUpdateDisciplinaTcc()
+    {
+        $data = $this->mock();
+
+        list(, , $moduloDisciplina) = $data;
+
+        $updateArray = $moduloDisciplina->toArray();
+        $updateArray['mdc_tipo_disciplina'] = 'tcc';
+
+        $modulodisciplinaId = $updateArray['mdc_id'];
+        unset($updateArray['mdc_id']);
+
+        $response = $this->repo->update($updateArray, $modulodisciplinaId);
+
         $this->assertEquals(1, $response);
+    }
+
+    public function testUpdatePreRequisito()
+    {
+        $data = $this->mock();
+
+        list(, $moduloMtc, $moduloDisciplina) = $data;
+
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $moduloMtc->mdo_mtc_id,
+        ]);
+
+        $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create();
+
+        $moduloDis = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina->dis_id,
+            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+            'mdc_tipo_disciplina' => 'eletiva',
+        ]);
+
+        $updateArray = $moduloDis->toArray();
+        $updateArray['mdc_pre_requisitos'][] = $moduloDisciplina->mdc_id;
+
+        $modulodisciplinaId = $updateArray['mdc_id'];
+        unset($updateArray['mdc_id']);
+
+        $response = $this->repo->update($updateArray, $modulodisciplinaId);
+
+        $this->assertEquals(1, $response);
+    }
+
+    public function testUpdateNoAptasPreRequisito()
+    {
+        $data = $this->mock();
+
+        list(, $moduloMatriz, $moduloDisciplina) = $data;
+
+        $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create();
+
+        $moduloDis = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina->dis_id,
+            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+            'mdc_tipo_disciplina' => 'eletiva',
+        ]);
+
+        $updateArray = $moduloDis->toArray();
+        $updateArray['mdc_pre_requisitos'][] = $moduloDisciplina->mdc_id;
+
+        $modulodisciplinaId = $updateArray['mdc_id'];
+        unset($updateArray['mdc_id']);
+
+        $response = $this->repo->update($updateArray, $modulodisciplinaId);
+
+        $this->assertEquals($response['type'], 'error');
     }
 
     public function testDelete()

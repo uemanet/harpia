@@ -20,7 +20,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testCreate()
     {
-
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create();
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
 
@@ -55,7 +54,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->repo->getAllMatriculasByAlunoModuloMatriz($matriculaoferta->matriculaCurso->aluno->alu_id, $modulomatriz->mdo_id);
 
         $this->assertNotEmpty($response);
-
     }
 
     public function testgetMatriculasOfertasDisciplinasByMatricula()

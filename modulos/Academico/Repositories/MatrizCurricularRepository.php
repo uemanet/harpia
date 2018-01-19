@@ -97,7 +97,7 @@ class MatrizCurricularRepository extends BaseRepository
         return $query->get();
     }
 
-    public function verifyIfDisciplinaExistsInMatriz($matrizId, $disciplinaId)
+    public function verifyIfDisciplinaExistsInMatriz($matrizId, $disciplinaId, $tcc = false)
     {
         $exists = \DB::table('acd_modulos_disciplinas')
             ->join('acd_modulos_matrizes', 'mdo_id', '=', 'mdc_mdo_id')
@@ -105,7 +105,13 @@ class MatrizCurricularRepository extends BaseRepository
             ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->where('mdo_mtc_id', $matrizId)
             ->where('mdc_dis_id', $disciplinaId)
-            ->first();
+            ->where(function ($query) use ($tcc) {
+                if ($tcc) {
+                    $query->where('mdc_tipo_disciplina', '=', 'tcc');
+                }
+            });
+
+        $exists = $exists->first();
 
         if ($exists) {
             return true;
