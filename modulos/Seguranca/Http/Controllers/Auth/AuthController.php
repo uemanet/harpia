@@ -69,7 +69,6 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
 
         if ($this->auth->attempt($credentials, $request->has('remember'))) {
-
             event(new LogoutOtherDevicesEvent($request));
             event(new ReloadCacheEvent());
 
