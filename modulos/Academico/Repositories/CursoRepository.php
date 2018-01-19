@@ -125,16 +125,12 @@ class CursoRepository extends BaseRepository
             DB::commit();
 
             return array('status' => 'success', 'message' => 'Curso criado com sucesso.');
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            return array('status' => 'error', 'message' => 'Erro ao criar curso. Parâmetros devem estar errados.');
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\QueryException | \Exception $e) {
             DB::rollback();
 
             if (config('app.debug')) {
                 throw $e;
             }
-
             return array('status' => 'error', 'message' => 'Erro ao criar curso. Entrar em contato com o suporte.');
         }
     }
@@ -185,17 +181,14 @@ class CursoRepository extends BaseRepository
             DB::commit();
 
             return array('status' => 'success', 'message' => 'Curso atualizado com sucesso.');
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollback();
-            return array('status' => 'error', 'message' => 'Erro ao editar curso. Parâmetros devem estar errados.');
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\QueryException | \Exception $e) {
             DB::rollback();
 
             if (config('app.debug')) {
                 throw $e;
             }
 
-            return array('status' => 'error', 'message' => 'Erro ao editar curso. Entrar em contato com o suporte.');
+            return array('status' => 'error', 'message' => 'Erro ao editar curso. Parâmetros devem estar errados.');
         }
     }
 
@@ -216,11 +209,7 @@ class CursoRepository extends BaseRepository
                 DB::commit();
 
                 return array('status' => 'success', 'message' => 'Curso excluído com sucesso.');
-            } catch (\Illuminate\Database\QueryException $e) {
-                DB::rollback();
-
-                return array('status' => 'error','message' => 'Erro ao tentar deletar. O curso contém dependências no sistema.');
-            } catch (\Exception $e) {
+            } catch (\Illuminate\Database\QueryException | \Exception $e) {
                 DB::rollback();
 
                 if (config('app.debug')) {
@@ -259,8 +248,7 @@ class CursoRepository extends BaseRepository
 
     public function getCursosByAmbiente($ambienteId)
     {
-        return
-         DB::table('int_ambientes_turmas')
+        return DB::table('int_ambientes_turmas')
                   ->select('crs_nome', 'crs_id')
                   ->join('acd_turmas', 'atr_trm_id', '=', 'trm_id')
                   ->join('acd_ofertas_cursos', 'trm_ofc_id', '=', 'ofc_id')

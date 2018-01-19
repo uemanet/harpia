@@ -102,6 +102,7 @@ class MatrizCurricularRepository extends BaseRepository
         $exists = \DB::table('acd_modulos_disciplinas')
             ->join('acd_modulos_matrizes', 'mdo_id', '=', 'mdc_mdo_id')
             ->select('mdc_dis_id')
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->where('mdo_mtc_id', $matrizId)
             ->where('mdc_dis_id', $disciplinaId)
             ->where(function ($query) use ($tcc) {
