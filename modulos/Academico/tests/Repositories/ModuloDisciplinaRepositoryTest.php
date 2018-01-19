@@ -32,6 +32,79 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $this->table = 'acd_modulos_disciplinas';
     }
 
+//    public function testUpdatePreRequisitos()
+//    {
+//
+////        $data = $this->mock();
+////
+////        list(, $modulo, $moduloDisciplina) = $data;
+////
+////        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+////            'mdo_mtc_id' => $modulo->mdo_mtc_id,
+////        ]);
+////
+////        $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create();
+////
+////        $moduloDisReq =  factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+////            'mdc_dis_id' => $disciplina->dis_id,
+////            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+////            'mdc_tipo_disciplina' => 'eletiva',
+////            'mdc_pre_requisitos' => json_encode(array($moduloDisciplina->mdc_id))
+////        ]);
+//
+//        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
+//            'crs_nvc_id' => 2,
+//        ]);
+//
+//        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+//            'mtc_crs_id' => $curso->crs_id
+//        ]);
+//
+//        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+//            'ofc_crs_id' => $curso->crs_id,
+//            'ofc_mtc_id' => $matrizCurricular->mtc_id,
+//        ]);
+//
+//        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+//            'trm_ofc_id' => $oferta->ofc_id,
+//        ]);
+//
+//        $polos = factory(Modulos\Academico\Models\Polo::class, 2)->create();
+//        $polo = $polos->random();
+//        $oferta->polos()->attach($polos->pluck('pol_id')->toArray());
+//
+//        $grupo = factory(Modulos\Academico\Models\Grupo::class)->create([
+//            'grp_trm_id' => $turma->trm_id,
+//            'grp_pol_id' => $polo->pol_id
+//        ]);
+//
+//        $modulosMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class, 2)->create([
+//            'mdo_mtc_id' => $matrizCurricular->mtc_id
+//        ]);
+//
+//        $disciplinas = factory(Modulos\Academico\Models\Disciplina::class, 6)->create([
+//            'dis_nvc_id' => $curso->crs_nvc_id
+//        ]);
+//
+//        $modulosDisciplina = new \Illuminate\Support\Collection();
+//        foreach ($modulosMatriz as $key => $moduloMatriz) {
+//            for ($i = $key * 3; $i < 3 * ($key + 1); $i++) {
+//                $modulosDisciplina[] = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+//                    'mdc_dis_id' => $disciplinas[$i]->dis_id,
+//                    'mdc_mdo_id' => $moduloMatriz->mdo_id,
+//                    'mdc_tipo_disciplina' => 'eletiva'
+//                ]);
+//            }
+//        }
+//
+//        $result = $this->repo->updatePreRequisitos($moduloMatriz->matriz->mtc_id, $moduloDisReq->mdc_id);
+//
+////        dd($result);
+//
+//        $this->assertNotEmpty($result);
+//
+//    }
+
     public function testCreate()
     {
         $curso = factory(Modulos\Academico\Models\Curso::class)->create();
@@ -166,78 +239,122 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $this->assertEquals($response['type'], 'error');
     }
 
-//    public function testRepositoryCreateDisciplinaExistsName()
-//    {
-//        $curso = factory(Modulos\Academico\Models\Curso::class)->create();
-//
-//        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
-//            'mtc_crs_id' => $curso->crs_id
-//        ]);
-//
-//        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
-//            'mdo_mtc_id' => $matrizCurricular->mtc_id
-//        ]);
-//
-//        $disciplina1 = factory(Modulos\Academico\Models\Disciplina::class)->create([
-//            'dis_nvc_id' => $curso->crs_nvc_id,
-//            'dis_nome' => 'Disciplina 1'
-//        ]);
-//
-//        $disciplina2 = factory(Modulos\Academico\Models\Disciplina::class)->create([
-//            'dis_nvc_id' => $curso->crs_nvc_id,
-//            'dis_nome' => 'Disciplina 1'
-//        ]);
-//
-//        factory(ModuloDisciplina::class)->create([
-//            'mdc_dis_id' => $disciplina1->dis_id,
-//            'mdc_mdo_id' => $moduloMatriz->mdo_id,
-//            'mdc_tipo_disciplina' => 'obrigatoria'
-//        ]);
-//
-//        $arraydata =  [
-//            'dis_id' => $disciplina2->dis_id,
-//            'tipo_disciplina' => 'obrigatoria',
-//            'mtc_id' => $moduloMatriz->matriz->mtc_id,
-//            'mod_id' => $moduloMatriz->mdo_id
-//        ];
-//
-//        $response = $this->repo->create($arraydata);
-//
-//        $this->assertEquals($response['type'], 'error');
-//    }
+    public function testRepositoryCreateDisciplinaExistsTcc()
+    {
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id
+        ]);
+
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        $disciplina1 = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+            'dis_nome' => 'Disciplina 1'
+        ]);
+
+        $disciplina2 = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+            'dis_nome' => 'Disciplina 2'
+        ]);
+
+        factory(ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina1->dis_id,
+            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+            'mdc_tipo_disciplina' => 'tcc'
+        ]);
+
+        $arraydata =  [
+            'dis_id' => $disciplina2->dis_id,
+            'tipo_disciplina' => 'tcc',
+            'mtc_id' => $moduloMatriz->matriz->mtc_id,
+            'mod_id' => $moduloMatriz->mdo_id
+        ];
+
+        $response = $this->repo->create($arraydata);
+
+        $this->assertEquals($response['type'], 'error');
+    }
+
+    public function testRepositoryCreateDisciplinaExistsPreRequisitos()
+    {
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id
+        ]);
+
+        $moduloMatriz1 = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        $moduloMatriz2 = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        $disciplina1 = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+            'dis_nome' => 'Disciplina 1'
+        ]);
+
+        $disciplina2 = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+            'dis_nome' => 'Disciplina 2'
+        ]);
+
+        $moduloDisciplina1 = factory(ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina1->dis_id,
+            'mdc_mdo_id' => $moduloMatriz1->mdo_id,
+            'mdc_tipo_disciplina' => 'obrigatoria'
+        ]);
+
+        $arraydata =  [
+            'dis_id' => $disciplina2->dis_id,
+            'tipo_disciplina' => 'obrigatoria',
+            'mtc_id' => $moduloMatriz2->matriz->mtc_id,
+            'mod_id' => $moduloMatriz2->mdo_id,
+            'pre_requisitos' => [$moduloDisciplina1->mdc_id]
+        ];
+
+        $response = $this->repo->create($arraydata);
+
+        $this->assertEquals($response['type'], 'success');
+    }
 
     public function testUpdate()
     {
-        //        $tipo = ['eletiva','tcc'];
-//        $data = factory(ModuloDisciplina::class)->create([
-//            'mdc_tipo_disciplina' => $tipo[random_int(0,1)]
-//        ]);
-
         $data = $this->mock();
 
-        list(, $modulo, $moduloDisciplina) = $data;
+        list(, $moduloMatriz, $moduloDisciplina) = $data;
 
-        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
-            'mdo_mtc_id' => $modulo->mdo_mtc_id,
+        $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => 1
         ]);
-
-        $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create();
 
         $moduloDis = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
             'mdc_dis_id' => $disciplina->dis_id,
             'mdc_mdo_id' => $moduloMatriz->mdo_id,
             'mdc_tipo_disciplina' => 'eletiva',
-            'mdc_pre_requisitos' => json_encode(array($moduloDisciplina->mdc_id))
+//            'mdc_pre_requisitos' => json_encode(array($moduloDisciplina->mdc_id))
         ]);
 
+//        $moduloDis = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+//            'mdc_dis_id' => $disciplina2->dis_id,
+//            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+//            'mdc_tipo_disciplina' => 'tcc',
+////            'mdc_pre_requisitos' => json_encode(array($moduloDisciplina->mdc_id))
+//        ]);
+
         $updateArray = $moduloDis->toArray();
-//        dd($updateArray);
         $updateArray['mdc_tipo_disciplina'] = 'tcc';
 
         $modulodisciplinaId = $updateArray['mdc_id'];
         unset($updateArray['mdc_id']);
 
-        $response = $this->repo->update($updateArray, $modulodisciplinaId, 'mdc_id');
+        $response = $this->repo->update($updateArray, $modulodisciplinaId);
 
         $this->assertEquals(1, $response);
     }
@@ -490,8 +607,6 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         ]);
 
         $result = $this->repo->getDisciplinasPreRequisitos($moduloDisReq->mdc_id);
-
-//        $result = $this->repo->getAllDisciplinasByModulo($moduloMatriz->mdo_id);
 
         $this->assertNotEmpty($result);
     }
