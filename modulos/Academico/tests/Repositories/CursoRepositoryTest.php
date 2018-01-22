@@ -171,7 +171,7 @@ class CursoRepositoryTest extends ModulosTestCase
         $configs = $this->mockConfigs();
         $data = array_merge($data, $configs);
 
-        // Update 
+        // Update
         $return = $this->repo->updateCurso($data, $id);
         $entry = Curso::find($id);
         $fromRepository = $this->repo->find($id);
@@ -205,7 +205,7 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->assertTrue(is_array($return));
         $this->assertArrayHasKey('status', $return);
         $this->assertEquals('error', $return['status']);
-        $this->assertEquals('Erro ao editar curso. Parâmetros devem estar errados.', $return['message']);        
+        $this->assertEquals('Erro ao editar curso. Parâmetros devem estar errados.', $return['message']);
     }
 
     public function testDelete()
