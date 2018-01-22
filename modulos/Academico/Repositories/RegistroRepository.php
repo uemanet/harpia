@@ -181,7 +181,7 @@ class RegistroRepository extends BaseRepository
             'reg_liv_id' => $livro->liv_id
         ]);
 
-        if ($registros->count() == RegistroRepository::FOLHAS_LIVRO * RegistroRepository::REGISTROS_FOLHA) {
+        if ($registros->count() == self::FOLHAS_LIVRO * self::REGISTROS_FOLHA) {
             return false;
         }
 
@@ -199,7 +199,7 @@ class RegistroRepository extends BaseRepository
             }
 
             // Pula para proxima folha
-            if ($ultimoRegistro->reg_registro >= RegistroRepository::REGISTROS_FOLHA) {
+            if ($ultimoRegistro->reg_registro >= self::REGISTROS_FOLHA) {
                 return (int) ($ultimoRegistro->reg_folha + 1);
             }
 
@@ -221,7 +221,7 @@ class RegistroRepository extends BaseRepository
             }
 
             // Pula para proxima folha, iniciando  contagem de registros da folha
-            if ($ultimoRegistro->reg_registro >= RegistroRepository::REGISTROS_FOLHA) {
+            if ($ultimoRegistro->reg_registro >= self::REGISTROS_FOLHA) {
                 return 1;
             }
 

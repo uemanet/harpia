@@ -538,13 +538,14 @@ $factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Genera
 $factory->define(Modulos\Academico\Models\Livro::class, function (Faker\Generator $faker) {
     return [
         'liv_numero' => 1,
-        'liv_tipo_livro' => 'DIPLOMA'
+        'liv_tipo_livro' => $faker->randomElement(['CERTIFICADO', 'DIPLOMA'])
     ];
 });
 
 $factory->define(Modulos\Academico\Models\Registro::class, function (Faker\Generator $faker) {
     $livro = factory(Modulos\Academico\Models\Livro::class)->create();
     $usuario = factory(Modulos\Seguranca\Models\Usuario::class)->create();
+
     return [
         'reg_liv_id' => $livro->liv_id,
         'reg_usr_id' => $usuario->usr_id,
