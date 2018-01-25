@@ -35,6 +35,7 @@ class DiplomaRepository extends BaseRepository
         if ($poloId != 0) {
             $diplomados = $diplomados->where('mat_pol_id', '=', $poloId);
         }
+
         $diplomados = $diplomados->get();
 
         $aptos = DB::table('acd_matriculas')

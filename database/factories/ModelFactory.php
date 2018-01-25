@@ -543,15 +543,14 @@ $factory->define(Modulos\Academico\Models\Livro::class, function (Faker\Generato
 });
 
 $factory->define(Modulos\Academico\Models\Registro::class, function (Faker\Generator $faker) {
-    $livro = factory(Modulos\Academico\Models\Livro::class)->create();
     $usuario = factory(Modulos\Seguranca\Models\Usuario::class)->create();
 
     return [
-        'reg_liv_id' => $livro->liv_id,
+        'reg_liv_id' => 1,
         'reg_usr_id' => $usuario->usr_id,
         'reg_folha' => $faker->randomNumber(),
         'reg_registro' => $faker->randomNumber(),
-        'reg_codigo_autenticidade' => $faker->randomNumber()
+        'reg_codigo_autenticidade' => $faker->uuid
     ];
 });
 
