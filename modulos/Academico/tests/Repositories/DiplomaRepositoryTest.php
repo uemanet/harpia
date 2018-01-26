@@ -2,6 +2,8 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Diploma;
+use Modulos\Seguranca\Models\Usuario;
+use Modulos\Academico\Models\Registro;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -9,20 +11,128 @@ use Modulos\Academico\Repositories\DiplomaRepository;
 
 class DiplomaRepositoryTest extends ModulosTestCase
 {
+    protected $user;
+
     public function setUp()
     {
         parent::setUp();
+        $this->user = factory(Usuario::class)->create();
         $this->repo = $this->app->make(DiplomaRepository::class);
         $this->table = 'acd_diplomas';
     }
 
+    private function mockUp()
+    {
+        // Aluno
+        $pessoa = factory(\Modulos\Geral\Models\Pessoa::class)->create();
+
+        $rg = factory(\Modulos\Geral\Models\Documento::class)->create([
+            'doc_pes_id' => $pessoa->pes_id,
+            'doc_tpd_id' => 1,
+            'doc_conteudo' => 195819621970,
+            'doc_orgao' => 'SSP'
+        ]);
+
+        $rg = factory(\Modulos\Geral\Models\Documento::class)->create([
+            'doc_pes_id' => $pessoa->pes_id,
+            'doc_tpd_id' => 2,
+            'doc_conteudo' => 19942002,
+            'doc_orgao' => 'SSP'
+        ]);
+
+        $aluno = factory(\Modulos\Academico\Models\Aluno::class)->create([
+            'alu_pes_id' => $pessoa->pes_id
+        ]);
+
+        // Curso, Matriz e Modulos
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create();
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id
+        ]);
+
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        $disciplinas = factory(Modulos\Academico\Models\Disciplina::class, 3)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+        ]);
+
+        foreach ($disciplinas as $disciplina) {
+            factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create([
+                'mdc_dis_id' => $disciplina->dis_id,
+                'mdc_mdo_id' => $moduloMatriz->mdo_id,
+                'mdc_tipo_disciplina' => 'obrigatoria',
+            ]);
+        }
+
+        // Oferta de curso e matricula
+        $ofertaCurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        // Com polos
+        $polos[] = factory(\Modulos\Academico\Models\Polo::class)->create()->pol_id;
+        $polos[] = factory(\Modulos\Academico\Models\Polo::class)->create()->pol_id;
+
+        $ofertaCurso->polos()->sync($polos);
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $ofertaCurso->ofc_id
+        ]);
+
+        // Grupo
+        $grupo = factory(\Modulos\Academico\Models\Grupo::class)->create([
+            'grp_trm_id' => $turma->trm_id,
+            'grp_pol_id' => $polos[0],
+        ]);
+
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create([
+            'mat_alu_id' => $aluno->alu_id,
+            'mat_trm_id' => $turma->trm_id,
+            'mat_pol_id' => $polos[0],
+            'mat_grp_id' => $grupo->grp_id,
+        ]);
+
+        return [$aluno, $matricula, $moduloMatriz];
+    }
+
+    private function seedTable()
+    {
+        $registros = [];
+        $matriculas = [];
+
+        $registroRepository = $this->app->make(\Modulos\Academico\Repositories\RegistroRepository::class);
+
+        // Diplomas
+        for ($i = 0; $i < 3; $i++) {
+            list(, $matricula,) = $this->mockUp();
+
+            $matriculas[] = $matricula;
+            $data = factory(Registro::class)->raw();
+            $data = array_merge([
+                'matricula' => $matricula->mat_id,
+            ], $data);
+
+            $registros[] = $registroRepository->create($data);
+        }
+
+        return [$matriculas, $registros];
+    }
+
+    /**
+     * @expectedException \Exception
+     */
     public function testCreate()
     {
-        $data = factory(Diploma::class)->raw();
-        $entry = $this->repo->create($data);
+        list(, $registros) = $this->seedTable();
 
-        $this->assertInstanceOf(Diploma::class, $entry);
-        $this->assertDatabaseHas($this->table, $entry->toArray());
+        $data = factory(Diploma::class)->raw([
+            'dip_reg_id' => $registros[0]->reg_id
+        ]);
+        $this->repo->create($data);
     }
 
     public function testFind()
@@ -230,33 +340,55 @@ class DiplomaRepositoryTest extends ModulosTestCase
 
     public function testGetAlunosDiplomados()
     {
-        factory(Diploma::class, 2)->create();
+        $this->actingAs($this->user);
+        list($matriculas, $registros) = $this->seedTable();
 
-        $diplomados = $this->repo->getAlunosDiplomados(1);
+        foreach ($registros as $registro) {
+            factory(Diploma::class)->create([
+                'dip_reg_id' => $registro->reg_id
+            ]);
+        }
 
-        $this->assertNotEmpty($diplomados['diplomados']);
+        $turma = $matriculas[0]->mat_trm_id;
+
+        $diplomados = $this->repo->getAlunosDiplomados($turma);
+
         $this->assertEmpty($diplomados['aptos']);
+        $this->assertNotEmpty($diplomados['diplomados']);
+        $this->assertEquals(1, $diplomados['diplomados']->count());
     }
 
     public function testGetAlunosDiplomadosWithPolo()
     {
-        $diploma = factory(Diploma::class)->create();
+        $this->actingAs($this->user);
+        list($matriculas) = $this->seedTable();
 
-        $diplomados = $this->repo->getAlunosDiplomados($diploma->matricula->mat_trm_id, $diploma->matricula->mat_pol_id);
+        $polo = $matriculas[0]->mat_pol_id;
+        $turma = $matriculas[0]->mat_trm_id;
 
-        $this->assertNotEmpty($diplomados['diplomados']);
+        $diplomados = $this->repo->getAlunosDiplomados($turma, $polo);
+
         $this->assertEmpty($diplomados['aptos']);
+        $this->assertNotEmpty($diplomados['diplomados']);
+        $this->assertEquals(1, $diplomados['diplomados']->count());
+
+        // Com polo errado (nao deve trazer nenhum registro)
+        $polo = $matriculas[1]->mat_pol_id;
+
+        $diplomados = $this->repo->getAlunosDiplomados($turma, $polo);
+
+        $this->assertEmpty($diplomados['aptos']);
+        $this->assertEmpty($diplomados['diplomados']);
     }
 
     public function testGetPrintData()
     {
-        $diploma = factory(Diploma::class, 2)->create();
+        $this->actingAs($this->user);
+        list($matriculas) = $this->seedTable();
 
-        $id = array(0 => $diploma[0]->dip_id);
-        $idPessoa = $diploma[0]->matricula->aluno->pessoa->pes_id;
+        $diploma = Diploma::all()->first();
 
-        $docRepository = $this->app->make(DocumentoRepository::class);
-        $documento = $docRepository->create(['doc_pes_id' => $idPessoa, 'doc_tpd_id' => 1, 'doc_conteudo' => 4653673163, 'doc_orgao' => 'SSP']);
+        $id[] = $diploma->dip_id;
 
         $diplomados = $this->repo->getPrintData($id);
 
@@ -265,25 +397,20 @@ class DiplomaRepositoryTest extends ModulosTestCase
 
     public function testGetPrintDataReturnError()
     {
-        $diploma = factory(Diploma::class, 2)->create();
+        $this->actingAs($this->user);
+        list($matriculas) = $this->seedTable();
 
-        $id = array(0 => $diploma[0]->dip_id);
-        $idPessoa = $diploma[0]->matricula->aluno->pessoa->pes_id;
+        $diploma = Diploma::all()->first();
 
-        $docRepository = $this->app->make(DocumentoRepository::class);
-        ;
-        //criado um documento sem orgao para fazer o teste. É esperado um documento um erro no campo órgão como retorno
-        $documento = $docRepository->create(['doc_pes_id' => $idPessoa, 'doc_tpd_id' => 1, 'doc_conteudo' => 4653673163]);
+        $id[] = $diploma->dip_id;
         $diplomados = $this->repo->getPrintData($id);
 
-        $this->assertEquals($diplomados['type'], 'error');
-        $this->assertEquals($diplomados['campo'], 'ORGAO');
+        $this->assertEquals('error', $diplomados['type']);
     }
 
     public function testGetPrintDataReturnNull()
     {
         $diplomados = $this->repo->getPrintData([1]);
-
         $this->assertEquals(null, $diplomados);
     }
 }

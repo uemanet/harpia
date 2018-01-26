@@ -475,57 +475,6 @@ $factory->define(Modulos\Academico\Models\LancamentoTcc::class, function (Faker\
     ];
 });
 
-$factory->define(Modulos\Academico\Models\Diploma::class, function () {
-    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
-
-    $ofertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
-        'ofc_crs_id' => $curso->crs_id
-    ]);
-
-    $turma = factory(Modulos\Academico\Models\Turma::class)->create([
-        'trm_ofc_id' => $ofertaCurso->ofc_id
-    ]);
-
-    $polo = factory(Modulos\Academico\Models\Polo::class)->create();
-    $ofertaCurso->polos()->attach($polo->pol_id);
-    $grupo = factory(Modulos\Academico\Models\Grupo::class)->create([
-        'grp_trm_id' => $turma->trm_id,
-        'grp_pol_id' => $polo->pol_id
-    ]);
-
-    $matricula = factory(Modulos\Academico\Models\Matricula::class)->create([
-        'mat_trm_id' => $turma->trm_id,
-        'mat_pol_id' => $polo->pol_id,
-        'mat_grp_id' => $grupo->grp_id
-    ]);
-
-    $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
-        'mdo_mtc_id' => $ofertaCurso->ofc_mtc_id
-    ]);
-
-    $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create([
-        'dis_nvc_id' => $curso->crs_nvc_id
-    ]);
-
-    $moduloDisciplina = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
-        'mdc_dis_id' => $disciplina->dis_id,
-        'mdc_mdo_id' => $moduloMatriz->mdo_id
-    ]);
-
-    $ofertaDisciplina = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
-        'ofd_mdc_id' => $moduloDisciplina->mdc_id,
-        'ofd_trm_id' => $turma->trm_id,
-        'ofd_per_id' => $turma->trm_per_id
-    ]);
-
-    return [
-        'mof_mat_id' => $matricula->mat_id,
-        'mof_ofd_id' => $ofertaDisciplina->ofd_id,
-        'mof_tipo_matricula' => 'matriculacomum',
-        'mof_status' => 'cursando'
-    ];
-});
-
 $factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Generator $faker) {
     $curso = factory(Modulos\Academico\Models\Curso::class)->create();
 
@@ -557,8 +506,8 @@ $factory->define(Modulos\Academico\Models\Registro::class, function (Faker\Gener
 $factory->define(Modulos\Academico\Models\Diploma::class, function (Faker\Generator $faker) {
     $registro = factory(Modulos\Academico\Models\Registro::class)->create();
     $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
-    return [
 
+    return [
         'dip_reg_id' => $registro->reg_id,
         'dip_mat_id' => $matricula->mat_id,
         'dip_processo' => $faker->sentence(3),
