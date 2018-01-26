@@ -476,11 +476,9 @@ $factory->define(Modulos\Academico\Models\LancamentoTcc::class, function (Faker\
 });
 
 $factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Generator $faker) {
-    $curso = factory(Modulos\Academico\Models\Curso::class)->create();
-
     return [
         'ucr_usr_id' => 1,
-        'ucr_crs_id' => $curso->crs_id
+        'ucr_crs_id' => 1
     ];
 });
 

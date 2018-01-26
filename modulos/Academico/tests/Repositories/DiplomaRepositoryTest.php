@@ -6,7 +6,6 @@ use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\Registro;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Academico\Repositories\DiplomaRepository;
 
 class DiplomaRepositoryTest extends ModulosTestCase
@@ -108,7 +107,7 @@ class DiplomaRepositoryTest extends ModulosTestCase
 
         // Diplomas
         for ($i = 0; $i < 3; $i++) {
-            list(, $matricula,) = $this->mockUp();
+            list(, $matricula, ) = $this->mockUp();
 
             $matriculas[] = $matricula;
             $data = factory(Registro::class)->raw();

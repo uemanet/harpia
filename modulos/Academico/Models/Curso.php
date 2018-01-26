@@ -56,7 +56,7 @@ class Curso extends BaseModel
 
     public function usuariosVinculados()
     {
-        return $this->belongsToMany('Modulos\Seguranca\Models\Vinculos', 'pcr_crs_id', 'crs_id');
+        return $this->hasMany('Modulos\Academico\Models\Vinculo', 'ucr_crs_id', 'crs_id');
     }
 
     public function configuracoes()
