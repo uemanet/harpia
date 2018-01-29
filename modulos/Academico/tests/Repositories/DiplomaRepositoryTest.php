@@ -126,8 +126,10 @@ class DiplomaRepositoryTest extends ModulosTestCase
      */
     public function testCreate()
     {
+        $this->expectException(\Exception::class);
         list(, $registros) = $this->seedTable();
 
+        $this->expectException(\Exception::class);
         $data = factory(Diploma::class)->raw([
             'dip_reg_id' => $registros[0]->reg_id
         ]);

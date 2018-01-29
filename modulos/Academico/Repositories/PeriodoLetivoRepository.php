@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
+use DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\PeriodoLetivo;
-use Carbon\Carbon;
-use DB;
 
 class PeriodoLetivoRepository extends BaseRepository
 {
@@ -28,6 +28,7 @@ class PeriodoLetivoRepository extends BaseRepository
             $attribute = $this->model->getKeyName();
         }
 
+        $updated = 0;
         $collection = $this->model->where($attribute, '=', $id)->get();
 
         if ($collection) {
@@ -35,35 +36,35 @@ class PeriodoLetivoRepository extends BaseRepository
                 $obj->fill($data)->save();
             }
 
-            return $collection->count();
+            $updated = $collection->count();
         }
 
-        return 0;
+        return $updated;
     }
 
     public function getAllByTurma($turmaId)
     {
         $result = $this->model
-                        ->where('per_fim', '>=', function ($query) use ($turmaId) {
-                            $query->select('per_fim')
-                                    ->from('acd_turmas')
-                                    ->join('acd_periodos_letivos', 'trm_per_id', '=', 'per_id')
-                                    ->where('trm_id', '=', $turmaId);
-                        })
-                        ->orderBy('per_inicio', 'ASC')
-                        ->get();
-        
+            ->where('per_fim', '>=', function ($query) use ($turmaId) {
+                $query->select('per_fim')
+                    ->from('acd_turmas')
+                    ->join('acd_periodos_letivos', 'trm_per_id', '=', 'per_id')
+                    ->where('trm_id', '=', $turmaId);
+            })
+            ->orderBy('per_inicio', 'ASC')
+            ->get();
+
         return $result;
     }
 
     public function getPeriodosValidos($ofc_ano, $periodo)
     {
         $periodosvalidos = $this->model
-                    ->whereYear('per_inicio', '>=', $ofc_ano)
-                    ->where('per_fim', '>=', date('Y-m-d'))
-                    ->orderBy('per_inicio', 'ASC')
-                    ->pluck('per_nome', 'per_id')
-                    ->toArray();
+            ->whereYear('per_inicio', '>=', $ofc_ano)
+            ->where('per_fim', '>=', date('Y-m-d'))
+            ->orderBy('per_inicio', 'ASC')
+            ->pluck('per_nome', 'per_id')
+            ->toArray();
 
         $periodosId = [];
 
@@ -76,25 +77,24 @@ class PeriodoLetivoRepository extends BaseRepository
         }
 
         return $this->model
-               ->whereIn('per_id', $periodosId)
-               ->pluck('per_nome', 'per_id')
-               ->toArray();
+            ->whereIn('per_id', $periodosId)
+            ->pluck('per_nome', 'per_id')
+            ->toArray();
     }
 
-    public function verifyNamePeriodo($periodoName, $periodoId = null)
+    public function verifyNamePeriodo($periodoName, $periodoId = null): bool
     {
         $result = $this->model->where('per_nome', $periodoName)->get();
 
         if (!$result->isEmpty()) {
-            if (!is_null($periodoId)) {
+
+            if(!is_null($periodoId)){
                 $result = $result->where('per_id', $periodoId);
 
-                if (!$result->isEmpty()) {
-                    return false;
-                }
+                return $result->isEmpty();
             }
 
-            return true;
+            return !$result->isEmpty();
         }
 
         return false;
