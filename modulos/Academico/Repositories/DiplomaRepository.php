@@ -7,6 +7,7 @@ use Harpia\Util\Util;
 use Modulos\Academico\Models\Diploma;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
+use Modulos\Academico\Repositories\RegistroRepository;
 
 class DiplomaRepository extends BaseRepository
 {
@@ -15,9 +16,21 @@ class DiplomaRepository extends BaseRepository
         parent::__construct($diploma);
     }
 
+    /**
+     * Este metodo nao e usado diretamente.
+     * Registros de diploma sao criados a partir da classe RegistroRepository.
+     *
+     * @see RegistroRepository::create()
+     * @throws \Exception
+     */
+    public function create(array $data)
+    {
+        throw new \Exception("Registros de diploma sao criados a partir da classe " . RegistroRepository::class);
+    }
+
     public function getAlunosDiplomados($turmaId, $poloId = 0)
     {
-        //recebe os alunos diplomados em deteminada turma
+        // busca os alunos diplomados em deteminada turma
         $diplomados = $this->model
             ->join('acd_matriculas', 'dip_mat_id', 'mat_id')
             ->join('acd_turmas', 'mat_trm_id', 'trm_id')
@@ -35,6 +48,7 @@ class DiplomaRepository extends BaseRepository
         if ($poloId != 0) {
             $diplomados = $diplomados->where('mat_pol_id', '=', $poloId);
         }
+
         $diplomados = $diplomados->get();
 
         $aptos = DB::table('acd_matriculas')
@@ -59,13 +73,11 @@ class DiplomaRepository extends BaseRepository
         return $returnData;
     }
 
-    public function getPrintData($diplomas)
+    public function getPrintData(array $diplomas)
     {
         $retorno = [];
 
         foreach ($diplomas as $key => $IdDiploma) {
-
-
             //recebe livro, folha e registro da certificação
             $livfolreg = DB::table('acd_diplomas')
                 ->join('acd_registros', 'reg_id', '=', 'dip_reg_id')
@@ -76,6 +88,7 @@ class DiplomaRepository extends BaseRepository
             if (!$livfolreg) {
                 return null;
             }
+
             //busca a mtricula relacionada com o Id do diploma
             $matricula = Matricula::find($livfolreg->dip_mat_id);
 
@@ -125,7 +138,6 @@ class DiplomaRepository extends BaseRepository
             $formata = str_replace('CURSO TÉCNICO ', '', $formata);
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
 
-
             $returnData = [
                 'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
                 'HABILITAÇÂO' => mb_strtoupper($curso->crs_habilitacao, "UTF-8"),
@@ -155,9 +167,9 @@ class DiplomaRepository extends BaseRepository
                 'DIAATUAL' => $diaatual
             ];
 
-            foreach ($returnData as $key => $dado) {
+            foreach ($returnData as $innerKey => $dado) {
                 if (!$dado) {
-                    return array('type' => 'error', 'dados' => $returnData, 'campo' => $key);
+                    return array('type' => 'error', 'dados' => $returnData, 'campo' => $innerKey);
                 }
             }
 

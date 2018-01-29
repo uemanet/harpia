@@ -2,8 +2,8 @@
 
 namespace Modulos\Academico\Models;
 
-use Illuminate\Pagination\Paginator;
 use Modulos\Core\Model\BaseModel;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Stevebauman\EloquentTable\TableCollection;
 
