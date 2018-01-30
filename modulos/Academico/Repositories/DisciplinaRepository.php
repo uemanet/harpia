@@ -2,9 +2,9 @@
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Academico\Models\Disciplina;
 use DB;
+use Modulos\Academico\Models\Disciplina;
+use Modulos\Core\Repository\BaseRepository;
 
 class DisciplinaRepository extends BaseRepository
 {
@@ -17,7 +17,9 @@ class DisciplinaRepository extends BaseRepository
     }
 
     /**
-     * Cas
+     * Verifica se nao existe outra disciplina com os
+     * mesmos atributos para ser criada
+     *
      * @param array $data
      * @param null $id
      * @return bool
@@ -45,7 +47,9 @@ class DisciplinaRepository extends BaseRepository
 
     /**
      *
-     * Busca todas as disciplinas não pertencentes a matriz atual pelo nome da disciplina e filtra as disciplinas de acordo com o nível do curso.
+     * Busca todas as disciplinas não pertencentes a
+     * matriz atual pelo nome da disciplina
+     * e filtra as disciplinas de acordo com o nível do curso.
      *
      * @param $matriz
      * @param $nome
@@ -68,19 +72,12 @@ class DisciplinaRepository extends BaseRepository
 
         $nivel = $query->crs_nvc_id;
 
-        $result = $this->model
+        return $this->model
             ->join('acd_niveis_cursos', 'dis_nvc_id', 'nvc_id')
             ->where('dis_nome', 'like', "%{$nome}%")
             ->where('dis_nvc_id', '=', $nivel)
             ->whereNotIn('dis_id', $disciplinasId)
             ->get();
-
-
-        if ($result->count()) {
-            return $result;
-        }
-
-        return null;
     }
 
     public function getDisciplinasModulosAnteriores($matrizId, $moduloId)
