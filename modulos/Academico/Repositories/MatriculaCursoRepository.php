@@ -594,16 +594,12 @@ class MatriculaCursoRepository extends BaseRepository
             $matriculaOferta = $this->matriculaOfertaDisciplinaRepository->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
                 ['ofd_mdc_id' => $disciplinaTcc->mdc_id, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
 
-            if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                if ($matriculaOferta->tcc) {
-                    return true;
-                }
-
-                return false;
+            if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final']) && $matriculaOferta->tcc) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     public function verifyIfAlunoHaveTitulacaoGraduacao(Matricula $matricula)
