@@ -24,15 +24,15 @@ class ModuloDisciplinaRepository extends BaseRepository
     public function verifyDisciplinaModulo($idDisciplina, $idModulo)
     {
         $disciplina = DB::table('acd_disciplinas')
-          ->where('dis_id', '=', $idDisciplina)->pluck('dis_nome', 'dis_id');
+            ->where('dis_id', '=', $idDisciplina)->pluck('dis_nome', 'dis_id');
 
 
         $verificar = DB::table('acd_disciplinas')
-          ->join('acd_modulos_disciplinas', 'dis_id', '=', 'acd_modulos_disciplinas.mdc_dis_id')
-          ->join('acd_modulos_matrizes', 'acd_modulos_disciplinas.mdc_mdo_id', '=', 'acd_modulos_matrizes.mdo_id')
-          ->join('acd_matrizes_curriculares', 'acd_modulos_matrizes.mdo_mtc_id', '=', 'acd_matrizes_curriculares.mtc_id')
-          ->where('acd_modulos_disciplinas.mdc_mdo_id', '=', $idModulo)
-          ->where('dis_nome', '=', $disciplina[$idDisciplina])->get();
+            ->join('acd_modulos_disciplinas', 'dis_id', '=', 'acd_modulos_disciplinas.mdc_dis_id')
+            ->join('acd_modulos_matrizes', 'acd_modulos_disciplinas.mdc_mdo_id', '=', 'acd_modulos_matrizes.mdo_id')
+            ->join('acd_matrizes_curriculares', 'acd_modulos_matrizes.mdo_mtc_id', '=', 'acd_matrizes_curriculares.mtc_id')
+            ->where('acd_modulos_disciplinas.mdc_mdo_id', '=', $idModulo)
+            ->where('dis_nome', '=', $disciplina[$idDisciplina])->get();
 
         if ($verificar->isEmpty()) {
             return false;
@@ -56,9 +56,9 @@ class ModuloDisciplinaRepository extends BaseRepository
 
                     foreach ($ids as $id) {
                         $disciplina = $this->model
-                                            ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
-                                            ->where('mdc_id', $id)
-                                            ->first();
+                            ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+                            ->where('mdc_id', $id)
+                            ->first();
                         if ($disciplina) {
                             $disciplinas[] = $disciplina;
                         }
@@ -119,7 +119,13 @@ class ModuloDisciplinaRepository extends BaseRepository
         return $result;
     }
 
-    //TODO refatorar paginate
+    /**
+     * @codeCoverageIgnore
+     * @param null $sort
+     * @param null $search
+     * @return mixed
+     * TODO refatorar paginate
+     */
     public function paginate($sort = null, $search = null)
     {
         $result = $this->model
@@ -215,12 +221,27 @@ class ModuloDisciplinaRepository extends BaseRepository
         return parent::update($data, $id, $attribute);
     }
 
-    public function updatePreRequisitos($matrizId, $moduloDisciplinaId)
+    public function delete($id)
+    {
+        $moduloDisciplina = $this->find($id);
+
+        if (!$moduloDisciplina) {
+            return false;
+        }
+
+        // Ao deletar a disciplina, caso ela seja pré-requisito de outra, precisa-se removê-la da lista dos outros registros
+        $matriz = $moduloDisciplina->modulo->matriz->mtc_id;
+        $this->updatePreRequisitos($matriz, $id);
+
+        return parent::delete($id);
+    }
+
+    private function updatePreRequisitos($matrizId, $moduloDisciplinaId)
     {
         $registros = $this->model->join('acd_modulos_matrizes', 'mdc_mdo_id', '=', 'mdo_id')
-                                ->where('mdo_mtc_id', '=', $matrizId)
-                                ->whereNotNull('mdc_pre_requisitos')
-                                ->get();
+            ->where('mdo_mtc_id', '=', $matrizId)
+            ->whereNotNull('mdc_pre_requisitos')
+            ->get();
 
         if ($registros) {
             try {
@@ -244,11 +265,8 @@ class ModuloDisciplinaRepository extends BaseRepository
                 return $registros->count();
             } catch (\Exception $e) {
                 DB::rollback();
-                return 0;
             }
         }
-
-        return 0;
     }
 
     public function getDisciplinasPreRequisitos($moduloDisciplinaId)

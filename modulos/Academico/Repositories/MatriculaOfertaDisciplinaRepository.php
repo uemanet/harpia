@@ -240,7 +240,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $matriculaOfertaDisciplina = $this->getLastMatriculaDisciplina($matricula->mat_id, $ofertasDisciplina->ofd_mdc_id);
 
             if ($matriculaOfertaDisciplina) {
-
                 $cancelado = $matriculaOfertaDisciplina->mof_situacao_matricula == 'cancelado';
                 $reprovado = in_array($matriculaOfertaDisciplina->mof_situacao_matricula, ['reprovado_media', 'reprovado_final']) && ($matriculaOfertaDisciplina->mof_ofd_id != $ofd_id);
 
@@ -299,7 +298,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function verifyHaveVagas($ofertaId)
     {
-
         $oferta = DB::table('acd_ofertas_disciplinas')
             ->where('ofd_id', '=', $ofertaId)
             ->first();
