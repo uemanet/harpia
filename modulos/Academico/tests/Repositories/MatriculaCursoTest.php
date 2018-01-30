@@ -1040,13 +1040,13 @@ class MatriculaCursoTest extends ModulosTestCase
             $ofertasDisciplina = new \Illuminate\Support\Collection();
             foreach ($modulosDisciplina as $moduloDisciplina) {
                 $ofertasDisciplina[] = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
-                'ofd_mdc_id' => $moduloDisciplina->mdc_id,
-                'ofd_trm_id' => $turma->trm_id,
-                'ofd_per_id' => $turma->trm_per_id,
-                'ofd_prf_id' => $professor->prf_id,
-                'ofd_tipo_avaliacao' => 'numerica',
-                'ofd_qtd_vagas' => 500
-            ]);
+                    'ofd_mdc_id' => $moduloDisciplina->mdc_id,
+                    'ofd_trm_id' => $turma->trm_id,
+                    'ofd_per_id' => $turma->trm_per_id,
+                    'ofd_prf_id' => $professor->prf_id,
+                    'ofd_tipo_avaliacao' => 'numerica',
+                    'ofd_qtd_vagas' => 500
+                ]);
             }
         }
 
