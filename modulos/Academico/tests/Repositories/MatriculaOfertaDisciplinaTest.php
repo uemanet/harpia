@@ -5,6 +5,8 @@ use Tests\Helpers\Reflection;
 use Modulos\Academico\Models\MatriculaOfertaDisciplina;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
+use Stevebauman\EloquentTable\TableCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 {
@@ -17,7 +19,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->repo = $this->app->make(MatriculaOfertaDisciplinaRepository::class);
         $this->docrepo = $this->app->make(DocumentoRepository::class);
 
-        $this->table = 'acd_departamento';
+        $this->table = 'acd_matriculas_ofertas_disciplinas';
     }
 
     public function testCreate()
@@ -35,6 +37,129 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
         $this->assertArrayHasKey('mof_id', $response);
         $this->assertNotEmpty($response);
+    }
+
+    public function testFind()
+    {
+        $entry = factory(MatriculaOfertaDisciplina::class)->create();
+        $id = $entry->mof_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(MatriculaOfertaDisciplina::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(MatriculaOfertaDisciplina::class, 2)->create();
+
+        $model = new MatriculaOfertaDisciplina();
+        $expected = $model->pluck('mof_tipo_matricula', 'mof_id');
+        $fromRepository = $this->repo->lists('mof_id', 'mof_tipo_matricula');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+
+        factory(MatriculaOfertaDisciplina::class)->create([
+            'mof_tipo_matricula' => 'matriculacomum'
+        ]);
+
+        $searchResult = $this->repo->search(array(['mof_tipo_matricula', '=', 'matriculacomum']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(MatriculaOfertaDisciplina::class)->create([
+            'mof_tipo_matricula' => 'matriculacomum'
+        ]);
+
+        $searchResult = $this->repo->search(array(['mof_tipo_matricula', '=', 'matriculacomum']), ['mof_id']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(MatriculaOfertaDisciplina::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(MatriculaOfertaDisciplina::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new MatriculaOfertaDisciplina();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
+    }
+
+    public function testPaginateWithoutParameters()
+    {
+        factory(MatriculaOfertaDisciplina::class, 2)->create();
+
+        $response = $this->repo->paginate();
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertGreaterThan(1, $response->total());
+    }
+
+    public function testPaginateWithSort()
+    {
+        factory(MatriculaOfertaDisciplina::class, 2)->create();
+
+        $sort = [
+            'field' => 'mof_id',
+            'sort' => 'desc'
+        ];
+
+        $response = $this->repo->paginate($sort);
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertEquals(2, $response->first()->mof_id);
+    }
+
+    public function testPaginateWithSearch()
+    {
+
+        $entry = factory(MatriculaOfertaDisciplina::class)->create([
+            'mof_tipo_matricula' => 'matriculacomun'
+        ]);
+
+        $search = [
+            [
+                'field' => 'mof_tipo_matricula',
+                'type' => '=',
+                'term' => 'matriculacomun'
+            ]
+        ];
+
+        $response = $this->repo->paginate(null, $search);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('matriculacomun', $response->first()->mof_tipo_matricula);
+
     }
 
     public function testgetAllAlunosBySituacaoWithDoc()
