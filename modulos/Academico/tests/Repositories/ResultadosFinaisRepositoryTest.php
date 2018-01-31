@@ -1,11 +1,9 @@
 <?php
 
+use Tests\ModulosTestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Artisan;
-use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Repositories\ResultadosFinaisRepository;
-use Tests\ModulosTestCase;
 
 class ResultadosFinaisRepositoryTest extends ModulosTestCase
 {

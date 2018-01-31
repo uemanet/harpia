@@ -39,6 +39,7 @@ class DocumentoRepository extends BaseRepository
             $query = $query->where($key, '=', $value);
         }
 
+        $updated = 0;
         $registros = $query->get();
 
         if ($registros) {
@@ -47,10 +48,10 @@ class DocumentoRepository extends BaseRepository
                 $obj->save();
             }
 
-            return $registros->count();
+            $updated = $registros->count();
         }
 
-        return 0;
+        return $updated;
     }
 
     public function deleteDocumento($documentoId)
@@ -85,6 +86,7 @@ class DocumentoRepository extends BaseRepository
             $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ? $data['doc_data_expedicao'] : null;
         }
 
+        $updated = 0;
         $registros = $this->model->where($attribute, '=', $id)->get();
 
         if ($registros) {
@@ -92,9 +94,9 @@ class DocumentoRepository extends BaseRepository
                 $obj->fill($data)->save();
             }
 
-            return $registros->count();
+            $updated = $registros->count();
         }
 
-        return 0;
+        return $updated;
     }
 }

@@ -1,61 +1,188 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\DisciplinaRepository;
+use Tests\ModulosTestCase;
+use Modulos\Academico\Models\Disciplina;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Academico\Repositories\DisciplinaRepository;
 
-class DisciplinaRepositoryTest extends TestCase
+class DisciplinaRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(DisciplinaRepository::class);
+        $this->table = 'acd_disciplinas';
     }
 
-    public function testAllWithEmptyDatabase()
+    private function mock()
     {
-        $response = $this->repo->all();
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
+            'crs_nvc_id' => 2,
+        ]);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id
+        ]);
+
+        $modulosMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class, 2)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        // Disciplinas para o curso
+        $disciplinas = factory(Modulos\Academico\Models\Disciplina::class, 6)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id
+        ]);
+
+        $modulosDisciplina = new \Illuminate\Support\Collection();
+        foreach ($modulosMatriz as $key => $moduloMatriz) {
+            for ($i = $key * 3; $i < 3 * ($key + 1); $i++) {
+                $modulosDisciplina[] = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+                    'mdc_dis_id' => $disciplinas[$i]->dis_id,
+                    'mdc_mdo_id' => $moduloMatriz->mdo_id,
+                    'mdc_tipo_disciplina' => 'obrigatoria'
+                ]);
+            }
+        }
+
+        return [$curso, $matrizCurricular, $modulosMatriz];
+    }
+
+    public function testCreate()
+    {
+        $data = factory(Disciplina::class)->raw();
+        $entry = $this->repo->create($data);
+
+        $this->assertInstanceOf(Disciplina::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Disciplina::class)->create();
+        $id = $entry->dis_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Disciplina::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Disciplina::class)->create();
+        $id = $entry->dis_id;
+
+        $data = $entry->toArray();
+
+        $data['dis_nome'] = "chair";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Disciplina::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Disciplina::class)->create();
+        $id = $entry->dis_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Disciplina::class, 2)->create();
+
+        $model = new Disciplina();
+        $expected = $model->pluck('dis_nome', 'dis_id');
+        $fromRepository = $this->repo->lists('dis_id', 'dis_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Disciplina::class, 2)->create();
+
+        factory(Disciplina::class)->create([
+            'dis_nome' => 'lorem ipsum'
+        ]);
+
+        $searchResult = $this->repo->search(array(['dis_nome', '=', 'lorem ipsum']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Disciplina::class, 2)->create();
+
+        $entry = factory(Disciplina::class)->create([
+            'dis_nome' => "lorem ipsum"
+        ]);
+
+        $expected = [
+            'dis_id' => $entry->dis_id,
+            'dis_nome' => $entry->dis_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['dis_nome', '=', "lorem ipsum"]), ['dis_id', 'dis_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Disciplina::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Disciplina::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Disciplina();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(\Modulos\Academico\Models\Disciplina::class, 2)->create();
+        factory(Disciplina::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(\Modulos\Academico\Models\Disciplina::class, 2)->create();
+        factory(Disciplina::class, 2)->create();
 
         $sort = [
             'field' => 'dis_id',
@@ -65,36 +192,40 @@ class DisciplinaRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->dis_id);
+        $this->assertEquals(2, $response->first()->dis_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(\Modulos\Academico\Models\Disciplina::class, 2)->create();
-
-        factory(\Modulos\Academico\Models\Disciplina::class)->create([
-            'dis_nome' => 'São Luís 1',
+        factory(Disciplina::class, 2)->create();
+        factory(Disciplina::class)->create([
+            'dis_nome' => 'lorem ipsum',
         ]);
 
         $search = [
             [
                 'field' => 'dis_nome',
-                'type' => 'like',
-                'term' => 'São Luís 1'
+                'type' => '=',
+                'term' => 'lorem ipsum'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
+        $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('lorem ipsum', $response->first()->dis_nome);
     }
 
-    public function testPaginateWithSearchAndOrder()
+    public function testPaginateWithSearchAndSort()
     {
-        factory(\Modulos\Academico\Models\Disciplina::class, 2)->create();
+        factory(Disciplina::class, 2)->create([
+            'dis_nome' => 'lorem ipsum' . bin2hex(random_bytes(5)),
+        ]);
+
+        factory(Disciplina::class)->create([
+            'dis_nvc_id' => 1,
+            'dis_nome' => 'lorem ipsum',
+        ]);
 
         $sort = [
             'field' => 'dis_id',
@@ -103,22 +234,26 @@ class DisciplinaRepositoryTest extends TestCase
 
         $search = [
             [
-                'field' => 'dis_id',
-                'type' => '>',
-                'term' => '1'
+                'field' => 'dis_nome',
+                'type' => 'like',
+                'term' => 'lorem ipsum'
+            ],
+            [
+                'field' => 'dis_nvc_id',
+                'type' => '=',
+                'term' => 1
             ]
         ];
 
         $response = $this->repo->paginate($sort, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('lorem ipsum', $response->first()->dis_nome);
     }
 
     public function testPaginateRequest()
     {
-        factory(\Modulos\Academico\Models\Disciplina::class, 2)->create();
+        factory(Disciplina::class, 2)->create();
 
         $requestParameters = [
             'page' => '1',
@@ -127,132 +262,74 @@ class DisciplinaRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
+    public function testValidacao()
     {
-        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $disciplinas = factory(Disciplina::class, 10)->create();
 
-        $data = $response->toArray();
+        // Verificar dados que nao existem no banco
+        $data = factory(Disciplina::class)->raw();
 
-        $this->assertInstanceOf(\Modulos\Academico\Models\Disciplina::class, $response);
+        $result = $this->repo->validacao($data);
+        $this->assertTrue($result);
 
-        $this->assertArrayHasKey('dis_id', $data);
+        $result = $this->repo->validacao($data, random_int(1, 10));
+        $this->assertTrue($result);
+
+        // Verifica com dados existentes no banco
+
+        $toCheck = $disciplinas->random();
+        $data = $toCheck->toArray();
+
+        unset($data['dis_id']);
+
+        $result = $this->repo->validacao($data); // Dados repetidos !!
+        $this->assertFalse($result);
+
+        $result = $this->repo->validacao($data, $toCheck->dis_id); // Caso de update
+        $this->assertTrue($result);
     }
 
-    public function testFind()
+    public function testBuscar()
     {
-        $data = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        list($curso, $matrizCurricular) = $this->mock();
 
-        $this->assertDatabaseHas('acd_disciplinas', $data->toArray());
-    }
+        $disciplinasRainbow = factory(Disciplina::class, 4)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+            'dis_nome' => 'rainbow ' . bin2hex(random_bytes(10))
+        ]);
 
-    public function testUpdate()
-    {
-        $data = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+        $disciplinasRose = factory(Disciplina::class, 3)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+            'dis_nome' => 'rose ' . bin2hex(random_bytes(10))
+        ]);
 
-        $updateArray = $data->toArray();
-        $updateArray['dis_nome'] = 'abcde_edcba';
+        $response = $this->repo->buscar($matrizCurricular->mtc_id, "rainbow");
 
-        $disciplinaId = $updateArray['dis_id'];
-        unset($updateArray['dis_id']);
+        $this->assertEquals(4, $response->count());
+        $this->assertStringStartsWith('rainbow', $response->random()->dis_nome);
 
-        $response = $this->repo->update($updateArray, $disciplinaId, 'dis_id');
+        $response = $this->repo->buscar($matrizCurricular->mtc_id, "rose");
 
-        $this->assertEquals(1, $response);
-    }
-
-    public function testValidacaoReturnFalse()
-    {
-        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-
-        $data = $response->toArray();
-
-        $response = $this->repo->validacao($data);
-
-        $this->assertEquals($response, false);
-    }
-
-    public function testValidacaoReturnTrue()
-    {
-        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-
-        $data = $response->toArray();
-        $data['dis_nome'] = 'Disciplina';
-
-        $response = $this->repo->validacao($data);
-
-        $this->assertEquals($response, true);
-    }
-
-    public function testValidacaoWithId()
-    {
-        $response = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-
-        $data = $response->toArray();
-
-        $response = $this->repo->validacao($data, $data['dis_id']);
-
-        $this->assertEquals($response, true);
-    }
-
-    public function testBuscarDisciplinasDaMatriz()
-    {
-        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
-
-        $response = $this->repo->buscar($response->modulo->matriz->mtc_id, $response->disciplina->dis_nome);
-
-        $this->assertEmpty($response, '');
-    }
-
-    public function testBuscarDisciplinas()
-    {
-        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
-
-        $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-
-        $response = $this->repo->buscar($response->modulo->matriz->mtc_id, $disciplina->dis_nome);
-
-        $this->assertNotEmpty($response, '');
-    }
-
-    public function testBuscarDisciplinasReturnNull()
-    {
-        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
-
-        $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-
-        $response = $this->repo->buscar($response->modulo->matriz->mtc_id, 'Disciplina');
-
-        $this->assertEquals($response, null);
+        $this->assertEquals(3, $response->count());
+        $this->assertStringStartsWith('rose', $response->random()->dis_nome);
     }
 
     public function testGetDisciplinasModulosAnteriores()
     {
-        $response = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+        list(, $matrizCurricular, $modulosMatriz) = $this->mock();
 
-        $response = $this->repo->getDisciplinasModulosAnteriores($response->modulo->matriz->mtc_id, $response->modulo->mdo_id);
+        $result = $this->repo->getDisciplinasModulosAnteriores($matrizCurricular->mtc_id, $modulosMatriz->last()->mdo_id);
 
-        $this->assertEmpty($response, '');
-    }
+        $disciplinasAnteriores = $modulosMatriz->first()->disciplinas;
 
-    public function testDelete()
-    {
-        $data = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-        $disciplinaId = $data->dis_id;
+        $this->assertEquals($disciplinasAnteriores->count(), $result->count());
 
-        $response = $this->repo->delete($disciplinaId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        foreach ($disciplinasAnteriores as $key => $disciplina) {
+            $this->assertEquals($disciplina->dis_nome, $result[$key]->dis_nome);
+        }
     }
 }

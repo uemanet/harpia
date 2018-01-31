@@ -653,7 +653,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             unset($data['mof_final']);
         }
 
-        if (isset($data['mof_final']) && ($data['mof_recuperacao'] == '' || $data['mof_recuperacao'] == null)) {
+        if (isset($data['mof_recuperacao']) && ($data['mof_recuperacao'] == '' || $data['mof_recuperacao'] == null)) {
             unset($data['mof_recuperacao']);
         }
 
@@ -672,6 +672,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $menorNota = min((float)$data['mof_nota1'], (float)$data['mof_nota2'], (float)$data['mof_nota3']);
 
         $media = $somaNotas / 3;
+        $data['mof_mediafinal'] = $media;
+        $data['mof_situacao_matricula'] = 'aprovado_media';
 
         // Recuperacao
         if ($media < (float)$configuracoesCurso['media_min_aprovacao'] && isset($data['mof_recuperacao'])) {
