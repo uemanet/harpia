@@ -104,6 +104,374 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response, 1);
     }
 
+    public function testgetAllMatriculasByAluno()
+    {
+        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create();
+
+        $response = $this->repo->getAllMatriculasByAluno($matriculaoferta->matriculaCurso->aluno->alu_id);
+
+        $this->assertNotEmpty($response);
+        $this->assertCount(1, $response);
+    }
+
+    public function testgetAllMatriculasByAlunoModuloMatriz()
+    {
+        $data = $this->mock();
+
+        $matriculaoferta = $data[0];
+        $modulomatriz = $data[1];
+
+        $response = $this->repo->getAllMatriculasByAlunoModuloMatriz($matriculaoferta->matriculaCurso->aluno->alu_id, $modulomatriz->mdo_id);
+
+        $this->assertNotEmpty($response);
+
+    }
+
+    public function testPaginateWithSearchAndOrder()
+    {
+        $this->mock();
+
+        $sort = [
+            'field' => 'pes_nome',
+            'sort' => 'desc'
+        ];
+
+        $search = [
+            [
+                'field' => 'mof_id',
+                'type' => '>',
+                'term' => '1'
+            ]
+        ];
+
+        $response = $this->repo->paginate($sort, $search);
+
+        $this->assertGreaterThan(1, $response->total());
+
+        $this->assertEquals(2, count($response));
+    }
+
+    public function testPaginateWithSearchAndOrderByCpf()
+    {
+        $this->mock();
+
+        $sort = [
+            'field' => 'pes_nome',
+            'sort' => 'desc'
+        ];
+
+        $search = [
+            [
+                'field' => 'pes_cpf',
+                'type' => 'like',
+                'term' => '53743639634'
+            ],
+            [
+                'field' => 'pes_nome',
+                'type' => 'like',
+                'term' => 'Empty'
+            ]
+        ];
+
+        $response = $this->repo->paginate($sort, $search);
+
+        $this->assertEmpty($response->total());
+
+    }
+
+    public function testgetMatriculasOfertasDisciplinasByMatricula()
+    {
+        $data = $this->mock();
+
+        $matriculaoferta = $data[0];
+
+        $response = $this->repo->getMatriculasOfertasDisciplinasByMatricula($matriculaoferta->matriculaCurso->mat_id, []);
+
+        $this->assertNotEmpty($response);
+
+        $this->assertEquals($response[0]->mof_mat_id, $matriculaoferta->mof_mat_id);
+    }
+
+    public function testgetDisciplinasCursadasByAluno()
+    {
+        $data = $this->mock();
+
+        $matriculaoferta = $data[0];
+
+        $response = $this->repo->getDisciplinasCursadasByAluno($matriculaoferta->matriculaCurso->aluno->alu_id, [
+            'ofd_per_id' => $matriculaoferta->ofertaDisciplina->ofd_per_id,
+            'ofd_trm_id' => $matriculaoferta->ofertaDisciplina->ofd_trm_id,
+            'mof_situacao_matricula' => ['cursando']
+        ]);
+
+        $this->assertNotEmpty($response);
+    }
+
+    public function testeVerifyIfAlunoIsMatriculadoInDisciplinaOferecida()
+    {
+        $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
+
+        $ofertaDisciplina = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create();
+
+        // matricular aluno nessa oferta
+        $matriculaDisciplina = factory(MatriculaOfertaDisciplina::class)->create([
+            'mof_mat_id' => $matricula->mat_id,
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id
+        ]);
+
+        $data = $matriculaDisciplina->toArray();
+
+        $this->assertInstanceOf(MatriculaOfertaDisciplina::class, $matriculaDisciplina);
+
+        $this->assertEquals($matricula->mat_id, $data['mof_mat_id']);
+        $this->assertEquals($ofertaDisciplina->ofd_id, $data['mof_ofd_id']);
+    }
+
+    public function testgetDisciplinasOfertadasNotCursadasByAluno()
+    {
+        $data = $this->mock();
+
+        $matriculaoferta = $data[0];
+
+        $response = $this->repo->getDisciplinasOfertadasNotCursadasByAluno($matriculaoferta->matriculaCurso->mat_alu_id, $matriculaoferta->matriculaCurso->mat_trm_id, $matriculaoferta->ofertaDisciplina->ofd_per_id);
+
+
+        $this->assertNotEmpty($response);
+    }
+
+    public function testcreateMatricula()
+    {
+        $data = $this->mock();
+
+        list(, , $ofertaDisciplina, $matriculaCurso) = $data;
+
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
+
+        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
+
+        $this->assertNotEmpty($response);
+    }
+
+    public function testcreateMatriculaAlunoSemPreRequisitos()
+    {
+        $data = $this->mock();
+
+        list(, $moduloMatriz, $ofertaDisciplina, $matriculaCurso, $modulodisciplina) = $data;
+
+        $modulo = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create(['mdo_mtc_id' => $moduloMatriz->mdo_mtc_id, 'mdo_nome' => 'Módulo de Teste']);
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_mdo_id' => $modulo->mdo_id, 'mdc_pre_requisitos' => "[".$modulodisciplina->mdc_id."]"]);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_qtd_vagas' => 100, 'ofd_mdc_id' => $modulodisciplina->mdc_id]);
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
+
+        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $oferta->ofd_id]);
+
+        $this->assertNotEmpty($response);
+        $this->assertEquals($response['type'], 'error');
+        $this->assertEquals($response['message'], 'Aluno possui pre-requisitos não satisfeitos');
+    }
+
+    public function testcreateMatriculaAlunoReprovadoNoCurso()
+    {
+        $data = $this->mock();
+
+        list(, , $ofertaDisciplina, $matriculaCurso) = $data;
+
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'reprovado']);
+
+        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
+
+
+        $this->assertEquals($response['type'], 'error');
+        $this->assertEquals($response['message'], 'Aluno não está cursando o curso');
+        $this->assertNotEmpty($response);
+    }
+
+    public function testcreateMatriculaDisciplinaSemVagas()
+    {
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_qtd_vagas' => 0]);
+        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'aprovado_media', 'mof_ofd_id' => $oferta->ofd_id]);
+
+        $response = $this->repo->createMatricula(['mat_id' => $matriculaoferta->mof_mat_id, 'ofd_id' => $matriculaoferta->mof_ofd_id]);
+
+        $this->assertNotEmpty($response);
+
+        $this->assertEquals($response['type'], 'error');
+        $this->assertEquals($response['message'], 'Sem vagas disponiveis');
+    }
+
+    public function testcreateMatriculaAlunoReprovadoDisciplina()
+    {
+        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'reprovado_media']);
+
+        $response = $this->repo->createMatricula(['mat_id' => $matriculaoferta->mof_mat_id, 'ofd_id' => $matriculaoferta->mof_ofd_id]);
+
+        $this->assertEquals($response['type'], 'error');
+        $this->assertEquals($response['message'], 'Aluno está reprovado nesta oferta de disciplina');
+    }
+
+    public function testcreateMatriculaAlunoAprovadoDisciplina()
+    {
+        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'aprovado_media']);
+
+        $response = $this->repo->createMatricula(['mat_id' => $matriculaoferta->mof_mat_id, 'ofd_id' => $matriculaoferta->mof_ofd_id]);
+
+        $this->assertNotEmpty($response);
+
+        $this->assertEquals($response['type'], 'error');
+        $this->assertEquals($response['message'], 'Aluno já aprovado nessa disciplina.');
+    }
+
+    public function testcreateMatriculaDuplicada()
+    {
+        $data = $this->mock();
+
+        list(, , $ofertaDisciplina, $matriculaCurso) = $data;
+
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
+
+        $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
+        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
+
+        $this->assertEquals($response['type'], 'error');
+        $this->assertEquals($response['message'], 'Aluno está cursando essa disciplina');
+        $this->assertNotEmpty($response);
+    }
+
+    public function testgetAlunosMatriculasLote()
+    {
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+        $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
+
+        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e foi reprovado por média
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'reprovado_media']);
+
+        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e foi aprovado por média
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'aprovado_media']);
+
+        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e está cursando a mesma
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
+
+        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina com status de matrícula cancelado
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cancelado']);
+
+        //este é para o caso em que o aluno não tem nenhuma matrícula na oferta disciplina em questão e portando ele está apto a se matricular nessa disciplina
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
+
+        $response = $this->repo->getAlunosMatriculasLote(['ofd_id' => $ofertaDisciplina->ofd_id, 'trm_id' => $turma->trm_id]);
+
+        $this->assertArrayHasKey('nao_matriculados', $response);
+        $this->assertArrayHasKey('cursando', $response);
+        $this->assertArrayHasKey('aprovados', $response);
+        $this->assertArrayHasKey('reprovados', $response);
+        $this->assertNotEmpty($response);
+
+    }
+
+    public function testgetAlunosMatriculasLoteComPolo()
+    {
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+        $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
+
+        //este é para o caso em que o aluno não tem nenhuma matrícula na oferta disciplina em questão e portando ele está apto a se matricular nessa disciplina
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
+
+        $response = $this->repo->getAlunosMatriculasLote(['ofd_id' => $ofertaDisciplina->ofd_id, 'trm_id' => $turma->trm_id, 'pol_id' => $matricula->mat_pol_id]);
+
+        $this->assertArrayHasKey('nao_matriculados', $response);
+        $this->assertArrayHasKey('cursando', $response);
+        $this->assertArrayHasKey('aprovados', $response);
+        $this->assertArrayHasKey('reprovados', $response);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testgetAlunosMatriculasLoteSemPreRequisitos()
+    {
+        $data = $this->mock();
+
+        list(, $moduloMatriz, $ofertaDisciplina, $matriculaCurso, $modulodisciplina) = $data;
+
+        $modulo = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create(['mdo_mtc_id' => $moduloMatriz->mdo_mtc_id, 'mdo_nome' => 'Módulo de Teste']);
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_mdo_id' => $modulo->mdo_id, 'mdc_pre_requisitos' => "[".$modulodisciplina->mdc_id."]"]);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_qtd_vagas' => 100, 'ofd_mdc_id' => $modulodisciplina->mdc_id]);
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
+
+        $response = $this->repo->getAlunosMatriculasLote(['ofd_id' => $oferta->ofd_id, 'trm_id' => $matricula->mat_trm_id, 'pol_id' => $matricula->mat_pol_id]);
+        $this->assertArrayHasKey('nao_matriculados', $response);
+        $this->assertArrayHasKey('cursando', $response);
+        $this->assertArrayHasKey('aprovados', $response);
+        $this->assertArrayHasKey('reprovados', $response);
+        $this->assertNotEmpty($response);
+
+        factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cancelado']);
+        $response = $this->repo->getAlunosMatriculasLote(['ofd_id' => $oferta->ofd_id, 'trm_id' => $matricula->mat_trm_id, 'pol_id' => $matricula->mat_pol_id]);
+        $this->assertArrayHasKey('nao_matriculados', $response);
+        $this->assertArrayHasKey('cursando', $response);
+        $this->assertArrayHasKey('aprovados', $response);
+        $this->assertArrayHasKey('reprovados', $response);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testpaginateRequestByParametrosNoParemeters()
+    {
+
+        factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class,10)->create();
+
+        $response = $this->repo->paginateRequestByParametros();
+
+        $this->assertEmpty($response);
+    }
+
+    public function testpaginateRequestByParametrosNullParemeters()
+    {
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
+        foreach ($matriculas as $matricula){
+            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
+        }
+
+        $response = $this->repo->paginateRequestByParametros(['trm_id' => null, 'ofd_id' => null]);
+
+        $this->assertEmpty($response);
+    }
+
+    public function testpaginateRequestByParametros()
+    {
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
+        foreach ($matriculas as $matricula){
+            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
+        }
+
+        $response = $this->repo->paginateRequestByParametros(['trm_id' => $turma->trm_id, 'ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
+
+        $this->assertNotEmpty($response);
+    }
+
+    public function testpaginateRequestByParametrosWithOrderAndSearch()
+    {
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
+        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
+        foreach ($matriculas as $matricula){
+            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
+        }
+
+        $response = $this->repo->paginateRequestByParametros(['trm_id' => $turma->trm_id, 'ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando', 'sort' => 'asc', 'field' => 'pes_nome', 'pol_id' => $matriculas[0]->mat_pol_id]);
+
+        $this->assertNotEmpty($response);
+    }
+
     public function testcalculaNotasNumericaAprovadoMedia()
     {
         $matriculaOferta = $this->mockConf();
@@ -227,290 +595,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
             ]);
 
         $this->assertEquals($response['mof_situacao_matricula'], 'aprovado_media');
-    }
-
-    public function testgetAllMatriculasByAluno()
-    {
-        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create();
-
-        $response = $this->repo->getAllMatriculasByAluno($matriculaoferta->matriculaCurso->aluno->alu_id);
-
-        $this->assertNotEmpty($response);
-        $this->assertCount(1, $response);
-    }
-
-    public function testgetAllMatriculasByAlunoModuloMatriz()
-    {
-        $data = $this->mock();
-
-        $matriculaoferta = $data[0];
-        $modulomatriz = $data[1];
-
-        $response = $this->repo->getAllMatriculasByAlunoModuloMatriz($matriculaoferta->matriculaCurso->aluno->alu_id, $modulomatriz->mdo_id);
-
-        $this->assertNotEmpty($response);
-
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        $this->mock();
-
-        $sort = [
-            'field' => 'pes_nome',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'mof_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertGreaterThan(1, $response->total());
-
-        $this->assertEquals(2, count($response));
-    }
-
-    public function testPaginateWithSearchAndOrderByCpf()
-    {
-        $this->mock();
-
-        $sort = [
-            'field' => 'pes_nome',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'pes_cpf',
-                'type' => 'like',
-                'term' => '53743639634'
-            ],
-            [
-                'field' => 'pes_nome',
-                'type' => 'like',
-                'term' => 'Empty'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertEmpty($response->total());
-
-    }
-
-    public function testgetMatriculasOfertasDisciplinasByMatricula()
-    {
-        $data = $this->mock();
-
-        $matriculaoferta = $data[0];
-
-        $response = $this->repo->getMatriculasOfertasDisciplinasByMatricula($matriculaoferta->matriculaCurso->mat_id, []);
-
-        $this->assertNotEmpty($response);
-
-        $this->assertEquals($response[0]->mof_mat_id, $matriculaoferta->mof_mat_id);
-    }
-
-    public function testgetDisciplinasCursadasByAluno()
-    {
-        $data = $this->mock();
-
-        $matriculaoferta = $data[0];
-
-        $response = $this->repo->getDisciplinasCursadasByAluno($matriculaoferta->matriculaCurso->aluno->alu_id, [
-            'ofd_per_id' => $matriculaoferta->ofertaDisciplina->ofd_per_id,
-            'ofd_trm_id' => $matriculaoferta->ofertaDisciplina->ofd_trm_id
-        ]);
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testeVerifyIfAlunoIsMatriculadoInDisciplinaOferecida()
-    {
-        $matricula = factory(Modulos\Academico\Models\Matricula::class)->create();
-
-        $ofertaDisciplina = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create();
-
-        // matricular aluno nessa oferta
-        $matriculaDisciplina = factory(MatriculaOfertaDisciplina::class)->create([
-            'mof_mat_id' => $matricula->mat_id,
-            'mof_ofd_id' => $ofertaDisciplina->ofd_id
-        ]);
-
-        $data = $matriculaDisciplina->toArray();
-
-        $this->assertInstanceOf(MatriculaOfertaDisciplina::class, $matriculaDisciplina);
-
-        $this->assertEquals($matricula->mat_id, $data['mof_mat_id']);
-        $this->assertEquals($ofertaDisciplina->ofd_id, $data['mof_ofd_id']);
-    }
-
-    public function testgetDisciplinasOfertadasNotCursadasByAluno()
-    {
-        $data = $this->mock();
-
-        $matriculaoferta = $data[0];
-
-        $response = $this->repo->getDisciplinasOfertadasNotCursadasByAluno($matriculaoferta->matriculaCurso->mat_alu_id, $matriculaoferta->matriculaCurso->mat_trm_id, $matriculaoferta->ofertaDisciplina->ofd_per_id);
-
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testcreateMatricula()
-    {
-        $data = $this->mock();
-
-
-        list(, , $ofertaDisciplina, $matriculaCurso) = $data;
-
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
-
-        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testcreateMatriculaAlunoReprovadoNoCurso()
-    {
-        $data = $this->mock();
-
-        list(, , $ofertaDisciplina, $matriculaCurso) = $data;
-
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'reprovado']);
-
-        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testcreateMatriculaAlunoReprovadoDisciplina()
-    {
-        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'reprovado_media']);
-
-        $response = $this->repo->createMatricula(['mat_id' => $matriculaoferta->mof_mat_id, 'ofd_id' => $matriculaoferta->mof_ofd_id]);
-
-        $this->assertEquals($response['type'], 'error');
-        $this->assertEquals($response['message'], 'Aluno está reprovado nesta oferta de disciplina');
-    }
-
-    public function testcreateMatriculaAlunoAprovadoDisciplina()
-    {
-        $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'aprovado_media']);
-
-        $response = $this->repo->createMatricula(['mat_id' => $matriculaoferta->mof_mat_id, 'ofd_id' => $matriculaoferta->mof_ofd_id]);
-
-        $this->assertNotEmpty($response);
-
-        $this->assertEquals($response['type'], 'error');
-        $this->assertEquals($response['message'], 'Aluno já aprovado nessa disciplina.');
-    }
-
-    public function testcreateMatriculaDuplicada()
-    {
-        $data = $this->mock();
-
-        list(, , $ofertaDisciplina, $matriculaCurso) = $data;
-
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
-
-        $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
-        $response = $this->repo->createMatricula(['mat_id' => $matricula->mat_id, 'ofd_id' => $ofertaDisciplina->ofd_id]);
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testgetAlunosMatriculasLote()
-    {
-
-        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-
-        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e foi reprovado por média
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'reprovado_media']);
-
-        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e foi aprovado por média
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'aprovado_media']);
-
-        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e está cursando a mesma
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
-
-        //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina com status de matrícula cancelado
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cancelado']);
-
-        //este é para o caso em que o aluno não tem nenhuma matrícula na oferta disciplina em questão e portando ele está apto a se matricular nessa disciplina
-        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-
-        $response = $this->repo->getAlunosMatriculasLote(['ofd_id' => $ofertaDisciplina->ofd_id, 'trm_id' => $turma->trm_id]);
-
-        $this->assertNotEmpty($response);
-    }
-
-    public function testpaginateRequestByParametrosNoParemeters()
-    {
-
-        factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class,10)->create();
-
-        $response = $this->repo->paginateRequestByParametros();
-
-        $this->assertEmpty($response);
-    }
-
-    public function testpaginateRequestByParametrosNullParemeters()
-    {
-
-        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
-        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-        foreach ($matriculas as $matricula){
-            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
-        }
-
-        $response = $this->repo->paginateRequestByParametros(['trm_id' => null, 'ofd_id' => null]);
-
-        $this->assertEmpty($response);
-    }
-
-    public function testpaginateRequestByParametros()
-    {
-
-        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
-        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-        foreach ($matriculas as $matricula){
-            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
-        }
-
-        $response = $this->repo->paginateRequestByParametros(['trm_id' => $turma->trm_id, 'ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
-
-        $this->assertNotEmpty($response);
-    }
-
-
-
-    public function testpaginateRequestByParametrosWithOrderAndSearch()
-    {
-
-        $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
-        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-        foreach ($matriculas as $matricula){
-            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
-        }
-
-        $response = $this->repo->paginateRequestByParametros(['trm_id' => $turma->trm_id, 'ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando', 'sort' => 'asc', 'field' => 'pes_nome', 'pol_id' => $matriculas[0]->mat_pol_id]);
-
-        $this->assertNotEmpty($response);
     }
 
     public function testDelete()
@@ -656,7 +740,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $rg = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
         $cpf = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
 
-        return [$matriculaOfertaDisciplina, $moduloMatriz, $ofertaDisciplina, $matricula];
+        return [$matriculaOfertaDisciplina, $moduloMatriz, $ofertaDisciplina, $matricula, $moduloDisciplina];
     }
 
     public function tearDown()
