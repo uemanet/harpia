@@ -456,7 +456,7 @@ class MatriculaCursoRepository extends BaseRepository
         return array('status' => 'success', 'message' => 'Apto');
     }
 
-    public function verifyIfAlunoIsAprovadoDisciplinasObrigatorias(Matricula $matricula)
+    private function verifyIfAlunoIsAprovadoDisciplinasObrigatorias(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -486,7 +486,7 @@ class MatriculaCursoRepository extends BaseRepository
         return false;
     }
 
-    public function verifyIfAlunoIsAprovadoEletivasModulosMatriz(Matricula $matricula)
+    private function verifyIfAlunoIsAprovadoEletivasModulosMatriz(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -533,7 +533,7 @@ class MatriculaCursoRepository extends BaseRepository
         return true;
     }
 
-    public function verifyIfAlunoHaveCargaHorariaMinCurso(Matricula $matricula)
+    private function verifyIfAlunoHaveCargaHorariaMinCurso(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -560,7 +560,7 @@ class MatriculaCursoRepository extends BaseRepository
         return $cargaHorariaAluno >= $matrizCurricular->mtc_horas;
     }
 
-    public function verifyIfAlunoAprovadoTcc(Matricula $matricula)
+    private function verifyIfAlunoAprovadoTcc(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -580,7 +580,7 @@ class MatriculaCursoRepository extends BaseRepository
         return true;
     }
 
-    public function verifyIfAlunoHaveTccLancado(Matricula $matricula)
+    private function verifyIfAlunoHaveTccLancado(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -602,7 +602,7 @@ class MatriculaCursoRepository extends BaseRepository
         return false;
     }
 
-    public function verifyIfAlunoHaveTitulacaoGraduacao(Matricula $matricula)
+    private function verifyIfAlunoHaveTitulacaoGraduacao(Matricula $matricula)
     {
         $pessoa = $matricula->aluno->pessoa;
 
@@ -638,7 +638,7 @@ class MatriculaCursoRepository extends BaseRepository
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
             // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
-            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)['status'] == 'success') {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id)['status'] == 'success') {
                 continue;
             }
 
