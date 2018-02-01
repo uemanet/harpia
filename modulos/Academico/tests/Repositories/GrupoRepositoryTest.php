@@ -308,9 +308,4 @@ class GrupoRepositoryTest extends ModulosTestCase
         $this->assertCount(1, $response);
     }
 
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
-    }
 }

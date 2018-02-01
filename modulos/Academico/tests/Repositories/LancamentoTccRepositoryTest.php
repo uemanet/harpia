@@ -242,7 +242,7 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
     public function testdeleteReturnException()
     {
         $this->expectException(\Exception::class);
-        $this->repo->deleteAnexoTcc(['asdsd']);
+        $this->repo->deleteAnexoTcc(['exception']);
     }
 
     public function testdeleteAnexoTccReturnFalse()
@@ -289,9 +289,4 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
         $this->assertNotEmpty($response, '');
     }
 
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
-    }
 }
