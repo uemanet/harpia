@@ -656,7 +656,7 @@ class MatriculaCursoRepository extends BaseRepository
         return array('aptos' => $aptos, 'certificados' => $certificados, 'aptosq' => COUNT($aptos), 'certificadosq' => COUNT($certificados));
     }
 
-    public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
+    private function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
     {
         $apto = false;
 
@@ -732,7 +732,7 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         // Casos de situações
-        if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias)) {
+        if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias) && $quantDisciplinasObrigatorias != 0) {
             return true;
         }
 

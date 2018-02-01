@@ -29,6 +29,8 @@ class MatriculaCursoTest extends ModulosTestCase
 
     protected $regrepo;
 
+    protected $docrepo;
+
     public function setUp()
     {
         parent::setUp();
@@ -90,7 +92,7 @@ class MatriculaCursoTest extends ModulosTestCase
             'mat_data_conclusao' => '15/11/2015'
         ]);
 
-        return [$curso, $oferta, $turma, $polo, $grupo, $aluno];
+        return [$curso, $oferta, $turma, $polo, $grupo, $aluno, $matricula];
     }
 
     public function testAllWithEmptyDatabase()
@@ -856,81 +858,81 @@ class MatriculaCursoTest extends ModulosTestCase
         $this->assertEmpty($result);
     }
 
-//    public function testGetAlunosAptosOrNot()
-//    {
-//        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
-//            'crs_nome' => 'Curso 1',
-//            'crs_nvc_id' => 1,
-//        ]);
-//
-//        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
-//            'mtc_crs_id' => $curso->crs_id
-//        ]);
-//
-//        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
-//            'ofc_crs_id' => $curso->crs_id,
-//            'ofc_mtc_id' => $matrizCurricular->mtc_id,
-//        ]);
-//
-//        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
-//            'trm_ofc_id' => $oferta->ofc_id,
-//        ]);
-//
-//        $polo = factory(Modulos\Academico\Models\Polo::class)->create();
-//        $oferta->polos()->attach($polo->pol_id);
-//
-//        //Turma e Polo sem matriculas cadastradas
-//        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
-//        $this->assertEmpty($result);
-//
-//        $data = $this->mockMatriculaGeral(['tcc'], 'concluido', 'cursando', 4);
-//        list($turma, $polo) = $data;
-//
-//        //Situacao Concluido para 4 alunos
-//        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
-//        foreach ($result as $item){
-//            $this->assertContains('Concluído', $item->status);
-//        }
-//
-//        $data = $this->mockMatriculaGeral(['tcc'], 'reprovado', 'cursando', 4);
-//        list($turma, $polo) = $data;
-//
-//        //Situacao Reprovado para 4 alunos
-//        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
-//        foreach ($result as $item){
-//            $this->assertContains('Reprovado', $item->status);
-//        }
-//
-//        $data = $this->mockMatriculaGeral(['tcc'], 'trancado', 'cursando', 4);
-//        list($turma, $polo) = $data;
-//
-//        //Situacao Reprovado para 4 alunos
-//        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
-//        foreach ($result as $item){
-//            $this->assertContains('Trancado', $item->status);
-//        }
-//
-//        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando', 4);
-//        list($turma, $polo) = $data;
-//
-//        //Situacao Cursando com status cursando em uma disciplina obrigatoria para 4 alunos
-//        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
-//        $this->assertNotEmpty($result);
-//        foreach ($result as $item){
-//            $this->assertContains('Não possui aprovação em todas as disciplinas obrigatórias', $item->status);
-//        }
-//
-//        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando', 4);
-//        list($turma, $polo) = $data;
-//
-//        //Situacao Cursando com status cursando em uma disciplina obrigatoria para 4 alunos
-//        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
-//        $this->assertNotEmpty($result);
-//        foreach ($result as $item){
-//            $this->assertContains('Não possui aprovação em todas as disciplinas obrigatórias', $item->status);
-//        }
-//    }
-//
+    public function testGetAlunosAptosOrNot()
+    {
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
+            'crs_nome' => 'Curso 1',
+            'crs_nvc_id' => 1,
+        ]);
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id
+        ]);
+
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matrizCurricular->mtc_id,
+        ]);
+
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $oferta->ofc_id,
+        ]);
+
+        $polo = factory(Modulos\Academico\Models\Polo::class)->create();
+        $oferta->polos()->attach($polo->pol_id);
+
+        //Turma e Polo sem matriculas cadastradas
+        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
+        $this->assertEmpty($result);
+
+        $data = $this->mockMatriculaGeral(['tcc'], 'concluido', 'cursando', 4);
+        list($turma, $polo) = $data;
+
+        //Situacao Concluido para 4 alunos
+        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
+        foreach ($result as $item) {
+            $this->assertContains('Concluído', $item->status);
+        }
+
+        $data = $this->mockMatriculaGeral(['tcc'], 'reprovado', 'cursando', 4);
+        list($turma, $polo) = $data;
+
+        //Situacao Reprovado para 4 alunos
+        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
+        foreach ($result as $item) {
+            $this->assertContains('Reprovado', $item->status);
+        }
+
+        $data = $this->mockMatriculaGeral(['tcc'], 'trancado', 'cursando', 4);
+        list($turma, $polo) = $data;
+
+        //Situacao Reprovado para 4 alunos
+        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
+        foreach ($result as $item) {
+            $this->assertContains('Trancado', $item->status);
+        }
+
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando', 4);
+        list($turma, $polo) = $data;
+
+        //Situacao Cursando com status cursando em uma disciplina obrigatoria para 4 alunos
+        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
+        $this->assertNotEmpty($result);
+        foreach ($result as $item) {
+            $this->assertContains('Não possui aprovação em todas as disciplinas obrigatórias', $item->status);
+        }
+
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando', 4);
+        list($turma, $polo) = $data;
+
+        //Situacao Cursando com status cursando em uma disciplina obrigatoria para 4 alunos
+        $result = $this->repo->getAlunosAptosOrNot($turma->trm_id, $polo->pol_id);
+        $this->assertNotEmpty($result);
+        foreach ($result as $item) {
+            $this->assertContains('Não possui aprovação em todas as disciplinas obrigatórias', $item->status);
+        }
+    }
+
     public function testVerifyIfAlunoIsAptoOrNot()
     {
         $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando');
@@ -969,6 +971,74 @@ class MatriculaCursoTest extends ModulosTestCase
         //Situacao Cursando com status aprovado_media em uma disciplina eletiva para 1 aluno
         $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoOrNot', [$matricula->mat_id]);
         $this->assertEquals('Apto', $result['message']);
+
+        $data = $this->mockMatriculaGeral(['obrigatoria', 'eletiva', 'tcc'], 'cursando', 'aprovado_media', 1, 10,
+            10, 10, 10, 10, false, true, 3);
+        list(, , $matriculas, , , , , ) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao com aluno sem TCC lancado
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoOrNot', [$matricula->mat_id]);
+        $this->assertEquals('Aluno não possui TCC lançado', $result['message']);
+
+        $data = $this->mockMatriculaGeral(['obrigatoria', 'eletiva', 'tcc'], 'cursando', 'aprovado_media', 1, 10,
+            10, 10, 10, 10, true, true, 3, 2, 4);
+        list(, , $matriculas, , , , , ) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao com aluno sem titulacao de graducao com curso nivel 4
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoOrNot', [$matricula->mat_id]);
+        $this->assertEquals('Aluno não possui titulação de graduação cadastrada', $result['message']);
+
+        $data = $this->mockMatriculaGeral(['obrigatoria', 'eletiva'], 'cursando', 'aprovado_media', 1, 10,
+            10, 10, 10, 10, false, true, 2);
+        list($turma, $polo, $matriculas, $modulosDisciplina, $moduloMatriz, $curso) = $data;
+
+        $matricula = $matriculas->first();
+
+        $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id,
+        ]);
+
+        $moduloDisciplina = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplina->dis_id,
+            'mdc_mdo_id' => $moduloMatriz->mdo_id,
+            'mdc_tipo_disciplina' => 'tcc'
+        ]);
+
+        $professor = factory(Modulos\Academico\Models\Professor::class)->create();
+
+        $titulacaoProfessor = factory(Modulos\Geral\Models\TitulacaoInformacao::class)->create([
+            'tin_pes_id' => $professor->pessoa->pes_id,
+            'tin_tit_id' => random_int(2, 7),
+        ]);
+
+        $ofertaDisciplina = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
+            'ofd_mdc_id' => $moduloDisciplina->mdc_id,
+            'ofd_trm_id' => $turma->trm_id,
+            'ofd_per_id' => $turma->trm_per_id,
+            'ofd_prf_id' => $professor->prf_id,
+            'ofd_tipo_avaliacao' => 'numerica',
+            'ofd_qtd_vagas' => 500
+        ]);
+
+        $matriculaOfertaDisciplina = factory(Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_mat_id' => $matricula->mat_id,
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id,
+            'mof_tipo_matricula' => 'matriculacomum',
+            'mof_situacao_matricula' => 'reprovado_media'
+        ]);
+
+        $lacamentosTCC = factory(\Modulos\Academico\Models\LancamentoTcc::class)->create([
+            'ltc_mof_id' => $matriculaOfertaDisciplina->mof_id,
+            'ltc_prf_id' => $professor->prf_id,
+        ]);
+
+        //Situacao com aluno reprovado em uma disciplina TCC
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoOrNot', [$matricula->mat_id]);
+        $this->assertEquals('Aluno não possui aprovação na disciplina de TCC', $result['message']);
     }
 
     public function testVerifyIfAlunoIsAprovadoDisciplinasObrigatorias()
@@ -1137,12 +1207,23 @@ class MatriculaCursoTest extends ModulosTestCase
             10, 10, 10, 10, 10, false, true, 2, 1);
         list($turma, $polo, $matriculas, $modulosDis, $moduloMatriz) = $data;
 
-        $matricula = $matriculas->first();
-
         //Situacao com aluno apto para ser certificado
         $result = $this->repo->getAlunosAptosCertificacao($turma->trm_id, $moduloMatriz->mdo_id, $polo->pol_id);
         $this->assertNotEmpty($result['aptos']);
-        $this->assertEquals($result['aptosq'], 2);
+        $this->assertEquals(2, $result['aptosq']);
+        $this->assertEmpty($result['certificados']);
+        $this->assertEquals(0, $result['certificadosq']);
+
+        $data = $this->mockMatriculaGeral(['obrigatoria', 'eletiva', 'tcc'], 'cursando', 'aprovado_media', 2,
+            10, 10, 10, 10, 10, true, true, 3, 1);
+        list($turma, $polo, $matriculas, $modulosDis, $moduloMatriz) = $data;
+
+        //Situacao com aluno aprovado em todas as disciplinas
+        $result = $this->repo->getAlunosAptosCertificacao($turma->trm_id, $moduloMatriz->mdo_id, $polo->pol_id);
+        $this->assertEmpty($result['aptos']);
+        $this->assertEquals(0, $result['aptosq']);
+        $this->assertEmpty($result['certificados']);
+        $this->assertEquals(0, $result['certificadosq']);
 
         $data = $this->mockMatriculaGeral(['eletiva'], 'concluido', 'aprovado_media', 1,
             10, 10, 10, 10, 10, false, true, 1, 1);
@@ -1161,13 +1242,333 @@ class MatriculaCursoTest extends ModulosTestCase
 
         $registros[] = $this->regrepo->create($data);
 
-        //Situacao aluno com titulacao de Graduação
+        //Situacao com alunos certificados
         $result = $this->repo->getAlunosAptosCertificacao($turma->trm_id, $moduloMatriz->mdo_id, $polo->pol_id);
+        $this->assertEmpty($result['aptos']);
+        $this->assertEquals(0, $result['aptosq']);
         $this->assertNotEmpty($result['certificados']);
-        $this->assertEquals($result['certificadosq'], 1);
+        $this->assertEquals(1, $result['certificadosq']);
+
+
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
+            'crs_nome' => 'Curso 1',
+            'crs_nvc_id' => 1,
+        ]);
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id
+        ]);
+
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matrizCurricular->mtc_id,
+        ]);
+
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $oferta->ofc_id,
+        ]);
+
+        $polo = factory(Modulos\Academico\Models\Polo::class)->create();
+        $oferta->polos()->attach($polo->pol_id);
+
+        $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id,
+        ]);
+
+        //Situacao com turma sem matriculas e sem passar o polo como parametro
+        $result = $this->repo->getAlunosAptosCertificacao($turma->trm_id, $moduloMatriz->mdo_id, null);
+        $this->assertEmpty($result['aptos']);
+        $this->assertEmpty($result['certificados']);
     }
 
-    //TODO criar factory para lancamento de TCC
+    public function testVerifyIfAlunoIsAptoCertificacao()
+    {
+        $data = $this->mockMatriculaGeral(['eletiva'], 'concluido', 'aprovado_media', 1,
+            10, 10, 10, 10, 10, false, true, 1, 1);
+        list($turma, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao aluno com situacao de matricula concluido
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoCertificacao', [$matricula->mat_id, $turma->trm_id, $moduloMatriz->mdo_id]);
+        $this->assertFalse($result);
+
+        $data = $this->mockMatriculaGeral(['eletiva'], 'cursando', 'reprovado_media', 1,
+            10, 10, 10, 10, 10, false, false, 1, 1);
+        list($turma, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Quando o modulo que for passado é menor que a quantidade modulos existentes
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoCertificacao', [$matricula->mat_id, $turma->trm_id, 1]);
+        $this->assertFalse($result);
+
+        $data = $this->mockMatriculaGeral(['eletiva'], 'cursando', 'reprovado_media', 1,
+            10, 10, 10, 10, 10, false, false, 1, 1);
+        list($turma, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao onde o aluno nao possui matricula em nenhuma oferta
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoCertificacao', [$matricula->mat_id, $turma->trm_id, $moduloMatriz->mdo_id]);
+        $this->assertFalse($result);
+
+        $data = $this->mockMatriculaGeral(['eletiva'], 'cursando', 'reprovado_media', 1,
+            10, 10, 10, 10, 10, false, true, 1, 1);
+        list($turma, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao onde o aluno não atinge a carga horaria minima de disciplinas eletivas do módulo
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoCertificacao', [$matricula->mat_id, $turma->trm_id, $moduloMatriz->mdo_id]);
+        $this->assertFalse($result);
+
+        $data = $this->mockMatriculaGeral(['eletiva'], 'cursando', 'aprovado_media', 1,
+            10, 10, 10, 3, 10, false, true, 1, 1);
+        list($turma, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao onde o aluno não atinge os creditos minimos de disciplinas eletivas do módulo
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoCertificacao', [$matricula->mat_id, $turma->trm_id, $moduloMatriz->mdo_id]);
+        $this->assertFalse($result);
+
+        $data = $this->mockMatriculaGeral(['obrigatoria', 'eletiva'], 'cursando', 'aprovado_media', 1,
+            10, 10, 10, 10, 10, false, true, 2, 1);
+        list($turma, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao onde o aluno esta apto a ser certificado
+        $result = $this->invokeMethod($this->repo, 'verifyIfAlunoIsAptoCertificacao', [$matricula->mat_id, $turma->trm_id, $moduloMatriz->mdo_id]);
+        $this->assertTrue($result);
+    }
+
+    public function testConcluirMatricula()
+    {
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando');
+        list(, , $matriculas) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao onde o aluno nao podera ter a sua matricula concluida
+        $result = $this->repo->concluirMatricula($matricula->mat_id);
+        $this->assertFalse($result);
+
+        $data = $this->mockMatriculaGeral(['eletiva', 'tcc'], 'cursando', 'aprovado_media', 1,
+            10, 10, 10, 10, 10, true, true, 2);
+        list(, , $matriculas) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao onde o aluno esta apto para ter a matricula concluida
+        $result = $this->repo->concluirMatricula($matricula->mat_id);
+        $this->assertEquals($matricula->mat_id, $result->mat_id);
+        $this->assertEquals('concluido', $result->mat_situacao);
+    }
+
+    public function testPaginateRequestByOfertaCurso()
+    {
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando');
+        list($turma) = $data;
+
+        $requestParameters = [
+            'trm_id' => $turma->trm_id,
+            'mat_situacao' => 'cursando',
+            'field' => 'trm_id',
+            'sort' => 'asc'
+        ];
+
+        //Passando o campo trm_id
+        $response = $this->repo->paginateRequestByOfertaCurso($requestParameters);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertGreaterThan(0, $response->total());
+
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando');
+        list($turma, $polo) = $data;
+
+        $requestParameters = [
+            'trm_id' => $turma->trm_id,
+            'pol_id' => $polo->pol_id,
+            'mat_situacao' => 'cursando',
+            'field' => 'trm_id',
+            'sort' => 'asc'
+        ];
+
+        //Passando o campo trm_id e pol_id
+        $response = $this->repo->paginateRequestByOfertaCurso($requestParameters);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertGreaterThan(0, $response->total());
+
+        $requestParameters = [
+
+        ];
+
+        //Passando parametros vazio
+        $response = $this->repo->paginateRequestByOfertaCurso($requestParameters);
+        $this->assertEmpty($response);
+
+        $requestParameters = [
+            'mat_situacao' => 'cursando',
+            'field' => 'trm_id',
+            'sort' => 'asc'
+        ];
+
+        //Passando parametros sem trm_id
+        $response = $this->repo->paginateRequestByOfertaCurso($requestParameters);
+        $this->assertEmpty($response);
+    }
+
+    public function testFindAllBySitucao()
+    {
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando');
+        list($turma, $polo, $matriculas) = $data;
+
+        $matricula = $matriculas->first();
+
+        $requestParameters = [
+            'trm_id' => $turma->trm_id,
+            'pol_id' => $polo->pol_id,
+            'mat_situacao' => 'cursando'
+        ];
+
+        $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
+        $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
+
+        //Criando doc de pessoa
+        $response = $this->repo->findAllBySitucao($requestParameters);
+        $this->assertNotEmpty($response);
+
+        $data = $this->mockMatriculaGeral(['obrigatoria'], 'cursando', 'cursando');
+        list($turma, $polo) = $data;
+
+
+        $requestParameters = [
+            'trm_id' => $turma->trm_id,
+            'pol_id' => $polo->pol_id,
+            'mat_situacao' => 'cursando'
+        ];
+
+        //Sem doc de pessoa
+        $response = $this->repo->findAllBySitucao($requestParameters);
+        $this->assertNotEmpty($response);
+
+
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
+            'crs_nome' => 'Curso 1',
+            'crs_nvc_id' => 1,
+        ]);
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id,
+        ]);
+
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matrizCurricular->mtc_id,
+        ]);
+
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $oferta->ofc_id,
+        ]);
+
+        $polo = factory(Modulos\Academico\Models\Polo::class)->create();
+        $oferta->polos()->attach($polo->pol_id);
+
+        $requestParameters = [
+            'trm_id' => $turma->trm_id,
+            'pol_id' => $polo->pol_id,
+            'mat_situacao' => 'cursando'
+        ];
+
+        //Passando turma sem matricula
+        $response = $this->repo->findAllBySitucao($requestParameters);
+        $this->assertEmpty($response);
+    }
+
+    public function testGetPrintData()
+    {
+        $data = $this->mockMatriculaGeral(['eletiva'], 'concluido', 'aprovado_media', 1,
+            10, 10, 10, 10, 10, false, true, 1, 1);
+        list(, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        //Situacao com aluno sem certificado
+        $result = $this->repo->getPrintData($matricula->mat_id, $moduloMatriz->mdo_id);
+        $this->assertNull($result);
+
+        $data = $this->mockMatriculaGeral(['eletiva'], 'concluido', 'aprovado_media', 1,
+            10, 10, 10, 10, 10, false, true, 1, 1);
+        list(, , $matriculas, , $moduloMatriz) = $data;
+
+        $matricula = $matriculas->first();
+
+        $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
+        $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
+
+        $this->actingAs(factory(Usuario::class)->create());
+
+        $data = factory(Registro::class)->raw();
+        $data = array_merge([
+            'matricula' => $matricula->mat_id,
+            'tipo_livro' => 'CERTIFICADO',
+            'modulo' => $moduloMatriz->mdo_id
+        ], $data);
+
+        $this->regrepo->create($data);
+
+        //Situacao com aluno certificado e com documentos
+        $result = $this->repo->getPrintData($matricula->mat_id, $moduloMatriz->mdo_id);
+        $this->assertNotEmpty($result['DESCRICAOMODULO']);
+        $this->assertNotEmpty($result['QUALIFICACAOMODULO']);
+        $this->assertNotEmpty($result['CARGAHORARIAMODULO']);
+        $this->assertNotEmpty($result['DISCIPLINAS']);
+        $this->assertNotEmpty($result['EIXOCURSO']);
+        $this->assertNotEmpty($result['LIVRO']);
+        $this->assertNotEmpty($result['FOLHA']);
+        $this->assertNotEmpty($result['REGISTRO']);
+        $this->assertNotEmpty($result['COEFICIENTEDOMODULO']);
+        $this->assertNotEmpty($result['PESSOANOME']);
+        $this->assertNotEmpty($result['PESSOACPF']);
+    }
+
+    public function testGetMatriculasPorStatus()
+    {
+        $this->mockMatriculaGeral(['eletiva'], 'concluido');
+
+        $result = $this->repo->getMatriculasPorStatus();
+        $result = array_pop($result);
+        $this->assertEquals(1, $result->quantidade);
+    }
+
+    //TODO tem que refatorar a funcao no repository
+    public function testGetMatriculasPorMesUltimosSeisMeses()
+    {
+        // Pare aqui e marque este teste como incompleto.
+        $this->markTestIncomplete(
+            'Teste incompleto.'
+        );
+
+        $formato = date("d/m/Y H:i:s", time() - 60 * 60 * 24 * 210);
+        $data = new \DateTime($formato); // 6 meses atras
+        $intervalo = new \DateInterval('P1D');
+
+        for ($i = 0; $i <= 210; $i++) {
+            $data = $data->add($intervalo);
+            $matricula = factory(Matricula::class)->raw();
+
+            $matricula = array_merge($matricula, [
+                'created_at' => $data->format('Y-m-d H:i:s'),
+                'updated_at' => $data->format('Y-m-d H:i:s'),
+            ]);
+
+            DB::table('acd_matriculas')->insert($matricula);
+        }
+
+        $result = $this->repo->getMatriculasPorMesUltimosSeisMeses();
+    }
+
     private function mockMatriculaGeral(array $tipoDisciplina = ['eletiva'],
                                         $situacaoMatricula = 'cursando',
                                         $situacaoMatriculaDisciplina = 'cursando',
@@ -1180,11 +1581,12 @@ class MatriculaCursoTest extends ModulosTestCase
                                         $tcc = false,
                                         $ofertaDis = true,
                                         $qtdDis = 1,
-                                        $titulacaoAluno = 2)
+                                        $titulacaoAluno = 2,
+                                        $nivelCurso = 1)
     {
         $curso = factory(Modulos\Academico\Models\Curso::class)->create([
             'crs_nome' => 'Curso 1',
-            'crs_nvc_id' => 1,
+            'crs_nvc_id' => $nivelCurso,
         ]);
 
         $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
@@ -1211,8 +1613,8 @@ class MatriculaCursoTest extends ModulosTestCase
 
         $moduloMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class)->create([
             'mdo_mtc_id' => $matrizCurricular->mtc_id,
-            "mdo_cargahoraria_min_eletivas" => ($cargaHorariaMinEle) ? $cargaHorariaMinEle : null,
-            "mdo_creditos_min_eletivas" => ($creditosMinEle) ? $creditosMinEle : null,
+            'mdo_cargahoraria_min_eletivas' => ($cargaHorariaMinEle) ? $cargaHorariaMinEle : null,
+            'mdo_creditos_min_eletivas' => ($creditosMinEle) ? $creditosMinEle : null,
         ]);
 
         $disciplina = factory(Modulos\Academico\Models\Disciplina::class, $qtdDis)->create([
@@ -1253,6 +1655,7 @@ class MatriculaCursoTest extends ModulosTestCase
 
         $alunos = factory(Modulos\Academico\Models\Aluno::class, $qtdAlunos)->create();
 
+
         factory(\Modulos\Geral\Models\Titulacao::class, 7)->create();
 
         $titulacoes = new \Illuminate\Support\Collection();
@@ -1272,7 +1675,7 @@ class MatriculaCursoTest extends ModulosTestCase
                 'mat_grp_id' => $grupo->grp_id,
                 'mat_situacao' => $situacaoMatricula,
                 'mat_modo_entrada' => 'vestibular',
-                'mat_data_conclusao' => '15/11/2015'
+                'mat_data_conclusao' => '15/11/2015',
             ]);
         }
 
@@ -1302,6 +1705,6 @@ class MatriculaCursoTest extends ModulosTestCase
         }
 
 
-        return [$turma, $polo, $matriculas, $modulosDisciplina, $moduloMatriz];
+        return [$turma, $polo, $matriculas, $modulosDisciplina, $moduloMatriz, $curso];
     }
 }
