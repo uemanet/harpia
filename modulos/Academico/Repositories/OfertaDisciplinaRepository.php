@@ -50,18 +50,14 @@ class OfertaDisciplinaRepository extends BaseRepository
         return $query->get();
     }
 
-    public function verifyDisciplinaTurmaPeriodo($turmaId, $periodoId, $disciplinaId)
+    public function verifyDisciplinaTurmaPeriodo($turmaId, $periodoId, $disciplinaId): bool
     {
         $exists = $this->model->where('ofd_trm_id', $turmaId)
             ->where('ofd_per_id', $periodoId)
             ->where('ofd_mdc_id', $disciplinaId)
             ->first();
 
-        if ($exists) {
-            return true;
-        }
-
-        return false;
+        return (bool)$exists;
     }
 
     public function findAllWithMapeamentoNotas(array $options = [], array $select = [], array $order = [])

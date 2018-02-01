@@ -653,7 +653,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             unset($data['mof_final']);
         }
 
-        if (isset($data['mof_final']) && ($data['mof_recuperacao'] == '' || $data['mof_recuperacao'] == null)) {
+        if (isset($data['mof_recuperacao']) && ($data['mof_recuperacao'] == '' || $data['mof_recuperacao'] == null)) {
             unset($data['mof_recuperacao']);
         }
 
