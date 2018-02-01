@@ -113,7 +113,7 @@ class GrupoRepository extends BaseRepository
                 ->where('log_table_id', '=', $entry['ttg_id'])
                 ->get();
 
-            if (!$data) {
+            if (!$data->count()) {
                 $result->push($entry);
                 continue;
             }

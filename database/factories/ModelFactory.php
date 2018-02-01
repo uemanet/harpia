@@ -382,7 +382,7 @@ $factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function (Fak
         'ofd_per_id' => $turma->trm_per_id,
         'ofd_prf_id' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'ofd_tipo_avaliacao' => $faker->randomElement(['numerica', 'conceitual']),
-        'ofd_qtd_vagas' => 500
+        'ofd_qtd_vagas' => random_int(10, 50)
     ];
 });
 
@@ -455,7 +455,15 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
         'mof_mat_id' => $matricula->mat_id,
         'mof_ofd_id' => $ofertaDisciplina->ofd_id,
         'mof_tipo_matricula' => 'matriculacomum',
-        'mof_situacao_matricula' => 'cursando'
+        'mof_situacao_matricula' => 'cursando',
+        'mof_nota1' => null,
+        'mof_nota2' => null,
+        'mof_nota3' => null,
+        'mof_conceito' => null,
+        'mof_recuperacao' => null,
+        'mof_final' => null,
+        'mof_mediafinal' => null
+
     ];
 });
 
