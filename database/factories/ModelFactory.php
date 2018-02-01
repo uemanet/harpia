@@ -382,7 +382,7 @@ $factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function (Fak
         'ofd_per_id' => $turma->trm_per_id,
         'ofd_prf_id' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'ofd_tipo_avaliacao' => $faker->randomElement(['numerica', 'conceitual']),
-        'ofd_qtd_vagas' => 500
+        'ofd_qtd_vagas' => random_int(10, 50)
     ];
 });
 
