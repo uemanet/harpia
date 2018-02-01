@@ -245,13 +245,13 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $curso = factory(Curso::class)->create();
 
         // Duas matrizes para o mesmo curso
-        list($matriz,) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
         $matrizes[] = $matriz;
 
-        list($matriz,) = $this->mock($curso, ['mtc_titulo' => 'May']);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'May']);
         $matrizes[] = $matriz;
 
-        list($matriz,) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
         $matrizes[] = $matriz;
 
         // Paginacao sem request params
@@ -275,13 +275,13 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $curso = factory(Curso::class)->create();
 
         // Duas matrizes para o mesmo curso
-        list($matriz,) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
         $matrizes[] = $matriz;
 
-        list($matriz,) = $this->mock($curso, ['mtc_titulo' => 'May']);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'May']);
         $matrizes[] = $matriz;
 
-        list($matriz,) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
         $matrizes[] = $matriz;
 
         // Mais um curso e mais uma matriz

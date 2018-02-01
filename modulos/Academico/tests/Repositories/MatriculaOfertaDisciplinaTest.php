@@ -24,7 +24,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testCreate()
     {
-
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create();
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
 
@@ -64,7 +63,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testSearch()
     {
-
         factory(MatriculaOfertaDisciplina::class)->create([
             'mof_tipo_matricula' => 'matriculacomum'
         ]);
@@ -142,7 +140,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testPaginateWithSearch()
     {
-
         $entry = factory(MatriculaOfertaDisciplina::class)->create([
             'mof_tipo_matricula' => 'matriculacomun'
         ]);
@@ -159,16 +156,15 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
         $this->assertEquals('matriculacomun', $response->first()->mof_tipo_matricula);
-
     }
 
     public function testgetAllAlunosBySituacaoWithDoc()
     {
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $matriculas = factory(\Modulos\Academico\Models\Matricula::class,10)->create(['mat_trm_id' => $turma->trm_id]);
+        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
 
-        foreach ($matriculas as $matricula){
+        foreach ($matriculas as $matricula) {
             factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
             $rg = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
             $cpf = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
@@ -183,10 +179,10 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
     public function testgetAllAlunosBySituacaoWithoutDoc()
     {
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
-        $matriculas = factory(\Modulos\Academico\Models\Matricula::class,10)->create(['mat_trm_id' => $turma->trm_id]);
+        $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
 
-        foreach ($matriculas as $matricula){
+        foreach ($matriculas as $matricula) {
             factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
             $polo = $matricula->mat_pol_id;
         }
@@ -249,7 +245,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->repo->getAllMatriculasByAlunoModuloMatriz($matriculaoferta->matriculaCurso->aluno->alu_id, $modulomatriz->mdo_id);
 
         $this->assertNotEmpty($response);
-
     }
 
     public function testPaginateWithSearchAndOrder()
@@ -301,7 +296,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->repo->paginate($sort, $search);
 
         $this->assertEmpty($response->total());
-
     }
 
     public function testgetMatriculasOfertasDisciplinasByMatricula()
@@ -464,7 +458,6 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testgetAlunosMatriculasLote()
     {
-
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
 
@@ -494,12 +487,10 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertArrayHasKey('aprovados', $response);
         $this->assertArrayHasKey('reprovados', $response);
         $this->assertNotEmpty($response);
-
     }
 
     public function testgetAlunosMatriculasLoteComPolo()
     {
-
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
 
@@ -544,8 +535,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testpaginateRequestByParametrosNoParemeters()
     {
-
-        factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class,10)->create();
+        factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class, 10)->create();
 
         $response = $this->repo->paginateRequestByParametros();
 
@@ -554,11 +544,10 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testpaginateRequestByParametrosNullParemeters()
     {
-
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-        foreach ($matriculas as $matricula){
+        foreach ($matriculas as $matricula) {
             factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
         }
 
@@ -569,11 +558,10 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testpaginateRequestByParametros()
     {
-
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-        foreach ($matriculas as $matricula){
+        foreach ($matriculas as $matricula) {
             factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
         }
 
@@ -584,11 +572,10 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
     public function testpaginateRequestByParametrosWithOrderAndSearch()
     {
-
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
-        foreach ($matriculas as $matricula){
+        foreach ($matriculas as $matricula) {
             factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_situacao_matricula' => 'cursando']);
         }
 

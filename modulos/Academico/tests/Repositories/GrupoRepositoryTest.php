@@ -284,7 +284,7 @@ class GrupoRepositoryTest extends ModulosTestCase
         $usuario = factory(\Modulos\Seguranca\Models\Usuario::class)->create();
         $grupo = factory(Grupo::class)->create();
         $tutoresgrupos = factory(\Modulos\Academico\Models\TutorGrupo::class, 3)->create(['ttg_grp_id' => $grupo->grp_id]);
-        foreach ($tutoresgrupos as $tutorgrupo){
+        foreach ($tutoresgrupos as $tutorgrupo) {
             factory(\Modulos\Seguranca\Models\Auditoria::class)
                 ->create(['log_usr_id' => $usuario->usr_id,
                           'log_table_id' => $tutorgrupo->ttg_grp_id,
