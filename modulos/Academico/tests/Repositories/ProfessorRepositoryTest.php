@@ -5,11 +5,14 @@ use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Models\Documento;
 use Modulos\Academico\Models\Professor;
 use Illuminate\Database\Eloquent\Collection;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\ProfessorRepository;
 
 class ProfessorRepositoryTest extends ModulosTestCase
 {
+    protected $repo;
+
     public function setUp()
     {
         parent::setUp();
@@ -25,6 +28,140 @@ class ProfessorRepositoryTest extends ModulosTestCase
         $this->assertEquals(0, $response->count());
     }
 
+    public function testCreate()
+    {
+        $data = factory(Professor::class)->raw();
+        $entry = $this->repo->create($data);
+
+        $this->assertInstanceOf(Professor::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Professor::class)->create();
+        $id = $entry->prf_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Professor::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $data = factory(Professor::class)->create();
+        $id = $data->prf_id;
+
+        $updateArray = $data->toArray();
+        $updateArray['prf_pes_id'] = factory(Modulos\Geral\Models\Pessoa::class)->create([
+            'pes_nome' => 'abc123'
+        ])->pes_id;
+
+        $professorId = $updateArray['prf_id'];
+
+        $response = $this->repo->update($updateArray, $professorId, 'prf_id');
+        $fromRepository = $this->repo->find($id);
+
+
+        $this->assertEquals(1, $response);
+        $this->assertDatabaseHas($this->table, $updateArray);
+        $this->assertInstanceOf(Professor::class, $fromRepository);
+        $this->assertEquals($updateArray, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Professor::class)->create();
+        $id = $entry->prf_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Professor::class, 2)->create();
+
+        $model = new Professor();
+        $expected = $model->join('gra_pessoas', 'pes_id', '=', 'acd_professores.prf_pes_id')->pluck('pes_nome', 'prf_id');
+        $fromRepository = $this->repo->lists('prf_id', 'pes_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        factory(Professor::class, 2)->create();
+
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Irineu'
+        ]);
+
+        factory(Professor::class)->create([
+            'prf_pes_id' => $pessoa->pes_id
+        ]);
+
+        $searchResult = $this->repo->search(array(['pes_nome', 'like', 'Irineu']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Professor::class, 2)->create();
+
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Irineu',
+        ]);
+
+        $entry = factory(Professor::class)->create([
+            'prf_pes_id' => $pessoa->pes_id
+        ]);
+
+        $expected = [
+            'prf_id' => $entry->prf_id,
+            'pes_nome' => $entry->pessoa->pes_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['pes_nome', '=', "Irineu"]), ['prf_id', 'pes_nome']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Professor::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Professor::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Professor();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
+    }
+
     public function testPaginateWithoutParameters()
     {
         factory(Professor::class, 2)->create();
@@ -32,7 +169,6 @@ class ProfessorRepositoryTest extends ModulosTestCase
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
@@ -41,15 +177,13 @@ class ProfessorRepositoryTest extends ModulosTestCase
         factory(Professor::class, 2)->create();
 
         $sort = [
-            'field' => 'pes_id',
+            'field' => 'prf_id',
             'sort' => 'desc'
         ];
 
         $response = $this->repo->paginate($sort);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->pes_id);
+        $this->assertGreaterThan($response->last()->prf_id, $response->first()->prf_id); // 2, 1 || 1, 2
     }
 
     public function testPaginateWithSearch()
@@ -72,45 +206,33 @@ class ProfessorRepositoryTest extends ModulosTestCase
         $search = [
             [
                 'field' => 'pes_nome',
-                'type' => 'like',
+                'type' => '=',
                 'term' => 'Irineu'
             ],
             [
                 'field' => 'pes_cpf',
                 'type' => '=',
                 'term' => '123456789'
-            ],
-        ];
-
-        $response = $this->repo->paginate(null, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Professor::class, 2)->create();
-
-        $sort = [
-            'field' => 'prf_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'prf_id',
-                'type' => '>',
-                'term' => '1'
             ]
         ];
 
-        $response = $this->repo->paginate($sort, $search);
-
+        $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('Irineu', $response->first()->pes_nome);
+
+        $search = [
+            [
+                'field' => 'pes_nome',
+                'type' => 'like',
+                'term' => 'Irineu'
+            ]
+        ];
+
+        $response = $this->repo->paginate(null, $search);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('Irineu', $response->first()->pes_nome);
     }
 
     public function testPaginateRequest()
@@ -119,73 +241,12 @@ class ProfessorRepositoryTest extends ModulosTestCase
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'pes_id',
+            'field' => 'prf_id',
             'sort' => 'asc'
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Professor::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(Professor::class, $response);
-
-        $this->assertArrayHasKey('prf_id', $data);
-    }
-
-    public function testFind()
-    {
-        $data = factory(Professor::class)->create();
-
-        $this->assertDatabaseHas('acd_professores', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Professor::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['prf_pes_id'] = factory(Modulos\Geral\Models\Pessoa::class)->create([
-            'pes_nome' => 'abc123'
-        ])->pes_id;
-
-        $professorId = $updateArray['prf_id'];
-        unset($updateArray['prf_id']);
-
-        $response = $this->repo->update($updateArray, $professorId, 'prf_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Professor::class)->create();
-        $professorId = $data->prf_id;
-
-        $response = $this->repo->delete($professorId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testLists()
-    {
-        $entries = factory(Professor::class, 2)->create();
-
-        $model = new Professor();
-        $result = $model->join('gra_pessoas', 'pes_id', '=', 'prf_pes_id');
-
-        $expected = $result->pluck('pes_nome', 'prf_pes_id');
-
-        $fromRepository = $this->repo->lists('prf_id', 'pes_nome', false);
-
-        $this->assertEquals($expected, $fromRepository);
     }
 }
