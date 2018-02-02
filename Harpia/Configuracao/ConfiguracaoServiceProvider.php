@@ -2,11 +2,16 @@
 
 namespace Harpia\Configuracao;
 
-use Illuminate\Support\ServiceProvider;
 use Modulos\Geral\Models\Configuracao;
-use Modulos\Geral\Repositories\ConfiguracaoRepository;
+use Illuminate\Support\ServiceProvider;
 use Harpia\Configuracao\Configuracao as Config;
+use Modulos\Geral\Repositories\ConfiguracaoRepository;
 
+/**
+ * Class ConfiguracaoServiceProvider
+ * @package Harpia\Configuracao
+ * @codeCoverageIgnore
+ */
 class ConfiguracaoServiceProvider extends ServiceProvider
 {
 

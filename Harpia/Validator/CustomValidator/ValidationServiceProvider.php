@@ -4,6 +4,11 @@ namespace Harpia\Validator\CustomValidator;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class ValidationServiceProvider
+ * @package Harpia\Validator\CustomValidator
+ * @codeCoverageIgnore
+ */
 class ValidationServiceProvider extends ServiceProvider
 {
     public function register()

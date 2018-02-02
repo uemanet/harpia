@@ -3,9 +3,12 @@
 namespace Harpia\Moodle;
 
 use Illuminate\Support\ServiceProvider;
-use Modulos\Integracao\Models\AmbienteVirtual;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
+/**
+ * Class MoodleServiceProvider
+ * @package Harpia\Moodle
+ * @codeCoverageIgnore
+ */
 class MoodleServiceProvider extends ServiceProvider
 {
     /**
