@@ -288,5 +288,4 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
         $this->assertNotEmpty($response, '');
     }
-
 }

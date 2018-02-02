@@ -307,5 +307,4 @@ class GrupoRepositoryTest extends ModulosTestCase
 
         $this->assertCount(1, $response);
     }
-
 }
