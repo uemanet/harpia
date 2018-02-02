@@ -1,5 +1,6 @@
 <?php
 
+use Tests\ModulosTestCase;
 use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
@@ -12,33 +13,17 @@ use Modulos\Integracao\Repositories\SincronizacaoRepository;
  * Class TurmaRemovidaListenerTest
  * @group Listeners
  */
-class TurmaRemovidaListenerTest extends TestCase
+class TurmaRemovidaListenerTest extends ModulosTestCase
 {
+    protected $turma;
     protected $ambiente;
     protected $sincronizacaoRepository;
-    protected $turma;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
 
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(SincronizacaoRepository::class);
-
         Modulos\Integracao\Models\Servico::truncate();
-
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();
