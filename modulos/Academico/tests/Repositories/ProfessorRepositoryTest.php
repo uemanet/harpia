@@ -6,17 +6,10 @@ use Modulos\Geral\Models\Documento;
 use Modulos\Academico\Models\Professor;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Modulos\Academico\Repositories\ProfessorRepository;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ProfessorRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
     public function setUp()
     {
         parent::setUp();

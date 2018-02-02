@@ -1,8 +1,6 @@
 <?php
 
 use Tests\ModulosTestCase;
-use Modulos\Academico\Models\Matricula;
-use Illuminate\Database\Eloquent\Collection;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

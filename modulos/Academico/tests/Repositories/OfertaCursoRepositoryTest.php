@@ -1,47 +1,181 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Tests\ModulosTestCase;
+use Illuminate\Support\Facades\DB;
 use Modulos\Academico\Models\OfertaCurso;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Models\Turma;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
 
-class OfertaCursoRepositoryTest extends TestCase
+class OfertaCursoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
-    public function login()
-    {
-        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
-        $this->be($user);
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(OfertaCursoRepository::class);
-        $this->login();
+        $this->table = 'acd_ofertas_cursos';
+    }
+
+    public function testCreate()
+    {
+        // Oferta sem polo
+        $data = factory(OfertaCurso::class)->raw();
+        $entry = $this->repo->create($data);
+
+        $this->assertInstanceOf(OfertaCurso::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+
+        // Adiciona oferta com polos
+        $polos = factory(\Modulos\Academico\Models\Polo::class, 2)->create();
+        $polosId = $polos->pluck('pol_id')->toArray();
+
+        $data = factory(OfertaCurso::class)->raw();
+        $data['polos'] = $polosId;
+        $entry = $this->repo->create($data);
+
+        $polosOfertasCurso = DB::table('acd_polos_ofertas_cursos')->get()->toArray();
+
+        $ofertasFromDatabase[] = (string)$polosOfertasCurso[0]->poc_ofc_id;
+        $ofertasFromDatabase[] = (string)$polosOfertasCurso[1]->poc_ofc_id;
+
+        $polosFromDatabase[] = $polosOfertasCurso[0]->poc_pol_id;
+        $polosFromDatabase[] = $polosOfertasCurso[1]->poc_pol_id;
+
+        // Dois polos para a ultima oferta
+        $ofertasIdExpected = [
+            2,
+            2
+        ];
+
+        $this->assertInstanceOf(OfertaCurso::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+
+        $this->assertEquals($polosId, $polosFromDatabase);
+        $this->assertEquals($ofertasIdExpected, $ofertasFromDatabase);
+
+        // Tenta criar uma oferta com mesmo ano, modalidade e curso : Deve retornar Null
+
+        $entry = $this->repo->create($data);
+        $this->assertNull($entry);
+    }
+
+    public function testFind()
+    {
+        $entry = factory(OfertaCurso::class)->create();
+        $id = $entry->ofc_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(OfertaCurso::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+
+        $data = $entry->toArray();
+        $data['ofc_ano'] = 1999;
+
+        $id = $entry->ofc_id;
+        $response = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $response);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(OfertaCurso::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testUpdateRemovePolos()
+    {
+        $polos = factory(\Modulos\Academico\Models\Polo::class, 2)->create();
+        $polosId = $polos->pluck('pol_id')->toArray();
+
+        $data = factory(OfertaCurso::class)->raw();
+        $data['polos'] = $polosId;
+        $entry = $this->repo->create($data);
+
+        $data = $entry->toArray();
+
+        $this->assertEquals(2, DB::table('acd_polos_ofertas_cursos')->get()->count());
+
+        $id = $entry->ofc_id;
+        $toCompare = $data;
+        $data['polos'] = [];
+        unset($toCompare['polos']);
+
+        $response = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $response);
+        $this->assertDatabaseHas($this->table, $toCompare);
+        $this->assertInstanceOf(OfertaCurso::class, $fromRepository);
+        $this->assertEquals($toCompare, $fromRepository->toArray());
+        $this->assertEquals(0, DB::table('acd_polos_ofertas_cursos')->get()->count());
+    }
+
+    public function testUpdateWithPolos()
+    {
+        $polos = factory(\Modulos\Academico\Models\Polo::class, 2)->create();
+        $polosId = $polos->pluck('pol_id')->toArray();
+
+        $data = factory(OfertaCurso::class)->raw();
+        $data['polos'] = $polosId;
+        $entry = $this->repo->create($data);
+
+        $data = $entry->toArray();
+
+        $this->assertEquals(2, DB::table('acd_polos_ofertas_cursos')->get()->count());
+
+        $polosId[] = factory(\Modulos\Academico\Models\Polo::class)->create()->pol_id;
+
+        $id = $entry->ofc_id;
+        $toCompare = $data;
+        $data['polos'] = $polosId;
+        unset($toCompare['polos']);
+
+        $response = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $response);
+        $this->assertDatabaseHas($this->table, $toCompare);
+        $this->assertInstanceOf(OfertaCurso::class, $fromRepository);
+        $this->assertEquals($toCompare, $fromRepository->toArray());
+        $this->assertEquals(3, DB::table('acd_polos_ofertas_cursos')->get()->count());
+    }
+
+    public function testUpdateWithPolosEnroled()
+    {
+        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        $turmas = factory(Modulos\Academico\Models\Turma::class, 4)->create(['trm_ofc_id' => $data->ofc_id]);
+
+        $updateArray = $data->toArray();
+        $updateArray['ofc_ano'] = 1999;
+        $updateArray['polos'] = [];
+        $polosnovos = factory(\Modulos\Academico\Models\Polo::class, 3)->create();
+        foreach ($polosnovos as $key => $polo) {
+            $updateArray['polos'][] = $polo;
+            factory(Modulos\Academico\Models\Grupo::class, 4)->create(['grp_trm_id' => $turmas[0]->trm_id, 'grp_pol_id' => $polo]);
+        }
+
+        $ofertacursodId = $updateArray['ofc_id'];
+        unset($updateArray['ofc_id']);
+
+        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
+
+        $this->assertEquals('warning', $response['type']);
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(OfertaCurso::class)->create();
+        $id = $entry->ofc_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
     }
 
     public function testAllWithEmptyDatabase()
@@ -210,118 +344,13 @@ class OfertaCursoRepositoryTest extends TestCase
         }
 
         $data = ['ofc_ano' => 2018,
-                 'ofc_mdl_id' => $modalidade->mdl_id,
-                 'ofc_crs_id' => $curso->crs_id,
-                 'ofc_mtc_id' => $matriz->mtc_id,
-                 'polos' => $arrayPolos
-               ];
+            'ofc_mdl_id' => $modalidade->mdl_id,
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matriz->mtc_id,
+            'polos' => $arrayPolos
+        ];
         return $data;
     }
-
-    public function testCreate()
-    {
-        $data = $this->mockData();
-        $ofertacurso = $this->repo->create($data);
-
-        $this->assertInstanceOf(OfertaCurso::class, $ofertacurso);
-
-        $this->assertArrayHasKey('ofc_id', $ofertacurso);
-    }
-
-    public function testCreateReturnNull()
-    {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-        $data = ['ofc_ano' => $data->ofc_ano,
-                 'ofc_mdl_id' => $data->ofc_mdl_id,
-                 'ofc_crs_id' => $data->ofc_crs_id,
-                 'ofc_mtc_id' => $data->ofc_mtc_id,
-                 'polos' => null
-               ];
-        $ofertacurso = $this->repo->create($data);
-
-        $this->assertEquals(null, $ofertacurso);
-    }
-
-    public function testFind()
-    {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-
-        $this->assertDatabaseHas('acd_ofertas_cursos', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 1999;
-        $updateArray['polos'] = null;
-
-        $ofertacursodId = $updateArray['ofc_id'];
-        unset($updateArray['ofc_id']);
-
-        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testUpdateRemovePolos()
-    {
-        $data = $this->mockData();
-        $ofertacurso = $this->repo->create($data);
-
-        $ofertacursodId = $ofertacurso->ofc_id;
-        $data['polos'] = null;
-        unset($data['ofc_id']);
-        $response = $this->repo->update($data, $ofertacursodId, 'ofc_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testUpdateWithPolos()
-    {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-        factory(Modulos\Academico\Models\Turma::class, 4)->create(['trm_ofc_id' => $data->ofc_id]);
-
-        $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 1999;
-        $updateArray['polos'] = [];
-        $polosnovos = factory(\Modulos\Academico\Models\Polo::class, 3)->create();
-        foreach ($polosnovos as $key => $polo) {
-            $updateArray['polos'][] = $polo;
-        }
-
-        $ofertacursodId = $updateArray['ofc_id'];
-        unset($updateArray['ofc_id']);
-
-        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testUpdateWithPolosEnroled()
-    {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-        $turmas = factory(Modulos\Academico\Models\Turma::class, 4)->create(['trm_ofc_id' => $data->ofc_id]);
-
-        $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 1999;
-        $updateArray['polos'] = [];
-        $polosnovos = factory(\Modulos\Academico\Models\Polo::class, 3)->create();
-        foreach ($polosnovos as $key => $polo) {
-            $updateArray['polos'][] = $polo;
-            factory(Modulos\Academico\Models\Grupo::class, 4)->create(['grp_trm_id' => $turmas[0]->trm_id, 'grp_pol_id' => $polo]);
-        }
-
-        $ofertacursodId = $updateArray['ofc_id'];
-        unset($updateArray['ofc_id']);
-
-        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
-
-        $this->assertEquals('warning', $response['type']);
-    }
-
-
 
     public function testFindAllByCurso()
     {
@@ -350,7 +379,6 @@ class OfertaCursoRepositoryTest extends TestCase
         $this->assertNotEmpty($curso, '');
     }
 
-
     public function testListsAllById()
     {
         $turma = factory(Modulos\Academico\Models\Turma::class)->create();
@@ -358,22 +386,5 @@ class OfertaCursoRepositoryTest extends TestCase
         $curso = $this->repo->listsAllById($turma->ofertacurso->curso->crs_id);
 
         $this->assertNotEmpty($curso, '');
-    }
-
-
-    public function testDelete()
-    {
-        $data = factory(OfertaCurso::class)->create();
-        $ofertacursoId = $data->ofc_id;
-
-        $response = $this->repo->delete($ofertacursoId);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }

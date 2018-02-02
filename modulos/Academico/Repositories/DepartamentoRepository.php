@@ -2,8 +2,8 @@
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Departamento;
+use Modulos\Core\Repository\BaseRepository;
 
 class DepartamentoRepository extends BaseRepository
 {
