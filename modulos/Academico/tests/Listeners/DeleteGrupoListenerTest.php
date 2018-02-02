@@ -3,6 +3,10 @@
 use Modulos\Academico\Events\DeleteGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
+/**
+ * Class DeleteGrupoListenerTest
+ * @group Listeners
+ */
 class DeleteGrupoListenerTest extends TestCase
 {
     protected $ambiente;

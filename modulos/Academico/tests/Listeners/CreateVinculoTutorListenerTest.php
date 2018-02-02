@@ -4,6 +4,10 @@ use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateVinculoTutorEvent;
 
+/**
+ * Class CreateVinculoTutorListenerTest
+ * @group Listeners
+ */
 class CreateVinculoTutorListenerTest extends TestCase
 {
     protected $ambiente;

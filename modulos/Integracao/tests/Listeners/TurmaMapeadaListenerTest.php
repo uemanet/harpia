@@ -2,6 +2,10 @@
 
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
+/**
+ * Class TurmaMapeadaListenerTest
+ * @group Listeners
+ */
 class TurmaMapeadaListenerTest extends TestCase
 {
     protected $ambiente;

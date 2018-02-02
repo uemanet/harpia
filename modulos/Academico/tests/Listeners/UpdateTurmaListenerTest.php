@@ -3,6 +3,10 @@
 use Modulos\Academico\Events\UpdateTurmaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
+/**
+ * Class UpdateTurmaListenerTest
+ * @group Listeners
+ */
 class UpdateTurmaListenerTest extends TestCase
 {
     protected $ambiente;

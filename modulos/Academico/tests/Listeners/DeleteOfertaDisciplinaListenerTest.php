@@ -4,6 +4,10 @@ use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 
+/**
+ * Class DeleteOfertaDisciplinaListenerTest
+ * @group Listeners
+ */
 class DeleteOfertaDisciplinaListenerTest extends TestCase
 {
     protected $turma;

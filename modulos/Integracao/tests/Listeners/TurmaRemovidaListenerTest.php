@@ -1,23 +1,17 @@
 <?php
 
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Models\Curso;
-use Modulos\Academico\Models\Vinculo;
-use Modulos\Academico\Models\PeriodoLetivo;
 use Modulos\Integracao\Models\Sincronizacao;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Integracao\Listeners\TurmaMapeadaListener;
 use Modulos\Integracao\Listeners\TurmaRemovidaListener;
 use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
+/**
+ * Class TurmaRemovidaListenerTest
+ * @group Listeners
+ */
 class TurmaRemovidaListenerTest extends TestCase
 {
     protected $ambiente;

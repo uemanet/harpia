@@ -4,6 +4,7 @@ namespace Harpia\Mock;
 
 /**
  * Classe para Mock de RouteResolver
+ * @codeCoverageIgnore
  * @see \Illuminate\Http\Request::getRouteResolver()
  * @see \Illuminate\Http\Request::setRouteResolver()
  */

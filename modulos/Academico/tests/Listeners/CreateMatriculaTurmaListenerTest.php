@@ -4,6 +4,10 @@ use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 
+/**
+ * Class CreateMatriculaTurmaListenerTest
+ * @group Listeners
+ */
 class CreateMatriculaTurmaListenerTest extends TestCase
 {
     protected $ambiente;

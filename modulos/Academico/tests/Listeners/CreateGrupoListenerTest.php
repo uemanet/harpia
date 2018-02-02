@@ -3,6 +3,10 @@
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
+/**
+ * Class CreateGrupoListenerTest
+ * @group Listeners
+ */
 class CreateGrupoListenerTest extends TestCase
 {
     protected $ambiente;

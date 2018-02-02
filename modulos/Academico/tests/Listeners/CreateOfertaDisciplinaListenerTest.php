@@ -3,6 +3,10 @@
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 
+/**
+ * Class CreateOfertaDisciplinaListenerTest
+ * @group Listeners
+ */
 class CreateOfertaDisciplinaListenerTest extends TestCase
 {
     protected $turma;

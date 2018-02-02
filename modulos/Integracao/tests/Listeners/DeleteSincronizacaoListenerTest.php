@@ -3,6 +3,10 @@
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 
+/**
+ * Class DeleteSincronizacaoListenerTest
+ * @group Listeners
+ */
 class DeleteSincronizacaoListenerTest extends TestCase
 {
     protected $ambiente;

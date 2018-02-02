@@ -2,11 +2,15 @@
 
 use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Listeners\SincronizacaoListener;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Listeners\UpdateSincronizacaoListener;
-use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 
+/**
+ * Class UpdateSincronizacaoListenerTest
+ * @group Listeners
+ */
 class UpdateSincronizacaoListenerTest extends TestCase
 {
     protected $ambiente;
