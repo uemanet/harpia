@@ -53,17 +53,6 @@ class CentroRepositoryTest extends ModulosTestCase
         $this->assertEquals($data, $fromRepository->toArray());
     }
 
-    public function testDelete()
-    {
-        $entry = factory(Centro::class)->create();
-        $id = $entry->cen_id;
-
-        $return = $this->repo->delete($id);
-
-        $this->assertEquals(1, $return);
-        $this->assertDatabaseMissing($this->table, $entry->toArray());
-    }
-
     public function testLists()
     {
         $entries = factory(Centro::class, 2)->create();

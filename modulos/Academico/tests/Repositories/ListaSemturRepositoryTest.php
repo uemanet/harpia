@@ -1,17 +1,12 @@
 <?php
 
 use Tests\ModulosTestCase;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\ListaSemturRepository;
 use Modulos\Academico\Models\ListaSemtur;
+use Illuminate\Database\Eloquent\Collection;
+use Modulos\Academico\Repositories\ListaSemturRepository;
 
 class ListaSemturRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
     protected $repo;
 
     public function setUp()
@@ -102,7 +97,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
             $lista->matriculas()->attach($matricula->mat_id);
         }
 
-        $response = $this->repo->paginateRequest(array("lst_id" => $lista->lst_id, "lst_nome" => $lista->lst_nome, "field" => "lst_nome",  "sort" => "asc"));
+        $response = $this->repo->paginateRequest(array("lst_id" => $lista->lst_id, "lst_nome" => $lista->lst_nome, "field" => "lst_nome", "sort" => "asc"));
 
         $this->assertGreaterThan(0, $response->total());
     }
@@ -142,7 +137,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
 
         $lista->matriculas()->attach($matricula->mat_id);
 
-        $response = $this->repo->findAll(['pes_nome'=> $matricula->aluno->pessoa->pes_nome], ['pes_nome' => 'asc'], ['mat_id', 'pes_nome', 'trm_nome', 'pol_nome']);
+        $response = $this->repo->findAll(['pes_nome' => $matricula->aluno->pessoa->pes_nome], ['pes_nome' => 'asc'], ['mat_id', 'pes_nome', 'trm_nome', 'pol_nome']);
 
         $this->assertEquals(1, count($response));
     }
@@ -166,11 +161,5 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $response = $this->repo->getMatriculasOutOfLista($lista->lst_id, $matricula->mat_trm_id, $matricula->mat_pol_id);
 
         $this->assertNotEmpty($response);
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }

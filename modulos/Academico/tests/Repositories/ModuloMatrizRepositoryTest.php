@@ -1,20 +1,13 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\ModuloMatrizRepository;
+use Tests\ModulosTestCase;
 use Modulos\Academico\Models\ModuloMatriz;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Stevebauman\EloquentTable\TableCollection;
-use Tests\ModulosTestCase;
+use Modulos\Academico\Repositories\ModuloMatrizRepository;
 
 class ModuloMatrizRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
     protected $repo;
 
     public function setUp()
