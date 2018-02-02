@@ -1,6 +1,6 @@
 <?php
 
-namespace Harpia\Mock;
+namespace Tests\Helpers;
 
 /**
  * Classe para Mock de RouteResolver

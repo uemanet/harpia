@@ -2,7 +2,7 @@
 
 use Illuminate\View\View;
 use Tests\ModulosTestCase;
-use Harpia\Mock\RouteResolver;
+use Tests\Helpers\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
 use Harpia\Menu\MenuItem as MenuNode;

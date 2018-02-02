@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Harpia\Mock\RouteResolver;
+use Tests\Helpers\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\Usuario;
