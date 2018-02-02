@@ -1,19 +1,13 @@
 <?php
 
-use Illuminate\Pagination\LengthAwarePaginator;
+use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Livro;
 use Stevebauman\EloquentTable\TableCollection;
-use Tests\ModulosTestCase;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\LivroRepository;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class LivroRepositorytTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
     protected $repo;
 
     public function setUp()

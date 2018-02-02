@@ -2,11 +2,11 @@
 
 use Tests\ModulosTestCase;
 use Tests\Helpers\Reflection;
-use Modulos\Academico\Models\MatriculaOfertaDisciplina;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Geral\Repositories\DocumentoRepository;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Modulos\Geral\Repositories\DocumentoRepository;
+use Modulos\Academico\Models\MatriculaOfertaDisciplina;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 {
