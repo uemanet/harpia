@@ -2,6 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Illuminate\Support\Facades\DB;
+use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\OfertaCurso;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -9,9 +10,12 @@ use Modulos\Academico\Repositories\OfertaCursoRepository;
 
 class OfertaCursoRepositoryTest extends ModulosTestCase
 {
+    protected $user;
+
     public function setUp()
     {
         parent::setUp();
+        $this->user = factory(Usuario::class)->create();
         $this->repo = $this->app->make(OfertaCursoRepository::class);
         $this->table = 'acd_ofertas_cursos';
     }
@@ -93,6 +97,7 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
         $polosId = $polos->pluck('pol_id')->toArray();
 
         $data = factory(OfertaCurso::class)->raw();
+        $data['ofc_ano'] = 1999;
         $data['polos'] = $polosId;
         $entry = $this->repo->create($data);
 
@@ -147,24 +152,82 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
 
     public function testUpdateWithPolosEnroled()
     {
-        $data = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
-        $turmas = factory(Modulos\Academico\Models\Turma::class, 4)->create(['trm_ofc_id' => $data->ofc_id]);
+        $polos = factory(\Modulos\Academico\Models\Polo::class, 2)->create();
+        $polosId = $polos->pluck('pol_id')->toArray();
 
-        $updateArray = $data->toArray();
-        $updateArray['ofc_ano'] = 1999;
-        $updateArray['polos'] = [];
-        $polosnovos = factory(\Modulos\Academico\Models\Polo::class, 3)->create();
-        foreach ($polosnovos as $key => $polo) {
-            $updateArray['polos'][] = $polo;
-            factory(Modulos\Academico\Models\Grupo::class, 4)->create(['grp_trm_id' => $turmas[0]->trm_id, 'grp_pol_id' => $polo]);
-        }
+        // Oferta de curso com polos
+        $data = factory(OfertaCurso::class)->raw();
+        $data['polos'] = $polosId;
+        $entry = $this->repo->create($data);
 
-        $ofertacursodId = $updateArray['ofc_id'];
-        unset($updateArray['ofc_id']);
+        $data = $entry->toArray();
 
-        $response = $this->repo->update($updateArray, $ofertacursodId, 'ofc_id');
+        $this->assertEquals(2, DB::table('acd_polos_ofertas_cursos')->get()->count());
 
+        $polosId[] = factory(\Modulos\Academico\Models\Polo::class)->create()->pol_id;
+
+        // Duas turmas na oferta
+        $turmas[] = factory(\Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $entry->ofc_id
+        ]);
+
+        $turmas[] = factory(\Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $entry->ofc_id
+        ]);
+
+        // Grupos
+        factory(\Modulos\Academico\Models\Grupo::class)->create([
+            'grp_trm_id' => $turmas[0]->trm_id,
+            'grp_pol_id' => $polosId[0]
+        ]);
+
+        factory(\Modulos\Academico\Models\Grupo::class)->create([
+            'grp_trm_id' => $turmas[1]->trm_id,
+            'grp_pol_id' => $polosId[1]
+        ]);
+
+        // 1 - Atualizar removendo os polos
+        $id = $entry->ofc_id;
+        $data['ofc_ano'] = 1999;
+        $toCompare = $data;
+
+        unset($data['polos']);  // Remove polos
+        unset($toCompare['polos']);
+
+        $response = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $databaseData = $fromRepository->toArray();
+
+        /**
+         * Previne sobre diferencas no campo updated_at
+         */
+        unset($toCompare['updated_at']);
+        unset($databaseData['updated_at']);
+
+        // Os polos nao devem ser removidos da oferta
+        $this->assertEquals($toCompare, $databaseData);
+        $this->assertTrue($response);
+        $this->assertEquals(2, DB::table('acd_polos_ofertas_cursos')->get()->count());
+
+        // 2 - Testa adicionando polos
+        $data['polos'][] = factory(\Modulos\Academico\Models\Polo::class)->create()->pol_id;
+
+        $response = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $databaseData = $fromRepository->toArray();
+
+        /**
+         * Previne sobre diferencas no campo updated_at
+         */
+        unset($databaseData['updated_at']);
+
+        // Um polo deve ser adicionado
+        $this->assertTrue(is_array($response));
         $this->assertEquals('warning', $response['type']);
+        $this->assertEquals($toCompare, $databaseData);
+        $this->assertEquals(3, DB::table('acd_polos_ofertas_cursos')->get()->count());
     }
 
     public function testDelete()
@@ -208,7 +271,9 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
 
     public function testPaginateWithSort()
     {
-        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create([
+            'ucr_usr_id' => $this->user->usr_id
+        ]);
 
         foreach ($vinculos as $vinculo) {
             factory(OfertaCurso::class)->create([
@@ -227,12 +292,12 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSearch()
     {
+        $this->actingAs($this->user);
         $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
         foreach ($vinculos as $vinculo) {
@@ -254,7 +319,6 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
             'ucr_crs_id' => $ofertaCurso->ofc_crs_id
         ]);
 
-
         $search = [
             [
                 'field' => 'ofc_ano',
@@ -265,11 +329,10 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
 
         $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertCount(1, $response);
     }
 
-    public function testPaginateWithSearchAndOrder()
+    public function testPaginateWithSearchAndSort()
     {
         $vinculos = factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
 
@@ -296,9 +359,7 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
         ];
 
         $response = $this->repo->paginate($sort, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
@@ -354,29 +415,60 @@ class OfertaCursoRepositoryTest extends ModulosTestCase
 
     public function testFindAllByCurso()
     {
-        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create();
+        factory(OfertaCurso::class, 10);
 
-        $curso = $this->repo->findAllByCurso($ofertacurso->curso->crs_id);
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
 
-        $this->assertNotEmpty($curso, '');
+        $ofertacurso = factory(OfertaCurso::class, 3)->create([
+            'ofc_crs_id' => $curso->crs_id
+        ]);
+
+        $response = $this->repo->findAllByCurso($curso->crs_id);
+        $this->assertEquals(3, $response->count());
     }
 
-    public function testFindAllByCursowithoutpresencial()
+    public function testFindAllByCursoWithoutPresencial()
     {
-        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Modalidade::class, 3)->create();
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
 
-        $curso = $this->repo->findAllByCursowithoutpresencial($ofertacurso[1]->curso->crs_id);
+        factory(OfertaCurso::class, 5)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mdl_id' => 1
+        ]);
 
-        $this->assertNotEmpty($curso, '');
+        $response = $this->repo->findAllByCursoWithoutPresencial($curso->crs_id);
+        $this->assertEquals(0, $response->count());
+
+        $ofertasComEad = factory(OfertaCurso::class, 3)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mdl_id' => random_int(2, 3)
+        ]);
+
+        $response = $this->repo->findAllByCursoWithoutPresencial($curso->crs_id);
+        $this->assertEquals(3, $response->count());
     }
 
     public function testFindAllByCursowithoutEad()
     {
-        $ofertacurso = factory(Modulos\Academico\Models\OfertaCurso::class, 2)->create();
+        factory(\Modulos\Academico\Models\Modalidade::class, 3)->create();
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
 
-        $curso = $this->repo->findAllByCursowithoutEad($ofertacurso[0]->curso->crs_id);
+        factory(OfertaCurso::class, 5)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mdl_id' => random_int(2, 3)
+        ]);
 
-        $this->assertNotEmpty($curso, '');
+        $response = $this->repo->findAllByCursoWithoutEad($curso->crs_id);
+        $this->assertEquals(0, $response->count());
+
+        $ofertasComEad = factory(OfertaCurso::class, 3)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mdl_id' => 1
+        ]);
+
+        $response = $this->repo->findAllByCursoWithoutEad($curso->crs_id);
+        $this->assertEquals(3, $response->count());
     }
 
     public function testListsAllById()

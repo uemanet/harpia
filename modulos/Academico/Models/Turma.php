@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Models;
 
-use Illuminate\Support\Facades\DB;
 use Modulos\Core\Model\BaseModel;
 
 class Turma extends BaseModel

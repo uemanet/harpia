@@ -45,6 +45,12 @@ class OfertaCursoRepository extends BaseRepository
         return $oferta;
     }
 
+    /**
+     * @param array $data
+     * @param $id
+     * @param null $attribute
+     * @return array|int|null
+     */
     public function update(array $data, $id, $attribute = null)
     {
         $oferta = $this->find($id);
@@ -171,6 +177,7 @@ class OfertaCursoRepository extends BaseRepository
 
     /**
      * Busca uma oferta de curso específica de acordo com o seu Id
+     * @deprecated
      * @param $ofertaid
      * @return mixed
      */

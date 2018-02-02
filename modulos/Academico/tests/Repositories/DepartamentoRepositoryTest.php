@@ -12,7 +12,7 @@ class DepartamentoRepositoryTest extends ModulosTestCase
     {
         parent::setUp();
         $this->repo = $this->app->make(DepartamentoRepository::class);
-        $this->table = 'acd_departamento';
+        $this->table = 'acd_departamentos';
     }
 
     public function testCreate()
