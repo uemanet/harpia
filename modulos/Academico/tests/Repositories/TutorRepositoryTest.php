@@ -275,24 +275,6 @@ class TutorRepositoryTest extends ModulosTestCase
         $this->assertNotEmpty($tutores, '');
     }
 
-//    public function testFind()
-//    {
-//        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
-//
-//        $this->assertDatabaseHas('acd_tutores', $data->toArray());
-//    }
-//
-//    public function testDelete()
-//    {
-//        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
-//        $tutorId = $data->tut_id;
-//
-//        $response = $this->repo->delete($tutorId);
-//
-//        $this->assertEquals(1, $response);
-//    }
-
-
     public function tearDown()
     {
         Artisan::call('migrate:reset');
