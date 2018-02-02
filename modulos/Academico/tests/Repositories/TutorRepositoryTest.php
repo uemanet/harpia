@@ -1,63 +1,174 @@
 <?php
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Tests\ModulosTestCase;
+use Tests\Helpers\Reflection;
+use Modulos\Geral\Models\Pessoa;
+use Modulos\Academico\Models\Tutor;
+use Modulos\Academico\Models\Curso;
+use Modulos\Geral\Models\Documento;
+use Modulos\Academico\Models\Vinculo;
+use Modulos\Seguranca\Models\Usuario;
+use Modulos\Academico\Models\Matricula;
 use Illuminate\Support\Facades\Artisan;
+use Stevebauman\EloquentTable\TableCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Academico\Models\TutorGrupo;
-use Modulos\Academico\Models\Tutor;
 
-class TutorRepositoryTest extends TestCase
+
+class TutorRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
+    use Reflection;
 
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(TutorRepository::class);
+        $this->table = 'acd_tutores';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function testCreate()
     {
-        $response = $this->repo->all();
+        $data = factory(Tutor::class)->raw();
+        $entry = $this->repo->create($data);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $this->assertInstanceOf(Tutor::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Tutor::class)->create();
+        $id = $entry->tut_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Tutor::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        factory(Pessoa::class, 10);
+        $entry = factory(Tutor::class)->create();
+        $id = $entry->tut_id;
+
+        $data = $entry->toArray();
+
+        $data['tut_pes_id'] = 5;
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Tutor::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Tutor::class)->create();
+        $id = $entry->tut_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Tutor::class, 2)->create();
+
+        $model = new Tutor();
+        $expected = $model->pluck('tut_nome', 'tut_id');
+        $fromRepository = $this->repo->lists('tut_id', 'tut_nome');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Moisés',
+        ]);
+
+        $tutor = factory(Tutor::class)->create([
+            'tut_pes_id' => $pessoa->pes_id
+        ]);
+
+        $searchResult = $this->repo->search(array(['tut_pes_id', '=', $tutor->tut_pes_id]));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(Tutor::class, 2)->create();
+
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Moisés',
+        ]);
+
+        $entry = factory(Tutor::class)->create([
+            'tut_pes_id' => $pessoa->pes_id
+        ]);
+
+        $expected = [
+            'tut_id' => $entry->tut_id,
+            'pes_nome' => $entry->pessoa->pes_nome
+        ];
+
+        $searchResult = $this->repo->search(array(['tut_pes_id', '=', $entry->tut_pes_id]), ['tut_id']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Tutor::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Tutor::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Tutor();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
     {
-        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
+        factory(Tutor::class, 2)->create();
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
+        factory(Tutor::class, 2)->create();
 
         $sort = [
             'field' => 'tut_id',
@@ -67,85 +178,56 @@ class TutorRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->tut_id);
+        $this->assertEquals(2, $response->first()->tut_id);
     }
 
     public function testPaginateWithSearch()
     {
-        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
+        factory(Tutor::class, 2)->create();
 
-        factory(Modulos\Academico\Models\Tutor::class)->create([
-            'tut_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create([
-                'pes_nome' => 'Tutor'
-            ])->pes_id
+        $pessoa = factory(Pessoa::class)->create([
+            'pes_nome' => 'Moisés',
+        ]);
+
+        $documento = factory(Documento::class)->create([
+            'doc_pes_id' => $pessoa->pes_id,
+            'doc_conteudo' => '123456789'
+        ]);
+
+        $entry = factory(Tutor::class)->create([
+            'tut_pes_id' => $pessoa->pes_id
         ]);
 
         $search = [
             [
                 'field' => 'pes_nome',
-                'type' => 'like',
-                'term' => 'Tutor'
+                'type' => '=',
+                'term' => 'Moisés'
+            ],
+            [
+                'field' => 'pes_cpf',
+                'type' => '=',
+                'term' => '123456789'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
-
-        $sort = [
-            'field' => 'tut_id',
-            'sort' => 'desc'
-        ];
+        $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('Moisés', $response->first()->pes_nome);
 
         $search = [
             [
-                'field' => 'tut_id',
-                'type' => '>',
-                'term' => '1'
+                'field' => 'pes_nome',
+                'type' => 'like',
+                'term' => 'Moisés'
             ]
         ];
 
-        $response = $this->repo->paginate($sort, $search);
-
+        $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testPaginateRequest()
-    {
-        factory(Modulos\Academico\Models\Tutor::class, 2)->create();
-
-        $requestParameters = [
-            'page' => '1',
-            'field' => 'tut_id',
-            'sort' => 'asc'
-        ];
-
-        $response = $this->repo->paginateRequest($requestParameters);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Modulos\Academico\Models\Tutor::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(\Modulos\Academico\Models\Tutor::class, $response);
-
-        $this->assertArrayHasKey('tut_id', $data);
+        $this->assertEquals('Moisés', $response->first()->pes_nome);
     }
 
     public function testListsTutorPessoa()
@@ -193,22 +275,22 @@ class TutorRepositoryTest extends TestCase
         $this->assertNotEmpty($tutores, '');
     }
 
-    public function testFind()
-    {
-        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
-
-        $this->assertDatabaseHas('acd_tutores', $data->toArray());
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
-        $tutorId = $data->tut_id;
-
-        $response = $this->repo->delete($tutorId);
-
-        $this->assertEquals(1, $response);
-    }
+//    public function testFind()
+//    {
+//        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
+//
+//        $this->assertDatabaseHas('acd_tutores', $data->toArray());
+//    }
+//
+//    public function testDelete()
+//    {
+//        $data = factory(Modulos\Academico\Models\Tutor::class)->create();
+//        $tutorId = $data->tut_id;
+//
+//        $response = $this->repo->delete($tutorId);
+//
+//        $this->assertEquals(1, $response);
+//    }
 
 
     public function tearDown()
