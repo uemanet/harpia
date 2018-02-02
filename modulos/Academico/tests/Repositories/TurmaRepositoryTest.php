@@ -316,7 +316,6 @@ class TurmaRepositoryTest extends ModulosTestCase
         $shortname = $this->repo->shortName($turma);
 
         $this->assertEquals($shortname, str_replace(' ', '_', $turma->ofertacurso->curso->crs_sigla . ' ' . $turma->trm_nome . ' ' . $turma->periodo->per_nome));
-
     }
 
     public function testpendenciasTurmaReturnFalse()

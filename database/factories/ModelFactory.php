@@ -493,7 +493,7 @@ $factory->define(Modulos\Academico\Models\Vinculo::class, function (Faker\Genera
 $factory->define(Modulos\Academico\Models\Livro::class, function (Faker\Generator $faker) {
     return [
         'liv_numero' => 1,
-        'liv_tipo_livro' => $faker->randomElement(['CERTIFICADO', 'DIPLOMA'])
+        'liv_tipo_livro' => 'DIPLOMA'
     ];
 });
 
