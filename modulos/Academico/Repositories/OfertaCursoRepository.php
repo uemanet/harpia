@@ -40,7 +40,6 @@ class OfertaCursoRepository extends BaseRepository
                     $oferta->polos()->attach($id);
                 }
             }
-
         }
 
         return $oferta;

@@ -239,6 +239,11 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
         $this->assertNotEquals(false, $response);
     }
 
+    public function testdeleteReturnException()
+    {
+        $this->expectException(\Exception::class);
+        $this->repo->deleteAnexoTcc(['exception']);
+    }
 
     public function testdeleteAnexoTccReturnFalse()
     {
@@ -264,41 +269,23 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
     public function testFindDisciplinaByTurma()
     {
-        $disciplina = factory(\Modulos\Academico\Models\Disciplina::class)->create();
-        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
-
-        $mdc = $this->modulodisciplinaRepository->create([
-        'dis_id' => $disciplina->dis_id,
-        'mod_id' => $modulodisciplina->mdc_mdo_id,
-        'mtc_id' => $modulodisciplina->modulo->matriz->mtc_id,
-        'tipo_disciplina' => 'tcc',
-        'mdc_pre_requisitos' => null
-      ]);
-
-        $mdc = $this->modulodisciplinaRepository->find($mdc['data']['mdc_id']);
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_tipo_disciplina' => 'tcc']);
 
         $OfertaCurso = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
-        'ofc_crs_id' => $mdc->modulo->matriz->curso->crs_id
-      ]);
+            'ofc_crs_id' => $modulodisciplina->modulo->matriz->curso->crs_id
+        ]);
 
         $turma = factory(Modulos\Academico\Models\Turma::class)->create([
-        'trm_ofc_id' => $OfertaCurso->ofc_id
-      ]);
+            'trm_ofc_id' => $OfertaCurso->ofc_id
+        ]);
 
         $oferta = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
-        'ofd_trm_id' => $turma->trm_id,
-        'ofd_mdc_id' => $mdc->mdc_id,
-
-      ]);
+            'ofd_trm_id' => $turma->trm_id,
+            'ofd_mdc_id' => $modulodisciplina->mdc_id,
+        ]);
 
         $response = $this->repo->findDisciplinaByTurma($turma->trm_id);
 
         $this->assertNotEmpty($response, '');
-    }
-
-    public function tearDown()
-    {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
     }
 }
