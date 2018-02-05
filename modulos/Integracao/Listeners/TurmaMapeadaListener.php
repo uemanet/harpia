@@ -65,7 +65,7 @@ class TurmaMapeadaListener
             $param['url'] = $ambiente->amb_url;
             $param['token'] = $ambServico->asr_token;
             $param['action'] = 'post';
-            $param['functioname'] = $event->getEndpoint();
+            $param['functionname'] = $event->getEndpoint();
             $param['data'] = $data;
 
             $response = Moodle::send($param);

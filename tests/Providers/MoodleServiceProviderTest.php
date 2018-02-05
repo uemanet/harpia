@@ -4,6 +4,8 @@ use GuzzleHttp\Client;
 use Harpia\Moodle\Moodle;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Handler\MockHandler;
 
 class MoodleServiceProviderTest extends TestCase
 {
@@ -21,63 +23,70 @@ class MoodleServiceProviderTest extends TestCase
 
     public function testPostRequest()
     {
+        // Container para armazenar as requests feitas ao servidor
         $container = [];
         $history = Middleware::history($container);
 
-        $stack = HandlerStack::create();
-        $stack->push($history);
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([])),
+        ]);
 
-        $client = new Client(['handler' => $stack]);
+        // Response normal do Moodle
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
         $this->moodleServiceProvider->setClient($client);
 
         $response = $this->moodleServiceProvider->send([
             'url' => 'http://localhost:8080',
             'token' => 'abdefgh123456',
-            'functioname' => 'test_post',
+            'functionname' => 'test_post',
             'action' => 'post',
             'data' => [
                 'form' => []
             ]
         ]);
 
-        $this->assertEquals(1, count($container));
-
+        $expectedUrl = "http://localhost:8080/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=test_post&moodlewsrestformat=json";
         $transaction = array_shift($container);
 
-        $expectedUrl = "http://localhost:8080/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=test_post&moodlewsrestformat=json";
-
         $this->assertTrue(is_array($response), "Response must be an array");
-        $this->assertSame($expectedUrl, (string) $transaction["request"]->getUri());
+        $this->assertSame($expectedUrl, (string)$transaction["request"]->getUri());
         $this->assertEquals('POST', $transaction["request"]->getMethod());
     }
 
     public function testGetRequest()
     {
+        // Container para armazenar as requests feitas ao servidor
         $container = [];
         $history = Middleware::history($container);
 
-        $stack = HandlerStack::create();
-        $stack->push($history);
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode(["response" => true])),
+        ]);
 
-        $client = new Client(['handler' => $stack]);
+        // Response normal do Moodle
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
         $this->moodleServiceProvider->setClient($client);
 
         $response = $this->moodleServiceProvider->send([
             'url' => 'http://localhost:8080',
             'token' => 'abdefgh123456',
-            'functioname' => 'integracao_ping',
+            'functionname' => 'integracao_ping',
             'action' => 'SELECT',
             'data' => []
         ]);
 
-        $this->assertEquals(1, count($container));
+        $expectedUrl = "http://localhost:8080/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=integracao_ping&moodlewsrestformat=json";
 
         $transaction = array_shift($container);
 
-        $expectedUrl = "http://localhost:8080/webservice/rest/server.php?wstoken=abdefgh123456&wsfunction=integracao_ping&moodlewsrestformat=json";
-
         $this->assertTrue(is_array($response), "Response must be an array");
-        $this->assertSame($expectedUrl, (string) $transaction["request"]->getUri());
+        $this->assertSame($expectedUrl, (string)$transaction["request"]->getUri());
         $this->assertEquals('GET', $transaction["request"]->getMethod());
     }
 }

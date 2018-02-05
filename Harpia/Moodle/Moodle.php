@@ -30,14 +30,14 @@ class Moodle
      */
     public function send(array $param)
     {
-        $url = $param['url'] . '/webservice/rest/server.php?wstoken=' . $param['token'] . '&wsfunction=' . $param['functioname'] . '&moodlewsrestformat=json';
+        $url = $param['url'] . '/webservice/rest/server.php?wstoken=' . $param['token'] . '&wsfunction=' . $param['functionname'] . '&moodlewsrestformat=json';
 
         $method = 'post';
 
         if ($param['action'] == 'SELECT') {
             $method = 'get';
             $param['data']['wstoken'] = $param['token'];
-            $param['data']['wsfunction'] = $param['functioname'];
+            $param['data']['wsfunction'] = $param['functionname'];
             $param['data']['moodlewsrestformat'] = 'json';
         }
 
