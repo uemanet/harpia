@@ -136,7 +136,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $rules = [
             'crs_id' => 'required',
             'ofc_id' => 'required',
-            'trm_id' => 'required',
+            'trm_id' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -159,7 +159,7 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $date = new Carbon();
 
-        Excel::create('relatorio', function ($excel) use ($curso, $turma, $date, $matriculas) {
+        Excel::create('Relatorio de matrículas da turma '.$turma->trm_nome, function ($excel) use ($curso, $turma, $date, $matriculas) {
             $excel->sheet($turma->trm_nome, function ($sheet) use ($curso, $turma, $date, $matriculas) {
                 // Cabecalho
                 $objDraw = new \PHPExcel_Worksheet_Drawing();

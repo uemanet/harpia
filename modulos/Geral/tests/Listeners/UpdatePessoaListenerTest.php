@@ -164,6 +164,7 @@ class UpdatePessoaListenerTest extends ModulosTestCase
         $container = [];
         $history = Middleware::history($container);
 
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
         $handler = HandlerStack::create();
         $handler->push($history);
         $client = new Client(['handler' => $handler]);

@@ -52,7 +52,7 @@ class TempoOnlineController extends Controller
             }
         })->first();
 
-        $timeclicks = 60;
+        $timeclicks = 1200;
         $cursos = $this->cursoRepository->getCursosByAmbiente($idAmbiente);
 
         $wsfunction = $monitoramento->servico->ser_slug;
