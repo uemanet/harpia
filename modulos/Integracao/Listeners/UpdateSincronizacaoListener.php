@@ -26,7 +26,6 @@ class UpdateSincronizacaoListener
             if (config('app.debug')) {
                 throw $e;
             }
-
         } finally {
             // @codeCoverageIgnoreEnd
             // Mantem a propagacao do evento

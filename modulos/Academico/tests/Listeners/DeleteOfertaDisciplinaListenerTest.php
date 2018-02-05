@@ -222,6 +222,5 @@ class DeleteOfertaDisciplinaListenerTest extends ModulosTestCase
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $deleteOfertaDisciplinaListener->handle($deleteOfertaDisciplinaEvent);
         $this->assertEquals(3, $this->sincronizacaoRepository->count());
-
     }
 }

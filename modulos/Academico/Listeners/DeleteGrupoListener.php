@@ -39,7 +39,7 @@ class DeleteGrupoListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functioname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpoint();
                 $param['action'] = 'DELETE';
 
                 $param['data']['group']['grp_id'] = $grupo->grp_id;
