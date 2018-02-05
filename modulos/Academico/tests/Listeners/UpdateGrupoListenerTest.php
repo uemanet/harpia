@@ -145,7 +145,7 @@ class UpdateGrupoListenerTest extends ModulosTestCase
             new Response(200, ['content-type' => 'application/text'], json_encode([
                 "id" => random_int(1, 10),
                 "status" => "success",
-                "message" => "Grupo criado com sucesso"
+                "message" => "Grupo atualizado com sucesso"
             ])),
         ]);
 
