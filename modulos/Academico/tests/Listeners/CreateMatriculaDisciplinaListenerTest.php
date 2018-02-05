@@ -1,5 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
@@ -9,7 +16,7 @@ use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
  * Class CreateMatriculaDisciplinaListenerTest
  * @group Listeners
  */
-class CreateMatriculaDisciplinaListenerTest extends TestCase
+class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
 {
     protected $turma;
     protected $grupo;
@@ -18,23 +25,9 @@ class CreateMatriculaDisciplinaListenerTest extends TestCase
     protected $matriculaDisciplina;
     protected $sincronizacaoRepository;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
@@ -169,8 +162,66 @@ class CreateMatriculaDisciplinaListenerTest extends TestCase
         ]);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Aluno matriculado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $createMatriculaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener::class);
+
+        $this->assertEquals(3, $this->sincronizacaoRepository->count());
+
+        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina);
+        $sincronizacaoListener->handle($createMatriculaDisciplinaEvent);
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $createMatriculaDisciplinaEvent->getData()->getTable(),
+            'sym_table_id' => $createMatriculaDisciplinaEvent->getData()->getKey(),
+            'sym_action' => $createMatriculaDisciplinaEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $createMatriculaDisciplinaEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $createMatriculaDisciplinaListener->handle($createMatriculaDisciplinaEvent);
+
+        $this->assertEquals(4, $this->sincronizacaoRepository->count());
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $createMatriculaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener::class);
 

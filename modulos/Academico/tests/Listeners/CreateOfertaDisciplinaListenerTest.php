@@ -1,5 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 
@@ -7,30 +14,16 @@ use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
  * Class CreateOfertaDisciplinaListenerTest
  * @group Listeners
  */
-class CreateOfertaDisciplinaListenerTest extends TestCase
+class CreateOfertaDisciplinaListenerTest extends ModulosTestCase
 {
     protected $turma;
     protected $ambiente;
     protected $ofertaDisciplina;
     protected $sincronizacaoRepository;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
@@ -141,8 +134,66 @@ class CreateOfertaDisciplinaListenerTest extends TestCase
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Oferta criado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $createOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateOfertaDisciplinaListener::class);
+
+        $this->assertEquals(1, $this->sincronizacaoRepository->count());
+
+        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
+        $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $createOfertaDisciplinaEvent->getData()->getTable(),
+            'sym_table_id' => $createOfertaDisciplinaEvent->getData()->getKey(),
+            'sym_action' => $createOfertaDisciplinaEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $createOfertaDisciplinaEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
+
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $createOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateOfertaDisciplinaListener::class);
 
