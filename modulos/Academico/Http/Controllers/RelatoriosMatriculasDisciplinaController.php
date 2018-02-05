@@ -2,17 +2,18 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Excel;
+use Validator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\OfertaCursoRepository;
-use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Repositories\PoloRepository;
-use Validator;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class RelatoriosMatriculasDisciplinaController extends BaseController
 {
@@ -178,14 +179,66 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
         $date = new Carbon();
 
-        $html = view('Academico::relatoriosmatriculasdisciplina.relatorioalunosxls', compact('alunos', 'disciplina', 'date', 'turma'))->render();
+        Excel::create('Relatorio de matrículas da disciplina '.$disciplina[0], function ($excel) use ($turma, $date, $alunos, $disciplina) {
+            $excel->sheet($turma->trm_nome, function ($sheet) use ($turma, $date, $alunos, $disciplina) {
+                // Cabecalho
+                $objDraw = new \PHPExcel_Worksheet_Drawing();
+                $objDraw->setPath(public_path('/img/logo_oficial.png'));
+                $objDraw->setCoordinates('A1');
+                $objDraw->setWidthAndHeight(230, 70);
+                $objDraw->setWorksheet($sheet);
 
-        $arquivo = 'Matriculados na disciplina '.$disciplina.'.xls';
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachment; filename=$arquivo");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        print chr(255) . chr(254) . mb_convert_encoding($html, 'UTF-16LE', 'UTF-8');
-        exit;
+                $sheet->cell('B1', function ($cell) use ($disciplina) {
+                    $cell->setValue('Relatório de alunos da disciplina: ' . $disciplina[0]);
+                });
+
+                $sheet->cell('B2', function ($cell) use ($date) {
+                    $cell->setValue('Emitido em: ' . $date->format('d/m/Y H:i:s'));
+                });
+
+                $sheet->cell('B3', function ($cell) use ($turma) {
+                    $cell->setValue('Turma: ' . $turma->trm_nome);
+                });
+
+                // Dados
+                $sheet->appendRow(5, [
+                    'Matrícula',
+                    'Aluno',
+                    'Email',
+                    'Polo',
+                    'Data de Nascimento',
+                    'Identidade',
+                    'CPF',
+                    'Nome do Pai',
+                    'Nome da Mãe',
+                    'Situação'
+                ]);
+
+                foreach ($alunos as $aluno) {
+                    $data = [
+                      $aluno->mat_id,
+                      $aluno->pes_nome,
+                      $aluno->pes_email,
+                      $aluno->pol_nome,
+                      $aluno->pes_nascimento,
+                      $aluno->rg,
+                      $aluno->cpf,
+                      $aluno->pes_pai,
+                      $aluno->pes_mae,
+                      $aluno->situacao_matricula
+                    ];
+
+                    $sheet->appendRow($data);
+                }
+
+                $sheet->mergeCells('B1:F1');
+                $sheet->mergeCells('B2:F2');
+                $sheet->mergeCells('B3:F3');
+
+                $sheet->cells('B1:B3', function ($cells) {
+                    $cells->setAlignment('center');
+                });
+            });
+        })->download('xls');
     }
 }
