@@ -1,5 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Academico\Events\DeleteVinculoTutorEvent;
@@ -8,7 +15,7 @@ use Modulos\Academico\Events\DeleteVinculoTutorEvent;
  * Class DeleteVinculoTutorListenerTest
  * @group Listeners
  */
-class DeleteVinculoTutorListenerTest extends TestCase
+class DeleteVinculoTutorListenerTest extends ModulosTestCase
 {
     protected $ambiente;
     protected $sincronizacaoRepository;
@@ -17,23 +24,9 @@ class DeleteVinculoTutorListenerTest extends TestCase
     protected $tutor;
     protected $tutorGrupo;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
@@ -158,8 +151,67 @@ class DeleteVinculoTutorListenerTest extends TestCase
         $createVinculoListener->handle($createVinculoEvent);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Tutor desvinculado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $deleteVinculoListener = $this->app->make(\Modulos\Academico\Listeners\DeleteVinculoTutorListener::class);
+
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+
+        $deleteVinculoEvent = new DeleteVinculoTutorEvent($this->tutorGrupo);
+
+        $sincronizacaoListener->handle($deleteVinculoEvent);
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $deleteVinculoEvent->getData()->getTable(),
+            'sym_table_id' => $deleteVinculoEvent->getData()->getKey(),
+            'sym_action' => $deleteVinculoEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $deleteVinculoEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $deleteVinculoListener->handle($deleteVinculoEvent);
+
+        $this->assertEquals(3, $this->sincronizacaoRepository->count());
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $deleteVinculoListener = $this->app->make(\Modulos\Academico\Listeners\DeleteVinculoTutorListener::class);
 
