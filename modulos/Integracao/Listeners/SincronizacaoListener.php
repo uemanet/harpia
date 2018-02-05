@@ -32,11 +32,14 @@ class SincronizacaoListener
 
                 $this->sincronizacaoRepository->create($data);
             }
+            // @codeCoverageIgnoreStart
+            // Exception tem efeitos limitados ao ambiente de debug
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
         } finally {
+            // @codeCoverageIgnoreEnd
             // Mantem a propagacao do evento
             return true;
         }

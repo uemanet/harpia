@@ -50,32 +50,30 @@ class TurmaMapeadaListener
             // Web service de integracao
             $ambServico = $ambiente->ambienteservico->last();
 
-            if (!$ambServico) {
-                return;
+            if ($ambServico) {
+                $data['course']['trm_id'] = $turma->trm_id;
+                $data['course']['category'] = 1;
+                $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
+                $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
+                $data['course']['summaryformat'] = 1;
+                $data['course']['format'] = 'topics';
+                $data['course']['numsections'] = 0;
+
+                $param['url'] = $ambiente->amb_url;
+                $param['token'] = $ambServico->asr_token;
+                $param['action'] = 'post';
+                $param['functionname'] = $event->getEndpoint();
+                $param['data'] = $data;
+
+                $response = Moodle::send($param);
+                $status = 3;
+
+                if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                    $status = 2;
+                }
+
+                event(new UpdateSincronizacaoEvent($turma, $status, $response['message']));
             }
-
-            $data['course']['trm_id'] = $turma->trm_id;
-            $data['course']['category'] = 1;
-            $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
-            $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
-            $data['course']['summaryformat'] = 1;
-            $data['course']['format'] = 'topics';
-            $data['course']['numsections'] = 0;
-
-            $param['url'] = $ambiente->amb_url;
-            $param['token'] = $ambServico->asr_token;
-            $param['action'] = 'post';
-            $param['functionname'] = $event->getEndpoint();
-            $param['data'] = $data;
-
-            $response = Moodle::send($param);
-            $status = 3;
-
-            if (array_key_exists('status', $response) && $response['status'] == 'success') {
-                $status = 2;
-            }
-
-            event(new UpdateSincronizacaoEvent($turma, $status, $response['message']));
         } catch (ConnectException | ClientException | \Exception $exception) {
             if (env('app.debug')) {
                 throw $exception;

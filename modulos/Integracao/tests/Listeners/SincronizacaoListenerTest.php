@@ -1,6 +1,7 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Facades\Schema;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
 /**
