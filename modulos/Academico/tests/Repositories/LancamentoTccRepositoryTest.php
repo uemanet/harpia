@@ -154,6 +154,8 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
     {
         factory(LancamentoTcc::class, 2)->create();
 
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
@@ -185,7 +187,7 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
         $search = [
             [
                 'field' => 'ltc_titulo',
-                'type' => '=',
+                'type' => 'like',
                 'term' => 'Tcc'
             ]
         ];
