@@ -20,11 +20,15 @@ class UpdateSincronizacaoListener
         try {
             $data = $event->getData();
             $this->sincronizacaoRepository->updateSyncMoodle($data);
+            // @codeCoverageIgnoreStart
+            // Exception tem efeitos limitados ao ambiente de debug
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
 
+        } finally {
+            // @codeCoverageIgnoreEnd
             // Mantem a propagacao do evento
             return true;
         }
