@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\Helpers;
 
+/**
+ * @codeCoverageIgnore
+ */
 trait Reflection
 {
     /**

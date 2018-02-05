@@ -29,7 +29,7 @@ class MoodleServiceProviderTest extends TestCase
 
         // Mock de respostas do servidor
         $mock = new MockHandler([
-            new Response(200, ['content-type' => 'application/text'], json_encode([])),
+            new Response(200, ['content-type' => 'application/json'], json_encode([])),
         ]);
 
         // Response normal do Moodle
