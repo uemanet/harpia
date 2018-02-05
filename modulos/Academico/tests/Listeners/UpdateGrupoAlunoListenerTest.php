@@ -3,8 +3,11 @@
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\UpdateGrupoAlunoEvent;
-use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 
+/**
+ * Class UpdateGrupoAlunoListenerTest
+ * @group Listeners
+ */
 class UpdateGrupoAlunoListenerTest extends TestCase
 {
     protected $ambiente;

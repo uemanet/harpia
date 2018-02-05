@@ -202,21 +202,33 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testFindByWithOptions()
     {
-        factory(Modulos\Academico\Models\Livro::class)->create();
+        factory(Modulos\Academico\Models\Livro::class)->create([
+            'liv_tipo_livro' => 'CERTIFICADO'
+        ]);
 
         $result = $this->repo->findBy([
             'liv_tipo_livro' => 'DIPLOMA'
         ]);
 
-        $this->assertNotEmpty($result, '');
+        $this->assertEquals(0, $result->count());
+
+        factory(Modulos\Academico\Models\Livro::class)->create([
+            'liv_tipo_livro' => 'DIPLOMA'
+        ]);
+
+        $result = $this->repo->findBy([
+            'liv_tipo_livro' => 'DIPLOMA'
+        ]);
+
+        $this->assertEquals(1, $result->count());
     }
 
     public function testFindByNoOptions()
     {
-        factory(Modulos\Academico\Models\Livro::class)->create();
+        factory(Modulos\Academico\Models\Livro::class, 10)->create();
 
         $result = $this->repo->findBy();
 
-        $this->assertNotEmpty($result, '');
+        $this->assertEquals(10, $result->count());
     }
 }

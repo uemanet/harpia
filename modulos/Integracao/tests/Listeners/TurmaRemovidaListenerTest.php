@@ -1,50 +1,29 @@
 <?php
 
-use Modulos\Academico\Models\Turma;
-use Modulos\Academico\Models\Curso;
-use Modulos\Academico\Models\Vinculo;
-use Modulos\Academico\Models\PeriodoLetivo;
+use Tests\ModulosTestCase;
 use Modulos\Integracao\Models\Sincronizacao;
-use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\VinculoRepository;
 use Modulos\Integracao\Listeners\TurmaMapeadaListener;
 use Modulos\Integracao\Listeners\TurmaRemovidaListener;
 use Modulos\Integracao\Listeners\SincronizacaoListener;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class TurmaRemovidaListenerTest extends TestCase
+/**
+ * Class TurmaRemovidaListenerTest
+ * @group Listeners
+ */
+class TurmaRemovidaListenerTest extends ModulosTestCase
 {
+    protected $turma;
     protected $ambiente;
     protected $sincronizacaoRepository;
-    protected $turma;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
 
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(SincronizacaoRepository::class);
-
         Modulos\Integracao\Models\Servico::truncate();
-
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();

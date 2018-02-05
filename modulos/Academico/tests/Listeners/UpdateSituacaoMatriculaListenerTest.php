@@ -2,9 +2,12 @@
 
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Events\UpdateSituacaoMatriculaEvent;
 
+/**
+ * Class UpdateSituacaoMatriculaListenerTest
+ * @group Listeners
+ */
 class UpdateSituacaoMatriculaListenerTest extends TestCase
 {
     protected $ambiente;

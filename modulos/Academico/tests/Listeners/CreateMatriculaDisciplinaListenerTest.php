@@ -5,6 +5,10 @@ use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 
+/**
+ * Class CreateMatriculaDisciplinaListenerTest
+ * @group Listeners
+ */
 class CreateMatriculaDisciplinaListenerTest extends TestCase
 {
     protected $turma;

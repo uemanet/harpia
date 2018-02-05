@@ -4,6 +4,10 @@ use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\DeleteGrupoAlunoEvent;
 
+/**
+ * Class DeleteGrupoAlunoListenerTest
+ * @group Listeners
+ */
 class DeleteGrupoAlunoListenerTest extends TestCase
 {
     protected $ambiente;

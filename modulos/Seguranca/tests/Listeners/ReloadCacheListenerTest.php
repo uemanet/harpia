@@ -9,6 +9,10 @@ use Modulos\Seguranca\Models\Permissao;
 use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Listeners\ReloadCacheListener;
 
+/**
+ * Class ReloadCacheListenerTest
+ * @group Listeners
+ */
 class ReloadCacheListenerTest extends ModulosTestCase
 {
     public function testHandle()

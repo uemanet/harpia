@@ -4,6 +4,10 @@ use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Academico\Events\DeleteVinculoTutorEvent;
 
+/**
+ * Class DeleteVinculoTutorListenerTest
+ * @group Listeners
+ */
 class DeleteVinculoTutorListenerTest extends TestCase
 {
     protected $ambiente;

@@ -1,35 +1,25 @@
 <?php
 
+use Tests\ModulosTestCase;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Events\DeleteSincronizacaoEvent;
 
-class DeleteSincronizacaoListenerTest extends TestCase
+/**
+ * Class DeleteSincronizacaoListenerTest
+ * @group Listeners
+ */
+class DeleteSincronizacaoListenerTest extends ModulosTestCase
 {
+    protected $turma;
     protected $ambiente;
     protected $sincronizacaoRepository;
-    protected $turma;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
 
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
-
         Modulos\Integracao\Models\Servico::truncate();
-
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();
@@ -138,10 +128,10 @@ class DeleteSincronizacaoListenerTest extends TestCase
         ]);
 
         $deleteEvent = new DeleteSincronizacaoEvent(
-          $syncEvent->getData()->getTable(),
-          $syncEvent->getData()->getKey(),
-          2,
-          "",
+            $syncEvent->getData()->getTable(),
+            $syncEvent->getData()->getKey(),
+            2,
+            "",
             $syncEvent->getAction()
         );
 

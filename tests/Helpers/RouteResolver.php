@@ -1,9 +1,10 @@
 <?php
 
-namespace Harpia\Mock;
+namespace Tests\Helpers;
 
 /**
  * Classe para Mock de RouteResolver
+ * @codeCoverageIgnore
  * @see \Illuminate\Http\Request::getRouteResolver()
  * @see \Illuminate\Http\Request::setRouteResolver()
  */

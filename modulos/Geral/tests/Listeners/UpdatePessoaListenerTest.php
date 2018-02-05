@@ -5,6 +5,10 @@ use Modulos\Geral\Events\UpdatePessoaEvent;
 use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
+/**
+ * Class UpdatePessoaListenerTest
+ * @group Listeners
+ */
 class UpdatePessoaListenerTest extends TestCase
 {
     protected $turma;

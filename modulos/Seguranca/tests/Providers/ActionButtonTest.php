@@ -1,7 +1,7 @@
 <?php
 
 use Tests\ModulosTestCase;
-use Harpia\Mock\RouteResolver;
+use Tests\Helpers\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
 use Illuminate\Support\Facades\Cache;

@@ -1,9 +1,12 @@
 <?php
 
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 use Modulos\Academico\Events\UpdateProfessorDisciplinaEvent;
 
+/**
+ * Class UpdateProfessorDisciplinaListenerTest
+ * @group Listeners
+ */
 class UpdateProfessorDisciplinaListenerTest extends TestCase
 {
     protected $turma;
