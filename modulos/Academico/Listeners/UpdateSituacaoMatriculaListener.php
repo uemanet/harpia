@@ -39,7 +39,7 @@ class UpdateSituacaoMatriculaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functioname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpoint();
                 $param['action'] = 'UPDATE_SITUACAO_MATRICULA';
 
                 $param['data']['student']['trm_id'] = $matriculaTurma->mat_trm_id;
