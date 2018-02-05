@@ -161,7 +161,7 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
             'mof_mat_id' => $this->matriculaCurso->mat_id,
         ]);
     }
-    
+
     public function testHandleWithSuccess()
     {
         // Mock do servidor
