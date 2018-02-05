@@ -8,12 +8,69 @@ use DB;
 use Carbon\Carbon;
 use Modulos\Geral\Models\Anexo;
 use Modulos\Geral\Repositories\AnexoRepository;
+use Modulos\Academico\Models\ModuloDisciplina;
 
 class LancamentoTccRepository extends BaseRepository
 {
-    public function __construct(LancamentoTcc $lancamentotcc)
+    protected $moduloDisciplina;
+
+    public function __construct(LancamentoTcc $lancamentotcc, ModuloDisciplina $moduloDisciplina)
     {
         $this->model = $lancamentotcc;
+        $this->moduloDisciplina = $moduloDisciplina;
+    }
+
+    /**
+     * @param null $sort
+     * @param null $search
+     * @return mixed
+     */
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->moduloDisciplina
+            ->join('acd_disciplinas', function ($join) {
+                $join->on('mdc_dis_id', '=', 'dis_id');
+            })
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->join('acd_matriculas_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
+            })
+            ->where('mdc_tipo_disciplina', '=', 'tcc')
+            ->groupby('trm_id')->distinct();
+
+        if (!empty($search)) {
+            foreach ($search as $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        $result = $result->paginate(15);
+
+        return $result;
     }
 
     public function findBy(array $options, array $select = null)
