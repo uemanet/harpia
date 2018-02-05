@@ -1,5 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\UpdateGrupoAlunoEvent;
@@ -8,7 +15,7 @@ use Modulos\Academico\Events\UpdateGrupoAlunoEvent;
  * Class UpdateGrupoAlunoListenerTest
  * @group Listeners
  */
-class UpdateGrupoAlunoListenerTest extends TestCase
+class UpdateGrupoAlunoListenerTest extends ModulosTestCase
 {
     protected $ambiente;
     protected $sincronizacaoRepository;
@@ -16,23 +23,9 @@ class UpdateGrupoAlunoListenerTest extends TestCase
     protected $grupo;
     protected $matricula;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
 
         Modulos\Integracao\Models\Servico::truncate();
@@ -155,8 +148,84 @@ class UpdateGrupoAlunoListenerTest extends TestCase
         ]);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Aluno atualizado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $updateGrupoAlunoListener = $this->app->make(\Modulos\Academico\Listeners\UpdateGrupoAlunoListener::class);
+
+        $matriculaRepository = $this->app->make(\Modulos\Academico\Repositories\MatriculaCursoRepository::class);
+        $grupoRepository = $this->app->make(\Modulos\Academico\Repositories\GrupoRepository::class);
+
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+
+        // Cria novo grupo
+        $novoGrupo = factory(\Modulos\Academico\Models\Grupo::class)->create([
+            'grp_trm_id' => $this->turma->trm_id,
+            'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
+            'grp_nome' => "Group B"
+        ]);
+
+        // Atualiza a matricula para novo grupo
+        $oldGrupo = $this->matricula->mat_grp_id;
+
+        $matriculaRepository->update([
+            'mat_grp_id' => $novoGrupo->grp_id
+        ], $this->matricula->mat_id);
+
+        // Dispara evento de atualizacao
+        $updateGrupoAlunoEvent = new UpdateGrupoAlunoEvent($this->matricula, $oldGrupo);
+        $sincronizacaoListener->handle($updateGrupoAlunoEvent);
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $updateGrupoAlunoEvent->getData()->getTable(),
+            'sym_table_id' => $updateGrupoAlunoEvent->getData()->getKey(),
+            'sym_action' => $updateGrupoAlunoEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $updateGrupoAlunoEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $updateGrupoAlunoListener->handle($updateGrupoAlunoEvent);
+
+        $this->assertEquals(3, $this->sincronizacaoRepository->count());
+    }
+
+    public function testHandleWithFAIL()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $updateGrupoAlunoListener = $this->app->make(\Modulos\Academico\Listeners\UpdateGrupoAlunoListener::class);
 
