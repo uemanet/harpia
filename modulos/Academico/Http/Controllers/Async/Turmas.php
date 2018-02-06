@@ -54,7 +54,7 @@ class Turmas extends BaseController
         $ids = AmbienteTurma::all()->pluck('atr_trm_id')->toArray();
 
         $turmasSemAmbiente = $turmas->filter(function ($turma) use ($ids, $idOfertaCurso) {
-            if (in_array($turma->trm_id, $ids) && $turma->trm_ofc_id == $idOfertaCurso && $turma->trm_integrada == 1) {
+            if (!in_array($turma->trm_id, $ids) && $turma->trm_ofc_id == $idOfertaCurso && $turma->trm_integrada == 1) {
                 return $turma;
             }
         });
