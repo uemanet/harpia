@@ -152,54 +152,68 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
     public function testPaginateWithoutParameters()
     {
-        factory(LancamentoTcc::class, 2)->create();
-
-        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create();
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_tipo_disciplina' => 'tcc']);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_mdc_id' => $modulodisciplina->mdc_id]);
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $oferta->turma->trm_id]);
+        $matriculaOferta = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
 
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertGreaterThan(1, $response->total());
+        $this->assertEquals(1, $response->total());
     }
 
     public function testPaginateWithSort()
     {
-        factory(LancamentoTcc::class, 2)->create();
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_tipo_disciplina' => 'tcc']);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_mdc_id' => $modulodisciplina->mdc_id]);
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $oferta->turma->trm_id]);
+        $matriculaOferta = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
+
 
         $sort = [
-            'field' => 'ltc_id',
+            'field' => 'trm_id',
             'sort' => 'desc'
         ];
 
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-        $this->assertEquals(2, $response->first()->ltc_id);
+        $this->assertEquals(1, count($response));
     }
 
     public function testPaginateWithSearch()
     {
-        factory(LancamentoTcc::class, 2)->create();
-        factory(LancamentoTcc::class)->create([
-            'ltc_titulo' => 'Tcc',
-        ]);
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_tipo_disciplina' => 'tcc']);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_mdc_id' => $modulodisciplina->mdc_id]);
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $oferta->turma->trm_id]);
+        $matriculaOferta = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
 
         $search = [
             [
-                'field' => 'ltc_titulo',
-                'type' => 'like',
-                'term' => 'Tcc'
+                'field' => 'mdc_id',
+                'type' => '=',
+                'term' => $modulodisciplina->mdc_id
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
+
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-        $this->assertEquals('Tcc', $response->first()->ltc_titulo);
+        $this->assertEquals($oferta->turma->trm_nome, $response->first()->trm_nome);
     }
 
     public function testPaginateRequest()
     {
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_tipo_disciplina' => 'tcc']);
+        $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_mdc_id' => $modulodisciplina->mdc_id]);
+        $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $oferta->turma->trm_id]);
+        $matriculaOferta = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
+
+        $response = $this->repo->paginate();
+
+
         factory(LancamentoTcc::class, 2)->create();
 
         $requestParameters = [
