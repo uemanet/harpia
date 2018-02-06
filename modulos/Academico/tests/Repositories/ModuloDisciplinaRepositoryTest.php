@@ -525,14 +525,8 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
-    //TODO tem que refatorar funcao paginate no repository
     public function testPaginateWithoutParameters()
     {
-        // Pare aqui e marque este teste como incompleto.
-        $this->markTestIncomplete(
-            'Teste incompleto.'
-        );
-
         factory(ModuloDisciplina::class, 2)->create();
 
         $response = $this->repo->paginate();
@@ -541,14 +535,8 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $this->assertGreaterThan(1, $response->total());
     }
 
-    //TODO tem que refatorar funcao paginate no repository
     public function testPaginateWithSort()
     {
-        // Pare aqui e marque este teste como incompleto.
-        $this->markTestIncomplete(
-            'Teste incompleto.'
-        );
-
         factory(ModuloDisciplina::class, 2)->create();
 
         $sort = [
@@ -562,7 +550,6 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $this->assertEquals(2, $response->first()->mdc_id);
     }
 
-    //TODO tem que refatorar funcao paginate no repository
     public function testPaginateWithSearch()
     {
         $this->mock();
@@ -576,27 +563,16 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
                 'field' => 'mdc_tipo_disciplina',
                 'type' => '=',
                 'term' => 'eletiva'
-            ],
-            [
-                'field' => 'pes_cpf',
-                'type' => '=',
-                'term' => '123456'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
-        // Pare aqui e marque este teste como incompleto.
-        $this->markTestIncomplete(
-            'Teste incompleto.'
-        );
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
         $this->assertEquals('Eletiva', $response->first()->mdc_tipo_disciplina);
     }
 
-    //TODO tem que refatorar funcao paginate no repository
     public function testPaginateWithSortAndSearch()
     {
         $this->mock();
@@ -621,23 +597,12 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         $response = $this->repo->paginate($sort, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
 
-        // Pare aqui e marque este teste como incompleto.
-        $this->markTestIncomplete(
-            'Teste incompleto.'
-        );
-
         $this->assertGreaterThan(0, $response->total());
         $this->assertEquals('Eletiva', $response->first()->mdc_tipo_disciplina);
     }
 
-    //TODO tem que refatorar funcao paginate no repository
     public function testPaginateRequest()
     {
-        // Pare aqui e marque este teste como incompleto.
-        $this->markTestIncomplete(
-            'Teste incompleto.'
-        );
-
         factory(ModuloDisciplina::class, 2)->create();
 
         $requestParameters = [
@@ -716,7 +681,6 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
         list(, $modulo, $moduloDisciplina) = $data;
 
-
         $turmaId = $moduloDisciplina->ofertasDisciplinas->first()->ofd_trm_id;
         $perdId = $moduloDisciplina->ofertasDisciplinas->first()->ofd_per_id;
         $cursoNvcId = $modulo->matriz->curso->first()->crs_nvc_id;
@@ -734,7 +698,6 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
         ]);
 
         $result = $this->repo->getAllDisciplinasNotOfertadasByModulo($modulo->mdo_id, $turmaId, $perdId);
-
 
         $this->assertNotEmpty($result);
     }
