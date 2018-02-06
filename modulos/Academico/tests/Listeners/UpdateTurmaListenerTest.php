@@ -1,5 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Academico\Events\UpdateTurmaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
@@ -7,33 +14,18 @@ use Modulos\Integracao\Events\TurmaMapeadaEvent;
  * Class UpdateTurmaListenerTest
  * @group Listeners
  */
-class UpdateTurmaListenerTest extends TestCase
+class UpdateTurmaListenerTest extends ModulosTestCase
 {
+    protected $turma;
     protected $ambiente;
     protected $sincronizacaoRepository;
-    protected $turma;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
 
     public function setUp()
     {
         parent::setUp();
 
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
-
         Modulos\Integracao\Models\Servico::truncate();
-
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();
@@ -131,8 +123,72 @@ class UpdateTurmaListenerTest extends TestCase
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Turma atualizada com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $updateTurmaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateTurmaListener::class);
+        $turmaRepository = $this->app->make(\Modulos\Academico\Repositories\TurmaRepository::class);
+
+        $this->assertEquals(1, $this->sincronizacaoRepository->count());
+
+        // Atualiza o grupo
+        $turmaRepository->update(["trm_nome" => "Teste Mudança de Nome"], $this->turma->trm_id);
+
+        $updateTurmaEvent = new UpdateTurmaEvent($this->turma);
+        $sincronizacaoListener->handle($updateTurmaEvent);
+
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $updateTurmaEvent->getData()->getTable(),
+            'sym_table_id' => $updateTurmaEvent->getData()->getKey(),
+            'sym_action' => $updateTurmaEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $updateTurmaEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+
+        $updateTurmaListener->handle($updateTurmaEvent);
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $updateTurmaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateTurmaListener::class);
         $turmaRepository = $this->app->make(\Modulos\Academico\Repositories\TurmaRepository::class);

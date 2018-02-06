@@ -47,7 +47,7 @@ class UpdateProfessorDisciplinaListener
 
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functioname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpoint();
                 $param['action'] = "UPDATE";
 
                 $nome = explode(" ", $ofertaDisciplina->professor->pessoa->pes_nome);

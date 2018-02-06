@@ -1,6 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
 use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 
 /**
@@ -107,8 +113,63 @@ class TurmaMapeadaListenerTest extends ModulosTestCase
         ]);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Curso atualizado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
+
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+
+        $sincronizacaoListener->handle($turmaMapeadaEvent);
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $turmaMapeadaEvent->getData()->getTable(),
+            'sym_table_id' => $turmaMapeadaEvent->getData()->getKey(),
+            'sym_action' => $turmaMapeadaEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $turmaMapeadaEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $turmaMapeadaListener->handle($turmaMapeadaEvent);
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 

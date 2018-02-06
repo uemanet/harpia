@@ -48,7 +48,7 @@ class CreateMatriculaDisciplinaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functioname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpoint();
                 $param['action'] = 'CREATE';
 
                 $param['data']['enrol']['mof_id'] = $matriculaOfertaDisciplina->mof_id;

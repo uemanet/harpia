@@ -1,5 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\UpdateProfessorDisciplinaEvent;
 
@@ -7,32 +14,18 @@ use Modulos\Academico\Events\UpdateProfessorDisciplinaEvent;
  * Class UpdateProfessorDisciplinaListenerTest
  * @group Listeners
  */
-class UpdateProfessorDisciplinaListenerTest extends TestCase
+class UpdateProfessorDisciplinaListenerTest extends ModulosTestCase
 {
     protected $turma;
     protected $ambiente;
     protected $ofertaDisciplina;
     protected $sincronizacaoRepository;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
 
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
-
         Modulos\Integracao\Models\Servico::truncate();
 
         $this->createAmbiente();
@@ -118,7 +111,7 @@ class UpdateProfessorDisciplinaListenerTest extends TestCase
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
 
         // Cria a oferta
-        $ofertaDisciplinaData =  [
+        $ofertaDisciplinaData = [
             'ofd_trm_id' => $this->turma->trm_id,
             'ofd_per_id' => $this->turma->trm_per_id,
         ];
@@ -141,8 +134,81 @@ class UpdateProfessorDisciplinaListenerTest extends TestCase
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Professor atualizado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $updateProfessorDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateProfessorDisciplinaListener::class);
+
+        $this->assertEquals(1, $this->sincronizacaoRepository->count());
+
+        // Atualiza o professor da disciplina
+        $novoProfessor = factory(\Modulos\Academico\Models\Professor::class)->create();
+        $ofertaDisciplinaRepository = $this->app->make(\Modulos\Academico\Repositories\OfertaDisciplinaRepository::class);
+
+        $ofertaDisciplinaRepository->update([
+            'ofd_prf_id' => $novoProfessor->prf_id
+        ], $this->ofertaDisciplina->ofd_id);
+
+        $this->assertDatabaseHas('acd_ofertas_disciplinas', [
+            'ofd_prf_id' => $novoProfessor->prf_id
+        ]);
+
+        $this->assertEquals(1, $ofertaDisciplinaRepository->count());
+
+        // Dispara evento de atualizacao de professor
+        $updateProfessorDisciplinaEvent = new UpdateProfessorDisciplinaEvent($this->ofertaDisciplina);
+        $sincronizacaoListener->handle($updateProfessorDisciplinaEvent);
+
+        $this->assertDatabaseHas('int_sync_moodle', [
+            'sym_table' => $updateProfessorDisciplinaEvent->getData()->getTable(),
+            'sym_table_id' => $updateProfessorDisciplinaEvent->getData()->getKey(),
+            'sym_action' => $updateProfessorDisciplinaEvent->getAction(),
+            'sym_status' => 1,
+            'sym_mensagem' => null,
+            'sym_data_envio' => null,
+            'sym_extra' => $updateProfessorDisciplinaEvent->getExtra()
+        ]);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $updateProfessorDisciplinaListener->handle($updateProfessorDisciplinaEvent);
+
+        $this->assertEquals(2, $this->sincronizacaoRepository->count());
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $updateProfessorDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\UpdateProfessorDisciplinaListener::class);
 

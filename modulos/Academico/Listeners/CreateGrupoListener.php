@@ -39,7 +39,7 @@ class CreateGrupoListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functioname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpoint();
                 $param['action'] = 'CREATE';
 
                 $param['data']['group']['trm_id'] = $grupo->grp_trm_id;

@@ -1,6 +1,13 @@
 <?php
 
+use GuzzleHttp\Client;
+use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Modulos\Geral\Models\Pessoa;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Geral\Events\UpdatePessoaEvent;
 use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
@@ -9,33 +16,18 @@ use Modulos\Integracao\Events\TurmaMapeadaEvent;
  * Class UpdatePessoaListenerTest
  * @group Listeners
  */
-class UpdatePessoaListenerTest extends TestCase
+class UpdatePessoaListenerTest extends ModulosTestCase
 {
     protected $turma;
     protected $ambiente;
     protected $sincronizacaoRepository;
 
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
 
-        Artisan::call('modulos:migrate');
-
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);
-
         Modulos\Integracao\Models\Servico::truncate();
-
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();
@@ -133,21 +125,60 @@ class UpdatePessoaListenerTest extends TestCase
         $sincronizacaoListener->handle($turmaMapeadaEvent);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Usuário atualizado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-
         $this->assertEquals(1, Sincronizacao::all()->count());
-
         $pessoa = Pessoa::all()->first();
         $updatePessoaEvent = new UpdatePessoaEvent($pessoa, $this->ambiente->amb_id);
-
         $sincronizacaoListener->handle($updatePessoaEvent);
-
         $this->assertEquals(2, Sincronizacao::all()->count());
-
         $updatePessoaListener = $this->app->make(\Modulos\Geral\Listeners\UpdatePessoaListener::class);
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $updatePessoaListener->handle($updatePessoaEvent);
+    }
 
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
+        $this->assertEquals(1, Sincronizacao::all()->count());
+        $pessoa = Pessoa::all()->first();
+        $updatePessoaEvent = new UpdatePessoaEvent($pessoa, $this->ambiente->amb_id);
+        $sincronizacaoListener->handle($updatePessoaEvent);
+        $this->assertEquals(2, Sincronizacao::all()->count());
+        $updatePessoaListener = $this->app->make(\Modulos\Geral\Listeners\UpdatePessoaListener::class);
         $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
         $updatePessoaListener->handle($updatePessoaEvent);
     }

@@ -1,6 +1,12 @@
 <?php
 
+use GuzzleHttp\Client;
 use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
@@ -121,8 +127,57 @@ class TurmaRemovidaListenerTest extends ModulosTestCase
         $sincronizacaoListener->handle($turmaMapeadaEvent);
     }
 
-    public function testHandle()
+    public function testHandleWithSuccess()
     {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "id" => random_int(1, 10),
+                "status" => "success",
+                "message" => "Curso criado com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
+        $turmaRemovidaListener = $this->app->make(TurmaRemovidaListener::class);
+
+        $this->assertEquals(1, Sincronizacao::all()->count());
+
+        $turmaRemovidaEvent = new TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id);
+
+        $sincronizacaoListener->handle($turmaRemovidaEvent);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $turmaRemovidaListener->handle($turmaRemovidaEvent);
+
+        $this->assertEquals(2, Sincronizacao::all()->count());
+    }
+
+    public function testHandleWithFail()
+    {
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // A falta do Mock de response causa o disparo de uma excecao no Listener
+        $handler = HandlerStack::create();
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
         $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
         $turmaRemovidaListener = $this->app->make(TurmaRemovidaListener::class);
 
