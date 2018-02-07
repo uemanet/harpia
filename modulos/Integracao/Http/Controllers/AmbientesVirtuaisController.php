@@ -228,7 +228,7 @@ class AmbientesVirtuaisController extends BaseController
 
         $servicoModel = new Servico();
 
-        $servicos = $servicoModel->whereNotIn("ser_id", $idsAmbientesAdicionados)->get();
+        $servicos = $servicoModel->whereNotIn("ser_id", $idsAmbientesAdicionados)->pluck('ser_nome', 'ser_id');
         $servicosdoambiente = $ambiente->servicos;
 
         return view('Integracao::ambientesvirtuais.adicionarservico', compact('ambiente', 'servicos', 'servicosdoambiente'));
