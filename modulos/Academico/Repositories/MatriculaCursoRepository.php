@@ -107,6 +107,7 @@ class MatriculaCursoRepository extends BaseRepository
         return (bool)$result->count();
     }
 
+    //TODO: Refatorar a consulta dessa função
     public function verifyExistsVagasByTurma($turmaId)
     {
         $result = $this->model
