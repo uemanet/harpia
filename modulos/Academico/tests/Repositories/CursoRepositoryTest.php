@@ -98,6 +98,7 @@ class CursoRepositoryTest extends ModulosTestCase
             $table->dropColumn('crs_descricao');
         });
 
+        $this->expectException(\Exception::class);
         $return = $this->repo->create($data);
 
         $this->assertTrue(is_array($return));
@@ -200,7 +201,9 @@ class CursoRepositoryTest extends ModulosTestCase
         Schema::table($this->table, function ($table) {
             $table->dropColumn('crs_descricao');
         });
-        
+
+        $this->expectException(\Exception::class);
+        $data['crs_data_autorizacao'] = $fromRepository->crs_data_autorizacao;
         $return = $this->repo->updateCurso($data, $id);
         $this->assertTrue(is_array($return));
         $this->assertArrayHasKey('status', $return);
