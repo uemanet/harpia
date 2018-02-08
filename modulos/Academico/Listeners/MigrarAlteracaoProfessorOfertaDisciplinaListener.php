@@ -84,7 +84,7 @@ class MigrarAlteracaoProfessorOfertaDisciplinaListener
                             }
                         }
 
-                        event(new AtualizarSyncEvent($ofertaDisciplina, $status, $retorno['message']));
+                        event(new AtualizarSyncEvent($ofertaDisciplina, $status, $retorno['message'], $event->getAction()));
                     } catch (\GuzzleHttp\Exception\ConnectException $e) {
                         event(new AtualizarSyncEvent($ofertaDisciplina, 3, $e->getMessage()));
                     } catch (\GuzzleHttp\Exception\ClientException $e) {
