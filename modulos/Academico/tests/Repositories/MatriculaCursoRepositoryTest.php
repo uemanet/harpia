@@ -1548,6 +1548,8 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
             for ($j = 0; $j < 10; $j++) {
                 $matricula = factory(Matricula::class)->raw();
 
+                $matricula['mat_data_conclusao'] = $fimPeriodo->format('d/m/Y');
+
                 $matricula = array_merge($matricula, [
                     'created_at' => $inicioPeriodo->format('Y-m-d H:i:s'),
                     'updated_at' => $inicioPeriodo->format('Y-m-d H:i:s'),
