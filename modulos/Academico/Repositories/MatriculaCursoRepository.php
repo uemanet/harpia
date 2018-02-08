@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Modulos\Academico\Models\Matricula;
-use Modulos\Core\Repository\BaseRepository;
 use DB;
 use Auth;
-use stdClass;
+use Modulos\Academico\Models\Matricula;
+use Modulos\Core\Repository\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 class MatriculaCursoRepository extends BaseRepository
 {
@@ -20,18 +21,18 @@ class MatriculaCursoRepository extends BaseRepository
     protected $vinculoRepository;
 
     private $meses = [
-        1 => "Janeiro",
-        2 => "Fevereiro",
-        3 => "Março",
-        4 => "Abril",
-        5 => "Maio",
-        6 => "Junho",
-        7 => "Julho",
-        8 => "Agosto",
-        9 => "Setembro",
-        10 => "Outubro",
-        11 => "Novembro",
-        12 => "Dezembro",
+        1 => "Jan",
+        2 => "Fev",
+        3 => "Mar",
+        4 => "Abr",
+        5 => "Mai",
+        6 => "Jun",
+        7 => "Jul",
+        8 => "Ago",
+        9 => "Set",
+        10 => "Out",
+        11 => "Nov",
+        12 => "Dez",
     ];
 
     public function __construct(
@@ -364,7 +365,7 @@ class MatriculaCursoRepository extends BaseRepository
 
         if ($matriculas->count()) {
             foreach ($matriculas as $matricula) {
-                $obj = new StdClass;
+                $obj = new \stdClass();
 
                 $obj->mat_id = $matricula->mat_id;
                 $obj->alu_id = $matricula->alu_id;
@@ -953,15 +954,30 @@ class MatriculaCursoRepository extends BaseRepository
         return $result;
     }
 
-    public function getMatriculasPorMesUltimosSeisMeses()
+    public function getMatriculasPorMesUltimosSeisMeses(): SupportCollection
     {
-        $result = DB::table('acd_matriculas')
-            ->select(DB::raw('MONTH(created_at) as mes'), DB::raw('COUNT(*) as quantidade'))
-            ->where(DB::raw('created_at'), '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 6 MONTH)'))
-            ->groupBy('mes')->get()->toArray();
+        $fimPeriodo = new \DateTime('first day of next month');
+        $inicioPeriodo = $fimPeriodo->sub(new \DateInterval('P6M'));
 
-        foreach ($result as $key => $item) {
-            $result[$key]->mes = $this->meses[$result[$key]->mes];
+        // Traz todas as matriculas do periodo
+        $historico = DB::table('acd_matriculas')->where('created_at', '>=', $inicioPeriodo->format('Y-m-d') . ' 00:00:00')->get();
+
+        $result = collect([]);
+
+        for ($i = 0; $i < 6; $i++) {
+            $data = [];
+
+            $matriculasMes = $historico->filter(function ($value, $key) use ($inicioPeriodo) {
+                $createdAt = new \DateTime($value->created_at);
+                return (int)$createdAt->format('m') == (int)$inicioPeriodo->format('m');
+            });
+
+            $data['mes'] = $this->meses[(int)$inicioPeriodo->format('m')] . '/' . $inicioPeriodo->format('y');
+            $data['quantidade'] = $matriculasMes->count();
+
+            $result[] = $data;
+
+            $inicioPeriodo = $inicioPeriodo->add(new \DateInterval('P1M'));
         }
 
         return $result;

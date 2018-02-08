@@ -404,7 +404,7 @@ $factory->define(Modulos\Academico\Models\Matricula::class, function () {
         'mat_grp_id' => $grupo->grp_id,
         'mat_situacao' => 'cursando',
         'mat_modo_entrada' => 'vestibular',
-        'mat_data_conclusao' => '15/11/2015'
+        'mat_data_conclusao' => '2015-11-15'
     ];
 });
 

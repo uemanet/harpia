@@ -1,29 +1,25 @@
 <?php
 
 use Carbon\Carbon;
-use Modulos\Academico\Models\Registro;
-use Modulos\Academico\Repositories\RegistroRepository;
 use Tests\ModulosTestCase;
 use Tests\Helpers\Reflection;
 use Modulos\Academico\Models\Curso;
 use Modulos\Academico\Models\Vinculo;
 use Modulos\Seguranca\Models\Usuario;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Artisan;
+use Modulos\Academico\Models\Registro;
 use Modulos\Academico\Models\Matricula;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Collection;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\DocumentoRepository;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Modulos\Academico\Repositories\RegistroRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 
-class MatriculaCursoTest extends ModulosTestCase
+class MatriculaCursoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware,
-        Reflection;
+    use Reflection;
 
     protected $repo;
 
@@ -1542,31 +1538,33 @@ class MatriculaCursoTest extends ModulosTestCase
         $this->assertEquals(1, $result->quantidade);
     }
 
-    //TODO tem que refatorar a funcao no repository
     public function testGetMatriculasPorMesUltimosSeisMeses()
     {
-        // Pare aqui e marque este teste como incompleto.
-        $this->markTestIncomplete(
-            'Teste incompleto.'
-        );
+        $fimPeriodo = new \DateTime('first day of next month');
+        $inicioPeriodo = $fimPeriodo->sub(new \DateInterval('P6M'));
 
-        $formato = date("d/m/Y H:i:s", time() - 60 * 60 * 24 * 210);
-        $data = new \DateTime($formato); // 6 meses atras
-        $intervalo = new \DateInterval('P1D');
+        // Cria 10 registros de matricula a cada mes nos ultimos 6 meses
+        for ($i = 0; $i < 6; $i++) {
+            for ($j = 0; $j < 10; $j++) {
+                $matricula = factory(Matricula::class)->raw();
 
-        for ($i = 0; $i <= 210; $i++) {
-            $data = $data->add($intervalo);
-            $matricula = factory(Matricula::class)->raw();
+                $matricula = array_merge($matricula, [
+                    'created_at' => $inicioPeriodo->format('Y-m-d H:i:s'),
+                    'updated_at' => $inicioPeriodo->format('Y-m-d H:i:s'),
+                ]);
 
-            $matricula = array_merge($matricula, [
-                'created_at' => $data->format('Y-m-d H:i:s'),
-                'updated_at' => $data->format('Y-m-d H:i:s'),
-            ]);
+                DB::table('acd_matriculas')->insert($matricula);
+            }
 
-            DB::table('acd_matriculas')->insert($matricula);
+            $inicioPeriodo = $inicioPeriodo->add(new \DateInterval('P1M'));
         }
 
         $result = $this->repo->getMatriculasPorMesUltimosSeisMeses();
+
+        foreach ($result as $item) {
+            $this->assertTrue(array_key_exists('mes', $item));
+            $this->assertEquals(10, $item['quantidade']);
+        }
     }
 
     private function mockMatriculaGeral(array $tipoDisciplina = ['eletiva'],
