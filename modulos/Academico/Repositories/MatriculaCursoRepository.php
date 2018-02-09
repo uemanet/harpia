@@ -108,13 +108,10 @@ class MatriculaCursoRepository extends BaseRepository
         return (bool)$result->count();
     }
 
-    //TODO: Refatorar a consulta dessa função
     public function verifyExistsVagasByTurma($turmaId)
     {
-        $result = $this->model
-            ->rightJoin('acd_turmas', function ($join) {
-                $join->on('mat_trm_id', '=', 'trm_id');
-            })
+        $result = DB::table('acd_turmas')
+            ->leftJoin('acd_matriculas', 'mat_trm_id', '=', 'trm_id')
             ->select('trm_qtd_vagas', DB::raw('COUNT(mat_trm_id) as qtd_matriculas'))
             ->where('trm_id', '=', $turmaId)
             ->groupBy('trm_id')

@@ -81,18 +81,19 @@ class CursoRepositoryTest extends ModulosTestCase
 
     public function testCreateWithException()
     {
+        config(['app.debug' => true]);
         // Necessario estar logado por conta do Vinculo
         $user = factory(Usuario::class)->create();
         $this->actingAs($user);
-        
+
         $curso = factory(Curso::class)->raw();
         $configs = $this->mockConfigs();
-        
+
         $data = array_merge($curso, $configs);
-        
+
         $this->assertEquals(0, Curso::all()->count());
         $this->assertEquals(0, ConfiguracaoCurso::all()->count());
-        
+
         // Exclui uma coluna para produzir um erro ao salvar
         Schema::table($this->table, function ($table) {
             $table->dropColumn('crs_descricao');
@@ -196,6 +197,7 @@ class CursoRepositoryTest extends ModulosTestCase
         $this->assertEquals('Curso não existe.', $return['message']);
 
         // Update - erro / exception
+        config(['app.debug' => true]);
 
         // Exclui uma coluna para produzir um erro ao atualizar
         Schema::table($this->table, function ($table) {
@@ -492,7 +494,7 @@ class CursoRepositoryTest extends ModulosTestCase
         // Mock de vinculo e login
         list($user, $cursos) = $this->mockVinculo(2, true, ['crs_nvc_id' => 2]);
         $this->actingAs($user);
-        
+
         // Ofertas de cursos
         $ofertas = [];
         foreach ($cursos as $curso) {

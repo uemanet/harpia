@@ -116,7 +116,7 @@ $factory->define(Modulos\Seguranca\Models\Permissao::class, function (Faker\Gene
 $factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Generator $faker) {
     return [
         'usr_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
-        'usr_usuario' => $faker->email,
+        'usr_usuario' => $faker->unique()->email,
         'usr_senha' => $faker->password,
         'usr_ativo' => 1
     ];
@@ -227,7 +227,7 @@ $factory->define(Modulos\Academico\Models\OfertaCurso::class, function (Faker\Ge
         'ofc_crs_id' => $curso->crs_id,
         'ofc_mtc_id' => factory(Modulos\Academico\Models\MatrizCurricular::class)->create(['mtc_crs_id' => $curso->crs_id])->mtc_id,
         'ofc_mdl_id' => $modalidade->mdl_id,
-        'ofc_ano' => $faker->year
+        'ofc_ano' => random_int(2010, 2018)
     ];
 });
 
