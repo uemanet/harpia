@@ -231,7 +231,7 @@ class MapeamentoNotasRepository extends BaseRepository
         }
 
         // Web service de integracao
-        $ambServico = $ambiente->ambienteservico->last();
+        $ambServico = $ambiente->integracao();
 
         if ($ambServico) {
             $parametros = [];

@@ -31,7 +31,7 @@ class DeleteGrupoAlunoListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->last();
+            $ambServico = $ambiente->integracao();
 
             if ($ambServico) {
                 $param = [];

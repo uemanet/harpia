@@ -48,7 +48,7 @@ class TurmaRemovidaListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->last();
+            $ambServico = $ambiente->integracao();
 
             if ($ambServico) {
                 $data['course']['trm_id'] = $turma->trm_id;

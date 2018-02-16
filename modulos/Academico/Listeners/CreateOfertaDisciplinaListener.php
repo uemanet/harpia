@@ -49,7 +49,7 @@ class CreateOfertaDisciplinaListener
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->ambienteservico->last();
+            $ambServico = $ambiente->integracao();
 
             if ($ambServico) {
                 $professor = $this->professorRepository->find($oferta->ofd_prf_id);
