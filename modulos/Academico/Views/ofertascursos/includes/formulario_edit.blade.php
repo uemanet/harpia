@@ -14,21 +14,22 @@
     <div class="form-group col-md-4 @if ($errors->has('ofc_mdl_id')) has-error @endif">
         {!! Form::label('ofc_mdl_id', 'Modalidade*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('ofc_mdl_id', $modalidades, [$ofertaCurso->modalidade->mdl_id], ['class' => 'form-control', 'placeholder' => 'Selecione a modalidade']) !!}
+            {!! Form::select('ofc_mdl_id', $modalidades, [$ofertaCurso->modalidade->mdl_id], ['class' => 'form-control', 'placeholder' => 'Selecione a modalidade', 'disabled' => true]) !!}
         </div>
     </div>
-</div>
+</div>git
 <div class="row">
     <div class="form-group col-md-9 @if ($errors->has('polos')) has-error @endif">
         {!! Form::label('polos', 'Polos*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('polos[]', $polos, $polosOferta, ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+            @if ($errors->has('polos')) <p class="help-block">{{ $errors->first('polos') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('ofc_ano')) has-error @endif">
         {!! Form::label('ofc_ano', 'Ano*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::number('ofc_ano', $ofertaCurso->ofc_ano, ['class' => 'form-control']) !!}
+            {!! Form::number('ofc_ano', $ofertaCurso->ofc_ano, ['class' => 'form-control', 'disabled' => true]) !!}
         </div>
     </div>
 </div>
@@ -42,20 +43,20 @@
     @parent
 
     <script type="application/javascript">
-        $(document).ready(function(){
-            $('#ofc_crs_id').prop('selectedIndex',0);
+        $(document).ready(function () {
+            $('#ofc_crs_id').prop('selectedIndex', 0);
         });
     </script>
     <script type="application/javascript">
 
-        $('#ofc_crs_id').change(function() {
+        $('#ofc_crs_id').change(function () {
             var cursoId = $("#ofc_crs_id").val();
 
             if (!cursoId) {
                 return;
             }
 
-            $.harpia.httpget('{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/' + cursoId).done(function(result){
+            $.harpia.httpget('{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/' + cursoId).done(function (result) {
 
                 $("#ofc_mtc_id").empty();
 
@@ -63,7 +64,7 @@
                     $('#ofc_mtc_id').append('<option value=#>Sem matrizes curriculares cadastradas</option>');
                 } else {
                     $("#ofc_mtc_id").append("<option value='' selected>Selecione uma matriz curricular</option>");
-                    $.each(result, function(key, value) {
+                    $.each(result, function (key, value) {
                         $('#ofc_mtc_id').append('<option value=' + value.mtc_id + ' >' + value.mtc_titulo + '</option>');
                     });
                 }

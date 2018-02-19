@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('mdo_id', 'Módulo*', ['class' => 'control-label']) !!}
-                    {{ Form::select('mdo_id', [], null, ['class' => 'form-control', 'id' => 'mdo_id', 'value' => Input::get('pes_email'), 'placeholder' => 'Módulo']) }}
+                    {{ Form::select('mdo_id', [], null, ['class' => 'form-control', 'id' => 'mdo_id', 'required', 'value' => Input::get('pes_email'), 'placeholder' => 'Módulo']) }}
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('pol_id', 'Polo', ['class' => 'control-label']) !!}
@@ -160,6 +160,16 @@
               var modulo = $('#mdo_id').val();
               var turma = $('#trm_id').val();
               var polo = $('#pol_id').val();
+
+              if(!turma) {
+                  swal("Selecione uma turma", "Necessário selecionar uma turma para certificação", "info");
+                  return;
+              }
+
+              if(!modulo) {
+                  swal("Selecione o Módulo", "Necessário selecionar um módulo para certificação", "info");
+                  return;
+              }
 
               if (polo == null) {
                 polo = '';

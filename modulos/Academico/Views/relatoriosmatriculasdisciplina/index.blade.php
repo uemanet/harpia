@@ -58,7 +58,7 @@
                                 {!! Form::select('ofd_id', $disciplinas, Input::get('ofd_id'), ['class' => 'form-control']) !!}
                             </div>
                         </div>
-                        <div class="col-md-2 @if ($errors->has('pol_id')) has-error @endif">
+                        <div class="col-md-3 @if ($errors->has('pol_id')) has-error @endif">
                             {!! Form::label('pol_id', 'Polo') !!}
                             <div class="form-group">
                                 {!! Form::select('pol_id', $polos, Input::get('pol_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o polo']) !!}
@@ -71,8 +71,9 @@
                                 {!! Form::select('mof_situacao_matricula', $situacao, Input::get('mof_situacao_matricula'), ['class' => 'form-control']) !!}
                                 @if ($errors->has('mof_situacao_matricula')) <p class="help-block">{{ $errors->first('mof_situacao_matricula') }}</p> @endif
                             </div>
-                        </div>                        <div class="col-md-2">
-                            <label for="">&nbsp;</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label for=""></label>
                             <div class="form-group">
                                 <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
                             </div>
@@ -88,7 +89,7 @@
         <div class="box box-primary">
             <div class="box-header">
                 <div class="row">
-                    <div class="col-md-2 col-md-offset-8">
+                    <div class="col-md-2" style="float: right; margin-right: 1%;">
                         <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculasdisciplinas.xls') }}">
                             {!! ActionButton::grid([
                                     'type' => 'LINE',
@@ -113,7 +114,7 @@
                             <input type="hidden" name="mof_situacao_matricula" id="situacao" value="">
                         </form>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2" style="float: right;">
                         <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriosmatriculasdisciplinas.pdf') }}">
                             {!! ActionButton::grid([
                                     'type' => 'LINE',
