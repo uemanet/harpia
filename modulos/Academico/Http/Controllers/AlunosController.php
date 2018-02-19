@@ -108,7 +108,7 @@ class AlunosController extends BaseController
         return view('Academico::alunos.create', ['pessoa' => []]);
     }
 
-    public function postCreate(Request $request)
+    public function postCreate(PessoaRequest $request)
     {
         $pessoaRequest = new PessoaRequest();
         $alunoRequest = new AlunoRequest();
@@ -151,11 +151,11 @@ class AlunosController extends BaseController
             $pes_id = isset($dataForm['pes_id']) ? $request->input('pes_id') : null;
 
             if ($pes_id) {
-                if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
-                    $errors = ['pes_email' => 'Email já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
-                }
-
+                // if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
+                //     $errors = ['pes_email' => 'Email já cadastrado'];
+                //     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
+                // }
+                $dataPessoa['pes_id'] = $pes_id;
                 if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
                     $errors = ['doc_conteudo' => 'CPF já cadastrado'];
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
@@ -171,10 +171,10 @@ class AlunosController extends BaseController
 
                 $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
             } else {
-                if ($this->pessoaRepository->verifyEmail($request->input('pes_email'))) {
-                    $errors = ['pes_email' => 'Email já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
-                }
+                // if ($this->pessoaRepository->verifyEmail($request->input('pes_email'))) {
+                //     $errors = ['pes_email' => 'Email já cadastrado'];
+                //     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
+                // }
 
                 if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'))) {
                     $errors = ['doc_conteudo' => 'CPF já cadastrado'];
@@ -249,10 +249,10 @@ class AlunosController extends BaseController
             return redirect()->route('academico.alunos.index');
         }
 
-        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
-            $errors = ['pes_email' => 'Email já cadastrado'];
-            return redirect()->back()->withInput($request->all())->withErrors($errors);
-        }
+        // if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
+        //     $errors = ['pes_email' => 'Email já cadastrado'];
+        //     return redirect()->back()->withInput($request->all())->withErrors($errors);
+        // }
 
         if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
             $errors = ['doc_conteudo' => 'CPF já cadastrado'];
