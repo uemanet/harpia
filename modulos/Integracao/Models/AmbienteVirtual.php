@@ -51,7 +51,7 @@ class AmbienteVirtual extends BaseModel
         return $result->first();
     }
 
-    public function monitor()
+    public function monitoramento()
     {
         $result = $this->select($this->table.'.*', 'asr_token')
             ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
