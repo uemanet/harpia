@@ -83,7 +83,7 @@ class SincronizacaoController extends BaseController
                     ],
                     'buttons' => $buttons
                 ]);
-            })->sortable(array('sym_table', 'sym_action'));
+            })->sortable(array('sym_id', 'sym_table', 'sym_action', 'sym_data_envio'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }

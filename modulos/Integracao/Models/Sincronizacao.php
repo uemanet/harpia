@@ -24,5 +24,6 @@ class Sincronizacao extends BaseModel
         'sym_table' => 'like',
         'sym_table_id' => '=',
         'sym_status' => '=',
+        'sym_data_envio' => '='
     ];
 }
