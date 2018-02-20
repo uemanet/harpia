@@ -25,8 +25,6 @@ class PessoaRequest extends BaseRequest
      */
     public function rules($idPessoa = null)
     {
-        $pessoa = $this->all();
-
         if ($this->method() == 'POST') {
             return [
                 'pes_nome' => 'required|min:3|max:150',
@@ -53,8 +51,12 @@ class PessoaRequest extends BaseRequest
         }
 
         if (!$idPessoa) {
-            $idPessoa = $pessoa['pes_id'];
+            $pessoa = $this->all();
+            if (array_key_exists('pes_id', $pessoa)) {
+                $idPessoa = $pessoa['pes_id'];
+            }
         }
+
         return [
             'pes_nome' => 'required|min:3|max:150',
             'pes_sexo' => 'required',

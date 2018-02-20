@@ -255,29 +255,6 @@ class PessoaRepositoryTest extends ModulosTestCase
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testVerifyEmail()
-    {
-        factory(Pessoa::class, 2)->create();
-
-        // Email sem pessoa
-        $this->assertFalse($this->repo->verifyEmail('findthisemail@email.com'));
-
-        // Email com id de callback pessoa existente
-        $this->assertFalse($this->repo->verifyEmail('findthisemail@email.com', 2));
-
-        // Email com id de callback pessoa inexistente
-        $this->assertFalse($this->repo->verifyEmail('findthisemail@email.com', 39));
-
-        $pessoa = factory(Pessoa::class)->create([
-            'pes_email' => 'emailtofind@email.com'
-        ]);
-
-        $id = $pessoa->pes_id;
-
-        $this->assertTrue($this->repo->verifyEmail('emailtofind@email.com'));
-        $this->assertTrue($this->repo->verifyEmail('emailtofind@email.com', $id));
-    }
-
     public function testFindPessoaByCpf()
     {
         factory(Pessoa::class, 2)->create();
