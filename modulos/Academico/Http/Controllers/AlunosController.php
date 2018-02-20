@@ -108,19 +108,12 @@ class AlunosController extends BaseController
         return view('Academico::alunos.create', ['pessoa' => []]);
     }
 
-    public function postCreate(PessoaRequest $request)
+    public function postCreate(Request $request)
     {
         $pessoaRequest = new PessoaRequest();
         $alunoRequest = new AlunoRequest();
 
         try {
-            $validator = Validator::make($request->all(), $pessoaRequest->rules());
-
-            if ($validator->fails()) {
-                return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
-            }
-
-
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -157,9 +150,7 @@ class AlunosController extends BaseController
             if ($pes_id) {
                 $dataPessoa['pes_id'] = $pes_id;
 
-                $validator = Validator::make($dataPessoa, $pessoaRequest->rules($pes_id));
-
-
+                $validator = Validator::make($request->all(), $pessoaRequest->rules($pes_id));
                 if ($validator->fails()) {
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
