@@ -150,7 +150,7 @@ class TutoresController extends BaseController
             if ($pes_id) {
                 $dataPessoa['pes_id'] = $pes_id;
 
-                $validator = Validator::make($dataPessoa, $pessoaRequest->rules($pes_id));
+                $validator = Validator::make($request->all(), $pessoaRequest->rules($pes_id));
 
 
                 if ($validator->fails()) {
@@ -158,7 +158,7 @@ class TutoresController extends BaseController
                 }
 
                 DB::beginTransaction();
-                $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
+                $this->pessoaRepository->update($request->all(), $pes_id, 'pes_id');
             } else {
                 $validator = Validator::make($request->all(), $pessoaRequest->rules());
 
