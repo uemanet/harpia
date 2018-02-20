@@ -114,8 +114,6 @@ class TutoresController extends BaseController
         $tutorRequest = new TutorRequest();
 
         try {
-            DB::beginTransaction();
-
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -159,6 +157,7 @@ class TutoresController extends BaseController
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
 
+                DB::beginTransaction();
                 $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
             } else {
                 $validator = Validator::make($request->all(), $pessoaRequest->rules());
@@ -166,7 +165,7 @@ class TutoresController extends BaseController
                 if ($validator->fails()) {
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
-
+                DB::beginTransaction();
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
             }
 
