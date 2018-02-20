@@ -37,7 +37,7 @@ class PerfilRepository extends BaseRepository
             $conta = count($separa);
             $arrayPermissoes = [
                 'prm_id' => $permissao->prm_id,
-                'prm_nome' => $separa[$conta - 1],
+                'prm_nome' => $permissao->prm_nome,
                 'habilitado' => $habilitado
             ];
 
