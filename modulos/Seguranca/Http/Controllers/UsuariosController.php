@@ -130,7 +130,6 @@ class UsuariosController extends BaseController
             return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($errors);
         }
 
-        DB::beginTransaction();
 
         try {
             $dataPessoa = array(
@@ -169,6 +168,7 @@ class UsuariosController extends BaseController
                     return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validator);
                 }
 
+                DB::beginTransaction();
                 $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
 
                 $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
@@ -178,7 +178,7 @@ class UsuariosController extends BaseController
                 if ($validator->fails()) {
                     return redirect()->back()->with('validado', true)->withInput($request->except('usr_senha'))->withErrors($validator);
                 }
-
+                DB::beginTransaction();
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
                 $pes_id = $pessoa->pes_id;
 

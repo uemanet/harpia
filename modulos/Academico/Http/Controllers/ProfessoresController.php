@@ -113,8 +113,6 @@ class ProfessoresController extends BaseController
         $pessoaRequest = new PessoaRequest();
         $professorRequest = new ProfessorRequest();
         try {
-            DB::beginTransaction();
-
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -151,18 +149,21 @@ class ProfessoresController extends BaseController
             if ($pes_id) {
                 $dataPessoa['pes_id'] = $pes_id;
 
-                $validator = Validator::make($dataPessoa, $pessoaRequest->rules($pes_id));
+                $validator = Validator::make($request->all(), $pessoaRequest->rules($pes_id));
+
                 if ($validator->fails()) {
+                    // dd($validator);
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
 
+                DB::beginTransaction();
                 $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
             } else {
                 $validator = Validator::make($request->all(), $pessoaRequest->rules());
                 if ($validator->fails()) {
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
-
+                DB::beginTransaction();
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
             }
 
