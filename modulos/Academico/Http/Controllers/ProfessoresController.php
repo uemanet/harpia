@@ -152,8 +152,6 @@ class ProfessoresController extends BaseController
                 $dataPessoa['pes_id'] = $pes_id;
 
                 $validator = Validator::make($dataPessoa, $pessoaRequest->rules($pes_id));
-                
-
                 if ($validator->fails()) {
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
@@ -161,7 +159,6 @@ class ProfessoresController extends BaseController
                 $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
             } else {
                 $validator = Validator::make($request->all(), $pessoaRequest->rules());
-
                 if ($validator->fails()) {
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
@@ -176,7 +173,6 @@ class ProfessoresController extends BaseController
             );
 
             $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
-
 
             $validator = Validator::make(['prf_pes_id' => $pes_id, 'prf_codigo' => $request->prf_codigo], $professorRequest->rules());
 
@@ -222,7 +218,7 @@ class ProfessoresController extends BaseController
     {
         $pessoaRequest = new PessoaRequest();
 
-        $validation = Validator::make($request->all(), $pessoaRequest->rules());
+        $validation = Validator::make($request->all(), $pessoaRequest->rules($pessoaId));
 
         if ($validation->fails()) {
             return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
@@ -234,11 +230,6 @@ class ProfessoresController extends BaseController
             flash()->error('Pessoa não existe.');
             return redirect()->route('academico.professores.index');
         }
-
-        // if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
-        //     $errors = ['pes_email' => 'Email já cadastrado'];
-        //     return redirect()->back()->withInput($request->all())->withErrors($errors);
-        // }
 
         if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {
             $errors = ['doc_conteudo' => 'CPF já cadastrado'];
