@@ -239,7 +239,7 @@ class MapeamentoNotasRepository extends BaseRepository
             // url do ambiente
             $parametros['url'] = $ambiente->amb_url;
             $parametros['token'] = $ambServico->asr_token;
-            $parametros['functioname'] = 'local_integracao_get_grades_batch';
+            $parametros['functionname'] = 'local_integracao_get_grades_batch';
             $parametros['action'] = 'MAPEAR_NOTAS_ALUNO';
 
             $parametros['data']['grades'] = $data;
