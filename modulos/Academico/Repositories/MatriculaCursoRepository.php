@@ -928,9 +928,9 @@ class MatriculaCursoRepository extends BaseRepository
             'CARGAHORARIAMODULO' => $cargahoraria,
             'DISCIPLINAS' => $disciplinas,
             'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
-            'LIVRO' => str_pad($livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
-            'FOLHA' => str_pad($livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
-            'REGISTRO' => str_pad($livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
+            'LIVRO' => str_pad((string) $livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
+            'FOLHA' => str_pad((string) $livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
+            'REGISTRO' => str_pad((string) $livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
             'COEFICIENTEDOMODULO' => $coeficiente,
             'PESSOANOME' => mb_strtoupper($nomepessoa, "UTF-8"),
             'PESSOACPF' => $cpfpessoaformatado

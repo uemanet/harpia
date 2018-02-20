@@ -268,7 +268,7 @@
 
                         table2 += '<tr>';
                         table2 += '<td>' + obj.pes_nome + '</td>';
-                        table2 += '<td><span class="label label-info">Certificados</span></td>';
+                        table2 += '<td><span class="label label-info text-center">Certificado</span></td>';
                         table2 += '<td><a target = "_blanck" type="button" href= "{{url('/')}}/academico/async/cursos/printCertificado/'+obj.mat_id+'/'+$('#mdo_id').val()+'" class="btn btn-primary"><i class="glyphicon glyphicon-print"></i></a></td>';
                         table2 += '</tr>';
                     });
