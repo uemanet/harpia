@@ -140,7 +140,7 @@
         $(document).on('click', '#btnLocalizar', function () {
             event.preventDefault();
 
-            var token = '{{$ambiente->asr_token}}';
+            var token = '{{$monitoramento->asr_token}}';
             var moodlewsformat = "json";
             var wsfunction = "monitor_tutor_answers";
             var url = "{{$ambiente->amb_url}}";
