@@ -99,7 +99,7 @@
             if (turmaId) {
                 selectGrupos.empty();
                 selectTutores.empty();
-                selectGrupos.append('<option>Selecione o grupo</option>');
+                selectGrupos.append('<option>Selecione o tipo de tutoria</option>');
                 selectGrupos.append('<option value="presencial">Presencial</option>')
                 selectGrupos.append('<option value="distancia">Distância</option>')
 
