@@ -10,17 +10,25 @@ Tecnologias utilizadas:
 -----------------------
 Backend:
 --------
- * PHP 5.6+
- * Laravel Framework 5.3
- * Docker
+ * PHP 7.1+
+ * Laravel Framework 5.5
 
 Frontend:
 ---------
  * Twitter Bootstrap 3.3
  * jQuery 3.1
- * Font Awesome 3.2 
+ * Font Awesome 3.2
  * Bootbox
  * AdminLTE
+
+Requerimentos do sistema
+------------
+ * PHP >= 7.1
+ * OpenSSL PHP Extension
+ * PDO PHP Extension
+ * Mbstring PHP Extension
+ * Tokenizer PHP Extension
+ * XML PHP Extension
 
 Instalação
 ------------
@@ -30,33 +38,53 @@ Usando composer (recomendado)
 Clone o repositório e manualmente execute o 'composer':
 
     cd /var/www/html
-    git clone http://200.166.97.120/dte/harpia.git
+    git clone https://github.com/uemanet/harpia.git
     cd harpia
     php composer self-update
     php composer install
+
+Os comandos acima baixam o código do sistema e instalam suas dependências. Agora é preciso configurar o sistema.
+
+Você pode copiar o arquivo .env.example e criar um novo chamado .env, nesse arquivo ficarão as configurações do banco de dados e demais configurações do sistema.
+
+    cp .env.example .env
+
+Abra o arquivo .env e configure-o de acordo com as informações do seu servidor.
+
+Por fim execute o comando abaixo parar criar uma chave para a aplicação:
+
+    php artisan key:generate
+
+Nosso último passo é executar os comandos para criar a base de dados do sistema. Você pode com um único comando executar as migrations que irão criar as tabelas do banco de dados e também popular as tabelas básicas para o sistema em produção. O comando é:
+
+    modulos:migrate --seed=prod
+
+Caso queira, você pode executar um comando para criar as tabelas e populá-las com dados fictícios. Isso é muito bom para fins de desenvolvimento e também para conhecer as funcionalidades do sistema, uma vez que vários dados serão criados de forma prática. O comando está logo abaixo:
+
+    modulos:migrate --seed=dev
+
+Pronto! Se você seguiu todos os passos corretamente o sistema já está disponível para você. Para fazer login utilize as credenciais abaixo:
+
+    Usuário: admin@admin.com
+    Senha: 123456
 
 Criando um virtual host(opcional)
 ------------
     <VirtualHost *:80>
         ServerName harpia.dev
         DocumentRoot /var/www/html/harpia/public
-        SetEnv PROJECT_ROOT "/var/www/html/harpia" 
+        SetEnv PROJECT_ROOT "/var/www/html/harpia"
         <Directory /var/www/html/harpia/public>
-                DirectoryIndex index.php
-                AllowOverride All
-                Order allow,deny
-                Allow from all
-            </Directory>
+            DirectoryIndex index.php
+            AllowOverride All
+            Order allow,deny
+            Allow from all
+        </Directory>
     </VirtualHost>
 
-Colaboradores (ordem alfabética)
--------------
-* **Bruno Luan**
+Laravel
+------------
 
-* **Felipe Pimenta**
+O sistema foi desenvolvido utilizando o framework Laravel 5.5. Caso tenha alguma dúvida na configuração, instalação de dependências, ou para entender o funcionamento do framework, você pode utilizar a documentação no site oficial do Laravel.
 
-* **Lucas Vieira**
-
-* **Pedro Fellipe**
-
-* **Willian Mano**
+[https://laravel.com/docs/5.5](https://laravel.com/docs/5.5)

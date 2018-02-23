@@ -2,8 +2,8 @@
 
 namespace Modulos\Seguranca\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Seguranca\Models\MenuItem;
+use Modulos\Core\Repository\BaseRepository;
 
 class MenuItemRepository extends BaseRepository
 {
@@ -12,20 +12,13 @@ class MenuItemRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function find($id)
-    {
-        return $this->model->find($id);
-    }
-
     public function getCategorias($moduloId)
     {
         return MenuItem::where([
             ['mit_mod_id', '=', $moduloId],
             ['mit_visivel', '=', 1],
             ['mit_item_pai', '=', null]
-        ])
-            ->orderBy('mit_ordem', 'asc')
-            ->get();
+        ])->orderBy('mit_ordem', 'asc')->get();
     }
 
     public function getItensFilhos($moduloId, $categoriaId)
@@ -34,9 +27,7 @@ class MenuItemRepository extends BaseRepository
             ['mit_mod_id', '=', $moduloId],
             ['mit_item_pai', '=', $categoriaId],
             ['mit_visivel', '=', 1]
-        ])
-        ->orderBy('mit_ordem', 'asc')
-        ->get();
+        ])->orderBy('mit_ordem', 'asc')->get();
     }
 
     public function isCategoria($menuItemId)
@@ -47,7 +38,7 @@ class MenuItemRepository extends BaseRepository
             return false;
         }
 
-        if (isset($menuItem->rota)) {
+        if (isset($menuItem->mit_rota)) {
             return false;
         }
 
@@ -62,7 +53,7 @@ class MenuItemRepository extends BaseRepository
             return false;
         }
 
-        if (isset($menuItem->rota)) {
+        if (isset($menuItem->mit_rota)) {
             return false;
         }
 
@@ -88,9 +79,9 @@ class MenuItemRepository extends BaseRepository
         $itemPaiId = isset($data['mit_item_pai']) ? $data['mit_item_pai'] : null;
 
         $item = $this->model->where('mit_mod_id', $data['mit_mod_id'])
-                            ->where('mit_item_pai', $itemPaiId)
-                            ->orderBy('mit_ordem', 'desc')
-                            ->first();
+            ->where('mit_item_pai', $itemPaiId)
+            ->orderBy('mit_ordem', 'desc')
+            ->first();
 
         if ($item) {
             $ordem = $item->mit_ordem + 1;

@@ -56,9 +56,9 @@
                                             $numerica = '';
                                             $conceito = 'disabled';
 
-                                            if ($value->ofd_tipo_avaliacao == 'conceitual') {
-                                            $numerica = 'disabled';
-                                            $conceito = '';
+                                            if ($value->getOriginal('ofd_tipo_avaliacao') == 'conceitual') {
+                                                $numerica = 'disabled';
+                                                $conceito = '';
                                             }
                                             @endphp
                                             <tr id="{{ $value->ofd_id }}">

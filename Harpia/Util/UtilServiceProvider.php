@@ -4,6 +4,11 @@ namespace Harpia\Util;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class UtilServiceProvider
+ * @package Harpia\Util
+ * @codeCoverageIgnore
+ */
 class UtilServiceProvider extends ServiceProvider
 {
 

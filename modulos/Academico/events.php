@@ -13,77 +13,77 @@
  */
 
 return [
-    'Modulos\Academico\Events\MatriculaAlunoTurmaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarMatriculaAlunoTurmaListener'
+    'Modulos\Academico\Events\CreateMatriculaTurmaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateMatriculaTurmaListener'
     ],
 
-    'Modulos\Academico\Events\AtualizarTurmaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAtualizaTurmaListener'
+    'Modulos\Academico\Events\UpdateTurmaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\UpdateTurmaListener'
     ],
 
-    'Modulos\Academico\Events\NovoGrupoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarGrupoListener',
+    'Modulos\Academico\Events\CreateGrupoEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateGrupoListener',
     ],
 
-    'Modulos\Academico\Events\NovaMatriculaDisciplinaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarMatriculaDisciplinaListener',
+    'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
     ],
 
-    'Modulos\Academico\Events\TutorVinculadoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarTutorVinculadoListener',
+    'Modulos\Academico\Events\CreateVinculoTutorEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateVinculoTutorListener',
     ],
 
-    'Modulos\Academico\Events\OfertaDisciplinaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarOfertaDisciplinaListener',
+    'Modulos\Academico\Events\CreateOfertaDisciplinaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateOfertaDisciplinaListener',
     ],
 
-    'Modulos\Academico\Events\AtualizarGrupoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAtualizaGrupoListener'
+    'Modulos\Academico\Events\UpdateGrupoEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\UpdateGrupoListener'
     ],
 
     'Modulos\Academico\Events\DeleteGrupoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarExclusaoGrupoListener',
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteGrupoListener',
     ],
 
     'Modulos\Academico\Events\DeleteOfertaDisciplinaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarExclusaoOfertaDisciplinaListener',
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteOfertaDisciplinaListener',
     ],
 
-    'Modulos\Academico\Events\DeleteTutorVinculadoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarExclusaoTutorVinculadoListener',
+    'Modulos\Academico\Events\DeleteVinculoTutorEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteVinculoTutorListener',
     ],
 
-    'Modulos\Academico\Events\AlterarGrupoAlunoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAlterarGrupoAlunoListener',
+    'Modulos\Academico\Events\UpdateGrupoAlunoEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\UpdateGrupoAlunoListener',
     ],
 
-    'Modulos\Academico\Events\DeletarGrupoAlunoEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarDeletarGrupoAlunoListener',
+    'Modulos\Academico\Events\DeleteGrupoAlunoEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteGrupoAlunoListener',
     ],
 
-    'Modulos\Academico\Events\AtualizarSituacaoMatriculaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAtualizarSituacaoMatriculaListener',
+    'Modulos\Academico\Events\UpdateSituacaoMatriculaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\UpdateSituacaoMatriculaListener',
     ],
 
-    'Modulos\Academico\Events\AtualizarMatriculaCursoEvent' => [
-        'Modulos\Academico\Listeners\AtualizarMatriculaCursoListener'
+    'Modulos\Academico\Events\UpdateMatriculaCursoEvent' => [
+        'Modulos\Academico\Listeners\UpdateMatriculaCursoListener'
     ],
 
-    'Modulos\Academico\Events\AlterarProfessorOfertaDisciplinaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Academico\Listeners\MigrarAlteracaoProfessorOfertaDisciplinaListener'
+    'Modulos\Academico\Events\UpdateProfessorDisciplinaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\UpdateProfessorDisciplinaListener'
     ],
 ];

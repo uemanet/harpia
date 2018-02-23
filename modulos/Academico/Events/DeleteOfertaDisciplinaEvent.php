@@ -2,13 +2,13 @@
 
 namespace Modulos\Academico\Events;
 
-use Harpia\Event\Event;
-use Modulos\Core\Model\BaseModel;
+use Harpia\Event\SincronizacaoEvent;
+use Modulos\Academico\Models\OfertaDisciplina;
 
-class DeleteOfertaDisciplinaEvent extends Event
+class DeleteOfertaDisciplinaEvent extends SincronizacaoEvent
 {
-    public function __construct(BaseModel $entry, $action = "DELETE", $extra)
+    public function __construct(OfertaDisciplina $entry, $extra)
     {
-        parent::__construct($entry, $action, $extra);
+        parent::__construct($entry, "DELETE", $extra);
     }
 }

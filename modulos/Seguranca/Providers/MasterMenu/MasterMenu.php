@@ -7,13 +7,13 @@ use Cache;
 
 class MasterMenu
 {
-    protected $request;
     protected $auth;
+    protected $request;
 
-    public function __construct($app)
+    public function __construct($app, $request = null)
     {
-        $this->request = $app['request'];
         $this->auth = $app['auth'];
+        $this->request = is_null($request) ? $app['request'] : $request;
     }
 
     /**

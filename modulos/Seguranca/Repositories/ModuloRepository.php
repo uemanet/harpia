@@ -5,9 +5,15 @@ namespace Modulos\Seguranca\Repositories;
 use DB;
 use Cache;
 use Modulos\Seguranca\Models\Modulo;
+use Modulos\Core\Repository\BaseRepository;
 
-class ModuloRepository
+class ModuloRepository extends BaseRepository
 {
+    public function __construct(Modulo $modulo)
+    {
+        parent::__construct($modulo);
+    }
+
     public function getByUser($userId, $isMenu = false)
     {
         $modulos = DB::table('seg_modulos')
@@ -21,19 +27,14 @@ class ModuloRepository
             return $modulos;
         }
 
-        $permissoes = Cache::get('PERMISSOES_'.$userId);
+        $permissoes = Cache::get('PERMISSOES_' . $userId);
 
         for ($i = 0; $i < $modulos->count(); $i++) {
-            if (!in_array($modulos[$i]->mod_slug.'.index.index', $permissoes)) {
+            if (!in_array($modulos[$i]->mod_slug . '.index.index', $permissoes)) {
                 unset($modulos[$i]);
             }
         }
 
         return $modulos;
-    }
-
-    public function lists($identifier, $name)
-    {
-        return DB::table('seg_modulos')->pluck($name, $identifier)->toArray();
     }
 }

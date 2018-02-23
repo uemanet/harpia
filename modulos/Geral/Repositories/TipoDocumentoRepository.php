@@ -2,30 +2,31 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Geral\Models\TipoDocumento;
 use DB;
+use Modulos\Geral\Models\TipoDocumento;
+use Modulos\Core\Repository\BaseRepository;
 
 class TipoDocumentoRepository extends BaseRepository
 {
     public function __construct(TipoDocumento $tipo)
     {
-        $this->model = $tipo;
+        parent::__construct($tipo);
     }
 
     public function listsTipoDocumentoByDocumentoId($documentoId)
     {
         return $this->model
-                    ->join('gra_documentos', 'doc_tpd_id', 'tpd_id')
-                    ->where('doc_id', '=', $documentoId)
-                    ->pluck('tpd_nome', 'tpd_id');
+            ->join('gra_documentos', 'doc_tpd_id', 'tpd_id')
+            ->where('doc_id', '=', $documentoId)
+            ->pluck('tpd_nome', 'tpd_id')
+            ->toArray();
     }
 
     public function listsTiposDocumentosWithoutPessoa($pessoaId)
     {
         $entries = DB::table('gra_documentos')
-                    ->where('doc_pes_id', '=', $pessoaId)
-                    ->get();
+            ->where('doc_pes_id', '=', $pessoaId)
+            ->get();
 
         $tiposId = [];
 

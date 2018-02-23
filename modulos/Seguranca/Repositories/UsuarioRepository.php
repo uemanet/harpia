@@ -2,14 +2,14 @@
 
 namespace Modulos\Seguranca\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Seguranca\Models\Usuario;
+use Modulos\Core\Repository\BaseRepository;
 
 class UsuarioRepository extends BaseRepository
 {
     public function __construct(Usuario $usuario)
     {
-        $this->model = $usuario;
+        parent::__construct($usuario);
     }
 
     public function paginate($sort = null, $search = null)
@@ -57,7 +57,7 @@ class UsuarioRepository extends BaseRepository
 
         return $this->model->create($dados);
     }
-    
+
     public function sincronizarPerfis($usuarioId, array $perfis)
     {
         return $this->model->find($usuarioId)->perfis()->sync($perfis);

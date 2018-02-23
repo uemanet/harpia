@@ -27,6 +27,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
             $attribute = $this->model->getKeyName();
         }
 
+        $updated = 0;
         $collection = $this->model->where($attribute, '=', $id)->get();
 
         if ($collection) {
@@ -34,10 +35,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 $obj->fill($data)->save();
             }
 
-            return $collection->count();
+            $updated = $collection->count();
         }
 
-        return 0;
+        return $updated;
     }
 
     public function delete($id)
@@ -63,7 +64,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         if (!is_null($select)) {
-            $query = $query->select(implode(',', $select));
+            $query = $query->select($select);
         }
 
         return $query->get();

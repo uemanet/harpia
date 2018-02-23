@@ -26,7 +26,7 @@ class AlterFieldMdoCompetenciasModulosMatrizes extends Migration
     public function down()
     {
         Schema::table('acd_modulos_matrizes', function (Blueprint $table) {
-            $table->string('mdo_competencias', 255)->nullable();
+            $table->dropColumn('mdo_competencias');
         });
     }
 }

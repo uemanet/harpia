@@ -15,10 +15,6 @@ class AmbienteTurma extends BaseModel
         'atr_amb_id'
     ];
 
-    // protected $searchable = [
-    //     'asr_token' => 'like'
-    // ];
-
     public function turma()
     {
         return $this->belongsTo('Modulos\Academico\Models\Turma', 'atr_trm_id', 'trm_id');

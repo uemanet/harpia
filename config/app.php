@@ -255,10 +255,6 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-
-        /*
-         * Extra aliases
-         */
         'ActionButton' => Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton::class,
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
         'Flash' => Harpia\FlashToastrAlert\Flash::class,

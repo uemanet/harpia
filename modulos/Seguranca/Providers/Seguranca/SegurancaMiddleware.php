@@ -2,11 +2,11 @@
 
 namespace Modulos\Seguranca\Providers\Seguranca;
 
-use Illuminate\Http\Request;
 use DB;
+use Flash;
 use Config;
 use Closure;
-use Flash;
+use Illuminate\Http\Request;
 
 class SegurancaMiddleware extends AbstractSegurancaMiddleware
 {

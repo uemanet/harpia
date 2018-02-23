@@ -72,14 +72,14 @@ class ModulosMatrizesController extends BaseController
     {
         $matrizId = $request->get('id');
 
-        $matriz = $this->matrizcurricularRepository->listsAllById($matrizId);
+        $matriz = $this->matrizcurricularRepository->find($matrizId)->where('mtc_id', $matrizId)->pluck('mtc_titulo', 'mtc_id');
 
         if ($matriz->isEmpty()) {
             flash()->error('Matriz não existe!');
             return redirect()->back();
         }
 
-        $curso = $this->cursoRepository->listsCursoByMatriz($matrizId);
+        $curso = $this->cursoRepository->listsByMatrizId($matrizId);
 
         return view('Academico::modulosmatrizes.create', compact('matriz', 'curso'));
     }
@@ -127,9 +127,11 @@ class ModulosMatrizesController extends BaseController
             return redirect()->back();
         }
 
-        $curso = $this->cursoRepository->listsCursoByMatriz($modulo->mdo_mtc_id);
+        $curso = $this->cursoRepository->listsByMatrizId($modulo->mdo_mtc_id);
 
-        $matriz = $this->matrizcurricularRepository->listsAllById($modulo->mdo_mtc_id);
+        $matriz = $this->matrizcurricularRepository->find($modulo->matriz->mtc_id)
+                                                   ->where('mtc_id', $modulo->matriz->mtc_id)
+                                                   ->pluck('mtc_titulo', 'mtc_id');
 
 
         return view('Academico::modulosmatrizes.edit', compact('matriz', 'curso', 'modulo'));

@@ -66,13 +66,17 @@ class DocumentosController extends BaseController
     {
         $url = $request->session()->get('last_acad_route');
         $id = $request->session()->get('last_id');
+        $docId = $request->input('doc_tpd_id');
+        $dados = $request->all();
+
+        $tipodocumento = $this->documentoRepository->search(array(['doc_tpd_id', '=', $docId], ['doc_pes_id', '=', $dados['doc_pes_id']]));
+        if ($tipodocumento->count()) {
+            flash()->error('Essa pessoa já tem esse documento cadastrado.');
+            return redirect()->back();
+        }
 
         try {
             DB::beginTransaction();
-
-            $dados = $request->all();
-
-            $docId = $request->input('doc_tpd_id');
 
             if ($docId == 2) {
                 $rules = [
@@ -92,13 +96,6 @@ class DocumentosController extends BaseController
             }
 
             unset($dados['doc_file']);
-
-            $tipodocumento = $this->documentoRepository->verifyTipoExists($request->input('doc_tpd_id'), $request->input('doc_pes_id'));
-
-            if (!$tipodocumento) {
-                $errors = array('doc_tpd_id' => 'Essa pessoa já tem esse documento cadastrado');
-                return redirect()->back()->withInput($request->all())->withErrors($errors);
-            }
 
             $documento = $this->documentoRepository->create($dados);
 

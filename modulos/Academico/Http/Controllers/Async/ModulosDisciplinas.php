@@ -62,7 +62,6 @@ class ModulosDisciplinas extends BaseController
 
             // Ao deletar a disciplina, caso ela seja pré-requisito de outra, precisa-se removê-la da lista dos outros registros
             if ($this->moduloDisciplinaRepository->delete($dados['mdc_id'])) {
-                $this->moduloDisciplinaRepository->updatePreRequisitos($dados['mtc_id'], $dados['mdc_id']);
                 DB::commit();
 
                 return new JsonResponse(Response::HTTP_OK);

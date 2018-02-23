@@ -54,7 +54,8 @@ class RelatoriosMatriculasCursoController extends BaseController
                 $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
             }
 
-            $polos = $this->poloRepository->findAllByOfertaCurso($ofc_id)->pluck('pol_nome', 'pol_id');
+            $oferta = $this->ofertaCursoRepository->find($ofc_id);
+            $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
         }
 
         $paginacao = null;
@@ -135,7 +136,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $rules = [
             'crs_id' => 'required',
             'ofc_id' => 'required',
-            'trm_id' => 'required',
+            'trm_id' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -158,7 +159,7 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $date = new Carbon();
 
-        Excel::create('relatorio', function ($excel) use ($curso, $turma, $date, $matriculas) {
+        Excel::create('Relatorio de matrículas da turma '.$turma->trm_nome, function ($excel) use ($curso, $turma, $date, $matriculas) {
             $excel->sheet($turma->trm_nome, function ($sheet) use ($curso, $turma, $date, $matriculas) {
                 // Cabecalho
                 $objDraw = new \PHPExcel_Worksheet_Drawing();
