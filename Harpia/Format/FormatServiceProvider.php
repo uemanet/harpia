@@ -4,6 +4,9 @@ namespace Harpia\Format;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * @codeCoverageIgnore
+ */
 class FormatServiceProvider extends ServiceProvider
 {
 

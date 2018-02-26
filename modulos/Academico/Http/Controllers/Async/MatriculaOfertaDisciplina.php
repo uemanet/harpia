@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Modulos\Academico\Events\NovaMatriculaDisciplinaEvent;
+use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Core\Http\Controller\BaseController;
@@ -76,7 +76,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculasCollection)) {
                     foreach ($matriculasCollection as $obj) {
-                        event(new NovaMatriculaDisciplinaEvent($obj, "CREATE"));
+                        event(new CreateMatriculaDisciplinaEvent($obj));
                     }
                 }
             }
@@ -123,7 +123,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculas)) {
                     foreach ($matriculas as $obj) {
-                        event(new NovaMatriculaDisciplinaEvent($obj, "CREATE"));
+                        event(new CreateMatriculaDisciplinaEvent($obj));
                     }
                 }
             }

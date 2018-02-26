@@ -2,8 +2,8 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Academico\Events\DeleteTutorVinculadoEvent;
-use Modulos\Academico\Events\TutorVinculadoEvent;
+use Modulos\Academico\Events\DeleteVinculoTutorEvent;
+use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -173,7 +173,7 @@ class TutoresGruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 // Event tutor vinculado
-                event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
+                event(new CreateVinculoTutorEvent($tutorgrupo));
             }
 
             flash()->success('Vínculo criado com sucesso.');
@@ -249,9 +249,9 @@ class TutoresGruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 //Dispara evento para deletar o antigo tutor do grupo
-                event(new DeleteTutorVinculadoEvent($tutorGrupoOld));
+                event(new DeleteVinculoTutorEvent($tutorGrupoOld));
                 //Dispara evento para vincular novo tutor no grupo
-                event(new TutorVinculadoEvent($tutorgrupo, "CREATE"));
+                event(new CreateVinculoTutorEvent($tutorgrupo));
             }
 
             DB::commit();
@@ -286,7 +286,7 @@ class TutoresGruposController extends BaseController
             $this->tutorgrupoRepository->update($dados, $tutorGrupo->ttg_id, 'ttg_id');
 
             if ($ambiente) {
-                event(new DeleteTutorVinculadoEvent($tutorGrupo));
+                event(new DeleteVinculoTutorEvent($tutorGrupo));
             }
 
             flash()->success('Tutor desvinculado com sucesso.');

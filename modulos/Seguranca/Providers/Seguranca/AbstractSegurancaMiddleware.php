@@ -2,9 +2,9 @@
 
 namespace Modulos\Seguranca\Providers\Seguranca;
 
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\Seguranca\Providers\Seguranca\Exceptions\ForbiddenException;
-use Illuminate\Contracts\Auth\Guard;
 
 abstract class AbstractSegurancaMiddleware
 {
@@ -37,9 +37,11 @@ abstract class AbstractSegurancaMiddleware
      */
     protected function getRouteName($request)
     {
-        $routeName = $request->route()->getName();
+        if ($request->route()) {
+            return $request->route()->getName();
+        }
 
-        return $routeName;
+        return "";
     }
 
     /**

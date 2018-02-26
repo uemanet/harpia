@@ -18,26 +18,22 @@ return [
      * Evento de updates em sincronizacao
      * */
 
-    'Modulos\Integracao\Events\AtualizarSyncEvent' => [
-        'Modulos\Integracao\Listeners\AtualizarSyncListener'
+    'Modulos\Integracao\Events\UpdateSincronizacaoEvent' => [
+        'Modulos\Integracao\Listeners\UpdateSincronizacaoListener'
     ],
 
-    'Modulos\Integracao\Events\AtualizarSyncDeleteEvent' => [
-        'Modulos\Integracao\Listeners\AtualizarSyncDeleteListener'
+    'Modulos\Integracao\Events\DeleteSincronizacaoEvent' => [
+        'Modulos\Integracao\Listeners\DeleteSincronizacaoListener'
     ],
 
     'Modulos\Integracao\Events\TurmaMapeadaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Integracao\Listeners\MigrarTurmaListener'
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Integracao\Listeners\TurmaMapeadaListener'
     ],
 
-    'Modulos\Integracao\Events\DeleteOfertaTurmaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10,
-        'Modulos\Integracao\Listeners\MigrarExclusaoOfertaTurmaListener'
-    ],
-
-    'Modulos\Integracao\Events\MapearNotasEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncListener' => 10
+    'Modulos\Integracao\Events\TurmaRemovidaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Integracao\Listeners\TurmaRemovidaListener'
     ],
 
     'Modulos\Integracao\Events\SincronizacaoEvent' => [

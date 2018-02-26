@@ -4,6 +4,9 @@ namespace Harpia\Format\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Format extends Facade
 {
     /**

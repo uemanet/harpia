@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Academico\Models\Vinculo;
 use DB;
+use Modulos\Academico\Models\Vinculo;
+use Modulos\Core\Repository\BaseRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class VinculoRepository extends BaseRepository
 {
@@ -17,6 +19,7 @@ class VinculoRepository extends BaseRepository
      * Retorna todos os cursos aos quais o usuario esta vinculado.
      *
      * @param $usuarioId
+     * @return LengthAwarePaginator
      */
     public function paginateCursosVinculados($usuarioId)
     {
@@ -26,7 +29,7 @@ class VinculoRepository extends BaseRepository
             ->where('ucr_usr_id', '=', $usuarioId)->paginate(15);
     }
 
-    public function getCursos($usuarioId)
+    public function getCursos($usuarioId): array
     {
         $result = DB::table('acd_cursos')
             ->select('crs_id')
@@ -40,13 +43,13 @@ class VinculoRepository extends BaseRepository
     public function getCursosDisponiveis($usuarioId)
     {
         return DB::table('acd_cursos')
-                  ->select('crs_id', 'crs_nome', 'crs_sigla')
-                  ->whereNotIn('crs_id', DB::table('acd_cursos')
-                            ->select('crs_id')
-                            ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
-                            ->where('ucr_usr_id', '=', $usuarioId)
-                            ->pluck('crs_id'))
-                  ->pluck('crs_nome', 'crs_id');
+            ->select('crs_id', 'crs_nome', 'crs_sigla')
+            ->whereNotIn('crs_id', DB::table('acd_cursos')
+                ->select('crs_id')
+                ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
+                ->where('ucr_usr_id', '=', $usuarioId)
+                ->pluck('crs_id'))
+            ->pluck('crs_nome', 'crs_id');
     }
 
     /**
@@ -55,13 +58,13 @@ class VinculoRepository extends BaseRepository
      * @param $cursoId
      * @return bool
      */
-    public function userHasVinculo($usuarioId, $cursoId)
+    public function userHasVinculo($usuarioId, $cursoId): bool
     {
         $result = DB::table('acd_usuarios_cursos')
-                     ->where([
-                         ['ucr_usr_id', '=', $usuarioId],
-                         ['ucr_crs_id', '=', $cursoId]
-                     ])->get();
+            ->where([
+                ['ucr_usr_id', '=', $usuarioId],
+                ['ucr_crs_id', '=', $cursoId]
+            ])->get();
 
         return !$result->isEmpty();
     }
@@ -70,14 +73,16 @@ class VinculoRepository extends BaseRepository
     {
         $collection = $this->model->where('ucr_crs_id', '=', $cursoId)->get();
 
+        $result = false;
+
         if ($collection) {
             foreach ($collection as $obj) {
                 $obj->delete();
             }
 
-            return true;
+            $result = true;
         }
 
-        return false;
+        return $result;
     }
 }

@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('mdo_id', 'Módulo*', ['class' => 'control-label']) !!}
-                    {{ Form::select('mdo_id', [], null, ['class' => 'form-control', 'id' => 'mdo_id', 'value' => Input::get('pes_email'), 'placeholder' => 'Módulo']) }}
+                    {{ Form::select('mdo_id', [], null, ['class' => 'form-control', 'id' => 'mdo_id', 'required', 'value' => Input::get('pes_email'), 'placeholder' => 'Módulo']) }}
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('pol_id', 'Polo', ['class' => 'control-label']) !!}
@@ -161,6 +161,16 @@
               var turma = $('#trm_id').val();
               var polo = $('#pol_id').val();
 
+              if(!turma) {
+                  swal("Selecione uma turma", "Necessário selecionar uma turma para certificação", "info");
+                  return;
+              }
+
+              if(!modulo) {
+                  swal("Selecione o Módulo", "Necessário selecionar um módulo para certificação", "info");
+                  return;
+              }
+
               if (polo == null) {
                 polo = '';
               }
@@ -258,7 +268,7 @@
 
                         table2 += '<tr>';
                         table2 += '<td>' + obj.pes_nome + '</td>';
-                        table2 += '<td><span class="label label-info">Certificados</span></td>';
+                        table2 += '<td><span class="label label-info text-center">Certificado</span></td>';
                         table2 += '<td><a target = "_blanck" type="button" href= "{{url('/')}}/academico/async/cursos/printCertificado/'+obj.mat_id+'/'+$('#mdo_id').val()+'" class="btn btn-primary"><i class="glyphicon glyphicon-print"></i></a></td>';
                         table2 += '</tr>';
                     });

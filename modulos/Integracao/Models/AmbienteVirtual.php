@@ -39,4 +39,26 @@ class AmbienteVirtual extends BaseModel
     {
         return $this->hasMany('Modulos\Integracao\Models\AmbienteTurma', 'atr_amb_id', 'amb_id');
     }
+
+    public function integracao()
+    {
+        $result = $this->select($this->table.'.*', 'asr_token')
+            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
+            ->join('int_servicos', 'ser_id', '=', 'asr_ser_id')
+            ->where('ser_id', '=', 2)
+            ->get();
+
+        return $result->first();
+    }
+
+    public function monitoramento()
+    {
+        $result = $this->select($this->table.'.*', 'asr_token')
+            ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
+            ->join('int_servicos', 'ser_id', '=', 'asr_ser_id')
+            ->where('ser_id', '=', 1)
+            ->get();
+
+        return $result->first();
+    }
 }

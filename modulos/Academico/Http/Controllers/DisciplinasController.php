@@ -32,7 +32,7 @@ class DisciplinasController extends BaseController
         $tabela = null;
 
         $tableData = $this->disciplinaRepository->paginateRequest($request->all());
-        
+
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
                 'dis_id' => '#',

@@ -5,6 +5,7 @@ namespace Modulos\Seguranca\Http\Controllers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Repositories\ModuloRepository;
 use Auth;
 
@@ -25,7 +26,7 @@ class SelecionaModulosController extends BaseController
     {
         $user = $this->auth->user();
 
-        $moduloRepository = new ModuloRepository();
+        $moduloRepository = new ModuloRepository(new Modulo());
 
         $modulos = $moduloRepository->getByUser($user->usr_id);
 

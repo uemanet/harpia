@@ -112,16 +112,7 @@ class ProfessoresController extends BaseController
     {
         $pessoaRequest = new PessoaRequest();
         $professorRequest = new ProfessorRequest();
-
         try {
-            $validator = Validator::make($request->all(), $pessoaRequest->rules());
-
-            if ($validator->fails()) {
-                return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
-            }
-
-            DB::beginTransaction();
-
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
                 'pes_sexo' => $request->input('pes_sexo'),
@@ -150,48 +141,38 @@ class ProfessoresController extends BaseController
             $dataForm = $request->all();
             $pes_id = isset($dataForm['pes_id']) ? $request->input('pes_id') : null;
 
-            if ($pes_id) {
-                if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pes_id)) {
-                    $errors = ['pes_email' => 'Email já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
-                }
-
-                if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
-                    $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
-                }
-
-                $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
-
-                $dataDocumento = array(
-                    'doc_tpd_id' => 2,
-                    'doc_conteudo' => $cpf,
-                    'doc_pes_id' => $pes_id
-                );
-
-                $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
-            } else {
-                if ($this->pessoaRepository->verifyEmail($request->input('pes_email'))) {
-                    $errors = ['pes_email' => 'Email já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
-                }
-
-                if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'))) {
-                    $errors = ['doc_conteudo' => 'CPF já cadastrado'];
-                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
-                }
-
-                $pessoa = $this->pessoaRepository->create($dataPessoa);
-                $pes_id = $pessoa->pes_id;
-
-                $dataDocumento = array(
-                    'doc_pes_id' => $pes_id,
-                    'doc_tpd_id' => 2,
-                    'doc_conteudo' => $cpf
-                );
-
-                $this->documentoRepository->create($dataDocumento);
+            if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pes_id)) {
+                $errors = ['doc_conteudo' => 'CPF já cadastrado'];
+                return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
             }
+
+            if ($pes_id) {
+                $dataPessoa['pes_id'] = $pes_id;
+
+                $validator = Validator::make($request->all(), $pessoaRequest->rules($pes_id));
+
+                if ($validator->fails()) {
+                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
+                }
+
+                DB::beginTransaction();
+                $this->pessoaRepository->update($dataPessoa, $pes_id, 'pes_id');
+            } else {
+                $validator = Validator::make($request->all(), $pessoaRequest->rules());
+                if ($validator->fails()) {
+                    return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
+                }
+                DB::beginTransaction();
+                $pessoa = $this->pessoaRepository->create($dataPessoa);
+            }
+
+            $dataDocumento = array(
+                'doc_tpd_id' => 2,
+                'doc_conteudo' => $cpf,
+                'doc_pes_id' => $pes_id
+            );
+
+            $this->documentoRepository->updateOrCreate(['doc_pes_id' => $pes_id, 'doc_tpd_id' => 2], $dataDocumento);
 
             $validator = Validator::make(['prf_pes_id' => $pes_id, 'prf_codigo' => $request->prf_codigo], $professorRequest->rules());
 
@@ -237,7 +218,7 @@ class ProfessoresController extends BaseController
     {
         $pessoaRequest = new PessoaRequest();
 
-        $validation = Validator::make($request->all(), $pessoaRequest->rules());
+        $validation = Validator::make($request->all(), $pessoaRequest->rules($pessoaId));
 
         if ($validation->fails()) {
             return redirect()->back()->withInput($request->all())->withErrors($validation->messages());
@@ -248,11 +229,6 @@ class ProfessoresController extends BaseController
         if (!$pessoa) {
             flash()->error('Pessoa não existe.');
             return redirect()->route('academico.professores.index');
-        }
-
-        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $pessoaId)) {
-            $errors = ['pes_email' => 'Email já cadastrado'];
-            return redirect()->back()->withInput($request->all())->withErrors($errors);
         }
 
         if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $pessoaId)) {

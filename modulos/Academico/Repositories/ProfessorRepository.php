@@ -73,4 +73,24 @@ class ProfessorRepository extends BaseRepository
 
         return $result;
     }
+
+    public function search(array $options, array $select = null)
+    {
+        $query = $this->model->select('acd_professores.*', 'gra_pessoas.*', 'gra_documentos.*')
+           ->join('gra_pessoas', function ($join) {
+               $join->on('prf_pes_id', '=', 'pes_id');
+           })->leftJoin('gra_documentos', function ($join) {
+               $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+           });
+
+        foreach ($options as $op) {
+            $query = $query->where($op[0], $op[1], $op[2]);
+        }
+
+        if (!is_null($select)) {
+            $query = $query->select($select);
+        }
+
+        return $query->get();
+    }
 }

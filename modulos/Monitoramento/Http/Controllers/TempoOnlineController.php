@@ -2,22 +2,14 @@
 
 namespace Modulos\Monitoramento\Http\Controllers;
 
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Modulos\Core\Http\Controller\BaseController;
+use Configuracao;
 use App\Http\Controllers\Controller;
+use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use Configuracao;
 
-/**
- * Class IndexController.
- */
 class TempoOnlineController extends Controller
 {
-    /**
-     * @return \Illuminate\View\View
-     */
     protected $cursoRepository;
     protected $ambientevirtualRepository;
 
@@ -29,26 +21,42 @@ class TempoOnlineController extends Controller
 
     public function getIndex()
     {
-        $ambientes = $this->ambientevirtualRepository->findAmbientesWithMonitor();
+        $ambientes = AmbienteVirtual::all()->filter(function ($value) {
+            $servicos = $value->ambienteservico;
+
+            // Retorna somente os ambientes com plugin de monitoramento configurado
+            foreach ($servicos as $servico) {
+                if ($servico->asr_ser_id == 1) {
+                    return $value;
+                }
+            }
+        });
+
         return view('Monitoramento::tempoonline.index', compact('ambientes'));
     }
 
     public function getMonitorar($idAmbiente)
     {
-        $ambientevirtual = $this->ambientevirtualRepository->find($idAmbiente);
+        $ambiente = $this->ambientevirtualRepository->find($idAmbiente);
 
-        if (is_null($ambientevirtual)) {
+        if (is_null($ambiente)) {
             flash()->error('Ambiente não existe!');
             return redirect()->back();
         }
 
-        $ambiente = $this->ambientevirtualRepository->findAmbienteWithMonitor($idAmbiente);
+        $servicos = $ambiente->ambienteservico;
 
-        $timeclicks = 60;
+        $monitoramento = $servicos->filter(function ($value) {
+            if ($value->asr_ser_id == 1) {
+                return $value;
+            }
+        })->first();
+
+        $timeclicks = 1200;
         $cursos = $this->cursoRepository->getCursosByAmbiente($idAmbiente);
 
-        $wsfunction = $ambiente->ser_slug;
+        $wsfunction = $monitoramento->servico->ser_slug;
 
-        return view('Monitoramento::tempoonline.monitorar', compact('cursos', 'ambiente', 'timeclicks', 'wsfunction'));
+        return view('Monitoramento::tempoonline.monitorar', compact('cursos', 'ambiente', 'timeclicks', 'wsfunction', 'monitoramento'));
     }
 }

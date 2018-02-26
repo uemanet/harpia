@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Modulos\Academico\Models\Matricula;
-use Modulos\Core\Repository\BaseRepository;
 use DB;
 use Auth;
-use stdClass;
+use Modulos\Academico\Models\Matricula;
+use Modulos\Core\Repository\BaseRepository;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 
 class MatriculaCursoRepository extends BaseRepository
 {
@@ -20,18 +21,18 @@ class MatriculaCursoRepository extends BaseRepository
     protected $vinculoRepository;
 
     private $meses = [
-        1 => "Janeiro",
-        2 => "Fevereiro",
-        3 => "Março",
-        4 => "Abril",
-        5 => "Maio",
-        6 => "Junho",
-        7 => "Julho",
-        8 => "Agosto",
-        9 => "Setembro",
-        10 => "Outubro",
-        11 => "Novembro",
-        12 => "Dezembro",
+        1 => "Jan",
+        2 => "Fev",
+        3 => "Mar",
+        4 => "Abr",
+        5 => "Mai",
+        6 => "Jun",
+        7 => "Jul",
+        8 => "Ago",
+        9 => "Set",
+        10 => "Out",
+        11 => "Nov",
+        12 => "Dez",
     ];
 
     public function __construct(
@@ -68,12 +69,7 @@ class MatriculaCursoRepository extends BaseRepository
                     ->orWhere('trm_ofc_id', '=', $ofertaCursoId);
             })->get();
 
-
-        if ($result->count()) {
-            return true;
-        }
-
-        return false;
+        return (bool)$result->count();
     }
 
     public function verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $cursoId)
@@ -86,15 +82,11 @@ class MatriculaCursoRepository extends BaseRepository
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
             ->where('mat_alu_id', '=', $alunoId)
-            ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
+            ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente', 'reprovado'])
             ->where('ofc_crs_id', '=', $cursoId)
             ->get();
 
-        if ($result->count()) {
-            return true;
-        }
-
-        return false;
+        return (bool)$result->count();
     }
 
     public function verifyIfExistsMatriculaInCursoGraducao($alunoId)
@@ -113,53 +105,41 @@ class MatriculaCursoRepository extends BaseRepository
             ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
             ->get();
 
-        if ($result->count()) {
-            return true;
-        }
-
-        return false;
+        return (bool)$result->count();
     }
 
     public function verifyExistsVagasByTurma($turmaId)
     {
-        $result = $this->model
-                        ->rightJoin('acd_turmas', function ($join) {
-                            $join->on('mat_trm_id', '=', 'trm_id');
-                        })
-                        ->select('trm_qtd_vagas', DB::raw('COUNT(mat_trm_id) as qtd_matriculas'))
-                        ->where('trm_id', '=', $turmaId)
-                        ->groupBy('trm_id')
-                        ->first();
+        $result = DB::table('acd_turmas')
+            ->leftJoin('acd_matriculas', 'mat_trm_id', '=', 'trm_id')
+            ->select('trm_qtd_vagas', DB::raw('COUNT(mat_trm_id) as qtd_matriculas'))
+            ->where('trm_id', '=', $turmaId)
+            ->groupBy('trm_id')
+            ->first();
 
-        if ($result) {
-            if ($result->qtd_matriculas < $result->trm_qtd_vagas) {
-                return true;
-            }
-        }
-
-        return false;
+        return ($result && $result->qtd_matriculas < $result->trm_qtd_vagas);
     }
 
     public function listsCursosNotMatriculadoByAluno($alunoId)
     {
         $cursosMatriculados = $this->model
-                                    ->join('acd_turmas', function ($join) {
-                                        $join->on('mat_trm_id', '=', 'trm_id');
-                                    })
-                                    ->join('acd_ofertas_cursos', function ($join) {
-                                        $join->on('trm_ofc_id', '=', 'ofc_id');
-                                    })
-                                    ->join('acd_cursos', function ($join) {
-                                        $join->on('ofc_crs_id', '=', 'crs_id');
-                                    })
-                                    ->select('crs_id')
-                                    ->where('mat_alu_id', '=', $alunoId)
-                                    ->whereIn('mat_situacao', ['cursando'])
-                                    ->pluck('crs_id')
-                                    ->toArray();
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
+            })
+            ->select('crs_id')
+            ->where('mat_alu_id', '=', $alunoId)
+            ->whereIn('mat_situacao', ['cursando'])
+            ->pluck('crs_id')
+            ->toArray();
 
         $query = DB::table('acd_cursos')
-                    ->whereNotIn('crs_id', $cursosMatriculados);
+            ->whereNotIn('crs_id', $cursosMatriculados);
 
         if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
             $query = $query->where('crs_nvc_id', '<>', 1);
@@ -256,61 +236,67 @@ class MatriculaCursoRepository extends BaseRepository
 
     public function createMatricula($alunoId, array $options)
     {
-        // verifica se aluno possui matricula na oferta de curso ou na turma
-        if ($this->verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $options['ofc_id'], $options['mat_trm_id'])) {
-            return array(
-                'type' => 'error',
-                'message' => 'Aluno já possui matricula na oferta ou turma'
-            );
-        }
-
-        // verifica se aluno possui matricula ativa no curso, mesmo sendo em ofertas diferentes, contanto que tenha concluido, evadido
-        // ou abandonado o curso
-        if ($this->verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $options['crs_id'])) {
-            return array(
-                'type' => 'error',
-                'message' => 'Aluno já possui matricula ativa no curso selecionado'
-            );
-        }
-
-        // Verifica o nivel do curso, e caso seja de GRADUACAO, verifica se o aluno possui matrícula em algum curso de graduacao
-        $curso = DB::table('acd_cursos')->where('crs_id', $options['crs_id'])->first();
-
-        // caso seja de Graducao
-        if ($curso->crs_nvc_id == 1) {
-            if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
+        try {
+            // verifica se aluno possui matricula na oferta de curso ou na turma
+            if ($this->verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $options['ofc_id'], $options['mat_trm_id'])) {
                 return array(
                     'type' => 'error',
-                    'message' => 'Aluno já possui matricula ativa em outro curso de graduação'
+                    'message' => 'Aluno já possui matricula na oferta ou turma'
                 );
             }
-        }
 
-        // verifica se a turma ainda possui vagas disponiveis
-        if (!$this->verifyExistsVagasByTurma($options['mat_trm_id'])) {
-            return array(
-                'type' => 'error',
-                'message' => 'A turma escolhida não possui mais vagas disponiveis'
-            );
-        }
+            // verifica se aluno possui matricula ativa no curso, mesmo sendo em ofertas diferentes, contanto que tenha concluido, evadido
+            // ou abandonado o curso
+            if ($this->verifyIfExistsMatriculaByCursoAndSituacao($alunoId, $options['crs_id'])) {
+                return array(
+                    'type' => 'error',
+                    'message' => 'Aluno já possui matricula ativa no curso selecionado'
+                );
+            }
 
-        $dataMatricula = [
-            'mat_alu_id' => $alunoId,
-            'mat_trm_id' => $options['mat_trm_id'],
-            'mat_pol_id' => $options['mat_pol_id'],
-            'mat_grp_id' => ($options['mat_grp_id'] == '') ? null : $options['mat_grp_id'],
-            'mat_modo_entrada' => $options['mat_modo_entrada'],
-            'mat_situacao' => 'cursando'
-        ];
+            // Verifica o nivel do curso, e caso seja de GRADUACAO, verifica se o aluno possui matrícula em algum curso de graduacao
+            $curso = DB::table('acd_cursos')->where('crs_id', $options['crs_id'])->first();
 
-        $matricula = $this->create($dataMatricula);
+            // caso seja de Graducao
+            if ($curso->crs_nvc_id == 1) {
+                if ($this->verifyIfExistsMatriculaInCursoGraducao($alunoId)) {
+                    return array(
+                        'type' => 'error',
+                        'message' => 'Aluno já possui matricula ativa em outro curso de graduação'
+                    );
+                }
+            }
 
-        if ($matricula) {
-            return array(
-                'type' => 'success',
-                'message' => 'Matricula efetuada com sucesso!',
-                'matricula' => $matricula
-            );
+            // verifica se a turma ainda possui vagas disponiveis
+            if (!$this->verifyExistsVagasByTurma($options['mat_trm_id'])) {
+                return array(
+                    'type' => 'error',
+                    'message' => 'A turma escolhida não possui mais vagas disponiveis'
+                );
+            }
+
+            $dataMatricula = [
+                'mat_alu_id' => $alunoId,
+                'mat_trm_id' => $options['mat_trm_id'],
+                'mat_pol_id' => $options['mat_pol_id'],
+                'mat_grp_id' => ($options['mat_grp_id'] == '') ? null : $options['mat_grp_id'],
+                'mat_modo_entrada' => $options['mat_modo_entrada'],
+                'mat_situacao' => 'cursando'
+            ];
+
+            $matricula = $this->create($dataMatricula);
+
+            if ($matricula) {
+                return array(
+                    'type' => 'success',
+                    'message' => 'Matricula efetuada com sucesso!',
+                    'matricula' => $matricula
+                );
+            }
+        } catch (\Exception $exception) {
+            if (env('APP_DEBUG')) {
+                throw $exception;
+            }
         }
 
         return array(
@@ -376,7 +362,7 @@ class MatriculaCursoRepository extends BaseRepository
 
         if ($matriculas->count()) {
             foreach ($matriculas as $matricula) {
-                $obj = new StdClass;
+                $obj = new \stdClass();
 
                 $obj->mat_id = $matricula->mat_id;
                 $obj->alu_id = $matricula->alu_id;
@@ -419,7 +405,7 @@ class MatriculaCursoRepository extends BaseRepository
         return $result;
     }
 
-    public function verifyIfAlunoIsAptoOrNot($matriculaId)
+    private function verifyIfAlunoIsAptoOrNot($matriculaId)
     {
         $matricula = $this->find($matriculaId);
         $curso = $matricula->turma->ofertacurso->curso;
@@ -469,20 +455,20 @@ class MatriculaCursoRepository extends BaseRepository
         return array('status' => 'success', 'message' => 'Apto');
     }
 
-    public function verifyIfAlunoIsAprovadoDisciplinasObrigatorias(Matricula $matricula)
+    private function verifyIfAlunoIsAprovadoDisciplinasObrigatorias(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
 
         // busca todas as disciplinas obrigatorias da matriz do curso
         $disciplinasObrigatoriasMatriz = $this->matrizCurricularRepository
-                                    ->getDisciplinasByMatrizId($matrizCurricular->mtc_id, ['mdc_tipo_disciplina' => 'obrigatoria'])
-                                    ->pluck('mdc_id')
-                                    ->toArray();
+            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id, ['mdc_tipo_disciplina' => 'obrigatoria'])
+            ->pluck('mdc_id')
+            ->toArray();
 
         $matriculasAluno = $this->matriculaOfertaDisciplinaRepository
-                                ->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
-                                    ['mdc_tipo_disciplina' => 'obrigatoria', 'ofd_trm_id' => $matricula->mat_trm_id]);
+            ->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
+                ['mdc_tipo_disciplina' => 'obrigatoria', 'ofd_trm_id' => $matricula->mat_trm_id]);
 
         $quantDisciplinasObrigatoriasAprovadas = 0;
         foreach ($matriculasAluno as $matriculaOferta) {
@@ -499,7 +485,7 @@ class MatriculaCursoRepository extends BaseRepository
         return false;
     }
 
-    public function verifyIfAlunoIsAprovadoEletivasModulosMatriz(Matricula $matricula)
+    private function verifyIfAlunoIsAprovadoEletivasModulosMatriz(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -511,10 +497,10 @@ class MatriculaCursoRepository extends BaseRepository
 
             // busca todas as disciplinas eletivas do modulo da matriz
             $disciplinasEletivasMatriz = $this->matrizCurricularRepository
-                                                ->getDisciplinasByMatrizId($matrizCurricular->mtc_id,
-                                                    ['mdc_tipo_disciplina' => 'eletiva', 'mdc_mdo_id' => $modulo->mdo_id])
-                                                ->pluck('mdc_id')
-                                                ->toArray();
+                ->getDisciplinasByMatrizId($matrizCurricular->mtc_id,
+                    ['mdc_tipo_disciplina' => 'eletiva', 'mdc_mdo_id' => $modulo->mdo_id])
+                ->pluck('mdc_id')
+                ->toArray();
 
             if (empty($disciplinasEletivasMatriz)) {
                 continue;
@@ -524,7 +510,7 @@ class MatriculaCursoRepository extends BaseRepository
             $creditosEletivas = 0;
             foreach ($disciplinasEletivasMatriz as $disciplinaId) {
                 $matriculaOferta = $this->matriculaOfertaDisciplinaRepository->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
-                                        ['ofd_mdc_id' => $disciplinaId, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
+                    ['ofd_mdc_id' => $disciplinaId, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
 
                 if ($matriculaOferta && in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
                     $cargaHorariaEletivas += $matriculaOferta->dis_carga_horaria;
@@ -546,20 +532,20 @@ class MatriculaCursoRepository extends BaseRepository
         return true;
     }
 
-    public function verifyIfAlunoHaveCargaHorariaMinCurso(Matricula $matricula)
+    private function verifyIfAlunoHaveCargaHorariaMinCurso(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
 
         // busca todas as disciplinas da matriz do curso
         $disciplinasMatriz = $this->matrizCurricularRepository
-                                ->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
-                                ->pluck('mdc_id')
-                                ->toArray();
+            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
+            ->pluck('mdc_id')
+            ->toArray();
 
         $matriculasAluno = $this->matriculaOfertaDisciplinaRepository
-                                ->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
-                                    ['ofd_trm_id' => $matricula->mat_trm_id]);
+            ->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
+                ['ofd_trm_id' => $matricula->mat_trm_id]);
 
         $cargaHorariaAluno = 0;
 
@@ -573,27 +559,7 @@ class MatriculaCursoRepository extends BaseRepository
         return $cargaHorariaAluno >= $matrizCurricular->mtc_horas;
     }
 
-    public function verifyIfAlunoAprovadoTcc(Matricula $matricula)
-    {
-        // busca a matriz curricular do curso
-        $matrizCurricular = $matricula->turma->ofertacurso->matriz;
-
-        // busca a disciplina de tcc da matriz do curso
-        $disciplinaTcc = $this->matrizCurricularRepository
-                            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id, ['mdc_tipo_disciplina' => 'tcc'])
-                            ->first();
-
-        if ($disciplinaTcc) {
-            $matriculaOferta = $this->matriculaOfertaDisciplinaRepository->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
-                ['ofd_mdc_id' => $disciplinaTcc->mdc_id, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
-
-            return in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final']);
-        }
-
-        return true;
-    }
-
-    public function verifyIfAlunoHaveTccLancado(Matricula $matricula)
+    private function verifyIfAlunoAprovadoTcc(Matricula $matricula)
     {
         // busca a matriz curricular do curso
         $matrizCurricular = $matricula->turma->ofertacurso->matriz;
@@ -607,19 +573,35 @@ class MatriculaCursoRepository extends BaseRepository
             $matriculaOferta = $this->matriculaOfertaDisciplinaRepository->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
                 ['ofd_mdc_id' => $disciplinaTcc->mdc_id, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
 
-            if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                if ($matriculaOferta->tcc) {
-                    return true;
-                }
-
-                return false;
-            }
+            return in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final']);
         }
 
         return true;
     }
 
-    public function verifyIfAlunoHaveTitulacaoGraduacao(Matricula $matricula)
+    private function verifyIfAlunoHaveTccLancado(Matricula $matricula)
+    {
+        // busca a matriz curricular do curso
+        $matrizCurricular = $matricula->turma->ofertacurso->matriz;
+
+        // busca a disciplina de tcc da matriz do curso
+        $disciplinaTcc = $this->matrizCurricularRepository
+            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id, ['mdc_tipo_disciplina' => 'tcc'])
+            ->first();
+
+        if ($disciplinaTcc) {
+            $matriculaOferta = $this->matriculaOfertaDisciplinaRepository->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
+                ['ofd_mdc_id' => $disciplinaTcc->mdc_id, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
+
+            if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final']) && $matriculaOferta->tcc) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function verifyIfAlunoHaveTitulacaoGraduacao(Matricula $matricula)
     {
         $pessoa = $matricula->aluno->pessoa;
 
@@ -655,7 +637,7 @@ class MatriculaCursoRepository extends BaseRepository
             $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
 
             // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
-            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id, $ofertaCurso->ofc_id)['status'] == 'success') {
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id)['status'] == 'success') {
                 continue;
             }
 
@@ -673,7 +655,7 @@ class MatriculaCursoRepository extends BaseRepository
         return array('aptos' => $aptos, 'certificados' => $certificados, 'aptosq' => COUNT($aptos), 'certificadosq' => COUNT($certificados));
     }
 
-    public function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
+    private function verifyIfAlunoIsAptoCertificacao($matriculaId, $turmaId, $moduloId)
     {
         $apto = false;
 
@@ -735,7 +717,13 @@ class MatriculaCursoRepository extends BaseRepository
                         }
                     }
                 }
-            }
+                // Verifica se a oferta de disciplina está na matriz do curso
+                if (in_array($disciplina->mdc_id, $disciplinasMatriz)) {
+                    // Caso o aluno foi aprovado na disciplina, incrementa a variavel
+                    if (in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                        if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                            $quantDisciplinasObrigatoriasAprovadas++;
+                        }
 
             // se o aluno não atingir a carga horaria minima de disciplinas eletivas do módulo, não está apto para conclusão
             if ((!is_null($modulo->mdo_cargahoraria_min_eletivas)) && ($cargaHorariaEletivas < $modulo->mdo_cargahoraria_min_eletivas)) {
@@ -749,7 +737,7 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         // Casos de situações
-        if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias)) {
+        if (($quantDisciplinasObrigatoriasAprovadas == $quantDisciplinasObrigatorias) && $quantDisciplinasObrigatorias != 0) {
             return true;
         }
 
@@ -844,13 +832,13 @@ class MatriculaCursoRepository extends BaseRepository
             $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
         }
 
-        $matriculas =  $query->get();
+        $matriculas = $query->get();
 
         foreach ($matriculas as $key => $matricula) {
             $rg = DB::table('gra_documentos')
-            ->where('doc_pes_id', '=', $matricula->pes_id)
-            ->where('doc_tpd_id', 1)
-            ->first();
+                ->where('doc_pes_id', '=', $matricula->pes_id)
+                ->where('doc_tpd_id', 1)
+                ->first();
 
             if ($rg) {
                 $matricula['rg'] = $rg->doc_conteudo;
@@ -895,16 +883,16 @@ class MatriculaCursoRepository extends BaseRepository
         $pessoa = $matricula->aluno->pessoa;
 
         $modulo = DB::table('acd_modulos_matrizes')
-                  ->where('mdo_id', $IdModulo)->first();
+            ->where('mdo_id', $IdModulo)->first();
 
         $ofertasdisciplinas = DB::table('acd_ofertas_disciplinas')
-        ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
-        ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
-        ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
-        ->where('mdc_mdo_id', $IdModulo)
-        ->where('mof_mat_id', $IdMatricula)
-        ->orderBy('dis_nome', 'asc')
-        ->get();
+            ->join('acd_matriculas_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
+            ->join('acd_modulos_disciplinas', 'ofd_mdc_id', 'mdc_id')
+            ->join('acd_disciplinas', 'mdc_dis_id', 'dis_id')
+            ->where('mdc_mdo_id', $IdModulo)
+            ->where('mof_mat_id', $IdMatricula)
+            ->orderBy('dis_nome', 'asc')
+            ->get();
 
         $cargahoraria = 0;
         $disciplinas = [];
@@ -919,40 +907,40 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         //formata o coeficiente do módulo
-        $coeficiente = $numerador/$denominador;
+        $coeficiente = $numerador / $denominador;
         $coeficiente = number_format($coeficiente, 2, '.', '');
 
         $descricaomodulo = $modulo->mdo_descricao;
         $qualificacaomodulo = $modulo->mdo_qualificacao;
 
         $query = DB::table('gra_documentos')
-                  ->where('doc_pes_id', $pessoa->pes_id)
-                  ->where('doc_tpd_id', 2)
-                  ->first();
+            ->where('doc_pes_id', $pessoa->pes_id)
+            ->where('doc_tpd_id', 2)
+            ->first();
         $nomepessoa = $pessoa->pes_nome;
 
         //formatação do CPF de pessoa
         $cpfpessoa = $query->doc_conteudo;
-        $parte_um     = substr($cpfpessoa, 0, 3);
-        $parte_dois   = substr($cpfpessoa, 3, 3);
-        $parte_tres   = substr($cpfpessoa, 6, 3);
+        $parte_um = substr($cpfpessoa, 0, 3);
+        $parte_dois = substr($cpfpessoa, 3, 3);
+        $parte_tres = substr($cpfpessoa, 6, 3);
         $parte_quatro = substr($cpfpessoa, 9, 2);
         $cpfpessoaformatado = "$parte_um.$parte_dois.$parte_tres-$parte_quatro";
 
         //prepara o array de retorno
         $returnData = [
-                        'DESCRICAOMODULO' => mb_strtoupper($descricaomodulo, "UTF-8"),
-                        'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8") ,
-                        'CARGAHORARIAMODULO' => $cargahoraria,
-                        'DISCIPLINAS' => $disciplinas,
-                        'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
-                        'LIVRO' => str_pad($livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
-                        'FOLHA' => str_pad($livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
-                        'REGISTRO'=> str_pad($livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
-                        'COEFICIENTEDOMODULO'=> $coeficiente,
-                        'PESSOANOME'=> mb_strtoupper($nomepessoa, "UTF-8"),
-                        'PESSOACPF'=> $cpfpessoaformatado
-                        ];
+            'DESCRICAOMODULO' => mb_strtoupper($descricaomodulo, "UTF-8"),
+            'QUALIFICACAOMODULO' => mb_strtoupper($qualificacaomodulo, "UTF-8"),
+            'CARGAHORARIAMODULO' => $cargahoraria,
+            'DISCIPLINAS' => $disciplinas,
+            'EIXOCURSO' => mb_strtoupper($curso->crs_eixo, "UTF-8"),
+            'LIVRO' => str_pad((string) $livfolreg->liv_numero, 4, '0', STR_PAD_LEFT),
+            'FOLHA' => str_pad((string) $livfolreg->reg_folha, 4, '0', STR_PAD_LEFT),
+            'REGISTRO' => str_pad((string) $livfolreg->reg_registro, 4, '0', STR_PAD_LEFT),
+            'COEFICIENTEDOMODULO' => $coeficiente,
+            'PESSOANOME' => mb_strtoupper($nomepessoa, "UTF-8"),
+            'PESSOACPF' => $cpfpessoaformatado
+        ];
         return $returnData;
     }
 
@@ -966,18 +954,45 @@ class MatriculaCursoRepository extends BaseRepository
             $result[$key]->mat_situacao = ucfirst($result[$key]->mat_situacao);
         }
 
-        return $result;
+        if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
+            $sort = [
+                'field' => $requestParameters['field'],
+                'sort' => $requestParameters['sort']
+            ];
+            $query = $query->orderBy($sort['field'], $sort['sort']);
+        }
+
+        if ($requestParameters['mat_situacao'] != null) {
+            $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
+        }
+
+        return $query->paginate(15);
     }
 
-    public function getMatriculasPorMesUltimosSeisMeses()
+    public function getMatriculasPorMesUltimosSeisMeses(): SupportCollection
     {
-        $result = DB::table('acd_matriculas')
-            ->select(DB::raw('MONTH(created_at) as mes'), DB::raw('COUNT(*) as quantidade'))
-            ->where(DB::raw('created_at'), '>=', DB::raw('DATE_SUB(NOW(), INTERVAL 6 MONTH)'))
-            ->groupBy('mes')->get()->toArray();
+        $fimPeriodo = new \DateTime('first day of next month');
+        $inicioPeriodo = $fimPeriodo->sub(new \DateInterval('P6M'));
 
-        foreach ($result as $key => $item) {
-            $result[$key]->mes = $this->meses[$result[$key]->mes];
+        // Traz todas as matriculas do periodo
+        $historico = DB::table('acd_matriculas')->where('created_at', '>=', $inicioPeriodo->format('Y-m-d') . ' 00:00:00')->get();
+
+        $result = collect([]);
+
+        for ($i = 0; $i < 6; $i++) {
+            $data = [];
+
+            $matriculasMes = $historico->filter(function ($value, $key) use ($inicioPeriodo) {
+                $createdAt = new \DateTime($value->created_at);
+                return (int)$createdAt->format('m') == (int)$inicioPeriodo->format('m');
+            });
+
+            $data['mes'] = $this->meses[(int)$inicioPeriodo->format('m')] . '/' . $inicioPeriodo->format('y');
+            $data['quantidade'] = $matriculasMes->count();
+
+            $result[] = $data;
+
+            $inicioPeriodo = $inicioPeriodo->add(new \DateInterval('P1M'));
         }
 
         return $result;

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Harpia\Tree;
 
@@ -19,7 +20,7 @@ class Tree
      * @param \Harpia\Tree\Node $leaf
      * @throws \ErrorException
      */
-    public function addLeaf(Node $leaf)
+    public function addLeaf(Node $leaf): void
     {
         if ($this->root == null) {
             throw new \ErrorException("Cannot add leaf node as root node of tree");
@@ -32,9 +33,14 @@ class Tree
 
     /**
      * @param \Harpia\Tree\Node $node
+     * @throws \ErrorException
      */
-    public function addValue(Node $node)
+    public function addValue(Node $node): void
     {
+        if ($this->root == null && $node->isLeaf()) {
+            throw new \ErrorException("Cannot add leaf node as root node of tree");
+        }
+
         if ($this->root == null) {
             $this->root = $node;
             $this->nodes++;
@@ -48,22 +54,19 @@ class Tree
 
     /**
      * @param Tree $tree
+     * @throws \ErrorException
      */
-    public function addTree(Tree $tree)
+    public function addTree(Tree $tree): void
     {
         if ($tree->getRoot()) {
             $root = $tree->getRoot();
             $this->addValue($root);
             $this->nodes += $tree->getNodes() - 1;
-            return;
         }
-
-        $this->root = $tree->getRoot();
-        $this->nodes = $tree->getNodes();
     }
 
     /**
-     * @return null
+     * @return null|Node
      */
     public function getRoot()
     {
@@ -71,7 +74,7 @@ class Tree
     }
 
     /**
-     * @return int
+     * @return mixed
      */
     public function getNodes()
     {

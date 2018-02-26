@@ -2,9 +2,8 @@
 
 namespace Modulos\Academico\Models;
 
-use Illuminate\Support\Facades\DB;
-use Modulos\Core\Model\BaseModel;
 use Carbon\Carbon;
+use Modulos\Core\Model\BaseModel;
 
 class MatrizCurricular extends BaseModel
 {

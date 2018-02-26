@@ -3,12 +3,12 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Events\AlterarGrupoAlunoEvent;
-use Modulos\Academico\Events\AtualizarMatriculaCursoEvent;
-use Modulos\Academico\Events\DeletarGrupoAlunoEvent;
-use Modulos\Academico\Events\MatriculaAlunoTurmaEvent;
+use Modulos\Academico\Events\UpdateGrupoAlunoEvent;
+use Modulos\Academico\Events\UpdateMatriculaCursoEvent;
+use Modulos\Academico\Events\DeleteGrupoAlunoEvent;
+use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
-use Modulos\Academico\Listeners\AtualizarMatriculaCursoListener;
+use Modulos\Academico\Listeners\UpdateMatriculaCursoListener;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
@@ -23,8 +23,12 @@ class MatriculaCursoController extends BaseController
     protected $cursoRepository;
     protected $turmaRepository;
 
-    public function __construct(MatriculaCursoRepository $matricula, AlunoRepository $aluno, CursoRepository $curso, TurmaRepository $turmaRepository)
-    {
+    public function __construct(
+        MatriculaCursoRepository $matricula,
+        AlunoRepository $aluno,
+        CursoRepository $curso,
+        TurmaRepository $turmaRepository
+    ) {
         $this->matriculaCursoRepository = $matricula;
         $this->alunoRepository = $aluno;
         $this->cursoRepository = $curso;
@@ -109,7 +113,7 @@ class MatriculaCursoController extends BaseController
                 $matricula = $result['matricula'];
 
                 if ($matricula->turma->trm_integrada) {
-                    event(new MatriculaAlunoTurmaEvent($matricula));
+                    event(new CreateMatriculaTurmaEvent($matricula));
                 }
             }
 
@@ -151,20 +155,20 @@ class MatriculaCursoController extends BaseController
             // caso a turma seja integrada, manda as alterações pro moodle
             if ($turma->trm_integrada) {
                 if (($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
-                    event(new AlterarGrupoAlunoEvent($matricula, 'UPDATE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                    event(new UpdateGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id));
                 }
 
                 if (($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
-                    event(new DeletarGrupoAlunoEvent($matricula, 'DELETE_GRUPO_ALUNO', $oldMatricula->mat_grp_id));
+                    event(new DeleteGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id));
                 }
             }
 
             if ($oldMatricula->mat_grp_id != $matricula->mat_grp_id) {
-                event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::GRUPO, $observacao));
+                event(new UpdateMatriculaCursoEvent($matricula, UpdateMatriculaCursoEvent::GRUPO, $observacao));
             }
 
             if ($oldMatricula->mat_pol_id != $matricula->mat_pol_id) {
-                event(new AtualizarMatriculaCursoEvent($matricula, AtualizarMatriculaCursoEvent::POLO, $observacao));
+                event(new UpdateMatriculaCursoEvent($matricula, UpdateMatriculaCursoEvent::POLO, $observacao));
             }
 
             flash()->success('Matrícula atualizada com sucesso.');
