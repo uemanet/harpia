@@ -1,49 +1,181 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\MatrizCurricularRepository;
-use Modulos\Academico\Models\MatrizCurricular;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
-use Carbon\Carbon;
-
+use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Curso;
+use Modulos\Academico\Models\MatrizCurricular;
+use Stevebauman\EloquentTable\TableCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Modulos\Academico\Repositories\MatrizCurricularRepository;
 
-class MatrizCurricularRepositoryTest extends TestCase
+class MatrizCurricularRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(MatrizCurricularRepository::class);
+        $this->table = 'acd_matrizes_curriculares';
     }
 
-    public function testAllWithEmptyDatabase()
+    public function mock(Curso $curso, array $matriz = [])
     {
-        $response = $this->repo->all();
+        $matriz = array_merge($matriz, ['mtc_crs_id' => $curso->crs_id]);
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create($matriz);
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $modulosMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class, 2)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        // Disciplinas para o curso
+        $disciplinas = factory(Modulos\Academico\Models\Disciplina::class, 6)->create([
+            'dis_nvc_id' => $curso->crs_nvc_id
+        ]);
+
+        $modulosDisciplina = new \Illuminate\Support\Collection();
+        foreach ($modulosMatriz as $key => $moduloMatriz) {
+            for ($i = $key * 3; $i < 3 * ($key + 1); $i++) {
+                $modulosDisciplina[] = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+                    'mdc_dis_id' => $disciplinas[$i]->dis_id,
+                    'mdc_mdo_id' => $moduloMatriz->mdo_id,
+                    'mdc_tipo_disciplina' => 'obrigatoria'
+                ]);
+            }
+        }
+
+        return [$matrizCurricular, $modulosMatriz, $disciplinas];
+    }
+
+    public function testCreate()
+    {
+        $data = factory(MatrizCurricular::class)->raw();
+        $entry = $this->repo->create($data);
+
+        $fromRepository = $entry->toArray();
+        $fromRepository['mtc_data'] = $entry->getOriginal('mtc_data');
+
+        $this->assertInstanceOf(MatrizCurricular::class, $entry);
+        $this->assertDatabaseHas($this->table, $fromRepository);
+    }
+
+    public function testFind()
+    {
+        $entry = factory(MatrizCurricular::class)->create();
+        $id = $entry->mtc_id;
+        $fromRepository = $this->repo->find($id);
+
+        $fromRepositoryArray = $entry->toArray();
+        $fromRepositoryArray['mtc_data'] = $entry->getOriginal('mtc_data');
+
+        $this->assertInstanceOf(MatrizCurricular::class, $fromRepository);
+
+        $this->assertDatabaseHas($this->table, $fromRepositoryArray);
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(MatrizCurricular::class)->create();
+        $id = $entry->mtc_id;
+
+        $data = $entry->toArray();
+
+        $data['mtc_titulo'] = "Title";
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $fromRepositoryArray = $fromRepository->toArray();
+
+        $data['mtc_data'] = $entry->getOriginal('mtc_data');
+        $fromRepositoryArray['mtc_data'] = $entry->getOriginal('mtc_data');
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(MatrizCurricular::class, $fromRepository);
+        $this->assertEquals($data, $fromRepositoryArray);
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(MatrizCurricular::class)->create();
+        $id = $entry->mtc_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(MatrizCurricular::class, 2)->create();
+
+        $model = new MatrizCurricular();
+        $expected = $model->pluck('mtc_titulo', 'mtc_id');
+        $fromRepository = $this->repo->lists('mtc_id', 'mtc_titulo');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(MatrizCurricular::class, 2)->create();
+
+        factory(MatrizCurricular::class)->create([
+            'mtc_titulo' => 'centro'
+        ]);
+
+        $searchResult = $this->repo->search(array(['mtc_titulo', '=', 'centro']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        factory(MatrizCurricular::class, 2)->create();
+
+        $entry = factory(MatrizCurricular::class)->create([
+            'mtc_titulo' => "centro"
+        ]);
+
+        $expected = [
+            'mtc_id' => $entry->mtc_id,
+            'mtc_titulo' => $entry->mtc_titulo
+        ];
+
+        $searchResult = $this->repo->search(array(['mtc_titulo', '=', "centro"]), ['mtc_id', 'mtc_titulo']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(MatrizCurricular::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(MatrizCurricular::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new MatrizCurricular();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
@@ -53,7 +185,6 @@ class MatrizCurricularRepositoryTest extends TestCase
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
@@ -69,55 +200,28 @@ class MatrizCurricularRepositoryTest extends TestCase
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->mtc_id);
+        $this->assertEquals(2, $response->first()->mtc_id);
     }
 
     public function testPaginateWithSearch()
     {
         factory(MatrizCurricular::class, 2)->create();
-
         factory(MatrizCurricular::class)->create([
-            'mtc_id' => 3,
+            'mtc_titulo' => 'centro',
         ]);
 
         $search = [
             [
-                'field' => 'mtc_id',
+                'field' => 'mtc_titulo',
                 'type' => '=',
-                'term' => 1
+                'term' => 'centro'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(MatrizCurricular::class, 2)->create();
-
-        $sort = [
-            'field' => 'mtc_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'mtc_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals('centro', $response->first()->mtc_titulo);
     }
 
     public function testPaginateRequest()
@@ -131,62 +235,192 @@ class MatrizCurricularRepositoryTest extends TestCase
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testCreate()
+    public function testPaginateRequestByCurso()
     {
-        $response = factory(MatrizCurricular::class)->create();
+        $matrizes = collect([]);
+        $curso = factory(Curso::class)->create();
 
-        $data = $response->toArray();
+        // Duas matrizes para o mesmo curso
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        $matrizes[] = $matriz;
 
-        $this->assertInstanceOf(MatrizCurricular::class, $response);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'May']);
+        $matrizes[] = $matriz;
 
-        $this->assertArrayHasKey('mtc_id', $data);
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
+        $matrizes[] = $matriz;
+
+        // Paginacao sem request params
+        $result = $this->repo->paginateRequestByCurso($curso->crs_id);
+        $this->assertEquals($matrizes->count(), $result->count());
+
+        $requestParams = [
+            'field' => 'mtc_titulo',
+            'sort' => 'desc'
+        ];
+
+        // Paginacao com request params
+        $result = $this->repo->paginateRequestByCurso($curso->crs_id, $requestParams);
+        $this->assertEquals($matrizes->count(), $result->count());
+        $this->assertEquals('Taylor', $result->first()->mtc_titulo);
     }
 
-    public function testFind()
+    public function testFindAllByCurso()
     {
-        $dados = factory(MatrizCurricular::class)->create();
-        // Recupera id do curso a partir do Factory
-        // Um Accessor é usado no model para retornar o nome do curso em vez de seu id
-        $data = $dados->first()->toArray();
-        // Retorna para date format americano antes de comparar com o banco
-        $data['mtc_data'] = Carbon::createFromFormat('d/m/Y', $data['mtc_data'])->toDateString();
-        $this->seeInDatabase('acd_matrizes_curriculares', $data);
+        $matrizes = collect([]);
+        $curso = factory(Curso::class)->create();
+
+        // Duas matrizes para o mesmo curso
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        $matrizes[] = $matriz;
+
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'May']);
+        $matrizes[] = $matriz;
+
+        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
+        $matrizes[] = $matriz;
+
+        // Mais um curso e mais uma matriz
+        $outroCurso = factory(Curso::class)->create();
+        $this->mock($outroCurso, ['mtc_titulo' => 'Mercury']);
+
+        $result = $this->repo->findAllByCurso($curso->crs_id);
+
+        $this->assertEquals($matrizes->count(), $result->count());
+        $this->assertEquals($matrizes->pluck('mtc_id')->toArray(), $result->pluck('mtc_id')->toArray());
     }
 
-    public function testUpdate()
+    public function testFindByOfertaCurso()
     {
-        $data = factory(MatrizCurricular::class)->create();
+        $curso = factory(Curso::class)->create();
 
-        $updateArray = $data->toArray();
-        $updateArray['mtc_descricao'] = 'abcde_edcba';
+        // Duas matrizes para o curso
+        list($primeiraMatriz, , $disciplinasPrimeiraMatriz) = $this->mock($curso);
+        list($segundaMatriz, , $disciplinasSegundaMatriz) = $this->mock($curso);
 
-        $matrizCurricularId = $updateArray['mtc_id'];
-        unset($updateArray['mtc_id']);
+        $ofertaCurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $primeiraMatriz->mtc_id
+        ]);
 
-        $response = $this->repo->update($updateArray, $matrizCurricularId, 'mtc_id');
+        $result = $this->repo->findByOfertaCurso($ofertaCurso->ofc_id);
 
-        $this->assertEquals(1, $response);
+        $this->assertInstanceOf(MatrizCurricular::class, $result);
+        $this->assertEquals($primeiraMatriz->toArray(), $result->toArray());
     }
 
-    public function testDelete()
+    public function testGetDisciplinasByMatrizId()
     {
-        $data = factory(MatrizCurricular::class)->create();
-        $matrizCurricularId = $data->mtc_id;
+        $curso = factory(Curso::class)->create();
+        list($matriz, , $disciplinas) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
 
-        $response = $this->repo->delete($matrizCurricularId);
+        // Sem opcoes
+        $id = $matriz->mtc_id;
+        $result = $this->repo->getDisciplinasByMatrizId($id);
 
-        $this->assertEquals(1, $response);
+        $this->assertEquals($disciplinas->count(), $result->count());
+
+        // Com opcoes
+        $options = [
+            'mdo_id' => 2
+        ];
+
+        $result = $this->repo->getDisciplinasByMatrizId($id, $options);
+
+        $this->assertEquals(3, $result->count());
     }
 
-    public function tearDown()
+    public function testVerifyIfDisciplinaExistsInMatriz()
     {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $curso = factory(Curso::class)->create();
+        list($matriz, $modulosMatriz, $disciplinas) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        $id = $matriz->mtc_id;
+
+        // Cadastra disciplina TCC
+        $disciplinaTcc = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+
+        factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplinaTcc->dis_id,
+            'mdc_mdo_id' => $modulosMatriz->last()->mdo_id,
+            'mdc_tipo_disciplina' => 'tcc'
+        ]);
+
+        $toCheck = $disciplinas->random();
+
+        // Disciplina existente
+        $result = $this->repo->verifyIfDisciplinaExistsInMatriz($id, $toCheck->dis_id);
+        $this->assertTrue($result);
+
+        // Disciplina existe, mas nao eh tcc
+        $result = $this->repo->verifyIfDisciplinaExistsInMatriz($id, $toCheck->dis_id, true);
+        $this->assertFalse($result);
+
+        // Disciplina nao existe
+        $disciplinaAvulsa = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+
+        $result = $this->repo->verifyIfDisciplinaExistsInMatriz($id, $disciplinaAvulsa->dis_id);
+        $this->assertFalse($result);
+
+        $result = $this->repo->verifyIfDisciplinaExistsInMatriz($id, $disciplinaAvulsa->dis_id, true);
+        $this->assertFalse($result);
+
+        // Disciplina existe e eh tcc
+        $result = $this->repo->verifyIfDisciplinaExistsInMatriz($id, $disciplinaTcc->dis_id);
+        $this->assertTrue($result);
+
+        $result = $this->repo->verifyIfDisciplinaExistsInMatriz($id, $disciplinaTcc->dis_id, true);
+        $this->assertTrue($result);
+    }
+
+    public function testVerifyIfNomeDisciplinaExistsInMatriz()
+    {
+        $curso = factory(Curso::class)->create();
+        list($matriz, $modulosMatriz, $disciplinas) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        $id = $matriz->mtc_id;
+
+        $nome = 'Algebra Linear';
+
+        $result = $this->repo->verifyIfNomeDisciplinaExistsInMatriz($id, $nome);
+        $this->assertFalse($result);
+
+        // Cadastra disciplina
+        $disciplinaNova = factory(\Modulos\Academico\Models\Disciplina::class)->create([
+            'dis_nome' => $nome
+        ]);
+
+        factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplinaNova->dis_id,
+            'mdc_mdo_id' => $modulosMatriz->last()->mdo_id,
+            'mdc_tipo_disciplina' => 'obrigatoria'
+        ]);
+
+        $result = $this->repo->verifyIfNomeDisciplinaExistsInMatriz($id, $nome);
+        $this->assertTrue($result);
+    }
+
+    public function testVerifyIfExistsDisciplinaTccInMatriz()
+    {
+        $curso = factory(Curso::class)->create();
+        list($matriz, $modulosMatriz) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        $id = $matriz->mtc_id;
+
+        $result = $this->repo->verifyIfExistsDisciplinaTccInMatriz($id);
+        $this->assertFalse($result);
+
+        // Cadastra disciplina tcc
+        $disciplinaTcc = factory(\Modulos\Academico\Models\Disciplina::class)->create();
+
+        factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create([
+            'mdc_dis_id' => $disciplinaTcc->dis_id,
+            'mdc_mdo_id' => $modulosMatriz->last()->mdo_id,
+            'mdc_tipo_disciplina' => 'tcc'
+        ]);
+
+        $result = $this->repo->verifyIfExistsDisciplinaTccInMatriz($id);
+        $this->assertTrue($result);
     }
 }

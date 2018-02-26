@@ -2,12 +2,13 @@
 
 namespace Modulos\Integracao\Events;
 
-use Harpia\Event\Event;
+use Harpia\Event\SincronizacaoEvent;
+use Modulos\Academico\Models\Turma;
 
-class TurmaMapeadaEvent extends Event
+class TurmaMapeadaEvent extends SincronizacaoEvent
 {
-    public function __construct($entry, $action = "CREATE")
+    public function __construct(Turma $entry, $extra = null)
     {
-        parent::__construct($entry, $action);
+        parent::__construct($entry, "CREATE", $extra);
     }
 }

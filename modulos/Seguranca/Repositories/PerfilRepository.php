@@ -2,30 +2,30 @@
 
 namespace Modulos\Seguranca\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Seguranca\Models\Perfil;
 use DB;
+use Modulos\Seguranca\Models\Perfil;
+use Modulos\Core\Repository\BaseRepository;
 
 class PerfilRepository extends BaseRepository
 {
     public function __construct(Perfil $perfil)
     {
-        $this->model = $perfil;
+        parent::__construct($perfil);
     }
 
     public function getPerfilModulo($perfil)
     {
         $permissoes = DB::table('seg_permissoes')
-                   ->where('prm_rota', 'like', $perfil->modulo->mod_slug.'%')->get();
+            ->where('prm_rota', 'like', $perfil->modulo->mod_slug . '%')->get();
 
         $arrayRecursos = [];
         $arrayRecursosPermissoes = [];
 
         foreach ($permissoes as $key => $permissao) {
             $habilitado = DB::table('seg_permissoes_perfis')
-                     ->where('prp_prf_id', '=', $perfil->prf_id)
-                     ->where('prp_prm_id', '=', $permissao->prm_id)
-                     ->get();
+                ->where('prp_prf_id', '=', $perfil->prf_id)
+                ->where('prp_prm_id', '=', $permissao->prm_id)
+                ->get();
 
             if ($habilitado->isEmpty()) {
                 $habilitado = 0;
@@ -36,15 +36,16 @@ class PerfilRepository extends BaseRepository
             $separa = explode('.', $permissao->prm_rota);
             $conta = count($separa);
             $arrayPermissoes = [
-            'prm_id' => $permissao->prm_id,
-            'prm_nome' => $separa[$conta-1],
-            'habilitado' => $habilitado
-          ];
-            $arrayRecursosPermissoes[$key]['rcs_nome'] = $separa[$conta-2];
+                'prm_id' => $permissao->prm_id,
+                'prm_nome' => $permissao->prm_nome,
+                'habilitado' => $habilitado
+            ];
+
+            $arrayRecursosPermissoes[$key]['rcs_nome'] = $separa[$conta - 2];
             $arrayRecursosPermissoes[$key]['permissao'] = $arrayPermissoes;
 
-            if (!in_array($separa[$conta-2], $arrayRecursos)) {
-                $arrayRecursos[] = $separa[$conta-2];
+            if (!in_array($separa[$conta - 2], $arrayRecursos)) {
+                $arrayRecursos[] = $separa[$conta - 2];
             }
         }
 
@@ -59,8 +60,9 @@ class PerfilRepository extends BaseRepository
         $arraypermissoes = [];
         foreach ($retornoperfis as $keyA => $novo) {
             foreach ($arrayRecursosPermissoes as $keyB => $arrayRecurso) {
-                $stringA =$arrayRecurso['rcs_nome'];
+                $stringA = $arrayRecurso['rcs_nome'];
                 $stringB = $novo['rcs_nome'];
+
                 if ($stringA == $stringB) {
                     $arraypermissoes[] = $arrayRecurso['permissao'];
                 }
@@ -70,44 +72,6 @@ class PerfilRepository extends BaseRepository
         }
 
         return $retornoperfis;
-    }
-
-    public function getTreeOfPermissoesByPefilAndModulo($perfilId, $moduloId)
-    {
-        $sql = 'SELECT
-                  rcs_id, rcs_nome, rcs_nome, prm_id,prm_nome, (CASE WHEN bol=1 THEN 1 ELSE 0 END) AS habilitado
-                FROM (
-                    SELECT rcs_id, rcs_nome, prm_id, prm_nome
-                    FROM seg_permissoes
-                        LEFT JOIN seg_recursos ON rcs_id = prm_rcs_id
-                        LEFT JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id
-                    WHERE ctr_mod_id = :moduloid
-                ) todas
-                LEFT JOIN (
-                    SELECT prm_id as temp, 1 as bol
-                    FROM seg_permissoes
-                        LEFT JOIN seg_recursos ON rcs_id = prm_rcs_id
-                        LEFT JOIN seg_categorias_recursos ON rcs_ctr_id = ctr_id
-                        LEFT JOIN seg_perfis_permissoes ON prp_prm_id = prm_id
-                    WHERE prp_prf_id = :perfilid
-                ) menos ON todas.prm_id = menos.temp';
-
-        $permissoes = DB::select($sql, ['moduloid' => $moduloId, 'perfilid' => $perfilId]);
-
-        $retorno = [];
-        if (count($permissoes)) {
-            foreach ($permissoes as $key => $perm) {
-                if (isset($retorno[$perm->rcs_id])) {
-                    $retorno[$perm->rcs_id]['permissoes'][$perm->prm_id] = array('prm_id' => $perm->prm_id, 'prm_nome' => $perm->prm_nome, 'habilitado' => $perm->habilitado);
-                } else {
-                    $retorno[$perm->rcs_id]['rcs_id'] = $perm->rcs_id;
-                    $retorno[$perm->rcs_id]['rcs_nome'] = $perm->rcs_nome;
-                    $retorno[$perm->rcs_id]['permissoes'][$perm->prm_id] = array('prm_id' => $perm->prm_id, 'prm_nome' => $perm->prm_nome, 'habilitado' => $perm->habilitado);
-                }
-            }
-        }
-
-        return $retorno;
     }
 
     public function sincronizarPermissoes($perfilId, array $permissoes)

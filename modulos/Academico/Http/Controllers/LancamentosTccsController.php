@@ -3,11 +3,9 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\LancamentoTccRequest;
 use Illuminate\Http\Request;
-use Modulos\Academico\Models\Matricula;
 use Modulos\Academico\Repositories\LancamentoTccRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
@@ -48,7 +46,7 @@ class LancamentosTccsController extends BaseController
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->modulodisciplinaRepository->paginateRequest($request->all());
+        $tableData = $this->lancamentotccRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(

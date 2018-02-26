@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
-use Modulos\Academico\Events\OfertaDisciplinaEvent;
+use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
@@ -104,7 +104,7 @@ class OfertaDisciplina extends BaseController
                 $turma = $this->turmaRepository->find($ofertadisciplina->ofd_trm_id);
 
                 if ($turma->trm_integrada) {
-                    event(new OfertaDisciplinaEvent($ofertadisciplina, "CREATE"));
+                    event(new CreateOfertaDisciplinaEvent($ofertadisciplina));
                 }
 
                 return new JsonResponse(['message' => 'Disciplina ofertada com sucesso!'], Response::HTTP_OK);

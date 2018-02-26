@@ -2,8 +2,8 @@
 
 namespace Modulos;
 
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

@@ -3,7 +3,7 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Events\AtualizarTurmaEvent;
+use Modulos\Academico\Events\UpdateTurmaEvent;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -120,7 +120,7 @@ class TurmasController extends BaseController
             return redirect()->back();
         }
 
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+        $curso = $oferta->curso->where('crs_id', $oferta->curso->crs_id)->pluck('crs_nome', 'crs_id');
 
         $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, date('Y'));
 
@@ -160,7 +160,7 @@ class TurmasController extends BaseController
 
         $oferta = $this->ofertacursoRepository->find($turma->trm_ofc_id);
 
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
 
         $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, $turma->trm_per_id);
 
@@ -188,7 +188,7 @@ class TurmasController extends BaseController
 
             $turmaUpdated = $this->turmaRepository->find($id);
             if ($turmaUpdated->trm_integrada) {
-                event(new AtualizarTurmaEvent($turmaUpdated, 'UPDATE'));
+                event(new UpdateTurmaEvent($turmaUpdated));
             }
             return redirect()->route('academico.ofertascursos.turmas.index', $turma->trm_ofc_id);
         } catch (\Exception $e) {

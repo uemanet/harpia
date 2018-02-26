@@ -32,10 +32,10 @@
             <div class="row">
                 @if($turmas->count())
                     {!! Form::hidden('lst_id', $lista->lst_id, ['id' => 'lst_id']) !!}
-                    <div class="col-md-5">
-                        {!! Form::select('trm_id', $turmas, old('trm_id'), ['id' => 'trm_id', 'class' => 'form-control', 'placeholder' => 'Turma']) !!}
+                    <div class="col-md-4">
+                        {!! Form::select('trm_id', $turmas, old('trm_id'), ['id' => 'trm_id', 'class' => 'form-control', 'placeholder' => 'Selecione uma Turma']) !!}
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <button class="form-control btn-primary btnBuscar">Buscar</button>
                     </div>
                 @else

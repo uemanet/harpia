@@ -2,26 +2,16 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Illuminate\Support\Facades\DB;
-use Modulos\Core\Repository\BaseRepository;
+use DB;
 use Modulos\Geral\Models\Anexo;
 use Modulos\Geral\Models\Documento;
-use Carbon\Carbon;
+use Modulos\Core\Repository\BaseRepository;
 
 class DocumentoRepository extends BaseRepository
 {
     public function __construct(Documento $documento)
     {
         $this->model = $documento;
-    }
-
-    public function getCpfByPessoa($pessoaId)
-    {
-        return $this->model
-                    ->join('gra_tipos_documentos', 'doc_tpd_id', 'tpd_id')
-                    ->where('doc_pes_id', '=', $pessoaId)
-                    ->where('tpd_nome', 'CPF')
-                    ->get();
     }
 
     public function verifyCpf($cpf, $idPessoa = null)
@@ -39,8 +29,6 @@ class DocumentoRepository extends BaseRepository
 
             return true;
         }
-
-        return false;
     }
 
     public function updateDocumento(array $data, array $options)
@@ -51,6 +39,7 @@ class DocumentoRepository extends BaseRepository
             $query = $query->where($key, '=', $value);
         }
 
+        $updated = 0;
         $registros = $query->get();
 
         if ($registros) {
@@ -59,10 +48,10 @@ class DocumentoRepository extends BaseRepository
                 $obj->save();
             }
 
-            return $registros->count();
+            $updated = $registros->count();
         }
 
-        return 0;
+        return $updated;
     }
 
     public function deleteDocumento($documentoId)
@@ -87,14 +76,6 @@ class DocumentoRepository extends BaseRepository
         return $this->model->updateOrCreate($attributes, $data);
     }
 
-    /**
-     * Formata datas pt_BR para default MySQL
-     * para update de registros
-     * @param array $data
-     * @param $id
-     * @param string $attribute
-     * @return mixed
-     */
     public function update(array $data, $id, $attribute = null)
     {
         if (!$attribute) {
@@ -105,6 +86,7 @@ class DocumentoRepository extends BaseRepository
             $data['doc_data_expedicao'] = ($data['doc_data_expedicao'] != "") ? $data['doc_data_expedicao'] : null;
         }
 
+        $updated = 0;
         $registros = $this->model->where($attribute, '=', $id)->get();
 
         if ($registros) {
@@ -112,23 +94,9 @@ class DocumentoRepository extends BaseRepository
                 $obj->fill($data)->save();
             }
 
-            return $registros->count();
+            $updated = $registros->count();
         }
 
-        return 0;
-    }
-
-    public function verifyTipoExists($tipodocumentoId, $pessoaId)
-    {
-        $tipo_exists = $this->model
-            ->where('doc_pes_id', '=', $pessoaId)
-            ->where('doc_tpd_id', '=', $tipodocumentoId)
-            ->get();
-
-        if ($tipo_exists->isEmpty()) {
-            return true;
-        }
-
-        return false;
+        return $updated;
     }
 }

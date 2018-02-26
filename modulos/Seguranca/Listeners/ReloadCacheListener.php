@@ -2,8 +2,8 @@
 
 namespace Modulos\Seguranca\Listeners;
 
+use Cache;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Cache;
 use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 

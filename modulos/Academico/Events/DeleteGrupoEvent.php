@@ -2,13 +2,13 @@
 
 namespace Modulos\Academico\Events;
 
-use Harpia\Event\Event;
-use Modulos\Core\Model\BaseModel;
+use Modulos\Academico\Models\Grupo;
+use Harpia\Event\SincronizacaoEvent;
 
-class DeleteGrupoEvent extends Event
+class DeleteGrupoEvent extends SincronizacaoEvent
 {
-    public function __construct(BaseModel $entry, $action = "DELETE", $extra)
+    public function __construct(Grupo $entry, $extra)
     {
-        parent::__construct($entry, $action, $extra);
+        parent::__construct($entry, "DELETE", $extra);
     }
 }

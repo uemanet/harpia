@@ -11,3 +11,4 @@ Homestead.json
 *_reports
 composer.lock
 .vscode/
+codecoverage

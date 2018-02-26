@@ -3,9 +3,8 @@
 namespace Modulos\Academico\Repositories;
 
 use Modulos\Academico\Models\Matricula;
-use Modulos\Core\Repository\BaseRepository;
 
-class HistoricoParcialRepository extends BaseRepository
+class HistoricoParcialRepository
 {
     private $periodoLetivoRepository;
     private $matriculaOfertaDisciplinaRepository;

@@ -1,56 +1,171 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Modulos\Academico\Repositories\VinculoRepository;
+use Tests\ModulosTestCase;
+use Modulos\Academico\Models\Curso;
 use Modulos\Academico\Models\Vinculo;
+use Modulos\Seguranca\Models\Usuario;
+use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Artisan;
-use Auth;
+use Modulos\Academico\Repositories\VinculoRepository;
 
-class VinculoRepositoryTest extends TestCase
+class VinculoRepositoryTest extends ModulosTestCase
 {
-    use DatabaseTransactions,
-        WithoutMiddleware;
-
-    protected $repo;
-
-    public function createApplication()
-    {
-        putenv('DB_CONNECTION=sqlite_testing');
-
-        $app = require __DIR__ . '/../../../../bootstrap/app.php';
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        return $app;
-    }
-
-    public function login()
-    {
-        $user = factory(Modulos\Seguranca\Models\Usuario::class)->create();
-
-        $this->actingAs($user);
-    }
-
-
     public function setUp()
     {
         parent::setUp();
-
-        Artisan::call('modulos:migrate');
-
         $this->repo = $this->app->make(VinculoRepository::class);
-        $this->login();
+        $this->table = 'acd_usuarios_cursos';
     }
 
-    public function testAllWithEmptyDatabase()
+    private function mockVinculo(int $qtdCursos = 1, $withBond = true, $curso = [])
     {
-        $response = $this->repo->all();
+        // Usuario, Curso e Vinculo
+        $user = factory(Usuario::class)->create();
 
-        $this->assertInstanceOf(Collection::class, $response);
-        $this->assertEquals(0, $response->count());
+        $cursos = factory(Curso::class, $qtdCursos)->create($curso);
+
+        if ($withBond) {
+            foreach ($cursos as $curso) {
+                factory(Vinculo::class)->create([
+                    'ucr_usr_id' => $user->usr_id,
+                    'ucr_crs_id' => $curso->crs_id
+                ]);
+            }
+        }
+
+        return [$user, $cursos];
+    }
+
+    public function testCreate()
+    {
+        $data = factory(Vinculo::class)->raw();
+        $entry = $this->repo->create($data);
+
+        $this->assertInstanceOf(Vinculo::class, $entry);
+        $this->assertDatabaseHas($this->table, $entry->toArray());
+    }
+
+    public function testFind()
+    {
+        $entry = factory(Vinculo::class)->create();
+        $id = $entry->ucr_id;
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertInstanceOf(Vinculo::class, $fromRepository);
+        $this->assertDatabaseHas($this->table, $fromRepository->toArray());
+        $this->assertEquals($entry->toArray(), $fromRepository->toArray());
+    }
+
+    public function testUpdate()
+    {
+        $entry = factory(Vinculo::class)->create();
+        $id = $entry->ucr_id;
+
+        $curso = factory(Curso::class)->create();
+        $data = $entry->toArray();
+
+        $data['ucr_crs_id'] = $curso->crs_id;
+
+        $return = $this->repo->update($data, $id);
+        $fromRepository = $this->repo->find($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseHas($this->table, $data);
+        $this->assertInstanceOf(Vinculo::class, $fromRepository);
+        $this->assertEquals($data, $fromRepository->toArray());
+    }
+
+    public function testDelete()
+    {
+        $entry = factory(Vinculo::class)->create();
+        $id = $entry->ucr_id;
+
+        $return = $this->repo->delete($id);
+
+        $this->assertEquals(1, $return);
+        $this->assertDatabaseMissing($this->table, $entry->toArray());
+    }
+
+    public function testLists()
+    {
+        $entries = factory(Vinculo::class, 2)->create();
+
+        $model = new Vinculo();
+        $expected = $model->pluck('ucr_usr_id', 'ucr_id');
+        $fromRepository = $this->repo->lists('ucr_id', 'ucr_usr_id');
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testSearch()
+    {
+        $entries = factory(Vinculo::class, 2)->create();
+
+        factory(Vinculo::class)->create([
+            'ucr_usr_id' => 'centro'
+        ]);
+
+        $searchResult = $this->repo->search(array(['ucr_usr_id', '=', 'centro']));
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+    }
+
+    public function testSearchWithSelect()
+    {
+        $users = factory(Usuario::class, 10)->create();
+
+        factory(Vinculo::class, 2)->create([
+            'ucr_usr_id' => factory(Usuario::class)->create()->usr_id,
+            'ucr_crs_id' => factory(Curso::class)->create()->crs_id
+        ]);
+
+        $randomUser = $users->random();
+        $id = $randomUser->usr_id;
+
+        $entry = factory(Vinculo::class)->create([
+            'ucr_usr_id' => $randomUser->usr_id,
+            'ucr_crs_id' => factory(Curso::class)->create()->crs_id
+        ]);
+
+        $expected = [
+            'ucr_id' => $entry->ucr_id,
+            'ucr_usr_id' => $entry->ucr_usr_id
+        ];
+
+        $searchResult = $this->repo->search(array(['ucr_usr_id', '=', $id]), ['ucr_id', 'ucr_usr_id']);
+
+        $this->assertInstanceOf(TableCollection::class, $searchResult);
+        $this->assertEquals(1, $searchResult->count());
+        $this->assertEquals($expected, $searchResult->first()->toArray());
+    }
+
+    public function testAll()
+    {
+        // With empty database
+        $collection = $this->repo->all();
+
+        $this->assertEquals(0, $collection->count());
+
+        // Non-empty database
+        $created = factory(Vinculo::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $collection->count());
+    }
+
+    public function testCount()
+    {
+        $created = factory(Vinculo::class, 10)->create();
+        $collection = $this->repo->all();
+
+        $this->assertEquals($created->count(), $this->repo->count());
+    }
+
+    public function testGetFillableModelFields()
+    {
+        $model = new Vinculo();
+        $this->assertEquals($model->getFillable(), $this->repo->getFillableModelFields());
     }
 
     public function testPaginateWithoutParameters()
@@ -60,7 +175,6 @@ class VinculoRepositoryTest extends TestCase
         $response = $this->repo->paginate();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(1, $response->total());
     }
 
@@ -69,62 +183,39 @@ class VinculoRepositoryTest extends TestCase
         factory(Vinculo::class, 2)->create();
 
         $sort = [
-            'field' => 'ucr_crs_id',
+            'field' => 'ucr_id',
             'sort' => 'desc'
         ];
 
         $response = $this->repo->paginate($sort);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(1, $response[0]->ucr_crs_id);
+        $this->assertEquals(2, $response->first()->ucr_id);
     }
 
     public function testPaginateWithSearch()
     {
         factory(Vinculo::class, 2)->create();
 
+        $user = factory(Usuario::class)->create();
+        $id = $user->usr_id;
+
         factory(Vinculo::class)->create([
-            'ucr_crs_id' => 3,
+            'ucr_usr_id' => $id,
         ]);
 
         $search = [
             [
-                'field' => 'ucr_crs_id',
+                'field' => 'ucr_usr_id',
                 'type' => '=',
-                'term' => 1
+                'term' => $id
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
-
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertCount(1, $response);
-    }
-
-    public function testPaginateWithSearchAndOrder()
-    {
-        factory(Vinculo::class, 2)->create();
-
-        $sort = [
-            'field' => 'ucr_crs_id',
-            'sort' => 'desc'
-        ];
-
-        $search = [
-            [
-                'field' => 'ucr_crs_id',
-                'type' => '>',
-                'term' => '1'
-            ]
-        ];
-
-        $response = $this->repo->paginate($sort, $search);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
         $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals($id, $response->first()->ucr_usr_id);
     }
 
     public function testPaginateRequest()
@@ -133,114 +224,100 @@ class VinculoRepositoryTest extends TestCase
 
         $requestParameters = [
             'page' => '1',
-            'field' => 'mtc_id',
-            'sort' => 'asc'
+            'field' => 'ucr_id',
+            'sort' => 'desc'
         ];
 
         $response = $this->repo->paginateRequest($requestParameters);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(0, $response->total());
-    }
-
-    public function testCreate()
-    {
-        $response = factory(Vinculo::class)->create();
-
-        $data = $response->toArray();
-
-        $this->assertInstanceOf(Vinculo::class, $response);
-
-        $this->assertArrayHasKey('ucr_crs_id', $data);
-    }
-
-    public function testFind()
-    {
-        $data = factory(Vinculo::class)->create();
-
-        $this->seeInDatabase('acd_usuarios_cursos', $data->toArray());
-    }
-
-    public function testUpdate()
-    {
-        $data = factory(Vinculo::class)->create();
-
-        $updateArray = $data->toArray();
-        $updateArray['ucr_crs_id'] = 2;
-
-        $vinculo = $updateArray['ucr_id'];
-        unset($updateArray['ucr_id']);
-
-        $response = $this->repo->update($updateArray, $vinculo, 'ucr_id');
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testDelete()
-    {
-        $data = factory(Vinculo::class)->create();
-        $vinculo = $data->ucr_id;
-
-        $response = $this->repo->delete($vinculo);
-
-        $this->assertEquals(1, $response);
-    }
-
-    public function testPaginateCursosVinculados()
-    {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
-
-        $response = $this->repo->paginateCursosVinculados(Auth::user()->usr_id);
-
-        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
-
-        $this->assertGreaterThan(0, $response->total());
+        $this->assertEquals(2, $response->total());
+        $this->assertEquals(2, $response->first()->ucr_id);
     }
 
     public function testGetCursos()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        list($user, $cursos) = $this->mockVinculo(2);
 
-        $response = $this->repo->getCursos(Auth::user()->usr_id);
+        $id = $user->usr_id;
+        $expected = $cursos->pluck('crs_id')->toArray();
 
-        $this->assertGreaterThan(0, $response);
+        $fromRepository = $this->repo->getCursos($id);
+
+        $this->assertEquals($expected, $fromRepository);
+    }
+
+    public function testPaginateCursosVinculados()
+    {
+        $firstUser = factory(Usuario::class)->create();
+
+        list($user, $cursos) = $this->mockVinculo(5);
+
+        $id = $user->usr_id;
+
+        // Usuario sem vinculo
+        $response = $this->repo->paginateCursosVinculados($firstUser->usr_id);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertEquals(0, $response->total());
+
+        // Usuario com vinculo
+        $response = $this->repo->paginateCursosVinculados($id);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $response);
+        $this->assertEquals(5, $response->total());
     }
 
 
     public function testGetCursosDisponiveis()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        $firstUser = factory(Usuario::class)->create();
 
-        factory(\Modulos\Academico\Models\Curso::class, 2)->create();
+        list($user, $cursos) = $this->mockVinculo(2);
+        $id = $user->usr_id;
 
-        $response = $this->repo->getCursosDisponiveis(Auth::user()->usr_id);
+        // Nenhum curso disponivel
+        $response = $this->repo->getCursosDisponiveis($id);
+        $this->assertEquals(0, $response->count());
 
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $response);
-
-        $this->arrayHasKey('crs_nome', $response->all());
-
-        $this->assertGreaterThan(1, $response->all());
+        factory(Curso::class, 2)->create();
+        $response = $this->repo->getCursosDisponiveis($id);
+        $this->assertEquals(2, $response->count());
     }
 
-    public function userHasVinculo()
+    public function testUserHasVinculo()
     {
-        factory(\Modulos\Academico\Models\Vinculo::class, 2)->create();
+        // Curso sem vinculo
+        $curso = factory(Curso::class)->create();
 
-        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
+        list($user, $cursos) = $this->mockVinculo(2);
+        $id = $user->usr_id;
 
-        $query = $this->repo->userHasVinculo(Auth::user()->usr_id, 1);
-
-        $this->assertTrue($query);
-
-        $query = $this->repo->userHasVinculo(Auth::user()->usr_id, $curso->crs_id);
-
-        $this->assertFalse($query);
+        $this->assertFalse($this->repo->userHasVinculo($id, $curso->crs_id));
+        $this->assertTrue($this->repo->userHasVinculo($id, $cursos[random_int(0, 1)]->crs_id));
     }
 
-    public function tearDown()
+    public function testDeleteAllVinculosByCurso()
     {
-        Artisan::call('migrate:reset');
-        parent::tearDown();
+        $curso = factory(Curso::class)->create();
+        $users = factory(Usuario::class, 10)->create();
+
+        foreach ($users as $user) {
+            factory(Vinculo::class)->create([
+                'ucr_usr_id' => $user->usr_id,
+                'ucr_crs_id' => $curso->crs_id
+            ]);
+        }
+
+        $curso = Curso::find($curso->crs_id);
+
+        // Antes de remover
+        $this->assertEquals(10, $curso->usuariosVinculados->count());
+
+        // Remocao
+        $result = $this->repo->deleteAllVinculosByCurso($curso->crs_id);
+
+        $curso = Curso::find($curso->crs_id);
+
+        // Remocao
+        $this->assertEquals(0, $curso->usuariosVinculados->count());
     }
 }

@@ -3,9 +3,10 @@
 namespace Modulos\Integracao\Http\Controllers;
 
 use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Integracao\Events\DeleteOfertaTurmaEvent;
+use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
+use Modulos\Integracao\Models\AmbienteServico;
+use Modulos\Integracao\Models\Servico;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
@@ -30,13 +31,14 @@ class AmbientesVirtuaisController extends BaseController
     protected $ambienteTurmaRepository;
     protected $turmaRepository;
 
-    public function __construct(AmbienteVirtualRepository $ambienteVirtualRepository,
-                                ServicoRepository $servicoRepository,
-                                AmbienteServicoRepository $ambienteServicoRepository,
-                                CursoRepository $cursoRepository,
-                                AmbienteTurmaRepository $ambienteTurmaRepository,
-                                TurmaRepository $turmaRepository)
-    {
+    public function __construct(
+        AmbienteVirtualRepository $ambienteVirtualRepository,
+        ServicoRepository $servicoRepository,
+        AmbienteServicoRepository $ambienteServicoRepository,
+        CursoRepository $cursoRepository,
+        AmbienteTurmaRepository $ambienteTurmaRepository,
+        TurmaRepository $turmaRepository
+    ) {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteServicoRepository = $ambienteServicoRepository;
@@ -67,8 +69,8 @@ class AmbientesVirtuaisController extends BaseController
             ))->modifyCell('amb_action', function () {
                 return array('style' => 'width: 140px;');
             })->means('amb_action', 'amb_id')
-              ->modify('amb_action', function ($id) {
-                  return ActionButton::grid([
+                ->modify('amb_action', function ($id) {
+                    return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
                             'classButton' => 'btn-default',
@@ -109,7 +111,7 @@ class AmbientesVirtuaisController extends BaseController
                             ]
                         ]
                     ]);
-              })
+                })
                 ->sortable(array('amb_id', 'amb_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
@@ -219,9 +221,15 @@ class AmbientesVirtuaisController extends BaseController
             return redirect()->back();
         }
 
-        $servicos = $this->servicoRepository->listsServicosWithoutAmbiente($ambienteId);
+        $ambServicos = new AmbienteServico();
+        $idsAmbientesAdicionados = $ambServicos
+            ->where("asr_amb_id", "=", $ambienteId)
+            ->get()->pluck("asr_ser_id")->toArray();
 
-        $servicosdoambiente = $ambiente->servicos()->get();
+        $servicoModel = new Servico();
+
+        $servicos = $servicoModel->whereNotIn("ser_id", $idsAmbientesAdicionados)->pluck('ser_nome', 'ser_id');
+        $servicosdoambiente = $ambiente->servicos;
 
         return view('Integracao::ambientesvirtuais.adicionarservico', compact('ambiente', 'servicos', 'servicosdoambiente'));
     }
@@ -253,12 +261,12 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambiente = $this->ambienteVirtualRepository->find($dados['asr_amb_id']);
             $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
-            $url .= $dados['asr_token'] . '&wsfunction='.strtolower($servico->ser_nome).'_ping&moodlewsrestformat=json';
+            $url .= $dados['asr_token'] . '&wsfunction=' . strtolower($servico->ser_nome) . '_ping&moodlewsrestformat=json';
 
             $client = new Client();
             $response = $client->request('POST', $url, ['query' => null]);
 
-            $data = (array) json_decode($response->getBody());
+            $data = (array)json_decode($response->getBody());
 
             if (!array_key_exists('response', $data)) {
                 // Erro ao verificar token
@@ -294,11 +302,10 @@ class AmbientesVirtuaisController extends BaseController
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->error('Erro ao tentar atribuir serviço ao ambiente. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->error('Erro ao tentar atribuir serviço ao ambiente. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -368,7 +375,9 @@ class AmbientesVirtuaisController extends BaseController
         $dados['atr_amb_id'] = $validate['atr_amb_id'];
 
         try {
-            if (!$this->ambienteVirtualRepository->verifyIfExistsAmbienteTurma($dados['atr_amb_id'], $dados['atr_trm_id'])) {
+            $turma = $this->turmaRepository->find($dados['atr_trm_id']);
+
+            if (!$turma->ambientes->count()) {
                 $ambienteturma = $this->ambienteTurmaRepository->create($dados);
 
                 if (!$ambienteturma) {
@@ -382,21 +391,21 @@ class AmbientesVirtuaisController extends BaseController
                 $turma = $this->turmaRepository->find($dados['atr_trm_id']);
 
                 if ($turma->trm_integrada) {
-                    event(new TurmaMapeadaEvent($turma, "CREATE"));
+                    event(new TurmaMapeadaEvent($turma));
                 }
 
                 return redirect()->back();
             }
+
             flash()->error('Essa turma já está vinculada em um ambiente!');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
-            } else {
-                flash()->error('Erro ao tentar vincular turma ao ambiente. Caso o problema persista, entre em contato com o suporte.');
-
-                return redirect()->back();
             }
+
+            flash()->error('Erro ao tentar vincular turma ao ambiente. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
         }
     }
 
@@ -410,17 +419,17 @@ class AmbientesVirtuaisController extends BaseController
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
             $ambiente = $turma->ambientes->first()->amb_id;
 
-            $deletar = $this->ambienteTurmaRepository->verificaPendenciasTurma($ambienteTurmaId);
+            $deletar = $this->turmaRepository->pendenciasTurma($turma->trm_id);
 
             if ($deletar) {
                 flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
+                return redirect()->back();
             }
-            return redirect()->back();
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
             if ($turma->trm_integrada) {
-                event(new DeleteOfertaTurmaEvent($turma, "DELETE", $ambiente));
+                event(new TurmaRemovidaEvent($turma, $ambiente));
             }
 
             flash()->success('Turma excluída com sucesso.');

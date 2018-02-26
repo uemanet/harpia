@@ -71,7 +71,6 @@
     <script>
         $(function() {
             $(document).on('click', '.btn-mapear', function (event) {
-
               //Pega todas as linhas da tabela que estão com status de falha
               itens = new Array();
               $('table tbody tr').each(function () {
@@ -82,6 +81,7 @@
                       'status': trim($(colunas[3]).text())
 
                   };
+
                   // Adicionar o objeto item no array
                   if (item.status === "Falha") {
                     itens.push(item.id);

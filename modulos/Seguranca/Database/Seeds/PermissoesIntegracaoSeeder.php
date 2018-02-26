@@ -62,6 +62,12 @@ class PermissoesIntegracaoSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
+            'prm_nome' => 'deletarservico',
+            'prm_rota' => 'integracao.ambientesvirtuais.deletarservico'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
             'prm_nome' => 'adicionarturma',
             'prm_rota' => 'integracao.ambientesvirtuais.adicionarturma'
         ]);

@@ -20,6 +20,7 @@ class Disciplina extends BaseModel
     ];
 
     protected $searchable = [
+        'dis_nvc_id' => '=',
         'dis_nome' => 'like'
     ];
 
