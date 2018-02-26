@@ -27,9 +27,6 @@
         <testsuite name="Monitoramento">
             <directory suffix="Test.php">./modulos/Monitoramento/tests</directory>
         </testsuite>
-        <testsuite name="IntegracaoUema">
-            <directory suffix="Test.php">./modulos/IntegracaoUema/tests</directory>
-        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
@@ -43,9 +40,6 @@
             <directory suffix=".php">./modulos/Integracao/Providers</directory>
             <directory suffix=".php">./modulos/Integracao/Listeners</directory>
             <directory suffix=".php">./modulos/Integracao/Repositories</directory>
-            <directory suffix=".php">./modulos/IntegracaoUema/Providers</directory>
-            <directory suffix=".php">./modulos/IntegracaoUema/Listeners</directory>
-            <directory suffix=".php">./modulos/IntegracaoUema/Repositories</directory>
             <directory suffix=".php">./modulos/Monitoramento/Providers</directory>
             <directory suffix=".php">./modulos/Monitoramento/Providers</directory>
             <directory suffix=".php">./modulos/Monitoramento/Listeners</directory>
