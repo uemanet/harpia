@@ -21,11 +21,7 @@ class ConfiguracaoRepository extends BaseRepository
             ->pluck('cnf_valor')
             ->toArray();
 
-        if (!empty($result)) {
-            return array_shift($result);
-        }
-
-        return null;
+        return !empty($result) ? array_shift($result) : null;
     }
 
     public function getAll()

@@ -3,9 +3,9 @@
 namespace Modulos\Academico\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modulos\Academico\Events\AtualizarGrupoEvent;
+use Modulos\Academico\Events\UpdateGrupoEvent;
 use Modulos\Academico\Events\DeleteGrupoEvent;
-use Modulos\Academico\Events\NovoGrupoEvent;
+use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Academico\Http\Requests\GrupoRequest;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
@@ -140,14 +140,10 @@ class GruposController extends BaseController
             return redirect()->back();
         }
 
-        $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
-
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
-
-        $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
-
+        $oferta = $turma->ofertacurso;
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
+        $polos = $turma->ofertacurso->polos->pluck('pol_nome', 'pol_id');
+        $oferta = $oferta->where('ofc_id', $oferta->ofc_id)->pluck('ofc_ano', 'ofc_id');
         $turma = $this->turmaRepository->listsAllById($turmaId);
 
         return view('Academico::grupos.create', ['curso' => $curso, 'oferta' => $oferta, 'turma' => $turma, 'polos' => $polos]);
@@ -175,7 +171,7 @@ class GruposController extends BaseController
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
             if ($turma->trm_integrada) {
-                event(new NovoGrupoEvent($grupo, "CREATE"));
+                event(new CreateGrupoEvent($grupo));
             }
 
             flash()->success('Grupo criado com sucesso.');
@@ -201,9 +197,9 @@ class GruposController extends BaseController
 
         $turma = $this->turmaRepository->find($grupo->grp_trm_id);
         $oferta = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
-        $curso = $this->cursoRepository->listsCursoByOferta($oferta->ofc_crs_id);
-        $polos = $this->poloRepository->findAllByOfertaCurso($oferta->ofc_id)->pluck('pol_nome', 'pol_id');
-        $oferta = $this->ofertaCursoRepository->listsOfertaByTurma($turma->trm_ofc_id);
+        $curso = $oferta->curso->where('crs_id', $turma->ofertacurso->curso->crs_id)->pluck('crs_nome', 'crs_id');
+        $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
+        $oferta = $oferta->where('ofc_id', $oferta->ofc_id)->pluck('ofc_ano', 'ofc_id');
         $turma = $this->turmaRepository->listsAllById($grupo->grp_trm_id);
 
 
@@ -245,7 +241,7 @@ class GruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 $grupoAtt = $this->grupoRepository->find($id);
-                event(new AtualizarGrupoEvent($grupoAtt));
+                event(new UpdateGrupoEvent($grupoAtt));
             }
 
             flash()->success('Grupo atualizado com sucesso.');
@@ -276,7 +272,7 @@ class GruposController extends BaseController
             $ambiente = $this->ambienteRepository->getAmbienteByTurma($turmaId);
 
             if ($ambiente) {
-                event(new DeleteGrupoEvent($grupo, "DELETE", $ambiente->id));
+                event(new DeleteGrupoEvent($grupo, $ambiente->amb_id));
             }
 
             flash()->success('Grupo excluído com sucesso.');
@@ -298,6 +294,11 @@ class GruposController extends BaseController
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+
+        return view('Academico::grupos.movimentacoes', [
+            'grupo' => $grupo,
+            'movimentacoes' => $this->grupoRepository->getMovimentacoes($grupo->grp_id)
+        ]);
     }
 
     public function getMovimentacoes($id)

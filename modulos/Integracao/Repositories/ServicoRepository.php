@@ -1,45 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Integracao\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
-use Modulos\Integracao\Models\Servico;
 use DB;
+use Modulos\Integracao\Models\Servico;
+use Modulos\Core\Repository\BaseRepository;
 
 class ServicoRepository extends BaseRepository
 {
-    public function __construct(Servico $servico)
+    protected $ambienteVirtualRepository;
+
+    public function __construct(Servico $servico, AmbienteVirtualRepository $ambienteVirtualRepository)
     {
-        $this->model = $servico;
+        parent::__construct($servico);
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
-    public function listsServicosWithoutAmbiente($ambienteId)
+    public function verifyIfExistsAmbienteServico($ambienteId, $servicoId) : bool
     {
-        $entries = DB::table('int_ambientes_servicos')
-                    ->join('int_ambientes_virtuais', 'asr_amb_id', '=', 'amb_id')
-                    ->where('asr_amb_id', '=', $ambienteId)
-                    ->get();
+        $ambiente = $this->ambienteVirtualRepository->find($ambienteId);
 
-        $servicosId = [];
-        foreach ($entries as $key => $value) {
-            $servicosId[] = $value->asr_ser_id;
-        }
+        $temServico = $ambiente->servicos->filter(function ($value) use ($servicoId) {
+            if ($value->ser_id == $servicoId) {
+                return $value;
+            }
+        });
 
-        $result = $this->model
-            ->whereNotIn('ser_id', $servicosId)
-            ->pluck('ser_nome', 'ser_id');
-
-        return $result;
-    }
-
-    public function verifyIfExistsAmbienteServico($ambienteId, $servicoId)
-    {
-        $exists = DB::table('int_ambientes_servicos')
-                  ->where('asr_amb_id', '=', $ambienteId)
-                  ->where('asr_ser_id', '=', $servicoId)
-                  ->first();
-                  
-        if ($exists) {
+        if ($temServico->count()) {
             return true;
         }
 

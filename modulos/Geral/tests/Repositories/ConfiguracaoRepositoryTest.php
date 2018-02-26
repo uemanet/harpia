@@ -149,7 +149,7 @@ class ConfiguracaoRepositoryTest extends TestCase
     {
         $data = factory(Configuracao::class)->create();
 
-        $this->seeInDatabase('gra_configuracoes', $data->toArray());
+        $this->assertDatabaseHas('gra_configuracoes', $data->toArray());
     }
 
     public function testUpdate()

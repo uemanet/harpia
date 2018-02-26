@@ -1,14 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Modulos\Academico\Repositories;
 
-use Modulos\Academico\Models\Certificado;
-use Modulos\Academico\Models\Diploma;
-use Modulos\Academico\Models\Livro;
-use Modulos\Academico\Models\Registro;
-use Modulos\Core\Repository\BaseRepository;
+use App;
 use Auth;
 use Ramsey\Uuid\Uuid;
+use Modulos\Academico\Models\Livro;
+use Modulos\Academico\Models\Diploma;
+use Modulos\Academico\Models\Registro;
+use Modulos\Academico\Models\Certificado;
+use Modulos\Core\Repository\BaseRepository;
 
 class RegistroRepository extends BaseRepository
 {
@@ -19,8 +21,8 @@ class RegistroRepository extends BaseRepository
 
     public function __construct(Registro $registro)
     {
-        $this->livroRepository = new LivroRepository(new Livro());
         parent::__construct($registro);
+        $this->livroRepository = App::make(LivroRepository::class);
     }
 
     public function paginate($sort = null, $search = null)
@@ -40,7 +42,6 @@ class RegistroRepository extends BaseRepository
             ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
             ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
             ->distinct();
-
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
@@ -125,7 +126,7 @@ class RegistroRepository extends BaseRepository
     {
         $ultimoLivro = $this->ultimoLivro('DIPLOMA');
 
-        // Se null, nao ha livros de certificacao ainda ou se nao ha vagas no livro, criar um novo
+        // Se null, nao ha livros de diploma ainda ou se nao ha vagas no livro, criar um novo
         if (!$ultimoLivro || !$this->livroTemRegistroDisponiveis($ultimoLivro)) {
             $numero = 1;
 
@@ -139,7 +140,7 @@ class RegistroRepository extends BaseRepository
                 'liv_tipo_livro' => 'DIPLOMA'
             ]);
 
-            $ultimoLivro = $this->ultimoLivro();
+            $ultimoLivro = $this->ultimoLivro('DIPLOMA');
         }
 
         // Adicionar ao livro
@@ -181,55 +182,46 @@ class RegistroRepository extends BaseRepository
             'reg_liv_id' => $livro->liv_id
         ]);
 
-        if ($registros->count() == RegistroRepository::FOLHAS_LIVRO * RegistroRepository::REGISTROS_FOLHA) {
-            return false;
-        }
-
-        return true;
+        return !($registros->count() == self::FOLHAS_LIVRO * self::REGISTROS_FOLHA);
     }
 
     private function folhaParaNovoRegistro(Livro $livro)
     {
-        if ($this->livroTemRegistroDisponiveis($livro)) {
-            $ultimoRegistro = $this->ultimoRegistroLivro($livro);
+        $registrosDisponiveis = $this->livroTemRegistroDisponiveis($livro);
+        $ultimoRegistro = $this->ultimoRegistroLivro($livro);
 
-            // Livro ainda nao tem registros
-            if (!$ultimoRegistro) {
-                return 1;
-            }
-
+        if ($registrosDisponiveis && $ultimoRegistro) {
             // Pula para proxima folha
-            if ($ultimoRegistro->reg_registro >= RegistroRepository::REGISTROS_FOLHA) {
-                return (int) ($ultimoRegistro->reg_folha + 1);
+            if ($ultimoRegistro->reg_registro >= self::REGISTROS_FOLHA) {
+                return (int)($ultimoRegistro->reg_folha + 1);
             }
 
             // O novo registro fica na mesma folha
-            return (int) ($ultimoRegistro->reg_folha);
+            return (int)($ultimoRegistro->reg_folha);
         }
 
-        return 0;
+        // Livro nao possui registros disponiveis ou ainda nao tem registros
+        return 1;
     }
 
     private function numeroParaNovoRegistro(Livro $livro)
     {
-        if ($this->livroTemRegistroDisponiveis($livro)) {
-            $ultimoRegistro = $this->ultimoRegistroLivro($livro);
+        $registrosDisponiveis = $this->livroTemRegistroDisponiveis($livro);
+        $ultimoRegistro = $this->ultimoRegistroLivro($livro);
 
-            // Livro ainda nao tem registros
-            if (!$ultimoRegistro) {
-                return 1;
-            }
-
+        if ($registrosDisponiveis && $ultimoRegistro) {
             // Pula para proxima folha, iniciando  contagem de registros da folha
-            if ($ultimoRegistro->reg_registro >= RegistroRepository::REGISTROS_FOLHA) {
+            if ($ultimoRegistro->reg_registro >= self::REGISTROS_FOLHA) {
                 return 1;
             }
 
             // Incrementa
-            return (int) ($ultimoRegistro->reg_registro + 1);
+            return (int)($ultimoRegistro->reg_registro + 1);
         }
 
-        return 0;
+
+        // Livro nao possui registros disponiveis ou ainda nao tem registros
+        return 1;
     }
 
     private function ultimoRegistroLivro(Livro $livro)
@@ -247,7 +239,7 @@ class RegistroRepository extends BaseRepository
      * @param $moduloId
      * @return bool
      */
-    public function matriculaTemRegistro($matriculaId, $moduloId)
+    public function matriculaTemRegistro($matriculaId, $moduloId): bool
     {
         $result = $this->model
             ->join('acd_certificados', 'reg_id', '=', 'crt_reg_id')
@@ -255,18 +247,14 @@ class RegistroRepository extends BaseRepository
             ->where('crt_mdo_id', '=', $moduloId)
             ->get();
 
-        if ($result->count()) {
-            return true;
-        }
-
-        return false;
+        return (bool)$result->count();
     }
 
     /**
      * @param $options
      * @return mixed
      */
-    public function findBy($options)
+    public function findBy(array $options = [])
     {
         $query = $this->model;
 
@@ -290,13 +278,13 @@ class RegistroRepository extends BaseRepository
             ->join('acd_livros', 'reg_liv_id', '=', 'liv_id');
 
 
-        if ($registro->livro()->first()->liv_tipo_livro == "CERTIFICADO") {
+        if ($registro->livro->liv_tipo_livro == "CERTIFICADO") {
             $query = $query
                 ->join('acd_certificados', 'crt_reg_id', '=', 'reg_id')
                 ->join('acd_matriculas', 'crt_mat_id', '=', 'mat_id');
         }
 
-        if ($registro->livro()->first()->liv_tipo_livro == "DIPLOMA") {
+        if ($registro->livro->liv_tipo_livro == "DIPLOMA") {
             $query = $query
                 ->join('acd_diplomas', 'dip_reg_id', '=', 'reg_id')
                 ->join('acd_matriculas', 'dip_mat_id', '=', 'mat_id')

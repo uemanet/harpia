@@ -10,7 +10,6 @@
          syntaxCheck="false"
          verbose="true"
          bootstrap="../../bootstrap/autoload.php">
-
     <testsuites>
         <testsuite name="Geral Test Suite">
             <directory suffix="Test.php">./tests</directory>
@@ -18,28 +17,27 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./Http</directory>
-            <directory suffix=".php">./Models</directory>
-            <directory suffix=".php">./Providers</directory>
+            <directory suffix=".php">./Listeners</directory>
             <directory suffix=".php">./Repositories</directory>
         </whitelist>
     </filter>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_DEBUG" value="false"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="STORAGE_DISK" value="test"/>
     </php>
-
     <logging>
         <log type="coverage-html"
-             target="_reports/coverage"
+             target="../../../coverage/Geral"
              title="Coverage"
              charset="UTF-8"
              yui="true"
              highlight="true"
              lowUpperBound="35"
              highLowerBound="70"/>
-        <log type="coverage-clover" target="_reports/logs/clover.xml"/>
+        <log type="coverage-clover" target="../../../coverage/Geral/log/clover.xml"/>
     </logging>
 </phpunit>

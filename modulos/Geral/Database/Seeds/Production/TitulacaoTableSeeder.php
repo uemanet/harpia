@@ -12,13 +12,12 @@ class TitulacaoTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         $tipos = [
-            'Ensino Médio' => 1,
-            'Graduação' => 10,
-            'Especialização' => 30,
-            'Mestrado' => 40,
-            'Doutorado' => 60,
-            'Pós-Doutorado' => 80,
-            'Pós-Graduação' => 20
+            'Graduação' => 2,
+            'Mestrado' => 4,
+            'Doutorado' => 5,
+            'Pós-doutorado' => 6,
+            'Especialização' => 3,
+            'Ensino Médio' => 1
         ];
 
         foreach ($tipos as $tipo => $peso) {

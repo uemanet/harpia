@@ -139,17 +139,15 @@ class PessoasController extends BaseController
             return redirect()->route('geral.pessoas.index');
         }
 
-        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id)) {
-            $errors = ['pes_email' => 'Email já cadastrado'];
-            return redirect()->back()->withInput($request->all())->withErrors($errors);
-        }
-
         if ($this->documentoRepository->verifyCpf($request->input('doc_conteudo'), $id)) {
             $errors = ['doc_conteudo' => 'CPF já cadastrado'];
             return redirect()->back()->withInput($request->all())->withErrors($errors);
         }
 
-        DB::beginTransaction();
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
 
         try {
             $oldPessoa = clone $pessoa;

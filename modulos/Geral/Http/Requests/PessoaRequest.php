@@ -4,6 +4,7 @@ namespace Modulos\Geral\Http\Requests;
 
 use Modulos\Core\Http\Request\BaseRequest;
 use Modulos\Geral\Models\Pessoa;
+use Illuminate\Validation\Rule;
 
 class PessoaRequest extends BaseRequest
 {
@@ -22,7 +23,7 @@ class PessoaRequest extends BaseRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules($idPessoa = null)
     {
         if ($this->method() == 'POST') {
             return [
@@ -49,10 +50,17 @@ class PessoaRequest extends BaseRequest
             ];
         }
 
+        if (!$idPessoa) {
+            $pessoa = $this->all();
+            if (array_key_exists('pes_id', $pessoa)) {
+                $idPessoa = $pessoa['pes_id'];
+            }
+        }
+
         return [
             'pes_nome' => 'required|min:3|max:150',
             'pes_sexo' => 'required',
-            'pes_email' => 'required|email',
+            'pes_email' => 'required|email|'.Rule::unique('gra_pessoas')->ignore($idPessoa, 'pes_id'),
             'pes_telefone' => 'required|max:20',
             'pes_nascimento' => 'required|date_format:d/m/Y',
             'pes_mae' => 'required|max:150',

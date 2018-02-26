@@ -18,7 +18,7 @@ class ModuloDisciplina extends BaseModel
     ];
 
     protected $searchable = [
-        'mdc_dis_id' => 'like'
+        'mdc_dis_id' => '='
     ];
 
     public function disciplina()

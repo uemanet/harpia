@@ -54,14 +54,14 @@
                             @if ($errors->has('pol_id')) <p class="help-block">{{ $errors->first('pol_id') }}</p> @endif
                         </div>
                     </div>
-                    <div class="col-md-5 @if ($errors->has('mat_situacao')) has-error @endif">
+                    <div class="col-md-4 @if ($errors->has('mat_situacao')) has-error @endif">
                         {!! Form::label('mat_situacao', 'Situação') !!}
                         <div class="form-group">
                             {!! Form::select('mat_situacao', $situacao, Input::get('mat_situacao'), ['class' => 'form-control']) !!}
                             @if ($errors->has('mat_situacao')) <p class="help-block">{{ $errors->first('mat_situacao') }}</p> @endif
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="">&nbsp;</label>
                         <div class="form-group">
                             {!! ActionButton::grid([

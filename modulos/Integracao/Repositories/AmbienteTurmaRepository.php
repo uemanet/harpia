@@ -10,7 +10,7 @@ class AmbienteTurmaRepository extends BaseRepository
 {
     public function __construct(AmbienteTurma $ambienteturma)
     {
-        $this->model = $ambienteturma;
+        parent::__construct($ambienteturma);
     }
 
     public function verificaPendenciasTurma($turmaId)

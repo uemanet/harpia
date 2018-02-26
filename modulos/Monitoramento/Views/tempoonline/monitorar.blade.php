@@ -1,12 +1,12 @@
 @extends('layouts.modulos.monitoramento')
 
 @section('stylesheets')
-  <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-  <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
 @endsection
 
 @section('title')
-   Tempo Online
+    Tempo Online
 @stop
 
 @section('subtitle')
@@ -31,29 +31,29 @@
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("select").select2();
-            });
-        </script>
-
     <script type="text/javascript">
-            $('.datepicker2').datepicker({
-              format: 'dd/mm/yyyy',
-              language: 'pt-BR'
-            });
-            var myDate = new Date();
-            var prettyDate = (myDate.getDate()-7)+'/'+(myDate.getMonth()+1) + '/' + (myDate.getFullYear());
-            $(".datepicker2").datepicker('setDate', prettyDate);
+        $(document).ready(function () {
+            $("select").select2();
+        });
     </script>
 
     <script type="text/javascript">
-            $('.datepicker').datepicker({
-              format: 'dd/mm/yyyy',
-              language: 'pt-BR'
-            });
+        $('.datepicker2').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR'
+        });
+        var myDate = new Date();
+        var prettyDate = (myDate.getDate() - 7) + '/' + (myDate.getMonth() + 1) + '/' + (myDate.getFullYear());
+        $(".datepicker2").datepicker('setDate', prettyDate);
+    </script>
 
-            $(".datepicker").datepicker('setDate', new Date());
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR'
+        });
+
+        $(".datepicker").datepicker('setDate', new Date());
     </script>
 
     <script src="{{asset('/js/plugins/Chart.min.js')}}" type="text/javascript"></script>

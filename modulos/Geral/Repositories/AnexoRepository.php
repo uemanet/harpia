@@ -2,11 +2,12 @@
 
 namespace Modulos\Geral\Repositories;
 
-use League\Flysystem\FileExistsException;
-use Modulos\Core\Repository\BaseRepository;
+use Storage;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Response;
+use League\Flysystem\FileExistsException;
+use Modulos\Core\Repository\BaseRepository;
 
 class AnexoRepository extends BaseRepository
 {
@@ -14,8 +15,13 @@ class AnexoRepository extends BaseRepository
 
     public function __construct(Anexo $anexo)
     {
-        $this->model = $anexo;
-        $this->basePath = storage_path() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+        parent::__construct($anexo);
+
+        // Usa o driver default para armazenamento
+        $driver = Storage::disk()->getDriver();
+        $prefix = $driver->getAdapter()->getPathPrefix();
+
+        $this->basePath = $prefix . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -86,7 +92,7 @@ class AnexoRepository extends BaseRepository
 
         list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
 
-        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR. $anexo->anx_localizacao;
+        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao;
 
         $headers = array('Content-Type: ' . $anexo->anx_mime);
         return Response::download($caminhoArquivo, $anexo->anx_nome, $headers);
@@ -120,6 +126,7 @@ class AnexoRepository extends BaseRepository
             if (config('app.debug')) {
                 throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
+
             return array(
                 'type' => 'error_exists',
                 'message' => 'Arquivo enviado já existe'

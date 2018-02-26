@@ -171,7 +171,7 @@ class OfertasCursosController extends BaseController
             $ofertaCurso = $this->ofertacursoRepository->find($id);
 
             if ($ofertaCurso) {
-                $data = $request->except(['_method', '_token']);
+                $data = $request->except(['_method', '_token', 'ofc_mdl_id', 'ofc_ano']);
                 $data['ofc_crs_id'] = $ofertaCurso->ofc_crs_id;
 
                 $resultado = $this->ofertacursoRepository->update($data, $id);

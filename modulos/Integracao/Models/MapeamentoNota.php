@@ -10,6 +10,10 @@ class MapeamentoNota extends BaseModel
 
     protected $primaryKey = 'min_id';
 
+    protected $searchable = [
+        'min_id_conceito'
+    ];
+
     protected $fillable = [
         'min_ofd_id',
         'min_id_nota1',
@@ -19,4 +23,9 @@ class MapeamentoNota extends BaseModel
         'min_id_conceito',
         'min_id_final'
     ];
+
+    public function ofertadisciplina()
+    {
+        return $this->belongsTo('Modulos\Academico\Models\OfertaDisciplina', 'min_ofd_id', 'ofd_id');
+    }
 }

@@ -2,14 +2,14 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Models\Titulacao;
+use Modulos\Core\Repository\BaseRepository;
 
 class TitulacaoRepository extends BaseRepository
 {
     public function __construct(Titulacao $titulacao)
     {
-        $this->model = $titulacao;
+        parent::__construct($titulacao);
     }
 
     public function verifyTitulacao($titulacaoName)

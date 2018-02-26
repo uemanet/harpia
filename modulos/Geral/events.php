@@ -13,12 +13,8 @@
  */
 
 return [
-    'Modulos\Geral\Events\HelloGeral' => [
-        'Modulos\Geral\Listeners\GeralListener',
-    ],
-
-    'Modulos\Geral\Events\AtualizarPessoaEvent' => [
-        'Modulos\Integracao\Listeners\NovaSyncUpdatePessoaListener' => 10,
-        'Modulos\Geral\Listeners\MigrarAtualizarPessoaListener',
+    'Modulos\Geral\Events\UpdatePessoaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Geral\Listeners\UpdatePessoaListener',
     ]
 ];

@@ -26,7 +26,7 @@ class MapeamentoNotasRepository extends BaseRepository
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
     ) {
-        $this->model = $model;
+        parent::__construct($model);
         $this->periodoLetivoRepository = $periodoLetivoRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
@@ -128,9 +128,9 @@ class MapeamentoNotasRepository extends BaseRepository
         // Dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas
         // necessários
         $itensNota = DB::table('int_mapeamento_itens_nota')
-                        ->where('min_ofd_id', $ofertaDisciplina->ofd_id)
-                        ->select($select)
-                        ->first();
+            ->where('min_ofd_id', $ofertaDisciplina->ofd_id)
+            ->select($select)
+            ->first();
 
         // caso não exista itens de notas cadastrados, envia uma mensagem de erro
         if (!$itensNota) {
@@ -196,12 +196,12 @@ class MapeamentoNotasRepository extends BaseRepository
                 if ($nota['tipo'] != 'conceito') {
                     $value = (float)$nota['nota'];
                 }
-                $notas['mof_'.$nota['tipo']] = $value;
+                $notas['mof_' . $nota['tipo']] = $value;
             }
 
             foreach ($tiposenviados as $enviado) {
                 if (!in_array($enviado, $tiposrecebidos) && $enviado != 'final') {
-                    $notas['mof_'.$enviado] = 0;
+                    $notas['mof_' . $enviado] = 0;
                 }
             }
 
@@ -226,13 +226,20 @@ class MapeamentoNotasRepository extends BaseRepository
         // buscar ambiente virtual vinculado à turma do aluno
         $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($trm_id);
 
-        if ($ambiente) {
+        if (!$ambiente) {
+            return null;
+        }
+
+        // Web service de integracao
+        $ambServico = $ambiente->integracao();
+
+        if ($ambServico) {
             $parametros = [];
 
             // url do ambiente
-            $parametros['url'] = $ambiente->url;
-            $parametros['token'] = $ambiente->token;
-            $parametros['functioname'] = 'local_integracao_get_grades_batch';
+            $parametros['url'] = $ambiente->amb_url;
+            $parametros['token'] = $ambServico->asr_token;
+            $parametros['functionname'] = 'local_integracao_get_grades_batch';
             $parametros['action'] = 'MAPEAR_NOTAS_ALUNO';
 
             $parametros['data']['grades'] = $data;
@@ -245,14 +252,6 @@ class MapeamentoNotasRepository extends BaseRepository
         }
 
         return null;
-    }
-
-    private function getConfiguracoesCurso($cursoId)
-    {
-        return DB::table('acd_configuracoes_cursos')
-                        ->where('cfc_crs_id', '=', $cursoId)
-                        ->pluck('cfc_valor', 'cfc_nome')
-                        ->toArray();
     }
 
     public function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'Numérica')
@@ -284,7 +283,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
         // 1º Caso - Aluno Aprovado por Media e sem recuperacao
         if ($mediaParcial >= $mediaAprovacao) {
-            $notas['mof_mediafinal'] = $mediaParcial;
+            $notas['mof_mediafinal'] = (float)number_format($mediaParcial, 2);
             $notas['mof_situacao_matricula'] = 'aprovado_media';
             return $notas;
         }
@@ -292,7 +291,7 @@ class MapeamentoNotasRepository extends BaseRepository
         // 2º Caso - Aluno nao atinge a media minima, mas possui recuperacao
         if (($mediaParcial < $mediaAprovacao) && array_key_exists('mof_recuperacao', $notas)) {
             $recuperacao = $notas['mof_recuperacao'];
-            $mediaParcial =  ($recuperacao > $mediaParcial) ? $recuperacao : $mediaParcial;
+            $mediaParcial = ($recuperacao > $mediaParcial) ? $recuperacao : $mediaParcial;
 
             $modoRecuperacao = $configuracoesCurso['modo_recuperacao'];
 
@@ -307,7 +306,7 @@ class MapeamentoNotasRepository extends BaseRepository
             }
 
             if ($mediaParcial >= $mediaAprovacao) {
-                $notas['mof_mediafinal'] = $mediaParcial;
+                $notas['mof_mediafinal'] = (float)number_format($mediaParcial, 2);
                 $notas['mof_situacao_matricula'] = 'aprovado_media';
                 return $notas;
             }
@@ -327,13 +326,13 @@ class MapeamentoNotasRepository extends BaseRepository
                 $status = 'aprovado_final';
             }
 
-            $notas['mof_mediafinal'] = $mediaFinal;
+            $notas['mof_mediafinal'] = (float)number_format($mediaFinal, 2);
             $notas['mof_situacao_matricula'] = $status;
             return $notas;
         }
 
         // 4º Caso - Aluno não atinge a media minima, e nem vai pra final
-        $notas['mof_mediafinal'] = $mediaParcial;
+        $notas['mof_mediafinal'] = (float)number_format($mediaParcial, 2);
         $notas['mof_situacao_matricula'] = 'reprovado_media';
         return $notas;
     }

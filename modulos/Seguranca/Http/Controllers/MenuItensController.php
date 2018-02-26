@@ -2,16 +2,16 @@
 
 namespace Modulos\Seguranca\Http\Controllers;
 
+use Route;
 use Illuminate\Http\Request;
-use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Events\ReloadCacheEvent;
-use Modulos\Seguranca\Http\Requests\MenuItemRequest;
-use Modulos\Seguranca\Models\MenuItem;
 use Modulos\Seguranca\Models\Modulo;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
+use Modulos\Seguranca\Models\MenuItem;
+use Modulos\Seguranca\Events\ReloadCacheEvent;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Seguranca\Http\Requests\MenuItemRequest;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Seguranca\Repositories\MenuItemRepository;
-use Route;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
 class MenuItensController extends BaseController
 {

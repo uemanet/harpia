@@ -23,7 +23,8 @@
                             <i class="fa fa fa-line-chart"></i>
                         </div>
                         @haspermission('monitoramento.tempoonline.monitorar')
-                            <a href="{{route('monitoramento.tempoonline.monitorar', $ambiente->amb_id)}}" class="small-box-footer">Acessar <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="{{route('monitoramento.tempoonline.monitorar', $ambiente->amb_id)}}"
+                           class="small-box-footer">Acessar <i class="fa fa-arrow-circle-right"></i></a>
                         @endhaspermission
                     </div>
                 </div>
