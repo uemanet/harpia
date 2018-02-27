@@ -12,3 +12,4 @@ Homestead.json
 composer.lock
 .vscode/
 codecoverage
+/build
