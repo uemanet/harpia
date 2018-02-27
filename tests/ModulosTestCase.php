@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -38,6 +39,24 @@ class ModulosTestCase extends \TestCase
         }
 
         return parent::assertDatabaseHas($table, $data);
+    }
+
+    /**
+     * @see TestCase::assertEquals()
+     */
+    public static function assertEquals($expected, $actual, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
+    {
+        /*
+         * Previne erros causados pela diferenca de tempo
+         * entre a criacao do registro, sua edicao
+         * e atualizacao no banco durante os testes
+         */
+        if (is_array($expected) && is_array($actual)) {
+            unset($actual['updated_at']);
+            unset($expected['updated_at']);
+        }
+
+        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
 
     public function setUp()
