@@ -7,9 +7,9 @@ use Cache;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Core\Repository\BaseRepository;
 
-class ModuloRepository extends BaseRepository
+class ModuloRepository
 {
-    public function __construct(Modulo $modulo)
+    public function getByUser($userId, $isMenu = false)
     {
         parent::__construct($modulo);
     }

@@ -35,4 +35,18 @@ class OfertasCursos extends BaseController
 
         return new JsonResponse($ofertas, 200);
     }
+
+    public function getFindAllByCursoWithoutEad($cursoId)
+    {
+        $ofertas = $this->ofertaCursoRepository->findAllByCursoWithoutEad($cursoId);
+
+        return new JsonResponse($ofertas, 200);
+    }
+
+    public function getFindAllByCursoWithoutEad($cursoId)
+    {
+        $ofertas = $this->ofertaCursoRepository->findAllByCursoWithoutEad($cursoId);
+
+        return new JsonResponse($ofertas, 200);
+    }
 }

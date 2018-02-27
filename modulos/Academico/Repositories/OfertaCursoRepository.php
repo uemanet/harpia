@@ -203,4 +203,198 @@ class OfertaCursoRepository extends BaseRepository
         // Retorna os polos vinculados
         return $polos->unique();
     }
+
+    /**
+     * Cria uma nova oferta de curso, de acordo com regras de validação
+     * @param array $ofertaCurso
+     * @return mixed
+     */
+
+    public function create(array $data)
+    {
+        // verifica se existe um registro com mesmo ano, modalidade e curso
+        $entry = $this->model
+            ->where([
+                ['ofc_ano', '=', $data['ofc_ano']],
+                ['ofc_mdl_id', '=', $data['ofc_mdl_id']],
+                ['ofc_crs_id', '=', $data['ofc_crs_id']]
+            ])->first();
+
+        if (!$entry) {
+            $oferta = $this->model->create($data);
+
+            if (!is_null($data['polos'])) {
+                foreach ($data['polos'] as $id) {
+                    $oferta->polos()->attach($id);
+                }
+            }
+
+            return $oferta;
+        }
+
+        return null;
+    }
+
+    public function update(array $data, $id, $attribute = null)
+    {
+        $oferta = $this->find($id);
+
+        // Polos com grupos vinculados
+        $polosComGruposVinculados = $this->polosVinculadosGrupos($oferta->turmas)->toArray();
+
+        // Polos vinculados com a oferta
+        $polosVinculados = DB::table('acd_polos_ofertas_cursos')
+            ->where('poc_ofc_id', '=', $oferta->ofc_id)
+            ->pluck('poc_pol_id')->toArray();
+
+        $avisos = null;
+
+        if (!is_null($data['polos'])) {
+            // Polos que podem ser removidos da oferta
+            // Apenas polos sem grupos vinculados
+            $remover = array_diff($polosVinculados, $polosComGruposVinculados);
+
+            foreach ($polosComGruposVinculados as $polo) {
+                if (!in_array($polo, $data['polos'])) {
+                    $avisos = array('type' => 'warning', 'message' => 'Alguns polos contém grupos vinculados e não foram removidos');
+                    break;
+                }
+            }
+
+            foreach ($remover as $key => $polo) {
+                $oferta->polos()->detach($polo);
+            }
+
+            // Redefine os polos a serem vinculados
+            $revinculo = array_diff($data['polos'], $polosComGruposVinculados);
+
+            foreach ($revinculo as $polo) {
+                $oferta->polos()->attach($polo);
+            }
+        }
+
+        unset($data['polos']);
+        $update = $oferta->fill($data)->save();
+
+        if ($avisos) {
+            return $avisos;
+        }
+
+        return $update;
+    }
+
+    private function polosVinculadosGrupos(Collection $turmas)
+    {
+        $polos = [];
+
+        foreach ($turmas as $turma) {
+            $grupos = $turma->grupos;
+
+            foreach ($grupos as $grupo) {
+                $polos[] = $grupo->grp_pol_id;
+            }
+        }
+
+        $polos = collect($polos);
+
+        // Retorna os polos vinculados
+        return $polos->unique();
+    }
+
+    /**
+     * Cria uma nova oferta de curso, de acordo com regras de validação
+     * @param array $ofertaCurso
+     * @return mixed
+     */
+
+    public function create(array $data)
+    {
+        // verifica se existe um registro com mesmo ano, modalidade e curso
+        $entry = $this->model
+            ->where([
+                ['ofc_ano', '=', $data['ofc_ano']],
+                ['ofc_mdl_id', '=', $data['ofc_mdl_id']],
+                ['ofc_crs_id', '=', $data['ofc_crs_id']]
+            ])->first();
+
+        if (!$entry) {
+            $oferta = $this->model->create($data);
+
+            if (!is_null($data['polos'])) {
+                foreach ($data['polos'] as $id) {
+                    $oferta->polos()->attach($id);
+                }
+            }
+
+            return $oferta;
+        }
+
+        return null;
+    }
+
+    public function update(array $data, $id, $attribute = null)
+    {
+        $oferta = $this->find($id);
+
+        // Polos com grupos vinculados
+        $polosComGruposVinculados = $this->polosVinculadosGrupos($oferta->turmas)->toArray();
+
+        // Polos vinculados com a oferta
+        $polosVinculados = DB::table('acd_polos_ofertas_cursos')
+            ->where('poc_ofc_id', '=', $oferta->ofc_id)
+            ->pluck('poc_pol_id')->toArray();
+
+        $avisos = null;
+
+        if (!is_null($data['polos'])) {
+            // Polos que podem ser removidos da oferta
+            // Apenas polos sem grupos vinculados
+            $remover = array_diff($polosVinculados, $polosComGruposVinculados);
+
+            foreach ($polosComGruposVinculados as $polo) {
+                if (!in_array($polo, $data['polos'])) {
+                    $avisos = array('type' => 'warning', 'message' => 'Alguns polos contém grupos vinculados e não foram removidos');
+                    break;
+                }
+            }
+
+            foreach ($remover as $key => $polo) {
+                $oferta->polos()->detach($polo);
+            }
+
+            // Redefine os polos a serem vinculados
+            $revinculo = array_diff($data['polos'], $polosComGruposVinculados);
+
+            foreach ($revinculo as $polo) {
+                $oferta->polos()->attach($polo);
+            }
+        }
+
+        unset($data['polos']);
+        $update = $oferta->fill($data)->save();
+
+        if ($avisos) {
+            return $avisos;
+        }
+
+        return $update;
+    }
+
+    private function polosVinculadosGrupos(Collection $turmas)
+    {
+        $polos = [];
+
+        foreach ($turmas as $turma) {
+            $grupos = $turma->grupos;
+
+            foreach ($grupos as $grupo) {
+                $polos[] = $grupo->grp_pol_id;
+            }
+        }
+
+        $polos = collect($polos);
+
+        // Retorna os polos vinculados
+        return $polos->unique();
+    }
 }

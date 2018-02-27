@@ -89,6 +89,32 @@ class DocumentosController extends BaseController
                 }
             }
 
+            $docId = $request->input('doc_tpd_id');
+
+            if ($docId == 2) {
+                $rules = [
+                    'doc_conteudo' => 'cpf',
+                ];
+
+                $validator = Validator::make($request->all(), $rules);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput($request->all())->withErrors($validator);
+                }
+            }
+
+            $docId = $request->input('doc_tpd_id');
+
+            if ($docId == 2) {
+                $rules = [
+                    'doc_conteudo' => 'cpf',
+                ];
+
+                $validator = Validator::make($request->all(), $rules);
+                if ($validator->fails()) {
+                    return redirect()->back()->withInput($request->all())->withErrors($validator);
+                }
+            }
+
             if ($request->file('doc_file') != null) {
                 $anexoDocumento = $request->file('doc_file');
                 $anexoCriado = $this->anexoRepository->salvarAnexo($anexoDocumento);

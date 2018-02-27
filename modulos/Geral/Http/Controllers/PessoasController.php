@@ -144,7 +144,10 @@ class PessoasController extends BaseController
             return redirect()->back()->withInput($request->all())->withErrors($errors);
         }
 
-        DB::beginTransaction();
+        if ($this->pessoaRepository->verifyEmail($request->input('pes_email'), $id)) {
+            $errors = ['pes_email' => 'Email já cadastrado'];
+            return redirect()->back()->withInput($request->all())->withErrors($errors);
+        }
 
         try {
             $oldPessoa = clone $pessoa;

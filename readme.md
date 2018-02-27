@@ -2,6 +2,8 @@
 Harpia - UemaNet
 =======================
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/613b0db5d6484a7f912d27cbe14bf197)](https://app.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&utm_medium=referral&utm_content=uemanet/harpia&utm_campaign=badger)
+
 Introdução
 ------------
 Esse é o repositório do sistema de gestão modular Núcleo de Tecnologias para Educação - UemaNet.

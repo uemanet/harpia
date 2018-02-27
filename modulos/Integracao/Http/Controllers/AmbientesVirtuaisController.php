@@ -111,7 +111,7 @@ class AmbientesVirtuaisController extends BaseController
                             ]
                         ]
                     ]);
-                })
+              })
                 ->sortable(array('amb_id', 'amb_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
@@ -322,6 +322,9 @@ class AmbientesVirtuaisController extends BaseController
         } catch (\Illuminate\Database\QueryException $e) {
             flash()->error('Erro ao tentar deletar. O serviço contém dependências no sistema.');
             return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O serviço contém dependências no sistema.');
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -431,6 +434,7 @@ class AmbientesVirtuaisController extends BaseController
             if ($turma->trm_integrada) {
                 event(new TurmaRemovidaEvent($turma, $ambiente));
             }
+            return redirect()->back();
 
             flash()->success('Turma excluída com sucesso.');
 

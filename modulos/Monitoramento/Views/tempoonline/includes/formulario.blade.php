@@ -39,11 +39,37 @@
 </div>
 
 @section('scripts')
-    @parent
+@parent
 
-    <script type="application/javascript">
-        $(document).ready(function () {
-            $('#crs_id').prop('selectedIndex', 0);
+<script type="application/javascript">
+$(document).ready(function () {
+    $('#crs_id').prop('selectedIndex', 0);
+});
+</script>
+<script type="application/javascript">
+
+$('#crs_id').change(function (e) {
+    var crsId = $(this).val();
+
+    var selectOfertas = $('#ofc_id');
+    var selectTurmas = $('#trm_id');
+    if (crsId) {
+
+        // Populando o select de ofertas de cursos
+        selectOfertas.empty();
+        selectTurmas.empty();
+
+        $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
+        .done(function (data) {
+            if (!$.isEmptyObject(data)) {
+                selectOfertas.append("<option>Selecione a oferta</option>");
+                $.each(data, function (key, value) {
+                    selectOfertas.append('<option value="' + value.ofc_id + '">' + value.ofc_ano + '</option>');
+                });
+            } else {
+                selectOfertas.append("<option>Sem ofertas cadastradas</option>");
+
+            }
         });
     </script>
     <script type="application/javascript">
@@ -73,6 +99,7 @@
                     });
             }
         });
+    }
 
         $('#ofc_id').change(function (e) {
             var ofertaId = $(this).val();
@@ -132,18 +159,32 @@
                     });
             }
 
-        })
+    }
 
-    </script>
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
+})
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
+$('#grp_id').change(function (e) {
+    var turmaId = $('#trm_id').val();
+    var tipotutoria = $(this).val();
+    var selectTutores = $('#tut_id');
+
+    if (turmaId) {
+
+        selectTutores.empty();
+        $.harpia.httpget('{{url("/")}}/academico/async/tutores/findallbyturmatipotutoria/' + turmaId + '/' + tipotutoria)
+        .done(function (data) {
+            if (!$.isEmptyObject(data)) {
+                selectTutores.append('<option>Selecione o tutor</option>');
+                $.each(data, function (key, obj) {
+                    selectTutores.append('<option value="' + obj.pes_id + '">' + obj.pes_nome + '</option>')
+                });
+            } else {
+                selectTutores.append('<option>Sem tutores cadastrados nessa turma</option>')
+            }
         });
+    }
 
-        $(document).on('click', '.btn-primary', function (event) {
-            event.preventDefault();
+})
 
             var array = new Array();
 
@@ -297,6 +338,110 @@
 
             new Chart(monitoramento, config);
         });
+    }
+
+    dadosDatasets = new Array();
+
+    var dias = new Array();
+    var tempos = new Array();
+    var parada = new Array();
+
+    for (var i = 0; i < dadosgrafico.length; i++) {
+
+        parada = dadosgrafico[i].items;
+
+        for (var j = 0; j < parada.length; j++) {
+            dias[j] = parada[j].date.replace(/-/g, "\/");
+            tempos[j] = parada[j].onlinetime;
+        }
+
+        dataset = {
+            label:dadosgrafico[i].fullname,
+            data:tempos,
+            fill: true,
+            backgroundColor: 'rgba(255, '+Math.floor((Math.random() * 255) + 1)+', '+Math.floor((Math.random() * 255) + 1)+', .6)'
+        }
+        tempos =[];
+
+        dadosDatasets.push(dataset);
+    }
+
+    var config;
+    config = {
+        type: 'line',
+        data: {
+            labels: dias,
+            datasets: dadosDatasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Gráfico de Acesso ao AVA'
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    beginAtZero: true,
+                    scaleLabel: {
+                        display: false,
+                        labelString: 'Dias'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    beginAtZero: true,
+                    // ticks: {
+                    //   suggestedMax: 6,
+                    //   fixedStepSize: 1
+                    // },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tempo Online (Segundos)',
+                        stacked: true
+                    }
+                }]
+            },
+            tooltips: {
+
+                mode: 'label',
+
+                intersect: false,
+                bodyFontColor: "#fff",
+                bodyFontStyle: "bold",
+                bodyFontFamily: "'Helvetica', 'Arial', sans-serif",
+                footerFontSize: 15,
+                // callbacks: {
+                //     label: function (tooltipItem, data) {
+                //
+                //         for(var i = 0; i < data.datasets.lenght; i++){
+                //             var moodle = dadosgrafico[i];
+                //             var seconds = moodle.items[tooltipItem.index].onlinetime;
+                //
+                //             var h = Math.floor(seconds / 3600);
+                //             var m = Math.floor(seconds % 3600 / 60);
+                //             var s = Math.floor(seconds % 3600 % 60);
+                //             var humanFormat = h + 'h:' + m + 'm:' + s + 's';
+                //
+                //             return humanFormat;
+                //         }
+                //     },
+                // },
+            }
+        }
+    };
+
+    // get line chart canvas
+    var monitoramento = document.getElementById('grafico-tempo').getContext('2d');
+    // draw line chart
+
+    new Chart(monitoramento, config);
+});
 
 
     </script>

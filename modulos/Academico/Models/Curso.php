@@ -64,6 +64,16 @@ class Curso extends BaseModel
         return $this->hasMany('Modulos\Academico\Models\ConfiguracaoCurso', 'cfc_crs_id', 'crs_id');
     }
 
+    public function configuracoes()
+    {
+        return $this->hasMany('Modulos\Academico\Models\ConfiguracaoCurso', 'cfc_crs_id', 'crs_id');
+    }
+
+    public function configuracoes()
+    {
+        return $this->hasMany('Modulos\Academico\Models\ConfiguracaoCurso', 'cfc_crs_id', 'crs_id');
+    }
+
     // Accessors
     public function getCrsDataAutorizacaoAttribute($value)
     {

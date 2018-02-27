@@ -717,7 +717,13 @@ class MatriculaCursoRepository extends BaseRepository
                         }
                     }
                 }
-            }
+                // Verifica se a oferta de disciplina está na matriz do curso
+                if (in_array($disciplina->mdc_id, $disciplinasMatriz)) {
+                    // Caso o aluno foi aprovado na disciplina, incrementa a variavel
+                    if (in_array($disciplina->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                        if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                            $quantDisciplinasObrigatoriasAprovadas++;
+                        }
 
             // se o aluno não atingir a carga horaria minima de disciplinas eletivas do módulo, não está apto para conclusão
             if ((!is_null($modulo->mdo_cargahoraria_min_eletivas)) && ($cargaHorariaEletivas < $modulo->mdo_cargahoraria_min_eletivas)) {
@@ -948,7 +954,19 @@ class MatriculaCursoRepository extends BaseRepository
             $result[$key]->mat_situacao = ucfirst($result[$key]->mat_situacao);
         }
 
-        return $result;
+        if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
+            $sort = [
+                'field' => $requestParameters['field'],
+                'sort' => $requestParameters['sort']
+            ];
+            $query = $query->orderBy($sort['field'], $sort['sort']);
+        }
+
+        if ($requestParameters['mat_situacao'] != null) {
+            $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
+        }
+
+        return $query->paginate(15);
     }
 
     public function getMatriculasPorMesUltimosSeisMeses(): SupportCollection

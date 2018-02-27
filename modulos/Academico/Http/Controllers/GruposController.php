@@ -14,6 +14,7 @@ use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use DB;
@@ -293,6 +294,11 @@ class GruposController extends BaseController
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+
+        return view('Academico::grupos.movimentacoes', [
+            'grupo' => $grupo,
+            'movimentacoes' => $this->grupoRepository->getMovimentacoes($grupo->grp_id)
+        ]);
     }
 
     public function getMovimentacoes($id)

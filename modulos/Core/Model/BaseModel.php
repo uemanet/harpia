@@ -3,6 +3,7 @@
 namespace Modulos\Core\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Modulos\Seguranca\Observers\AuditoriaObserver;
 use Stevebauman\EloquentTable\TableTrait;
 use Modulos\Seguranca\Observers\AuditoriaObserver;
 

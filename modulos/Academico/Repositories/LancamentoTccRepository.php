@@ -94,6 +94,48 @@ class LancamentoTccRepository extends BaseRepository
         return $query->get();
     }
 
+    public function findBy(array $options, array $select = null)
+    {
+        $query = $this->model
+                        ->join('acd_professores', function ($join) {
+                            $join->on('ltc_prf_id', '=', 'prf_id');
+                        })
+                        ->join('gra_pessoas', function ($join) {
+                            $join->on('prf_pes_id', '=', 'pes_id');
+                        });
+
+        foreach ($options as $key => $value) {
+            $query = $query->where($key, '=', $value);
+        }
+
+        if ($select) {
+            $query = $query->select($select);
+        }
+
+        return $query->get();
+    }
+
+    public function findBy(array $options, array $select = null)
+    {
+        $query = $this->model
+                        ->join('acd_professores', function ($join) {
+                            $join->on('ltc_prf_id', '=', 'prf_id');
+                        })
+                        ->join('gra_pessoas', function ($join) {
+                            $join->on('prf_pes_id', '=', 'pes_id');
+                        });
+
+        foreach ($options as $key => $value) {
+            $query = $query->where($key, '=', $value);
+        }
+
+        if ($select) {
+            $query = $query->select($select);
+        }
+
+        return $query->get();
+    }
+
     public function findDisciplinaByTurma($turmaId)
     {
         $disciplina = DB::table('acd_turmas')
