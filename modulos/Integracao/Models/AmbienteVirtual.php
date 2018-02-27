@@ -46,6 +46,7 @@ class AmbienteVirtual extends BaseModel
             ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
             ->join('int_servicos', 'ser_id', '=', 'asr_ser_id')
             ->where('ser_id', '=', 2)
+            ->where('amb_id', '=', $this->amb_id)
             ->get();
 
         return $result->first();
@@ -57,6 +58,7 @@ class AmbienteVirtual extends BaseModel
             ->join('int_ambientes_servicos', 'amb_id', '=', 'asr_amb_id')
             ->join('int_servicos', 'ser_id', '=', 'asr_ser_id')
             ->where('ser_id', '=', 1)
+            ->where('amb_id', '=', $this->amb_id)
             ->get();
 
         return $result->first();
