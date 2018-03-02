@@ -171,8 +171,10 @@
                     grafico.append('<canvas id="grafico-tempo" height="400"></canvas>');
                 }
 
+                console.log(url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&startdate=" + datainicio + "&enddate=" + datafim + "&pesid=" + array[0] + "&timebetweenclicks=" + timeclicks + "&moodlewsrestformat=" + moodlewsformat);
+
                 var request = $.ajax({
-                    url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&start_date=" + datainicio + "&end_date=" + datafim + "&pes_id=" + array[i] + "&time_between_clicks=" + timeclicks + "&moodlewsrestformat=" + moodlewsformat,
+                    url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&startdate=" + datainicio + "&enddate=" + datafim + "&pesid=" + array[i] + "&timebetweenclicks=" + timeclicks + "&moodlewsrestformat=" + moodlewsformat,
                     type: "POST",
                     dataType: "json",
                     async: false,
@@ -182,7 +184,7 @@
                         if (moodledata.errorcode === "startdateerror") {
                             toastr.error('A data de fim não deve ser menor que a data de início', null, {progressBar: true});
                         }
-
+                        console.log(moodledata);
                         if (moodledata.errorcode === "enddateerror") {
                             toastr.error('A data de fim não deve maior que o dia atual', null, {progressBar: true});
                         }
