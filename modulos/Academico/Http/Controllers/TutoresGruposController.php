@@ -2,21 +2,21 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Academico\Events\DeleteVinculoTutorEvent;
-use Modulos\Academico\Events\CreateVinculoTutorEvent;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Academico\Http\Requests\TutorGrupoRequest;
+use DB;
 use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\TutorGrupoRepository;
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Repositories\GrupoRepository;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Seguranca\Providers\ActionButton\TButton;
+use Modulos\Academico\Events\DeleteVinculoTutorEvent;
+use Modulos\Academico\Events\CreateVinculoTutorEvent;
+use Modulos\Academico\Http\Requests\TutorGrupoRequest;
+use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Academico\Repositories\OfertaCursoRepository;
+use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
-use DB;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
 class TutoresGruposController extends BaseController
 {
@@ -160,6 +160,14 @@ class TutoresGruposController extends BaseController
             $tutorId = $request->input('ttg_tut_id');
             $grupoTutor = $request->input('ttg_grp_id');
 
+            if ($this->tutorgrupoRepository->search([
+                ['ttg_tut_id', '=', $tutorId],
+                ['ttg_grp_id', '=', $grupoTutor],
+                ['ttg_data_fim', '=', null]
+            ])->count()) {
+                flash()->error('Este tutor já está vinculado ao grupo!');
+                return redirect()->back();
+            }
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
 
@@ -222,8 +230,6 @@ class TutoresGruposController extends BaseController
     public function putAlterarTutor($idTutorGrupo, TutorGrupoRequest $request)
     {
         try {
-            DB::beginTransaction();
-
             $tutorGrupoOld = $this->tutorgrupoRepository->find($idTutorGrupo);
 
             if (!$tutorGrupoOld) {
@@ -231,8 +237,19 @@ class TutoresGruposController extends BaseController
                 return redirect()->back();
             }
 
+            if ($this->tutorgrupoRepository->search([
+                ['ttg_tut_id', '=', $request->input('ttg_tut_id')],
+                ['ttg_grp_id', '=', $request->input('ttg_grp_id')],
+                ['ttg_data_fim', '=', null]
+            ])->count()) {
+                flash()->error('Este tutor já está vinculado ao grupo!');
+                return redirect()->back();
+            }
+
             //Atualiza o fim do vículo do tutor antigo
             $dados['ttg_data_fim'] = date('Y-m-d');
+
+            DB::beginTransaction();
             $this->tutorgrupoRepository->update($dados, $tutorGrupoOld->ttg_id, 'ttg_id');
 
             $tutorgrupo = $this->tutorgrupoRepository->create($request->all());
