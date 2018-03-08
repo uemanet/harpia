@@ -13,3 +13,4 @@ composer.lock
 .vscode/
 codecoverage
 /build
+.php_cs.cache
