@@ -38,8 +38,6 @@ class OfertaCursoRequest extends BaseRequest
             case 'PUT':
                 {
                     return [
-                        'ofc_mdl_id' => 'required',
-                        'ofc_ano' => 'integer|required|min:1|max:9999',
                         'polos' => 'required'
                     ];
                 }
