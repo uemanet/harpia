@@ -14,7 +14,7 @@ before_script:
   - sudo apt-get -qq update
   - sudo apt-get install -y php7.1-memcached
   - composer self-update
-  - composer install --no-interaction
+  - composer install --no-interaction >> /dev/null
 
 script:
   - ./bin/phpunit -c phpunit.xml
