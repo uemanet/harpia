@@ -172,7 +172,7 @@
                 }
 
                 var request = $.ajax({
-                    url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&start_date=" + datainicio + "&end_date=" + datafim + "&pes_id=" + array[i] + "&time_between_clicks=" + timeclicks + "&moodlewsrestformat=" + moodlewsformat,
+                    url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&startdate=" + datainicio + "&enddate=" + datafim + "&pesid=" + array[i] + "&timebetweenclicks=" + timeclicks + "&moodlewsrestformat=" + moodlewsformat,
                     type: "POST",
                     dataType: "json",
                     async: false,
