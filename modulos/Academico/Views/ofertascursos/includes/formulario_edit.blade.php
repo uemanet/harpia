@@ -17,7 +17,7 @@
             {!! Form::select('ofc_mdl_id', $modalidades, [$ofertaCurso->modalidade->mdl_id], ['class' => 'form-control', 'placeholder' => 'Selecione a modalidade', 'disabled' => true]) !!}
         </div>
     </div>
-</div>git
+</div>
 <div class="row">
     <div class="form-group col-md-9 @if ($errors->has('polos')) has-error @endif">
         {!! Form::label('polos', 'Polos*', ['class' => 'control-label']) !!}
