@@ -13,5 +13,17 @@ before_script:
   - composer self-update
   - composer install --no-interaction
 
-script:
-  -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml
+jobs:
+  include:
+    - stage: Academico Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Academico/
+    - stage: Geral Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Geral/
+    - stage: Integracao Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Integracao/
+    - stage: Seguranca Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Seguranca/
