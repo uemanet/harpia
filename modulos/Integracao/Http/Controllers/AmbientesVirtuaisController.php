@@ -261,7 +261,7 @@ class AmbientesVirtuaisController extends BaseController
         try {
             $ambiente = $this->ambienteVirtualRepository->find($dados['asr_amb_id']);
             $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
-            $url .= $dados['asr_token'] . '&wsfunction=' . strtolower($servico->ser_nome) . '_ping&moodlewsrestformat=json';
+            $url .= $dados['asr_token'] . '&wsfunction=' . 'local_'. strtolower($servico->ser_nome) . '_ping&moodlewsrestformat=json';
 
             $client = new Client();
             $response = $client->request('POST', $url, ['query' => null]);
