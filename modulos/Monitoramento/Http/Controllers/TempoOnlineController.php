@@ -55,7 +55,7 @@ class TempoOnlineController extends Controller
         $timeclicks = 1200;
         $cursos = $this->cursoRepository->getCursosByAmbiente($idAmbiente);
 
-        $wsfunction = $monitoramento->servico->ser_slug;
+        $wsfunction = 'local_monitor_get_tutor_online_time';
 
         return view('Monitoramento::tempoonline.monitorar', compact('cursos', 'ambiente', 'timeclicks', 'wsfunction', 'monitoramento'));
     }

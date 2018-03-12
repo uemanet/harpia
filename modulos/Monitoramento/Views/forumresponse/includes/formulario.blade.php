@@ -142,7 +142,7 @@
 
             var token = '{{$monitoramento->asr_token}}';
             var moodlewsformat = "json";
-            var wsfunction = "monitor_tutor_answers";
+            var wsfunction = "local_monitor_tutor_answers";
             var url = "{{$ambiente->amb_url}}";
             var turmaId = $('#trm_id').val();
             var tutorId = $('#tut_id').val();
