@@ -1,0 +1,29 @@
+
+## Harpia build configs
+
+language: php
+dist: trusty
+sudo: required
+
+php:
+  - 7.1
+
+before_script:
+  - cp .env.travis .env
+  - composer self-update
+  - composer install --no-interaction
+
+jobs:
+  include:
+    - stage: Academico Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Academico/
+    - stage: Geral Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Geral/
+    - stage: Integracao Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Integracao/
+    - stage: Seguranca Tests
+      script:
+      -  ./bin/paratest -p4 --phpunit ./bin/phpunit --configuration phpunit.xml modulos/Seguranca/
