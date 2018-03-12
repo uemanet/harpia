@@ -152,7 +152,7 @@
             }
             $.harpia.showloading();
             var request = $.ajax({
-                url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&pes_id=" + tutorId + "&trm_id=" + turmaId + "&moodlewsrestformat=" + moodlewsformat,
+                url: url + "webservice/rest/server.php?wstoken=" + token + "&wsfunction=" + wsfunction + "&pesid=" + tutorId + "&trmid=" + turmaId + "&moodlewsrestformat=" + moodlewsformat,
                 type: "POST",
                 dataType: "json",
                 async: true,
