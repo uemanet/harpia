@@ -174,10 +174,16 @@ $factory->define(Modulos\Academico\Models\Professor::class, function (Faker\Gene
 });
 
 $factory->define(Modulos\Academico\Models\PeriodoLetivo::class, function (Faker\Generator $faker) {
+    $max = \DateTime::createFromFormat('d/m/Y', '31/12/2014')->getTimestamp();
+
+    // Periodo letivo com 5 meses
+    $inicio = \DateTime::createFromFormat('d/m/Y', $faker->date('d/m/Y', $max));
+    $fim = $inicio->add(new \DateInterval('P5M'));
+
     return [
         'per_nome' => $faker->word,
-        'per_inicio' => $faker->date('d/m/Y'),
-        'per_fim' => $faker->date('d/m/Y'),
+        'per_inicio' => $inicio->format('d/m/Y'),
+        'per_fim' => $fim->format('d/m/Y'),
     ];
 });
 
