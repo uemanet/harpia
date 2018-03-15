@@ -286,6 +286,43 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $naomatriculadas;
     }
 
+    public function getDisciplinesNotEnroledByStudent($alunoId, $turmaId, $periodoId)
+    {
+        // busca as disciplinas ofertadas para a turma e periodo
+        $ofertasDisciplinas = DB::table('acd_ofertas_disciplinas')
+                                ->join('acd_periodos_letivos', 'ofd_per_id', 'per_id')
+                                ->join('acd_modulos_disciplinas','ofd_mdc_id', '=', 'mdc_id')
+                                ->join('acd_disciplinas', 'mdc_dis_id', '=', 'dis_id')
+                                ->where('ofd_trm_id', $turmaId)
+                                ->get();
+
+        // busca o aluno
+        $aluno = $this->alunoRepository->find($alunoId);
+
+        // busca a matricula do aluno na turma
+        $matricula = $aluno->matriculas()->where('mat_trm_id', '=', $turmaId)->first();
+
+        $naomatriculadas = [];
+
+        foreach ($ofertasDisciplinas as $ofertaDisciplina) {
+
+            // Verifica se o aluno está cursando ou já foi aprovado na oferta de disciplina
+            $matriculaOfertaDisciplina = DB::table('acd_matriculas_ofertas_disciplinas')
+                                                ->where('mof_ofd_id', $ofertaDisciplina->ofd_id)
+                                                ->where('mof_mat_id', $matricula->mat_id)
+                                                ->whereIn('mof_situacao_matricula', ['cursando', 'aprovado_media', 'aprovado_final'])
+                                                ->get();
+
+            //Caso a condição seja falsa, adicionar disciplina no array de retorno
+            if (!$matriculaOfertaDisciplina->count()) {
+                $naomatriculadas[] = $ofertaDisciplina;
+            }
+
+        }
+
+        return $naomatriculadas;
+    }
+
     public function getLastMatriculaDisciplina($matriculaId, $moduloDisciplinaId)
     {
         $query = $this->model->join('acd_ofertas_disciplinas', 'mof_ofd_id', 'ofd_id')
