@@ -92,8 +92,37 @@
                 }
             });
 
+
+            $(document).on("click", ".modalButton",function(){
+
+                event.preventDefault();
+
+                var ofertaCursoId = $(this).attr('data-ofc-id');
+
+
+                var matriculaId = $(document).find('option:selected').attr('data-mat-id');
+                console.log(matriculaId);
+
+                $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/getmodal/"+ofertaCursoId + "/" + matriculaId)
+                    .done(function(response) {
+                        $('.modal').empty();
+                        $('.modal').append(response);
+                    });
+
+                $('#matricula-modal').modal();
+            });
+
+            var renderModal = function(ofertaId) {
+
+                $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/getmodal/"+ofertaId)
+                    .done(function(response) {
+                        $('.modal').empty();
+                        $('.modal').append(response);
+                    });
+            };
+
             // Botao de Localizar Disciplinas Ofertadas
-            $('#btnLocalizar').click(function () {
+            $('#btnLocalizar').on('click',function(){
                 var turma = $('#crs_id option:selected').attr('data-trm-id');
                 var periodo = $('#ofd_per_id').val();
 
@@ -104,102 +133,27 @@
                 renderTable(turma, periodo, alunoId);
             });
 
-            // evento para selecionar todos os checkboxes
-            $('.tabela-ofertas').on('click', '#select_all',function(event) {
-                if(this.checked) {
-                    $(':checkbox').each(function() {
-                        this.checked = true;
-                    });
-                }
-                else {
-                    $(':checkbox').each(function() {
-                        this.checked = false;
-                    });
-                }
-            });
 
-            var hiddenButton = function () {
-                var checkboxes = $('.tabela-ofertas table td input[type="checkbox"]');
 
-                if(checkboxes.is(':checked')){
-                    $(document).find('#confirmMatricula').removeClass('hidden');
-                }else{
-                    $(document).find('#confirmMatricula').addClass('hidden');
-                }
-            };
-
-            $(document).on('click', '.tabela-ofertas table input[type="checkbox"]', hiddenButton);
-
-            // evento do botão de confirmar a matricula na(s) disciplina(s)
-            $('.tabela-ofertas').on('click', '#confirmMatricula', function (e) {
-
-                var quant = $('.ofertas:checked').length;
-
-                if(!(quant > 0)) {
-                    return false;
-                }
-
-                var ofertasIds = new Array();
-                var matriculaId = $('#crs_id option:selected').attr('data-mat-id');
-
-                $('.ofertas:checked').each(function () {
-                    ofertasIds.push($(this).val());
-                });
-
-                sendDisciplinas(matriculaId,ofertasIds);
-            });
 
             var renderTable = function(turmaId, periodoId, alunoId) {
                 $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId)
-                    .done(function(response) {
-                        $('.tabela-ofertas').empty();
-                        $('.tabela-ofertas').append(response);
+            .done(function(response) {
+                    $('.tabela-ofertas').empty();
+                    $('.tabela-ofertas').append(response);
                 });
+
             };
 
-            var sendDisciplinas = function (matriculaId, ofertasIds) {
 
-                var dados = {
-                    ofertas: ofertasIds,
-                    mof_mat_id: matriculaId,
-                    _token: token
-                };
 
-                $.harpia.showloading();
 
-                var result = false;
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/academico/async/matriculasofertasdisciplinas/matricular',
-                    data: dados,
-                    success: function (data) {
-                        $.harpia.hideloading();
-
-                        toastr.success('Aluno matriculado com sucesso!', null, {progressBar: true});
-
-                        var turma = $('#crs_id option:selected').attr('data-trm-id');
-                        var periodo = $('#ofd_per_id').val();
-
-                        renderTable(turma, periodo, alunoId);
-                    },
-                    error: function (xhr, textStatus, error) {
-                        $.harpia.hideloading();
-
-                        switch (xhr.status) {
-                            case 400:
-                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
-                                break;
-                            default:
-                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
-
-                                result = false;
-                        }
-                    }
-                });
-            };
 
         });
+
+
+
+
     </script>
 
 @endsection

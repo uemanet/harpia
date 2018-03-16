@@ -174,7 +174,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'aproveitamentoestudos'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@getIndex')->name('academico.aproveitamentoestudos.index');
         Route::get('/show/{idAluno}', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@getShow')->name('academico.aproveitamentoestudos.show');
-        Route::post('/aproveitar', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@postAproveitarDisciplina')->name('academico.aproveitamentoestudos.aproveitardisciplina');
+        Route::post('/aproveitar/{ofertaId}/{matriculaId}', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@postAproveitarDisciplina')->name('academico.aproveitamentoestudos.aproveitardisciplina');
     });
 
     Route::group(['prefix' => 'matriculaslote'], function () {
@@ -325,6 +325,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'aproveitamentoestudos'], function () {
             Route::get('/gettableofertasdisciplinas/{aluno}/{turma}/{periodo}', '\Modulos\Academico\Http\Controllers\Async\AproveitamentoEstudos@getTableOfertasDisciplinas')->name('academico.async.aproveitamentoestudos.gettableofertasdisciplinas');
+            Route::get('/getmodal/{oferta}', '\Modulos\Academico\Http\Controllers\Async\AproveitamentoEstudos@getModal')->name('academico.async.aproveitamentoestudos.getmodal');
         });
 
         Route::group(['prefix' => 'grupos'], function () {
