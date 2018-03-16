@@ -17,6 +17,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                                <th> # </th>
                                 <th>Período Letivo</th>
                                 <th>Disciplina</th>
                                 <th>Carga Horária</th>
@@ -27,6 +28,7 @@
                         <tbody>
                             @foreach($disciplinasdisponiveis as $disciplina)
                                 <tr>
+                                    <td>{{ $disciplina->ofd_id }}</td>
                                     <td>{{ $disciplina->per_nome }}</td>
                                     <td>{{ $disciplina->dis_nome }}</td>
                                     <td>{{ $disciplina->dis_carga_horaria }} horas</td>
@@ -41,19 +43,21 @@
                                                         'route' => 'academico.aproveitamentoestudos.aproveitardisciplina',
                                                         'parameters' => $disciplina->ofd_id,
                                                         'label' => '',
-                                                        'method' => 'get'
+                                                        'method' => 'get',
+                                                        'attributes' => [
+                                                            'data-ofc-id' => $disciplina->ofd_id,
+                                                            'data-content' => $loop->index
+                                                         ]
                                                     ]
                                                 ]
                                             ])
                                          !!}
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="form-group">
-                        <button class="btn btn-primary pull-right hidden" id="confirmMatricula">Confirmar Matricula</button>
-                    </div>
                 @else
                     <p>Não há disciplinas disponíveis para este período</p>
                 @endif
@@ -62,3 +66,4 @@
     </div>
     <!-- /.box-body -->
 </div>
+

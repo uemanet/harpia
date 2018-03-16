@@ -2,8 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Academico\Http\Requests\OfertaDisciplinaRequest;
-use Modulos\Academico\Models\OfertaDisciplina;
+
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
@@ -11,12 +10,11 @@ use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Academico\Repositories\ProfessorRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
+use Modulos\Academico\Repositories\AproveitamentoEstudosRepository;
+
 
 class AproveitamentoEstudosController extends BaseController
 {
@@ -28,6 +26,7 @@ class AproveitamentoEstudosController extends BaseController
   protected $alunoRepository;
   protected $matriculaRepository;
   protected $matriculaOfertaDisciplinaRepository;
+  protected $aproveitamentoEstudosRepository;
 
   public function __construct(OfertaDisciplinaRepository $ofertadisciplinaRepository,
                               ModuloDisciplinaRepository $modulodisciplinaRepository,
@@ -35,7 +34,8 @@ class AproveitamentoEstudosController extends BaseController
                               CursoRepository $cursoRepository,
                               AlunoRepository $alunoRepository,
                               MatriculaCursoRepository $matriculaCursoRepository,
-                              MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository)
+                              MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
+                              AproveitamentoEstudosRepository $aproveitamentoEstudosRepository)
   {
       $this->ofertadisciplinaRepository = $ofertadisciplinaRepository;
       $this->modulodisciplinaRepository = $modulodisciplinaRepository;
@@ -44,6 +44,7 @@ class AproveitamentoEstudosController extends BaseController
       $this->alunoRepository = $alunoRepository;
       $this->matriculaRepository = $matriculaCursoRepository;
       $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
+      $this->aproveitamentoEstudosRepository = $aproveitamentoEstudosRepository;
   }
 
     public function getIndex(Request $request)
@@ -108,9 +109,28 @@ class AproveitamentoEstudosController extends BaseController
         ]);
     }
 
-    public function postAproveitarDisciplina()
+
+    public function postAproveitarDisciplina(Request $request, $matriculaId, $ofertaId)
     {
-        return 0;
+        try {
+            $aproveitamento = $this->aproveitamentoEstudosRepository->aproveitarDisciplina($matriculaId, $ofertaId ,$request->except('_token'));
+
+            if (!$departamento) {
+                flash()->error('Erro ao tentar salvar.');
+                return redirect()->back()->withInput($request->all());
+            }
+
+            flash()->success('Departamento criado com sucesso.');
+
+            return redirect()->route('academico.departamentos.index');
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
     }
 
 }
