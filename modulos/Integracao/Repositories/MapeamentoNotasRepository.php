@@ -2,15 +2,15 @@
 
 namespace Modulos\Integracao\Repositories;
 
+use DB;
 use Harpia\Moodle\Moodle;
-use Modulos\Academico\Models\MatriculaOfertaDisciplina;
-use Modulos\Academico\Models\OfertaDisciplina;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\MapeamentoNota;
-use DB;
+use Modulos\Academico\Models\OfertaDisciplina;
+use Modulos\Academico\Models\MatriculaOfertaDisciplina;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class MapeamentoNotasRepository extends BaseRepository
 {
@@ -22,15 +22,16 @@ class MapeamentoNotasRepository extends BaseRepository
     public function __construct(
         MapeamentoNota $model,
         PeriodoLetivoRepository $periodoLetivoRepository,
+        AmbienteVirtualRepository $ambienteVirtualRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
-        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
-        AmbienteVirtualRepository $ambienteVirtualRepository
-    ) {
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
+    )
+    {
         parent::__construct($model);
         $this->periodoLetivoRepository = $periodoLetivoRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
-        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
     public function getGradeCurricularByTurma($turmaId)
