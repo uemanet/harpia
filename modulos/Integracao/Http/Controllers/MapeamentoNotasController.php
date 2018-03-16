@@ -2,14 +2,14 @@
 
 namespace Modulos\Integracao\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 use Validator;
+use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
+use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class MapeamentoNotasController extends BaseController
 {
@@ -21,8 +21,8 @@ class MapeamentoNotasController extends BaseController
 
     public function __construct(
         CursoRepository $cursoRepository,
-        MapeamentoNotasRepository $mapeamentoNotasRepository,
         TurmaRepository $turmaRepository,
+        MapeamentoNotasRepository $mapeamentoNotasRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
     ) {
@@ -102,86 +102,86 @@ class MapeamentoNotasController extends BaseController
                 'mof_situacao_matricula' => 'Situação',
                 'mof_action' => 'Ações'
             ))
-            ->attributes(array(
-                'class' => 'table table-striped table-bordered'
-            ))
-            ->modifyCell('mof_id', function () {
-                return array('style' => 'width: 3%;');
-            })
-            ->modifyCell('mof_nota1', function () {
-                return array('style' => 'width: 5%;', 'class' => 'text-center');
-            })
-            ->modify('mof_nota1', function ($row) {
-                return is_null($row->mof_nota1) ? '---' : number_format($row->mof_nota1, 2);
-            })
-            ->modifyCell('mof_nota2', function () {
-                return array('style' => 'width: 5%;', 'class' => 'text-center');
-            })
-            ->modify('mof_nota2', function ($row) {
-                return is_null($row->mof_nota2) ? '---' : number_format($row->mof_nota2, 2);
-            })
-            ->modifyCell('mof_nota3', function () {
-                return array('style' => 'width: 5%;', 'class' => 'text-center');
-            })
-            ->modify('mof_nota3', function ($row) {
-                return is_null($row->mof_nota3) ? '---' : number_format($row->mof_nota3, 2);
-            })
-            ->modifyCell('mof_conceito', function () {
-                return array('style' => 'width: 5%;', 'class' => 'text-center');
-            })
-            ->modify('mof_conceito', function ($row) {
-                return is_null($row->mof_conceito) ? '---' : $row->mof_conceito;
-            })
-            ->modifyCell('mof_recuperacao', function () {
-                return array('style' => 'width: 5%;', 'class' => 'text-center');
-            })
-            ->modify('mof_recuperacao', function ($row) {
-                return is_null($row->mof_recuperacao) ? '---' : number_format($row->mof_recuperacao, 2);
-            })
-            ->modifyCell('mof_final', function () {
-                return array('style' => 'width: 5%;', 'class' => 'text-center');
-            })
-            ->modify('mof_final', function ($row) {
-                return is_null($row->mof_final) ? '---' : number_format($row->mof_final, 2);
-            })
-            ->modifyCell('mof_mediafinal', function () {
-                return array('style' => 'width: 8%;', 'class' => 'text-center');
-            })
-            ->modify('mof_mediafinal', function ($row) {
-                return is_null($row->mof_mediafinal) ? '---' : number_format($row->mof_mediafinal, 2);
-            })
-            ->modifyCell('mof_situacao_matricula', function () {
-                return array('style' => 'width: 5%;');
-            })
-            ->modify('mof_situacao_matricula', function ($row) {
-                switch ($row->mof_situacao_matricula) {
-                    case 'cursando':
-                        return "<span class='label label-info'>Cursando</span>";
-                        break;
-                    case 'aprovado_media':
-                        return "<span class='label label-success'>Aprovado por Média</span>";
-                        break;
-                    case 'aprovado_final':
-                        return "<span class='label label-success'>Aprovado por Final</span>";
-                        break;
-                    case 'reprovado_media':
-                        return "<span class='label label-danger'>Reprovado por Média</span>";
-                        break;
-                    case 'reprovado_final':
-                        return "<span class='label label-danger'>Reprovado por Final</span>";
-                        break;
-                    case 'cancelado':
-                        return "<span class='label label-warning'>Cancelado</span>";
-                        break;
-                }
-            })
-            ->modifyCell('mof_action', function () {
-                return array('style' => 'width: 10%');
-            })
-            ->modify('mof_action', function ($row) {
-                return "<a href='".route('integracao.mapeamentonotas.aluno', $row->mof_id)."' class='btn bg-orange'><i class='fa fa-exchange'></i> Migrar Notas</a>";
-            })
-            ->sortable(array('mof_id', 'pes_nome'));
+                ->attributes(array(
+                    'class' => 'table table-striped table-bordered'
+                ))
+                ->modifyCell('mof_id', function () {
+                    return array('style' => 'width: 3%;');
+                })
+                ->modifyCell('mof_nota1', function () {
+                    return array('style' => 'width: 5%;', 'class' => 'text-center');
+                })
+                ->modify('mof_nota1', function ($row) {
+                    return is_null($row->mof_nota1) ? '---' : number_format($row->mof_nota1, 2);
+                })
+                ->modifyCell('mof_nota2', function () {
+                    return array('style' => 'width: 5%;', 'class' => 'text-center');
+                })
+                ->modify('mof_nota2', function ($row) {
+                    return is_null($row->mof_nota2) ? '---' : number_format($row->mof_nota2, 2);
+                })
+                ->modifyCell('mof_nota3', function () {
+                    return array('style' => 'width: 5%;', 'class' => 'text-center');
+                })
+                ->modify('mof_nota3', function ($row) {
+                    return is_null($row->mof_nota3) ? '---' : number_format($row->mof_nota3, 2);
+                })
+                ->modifyCell('mof_conceito', function () {
+                    return array('style' => 'width: 5%;', 'class' => 'text-center');
+                })
+                ->modify('mof_conceito', function ($row) {
+                    return is_null($row->mof_conceito) ? '---' : $row->mof_conceito;
+                })
+                ->modifyCell('mof_recuperacao', function () {
+                    return array('style' => 'width: 5%;', 'class' => 'text-center');
+                })
+                ->modify('mof_recuperacao', function ($row) {
+                    return is_null($row->mof_recuperacao) ? '---' : number_format($row->mof_recuperacao, 2);
+                })
+                ->modifyCell('mof_final', function () {
+                    return array('style' => 'width: 5%;', 'class' => 'text-center');
+                })
+                ->modify('mof_final', function ($row) {
+                    return is_null($row->mof_final) ? '---' : number_format($row->mof_final, 2);
+                })
+                ->modifyCell('mof_mediafinal', function () {
+                    return array('style' => 'width: 8%;', 'class' => 'text-center');
+                })
+                ->modify('mof_mediafinal', function ($row) {
+                    return is_null($row->mof_mediafinal) ? '---' : number_format($row->mof_mediafinal, 2);
+                })
+                ->modifyCell('mof_situacao_matricula', function () {
+                    return array('style' => 'width: 5%;');
+                })
+                ->modify('mof_situacao_matricula', function ($row) {
+                    switch ($row->mof_situacao_matricula) {
+                        case 'cursando':
+                            return "<span class='label label-info'>Cursando</span>";
+                            break;
+                        case 'aprovado_media':
+                            return "<span class='label label-success'>Aprovado por Média</span>";
+                            break;
+                        case 'aprovado_final':
+                            return "<span class='label label-success'>Aprovado por Final</span>";
+                            break;
+                        case 'reprovado_media':
+                            return "<span class='label label-danger'>Reprovado por Média</span>";
+                            break;
+                        case 'reprovado_final':
+                            return "<span class='label label-danger'>Reprovado por Final</span>";
+                            break;
+                        case 'cancelado':
+                            return "<span class='label label-warning'>Cancelado</span>";
+                            break;
+                    }
+                })
+                ->modifyCell('mof_action', function () {
+                    return array('style' => 'width: 10%');
+                })
+                ->modify('mof_action', function ($row) {
+                    return "<a href='" . route('integracao.mapeamentonotas.aluno', $row->mof_id) . "' class='btn bg-orange'><i class='fa fa-exchange'></i> Migrar Notas</a>";
+                })
+                ->sortable(array('mof_id', 'pes_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }

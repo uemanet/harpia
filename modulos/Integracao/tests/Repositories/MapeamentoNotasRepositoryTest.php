@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Facades\Schema;
 use Modulos\Integracao\Models\MapeamentoNota;
 use Stevebauman\EloquentTable\TableCollection;
+use Modulos\Academico\Models\OfertaDisciplina;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 
@@ -21,6 +24,26 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         parent::setUp();
         $this->repo = $this->app->make(MapeamentoNotasRepository::class);
         $this->table = 'int_mapeamento_itens_nota';
+    }
+
+    private function mockMapeamentoItensNotaNumerica(int $ofertaId)
+    {
+        return [
+            'min_ofd_id' => $ofertaId,
+            'min_id_nota1' => random_int(1, 2550),
+            'min_id_nota2' => random_int(1, 2550),
+            'min_id_nota3' => random_int(1, 2550),
+            'min_id_recuperacao' => random_int(1, 2550),
+            'min_id_final' => random_int(1, 2550)
+        ];
+    }
+
+    private function mockMapeamentoItensNotaConceitual(int $ofertaId)
+    {
+        return [
+            'min_ofd_id' => $ofertaId,
+            'min_id_final' => random_int(1, 2550)
+        ];
     }
 
     public function testCreate()
@@ -420,5 +443,92 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
 
         $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
+    }
+
+    public function testSetMapeamentoNotas()
+    {
+        // Disciplina numerica
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $result = $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(array_key_exists('msg', $result));
+
+        // Disciplina conceito
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'conceitual'
+        ]);
+
+        $data = $this->mockMapeamentoItensNotaConceitual($ofertaDisciplina->ofd_id);
+        $result = $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(2, MapeamentoNota::all()->count());
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(array_key_exists('msg', $result));
+    }
+
+    public function testSetMapeamentoNotasOfertaInexistente()
+    {
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaNumerica(random_int(1, 40));
+        $result = $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(array_key_exists('error', $result));
+    }
+
+    public function testSetMapeamentoNotasOfertaUpdate()
+    {
+        // Disciplina numerica
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $result = $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(array_key_exists('msg', $result));
+
+        // Atualiza dados de um mapeamento ja existente
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $result = $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(array_key_exists('msg', $result));
+    }
+
+    public function testSetMapeamentoNotasOfertaException()
+    {
+        // Disciplina numerica
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        // Debug false
+        config(['app.debug' => false]);
+
+        Schema::table($this->table, function ($table) {
+            $table->dropColumn('min_id_recuperacao');
+        });
+
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $result = $this->repo->setMapeamentoNotas($data);
+
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(array_key_exists('error', $result));
     }
 }
