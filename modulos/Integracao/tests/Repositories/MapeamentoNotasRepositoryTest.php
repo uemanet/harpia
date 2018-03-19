@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use Tests\ModulosTestCase;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use Tests\Helpers\Reflection;
 use GuzzleHttp\Psr7\Response;
 use Harpia\Moodle\Facades\Moodle;
 use GuzzleHttp\Handler\MockHandler;
@@ -17,6 +18,8 @@ use Modulos\Integracao\Repositories\MapeamentoNotasRepository;
 
 class MapeamentoNotasRepositoryTest extends ModulosTestCase
 {
+    use Reflection;
+
     protected $configuracoesCurso = [
         "media_min_aprovacao" => "7.0",
         "media_min_final" => "5.0",
@@ -321,7 +324,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_conceito' => 'Bom'
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso, 'Conceitual');
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso, 'Conceitual']);
 
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_media');
     }
@@ -332,7 +335,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_conceito' => 'Insuficiente'
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso, 'Conceitual');
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso, 'Conceitual']);
 
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
     }
@@ -345,7 +348,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_nota3' => 7.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 7.0);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_media');
@@ -359,7 +362,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_nota3' => 3.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 4.0);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
@@ -374,7 +377,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_final' => 6.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 6.33);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
@@ -389,7 +392,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_final' => 3.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
@@ -406,7 +409,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_recuperacao' => 7.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 7.0);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_media');
@@ -421,7 +424,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_recuperacao' => 4.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 4.67);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
@@ -437,7 +440,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_final' => 5.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 5.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
@@ -453,7 +456,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_final' => 3.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
@@ -472,7 +475,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_recuperacao' => 7.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 7.0);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_media');
@@ -489,7 +492,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_recuperacao' => 6.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 5.33);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_media');
@@ -507,7 +510,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_final' => 5.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 5.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'aprovado_final');
@@ -525,7 +528,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             'mof_final' => 3.0
         ];
 
-        $result = $this->repo->calcularMedia($data, $this->configuracoesCurso);
+        $result = $this->invokeMethod($this->repo, 'calcularMedia', [$data, $this->configuracoesCurso]);
 
         $this->assertEquals($result['mof_mediafinal'], 4.83);
         $this->assertEquals($result['mof_situacao_matricula'], 'reprovado_final');
@@ -734,7 +737,8 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
 
-        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $result = $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $this->assertEquals('success', $result['status']);
 
         // Atualiza a partir do DB
         $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
@@ -833,7 +837,8 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
 
-        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $result = $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $this->assertEquals('success', $result['status']);
 
         // Atualiza a partir do DB
         $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
@@ -846,6 +851,119 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
 
         $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_conceito)); // Disciplina conceitual
+    }
+
+    public function testMapearNotasAlunoWithoutMapeamento()
+    {
+        // Mock oferta disciplina e mapeamento
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        // Nao mapeia os ids de itens de nota - Evitado para teste
+
+        // Mock ambiente e integracao ambiente turma
+        $moodle = [
+            'amb_nome' => 'Moodle',
+            'amb_versao' => '3.2+',
+            'amb_url' => "http://localhost:8080"
+        ];
+
+        $ambienteVirtual = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
+
+        // Integracao
+        $servico = factory(Modulos\Integracao\Models\Servico::class)->create([
+            'ser_id' => 2,
+            'ser_nome' => "Integração",
+            'ser_slug' => "local_integracao"
+        ]);
+
+        factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+            'asr_amb_id' => $ambienteVirtual->amb_id,
+            'asr_ser_id' => $servico->ser_id,
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
+        ]);
+
+        // Turma
+        $turma = \Modulos\Academico\Models\Turma::find($ofertaDisciplina->ofd_trm_id);
+        factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => $ambienteVirtual->amb_id
+        ]);
+
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "pes_id" => random_int(1, 10),
+                "grades" => json_encode([
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "nota1",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "nota2",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "nota3",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "recuperacao",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "final",
+                        "nota" => random_int(0, 10)
+                    ]
+                ]),
+                "status" => "success",
+                "message" => "Notas mapeadas com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+
+        $result = $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $this->assertEquals('error', $result['status']);
+
+        // Atualiza a partir do DB
+        $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
+
+        // Nao deve alterar as notas, ja que nao ha mapeamento para tal
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
     }
 
     public function testMapearNotasAlunoWithoutAmbiente()
@@ -901,7 +1019,8 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
 
-        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $result = $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $this->assertEquals('error', $result['status']);
 
         // Atualiza a partir do DB
         $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
@@ -979,7 +1098,8 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
         $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
 
-        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $result = $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+        $this->assertEquals('error', $result['status']);
 
         // Atualiza a partir do DB
         $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
