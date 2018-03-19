@@ -116,34 +116,20 @@ class MapeamentoNotasRepository extends BaseRepository
         }
     }
 
-    public function mapearNotasAluno(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, $configuracoesCurso)
+    private function getItensNota($ofertaDisciplinaId, array $select): array
     {
-        $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
-
-        // Buscar tipo de avaliacao da disciplina.
-        $tipoAvaliacao = $ofertaDisciplina->ofd_tipo_avaliacao;
-        if ($tipoAvaliacao == 'Conceitual') {
-            $select = ['min_id_conceito'];
-        }
-
-        // Dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas
-        // necessários
-        $itensNota = DB::table('int_mapeamento_itens_nota')
-            ->where('min_ofd_id', $ofertaDisciplina->ofd_id)
+        $itens = DB::table('int_mapeamento_itens_nota')
+            ->where('min_ofd_id', $ofertaDisciplinaId)
             ->select($select)
             ->first();
 
-        // caso não exista itens de notas cadastrados, envia uma mensagem de erro
-        if (!$itensNota) {
-            return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
-        }
+        return (array)$itens;
+    }
 
-        $itensNota = (array)$itensNota;
-
-        $pes_id = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
-
-        // Prepara o array com as informações que serão enviadas para o moodle.
+    private function prepareItensNota(array $itensNota): array
+    {
         $itens = [];
+
         foreach ($itensNota as $key => $value) {
             if ($value) {
                 $tipo = str_replace('min_id_', '', $key);
@@ -154,29 +140,47 @@ class MapeamentoNotasRepository extends BaseRepository
             }
         }
 
+        return $itens;
+    }
+
+    public function mapearNotasAluno(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, $configuracoesCurso)
+    {
+        $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
+
+        // Buscar tipo de avaliacao da disciplina.
+        $tipoAvaliacao = $ofertaDisciplina->ofd_tipo_avaliacao;
+        if ($tipoAvaliacao == 'Conceitual') {
+            $select = ['min_id_conceito'];
+        }
+
+        // Dependendo do tipo de avaliacao da disciplina, busca somente os ids's de itens de notas necessários
+        $itensNota = $this->getItensNota($ofertaDisciplina->ofd_id, $select);
+
+        // caso não exista itens de notas cadastrados, envia uma mensagem de erro
+        if (empty($itensNota)) {
+            return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
+        }
+
+        $pes_id = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
+
+        $itens = $this->prepareItensNota($itensNota);
+
         // Faz outra checagem pra evitar de mandar dados de itens de nota vazio.
         if (empty($itens)) {
             return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
         }
-
-        // Dados dos itens de notas são encapsulados em uma string json.
-        $data = [
-            'pes_id' => $pes_id,
-            'itens' => json_encode($itens)
-        ];
 
         $tiposenviados = [];
         foreach ($itens as $key => $tipo) {
             $tiposenviados[] = $tipo['tipo'];
         }
 
-        $response = $this->sendDataMoodle($data, $ofertaDisciplina->ofd_trm_id);
+        $response = $this->sendDataMoodle($pes_id, $itens, $ofertaDisciplina->ofd_trm_id);
 
         // Verifica se veio alguma resposta do moodle e qual status ela será encaixada.
         $status = 3;
         if ($response) {
-            $status = (array_key_exists('status', $response) &&
-                $response['status'] == 'success') ? 2 : 3;
+            $status = (array_key_exists('status', $response) && $response['status'] == 'success') ? 2 : 3;
         }
 
         // Caso tenha trazido as notas.
@@ -222,8 +226,13 @@ class MapeamentoNotasRepository extends BaseRepository
         return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
     }
 
-    private function sendDataMoodle(array $data, $trm_id)
+    private function sendDataMoodle($pesId, array $itens, $trm_id)
     {
+        $data = [
+            'pes_id' => $pesId,
+            'itens' => json_encode($itens)
+        ];
+
         // buscar ambiente virtual vinculado à turma do aluno
         $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($trm_id);
 
@@ -253,7 +262,7 @@ class MapeamentoNotasRepository extends BaseRepository
         return null;
     }
 
-    public function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'Numérica')
+    private function calcularMedia(array $notas, array $configuracoesCurso, $tipoAvaliacao = 'Numérica')
     {
         if ($tipoAvaliacao == 'Conceitual') {
             $conceitosAprovacao = json_decode($configuracoesCurso['conceitos_aprovacao'], true);
