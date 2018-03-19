@@ -2,13 +2,9 @@
 
 use Tests\ModulosTestCase;
 use Tests\Helpers\Reflection;
-use Stevebauman\EloquentTable\TableCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
-use Modulos\Academico\Models\MatriculaOfertaDisciplina;
 use Modulos\Academico\Repositories\AproveitamentoEstudosRepository;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class AproveitamentoEstudosRepositoryTest extends ModulosTestCase
 {
