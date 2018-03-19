@@ -271,13 +271,22 @@ class MenuAcademicoSeeder extends Seeder
             'mit_ordem' => 3
         ]);
 
+        $aproveitamentoestudos = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_item_pai' => $processos->mit_id,
+            'mit_nome' => 'Aproveitamento de Estudos',
+            'mit_rota' => 'academico.aproveitamentoestudos.index',
+            'mit_icone' => 'fa fa-archive',
+            'mit_ordem' => 4
+        ]);
+
         $lancamentonotas = MenuItem::create([
             'mit_mod_id' => 3,
             'mit_item_pai' => $processos->mit_id,
             'mit_nome' => 'Lançamento de notas',
             'mit_rota' => 'academico.lancamentonotas.index',
             'mit_icone' => 'fa fa-list-alt',
-            'mit_ordem' => 4
+            'mit_ordem' => 5
         ]);
 
         $carteirasestudantis = MenuItem::create([
@@ -286,7 +295,7 @@ class MenuAcademicoSeeder extends Seeder
             'mit_nome' => 'Carteiras de Estudante',
             'mit_rota' => 'academico.carteirasestudantis.index',
             'mit_icone' => 'fa fa-id-card-o',
-            'mit_ordem' => 5
+            'mit_ordem' => 6
         ]);
 
         // Categoria Documentos
