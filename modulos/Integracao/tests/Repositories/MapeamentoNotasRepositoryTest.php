@@ -1,7 +1,13 @@
 <?php
 declare(strict_types=1);
 
+use GuzzleHttp\Client;
 use Tests\ModulosTestCase;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Harpia\Moodle\Facades\Moodle;
+use GuzzleHttp\Handler\MockHandler;
 use Illuminate\Support\Facades\Schema;
 use Modulos\Integracao\Models\MapeamentoNota;
 use Stevebauman\EloquentTable\TableCollection;
@@ -42,11 +48,22 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
     {
         return [
             'min_ofd_id' => $ofertaId,
-            'min_id_final' => random_int(1, 2550)
+            'min_id_conceito' => random_int(1, 2550)
         ];
     }
 
-    public function mockGradeCurricularTurma()
+    private function mockConfiguracoesCurso($modoSubstituicao = 'substituir_menor_nota')
+    {
+        return [
+            "media_min_aprovacao" => "7.0",
+            "media_min_final" => "5.0",
+            "media_min_aprovacao_final" => "5.0",
+            "modo_recuperacao" => $modoSubstituicao,
+            "conceitos_aprovacao" => '["Bom","Muito Bom","Excelente"]',
+        ];
+    }
+
+    private function mockGradeCurricularTurma()
     {
         // Curso
         $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
@@ -91,7 +108,6 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         ]);
 
         // Turma
-
         $ofertaCurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create([
             'ofc_crs_id' => $curso->crs_id,
             'ofc_mtc_id' => $matrizCurricular->mtc_id
@@ -615,5 +631,365 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
             $this->assertArrayHasKey('per_nome', $periodo);
             $this->assertEquals(3, $periodo['ofertas']->count());
         }
+    }
+
+    public function testMapearNotasAlunoNumerica()
+    {
+        // Mock oferta disciplina e mapeamento
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+
+        // Mock ambiente e integracao ambiente turma
+        $moodle = [
+            'amb_nome' => 'Moodle',
+            'amb_versao' => '3.2+',
+            'amb_url' => "http://localhost:8080"
+        ];
+
+        $ambienteVirtual = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
+
+        // Integracao
+        $servico = factory(Modulos\Integracao\Models\Servico::class)->create([
+            'ser_id' => 2,
+            'ser_nome' => "Integração",
+            'ser_slug' => "local_integracao"
+        ]);
+
+        factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+            'asr_amb_id' => $ambienteVirtual->amb_id,
+            'asr_ser_id' => $servico->ser_id,
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
+        ]);
+
+        // Turma
+        $turma = \Modulos\Academico\Models\Turma::find($ofertaDisciplina->ofd_trm_id);
+        factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => $ambienteVirtual->amb_id
+        ]);
+
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "pes_id" => random_int(1, 10),
+                "grades" => json_encode([
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "nota1",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "nota2",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "nota3",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "recuperacao",
+                        "nota" => random_int(0, 10)
+                    ],
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "final",
+                        "nota" => random_int(0, 10)
+                    ]
+                ]),
+                "status" => "success",
+                "message" => "Notas mapeadas com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+
+        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+
+        // Atualiza a partir do DB
+        $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
+
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+    }
+
+    public function testMapearNotasAlunoConceitual()
+    {
+        // Mock oferta disciplina e mapeamento
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'conceitual'
+        ]);
+
+        $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaConceitual($ofertaDisciplina->ofd_id);
+        $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+
+        // Mock ambiente e integracao ambiente turma
+        $moodle = [
+            'amb_nome' => 'Moodle',
+            'amb_versao' => '3.2+',
+            'amb_url' => "http://localhost:8080"
+        ];
+
+        $ambienteVirtual = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
+
+        // Integracao
+        $servico = factory(Modulos\Integracao\Models\Servico::class)->create([
+            'ser_id' => 2,
+            'ser_nome' => "Integração",
+            'ser_slug' => "local_integracao"
+        ]);
+
+        factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+            'asr_amb_id' => $ambienteVirtual->amb_id,
+            'asr_ser_id' => $servico->ser_id,
+            'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
+        ]);
+
+        // Turma
+        $turma = \Modulos\Academico\Models\Turma::find($ofertaDisciplina->ofd_trm_id);
+        factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => $ambienteVirtual->amb_id
+        ]);
+
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        $conceitos = [
+            "Bom", "Muito Bom", "Excelente"
+        ];
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "pes_id" => random_int(1, 10),
+                "grades" => json_encode([
+                    [
+                        "id" => random_int(300, 1000),
+                        "tipo" => "conceito",
+                        "nota" => $conceitos[random_int(0, 2)]
+                    ],
+                ]),
+                "status" => "success",
+                "message" => "Notas mapeadas com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_conceito));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+
+        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+
+        // Atualiza a partir do DB
+        $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
+
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+
+        $this->assertFalse(is_null($matriculaOfertaDisciplina->mof_conceito)); // Disciplina conceitual
+    }
+
+    public function testMapearNotasAlunoWithoutAmbiente()
+    {
+        // Mock oferta disciplina e mapeamento
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+
+        // Turma
+        $turma = \Modulos\Academico\Models\Turma::find($ofertaDisciplina->ofd_trm_id);
+        factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => random_int(1, 10)
+        ]);
+
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "pes_id" => random_int(1, 10),
+                "grades" => json_encode([]),
+                "status" => "success",
+                "message" => "Notas mapeadas com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+
+        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+
+        // Atualiza a partir do DB
+        $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
+
+        // Notas nao devem mudar, ja que nao ha ambiente para se comunicar
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+    }
+
+    public function testMapearNotasAlunoWithoutIntegracao()
+    {
+        // Mock oferta disciplina e mapeamento
+        $ofertaDisciplina = factory(OfertaDisciplina::class)->create([
+            'ofd_tipo_avaliacao' => 'numerica'
+        ]);
+
+        $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+            'mof_ofd_id' => $ofertaDisciplina->ofd_id
+        ]);
+
+        $this->assertEquals(0, MapeamentoNota::all()->count());
+
+        $data = $this->mockMapeamentoItensNotaNumerica($ofertaDisciplina->ofd_id);
+        $this->repo->setMapeamentoNotas($data);
+
+        $this->assertEquals(1, MapeamentoNota::all()->count());
+
+        // Mock ambiente e integracao ambiente turma
+        $moodle = [
+            'amb_nome' => 'Moodle',
+            'amb_versao' => '3.2+',
+            'amb_url' => "http://localhost:8080"
+        ];
+
+        $ambienteVirtual = factory(Modulos\Integracao\Models\AmbienteVirtual::class)->create($moodle);
+
+        // Integracao - Evitado para teste
+
+        // Turma
+        $turma = \Modulos\Academico\Models\Turma::find($ofertaDisciplina->ofd_trm_id);
+        factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
+            'atr_trm_id' => $turma->trm_id,
+            'atr_amb_id' => $ambienteVirtual->amb_id
+        ]);
+
+        // Mock do servidor
+        $container = [];
+        $history = Middleware::history($container);
+
+        // Mock de respostas do servidor
+        $mock = new MockHandler([
+            new Response(200, ['content-type' => 'application/text'], json_encode([
+                "pes_id" => random_int(1, 10),
+                "grades" => json_encode([]),
+                "status" => "success",
+                "message" => "Notas mapeadas com sucesso"
+            ])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $client = new Client(['handler' => $handler]);
+
+        // Seta cliente de testes
+        Moodle::setClient($client);
+
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
+
+        $this->repo->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $this->configuracoesCurso);
+
+        // Atualiza a partir do DB
+        $matriculaOfertaDisciplina = \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($matriculaOfertaDisciplina->mof_id);
+
+        // Nao deve mudar as notas, ja que nao ha servico de integracao configurado
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota1));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota2));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_nota3));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_recuperacao));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_final));
+        $this->assertTrue(is_null($matriculaOfertaDisciplina->mof_mediafinal));
     }
 }
