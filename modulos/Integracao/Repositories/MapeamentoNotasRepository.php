@@ -3,7 +3,7 @@
 namespace Modulos\Integracao\Repositories;
 
 use DB;
-use Harpia\Moodle\Moodle;
+use Moodle;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\MapeamentoNota;
 use Modulos\Academico\Models\OfertaDisciplina;
@@ -245,9 +245,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
             $parametros['data']['grades'] = $data;
 
-            $moodleService = new Moodle();
-
-            $retorno = $moodleService->send($parametros);
+            $retorno = Moodle::send($parametros);
 
             return $retorno;
         }
