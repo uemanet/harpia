@@ -110,19 +110,36 @@ class AproveitamentoEstudosController extends BaseController
     }
 
 
-    public function postAproveitarDisciplina(Request $request, $matriculaId, $ofertaId)
+    public function postAproveitarDisciplina(Request $request,$ofertaId, $matriculaId)
     {
         try {
-            $aproveitamento = $this->aproveitamentoEstudosRepository->aproveitarDisciplina($matriculaId, $ofertaId ,$request->except('_token'));
+            $aproveitamento = $this->aproveitamentoEstudosRepository->aproveitarDisciplina($ofertaId, $matriculaId ,$request->except('_token'));
 
-            if (!$departamento) {
+            if (!$aproveitamento) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Departamento criado com sucesso.');
+            if ($aproveitamento['type'] == 'error') {
+                flash()->error($aproveitamento['message']);
+                return redirect()->back()->withInput($request->all());
+            };
 
-            return redirect()->route('academico.departamentos.index');
+            flash()->success($aproveitamento['message']);
+
+            $matricula = $this->matriculaRepository->find($matriculaId);
+            $aluno = $this->alunoRepository->find($matricula->mat_alu_id);
+            $alunoId = $aluno->alu_id;
+            $matriculas = $this->matriculaRepository->findAllVinculo(['mat_alu_id' => $alunoId, 'mat_situacao' => 'cursando']);
+            $aluno = $this->alunoRepository->find($alunoId);
+            $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
+
+            return view('Academico::aproveitamentoestudos.show', [
+                'pessoa' => $aluno->pessoa,
+                'aluno' => $aluno,
+                'matriculas' => $matriculas,
+                'periodoletivo' => $periodoletivo
+            ]);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
