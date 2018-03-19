@@ -4,6 +4,7 @@ namespace Modulos\Academico\Repositories;
 
 use DB;
 use Illuminate\Support\Collection;
+use Modulos\Academico\Models\Matricula;
 use Modulos\Academico\Models\MatriculaOfertaDisciplina;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Core\Repository\BaseRepository;
@@ -21,7 +22,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
     }
 
-    public function getDisciplinesNotEnroledByStudent($alunoId, $turmaId, $periodoId)
+    public function getDisciplinesNotEnroledByStudent($alunoId, $turmaId, $periodoId = null)
     {
         // busca as disciplinas ofertadas para a turma e periodo
         $ofertasDisciplinas = DB::table('acd_ofertas_disciplinas')
@@ -70,22 +71,42 @@ class AproveitamentoEstudosRepository extends BaseRepository
         $configuracoes = $turma->ofertacurso->curso->configuracoes->where('cfc_nome', '=', 'conceitos_aprovacao')->first();
         $configuracoes = json_decode($configuracoes->cfc_valor);
 
+        $conf = [];
 
+        foreach ($configuracoes as  $configuracao) {
+            $conf[$configuracao] = $configuracao;
+        }
 
         return [
             'avaliacao' => $tipo_avaliacao,
             'turma' => $turma,
-            'configuracoes' => $configuracoes
+            'configuracoes' => $conf
         ];
 
     }
-    public function aproveitarDisciplina($matriculaId, $ofertaId, $dados)
+    public function aproveitarDisciplina($ofertaId, $matriculaId, $dados)
     {
         $dados['mof_ofd_id'] = $ofertaId;
         $dados['mof_mat_id'] = $matriculaId;
+        $dados['mof_tipo_matricula'] = 'aproveitamentointerno';
+        $dados['mof_situacao_matricula'] = 'aprovado_media';
 
-        dd($dados);
+        // verifica se o aluno ainda está cursando o curso
+        $matricula = Matricula::find($dados['mof_mat_id']);
+        if ($matricula->mat_situacao != 'cursando') {
+            return array("type" => "error", "message" => "Aluno não está cursando o curso");
+        }
 
+        //verifica se a oferta disciplina existe
+        $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($dados['mof_ofd_id']);
+
+        if (!$ofertaDisciplina) {
+            return array("type" => "error", "message" => "Oferta de disciplina não existe");
+        }
+
+        $this->create($dados);
+
+        return array('type' => 'success', 'message' => 'Aproveitamento de Disciplina Criado com sucesso!');
     }
 
 

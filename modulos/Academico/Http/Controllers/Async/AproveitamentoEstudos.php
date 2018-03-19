@@ -43,7 +43,7 @@ class AproveitamentoEstudos extends BaseController
         return new JsonResponse($html, 200);
     }
 
-    public function getModal($ofertaId)
+    public function getModal($ofertaId, $matriculaId)
     {
 
         $data = $this->aproveitamentoEstudosRepository->getCourseConfiguration($ofertaId);
@@ -52,7 +52,7 @@ class AproveitamentoEstudos extends BaseController
         $tipo_avaliacao = $data['avaliacao'];
         $conceitos = $data['configuracoes'];
 
-        $html = view('Academico::aproveitamentoestudos.ajax.modal', compact( 'turma', 'tipo_avaliacao', 'conceitos', 'ofertaId'))->render();
+        $html = view('Academico::aproveitamentoestudos.ajax.modal', compact( 'turma', 'tipo_avaliacao', 'conceitos', 'ofertaId', 'matriculaId'))->render();
 
 
         return new JsonResponse($html, 200);

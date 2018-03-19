@@ -41,7 +41,7 @@
                                                         'classButton' => 'btn btn-primary modalButton',
                                                         'icon' => 'fa fa-paperclip',
                                                         'route' => 'academico.aproveitamentoestudos.aproveitardisciplina',
-                                                        'parameters' => $disciplina->ofd_id,
+                                                        'parameters' => [$disciplina->ofd_id,$disciplina->ofd_id ],
                                                         'label' => '',
                                                         'method' => 'get',
                                                         'attributes' => [

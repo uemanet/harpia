@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
 
-                        {!! Form::open(["url" => url('/') . "/academico/aproveitamentoestudos/aproveitar/". $ofertaId, "method" => "POST", "id" => "form", "role" => "form"]) !!}
+                        {!! Form::open(["url" => url('/') . "/academico/aproveitamentoestudos/aproveitar/". $ofertaId . "/" . $matriculaId, "method" => "POST", "id" => "form", "role" => "form"]) !!}
 
                 <div class="row">
                     <div class="form-group col-md-12">
