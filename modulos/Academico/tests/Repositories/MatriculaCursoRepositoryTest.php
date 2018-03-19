@@ -1693,7 +1693,6 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
             }
         }
 
-
         if ($tcc) {
             $lacamentosTCC = new \Illuminate\Support\Collection();
             foreach ($matriculasOfertaDisciplina as $matriculaOfertaDisciplina) {

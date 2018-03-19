@@ -46,6 +46,76 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         ];
     }
 
+    public function mockGradeCurricularTurma()
+    {
+        // Curso
+        $curso = factory(\Modulos\Academico\Models\Curso::class)->create();
+
+        // Matriz curricular e Modulos Matriz
+        $matrizCurricular = factory(\Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id,
+        ]);
+
+        $modulosDisciplinas = [];
+
+        // 3 modulos
+        for ($i = 0; $i <= 3; $i++) {
+            $moduloMatriz = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create([
+                'mdo_mtc_id' => $matrizCurricular->mtc_id,
+            ]);
+
+            // 3 disciplinas por modulo
+            for ($j = 0; $j <= 3; $j++) {
+                $modulosDisciplinas[] = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create([
+                    'mdc_mdo_id' => $moduloMatriz->mdo_id
+                ]);
+            }
+        }
+
+        $periodosLetivos = collect([]);
+
+        // Periodos letivos
+        $periodosLetivos[] = factory(\Modulos\Academico\Models\PeriodoLetivo::class)->create([
+            'per_inicio' => '01/01/2016',
+            'per_fim' => '01/06/2016'
+        ]);
+
+        $periodosLetivos[] = factory(\Modulos\Academico\Models\PeriodoLetivo::class)->create([
+            'per_inicio' => '04/06/2016',
+            'per_fim' => '11/12/2016'
+        ]);
+
+        $periodosLetivos[] = factory(\Modulos\Academico\Models\PeriodoLetivo::class)->create([
+            'per_inicio' => '04/02/2017',
+            'per_fim' => '01/06/2017'
+        ]);
+
+        // Turma
+
+        $ofertaCurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matrizCurricular->mtc_id
+        ]);
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $ofertaCurso->ofc_id,
+            'trm_per_id' => $periodosLetivos->first()->per_id,
+        ]);
+
+        // Ofertas Disciplinas na turma
+        foreach ($periodosLetivos as $key => $periodo) {
+            for ($i = $key * 3; $i < 3 * ($key + 1); $i++) {
+                factory(OfertaDisciplina::class)->create([
+                    'ofd_mdc_id' => $modulosDisciplinas[$i]->mdc_id,
+                    'ofd_trm_id' => $turma->trm_id,
+                    'ofd_per_id' => $periodo->per_id,
+                ]);
+            }
+        }
+
+        return [$matrizCurricular, $turma];
+    }
+
     public function testCreate()
     {
         $data = factory(MapeamentoNota::class)->raw();
@@ -530,5 +600,20 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
 
         $this->assertTrue(is_array($result));
         $this->assertTrue(array_key_exists('error', $result));
+    }
+
+    public function testGetGradeCurricularByTurma()
+    {
+        list(, $turma) = $this->mockGradeCurricularTurma();
+
+        $result = $this->repo->getGradeCurricularByTurma($turma->trm_id);
+
+        $this->assertEquals(3, count($result));
+
+        foreach ($result as $periodo) {
+            $this->assertArrayHasKey('per_id', $periodo);
+            $this->assertArrayHasKey('per_nome', $periodo);
+            $this->assertEquals(3, $periodo['ofertas']->count());
+        }
     }
 }
