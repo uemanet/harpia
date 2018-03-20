@@ -38,8 +38,8 @@
                                                 'type' => 'LINE',
                                                 'buttons' => [
                                                     [
-                                                        'classButton' => 'btn btn-primary modalButton',
-                                                        'icon' => 'fa fa-paperclip',
+                                                        'classButton' => 'btn btn-success modalButton',
+                                                        'icon' => 'fa fa-plus',
                                                         'route' => 'academico.aproveitamentoestudos.aproveitardisciplina',
                                                         'parameters' => [$disciplina->ofd_id,$disciplina->ofd_id ],
                                                         'label' => '',
@@ -66,4 +66,3 @@
     </div>
     <!-- /.box-body -->
 </div>
-

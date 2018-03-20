@@ -29,8 +29,13 @@ class AproveitamentoEstudosRepository extends BaseRepository
             ->join('acd_periodos_letivos', 'ofd_per_id', 'per_id')
             ->join('acd_modulos_disciplinas','ofd_mdc_id', '=', 'mdc_id')
             ->join('acd_disciplinas', 'mdc_dis_id', '=', 'dis_id')
-            ->where('ofd_trm_id', $turmaId)
-            ->get();
+            ->where('ofd_trm_id', $turmaId);
+
+        if ($periodoId) {
+           $ofertasDisciplinas->where('ofd_per_id', $periodoId);
+        }
+
+        $ofertasDisciplinas = $ofertasDisciplinas->get();
 
         // busca o aluno
         $aluno = $this->alunoRepository->find($alunoId);
