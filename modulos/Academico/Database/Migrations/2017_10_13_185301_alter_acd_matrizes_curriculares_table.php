@@ -24,5 +24,8 @@ class AlterAcdMatrizesCurricularesTable extends Migration
      */
     public function down()
     {
+        Schema::table('acd_matrizes_curriculares', function (Blueprint $table) {
+            $table->dropColumn('mtc_anx_projeto_pedagogico');
+        });
     }
 }
