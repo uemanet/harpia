@@ -15,6 +15,7 @@ trait Reflection
      * @param string $method
      * @param array $parameters
      * @return mixed
+     * @throws \ReflectionException
      */
     private function invokeMethod(&$object, string $method, array $parameters = [])
     {

@@ -4,6 +4,9 @@ namespace Harpia\Configuracao\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Configuracao extends Facade
 {
     /**

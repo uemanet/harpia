@@ -641,6 +641,25 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso aproveitamento de estudos
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.aproveitamentoestudos.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.aproveitamentoestudos.show'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.aproveitamentoestudos.aproveitardisciplina'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         //permissões do recurso historicoparcial
         $permissao = Permissao::create([
             'prm_nome' => 'index',
