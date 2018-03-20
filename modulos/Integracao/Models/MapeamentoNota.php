@@ -21,7 +21,8 @@ class MapeamentoNota extends BaseModel
         'min_id_nota3',
         'min_id_recuperacao',
         'min_id_conceito',
-        'min_id_final'
+        'min_id_final',
+        'min_id_aproveitamento'
     ];
 
     public function ofertadisciplina()
