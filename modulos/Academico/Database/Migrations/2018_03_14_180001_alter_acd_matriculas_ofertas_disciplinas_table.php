@@ -16,7 +16,7 @@ class AlterAcdMatriculasOfertasDisciplinasTable extends Migration
             $table->text('mof_observacao')->after('mof_situacao_matricula')->nullable();
         });
 
-        DB::statement("ALTER TABLE acd_matriculas_ofertas_disciplinas CHANGE COLUMN mof_tipo_matricula  ENUM('matriculacomum', 'aproveitamento')  NOT NULL");
+        DB::statement("ALTER TABLE acd_matriculas_ofertas_disciplinas CHANGE COLUMN mof_tipo_matricula mof_tipo_matricula ENUM('matriculacomum', 'aproveitamento')  NOT NULL");
     }
 
     /**
@@ -26,6 +26,9 @@ class AlterAcdMatriculasOfertasDisciplinasTable extends Migration
      */
     public function down()
     {
-        DB::statement("ALTER TABLE acd_matriculas_ofertas_disciplinas CHANGE COLUMN mof_tipo_matricula  ENUM('matriculacomum', 'aproveitamentointerno', 'aproveitamentoexterno')  NOT NULL");
+        Schema::table('acd_matriculas_ofertas_disciplinas', function (Blueprint $table) {
+            $table->dropColumn('mof_observacao');
+        });
+        DB::statement("ALTER TABLE acd_matriculas_ofertas_disciplinas CHANGE COLUMN mof_tipo_matricula mof_tipo_matricula ENUM('matriculacomum', 'aproveitamentointerno', 'aproveitamentoexterno')  NOT NULL");
     }
 }
