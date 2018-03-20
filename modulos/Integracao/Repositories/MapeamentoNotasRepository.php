@@ -271,15 +271,12 @@ class MapeamentoNotasRepository extends BaseRepository
 
             if ($ofertaDisciplina->ofd_tipo_avaliacao == 'Numérica') {
                 $status = (float)$nota >= $mediaAprovacao ? "aprovado_media" : "reprovado_media";
-                $nota = (float) $nota;
+                $nota = (float)$nota;
             }
 
             if ($ofertaDisciplina->ofd_tipo_avaliacao == 'Conceitual') {
                 $campo = 'mof_conceito';
-
-                if (!in_array($nota, $conceitosAprovacao)) {
-                    $status = 'reprovado_media';
-                }
+                $status = !in_array($nota, $conceitosAprovacao) ? "reprovado_media" : "aprovado_media";
             }
 
 

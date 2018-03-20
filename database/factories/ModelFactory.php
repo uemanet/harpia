@@ -548,7 +548,8 @@ $factory->define(\Modulos\Integracao\Models\MapeamentoNota::class, function (Fak
         'min_id_nota3' => $faker->numberBetween(0, 10),
         'min_id_recuperacao' => $faker->numberBetween(0, 5),
         'min_id_conceito' => $faker->randomElement(['aprovado', 'aprovado_final', 'reprovado', 'reprovado_final']),
-        'min_id_final' => $faker->numberBetween(0, 10)
+        'min_id_final' => $faker->numberBetween(0, 10),
+        'min_id_aproveitamento' => $faker->numberBetween(0, 10)
     ];
 });
 
