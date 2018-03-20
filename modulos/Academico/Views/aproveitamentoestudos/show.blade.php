@@ -92,13 +92,11 @@
                 }
             });
 
-
             $(document).on("click", ".modalButton",function(event){
 
                 event.preventDefault();
 
                 var ofertaCursoId = $(this).attr('data-ofc-id');
-
 
                 var matriculaId = $(document).find('option:selected').attr('data-mat-id');
 
