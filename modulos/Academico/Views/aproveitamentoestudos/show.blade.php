@@ -37,7 +37,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    {!! Form::label('ofd_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
+                    {!! Form::label('ofd_per_id', 'Período Letivo', ['class' => 'control-label']) !!}
                     {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group col-md-1">
@@ -50,7 +50,7 @@
 
 
         <!-- Modal Alterar Situacao Matricula  -->
-        <div class="modal" id="matricula-modal">
+        <div class="modal fade" id="matricula-modal">
 
         </div>
 
@@ -93,7 +93,7 @@
             });
 
 
-            $(document).on("click", ".modalButton",function(){
+            $(document).on("click", ".modalButton",function(event){
 
                 event.preventDefault();
 
@@ -101,7 +101,6 @@
 
 
                 var matriculaId = $(document).find('option:selected').attr('data-mat-id');
-                console.log(matriculaId);
 
                 $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/getmodal/"+ofertaCursoId + "/" + matriculaId)
                     .done(function(response) {
@@ -126,34 +125,34 @@
                 var turma = $('#crs_id option:selected').attr('data-trm-id');
                 var periodo = $('#ofd_per_id').val();
 
-                if(turma == '' || periodo == '') {
+                if(!turma ) {
                     return false;
+                }
+
+                if (periodo == '') {
+                  periodo = null;
                 }
 
                 renderTable(turma, periodo, alunoId);
             });
 
-
-
-
             var renderTable = function(turmaId, periodoId, alunoId) {
+
+              if (periodoId) {
                 $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId)
-            .done(function(response) {
-                    $('.tabela-ofertas').empty();
-                    $('.tabela-ofertas').append(response);
+                .done(function(response) {
+                  $('.tabela-ofertas').empty();
+                  $('.tabela-ofertas').append(response);
                 });
-
+              }else {
+                $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId)
+                .done(function(response) {
+                  $('.tabela-ofertas').empty();
+                  $('.tabela-ofertas').append(response);
+                });
+              }
             };
-
-
-
-
-
         });
-
-
-
-
     </script>
 
 @endsection
