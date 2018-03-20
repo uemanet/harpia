@@ -33,7 +33,7 @@ class AproveitamentoEstudos extends BaseController
 
     }
 
-    public function getTableOfertasDisciplinas($alunoId, $turmaId, $periodoLetivoId)
+    public function getTableOfertasDisciplinas($alunoId, $turmaId, $periodoLetivoId = null)
     {
 
         $disciplinasdisponiveis = $this->aproveitamentoEstudosRepository->getDisciplinesNotEnroledByStudent($alunoId, $turmaId, $periodoLetivoId);

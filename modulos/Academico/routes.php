@@ -324,7 +324,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         });
 
         Route::group(['prefix' => 'aproveitamentoestudos'], function () {
-            Route::get('/gettableofertasdisciplinas/{aluno}/{turma}/{periodo}', '\Modulos\Academico\Http\Controllers\Async\AproveitamentoEstudos@getTableOfertasDisciplinas')->name('academico.async.aproveitamentoestudos.gettableofertasdisciplinas');
+            Route::get('/gettableofertasdisciplinas/{aluno}/{turma}/{periodo?}', '\Modulos\Academico\Http\Controllers\Async\AproveitamentoEstudos@getTableOfertasDisciplinas')->name('academico.async.aproveitamentoestudos.gettableofertasdisciplinas');
             Route::get('/getmodal/{oferta}/{matricula}', '\Modulos\Academico\Http\Controllers\Async\AproveitamentoEstudos@getModal')->name('academico.async.aproveitamentoestudos.getmodal');
         });
 
