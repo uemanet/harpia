@@ -25,9 +25,6 @@ class AlterAcdDiplomasTable extends Migration
      */
     public function down()
     {
-        Schema::table('acd_diplomas', function (Blueprint $table) {
-            $table->dropColumn('dip_processo');
-            $table->dropColumn('dip_codigo_autenticidade_externo');
-        });
+
     }
 }
