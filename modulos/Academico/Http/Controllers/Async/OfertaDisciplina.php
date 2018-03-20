@@ -73,15 +73,11 @@ class OfertaDisciplina extends BaseController
                 continue;
             }
 
-            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamentointerno') {
-                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento Interno';
+            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamento') {
+                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento de Estudos';
                 continue;
             }
 
-            if ($retorno[$i]->mof_tipo_matricula == 'aproveitamentoexterno') {
-                $retorno[$i]->mof_tipo_matricula = 'Aproveitamento Externo';
-                continue;
-            }
         }
 
         return new JsonResponse($retorno, 200);

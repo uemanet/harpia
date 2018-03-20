@@ -68,7 +68,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
                 ->join('acd_disciplinas', 'mdc_dis_id', '=', 'dis_id')
                 ->where('mof_ofd_id', $ofertaDisciplina->ofd_id)
                 ->where('mof_mat_id', $matricula->mat_id)
-                ->where('mof_tipo_matricula', 'aproveitamentointerno')
+                ->where('mof_tipo_matricula', 'aproveitamento')
                 ->whereIn('mof_situacao_matricula', ['cursando', 'aprovado_media', 'aprovado_final'])
                 ->first();
 
@@ -113,7 +113,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
     {
         $dados['mof_ofd_id'] = $ofertaId;
         $dados['mof_mat_id'] = $matriculaId;
-        $dados['mof_tipo_matricula'] = 'aproveitamentointerno';
+        $dados['mof_tipo_matricula'] = 'aproveitamento';
         $dados['mof_situacao_matricula'] = 'aprovado_media';
 
         $matriculaoferta = $this->model
