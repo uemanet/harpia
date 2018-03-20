@@ -14,10 +14,14 @@ use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class MapeamentoNotasRepository extends BaseRepository
 {
+    protected $aproveitamentoStatus = [
+        'aproveitamentointerno', 'aproveitamentoexterno'
+    ];
+
     protected $periodoLetivoRepository;
+    protected $ambienteVirtualRepository;
     protected $ofertaDisciplinaRepository;
     protected $matriculaOfertaDisciplinaRepository;
-    protected $ambienteVirtualRepository;
 
     public function __construct(
         MapeamentoNota $model,
@@ -58,7 +62,8 @@ class MapeamentoNotasRepository extends BaseRepository
                 'min_id_nota3',
                 'min_id_conceito',
                 'min_id_recuperacao',
-                'min_id_final'
+                'min_id_final',
+                'min_id_aproveitamento'
             ], ['dis_nome' => 'asc']);
 
             if ($ofertas->count()) {
@@ -145,6 +150,10 @@ class MapeamentoNotasRepository extends BaseRepository
 
     public function mapearNotasAluno(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, $configuracoesCurso)
     {
+        if (in_array($matriculaOfertaDisciplina->mof_tipo_matricula, $this->aproveitamentoStatus)) {
+            return $this->aproveitamentoEstudos($ofertaDisciplina, $matriculaOfertaDisciplina, $configuracoesCurso);
+        }
+
         $select = ['min_id_nota1', 'min_id_nota2', 'min_id_nota3', 'min_id_recuperacao', 'min_id_final'];
 
         // Buscar tipo de avaliacao da disciplina.
@@ -161,7 +170,7 @@ class MapeamentoNotasRepository extends BaseRepository
             return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
         }
 
-        $pes_id = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
+        $pesId = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
 
         $itens = $this->prepareItensNota($itensNota);
 
@@ -175,7 +184,7 @@ class MapeamentoNotasRepository extends BaseRepository
             $tiposenviados[] = $tipo['tipo'];
         }
 
-        $response = $this->sendDataMoodle($pes_id, $itens, $ofertaDisciplina->ofd_trm_id);
+        $response = $this->sendDataMoodle($pesId, $itens, $ofertaDisciplina->ofd_trm_id);
 
         // Verifica se veio alguma resposta do moodle e qual status ela será encaixada.
         $status = 3;
@@ -217,6 +226,66 @@ class MapeamentoNotasRepository extends BaseRepository
             foreach ($notas as $key => $value) {
                 $matriculaOfertaDisciplina->{$key} = $value;
             }
+
+            $matriculaOfertaDisciplina->save();
+
+            return array('status' => 'success', 'message' => 'Notas mapeadas com sucesso.');
+        }
+
+        return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
+    }
+
+    private function aproveitamentoEstudos(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, array $configuracoesCurso)
+    {
+        // Itens nota
+        $itensNota = $this->getItensNota($ofertaDisciplina->ofd_id, ['min_id_aproveitamento']);
+
+        // caso não exista itens de notas cadastrados, envia uma mensagem de erro
+        if (empty($itensNota)) {
+            return array('status' => 'error', 'message' => 'Não há itens de notas cadastrados para essa oferta de disciplina.');
+        }
+
+        $itens = $this->prepareItensNota($itensNota);
+        $pesId = $matriculaOfertaDisciplina->matriculaCurso->aluno->alu_pes_id;
+        $response = $this->sendDataMoodle($pesId, $itens, $ofertaDisciplina->ofd_trm_id);
+
+        // Verifica se veio alguma resposta do moodle e qual status ela será encaixada.
+        $status = 3;
+        if ($response) {
+            $status = (array_key_exists('status', $response) && $response['status'] == 'success') ? 2 : 3;
+        }
+
+        // Caso tenha trazido as notas.
+        if ($status == 2) {
+            $arrayNotas = json_decode($response['grades'], true);
+
+            // Configuracoes curso
+            $conceitosAprovacao = json_decode($configuracoesCurso['conceitos_aprovacao'], true);
+            $mediaAprovacao = (float)$configuracoesCurso['media_min_aprovacao'];
+
+            $nota = array_pop($arrayNotas)['nota'];
+
+            // Campo para atualizar
+            $campo = 'mof_mediafinal';
+            $status = 'aprovado_media';
+
+            if ($ofertaDisciplina->ofd_tipo_avaliacao == 'Numérica') {
+                $status = (float)$nota >= $mediaAprovacao ? "aprovado_media" : "reprovado_media";
+                $nota = (float) $nota;
+            }
+
+            if ($ofertaDisciplina->ofd_tipo_avaliacao == 'Conceitual') {
+                $campo = 'mof_conceito';
+
+                if (!in_array($nota, $conceitosAprovacao)) {
+                    $status = 'reprovado_media';
+                }
+            }
+
+
+            // atualizar o registro de notas
+            $matriculaOfertaDisciplina->{$campo} = $nota;
+            $matriculaOfertaDisciplina->mof_situacao_matricula = $status;
 
             $matriculaOfertaDisciplina->save();
 
