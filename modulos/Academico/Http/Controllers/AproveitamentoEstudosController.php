@@ -114,7 +114,7 @@ class AproveitamentoEstudosController extends BaseController
     {
         try {
             $aproveitamento = $this->aproveitamentoEstudosRepository->aproveitarDisciplina($ofertaId, $matriculaId ,$request->except('_token'));
-
+            $matricula = $this->matriculaRepository->find($matriculaId);
             if (!$aproveitamento) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
@@ -122,23 +122,16 @@ class AproveitamentoEstudosController extends BaseController
 
             if ($aproveitamento['type'] == 'error') {
                 flash()->error($aproveitamento['message']);
-                return redirect()->back()->withInput($request->all());
+                return redirect()->route('academico.aproveitamentoestudos.show', [
+                    'pessoa' => $matricula->mat_alu_id,
+                ]);
             };
 
-            flash()->success($aproveitamento['message']);
-
             $matricula = $this->matriculaRepository->find($matriculaId);
-            $aluno = $this->alunoRepository->find($matricula->mat_alu_id);
-            $alunoId = $aluno->alu_id;
-            $matriculas = $this->matriculaRepository->findAllVinculo(['mat_alu_id' => $alunoId, 'mat_situacao' => 'cursando']);
-            $aluno = $this->alunoRepository->find($alunoId);
-            $periodoletivo = $this->periodoletivoRepository->lists('per_id', 'per_nome');
 
-            return view('Academico::aproveitamentoestudos.show', [
-                'pessoa' => $aluno->pessoa,
-                'aluno' => $aluno,
-                'matriculas' => $matriculas,
-                'periodoletivo' => $periodoletivo
+            flash()->success($aproveitamento['message']);
+            return redirect()->route('academico.aproveitamentoestudos.show', [
+                'pessoa' => $matricula->mat_alu_id,
             ]);
         } catch (\Exception $e) {
             if (config('app.debug')) {
