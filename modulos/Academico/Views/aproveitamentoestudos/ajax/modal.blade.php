@@ -6,9 +6,7 @@
                 <h4 class="modal-title">Aproveitamento de disciplinas</h4>
             </div>
             <div class="modal-body">
-
                         {!! Form::open(["url" => url('/') . "/academico/aproveitamentoestudos/aproveitar/". $ofertaId . "/" . $matriculaId, "method" => "POST", "id" => "form", "role" => "form"]) !!}
-
                 <div class="row">
                     <div class="form-group col-md-12">
                         {!! Form::label('mof_observacao', 'Observação*', ['class' => 'control-label']) !!}

@@ -91,6 +91,15 @@ class AproveitamentoEstudosRepository extends BaseRepository
     }
     public function aproveitarDisciplina($ofertaId, $matriculaId, $dados)
     {
+
+        $matriculaoferta = $this->model
+            ->where('mof_mat_id', '=', $matriculaId)
+            ->where('mof_ofd_id', '=', $ofertaId)->get();
+
+        if ($matriculaoferta->count()){
+            return array("type" => "error", "message" => "Aluno já foi matriculado nessa disciplina");
+        }
+
         $dados['mof_ofd_id'] = $ofertaId;
         $dados['mof_mat_id'] = $matriculaId;
         $dados['mof_tipo_matricula'] = 'aproveitamentointerno';
