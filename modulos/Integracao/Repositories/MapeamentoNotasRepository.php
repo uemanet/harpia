@@ -279,7 +279,6 @@ class MapeamentoNotasRepository extends BaseRepository
                 $status = !in_array($nota, $conceitosAprovacao) ? "reprovado_media" : "aprovado_media";
             }
 
-
             // atualizar o registro de notas
             $matriculaOfertaDisciplina->{$campo} = $nota;
             $matriculaOfertaDisciplina->mof_situacao_matricula = $status;

@@ -36,9 +36,11 @@ class AproveitamentoEstudos extends BaseController
     public function getTableOfertasDisciplinas($alunoId, $turmaId, $periodoLetivoId = null)
     {
 
-        $disciplinasdisponiveis = $this->aproveitamentoEstudosRepository->getDisciplinesNotEnroledByStudent($alunoId, $turmaId, $periodoLetivoId);
+        $data = $this->aproveitamentoEstudosRepository->getDisciplinesNotEnroledByStudent($alunoId, $turmaId, $periodoLetivoId);
+        $disciplinasdisponiveis = $data['naomatriculadas'];
+        $disciplinasaproveitadas = $data['aproveitadas'];
 
-        $html = view('Academico::aproveitamentoestudos.ajax.disciplinasdisponiveis', compact( 'disciplinasdisponiveis'))->render();
+        $html = view('Academico::aproveitamentoestudos.ajax.disciplinasdisponiveis', compact( 'disciplinasdisponiveis', 'disciplinasaproveitadas'))->render();
 
         return new JsonResponse($html, 200);
     }
