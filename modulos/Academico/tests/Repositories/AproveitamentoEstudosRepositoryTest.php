@@ -117,7 +117,7 @@ class AproveitamentoEstudosRepositoryTest extends ModulosTestCase
         }
 
         $oferta = factory(\Modulos\Academico\Models\OfertaCurso::class)->create(['ofc_crs_id' => $curso->crs_id]);
-        $turma = factory(\Modulos\Academico\Models\Turma::class)->create(['trm_ofc_id' => $oferta->ofc_id]);
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create(['trm_ofc_id' => $oferta->ofc_id, 'trm_integrada' => 0]);
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id, 'ofd_tipo_avaliacao' => 'conceitual']);
 
@@ -168,6 +168,13 @@ class AproveitamentoEstudosRepositoryTest extends ModulosTestCase
 
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id, 'ofd_tipo_avaliacao' => 'numerica']);
         $response = $this->repo->aproveitarDisciplina($ofertaDisciplina->ofd_id, $matricula->mat_id, ['mof_observacao' => 'Teste Obsevação', 'mof_mediafinal' => 5]);
+
+        $this->assertNotEmpty($response);
+        $this->assertEquals($response['message'],'O cadastro contém erros no formulário');
+
+        $turma = factory(\Modulos\Academico\Models\Turma::class)->create(['trm_ofc_id' => $oferta->ofc_id, 'trm_integrada' => 1]);
+        $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id, 'ofd_tipo_avaliacao' => 'numerica']);
+        $response = $this->repo->aproveitarDisciplina($ofertaDisciplina->ofd_id, $matricula->mat_id, ['mof_observacao' => null]);
 
         $this->assertNotEmpty($response);
         $this->assertEquals($response['message'],'O cadastro contém erros no formulário');
