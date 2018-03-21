@@ -3,6 +3,7 @@
 namespace Modulos\Academico\Repositories;
 
 use DB;
+use Validator;
 use Illuminate\Support\Collection;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Academico\Models\MatriculaOfertaDisciplina;
@@ -95,6 +96,8 @@ class AproveitamentoEstudosRepository extends BaseRepository
 
         $configuracoes = $turma->ofertacurso->curso->configuracoes->where('cfc_nome', '=', 'conceitos_aprovacao')->first();
         $configuracoes = json_decode($configuracoes->cfc_valor);
+        $mediaminima = $turma->ofertacurso->curso->configuracoes->where('cfc_nome', '=', 'media_min_aprovacao')->first();
+        $mediaminima = $mediaminima->cfc_valor;
 
         $conf = [];
 
@@ -105,7 +108,8 @@ class AproveitamentoEstudosRepository extends BaseRepository
         return [
             'avaliacao' => $tipo_avaliacao,
             'turma' => $turma,
-            'configuracoes' => $conf
+            'configuracoes' => $conf,
+            'min' => $mediaminima
         ];
 
     }
@@ -135,6 +139,42 @@ class AproveitamentoEstudosRepository extends BaseRepository
 
         if (!$ofertaDisciplina) {
             return array("type" => "error", "message" => "Oferta de disciplina não existe");
+        }
+
+        if ($ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'numerica') {
+            $rules = [
+                'mof_observacao' => 'required',
+                'mof_mediafinal' => 'required|numeric'
+            ];
+
+            $validator = Validator::make($dados, $rules);
+
+            if ($validator->fails()) {
+                return array("type" => "error", "message" => "O cadastro contém erros no formulário");
+            }
+
+            $mediaminima = $ofertaDisciplina->turma->ofertacurso->curso->configuracoes->where('cfc_nome', '=', 'media_min_aprovacao')->first();
+            $mediaminima = $mediaminima->cfc_valor;
+            if ($dados['mof_mediafinal'] < $mediaminima || $dados['mof_mediafinal'] > 10 ){
+                return array("type" => "error", "message" => "O cadastro contém erros no formulário");
+            }
+        }else{
+            $rules = [
+                'mof_observacao' => 'required',
+                'mof_conceito' => 'required'
+            ];
+            $validator = Validator::make($dados, $rules);
+
+            if ($validator->fails()) {
+                return array("type" => "error", "message" => "O cadastro contém erros no formulário");
+            }
+
+            $configuracoes = $ofertaDisciplina->turma->ofertacurso->curso->configuracoes->where('cfc_nome', '=', 'conceitos_aprovacao')->first();
+            $configuracoes = json_decode($configuracoes->cfc_valor);
+
+            if(!in_array($dados['mof_conceito'], $configuracoes)){
+                return array("type" => "error", "message" => "O cadastro contém erros no formulário");
+            }
         }
 
         $matriculaoferta = $this->create($dados);
