@@ -306,7 +306,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $query = $this->model
             ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
             ->where('mof_ofd_id', '=', $ofertaId)
-            ->whereNotIn('mof_situacao_matricula',  ['cancelado', 'aproveitamentointerno'])
+            ->whereNotIn('mof_situacao_matricula',  ['cancelado', 'aproveitamento'])
             ->get();
 
 
@@ -320,7 +320,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function getQuantMatriculasByOfertaDisciplina($ofertaId)
     {
         return $this->model->where('mof_ofd_id', '=', $ofertaId)
-            ->whereNotIn('mof_situacao_matricula', ['cancelado', 'aproveitamentointerno'])
+            ->whereNotIn('mof_situacao_matricula', ['cancelado', 'aproveitamento'])
             ->count();
     }
 

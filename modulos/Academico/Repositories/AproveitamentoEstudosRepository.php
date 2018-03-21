@@ -44,6 +44,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
         $matricula = $aluno->matriculas()->where('mat_trm_id', '=', $turmaId)->first();
 
         $naomatriculadas = [];
+        $aproveitadas = [];
 
         foreach ($ofertasDisciplinas as $ofertaDisciplina) {
 
@@ -59,9 +60,28 @@ class AproveitamentoEstudosRepository extends BaseRepository
                 $naomatriculadas[] = $ofertaDisciplina;
             }
 
+            // Verifica se o aluno já tem a disciplina aproveitada
+            $aproveitada = DB::table('acd_matriculas_ofertas_disciplinas')
+                ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
+                ->join('acd_periodos_letivos', 'ofd_per_id', 'per_id')
+                ->join('acd_modulos_disciplinas','ofd_mdc_id', '=', 'mdc_id')
+                ->join('acd_disciplinas', 'mdc_dis_id', '=', 'dis_id')
+                ->where('mof_ofd_id', $ofertaDisciplina->ofd_id)
+                ->where('mof_mat_id', $matricula->mat_id)
+                ->where('mof_tipo_matricula', 'aproveitamento')
+                ->whereIn('mof_situacao_matricula', ['cursando', 'aprovado_media', 'aprovado_final'])
+                ->first();
+
+            //Caso a condição seja verdadeira, adicionar disciplina no array de retorno
+            if ($aproveitada) {
+
+                $aproveitadas[] = $aproveitada;
+            }
+
+
         }
 
-        return $naomatriculadas;
+        return ['naomatriculadas' => $naomatriculadas, 'aproveitadas' => $aproveitadas];
     }
 
     public function getCourseConfiguration($ofertaId)
@@ -91,6 +111,10 @@ class AproveitamentoEstudosRepository extends BaseRepository
     }
     public function aproveitarDisciplina($ofertaId, $matriculaId, $dados)
     {
+        $dados['mof_ofd_id'] = $ofertaId;
+        $dados['mof_mat_id'] = $matriculaId;
+        $dados['mof_tipo_matricula'] = 'aproveitamento';
+        $dados['mof_situacao_matricula'] = 'aprovado_media';
 
         $matriculaoferta = $this->model
             ->where('mof_mat_id', '=', $matriculaId)
@@ -99,11 +123,6 @@ class AproveitamentoEstudosRepository extends BaseRepository
         if ($matriculaoferta->count()){
             return array("type" => "error", "message" => "Aluno já foi matriculado nessa disciplina");
         }
-
-        $dados['mof_ofd_id'] = $ofertaId;
-        $dados['mof_mat_id'] = $matriculaId;
-        $dados['mof_tipo_matricula'] = 'aproveitamentointerno';
-        $dados['mof_situacao_matricula'] = 'aprovado_media';
 
         // verifica se o aluno ainda está cursando o curso
         $matricula = Matricula::find($dados['mof_mat_id']);
@@ -118,7 +137,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
             return array("type" => "error", "message" => "Oferta de disciplina não existe");
         }
 
-        $this->create($dados);
+        $matriculaoferta = $this->create($dados);
 
         return array('type' => 'success', 'message' => 'Aproveitamento de Disciplina Criado com sucesso!');
     }

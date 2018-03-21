@@ -24,5 +24,8 @@ class AlterAcdProfessoresTable extends Migration
      */
     public function down()
     {
+        Schema::table('acd_professores', function (Blueprint $table) {
+            $table->dropColumn('prf_codigo');
+        });
     }
 }

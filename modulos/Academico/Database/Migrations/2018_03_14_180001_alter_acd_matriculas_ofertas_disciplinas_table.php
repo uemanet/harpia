@@ -15,6 +15,7 @@ class AlterAcdMatriculasOfertasDisciplinasTable extends Migration
         Schema::table('acd_matriculas_ofertas_disciplinas', function (Blueprint $table) {
             $table->text('mof_observacao')->after('mof_situacao_matricula')->nullable();
         });
+
     }
 
     /**
@@ -24,5 +25,8 @@ class AlterAcdMatriculasOfertasDisciplinasTable extends Migration
      */
     public function down()
     {
+        Schema::table('acd_matriculas_ofertas_disciplinas', function (Blueprint $table) {
+            $table->dropColumn('mof_observacao');
+        });
     }
 }
