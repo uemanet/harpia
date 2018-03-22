@@ -54,6 +54,7 @@ class HistoricoParcialRepository
                 $cell['ofd_tipo_avaliacao'] = $oferta->ofd_tipo_avaliacao;
                 $cell['mdc_tipo_disciplina'] = $oferta->mdc_tipo_disciplina;
                 $cell['mdo_nome'] = $oferta->mdo_nome;
+                $cell['mof_tipo_matricula'] = $oferta->mof_tipo_matricula;
                 $cell['mof_nota1'] = '---';
                 $cell['mof_nota2'] = '---';
                 $cell['mof_nota3'] = '---';
