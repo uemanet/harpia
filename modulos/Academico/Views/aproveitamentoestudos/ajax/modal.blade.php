@@ -21,7 +21,7 @@
                         <div class="form-group col-md-12">
                             {!! Form::label('mof_mediafinal', 'Média Final*', ['class' => 'control-label' ]) !!}
                             <div class="controls">
-                                {!! Form::number('mof_mediafinal', old('mof_mediafinal'),['class' => 'form-control', 'min' => 0, 'max' => 10, 'step' => 0.1, 'required']) !!}
+                                {!! Form::number('mof_mediafinal', old('mof_mediafinal'),['class' => 'form-control', 'min' => $mediaminima, 'max' => 10, 'step' => 0.1, 'required']) !!}
                             </div>
                         </div>
                     </div>

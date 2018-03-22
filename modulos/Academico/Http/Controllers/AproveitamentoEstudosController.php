@@ -3,17 +3,17 @@
 namespace Modulos\Academico\Http\Controllers;
 
 
+use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
-use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
-use Modulos\Core\Http\Controller\BaseController;
-use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\AproveitamentoEstudosRepository;
+use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 
 class AproveitamentoEstudosController extends BaseController

@@ -40,6 +40,7 @@ class AproveitamentoEstudos extends BaseController
         $disciplinasdisponiveis = $data['naomatriculadas'];
         $disciplinasaproveitadas = $data['aproveitadas'];
 
+
         $html = view('Academico::aproveitamentoestudos.ajax.disciplinasdisponiveis', compact( 'disciplinasdisponiveis', 'disciplinasaproveitadas'))->render();
 
         return new JsonResponse($html, 200);
@@ -53,8 +54,8 @@ class AproveitamentoEstudos extends BaseController
         $turma = $data['turma'];
         $tipo_avaliacao = $data['avaliacao'];
         $conceitos = $data['configuracoes'];
-
-        $html = view('Academico::aproveitamentoestudos.ajax.modal', compact( 'turma', 'tipo_avaliacao', 'conceitos', 'ofertaId', 'matriculaId'))->render();
+        $mediaminima = (float)$data['min'];
+        $html = view('Academico::aproveitamentoestudos.ajax.modal', compact( 'turma', 'tipo_avaliacao', 'conceitos', 'ofertaId', 'matriculaId', 'mediaminima'))->render();
 
 
         return new JsonResponse($html, 200);
