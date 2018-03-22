@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterAcdProfessoresTable extends Migration
+class AlterIntMapeamentoItensNotaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AlterAcdProfessoresTable extends Migration
      */
     public function up()
     {
-        Schema::table('acd_professores', function (Blueprint $table) {
-            $table->integer('prf_codigo')->after('prf_pes_id')->nullable();
+        Schema::table('int_mapeamento_itens_nota', function (Blueprint $table) {
+            $table->integer('min_id_aproveitamento')->nullable();
         });
     }
 
@@ -24,8 +24,8 @@ class AlterAcdProfessoresTable extends Migration
      */
     public function down()
     {
-        Schema::table('acd_professores', function (Blueprint $table) {
-            $table->dropColumn('prf_codigo');
+        Schema::table('int_mapeamento_itens_nota', function (Blueprint $table) {
+            $table->dropColumn('min_id_aproveitamento');
         });
     }
 }

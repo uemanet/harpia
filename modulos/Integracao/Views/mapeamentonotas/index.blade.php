@@ -169,6 +169,7 @@
                 var conceito = $('#'+ofd_id+'_conceito').val();
                 var recuperacao = $('#'+ofd_id+'_recuperacao').val();
                 var final = $('#'+ofd_id+'_final').val();
+                var aproveitamento = $('#'+ofd_id+'_aproveitamento').val();
 
                 if (nota1 != '' || nota2 != '' || nota3 != '' || conceito != '' || recuperacao != '' || final != '') {
 
@@ -181,7 +182,8 @@
                             'min_id_nota3': nota3,
                             'min_id_conceito': conceito,
                             'min_id_recuperacao': recuperacao,
-                            'min_id_final': final
+                            'min_id_final': final,
+                            'min_id_aproveitamento': aproveitamento
                         })
                     };
 
