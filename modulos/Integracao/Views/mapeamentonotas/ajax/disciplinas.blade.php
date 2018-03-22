@@ -46,6 +46,7 @@
                                                 <th width="10%">ID Conceito</th>
                                                 <th width="10%">ID Recuperação</th>
                                                 <th width="10%">ID Final</th>
+                                                <th width="10%">ID Aproveitamento de Estudos</th>
                                                 <th width="2%"></th>
                                                 <th width="5%"></th>
                                             </tr>
@@ -92,6 +93,11 @@
                                                 <td>
                                                     <div class="form-group">
                                                         <input type="text" id="{{ $value->ofd_id }}_final" class="form-control" value="{{ !$value->min_id_final ? 0 : $value->min_id_final }}" {{$numerica}}>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input type="text" id="{{ $value->ofd_id }}_aproveitamento" class="form-control" value="{{ !$value->min_id_aproveitamento ? 0 : $value->min_id_aproveitamento }}">
                                                     </div>
                                                 </td>
                                                 <td style="text-align: center;">

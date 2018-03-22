@@ -197,7 +197,9 @@
                 @endphp
                 <td style="border-bottom: 0.1mm solid;">
                     @php
-                        if ($disciplina->mof_situacao_matricula == 'aprovado_media') {
+                        if ($disciplina->mof_tipo_matricula == 'aproveitamento'){
+                            echo "APROVEITAMENTO";
+                        } else if ($disciplina->mof_situacao_matricula == 'aprovado_media') {
                             echo "APROVADO POR MÉDIA";
                         } elseif ($disciplina->mof_situacao_matricula == 'aprovado_final') {
                             echo "APROVADO POR FINAL";

@@ -17,7 +17,7 @@ class CreateAcdMatriculasOfertasDisciplinasTable extends Migration
             $table->increments('mof_id');
             $table->integer('mof_mat_id')->unsigned();
             $table->integer('mof_ofd_id')->unsigned();
-            $table->enum('mof_tipo_matricula', ['matriculacomum', 'aproveitamentointerno', 'aproveitamentoexterno']);
+            $table->enum('mof_tipo_matricula', ['matriculacomum', 'aproveitamento']);
             $table->float('mof_nota1')->nullable();
             $table->float('mof_nota2')->nullable();
             $table->float('mof_nota3')->nullable();

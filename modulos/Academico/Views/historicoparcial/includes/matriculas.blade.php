@@ -72,6 +72,8 @@
                                                                         <span class="label label-primary">Cursando</span>
                                                                     @elseif($disciplina->mof_situacao_matricula == 'cancelado')
                                                                         <span class="label label-warning">Cancelado</span>
+                                                                    @elseif($disciplina->mof_tipo_matricula == 'aproveitamento' and $disciplina->mof_situacao_matricula == 'aprovado_media')
+                                                                        <span class="label label-success">Aproveitamento</span>
                                                                     @elseif($disciplina->mof_situacao_matricula == 'aprovado_media')
                                                                         <span class="label label-success">Aprovado por Média</span>
                                                                     @elseif($disciplina->mof_situacao_matricula == 'aprovado_final')

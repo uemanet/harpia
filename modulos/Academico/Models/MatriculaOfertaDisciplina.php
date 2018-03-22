@@ -21,7 +21,8 @@ class MatriculaOfertaDisciplina extends BaseModel
         'mof_recuperacao',
         'mof_final',
         'mof_mediafinal',
-        'mof_situacao_matricula'
+        'mof_situacao_matricula',
+        'mof_observacao'
     ];
 
     protected $searchable = [

@@ -462,6 +462,7 @@ $factory->define(Modulos\Academico\Models\MatriculaOfertaDisciplina::class, func
         'mof_ofd_id' => $ofertaDisciplina->ofd_id,
         'mof_tipo_matricula' => 'matriculacomum',
         'mof_situacao_matricula' => 'cursando',
+        'mof_observacao' => null,
         'mof_nota1' => null,
         'mof_nota2' => null,
         'mof_nota3' => null,
@@ -547,7 +548,8 @@ $factory->define(\Modulos\Integracao\Models\MapeamentoNota::class, function (Fak
         'min_id_nota3' => $faker->numberBetween(0, 10),
         'min_id_recuperacao' => $faker->numberBetween(0, 5),
         'min_id_conceito' => $faker->randomElement(['aprovado', 'aprovado_final', 'reprovado', 'reprovado_final']),
-        'min_id_final' => $faker->numberBetween(0, 10)
+        'min_id_final' => $faker->numberBetween(0, 10),
+        'min_id_aproveitamento' => $faker->numberBetween(0, 10)
     ];
 });
 

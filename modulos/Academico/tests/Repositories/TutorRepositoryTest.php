@@ -6,10 +6,10 @@ use Modulos\Geral\Models\Pessoa;
 use Modulos\Academico\Models\Tutor;
 use Modulos\Geral\Models\Documento;
 use Illuminate\Support\Facades\Artisan;
+use Modulos\Academico\Models\TutorGrupo;
 use Stevebauman\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TutorRepository;
-use Modulos\Academico\Models\TutorGrupo;
 
 class TutorRepositoryTest extends ModulosTestCase
 {
@@ -265,7 +265,7 @@ class TutorRepositoryTest extends ModulosTestCase
         $tutorgrupo->create(['ttg_tut_id' => $response->tut_id, 'ttg_grp_id' => $grupo->grp_id, 'ttg_tipo_tutoria' => 'presencial', 'ttg_data_inicio' => '10/11/2010', 'ttg_data_fim' => null]);
 
         $tutores = $TutorRepository->FindallbyTurmaTipoTutoria($grupo->turma->trm_id, 'presencial');
-      
+
         $this->assertNotEmpty($tutores, '');
     }
 

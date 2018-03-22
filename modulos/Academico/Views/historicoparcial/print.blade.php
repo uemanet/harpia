@@ -95,10 +95,14 @@
                                     $coeficienteParcial += ($disciplina->dis_carga_horaria * $disciplina->mof_mediafinal);
                                 endif;
                             ?>
+
+
                             @if ($disciplina->mof_situacao_matricula == 'cursando')
                                 <td>Cursando</td>
                             @elseif ($disciplina->mof_situacao_matricula == 'cancelado')
                                 <td>Cancelado</td>
+                            @elseif($disciplina->mof_tipo_matricula == 'aproveitamento' and $disciplina->mof_situacao_matricula == 'aprovado_media')
+                                <td>Aproveitamento</td>
                             @elseif($disciplina->mof_situacao_matricula == 'aprovado_media')
                                 <td>Aprovado Por Média</td>
                             @elseif($disciplina->mof_situacao_matricula == 'aprovado_final')

@@ -29,7 +29,7 @@ class OfertaDisciplinasTableSeeder extends Seeder
                     $ofertaDisciplina->ofd_trm_id = $turma->trm_id;
                     $ofertaDisciplina->ofd_per_id = $i+1;
                     $ofertaDisciplina->ofd_prf_id = $professor->prf_id;
-                    $ofertaDisciplina->ofd_tipo_avaliacao = 'numerica';
+                    $ofertaDisciplina->ofd_tipo_avaliacao = array_random(['numerica','conceitual']);
                     $ofertaDisciplina->ofd_qtd_vagas = 500;
 
                     $ofertaDisciplina->save();
