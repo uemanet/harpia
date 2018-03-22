@@ -1122,7 +1122,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
 
         $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
-            'mof_tipo_matricula' => "aproveitamentointerno"
+            'mof_tipo_matricula' => "aproveitamento"
         ]);
 
         $this->assertEquals(0, MapeamentoNota::all()->count());
@@ -1227,7 +1227,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
 
         $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
-            'mof_tipo_matricula' => "aproveitamentointerno"
+            'mof_tipo_matricula' => "aproveitamento"
         ]);
 
         $this->assertEquals(0, MapeamentoNota::all()->count());
@@ -1332,7 +1332,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
 
         $matriculaOfertaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
-            'mof_tipo_matricula' => "aproveitamentointerno"
+            'mof_tipo_matricula' => "aproveitamento"
         ]);
 
 
