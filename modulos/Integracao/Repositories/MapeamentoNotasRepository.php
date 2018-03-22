@@ -14,9 +14,7 @@ use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 
 class MapeamentoNotasRepository extends BaseRepository
 {
-    protected $aproveitamentoStatus = [
-        'aproveitamentointerno', 'aproveitamentoexterno'
-    ];
+    protected $aproveitamentoStatus = "aproveitamento";
 
     protected $periodoLetivoRepository;
     protected $ambienteVirtualRepository;
@@ -150,7 +148,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
     public function mapearNotasAluno(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, $configuracoesCurso)
     {
-        if (in_array($matriculaOfertaDisciplina->mof_tipo_matricula, $this->aproveitamentoStatus)) {
+        if ($matriculaOfertaDisciplina->mof_tipo_matricula == $this->aproveitamentoStatus) {
             return $this->aproveitamentoEstudos($ofertaDisciplina, $matriculaOfertaDisciplina, $configuracoesCurso);
         }
 
