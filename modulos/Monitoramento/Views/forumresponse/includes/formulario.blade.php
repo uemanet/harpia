@@ -190,21 +190,21 @@
             html = '<div class="row"><div class="col-md-12"><h3>' + moodledata.course + '</h3>';
             html += '</div></div>';
 
-            var grupoatual = moodledata.itens[0].idgrupo;
+            var grupoatual = moodledata.itens[0].groupid;
             $.each(moodledata.itens, function (chave, objeto) {
 
-                if (grupoatual == objeto.idgrupo && chave != 0) {
+                if (grupoatual == objeto.groupid && chave != 0) {
                     return true;
 
                 }
-                if (grupoatual != objeto.idgrupo) {
-                    grupoatual = objeto.idgrupo;
+                if (grupoatual != objeto.groupid) {
+                    grupoatual = objeto.groupid;
 
                 }
                 html += '<div class="row"><div class="col-md-12">';
                 html += '<div class="box">';
                 html += '<div class="box-header">';
-                html += '<h3 class="box-title">Grupo: ' + objeto.grupo + '</h3>';
+                html += '<h3 class="box-title">Grupo: ' + objeto.groupname + '</h3>';
                 html += '</div>';
                 html += '<div class="box-body no-padding">';
                 html += '<table class="table table-condensed">';
@@ -219,31 +219,31 @@
                 html += '</tr>';
                 $.each(moodledata.itens, function (key, obj) {
 
-                    if (obj.idgrupo == grupoatual) {
+                    if (obj.groupid == grupoatual) {
                         html += '<tr>';
                         html += '<td>' + obj.discussion + '</td>';
 
-                        if (obj.participacaototal > 0.7) {
-                            html += '<td><span class="badge bg-green">' + (obj.participacaototal * 100).toPrecision(3) + '%</span></td>';
-                        } else if (obj.participacaototal > 0.4 && obj.participacaototal < 0.7) {
-                            html += '<td><span class="badge bg-yellow">' + (obj.participacaototal * 100).toPrecision(3) + '%</span></td>';
-                        } else if (obj.participacaototal > 0.0 && obj.participacaototal <= 0.4) {
-                            html += '<td><span class="badge bg-red">' + (obj.participacaototal * 100).toPrecision(3) + '%</span></td>';
+                        if (obj.userparticipation > 0.7) {
+                            html += '<td><span class="badge bg-green">' + (obj.userparticipation * 100).toPrecision(3) + '%</span></td>';
+                        } else if (obj.userparticipation > 0.4 && obj.userparticipation < 0.7) {
+                            html += '<td><span class="badge bg-yellow">' + (obj.userparticipation * 100).toPrecision(3) + '%</span></td>';
+                        } else if (obj.userparticipation > 0.0 && obj.userparticipation <= 0.4) {
+                            html += '<td><span class="badge bg-red">' + (obj.userparticipation * 100).toPrecision(3) + '%</span></td>';
                         } else {
                             html += '<td><span class="badge bg-red">0%</span></td>';
                         }
 
-                        if (obj.percentual > 0.7) {
-                            html += '<td><span class="badge bg-green">' + (obj.percentual * 100).toPrecision(3) + '%</span></td>';
-                        } else if (obj.percentual > 0.4 && obj.percentual < 0.7) {
-                            html += '<td><span class="badge bg-yellow">' + (obj.percentual * 100).toPrecision(3) + '%</span></td>';
-                        } else if (obj.percentual > 0.0 && obj.percentual <= 0.4) {
-                            html += '<td><span class="badge bg-red">' + (obj.percentual * 100).toPrecision(3) + '%</span></td>';
+                        if (obj.percent > 0.7) {
+                            html += '<td><span class="badge bg-green">' + (obj.percent * 100).toPrecision(3) + '%</span></td>';
+                        } else if (obj.percent > 0.4 && obj.percent < 0.7) {
+                            html += '<td><span class="badge bg-yellow">' + (obj.percent * 100).toPrecision(3) + '%</span></td>';
+                        } else if (obj.percent > 0.0 && obj.percent <= 0.4) {
+                            html += '<td><span class="badge bg-red">' + (obj.percent * 100).toPrecision(3) + '%</span></td>';
                         } else {
                             html += '<td><span class="badge bg-red">0%</span></td>';
                         }
 
-                        html += '<td><span class="badge bg-blue">' + obj.tempo + '</span></td>';
+                        html += '<td><span class="badge bg-blue">' + obj.mediumresponsetime + '</span></td>';
                         html += '</tr>';
                     }
                 });
