@@ -165,6 +165,7 @@ class AlunosController extends BaseController
                 }
                 DB::beginTransaction();
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
+                $pes_id = $pessoa->pes_id;
             }
 
             $dataDocumento = array(
