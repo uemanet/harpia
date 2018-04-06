@@ -63,7 +63,7 @@ class DeleteOfertaDisciplinaListener
                 throw $exception;
             }
 
-            event(new UpdateSincronizacaoEvent($event->getData(), 3, get_class($exception), $event->getAction()));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, get_class($exception), $event->getAction(), null, $event->getExtra()));
         } finally {
             return true;
         }
