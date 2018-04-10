@@ -33,6 +33,11 @@ return [
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
     ],
 
+    'Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateMatriculaDisciplinaLoteListener',
+    ],
+
     'Modulos\Academico\Events\CreateVinculoTutorEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateVinculoTutorListener',
