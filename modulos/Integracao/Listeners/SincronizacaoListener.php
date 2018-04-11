@@ -31,6 +31,8 @@ class SincronizacaoListener
 
                     unset($itemEvent);
                 }
+
+                return true; // Passa para os demais listeners
             }
 
             if ($event->isFirstAttempt()) {
