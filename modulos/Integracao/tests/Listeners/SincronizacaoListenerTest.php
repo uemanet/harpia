@@ -217,7 +217,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
 
         // Cria um evento de matricula com alguma das matriculas passadas.
         // O objetivo eh checar se ha um log individual daquele registro na tabela de sincronizacao
-        $matriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($matriculaDisciplinaLoteEvent->getItens()->random());
+        $matriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($matriculaDisciplinaLoteEvent->getItems()->random());
 
         $this->assertDatabaseHas('int_sync_moodle', [
             'sym_table' => $matriculaDisciplinaEvent->getData()->getTable(),
@@ -228,6 +228,5 @@ class SincronizacaoListenerTest extends ModulosTestCase
             'sym_data_envio' => null,
             'sym_extra' => $matriculaDisciplinaEvent->getExtra()
         ]);
-
     }
 }

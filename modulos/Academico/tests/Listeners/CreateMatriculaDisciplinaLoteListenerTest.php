@@ -11,6 +11,7 @@ use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
+use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 
 /**
  * Class CreateMatriculaDisciplinaListenerTest
@@ -33,7 +34,6 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         $this->createAmbiente();
         $this->createIntegracao();
         $this->createMonitor();
-        $this->mockUpDatabase();
     }
 
     /**
@@ -103,29 +103,25 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
             'trm_qtd_vagas' => 50
         ];
 
-        $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
 
         // Vincular com o ambiente
         factory(\Modulos\Integracao\Models\AmbienteTurma::class)->create([
-            'atr_trm_id' => $this->turma->trm_id,
+            'atr_trm_id' => $turma->trm_id,
             'atr_amb_id' => $this->ambiente->amb_id
         ]);
 
         // Mapeia a turma
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-        $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
-        $createGroupListener = $this->app->make(\Modulos\Academico\Listeners\CreateGrupoListener::class);
-        $createMatriculaTurmaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaTurmaListener::class);
 
         // Eventos de turma
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($turma);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
-        $turmaMapeadaListener->handle($turmaMapeadaEvent);
 
         // Cria o grupo
         $grupo = factory(\Modulos\Academico\Models\Grupo::class)->create([
-            'grp_trm_id' => $this->turma->trm_id,
+            'grp_trm_id' => $turma->trm_id,
             'grp_pol_id' => factory(Modulos\Academico\Models\Polo::class)->create()->pol_id,
             'grp_nome' => "Group A"
         ]);
@@ -134,26 +130,24 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         $createGroupEvent = new CreateGrupoEvent($grupo);
 
         $sincronizacaoListener->handle($createGroupEvent);
-        $createGroupListener->handle($createGroupEvent);
-
-        // Cria a matricula no curso
-        $matriculaCurso = factory(\Modulos\Academico\Models\Matricula::class)->create([
-            'mat_trm_id' => $this->turma->trm_id,
-            'mat_grp_id' => $grupo->grp_id,
-        ]);
-
-        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($matriculaCurso);
-
-        // Eventos de Matricula no curso
-        $sincronizacaoListener->handle($createMatriculaTurmaEvent);
-        $createMatriculaTurmaListener->handle($createMatriculaTurmaEvent);
 
         // Matricula disciplina
         $matriculasDisciplinas = collect([]);
 
+        $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create([
+            'ofd_trm_id' => $turma->trm_id
+        ]);
+
         for ($i = 0; $i < $qtdeMatriculas; $i++) {
+            // Cria a matricula no curso
+            $matriculaCurso = factory(\Modulos\Academico\Models\Matricula::class)->create([
+                'mat_trm_id' => $turma->trm_id,
+                'mat_grp_id' => $grupo->grp_id,
+            ]);
+
             $matriculasDisciplinas[] = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
                 'mof_mat_id' => $matriculaCurso->mat_id,
+                'mof_ofd_id' => $ofertaDisciplina->ofd_id
             ]);
         }
 
@@ -166,12 +160,13 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         $container = [];
         $history = Middleware::history($container);
 
-        // Mock de respostas do servidor // TODO Check with server implementation
+        // TODO Check with server implementation
+        // Mock de respostas do servidor
         $mock = new MockHandler([
             new Response(200, ['content-type' => 'application/text'], json_encode([
                 "id" => random_int(1, 10),
                 "status" => "success",
-                "message" => "Aluno matriculado com sucesso"
+                "message" => "Alunos matriculado com sucesso"
             ])),
         ]);
 
@@ -183,27 +178,37 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         Moodle::setClient($client);
 
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-        $createMatriculaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener::class);
+        $createMatriculaDisciplinaLoteListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaLoteListener::class);
 
-        $this->assertEquals(3, $this->sincronizacaoRepository->count());
+        $matriculas = $this->mockUpDatabaseLote(10);
 
-        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina);
-        $sincronizacaoListener->handle($createMatriculaDisciplinaEvent);
+        \Modulos\Integracao\Models\Sincronizacao::truncate(); // Limpa eventos relacionados ao Mock
+
+        $this->assertEquals(0, \Modulos\Integracao\Models\Sincronizacao::all()->count());
+
+        $matriculaDisciplinaLoteEvent = new CreateMatriculaDisciplinaLoteEvent($matriculas);
+        $sincronizacaoListener->handle($matriculaDisciplinaLoteEvent);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $createMatriculaDisciplinaLoteListener->handle($matriculaDisciplinaLoteEvent);
+
+        $result = $this->sincronizacaoRepository->all();
+
+        $this->assertEquals(10, $result->count());
+
+        // Cria um evento de matricula com alguma das matriculas passadas.
+        // O objetivo eh checar se ha um log individual daquele registro na tabela de sincronizacao
+        $matriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($matriculaDisciplinaLoteEvent->getItems()->random());
 
         $this->assertDatabaseHas('int_sync_moodle', [
-            'sym_table' => $createMatriculaDisciplinaEvent->getData()->getTable(),
-            'sym_table_id' => $createMatriculaDisciplinaEvent->getData()->getKey(),
-            'sym_action' => $createMatriculaDisciplinaEvent->getAction(),
+            'sym_table' => $matriculaDisciplinaEvent->getData()->getTable(),
+            'sym_table_id' => $matriculaDisciplinaEvent->getData()->getKey(),
+            'sym_action' => $matriculaDisciplinaEvent->getAction(),
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => $createMatriculaDisciplinaEvent->getExtra()
+            'sym_extra' => $matriculaDisciplinaEvent->getExtra()
         ]);
-
-        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
-        $createMatriculaDisciplinaListener->handle($createMatriculaDisciplinaEvent);
-
-        $this->assertEquals(4, $this->sincronizacaoRepository->count());
     }
 
     public function testHandleWithFail()
@@ -212,8 +217,10 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         $container = [];
         $history = Middleware::history($container);
 
-        // A falta do Mock de response causa o disparo de uma excecao no Listener
-        $handler = HandlerStack::create();
+        // Sem resposta para causar uma excecao
+        $mock = new MockHandler([]);
+
+        $handler = HandlerStack::create($mock);
         $handler->push($history);
         $client = new Client(['handler' => $handler]);
 
@@ -221,26 +228,36 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         Moodle::setClient($client);
 
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-        $createMatriculaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener::class);
+        $createMatriculaDisciplinaLoteListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaDisciplinaLoteListener::class);
 
-        $this->assertEquals(3, $this->sincronizacaoRepository->count());
+        $matriculas = $this->mockUpDatabaseLote(10);
 
-        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina);
-        $sincronizacaoListener->handle($createMatriculaDisciplinaEvent);
+        \Modulos\Integracao\Models\Sincronizacao::truncate(); // Limpa eventos relacionados ao Mock
+
+        $this->assertEquals(0, \Modulos\Integracao\Models\Sincronizacao::all()->count());
+
+        $matriculaDisciplinaLoteEvent = new CreateMatriculaDisciplinaLoteEvent($matriculas);
+        $sincronizacaoListener->handle($matriculaDisciplinaLoteEvent);
+
+        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
+        $createMatriculaDisciplinaLoteListener->handle($matriculaDisciplinaLoteEvent);
+
+        $result = $this->sincronizacaoRepository->all();
+
+        $this->assertEquals(10, $result->count());
+
+        // Cria um evento de matricula com alguma das matriculas passadas.
+        // O objetivo eh checar se ha um log individual daquele registro na tabela de sincronizacao
+        $matriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($matriculaDisciplinaLoteEvent->getItems()->random());
 
         $this->assertDatabaseHas('int_sync_moodle', [
-            'sym_table' => $createMatriculaDisciplinaEvent->getData()->getTable(),
-            'sym_table_id' => $createMatriculaDisciplinaEvent->getData()->getKey(),
-            'sym_action' => $createMatriculaDisciplinaEvent->getAction(),
+            'sym_table' => $matriculaDisciplinaEvent->getData()->getTable(),
+            'sym_table_id' => $matriculaDisciplinaEvent->getData()->getKey(),
+            'sym_action' => $matriculaDisciplinaEvent->getAction(),
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => $createMatriculaDisciplinaEvent->getExtra()
+            'sym_extra' => $matriculaDisciplinaEvent->getExtra()
         ]);
-
-        $this->expectsEvents(\Modulos\Integracao\Events\UpdateSincronizacaoEvent::class);
-        $createMatriculaDisciplinaListener->handle($createMatriculaDisciplinaEvent);
-
-        $this->assertEquals(4, $this->sincronizacaoRepository->count());
     }
 }

@@ -23,9 +23,7 @@ class SincronizacaoListener
                 $class = $event->getBaseClass();
 
                 // Salva cada item de uma migracao em lote como uma migracao individual na tabela de sincronizacao
-                foreach ($event->getItens() as $item) {
-                    $itemEvent = new $class($item);
-
+                foreach ($event->getItemsAsEvents() as $itemEvent) {
                     $data = $this->getSyncData($itemEvent);
                     $this->sincronizacaoRepository->create($data);
 
@@ -52,7 +50,7 @@ class SincronizacaoListener
         }
     }
 
-    protected function getSyncData(SincronizacaoEvent $event) : array
+    protected function getSyncData(SincronizacaoEvent $event): array
     {
         $entry = $event->getData();
 

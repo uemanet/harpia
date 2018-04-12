@@ -59,7 +59,7 @@ abstract class SincronizacaoEvent extends Event
      * Retorna o endpoint correspondente ao evento de sincronizacao
      * @return string
      */
-    final public function getEndpoint()
+    public function getEndpoint()
     {
         if (isset(self::ENDPOINTS[$this->entry->getTable()][$this->action])) {
             return self::ENDPOINTS[$this->entry->getTable()][$this->action];

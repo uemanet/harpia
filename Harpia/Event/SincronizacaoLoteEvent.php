@@ -12,24 +12,35 @@ use Harpia\Event\Contracts\SincronizacaoLoteInterface;
  */
 abstract class SincronizacaoLoteEvent extends SincronizacaoEvent implements SincronizacaoLoteInterface
 {
-    protected $itens;
+    protected $items;
 
     protected $baseClass = "";
 
-    public function __construct(Collection $itens, string $action = "CREATE", $extra = null)
+    public function __construct(Collection $items, string $action = "CREATE", $extra = null)
     {
         $this->extra = $extra;
-        $this->itens = $itens;
+        $this->items = $items;
         $this->action = $action;
     }
 
-    public function getItens(): Collection
+    public function getItems(): Collection
     {
-        return $this->itens;
+        return $this->items;
     }
 
     public function getBaseClass(): string
     {
         return $this->baseClass;
+    }
+
+    public function getItemsAsEvents(): Collection
+    {
+        $events = collect([]);
+
+        foreach ($this->items as $item) {
+            $events->push(new $this->baseClass($item, $this->extra));
+        }
+
+        return $events;
     }
 }
