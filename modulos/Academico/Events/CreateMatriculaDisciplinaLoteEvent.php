@@ -28,4 +28,13 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
 
         parent::__construct($matriculas, $action, $extra);
     }
+
+    /**
+     * TODO review endpoint name
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return 'local_integracao_batch_enrol_student_discipline';
+    }
 }

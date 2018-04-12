@@ -12,7 +12,9 @@ use Illuminate\Support\Collection;
  */
 interface SincronizacaoLoteInterface
 {
-    public function getItens(): Collection;
+    public function getItems(): Collection;
 
     public function getBaseClass(): string;
+
+    public function getItemsAsEvents(): Collection;
 }
