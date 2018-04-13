@@ -30,7 +30,6 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
     }
 
     /**
-     * TODO review endpoint name
      * @return string
      */
     public function getEndpoint()
