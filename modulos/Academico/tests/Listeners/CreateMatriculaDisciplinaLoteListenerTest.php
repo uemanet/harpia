@@ -9,12 +9,11 @@ use Harpia\Moodle\Facades\Moodle;
 use GuzzleHttp\Handler\MockHandler;
 use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 
 /**
- * Class CreateMatriculaDisciplinaListenerTest
+ * Class CreateMatriculaDisciplinaLoteListenerTest
  * @group Listeners
  */
 class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
@@ -160,7 +159,6 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         $container = [];
         $history = Middleware::history($container);
 
-        // TODO Check with server implementation
         // Mock de respostas do servidor
         $mock = new MockHandler([
             new Response(200, ['content-type' => 'application/text'], json_encode([
