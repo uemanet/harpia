@@ -2,14 +2,15 @@
 
 namespace Modulos\Academico\Http\Controllers\Async;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
-use Modulos\Core\Http\Controller\BaseController;
 
 class MatriculaOfertaDisciplina extends BaseController
 {
@@ -53,7 +54,7 @@ class MatriculaOfertaDisciplina extends BaseController
         DB::beginTransaction();
 
         try {
-            $matriculasCollection = [];
+            $matriculasCollection = collect([]);
 
             foreach ($matriculas as $matricula) {
                 $result = $this->matriculaOfertaDisciplinaRepository->createMatricula(['mat_id' => $matricula, 'ofd_id' => $ofertaId]);
@@ -75,9 +76,7 @@ class MatriculaOfertaDisciplina extends BaseController
 
             if ($turma->trm_integrada) {
                 if (!empty($matriculasCollection)) {
-                    foreach ($matriculasCollection as $obj) {
-                        event(new CreateMatriculaDisciplinaEvent($obj));
-                    }
+                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection));
                 }
             }
 
