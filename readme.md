@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ce02749c9c7e41cdaefd89af3c60c2cb)](https://www.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uemanet/harpia&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/ce02749c9c7e41cdaefd89af3c60c2cb)](https://www.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&utm_medium=referral&utm_content=uemanet/harpia&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ce02749c9c7e41cdaefd89af3c60c2cb)](https://www.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uemanet/harpia&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/ce02749c9c7e41cdaefd89af3c60c2cb)](https://www.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&utm_medium=referral&utm_content=uemanet/harpia&utm_campaign=Badge_Coverage) [![Build Status](https://travis-ci.org/uemanet/harpia.svg?branch=master)](https://travis-ci.org/uemanet/harpia)
 
 Harpia - UemaNet
 =======================
