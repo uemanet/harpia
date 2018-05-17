@@ -429,7 +429,7 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         // A 4º e 5º regra nao se aplicam aos cursos tecnicos
-        if ($curso->crs_nvc_id != 2) {
+        if (!in_array($curso->crs_nvc_id, [2,7])) {
             // 4º Regra - Aprovação Tcc
             $aprovacao = $this->verifyIfAlunoAprovadoTcc($matricula);
             if (!$aprovacao) {
