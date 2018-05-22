@@ -1199,12 +1199,11 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
 
     public function testGetAlunosAptosCertificacao()
     {
-        $data = $this->mockMatriculaGeral(['obrigatoria', 'eletiva'], 'cursando', 'aprovado_media', 2,
-            10, 10, 10, 10, 10, false, true, 2, 1);
-        list($turma, $polo, $matriculas, $modulosDis, $moduloMatriz) = $data;
+        $data = $this->mockMatriculaAptaCertificacao(2);
+        list($turma, $polo, $matriculas, $modulosDis, $modulosMatriz) = $data;
 
         //Situacao com aluno apto para ser certificado
-        $result = $this->repo->getAlunosAptosCertificacao($turma->trm_id, $moduloMatriz->mdo_id, $polo->pol_id);
+        $result = $this->repo->getAlunosAptosCertificacao($turma->trm_id, $modulosMatriz[0]->mdo_id, $polo->pol_id);
         $this->assertNotEmpty($result['aptos']);
         $this->assertEquals(2, $result['aptosq']);
         $this->assertEmpty($result['certificados']);
@@ -1634,13 +1633,13 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
 
         $professor = factory(Modulos\Academico\Models\Professor::class)->create();
 
-        $titulacaoProfessor = factory(Modulos\Geral\Models\TitulacaoInformacao::class)->create([
+        factory(Modulos\Geral\Models\TitulacaoInformacao::class)->create([
             'tin_pes_id' => $professor->pessoa->pes_id,
             'tin_tit_id' => random_int(2, 7),
         ]);
 
+        $ofertasDisciplina = new \Illuminate\Support\Collection();
         if ($ofertaDis) {
-            $ofertasDisciplina = new \Illuminate\Support\Collection();
             foreach ($modulosDisciplina as $moduloDisciplina) {
                 $ofertasDisciplina[] = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
                     'ofd_mdc_id' => $moduloDisciplina->mdc_id,
@@ -1654,7 +1653,6 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
         }
 
         $alunos = factory(Modulos\Academico\Models\Aluno::class, $qtdAlunos)->create();
-
 
         factory(\Modulos\Geral\Models\Titulacao::class, 7)->create();
 
@@ -1703,7 +1701,120 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
             }
         }
 
-
         return [$turma, $polo, $matriculas, $modulosDisciplina, $moduloMatriz, $curso];
+    }
+
+    private function mockMatriculaAptaCertificacao($qtdAlunos)
+    {
+        $curso = factory(Modulos\Academico\Models\Curso::class)->create([
+            'crs_nome' => 'Curso 1',
+            'crs_nvc_id' => 1, // nivel curso tecnico
+        ]);
+
+        $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create([
+            'mtc_crs_id' => $curso->crs_id,
+            'mtc_horas' => 40
+        ]);
+
+        $oferta = factory(Modulos\Academico\Models\OfertaCurso::class)->create([
+            'ofc_crs_id' => $curso->crs_id,
+            'ofc_mtc_id' => $matrizCurricular->mtc_id,
+        ]);
+
+        $turma = factory(Modulos\Academico\Models\Turma::class)->create([
+            'trm_ofc_id' => $oferta->ofc_id,
+        ]);
+
+        $polo = factory(Modulos\Academico\Models\Polo::class)->create();
+        $oferta->polos()->attach($polo->pol_id);
+
+        $grupo = factory(Modulos\Academico\Models\Grupo::class)->create([
+            'grp_trm_id' => $turma->trm_id,
+            'grp_pol_id' => $polo->pol_id
+        ]);
+
+        $modulosMatriz = factory(Modulos\Academico\Models\ModuloMatriz::class, 2)->create([
+            'mdo_mtc_id' => $matrizCurricular->mtc_id,
+            'mdo_cargahoraria_min_eletivas' => 10,
+            'mdo_creditos_min_eletivas' => 5,
+        ]);
+
+        $modulosDisciplina = new \Illuminate\Support\Collection();
+        foreach ($modulosMatriz as $modulo) {
+            $tiposDisciplina = ['obrigatoria', 'eletiva'];
+            foreach ($tiposDisciplina as $tipo) {
+                $modulosDisciplina[] = factory(Modulos\Academico\Models\ModuloDisciplina::class)->create([
+                    'mdc_dis_id' => factory(Modulos\Academico\Models\Disciplina::class)->create([
+                        'dis_nvc_id' => $curso->crs_nvc_id,
+                        'dis_carga_horaria' => 10,
+                        'dis_creditos' => 5
+                    ])->dis_id,
+                    'mdc_mdo_id' => $modulo->mdo_id,
+                    'mdc_tipo_disciplina' => $tipo
+                ]);
+            }
+        }
+
+        $professor = factory(Modulos\Academico\Models\Professor::class)->create();
+
+        factory(Modulos\Geral\Models\TitulacaoInformacao::class)->create([
+            'tin_pes_id' => $professor->pessoa->pes_id,
+            'tin_tit_id' => random_int(2, 7),
+        ]);
+
+        $ofertasDisciplina = new \Illuminate\Support\Collection();
+        foreach ($modulosDisciplina as $moduloDisciplina) {
+            $ofertasDisciplina[] = factory(Modulos\Academico\Models\OfertaDisciplina::class)->create([
+                'ofd_mdc_id' => $moduloDisciplina->mdc_id,
+                'ofd_trm_id' => $turma->trm_id,
+                'ofd_per_id' => $turma->trm_per_id,
+                'ofd_prf_id' => $professor->prf_id,
+                'ofd_tipo_avaliacao' => 'numerica',
+                'ofd_qtd_vagas' => 500
+            ]);
+        }
+
+        $alunos = factory(Modulos\Academico\Models\Aluno::class, $qtdAlunos)->create();
+
+        factory(\Modulos\Geral\Models\Titulacao::class, 7)->create();
+
+        $titulacoes = new \Illuminate\Support\Collection();
+        foreach ($alunos as $aluno) {
+            $titulacoes[] = factory(Modulos\Geral\Models\TitulacaoInformacao::class)->create([
+                'tin_pes_id' => $aluno->pessoa->pes_id,
+                'tin_tit_id' => 2,
+            ]);
+        }
+
+        $matriculas = new \Illuminate\Support\Collection();
+        foreach ($alunos as $aluno) {
+            $matriculas[] = factory(Modulos\Academico\Models\Matricula::class)->create([
+                'mat_alu_id' => $aluno->alu_id,
+                'mat_trm_id' => $turma->trm_id,
+                'mat_pol_id' => $polo->pol_id,
+                'mat_grp_id' => $grupo->grp_id,
+                'mat_situacao' => 'cursando',
+                'mat_modo_entrada' => 'vestibular',
+            ]);
+        }
+
+        $matriculasOfertaDisciplina = new \Illuminate\Support\Collection();
+        foreach ($matriculas as $matricula) {
+            foreach ($ofertasDisciplina as $key => $ofertaDisciplina) {
+                $status = 'aprovado_media';
+                if ($key > 2) {
+                    $status = 'reprovado_media';
+                }
+                $matriculasOfertaDisciplina[] = factory(Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create([
+                    'mof_mat_id' => $matricula->mat_id,
+                    'mof_ofd_id' => $ofertaDisciplina->ofd_id,
+                    'mof_tipo_matricula' => 'matriculacomum',
+                    'mof_situacao_matricula' => $status
+                ]);
+            }
+        }
+
+        return [$turma, $polo, $matriculas, $modulosDisciplina, $modulosMatriz, $curso];
+
     }
 }
