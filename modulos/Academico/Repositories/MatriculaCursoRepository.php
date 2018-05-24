@@ -633,7 +633,6 @@ class MatriculaCursoRepository extends BaseRepository
         foreach ($matriculas as $matricula) {
 
             // Checar se aluno concluiu todas as disciplinas
-            $turma = $matricula->turma;
 
             if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
                 $certificados[] = $matricula;
