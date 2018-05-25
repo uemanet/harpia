@@ -2,7 +2,6 @@
 
 namespace Modulos\Academico\Repositories;
 
-use Illuminate\Support\Facades\DB;
 use Modulos\Academico\Models\ListaSemtur;
 use Modulos\Core\Repository\BaseRepository;
 
@@ -13,7 +12,7 @@ class ListaSemturRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function paginateRequest(array $requestParameters = null)
+    public function paginateRequest(array $requestParameters = [])
     {
         $sort = [];
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
