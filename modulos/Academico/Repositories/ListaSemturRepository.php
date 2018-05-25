@@ -13,7 +13,7 @@ class ListaSemturRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function paginateRequest(array $requestParameters = [])
+    public function paginateRequest(array $requestParameters = null)
     {
         $sort = [];
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
@@ -45,24 +45,24 @@ class ListaSemturRepository extends BaseRepository
     public function paginateMatriculas($sort = null, $search = null)
     {
         $result = $this->model
-                        ->join('acd_matriculas_listas_semtur', function ($join) {
-                            $join->on('mls_lst_id', '=', 'lst_id');
-                        })
-                        ->join('acd_matriculas', function ($join) {
-                            $join->on('mat_id', '=', 'mls_mat_id');
-                        })
-                        ->join('acd_turmas', function ($join) {
-                            $join->on('mat_trm_id', '=', 'trm_id');
-                        })
-                        ->join('acd_polos', function ($join) {
-                            $join->on('mat_pol_id', '=', 'pol_id');
-                        })
-                        ->join('acd_alunos', function ($join) {
-                            $join->on('mat_alu_id', '=', 'alu_id');
-                        })
-                        ->join('gra_pessoas', function ($join) {
-                            $join->on('alu_pes_id', '=', 'pes_id');
-                        });
+            ->join('acd_matriculas_listas_semtur', function ($join) {
+                $join->on('mls_lst_id', '=', 'lst_id');
+            })
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mat_id', '=', 'mls_mat_id');
+            })
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_polos', function ($join) {
+                $join->on('mat_pol_id', '=', 'pol_id');
+            })
+            ->join('acd_alunos', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            });
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
@@ -86,18 +86,18 @@ class ListaSemturRepository extends BaseRepository
     public function getTurmasByLista($id)
     {
         $result = $this->model
-                    ->join('acd_matriculas_listas_semtur', function ($join) {
-                        $join->on('mls_lst_id', '=', 'lst_id');
-                    })
-                    ->join('acd_matriculas', function ($join) {
-                        $join->on('mls_mat_id', '=', 'mat_id');
-                    })
-                    ->join('acd_turmas', function ($join) {
-                        $join->on('mat_trm_id', '=', 'trm_id');
-                    })
-                    ->where('lst_id', '=', $id)
-                    ->groupBy('mat_trm_id')
-                    ->pluck('trm_nome', 'trm_id');
+            ->join('acd_matriculas_listas_semtur', function ($join) {
+                $join->on('mls_lst_id', '=', 'lst_id');
+            })
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mls_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->where('lst_id', '=', $id)
+            ->groupBy('mat_trm_id')
+            ->pluck('trm_nome', 'trm_id');
 
         return $result;
     }
@@ -130,21 +130,21 @@ class ListaSemturRepository extends BaseRepository
         $query = $this->model->join('acd_matriculas_listas_semtur', function ($join) {
             $join->on('mls_lst_id', '=', 'lst_id');
         })
-                        ->join('acd_matriculas', function ($join) {
-                            $join->on('mls_mat_id', '=', 'mat_id');
-                        })
-                        ->join('acd_turmas', function ($join) {
-                            $join->on('mat_trm_id', '=', 'trm_id');
-                        })
-                        ->join('acd_polos', function ($join) {
-                            $join->on('mat_pol_id', '=', 'pol_id');
-                        })
-                        ->join('acd_alunos', function ($join) {
-                            $join->on('mat_alu_id', '=', 'alu_id');
-                        })
-                        ->join('gra_pessoas', function ($join) {
-                            $join->on('alu_pes_id', '=', 'pes_id');
-                        });
+            ->join('acd_matriculas', function ($join) {
+                $join->on('mls_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_polos', function ($join) {
+                $join->on('mat_pol_id', '=', 'pol_id');
+            })
+            ->join('acd_alunos', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            });
 
         foreach ($parameters as $key => $value) {
             $query = $query->where($key, '=', $value);
@@ -168,25 +168,25 @@ class ListaSemturRepository extends BaseRepository
         $query = \Modulos\Academico\Models\Matricula::join('acd_turmas', function ($join) {
             $join->on('mat_trm_id', '=', 'trm_id');
         })
-                        ->join('acd_polos', function ($join) {
-                            $join->on('mat_pol_id', '=', 'pol_id');
-                        })
-                        ->join('acd_alunos', function ($join) {
-                            $join->on('mat_alu_id', '=', 'alu_id');
-                        })
-                        ->join('gra_pessoas', function ($join) {
-                            $join->on('alu_pes_id', '=', 'pes_id');
-                        })
-                        ->select('acd_matriculas.*', 'pes_nome', 'pol_nome', 'trm_nome')
-                        ->whereNotIn('mat_id', function ($q) use ($listaId, $turmaId) {
-                            $q->select('mat_id')
-                                ->from('acd_matriculas')
-                                ->join('acd_matriculas_listas_semtur', 'mls_mat_id', '=', 'mat_id')
-                                ->where('mls_lst_id', '=', $listaId)
-                                ->where('mat_trm_id', '=', $turmaId);
-                        })
-                        ->where('mat_situacao', '=', 'cursando')
-                        ->where('mat_trm_id', '=', $turmaId);
+            ->join('acd_polos', function ($join) {
+                $join->on('mat_pol_id', '=', 'pol_id');
+            })
+            ->join('acd_alunos', function ($join) {
+                $join->on('mat_alu_id', '=', 'alu_id');
+            })
+            ->join('gra_pessoas', function ($join) {
+                $join->on('alu_pes_id', '=', 'pes_id');
+            })
+            ->select('acd_matriculas.*', 'pes_nome', 'pol_nome', 'trm_nome')
+            ->whereNotIn('mat_id', function ($q) use ($listaId, $turmaId) {
+                $q->select('mat_id')
+                    ->from('acd_matriculas')
+                    ->join('acd_matriculas_listas_semtur', 'mls_mat_id', '=', 'mat_id')
+                    ->where('mls_lst_id', '=', $listaId)
+                    ->where('mat_trm_id', '=', $turmaId);
+            })
+            ->where('mat_situacao', '=', 'cursando')
+            ->where('mat_trm_id', '=', $turmaId);
 
         if ($poloId) {
             $query = $query->where('mat_pol_id', '=', $poloId);
