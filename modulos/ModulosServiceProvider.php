@@ -11,25 +11,24 @@ class ModulosServiceProvider extends ServiceProvider
     {
         $modulos = config('modulos.modulos');
 
-        while (list(, $modulo) = each($modulos)) {
-
+        foreach ($modulos as $modulo) {
             // Load the routes for each of the modules
-            if (file_exists(__DIR__.'/'.$modulo.'/routes.php')) {
+            if (file_exists(__DIR__ . '/' . $modulo . '/routes.php')) {
                 Route::group([
                     'middleware' => 'web',
                     'namespace' => $modulo,
                 ], function ($router) use ($modulo) {
-                    require __DIR__.'/'.$modulo.'/routes.php';
+                    require __DIR__ . '/' . $modulo . '/routes.php';
                 });
             }
 
             // Load the views
-            if (is_dir(__DIR__.'/'.$modulo.'/Views')) {
-                $this->loadViewsFrom(__DIR__.'/'.$modulo.'/Views', $modulo);
+            if (is_dir(__DIR__ . '/' . $modulo . '/Views')) {
+                $this->loadViewsFrom(__DIR__ . '/' . $modulo . '/Views', $modulo);
             }
 
-            if (is_dir(__DIR__.'/'.$modulo.'/Database/Migrations')) {
-                $this->loadMigrationsFrom(__DIR__.'/'.$modulo.'/Database/Migrations');
+            if (is_dir(__DIR__ . '/' . $modulo . '/Database/Migrations')) {
+                $this->loadMigrationsFrom(__DIR__ . '/' . $modulo . '/Database/Migrations');
             }
         }
     }
