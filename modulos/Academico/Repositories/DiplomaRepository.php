@@ -179,8 +179,17 @@ class DiplomaRepository extends BaseRepository
         return $retorno;
     }
 
-    private function ucwords_improved($s, $e = array())
+    private function ucwords_improved($text, $ignore = array())
     {
-        return join(' ', array_map(create_function('$s', 'return (!in_array($s, ' . var_export($e, true) . ')) ? ucfirst($s) : $s;'), explode(' ', strtolower($s))));
+        $callback = function ($word) use ($ignore) {
+
+            if (in_array(strtolower($word), $ignore)) {
+                return strtolower($word);
+            }
+
+            return ucfirst(strtolower($word));
+        };
+
+        return join(' ', array_map($callback, explode(' ', $text)));
     }
 }

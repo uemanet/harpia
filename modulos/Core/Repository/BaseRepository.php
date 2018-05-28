@@ -93,7 +93,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $result->paginate(15);
     }
 
-    public function paginateRequest(array $requestParameters = null)
+    public function paginateRequest(array $requestParameters = [])
     {
         $sort = [];
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
