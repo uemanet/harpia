@@ -68,7 +68,7 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(Livro::class, 2)->create();
+        factory(Livro::class, 2)->create();
 
         $model = new Livro();
         $expected = $model->pluck('liv_tipo_livro', 'liv_id');
@@ -79,7 +79,7 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testSearch()
     {
-        $entries = factory(Livro::class, 2)->create([
+        factory(Livro::class, 2)->create([
             'liv_tipo_livro' => 'CERTIFICADO'
         ]);
 
@@ -130,7 +130,6 @@ class LivroRepositorytTest extends ModulosTestCase
     public function testCount()
     {
         $created = factory(Livro::class, 10)->create();
-        $collection = $this->repo->all();
 
         $this->assertEquals($created->count(), $this->repo->count());
     }

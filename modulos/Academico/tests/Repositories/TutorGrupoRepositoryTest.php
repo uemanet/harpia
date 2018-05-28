@@ -85,7 +85,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testSearch()
     {
-        $entries = factory(TutorGrupo::class, 2)->create([
+        factory(TutorGrupo::class, 2)->create([
             'ttg_tipo_tutoria' => 'distancia'
         ]);
 
