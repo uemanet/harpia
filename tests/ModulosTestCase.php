@@ -26,6 +26,10 @@ class ModulosTestCase extends \TestCase
 
     /**
      * @see InteractsWithDatabase::assertDatabaseHas()
+     * @param $table
+     * @param array $data
+     * @param null $connection
+     * @return \TestCase
      */
     protected function assertDatabaseHas($table, array $data, $connection = null)
     {
