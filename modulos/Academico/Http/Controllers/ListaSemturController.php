@@ -239,6 +239,17 @@ class ListaSemturController extends BaseController
 
         $matriculas = $lista->matriculas()->where('mat_trm_id', $turmaId)->get();
 
+        $nivel =
+        [
+          1 => 'GRD',
+          2 => 'TEC',
+          3 => 'TCG',
+          4 => 'ESP',
+          5 => 'MSC',
+          6 => 'DTR',
+          7 => 'APR'
+        ];
+
         if ($matriculas->count()) {
             $filename = $turma->ofertacurso->curso->crs_nome . ' - '. $turma->trm_nome.'.txt';
 
@@ -254,7 +265,7 @@ class ListaSemturController extends BaseController
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_mae), 50), 0, 50);
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_pai), 50), 0, 50);
                 $line .= $matricula->aluno->pessoa->pes_sexo;
-                $line .= substr(str_pad(utf8_decode($turma->ofertacurso->curso->crs_nome), 25), 0, 25);
+                $line .= substr(str_pad(utf8_decode('EAD_'.$nivel[$turma->ofertacurso->curso->crs_nvc_id].'_'.$turma->ofertacurso->curso->crs_id), 25), 0, 25);
                 $line .= '2'; // grau
                 $line .= '1'; // serie
                 $line .= 'I'; // turno
