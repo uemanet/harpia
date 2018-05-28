@@ -43,8 +43,15 @@ class ModulosTestCase extends \TestCase
 
     /**
      * @see TestCase::assertEquals()
+     * @param $expected
+     * @param $actual
+     * @param string $message
+     * @param float $delta
+     * @param int $maxDepth
+     * @param bool $canonicalize
+     * @param bool $ignoreCase
      */
-    public static function assertEquals($expected, $actual, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
+    public static function assertEquals($expected, $actual, string $message = '', float $delta = 0.0, int $maxDepth = 10, bool $canonicalize = false, bool $ignoreCase = false): void
     {
         /*
          * Previne erros causados pela diferenca de tempo
