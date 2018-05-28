@@ -265,7 +265,7 @@ class ListaSemturController extends BaseController
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_mae), 50), 0, 50);
                 $line .= substr(str_pad(utf8_decode($matricula->aluno->pessoa->pes_pai), 50), 0, 50);
                 $line .= $matricula->aluno->pessoa->pes_sexo;
-                $line .= substr(str_pad(utf8_decode('EAD_'.$nivel[$turma->ofertacurso->curso->crs_nvc_id].'_'.$turma->ofertacurso->curso->crs_id), 25), 0, 25);
+                $line .= substr(str_pad(utf8_decode('EAD'.$nivel[$turma->ofertacurso->curso->crs_nvc_id].$turma->ofertacurso->curso->crs_id), 25), 0, 25);
                 $line .= '2'; // grau
                 $line .= '1'; // serie
                 $line .= 'I'; // turno
