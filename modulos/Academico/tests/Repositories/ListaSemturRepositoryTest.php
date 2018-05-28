@@ -23,7 +23,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(0, $response->count());
     }
 
-    public function testvalidateMatricula()
+    public function testValidateMatricula()
     {
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
 
@@ -32,7 +32,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(false, $response);
     }
 
-    public function testvalidateMatriculaWithRg()
+    public function testValidateMatriculaWithRg()
     {
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
         factory(\Modulos\Geral\Models\Documento::class)->create(['doc_pes_id' => $matricula->aluno->alu_pes_id, 'doc_tpd_id' => 1]);
@@ -42,7 +42,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(false, $response);
     }
 
-    public function testvalidateMatriculaWithRgAndCpf()
+    public function testValidateMatriculaWithRgAndCpf()
     {
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
         factory(\Modulos\Geral\Models\Documento::class)->create(['doc_pes_id' => $matricula->aluno->alu_pes_id, 'doc_tpd_id' => 1]);
@@ -53,7 +53,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(true, $response);
     }
 
-    public function testvalidateMatriculaWithoutCidade()
+    public function testValidateMatriculaWithoutCidade()
     {
         $pessoa = factory(\Modulos\Geral\Models\Pessoa::class)->create(['pes_cidade' => '']);
         $aluno = factory(\Modulos\Academico\Models\Aluno::class)->create(['alu_pes_id' => $pessoa->pes_id]);
@@ -63,7 +63,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(false, $response);
     }
 
-    public function testvalidateMatriculaWithoutMae()
+    public function testValidateMatriculaWithoutMae()
     {
         $pessoa = factory(\Modulos\Geral\Models\Pessoa::class)->create(['pes_mae' => '']);
         $aluno = factory(\Modulos\Academico\Models\Aluno::class)->create(['alu_pes_id' => $pessoa->pes_id]);
@@ -102,7 +102,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertGreaterThan(0, $response->total());
     }
 
-    public function testgetTurmasByLista()
+    public function testGetTurmasByLista()
     {
         $lista = factory(ListaSemtur::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create();
@@ -116,7 +116,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(10, count($response));
     }
 
-    public function testgetPolosByLista()
+    public function testGetPolosByLista()
     {
         $lista = factory(ListaSemtur::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create();
@@ -130,7 +130,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(10, count($response));
     }
 
-    public function testfindAll()
+    public function testFindAll()
     {
         $lista = factory(ListaSemtur::class)->create();
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
@@ -142,7 +142,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEquals(1, count($response));
     }
 
-    public function testfindAllReturnEmpty()
+    public function testFindAllReturnEmpty()
     {
         $lista = factory(ListaSemtur::class)->create();
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();
@@ -154,7 +154,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
         $this->assertEmpty($response);
     }
 
-    public function testgetMatriculasOutOfLista()
+    public function testGetMatriculasOutOfLista()
     {
         $lista = factory(ListaSemtur::class)->create();
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create();

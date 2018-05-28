@@ -181,7 +181,7 @@ class DiplomaRepository extends BaseRepository
 
     private function ucwords_improved($text, $ignore = array())
     {
-        $f = function ($word) use ($ignore) {
+        $callback = function ($word) use ($ignore) {
 
             if (in_array(strtolower($word), $ignore)) {
                 return strtolower($word);
@@ -190,6 +190,6 @@ class DiplomaRepository extends BaseRepository
             return ucfirst(strtolower($word));
         };
 
-        return join(' ', array_map($f, explode(' ', $text)));
+        return join(' ', array_map($callback, explode(' ', $text)));
     }
 }
