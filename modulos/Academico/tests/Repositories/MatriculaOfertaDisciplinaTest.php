@@ -30,7 +30,8 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->repo->create(['mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $oferta->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'cursando']);
+            'mof_situacao_matricula' => 'cursando'
+        ]);
 
         $this->assertInstanceOf(MatriculaOfertaDisciplina::class, $response);
 
@@ -141,21 +142,21 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
     public function testPaginateWithSearch()
     {
         $entry = factory(MatriculaOfertaDisciplina::class)->create([
-            'mof_tipo_matricula' => 'matriculacomun'
+            'mof_tipo_matricula' => 'matriculacomum'
         ]);
 
         $search = [
             [
                 'field' => 'mof_tipo_matricula',
                 'type' => '=',
-                'term' => 'matriculacomun'
+                'term' => 'matriculacomum'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-        $this->assertEquals('matriculacomun', $response->first()->mof_tipo_matricula);
+        $this->assertEquals('matriculacomum', $response->first()->mof_tipo_matricula);
     }
 
     public function testgetAllAlunosBySituacaoWithDoc()
@@ -165,9 +166,25 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
 
         foreach ($matriculas as $matricula) {
-            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
-            $rg = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
-            $cpf = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 1, 'doc_conteudo' => '123456']);
+            factory(MatriculaOfertaDisciplina::class)->create([
+                'mof_mat_id' => $matricula->mat_id,
+                'mof_ofd_id' => $ofertaDisciplina,
+                'mof_tipo_matricula' => 'matriculacomum',
+                'mof_situacao_matricula' => 'cursando'
+            ]);
+
+            $rg = $this->docrepo->create([
+                'doc_pes_id' => $matricula->aluno->pessoa->pes_id,
+                'doc_tpd_id' => 2,
+                'doc_conteudo' => '123456',
+                'doc_data_expedicao' => '10/10/2000'
+            ]);
+
+            $cpf = $this->docrepo->create([
+                'doc_pes_id' => $matricula->aluno->pessoa->pes_id,
+                'doc_tpd_id' => 1,
+                'doc_conteudo' => '123456'
+            ]);
             $polo = $matricula->mat_pol_id;
         }
 
@@ -183,7 +200,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
 
         foreach ($matriculas as $matricula) {
-            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
+            factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina, 'mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'cursando']);
             $polo = $matricula->mat_pol_id;
         }
 
@@ -215,11 +232,11 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $matriculaOferta->mof_nota3 = 7;
 
         $response = $this->repo->update(['mof_nota1' => 7,
-                                         'mof_nota2' => 7,
-                                         'mof_nota3' => 7,
-                                         'mof_final' => '',
-                                         'mof_recuperacao' => '',
-                                         'mof_conceito'=> null], $matriculaOferta->mof_id);
+            'mof_nota2' => 7,
+            'mof_nota3' => 7,
+            'mof_final' => '',
+            'mof_recuperacao' => '',
+            'mof_conceito' => null], $matriculaOferta->mof_id);
 
 
         $this->assertEquals($response, 1);
@@ -378,7 +395,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         list(, $moduloMatriz, $ofertaDisciplina, $matriculaCurso, $modulodisciplina) = $data;
 
         $modulo = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create(['mdo_mtc_id' => $moduloMatriz->mdo_mtc_id, 'mdo_nome' => 'Módulo de Teste']);
-        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_mdo_id' => $modulo->mdo_id, 'mdc_pre_requisitos' => "[".$modulodisciplina->mdc_id."]"]);
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_mdo_id' => $modulo->mdo_id, 'mdc_pre_requisitos' => "[" . $modulodisciplina->mdc_id . "]"]);
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_qtd_vagas' => 100, 'ofd_mdc_id' => $modulodisciplina->mdc_id]);
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
 
@@ -463,19 +480,19 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
 
         //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e foi reprovado por média
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'reprovado_media']);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'reprovado_media']);
 
         //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e foi aprovado por média
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'aprovado_media']);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'aprovado_media']);
 
         //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina e está cursando a mesma
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cursando']);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'cursando']);
 
         //esta matrícula em disciplina testa o caso em que o aluno já tem uma matrícula nessa disciplina com status de matrícula cancelado
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
-        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cancelado']);
+        $matriculaOferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $ofertaDisciplina->ofd_id, 'mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'cancelado']);
 
         //este é para o caso em que o aluno não tem nenhuma matrícula na oferta disciplina em questão e portando ele está apto a se matricular nessa disciplina
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $turma->trm_id]);
@@ -513,7 +530,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         list(, $moduloMatriz, $ofertaDisciplina, $matriculaCurso, $modulodisciplina) = $data;
 
         $modulo = factory(\Modulos\Academico\Models\ModuloMatriz::class)->create(['mdo_mtc_id' => $moduloMatriz->mdo_mtc_id, 'mdo_nome' => 'Módulo de Teste']);
-        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_mdo_id' => $modulo->mdo_id, 'mdc_pre_requisitos' => "[".$modulodisciplina->mdc_id."]"]);
+        $modulodisciplina = factory(\Modulos\Academico\Models\ModuloDisciplina::class)->create(['mdc_mdo_id' => $modulo->mdo_id, 'mdc_pre_requisitos' => "[" . $modulodisciplina->mdc_id . "]"]);
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_qtd_vagas' => 100, 'ofd_mdc_id' => $modulodisciplina->mdc_id]);
         $matricula = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_trm_id' => $matriculaCurso->mat_trm_id, 'mat_pol_id' => $matriculaCurso->mat_pol_id, 'mat_grp_id' => $matriculaCurso->mat_grp_id, 'mat_situacao' => 'cursando']);
 
@@ -524,7 +541,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertArrayHasKey('reprovados', $response);
         $this->assertNotEmpty($response);
 
-        factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_tipo_matricula' => 'matriculacomun', 'mof_situacao_matricula' => 'cancelado']);
+        factory(MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id, 'mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'cancelado']);
         $response = $this->repo->getAlunosMatriculasLote(['ofd_id' => $oferta->ofd_id, 'trm_id' => $matricula->mat_trm_id, 'pol_id' => $matricula->mat_pol_id]);
         $this->assertArrayHasKey('nao_matriculados', $response);
         $this->assertArrayHasKey('cursando', $response);
@@ -602,7 +619,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
                     'mof_nota3' => 7,
                     'mof_final' => null,
                     'mof_recuperacao' => '',
-                    'mof_conceito'=> null
+                    'mof_conceito' => null
                 ], $configuracoesCurso
             ]);
 
@@ -627,7 +644,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
                     'mof_nota3' => 4,
                     'mof_final' => 7,
                     'mof_recuperacao' => 5,
-                    'mof_conceito'=> null
+                    'mof_conceito' => null
                 ], $configuracoesCurso
             ]);
 
@@ -653,7 +670,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
                     'mof_nota3' => 4,
                     'mof_final' => null,
                     'mof_recuperacao' => 7,
-                    'mof_conceito'=> null
+                    'mof_conceito' => null
                 ], $configuracoesCurso
             ]);
 
@@ -681,7 +698,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
                     'mof_nota3' => 4,
                     'mof_final' => null,
                     'mof_recuperacao' => 7,
-                    'mof_conceito'=> null
+                    'mof_conceito' => null
                 ], $configuracoesCurso
             ]);
 
@@ -702,7 +719,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $response = $this->invokeMethod($this->repo, 'calculaNotas',
             [
                 [
-                    'mof_conceito'=> 'Bom'
+                    'mof_conceito' => 'Bom'
                 ], $configuracoesCurso
             ]);
 
