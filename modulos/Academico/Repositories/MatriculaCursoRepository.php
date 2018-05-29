@@ -428,8 +428,8 @@ class MatriculaCursoRepository extends BaseRepository
             return array('status' => 'warning', 'message' => 'Aluno não atingiu carga horária minima do curso');
         }
 
-        // A 4º e 5º regra nao se aplicam aos cursos tecnicos
-        if ($curso->crs_nvc_id != 2) {
+        // A 4º e 5º regra só se aplicam a matrizes com tcc
+        if ($this->matrizCurricularRepository->verifyIfExistsDisciplinaTccInMatriz($matricula->turma->ofertacurso->ofc_mtc_id)) {
             // 4º Regra - Aprovação Tcc
             $aprovacao = $this->verifyIfAlunoAprovadoTcc($matricula);
             if (!$aprovacao) {
@@ -633,16 +633,14 @@ class MatriculaCursoRepository extends BaseRepository
         foreach ($matriculas as $matricula) {
 
             // Checar se aluno concluiu todas as disciplinas
-            $turma = $this->turmaRepository->find($turmaId);
-            $ofertaCurso = $this->ofertaCursoRepository->find($turma->trm_ofc_id);
-
-            // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
-            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id)['status'] == 'success') {
-                continue;
-            }
 
             if ($this->registroRepository->matriculaTemRegistro($matricula->mat_id, $moduloId)) {
                 $certificados[] = $matricula;
+                continue;
+            }
+
+            // Se aluno concluiu todas as disciplinas, nao esta apto para certificacao
+            if ($this->verifyIfAlunoIsAptoOrNot($matricula->mat_id)['status'] == 'success') {
                 continue;
             }
 

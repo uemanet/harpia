@@ -20,6 +20,8 @@ class ModuloDisciplinasTableSeeder extends Seeder
             $modulos = $matriz->modulos;
 
             $disciplinas = Disciplina::where('dis_nvc_id', $nivelCurso)->get();
+            $creditos = 0;
+            $ch = 0;
 
             $j = 0;
             for ($i = 0; $i < $modulos->count(); $i++) {
@@ -44,8 +46,15 @@ class ModuloDisciplinasTableSeeder extends Seeder
                     $moduloDisciplina->mdc_pre_requisitos = null;
 
                     $moduloDisciplina->save();
+
+                    $creditos += $disciplinas[$j]->dis_creditos;
+                    $ch += $disciplinas[$j]->dis_carga_horaria;
                 }
             }
+
+            $matriz->mtc_creditos = $creditos;
+            $matriz->mtc_horas = $ch;
+            $matriz->save();
         }
     }
 }
