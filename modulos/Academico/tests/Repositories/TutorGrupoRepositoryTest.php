@@ -74,7 +74,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(TutorGrupo::class, 2)->create();
+        factory(TutorGrupo::class, 2)->create();
 
         $model = new TutorGrupo();
         $expected = $model->pluck('ttg_tipo_tutoria', 'ttg_id');
@@ -85,7 +85,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testSearch()
     {
-        $entries = factory(TutorGrupo::class, 2)->create([
+        factory(TutorGrupo::class, 2)->create([
             'ttg_tipo_tutoria' => 'distancia'
         ]);
 
