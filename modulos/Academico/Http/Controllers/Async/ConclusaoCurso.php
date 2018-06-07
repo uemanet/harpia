@@ -52,8 +52,8 @@ class ConclusaoCurso extends BaseController
 
                 DB::commit();
 
-                return new JsonResponse('Matriculas concluidas com sucesso', 200);
             }
+            return new JsonResponse('Matriculas concluidas com sucesso', 200);
         } catch (\Exception $e) {
             DB::rollback();
             if (config('app.debug')) {
