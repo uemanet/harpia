@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Excel;
 use Validator;
+use Mpdf\Mpdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
@@ -111,7 +112,8 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $date = new Carbon();
 
-        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+        $configs = ['c', 'A4', '', '', 15, 15, 16, 16, 9, 9];
+        $mpdf = new mPDF($configs);
 
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Relatório de alunos do Curso ' . $nomecurso->crs_nome);
