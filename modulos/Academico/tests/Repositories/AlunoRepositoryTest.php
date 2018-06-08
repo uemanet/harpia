@@ -139,8 +139,8 @@ class AlunoRepositoryTest extends ModulosTestCase
         $entries = factory(Aluno::class, 2)->create();
 
         $model = new Aluno();
-        $expected = $model->pluck('alu_nome', 'alu_id');
-        $fromRepository = $this->repo->lists('alu_id', 'alu_nome');
+        $expected = Aluno::all()->pluck('alu_pes_id', 'alu_id');
+        $fromRepository = $this->repo->lists('alu_pes_id', 'alu_id');
 
         $this->assertEquals($expected, $fromRepository);
     }

@@ -2,11 +2,12 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Mpdf\Mpdf;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\LivroRepository;
 use Modulos\Academico\Repositories\RegistroRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
 
 class CertificacaoController
 {
@@ -45,7 +46,7 @@ class CertificacaoController
             return redirect()->back();
         }
         define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
-        $mpdf = new \mPDF();
+        $mpdf = new Mpdf();
         $mpdf->addPage('L');
         $mpdf->WriteHTML(view('Academico::certificacao.print', compact('dados'))->render());
         $mpdf->Output();
