@@ -68,7 +68,7 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(Livro::class, 2)->create();
+        factory(Livro::class, 2)->create();
 
         $model = new Livro();
         $expected = $model->pluck('liv_tipo_livro', 'liv_id');
