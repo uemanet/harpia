@@ -162,11 +162,9 @@ class RelatoriosAtasFinaisController extends BaseController
             'meses' => $this->meses
         ])->render();
 
-        return $content;
-
-        // mpdf
+        // Mpdf
         $configs = ['c', 'A4', '', '', 10, 10, 10, 10, 9, 9];
-        $mpdf = new mPDF($configs);
+        $mpdf = new Mpdf($configs);
         $mpdf->debug = true;
 
         $mpdf->mirrorMargins = 0;
