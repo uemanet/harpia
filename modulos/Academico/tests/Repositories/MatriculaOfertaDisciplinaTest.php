@@ -173,6 +173,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
                 'mof_situacao_matricula' => 'cursando'
             ]);
 
+            // RG
             $this->docrepo->create([
                 'doc_pes_id' => $matricula->aluno->pessoa->pes_id,
                 'doc_tpd_id' => 2,
@@ -180,11 +181,13 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
                 'doc_data_expedicao' => '10/10/2000'
             ]);
 
+            // CPF
             $this->docrepo->create([
                 'doc_pes_id' => $matricula->aluno->pessoa->pes_id,
                 'doc_tpd_id' => 1,
                 'doc_conteudo' => '123456'
             ]);
+
             $polo = $matricula->mat_pol_id;
         }
 
