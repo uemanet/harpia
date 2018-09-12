@@ -161,11 +161,11 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
         }
 
         if (in_array($endpoint, array_keys(self::EVENTS['TutorGrupo']))) {
-            return !$isDelete ? TutorGrupo::find($id) : self::mockDeletedEntry(TutorGrupo::class, 'ttg_id', $id);
+            return TutorGrupo::find($id);
         }
 
         if (in_array($endpoint, array_keys(self::EVENTS['Pessoa']))) {
-            return !$isDelete ? Pessoa::find($id) : self::mockDeletedEntry(Pessoa::class, 'pes_id', $id);
+            return Pessoa::find($id);
         }
 
         throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");
