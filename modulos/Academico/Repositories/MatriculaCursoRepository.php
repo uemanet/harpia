@@ -9,6 +9,7 @@ use Modulos\Academico\Models\Matricula;
 use Modulos\Core\Repository\BaseRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection as SupportCollection;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class MatriculaCursoRepository extends BaseRepository
 {
@@ -19,6 +20,7 @@ class MatriculaCursoRepository extends BaseRepository
     protected $turmaRepository;
     protected $registroRepository;
     protected $vinculoRepository;
+    protected $ambienteRepository;
 
     private $meses = [
         1 => "Jan",
@@ -36,6 +38,7 @@ class MatriculaCursoRepository extends BaseRepository
     ];
 
     public function __construct(
+        AmbienteVirtualRepository $ambienteRepository,
         Matricula $matricula,
         OfertaCursoRepository $oferta,
         MatrizCurricularRepository $matriz,
@@ -52,6 +55,7 @@ class MatriculaCursoRepository extends BaseRepository
         $this->moduloMatrizRepository = $modulo;
         $this->registroRepository = $registroRepository;
         $this->vinculoRepository = $vinculoRepository;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function verifyIfExistsMatriculaByOfertaCursoOrTurma($alunoId, $ofertaCursoId, $turmaId)
@@ -304,6 +308,49 @@ class MatriculaCursoRepository extends BaseRepository
             'message' => 'Erro ao tentar matricular aluno'
         );
     }
+
+    public function deleteMatricula($matriculaId)
+    {
+        try {
+            $matricula = $this->model->find($matriculaId);
+            if (!$matricula) {
+                return array(
+                    'type' => 'error',
+                    'message' => 'Matrícula inexistente'
+                );
+            }
+
+            $matriculaDisciplina = $this->matriculaOfertaDisciplinaRepository->findBy([
+                ['mof_mat_id','=', $matricula->mat_id]
+            ]);
+            if ($matriculaDisciplina->count()) {
+                return array(
+                    'type' => 'error',
+                    'message' => 'Aluno está matriculado em disciplinas ofertadas nesse curso!',
+                );
+            }
+
+
+            $this->delete($matricula->mat_id);
+
+            return array(
+                'type' => 'success',
+                'message' => 'Aluno desmatriculado com sucesso!',
+            );
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            if (env('APP_DEBUG')) {
+                throw $exception;
+            }
+        }
+
+        return array(
+            'type' => 'error',
+            'message' => 'Erro ao tentar matricular aluno'
+        );
+    }
+
 
     public function findMatriculaIdByTurmaAluno($alunoId, $turmaId)
     {

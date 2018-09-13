@@ -518,6 +518,12 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.matricularalunocurso.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         //permissões do recurso relatoriosmatriculascurso
         $permissao = Permissao::create([
             'prm_nome' => 'index',
