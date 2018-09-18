@@ -22,6 +22,26 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->table = 'acd_matriculas_ofertas_disciplinas';
     }
 
+    public function testDeleteMatricula()
+    {
+        $data = factory(MatriculaOfertaDisciplina::class)->create();
+        $response = $this->repo->deleteMatricula(['ofd_id' => $data->mof_ofd_id, 'mat_id' => $data->mof_mat_id]);
+        $this->assertEquals('success', $response['type']);
+
+        $data = factory(MatriculaOfertaDisciplina::class)->create(['mof_situacao_matricula' => 'cancelada']);
+        $response = $this->repo->deleteMatricula(['ofd_id' => $data->mof_ofd_id, 'mat_id' => $data->mof_mat_id]);
+        $this->assertEquals('error', $response['type']);
+
+        $data = factory(MatriculaOfertaDisciplina::class)->create(['mof_nota1' => 7.0]);
+        $response = $this->repo->deleteMatricula(['ofd_id' => $data->mof_ofd_id, 'mat_id' => $data->mof_mat_id]);
+        $this->assertEquals('error', $response['type']);
+
+
+        $response = $this->repo->deleteMatricula(['ofd_id' => 1000, 'mat_id' => 1000]);
+        $this->assertEquals('error', $response['type']);
+
+    }
+
     public function testCreate()
     {
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create();
