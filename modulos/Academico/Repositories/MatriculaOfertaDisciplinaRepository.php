@@ -214,12 +214,13 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                     ->count();
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
                 $disciplinas[$i]->status = 0;
-                if (!($disciplinas[$i]->mof_nota1 || $disciplinas[$i]->mof_nota2 || $disciplinas[$i]->mof_nota3 || $disciplinas[$i]->mof_conceito || $disciplinas[$i]->mof_recuperacao || $disciplinas[$i]->mof_final || $disciplinas[$i]->mof_mediafinal)){
+
+                if (!($disciplinas[$i]->mof_nota1 || $disciplinas[$i]->mof_nota2 || $disciplinas[$i]->mof_nota3 || $disciplinas[$i]->mof_conceito || $disciplinas[$i]->mof_recuperacao || $disciplinas[$i]->mof_final || $disciplinas[$i]->mof_mediafinal || $disciplinas[$i]->mof_situacao_matricula != 'cursando')){
                     $disciplinas[$i]->status = 1;
                 }
             }
-
         }
+
         return $disciplinas;
     }
 
@@ -412,25 +413,30 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function deleteMatricula(array $data)
     {
-        // verifica se o aluno ainda está cursando a disciplima
+        // verifica se o aluno ainda está cursando a disciplina
         $matricula = DB::table('acd_matriculas_ofertas_disciplinas')
                         ->where('mof_ofd_id', '=', $data['ofd_id'])
                         ->where('mof_mat_id', '=', $data['mat_id'])
+                        ->orderBy('mof_situacao_matricula', 'asc')
                         ->first();
+
+        if (!$matricula) {
+          return array("type" => "error", "message" => "Aluno não está matriculado na disciplina");
+        }
+
+        if ($matricula->mof_situacao_matricula != 'cursando'){
+            return array("type" => "error", "message" => "O aluno não está cursando essa disciplina");
+        }
 
         if ($matricula->mof_nota1 || $matricula->mof_nota2 || $matricula->mof_nota3 || $matricula->mof_conceito || $matricula->mof_recuperacao || $matricula->mof_final || $matricula->mof_mediafinal){
             return array("type" => "error", "message" => "Aluno já tem notas lançadas no sistema");
         }
 
-        if (!$matricula) {
-            return array("type" => "error", "message" => "Aluno não está matriculado na disciplina");
-        }
-
         $matricula = $this->find($matricula->mof_id);
+        $matricula->mof_situacao_matricula = 'cancelado';
+        $matricula->save();
 
-        $this->delete($matricula->mof_id);
-
-        return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!', 'obj' => $matricula);
+        return array('type' => 'success', 'message' => 'Matrícula cancelada com sucesso!', 'obj' => $matricula);
     }
 
     public function getAlunosMatriculasLote(array $parameters)

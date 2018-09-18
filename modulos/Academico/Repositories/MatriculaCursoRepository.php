@@ -320,6 +320,13 @@ class MatriculaCursoRepository extends BaseRepository
                 );
             }
 
+            if ($matricula->mat_situacao != 'cursando') {
+                return array(
+                    'type' => 'error',
+                    'message' => 'O status de matrícula é diferente de cursando'
+                );
+            }
+
             $matriculaDisciplina = $this->matriculaOfertaDisciplinaRepository->findBy([
                 ['mof_mat_id','=', $matricula->mat_id]
             ]);
@@ -339,7 +346,6 @@ class MatriculaCursoRepository extends BaseRepository
             );
 
         } catch (\Exception $exception) {
-            DB::rollBack();
             if (env('APP_DEBUG')) {
                 throw $exception;
             }
@@ -347,7 +353,7 @@ class MatriculaCursoRepository extends BaseRepository
 
         return array(
             'type' => 'error',
-            'message' => 'Erro ao tentar matricular aluno'
+            'message' => 'Erro ao tentar desmatricular aluno'
         );
     }
 
