@@ -178,7 +178,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals('matriculacomun', $response->first()->mof_tipo_matricula);
     }
 
-    public function testgetAllAlunosBySituacaoWithDoc()
+    public function testGetAllAlunosBySituacaoWithDoc()
     {
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
@@ -196,7 +196,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testgetAllAlunosBySituacaoWithoutDoc()
+    public function testGetAllAlunosBySituacaoWithoutDoc()
     {
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $matriculas = factory(\Modulos\Academico\Models\Matricula::class, 10)->create(['mat_trm_id' => $turma->trm_id]);
@@ -245,7 +245,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response, 1);
     }
 
-    public function testgetAllMatriculasByAluno()
+    public function testGetAllMatriculasByAluno()
     {
         $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create();
 
@@ -255,7 +255,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertCount(1, $response);
     }
 
-    public function testgetAllMatriculasByAlunoModuloMatriz()
+    public function testGetAllMatriculasByAlunoModuloMatriz()
     {
         $data = $this->mock();
 
@@ -318,7 +318,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEmpty($response->total());
     }
 
-    public function testgetMatriculasOfertasDisciplinasByMatricula()
+    public function testGetMatriculasOfertasDisciplinasByMatricula()
     {
         $data = $this->mock();
 
@@ -331,7 +331,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response[0]->mof_mat_id, $matriculaoferta->mof_mat_id);
     }
 
-    public function testgetDisciplinasCursadasByAluno()
+    public function testGetDisciplinasCursadasByAluno()
     {
         $data = $this->mock();
 
@@ -366,7 +366,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($ofertaDisciplina->ofd_id, $data['mof_ofd_id']);
     }
 
-    public function testgetDisciplinasOfertadasNotCursadasByAluno()
+    public function testGetDisciplinasOfertadasNotCursadasByAluno()
     {
         $data = $this->mock();
 
@@ -378,7 +378,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testcreateMatricula()
+    public function testCreateMatricula()
     {
         $data = $this->mock();
 
@@ -391,7 +391,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testcreateMatriculaAlunoSemPreRequisitos()
+    public function testCreateMatriculaAlunoSemPreRequisitos()
     {
         $data = $this->mock();
 
@@ -409,7 +409,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response['message'], 'Aluno possui pre-requisitos não satisfeitos');
     }
 
-    public function testcreateMatriculaAlunoReprovadoNoCurso()
+    public function testCreateMatriculaAlunoReprovadoNoCurso()
     {
         $data = $this->mock();
 
@@ -425,7 +425,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testcreateMatriculaDisciplinaSemVagas()
+    public function testCreateMatriculaDisciplinaSemVagas()
     {
         $oferta = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_qtd_vagas' => 0]);
         $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'aprovado_media', 'mof_ofd_id' => $oferta->ofd_id]);
@@ -438,7 +438,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response['message'], 'Sem vagas disponiveis');
     }
 
-    public function testcreateMatriculaAlunoReprovadoDisciplina()
+    public function testCreateMatriculaAlunoReprovadoDisciplina()
     {
         $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'reprovado_media']);
 
@@ -448,7 +448,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response['message'], 'Aluno está reprovado nesta oferta de disciplina');
     }
 
-    public function testcreateMatriculaAlunoAprovadoDisciplina()
+    public function testCreateMatriculaAlunoAprovadoDisciplina()
     {
         $matriculaoferta = factory(MatriculaOfertaDisciplina::class)->create(['mof_tipo_matricula' => 'matriculacomum', 'mof_situacao_matricula' => 'aprovado_media']);
 
@@ -460,7 +460,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertEquals($response['message'], 'Aluno já aprovado nessa disciplina.');
     }
 
-    public function testcreateMatriculaDuplicada()
+    public function testCreateMatriculaDuplicada()
     {
         $data = $this->mock();
 
@@ -476,7 +476,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testgetAlunosMatriculasLote()
+    public function testGetAlunosMatriculasLote()
     {
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
@@ -509,7 +509,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testgetAlunosMatriculasLoteComPolo()
+    public function testGetAlunosMatriculasLoteComPolo()
     {
         $turma = factory(\Modulos\Academico\Models\Turma::class)->create();
         $ofertaDisciplina = factory(\Modulos\Academico\Models\OfertaDisciplina::class)->create(['ofd_trm_id' => $turma->trm_id]);
@@ -526,7 +526,7 @@ class MatriculaOfertaDisciplinaTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testgetAlunosMatriculasLoteSemPreRequisitos()
+    public function testGetAlunosMatriculasLoteSemPreRequisitos()
     {
         $data = $this->mock();
 
