@@ -215,7 +215,22 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
                 $disciplinas[$i]->status = 0;
 
-                if (!($disciplinas[$i]->mof_nota1 || $disciplinas[$i]->mof_nota2 || $disciplinas[$i]->mof_nota3 || $disciplinas[$i]->mof_conceito || $disciplinas[$i]->mof_recuperacao || $disciplinas[$i]->mof_final || $disciplinas[$i]->mof_mediafinal || $disciplinas[$i]->mof_situacao_matricula != 'cursando')){
+                $toEvaluate = [
+					$disciplinas[$i]->mof_nota1,
+					$disciplinas[$i]->mof_nota2,
+					$disciplinas[$i]->mof_nota3,
+					$disciplinas[$i]->mof_conceito,
+					$disciplinas[$i]->mof_recuperacao,
+					$disciplinas[$i]->mof_final,
+					$disciplinas[$i]->mof_mediafinal,
+				];
+
+                $or = function(array $args) use ($or) {
+                	$firstArg = array_shift($args);
+                	return $firstArg || $or($args);
+				};
+
+                if (!$or($toEvaluate) && $disciplinas[$i]->mof_situacao_matricula == 'cursando'){
                     $disciplinas[$i]->status = 1;
                 }
             }
