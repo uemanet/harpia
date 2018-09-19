@@ -225,12 +225,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 					$disciplinas[$i]->mof_mediafinal,
 				];
 
-                $or = function(array $args) use ($or) {
-                	$firstArg = array_shift($args);
-                	return $firstArg || $or($args);
-				};
-
-                if (!$or($toEvaluate) && $disciplinas[$i]->mof_situacao_matricula == 'cursando'){
+                if (!strlen(implode($toEvaluate)) && $disciplinas[$i]->mof_situacao_matricula == 'cursando'){
                     $disciplinas[$i]->status = 1;
                 }
             }
@@ -443,7 +438,17 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             return array("type" => "error", "message" => "O aluno não está cursando essa disciplina");
         }
 
-        if ($matricula->mof_nota1 || $matricula->mof_nota2 || $matricula->mof_nota3 || $matricula->mof_conceito || $matricula->mof_recuperacao || $matricula->mof_final || $matricula->mof_mediafinal){
+        $toEvaluate = [
+            $matricula->mof_nota1,
+            $matricula->mof_nota2,
+            $matricula->mof_nota3,
+            $matricula->mof_conceito,
+            $matricula->mof_recuperacao,
+            $matricula->mof_final,
+            $matricula->mof_mediafinal,
+        ];
+
+        if (strlen(implode($toEvaluate))){
             return array("type" => "error", "message" => "Aluno já tem notas lançadas no sistema");
         }
 
@@ -497,7 +502,17 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
                 if ($matriculaDisciplina->mof_situacao_matricula == 'cursando') {
 
-                    if (!($matricula->mof_nota1 || $matricula->mof_nota2 || $matricula->mof_nota3 || $matricula->mof_conceito || $matricula->mof_recuperacao || $matricula->mof_final || $matricula->mof_mediafinal)) {
+                    $toEvaluate = [
+                        $matricula->mof_nota1,
+                        $matricula->mof_nota2,
+                        $matricula->mof_nota3,
+                        $matricula->mof_conceito,
+                        $matricula->mof_recuperacao,
+                        $matricula->mof_final,
+                        $matricula->mof_mediafinal,
+                    ];
+
+                    if (!strlen(implode($toEvaluate))){
                         $matricula->status = 'apto';
                     }
 
