@@ -351,7 +351,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
             foreach ($preRequisitos as $req) {
                 // busca a oferta de disciplina
-                $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id])->first();
+                $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id, 'ofd_trm_id' => $ofertaDisciplina->ofd_trm_id])->first();
 
                 // busca a matricula do aluno nessa disciplina
                 $matriculaOferta = $this->findBy([
