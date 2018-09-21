@@ -351,18 +351,19 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
             foreach ($preRequisitos as $req) {
                 // busca a oferta de disciplina
-                $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id, 'ofd_trm_id' => $ofertaDisciplina->ofd_trm_id])->first();
+                $ofertasDisciplinaAnteriores = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id, 'ofd_trm_id' => $ofertaDisciplina->ofd_trm_id]);
+                $results = [];
 
-                // busca a matricula do aluno nessa disciplina
-                $matriculaOferta = $this->findBy([
-                    ['mof_mat_id', '=', $matriculaId],
-                    ['mof_ofd_id', '=', $oferta->ofd_id]
-                ], null, ['mof_id' => 'desc'])->first();
+                foreach ($ofertasDisciplinaAnteriores as $oferta) {
+                  $result = $this->findBy([
+                      ['mof_mat_id', '=', $matriculaId],
+                      ['mof_ofd_id', '=', $oferta->ofd_id]
+                  ], null, ['mof_id' => 'desc'])->first();
 
-                if ($matriculaOferta) {
-                    if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                        $quantAprovadas++;
-                    }
+                  if ($result && in_array($result->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                    $quantAprovadas++;
+                    break;
+                  }
                 }
             }
 
