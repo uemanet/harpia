@@ -236,10 +236,8 @@ class MatriculaCursoController extends BaseController
             if ($turma->trm_integrada) {
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
                 if (!$ambiente) {
-                    return array(
-                        'type' => 'error',
-                        'message' => 'Esta turma é integrada, porém não está vinculada a um ambiente virtual!',
-                    );
+                    flash()->error('Esta turma é integrada, porém não está vinculada a um ambiente virtual!');
+                    return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
                 }
                 event(new DeleteMatriculaTurmaEvent($matricula, $ambiente->amb_id));
             }
