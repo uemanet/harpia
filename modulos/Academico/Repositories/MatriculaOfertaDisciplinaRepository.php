@@ -425,8 +425,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function deleteMatricula(array $data)
     {
         // verifica se o aluno ainda está cursando a disciplina
-        $matricula = DB::table('acd_matriculas_ofertas_disciplinas')
-                        ->where('mof_ofd_id', '=', $data['ofd_id'])
+        $matricula = MatriculaOfertaDisciplina::where('mof_ofd_id', '=', $data['ofd_id'])
                         ->where('mof_mat_id', '=', $data['mat_id'])
                         ->orderBy('mof_situacao_matricula', 'asc')
                         ->first();
@@ -453,7 +452,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             return array("type" => "error", "message" => "Aluno já tem notas lançadas no sistema");
         }
 
-        $matricula = $this->find($matricula->mof_id);
         $matricula->mof_situacao_matricula = 'cancelado';
         $matricula->save();
 
