@@ -35,6 +35,7 @@ class HistoricoParcialRepository
 
             $disciplinasCursadas = $this->matriculaOfertaDisciplinaRepository->findBy([
                 ['mof_mat_id', '=', $matricula->mat_id],
+                ['mof_situacao_matricula', '<>', 'cancelado'],
                 ['ofd_per_id', '=', $periodo->per_id]
             ], null, ['dis_nome' => 'asc', 'mdo_id' => 'asc']);
 

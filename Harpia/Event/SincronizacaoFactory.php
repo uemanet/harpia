@@ -2,6 +2,13 @@
 
 namespace Harpia\Event;
 
+use Modulos\Academico\Models\Grupo;
+use Modulos\Academico\Models\Matricula;
+use Modulos\Academico\Models\MatriculaOfertaDisciplina;
+use Modulos\Academico\Models\OfertaDisciplina;
+use Modulos\Academico\Models\Turma;
+use Modulos\Academico\Models\TutorGrupo;
+use Modulos\Geral\Models\Pessoa;
 use Modulos\Integracao\Models\Sincronizacao;
 use Harpia\Event\Contracts\SincronizacaoFactoryInterface;
 
@@ -28,6 +35,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
         'Matricula' => [
             'local_integracao_enrol_student' => \Modulos\Academico\Events\CreateMatriculaTurmaEvent::class,
+            'local_integracao_unenrol_student' => \Modulos\Academico\Events\DeleteMatriculaTurmaEvent::class,
             'local_integracao_change_role_student_course' => \Modulos\Academico\Events\UpdateSituacaoMatriculaEvent::class,
             'local_integracao_change_student_group' => \Modulos\Academico\Events\UpdateGrupoAlunoEvent::class,
             'local_integracao_unenrol_student_group' => \Modulos\Academico\Events\DeleteGrupoAlunoEvent::class,
@@ -35,6 +43,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
         'MatriculaOfertaDisciplina' => [
             'local_integracao_enrol_student_discipline' => \Modulos\Academico\Events\CreateMatriculaDisciplinaEvent::class,
+            'local_integracao_unenrol_student_discipline' => \Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent::class
         ],
 
         'TutorGrupo' => [
@@ -47,6 +56,13 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
         ],
     ];
 
+    /**
+     * Make an event fired previously
+     *
+     * @param Sincronizacao $sincronizacao
+     * @return SincronizacaoEvent
+     * @throws \Exception
+     */
     final public static function factory(Sincronizacao $sincronizacao)
     {
         $event = self::makeEvent($sincronizacao);
@@ -74,62 +90,6 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
     }
 
     /**
-     * Resolve as dependencias para um evento especifico
-     * @throws \Exception
-     * @param Sincronizacao $sincronizacao
-     * @return array
-     */
-    final private static function getDependencies(Sincronizacao $sincronizacao)
-    {
-        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action);
-
-        return [
-            'entry' => self::getEventEntry($endpoint, $sincronizacao->sym_table_id),
-            'extra' => $sincronizacao->sym_extra,
-        ];
-    }
-
-    /**
-     * Recupera o registro correspondente ao evento a ser fabricado
-     * @param $endpoint
-     * @param $id
-     * @return \Modulos\Core\Model\BaseModel
-     * @throws \Exception
-     */
-    final public static function getEventEntry($endpoint, $id)
-    {
-        if (in_array($endpoint, array_keys(self::EVENTS['Turma']))) {
-            return \Modulos\Academico\Models\Turma::find($id);
-        }
-
-        if (in_array($endpoint, array_keys(self::EVENTS['Grupo']))) {
-            return \Modulos\Academico\Models\Grupo::find($id);
-        }
-
-        if (in_array($endpoint, array_keys(self::EVENTS['OfertaDisciplina']))) {
-            return \Modulos\Academico\Models\OfertaDisciplina::find($id);
-        }
-
-        if (in_array($endpoint, array_keys(self::EVENTS['Matricula']))) {
-            return \Modulos\Academico\Models\Matricula::find($id);
-        }
-
-        if (in_array($endpoint, array_keys(self::EVENTS['MatriculaOfertaDisciplina']))) {
-            return \Modulos\Academico\Models\MatriculaOfertaDisciplina::find($id);
-        }
-
-        if (in_array($endpoint, array_keys(self::EVENTS['TutorGrupo']))) {
-            return \Modulos\Academico\Models\TutorGrupo::find($id);
-        }
-
-        if (in_array($endpoint, array_keys(self::EVENTS['Pessoa']))) {
-            return \Modulos\Geral\Models\Pessoa::find($id);
-        }
-
-        throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");
-    }
-
-    /**
      * Retorna o endpoint correspondent ao evento
      * @param $table
      * @param $action
@@ -142,6 +102,90 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
         }
 
         return "";
+    }
+
+    /**
+     * Resolve as dependencias para um evento especifico
+     * @throws \Exception
+     * @param Sincronizacao $sincronizacao
+     * @return array
+     */
+    final private static function getDependencies(Sincronizacao $sincronizacao)
+    {
+        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action);
+        $isDelete = self::isDeleteEvent($sincronizacao);
+
+        return [
+            'entry' => self::getEventEntry($endpoint, $sincronizacao->sym_table_id, $isDelete),
+            'extra' => $sincronizacao->sym_extra,
+        ];
+    }
+
+    /**
+     * Verifica se o evento corresponde a uma exclusao
+     *
+     * @param Sincronizacao $sincronizacao
+     * @return bool
+     */
+    final private static function isDeleteEvent(Sincronizacao $sincronizacao)
+    {
+        return (bool)strtolower($sincronizacao->sym_action) == 'delete';
+    }
+
+    /**
+     * Recupera o registro correspondente ao evento a ser fabricado
+     * @param $endpoint
+     * @param $id
+     * @param $isDelete true if is an delete event
+     * @return \Modulos\Core\Model\BaseModel
+     * @throws \Exception
+     */
+    final public static function getEventEntry($endpoint, $id, $isDelete = false)
+    {
+        if (in_array($endpoint, array_keys(self::EVENTS['Turma']))) {
+            return !$isDelete ? Turma::find($id) : self::mockDeletedEntry(Turma::class, 'trm_id', $id);
+        }
+
+        if (in_array($endpoint, array_keys(self::EVENTS['Grupo']))) {
+            return !$isDelete ? Grupo::find($id) : self::mockDeletedEntry(Grupo::class, 'grp_id', $id);
+        }
+
+        if (in_array($endpoint, array_keys(self::EVENTS['OfertaDisciplina']))) {
+            return !$isDelete ? OfertaDisciplina::find($id) : self::mockDeletedEntry(OfertaDisciplina::class, 'ofd_id', $id);
+        }
+
+        if (in_array($endpoint, array_keys(self::EVENTS['Matricula']))) {
+            return !$isDelete ? Matricula::find($id) : self::mockDeletedEntry(Matricula::class, 'mat_id', $id);
+        }
+
+        if (in_array($endpoint, array_keys(self::EVENTS['MatriculaOfertaDisciplina']))) {
+            return !$isDelete ? MatriculaOfertaDisciplina::find($id) : self::mockDeletedEntry(MatriculaOfertaDisciplina::class, 'mof_id', $id);
+        }
+
+        if (in_array($endpoint, array_keys(self::EVENTS['TutorGrupo']))) {
+            return TutorGrupo::find($id);
+        }
+
+        if (in_array($endpoint, array_keys(self::EVENTS['Pessoa']))) {
+            return Pessoa::find($id);
+        }
+
+        throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");
+    }
+
+    /**
+     * Mock deleted entries for fire failed delete sync events
+     *
+     * @param string $class
+     * @param string $primaryKey
+     * @param int $id
+     * @return mixed
+     */
+    final private static function mockDeletedEntry(string $class, string $primaryKey, int $id)
+    {
+        $entry = new $class();
+        $entry->$primaryKey = $id;
+        return $entry;
     }
 
     /**
