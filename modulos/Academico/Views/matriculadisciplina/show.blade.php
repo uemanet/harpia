@@ -99,19 +99,43 @@
             // evento para selecionar todos os checkboxes
             $('.tabela-ofertas').on('click', '#select_all',function(event) {
                 if(this.checked) {
-                    $(':checkbox').each(function() {
+                    $('.matricular').each(function() {
                         this.checked = true;
                     });
                 }
                 else {
-                    $(':checkbox').each(function() {
+                    $('.matricular').each(function() {
                         this.checked = false;
                     });
                 }
             });
 
+            // evento para selecionar todos os checkboxes
+            $('.tabela-ofertas').on('click', '#select_all_desmatricular',function(event) {
+                if(this.checked) {
+                    $('.desmatricular').each(function() {
+                        this.checked = true;
+                    });
+                }
+                else {
+                    $('.desmatricular').each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            var hiddenButtonDesmatricular = function () {
+                var checkboxes = $('.table-desmatricular input[type="checkbox"]');
+
+                if(checkboxes.is(':checked')){
+                    $(document).find('#confirmDesmatricular').removeClass('hidden');
+                }else{
+                    $(document).find('#confirmDesmatricular').addClass('hidden');
+                }
+            };
+
             var hiddenButton = function () {
-                var checkboxes = $('.tabela-ofertas table td input[type="checkbox"]');
+                var checkboxes = $('.table-matricular input[type="checkbox"]');
 
                 if(checkboxes.is(':checked')){
                     $(document).find('#confirmMatricula').removeClass('hidden');
@@ -120,25 +144,39 @@
                 }
             };
 
-            $(document).on('click', '.tabela-ofertas table input[type="checkbox"]', hiddenButton);
+            $(document).on('click', '.table-matricular input[type="checkbox"]', hiddenButton);
+            $(document).on('click', '.table-desmatricular input[type="checkbox"]', hiddenButtonDesmatricular);
 
             // evento do botão de confirmar a matricula na(s) disciplina(s)
             $('.tabela-ofertas').on('click', '#confirmMatricula', function (e) {
 
-                var quant = $('.ofertas:checked').length;
-
+                var quant = $('.matricular:checked').length;
                 if(!(quant > 0)) {
                     return false;
                 }
-
                 var ofertasIds = new Array();
                 var matriculaId = $('#crs_id option:selected').attr('data-mat-id');
-
-                $('.ofertas:checked').each(function () {
+                $('.matricular:checked').each(function () {
                     ofertasIds.push($(this).val());
                 });
 
                 sendDisciplinas(matriculaId,ofertasIds);
+            });
+
+            // evento do botão de confirmar a matricula na(s) disciplina(s)
+            $('.tabela-ofertas').on('click', '#confirmDesmatricular', function (e) {
+
+                var quant = $('.desmatricular:checked').length;
+                if(!(quant > 0)) {
+                    return false;
+                }
+                var ofertasIds = new Array();
+                var matriculaId = $('#crs_id option:selected').attr('data-mat-id');
+                $('.desmatricular:checked').each(function () {
+                    ofertasIds.push($(this).val());
+                });
+
+                sendDisciplinas(matriculaId,ofertasIds, true);
             });
 
             var renderTable = function(turmaId, periodoId, alunoId) {
@@ -149,7 +187,13 @@
                 });
             };
 
-            var sendDisciplinas = function (matriculaId, ofertasIds) {
+            var sendDisciplinas = function (matriculaId, ofertasIds, desmatricular = false) {
+
+                if (desmatricular) {
+                  url = '/academico/async/matriculasofertasdisciplinas/desmatricular';
+                } else {
+                  url = '/academico/async/matriculasofertasdisciplinas/matricular';
+                }
 
                 var dados = {
                     ofertas: ofertasIds,
@@ -163,12 +207,17 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/academico/async/matriculasofertasdisciplinas/matricular',
+                    url: url,
                     data: dados,
                     success: function (data) {
                         $.harpia.hideloading();
 
-                        toastr.success('Aluno matriculado com sucesso!', null, {progressBar: true});
+                        if (desmatricular) {
+                          toastr.success('Aluno desmatriculado com sucesso!', null, {progressBar: true});
+                        } else {
+                          toastr.success('Aluno matriculado com sucesso!', null, {progressBar: true});
+                        }
+
 
                         var turma = $('#crs_id option:selected').attr('data-trm-id');
                         var periodo = $('#ofd_per_id').val();
