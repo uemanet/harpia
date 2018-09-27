@@ -114,7 +114,7 @@ class SincronizacaoController extends BaseController
             flash()->error('Registro não encontrado.');
             return redirect()->route('integracao.sincronizacao.index');
         }
-
+        
         if ($sincronizacao->sym_status == 2) {
             flash()->error('Sincronização já realizada com sucesso anteriormente.');
             return redirect()->route('integracao.sincronizacao.index');
@@ -124,6 +124,7 @@ class SincronizacaoController extends BaseController
             $event = SincronizacaoFactory::factory($sincronizacao);
             event($event); // Dispara event
 
+            flash()->success('Sincronização realizada com sucesso!');
             return redirect()->route('integracao.sincronizacao.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {

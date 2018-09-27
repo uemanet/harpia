@@ -18,6 +18,11 @@ return [
         'Modulos\Academico\Listeners\CreateMatriculaTurmaListener'
     ],
 
+    'Modulos\Academico\Events\DeleteMatriculaTurmaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteMatriculaTurmaListener'
+    ],
+
     'Modulos\Academico\Events\UpdateTurmaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\UpdateTurmaListener'
@@ -28,6 +33,11 @@ return [
         'Modulos\Academico\Listeners\CreateGrupoListener',
     ],
 
+    'Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaListener',
+    ],
+
     'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
@@ -36,6 +46,11 @@ return [
     'Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaLoteListener',
+    ],
+
+    'Modulos\Academico\Events\DeleteMatriculaDisciplinaLoteEvent' => [
+        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaLoteListener',
     ],
 
     'Modulos\Academico\Events\CreateVinculoTutorEvent' => [

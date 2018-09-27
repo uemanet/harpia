@@ -155,6 +155,25 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
         $this->assertDatabaseMissing($this->table, $entry->toArray());
     }
 
+    public function testDeleteMatricula()
+    {
+        $entry = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_situacao' => 'cursando']);
+        $return = $this->repo->deleteMatricula($entry->mat_id);
+        $this->assertEquals('success', $return['type']);
+
+        $entry = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_situacao' => 'reprovado']);
+        $return = $this->repo->deleteMatricula($entry->mat_id);
+        $this->assertEquals('error', $return['type']);
+
+        $entry = factory(\Modulos\Academico\Models\Matricula::class)->create(['mat_situacao' => 'cursando']);
+        $matriculaDisciplina = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $entry->mat_id]);
+        $return = $this->repo->deleteMatricula($entry->mat_id);
+        $this->assertEquals('error', $return['type']);
+
+        $return = $this->repo->deleteMatricula(100);
+        $this->assertEquals('error', $return['type']);
+    }
+
     public function testLists()
     {
         $entries = factory(\Modulos\Academico\Models\Matricula::class, 2)->create();
