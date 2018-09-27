@@ -125,36 +125,45 @@
                                                         {!! ActionButton::grid([
                                                             'type' => 'LINE',
                                                             'buttons' => [
-                                                            [
-                                                            'classButton' => 'btn btn-primary modal-update-polo',
-                                                            'icon' => 'fa fa-pencil',
-                                                            'route' => 'academico.matricularalunocurso.edit',
-                                                            'parameters' => $matricula->mat_id,
-                                                            'label' => ' Atualizar Polo/Grupo',
-                                                            'method' => 'get',
-                                                            'attributes' => [
-                                                            'data-mat-id' => $matricula->mat_id,
-                                                            'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
-                                                            'data-trm-id' => $matricula->mat_trm_id,
-                                                            'data-pol-id' => $matricula->mat_pol_id,
-                                                            'data-grp-id' => $matricula->mat_grp_id,
-                                                            'data-content' => $loop->index,
-                                                            ],
-                                                            ],
-                                                            [
-                                                            'classButton' => 'btn btn-primary modalButton',
-                                                            'icon' => 'fa fa-pencil',
-                                                            'route' => 'academico.matricularalunocurso.edit',
-                                                            'parameters' => $matricula->mat_id,
-                                                            'label' => 'Atualizar situação de Matricula',
-                                                            'method' => 'get',
-                                                            'attributes' => [
-                                                            'data-content' => $loop->index,
-                                                            'value' => $matricula->mat_id
-                                                            ],
-                                                            ]
-                                                            ]
-                                                            ]) !!}
+                                                                    [
+                                                                        'classButton' => 'btn btn-primary modal-update-polo',
+                                                                        'icon' => 'fa fa-pencil',
+                                                                        'route' => 'academico.matricularalunocurso.edit',
+                                                                        'parameters' => $matricula->mat_id,
+                                                                        'label' => ' Atualizar Polo/Grupo',
+                                                                        'method' => 'get',
+                                                                        'attributes' => [
+                                                                            'data-mat-id' => $matricula->mat_id,
+                                                                            'data-ofc-id' => $matricula->turma->ofertacurso->ofc_id,
+                                                                            'data-trm-id' => $matricula->mat_trm_id,
+                                                                            'data-pol-id' => $matricula->mat_pol_id,
+                                                                            'data-grp-id' => $matricula->mat_grp_id,
+                                                                            'data-content' => $loop->index,
+                                                                        ],
+                                                                    ],
+                                                                    [
+                                                                        'classButton' => 'btn btn-primary modalButton',
+                                                                        'icon' => 'fa fa-pencil',
+                                                                        'route' => 'academico.matricularalunocurso.edit',
+                                                                        'parameters' => $matricula->mat_id,
+                                                                        'label' => 'Atualizar situação de Matricula',
+                                                                        'method' => 'get',
+                                                                        'attributes' => [
+                                                                            'data-content' => $loop->index,
+                                                                            'value' => $matricula->mat_id
+                                                                        ],
+                                                                    ],
+                                                                    [
+                                                                        'classButton' => 'btn btn-delete btn-danger',
+                                                                        'icon' => 'fa fa-trash',
+                                                                        'route' => 'academico.matricularalunocurso.delete',
+                                                                        'id' => $matricula->mat_id,
+                                                                        'label' => 'Desmatricular aluno',
+                                                                        'method' => 'post'
+                                                                    ]
+                                                                ]
+                                                            ])
+                                                        !!}
                                                     </div>
                                                 </div>
                                             @endif
