@@ -129,7 +129,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      */
     final private static function isDeleteEvent(Sincronizacao $sincronizacao)
     {
-        return (bool)strtolower($sincronizacao->sym_action) == 'delete';
+        return strtolower($sincronizacao->sym_action) == 'delete';
     }
 
     /**
