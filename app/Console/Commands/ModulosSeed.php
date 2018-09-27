@@ -41,39 +41,39 @@ class ModulosSeed extends Command
         $modulos = config('modulos.modulos');
 
         if ($this->option('dev')) {
-            while (list(, $modulo) = each($modulos)) {
+            foreach ($modulos as $modulo) {
 
-              // Load the migrations
-              if ($modulo == 'Seguranca') {
-                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\\'. $modulo .'Seeder';
-              } else {
-                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\Production\\'. $modulo .'Seeder';
-              }
+                // Load the migrations
+                if ($modulo == 'Seguranca') {
+                    $class = '\Modulos\\' . $modulo . '\Database\Seeds\\' . $modulo . 'Seeder';
+                } else {
+                    $class = '\Modulos\\' . $modulo . '\Database\Seeds\Production\\' . $modulo . 'Seeder';
+                }
                 if (class_exists($class)) {
                     Artisan::call('db:seed', ['--class' => $class]);
                     $this->info($modulo . ' Seed complete!');
                 }
 
-              // Load the migrations
-              if ($modulo == 'Seguranca') {
-                  $class = null;
-              } else {
-                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\Development\\'. $modulo .'Seeder';
-              }
+                // Load the migrations
+                if ($modulo == 'Seguranca') {
+                    $class = null;
+                } else {
+                    $class = '\Modulos\\' . $modulo . '\Database\Seeds\Development\\' . $modulo . 'Seeder';
+                }
                 if (class_exists($class)) {
                     Artisan::call('db:seed', ['--class' => $class]);
                     $this->info($modulo . ' Development Seed complete!');
                 }
             }
         } else {
-            while (list(, $modulo) = each($modulos)) {
+            foreach ($modulos as $modulo) {
 
-              // Load the migrations
-              if ($modulo == 'Seguranca') {
-                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\\'. $modulo .'Seeder';
-              } else {
-                  $class = '\Modulos\\'. $modulo .'\Database\Seeds\Production\\'. $modulo .'Seeder';
-              }
+                // Load the migrations
+                if ($modulo == 'Seguranca') {
+                    $class = '\Modulos\\' . $modulo . '\Database\Seeds\\' . $modulo . 'Seeder';
+                } else {
+                    $class = '\Modulos\\' . $modulo . '\Database\Seeds\Production\\' . $modulo . 'Seeder';
+                }
 
                 if (class_exists($class)) {
                     Artisan::call('db:seed', ['--class' => $class]);

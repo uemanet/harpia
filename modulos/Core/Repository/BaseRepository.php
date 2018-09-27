@@ -23,7 +23,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function update(array $data, $id, $attribute = null)
     {
-        if (!$attribute) {
+        if (is_null($attribute)) {
             $attribute = $this->model->getKeyName();
         }
 
@@ -79,7 +79,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 switch ($value['type']) {
                     case 'like':
                         $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
-                    break;
+                        break;
                     default:
                         $result = $result->where($value['field'], $value['type'], $value['term']);
                 }
@@ -93,7 +93,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $result->paginate(15);
     }
 
-    public function paginateRequest(array $requestParameters = null)
+    public function paginateRequest(array $requestParameters = [])
     {
         $sort = [];
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {

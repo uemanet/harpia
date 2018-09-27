@@ -31,6 +31,10 @@ Requerimentos do sistema
  * Tokenizer PHP Extension
  * XML PHP Extension
 
+Requerimentos do Moodle
+------------
+ * Versão mínima: 3.3
+
 Instalação
 ------------
 
