@@ -261,16 +261,40 @@
             // evento para selecionar todos os checkboxes
             $('.alunos').on('click', '#select_all',function(event) {
                 if(this.checked) {
-                    $(':checkbox').each(function() {
+                    $('.matriculas').each(function() {
                         this.checked = true;
                     });
                 }
                 else {
-                    $(':checkbox').each(function() {
+                    $('.matriculas').each(function() {
                         this.checked = false;
                     });
                 }
             });
+
+            // evento para selecionar todos os checkboxes
+            $('.alunos').on('click', '#select_all_matriculados',function(event) {
+                if(this.checked) {
+                    $('.matriculados').each(function() {
+                        this.checked = true;
+                    });
+                }
+                else {
+                    $('.matriculados').each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            var hiddenButtonDesmatricular = function () {
+                var checkboxes = $('.alunos table td input[type="checkbox"]');
+
+                if(checkboxes.is(':checked')){
+                    $(document).find('.btnDesmatricular').removeClass('hidden');
+                }else{
+                    $(document).find('.btnDesmatricular').addClass('hidden');
+                }
+            };
 
             var hiddenButton = function () {
                 var checkboxes = $('.alunos table td input[type="checkbox"]');
@@ -282,7 +306,10 @@
                 }
             };
 
-            $(document).on('click', '.alunos table input[type="checkbox"]', hiddenButton);
+
+            $(document).on('click', '.table-matricular input[type="checkbox"]', hiddenButton);
+            $(document).on('click', '.table-desmatricular input[type="checkbox"]', hiddenButtonDesmatricular);
+
 
             $('.alunos').on('click', '.btnMatricular', function () {
                 var quant = $('.matriculas:checked').length;
@@ -302,7 +329,25 @@
                 sendMatriculas(matriculasIds, ofertaId);
             });
 
-            var sendMatriculas = function(matriculasIds, ofertaId) {
+            $('.alunos').on('click', '.btnDesmatricular', function () {
+                var quant = $('.matriculados:checked').length;
+
+                var ofertaId = $('#ofd_id').val();
+
+                if((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
+                    return false;
+                }
+
+                var matriculasIds = new Array();
+
+                $('.matriculados:checked').each(function () {
+                    matriculasIds.push($(this).val());
+                });
+
+                sendMatriculas(matriculasIds, ofertaId, true);
+            });
+
+            var sendMatriculas = function(matriculasIds, ofertaId, desmatricular = false) {
 
                 var dados = {
                     matriculas: matriculasIds,
@@ -312,14 +357,24 @@
 
                 $.harpia.showloading();
 
+                if (desmatricular) {
+                  url = '/academico/async/matriculasofertasdisciplinas/desmatricularlote';
+                } else {
+                  url = '/academico/async/matriculasofertasdisciplinas/matriculaslote';
+                }
+
                 $.ajax({
                     type: 'POST',
-                    url: '/academico/async/matriculasofertasdisciplinas/matriculaslote',
+                    url: url,
                     data: dados,
                     success: function (data) {
                         $.harpia.hideloading();
 
-                        toastr.success('Alunos matriculados com sucesso!', null, {progressBar: true});
+                        if (desmatricular) {
+                          toastr.success('Alunos desmatriculados com sucesso!', null, {progressBar: true});
+                        } else {
+                          toastr.success('Alunos matriculados com sucesso!', null, {progressBar: true});
+                        }
 
                         var turma = turmaSelect.val();
                         var ofertaDisciplina = disciplinasOfertadasSelect.val();
@@ -329,8 +384,8 @@
                             trm_id: turma,
                             ofd_id: ofertaDisciplina
                         };
-
                         if (polo && polo != '') {
+
                             parameters['pol_id'] = polo;
                         }
 
@@ -349,6 +404,7 @@
                     }
                 });
             };
+
         });
     </script>
 @stop

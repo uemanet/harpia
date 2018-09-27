@@ -6,21 +6,26 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
+use Modulos\Academico\Events\DeleteMatriculaDisciplinaLoteEvent;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class MatriculaOfertaDisciplina extends BaseController
 {
     protected $matriculaOfertaDisciplinaRepository;
     protected $matriculaCursoRepository;
+    protected $ambienteRepository;
 
-    public function __construct(MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository, MatriculaCursoRepository $matriculaCursoRepository)
+    public function __construct(MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository, MatriculaCursoRepository $matriculaCursoRepository, AmbienteVirtualRepository $ambienteRepository)
     {
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
         $this->matriculaCursoRepository = $matriculaCursoRepository;
+        $this->ambienteRepository = $ambienteRepository;
     }
 
     public function getTableOfertasDisciplinas($alunoId, $turmaId, $periodoLetivoId)
@@ -91,6 +96,56 @@ class MatriculaOfertaDisciplina extends BaseController
         }
     }
 
+    public function postDesmatricularLote(Request $request)
+    {
+        $matriculas = $request->input('matriculas');
+        $ofertaId = $request->input('ofd_id');
+
+        DB::beginTransaction();
+
+        try {
+            $matriculasCollection = collect([]);
+
+            foreach ($matriculas as $matricula) {
+                $result = $this->matriculaOfertaDisciplinaRepository->deleteMatricula(['mat_id' => $matricula, 'ofd_id' => $ofertaId]);
+
+                if ($result['type'] == 'error') {
+                    DB::rollback();
+
+                    return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+                }
+
+                $matriculasCollection[] = $result['obj'];
+            }
+
+            // verifica se a turma dos alunos é integrada
+            $matriculaCurso = $this->matriculaCursoRepository->find($matriculas[0]);
+            $turma = $matriculaCurso->turma;
+
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($turma->trm_id);
+
+            if ($turma->trm_integrada) {
+                if (!$ambiente) {
+                  return new JsonResponse('Turma não vinculada a um Ambiente Virtual!', 200);
+                }
+                DB::commit();
+                if (!empty($matriculasCollection)) {
+                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id));
+                }
+            }
+            DB::commit();
+            return new JsonResponse('Alunos desmatriculados com sucesso!', 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            return new JsonResponse('Erro ao tentar desmatricular. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
     public function postMatricularAlunoDisciplinas(Request $request)
     {
         $ofertas = $request->input('ofertas');
@@ -138,6 +193,58 @@ class MatriculaOfertaDisciplina extends BaseController
         }
     }
 
+    public function postDesmatricularAlunoDisciplinas(Request $request)
+    {
+        $ofertas = $request->input('ofertas');
+        $matriculaId = $request->input('mof_mat_id');
+
+        DB::beginTransaction();
+
+        try {
+            $matriculas = [];
+
+            foreach ($ofertas as $ofertaId) {
+                $result = $this->matriculaOfertaDisciplinaRepository->deleteMatricula(['mat_id' => $matriculaId, 'ofd_id' => $ofertaId]);
+
+                if ($result['type'] == 'error') {
+                    DB::rollback();
+
+                    return new JsonResponse($result['message'], Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+                }
+
+                $matriculas[] = $result['obj'];
+            }
+
+            DB::commit();
+
+            // verifica se a turma do aluno é integrada
+            $matriculaCurso = $this->matriculaCursoRepository->find($matriculaId);
+            $turma = $matriculaCurso->turma;
+
+            $ambiente = $this->ambienteRepository->getAmbienteByTurma($turma->trm_id);
+            if (!$ambiente) {
+                return new JsonResponse('Turma não vinculada a um Ambiente Virtual!', 200);
+            }
+
+            if ($turma->trm_integrada) {
+                if (!empty($matriculas)) {
+                    foreach ($matriculas as $obj) {
+                        event(new DeleteMatriculaDisciplinaEvent($obj, $ambiente->amb_id ));
+                    }
+                }
+            }
+
+            return new JsonResponse('Aluno desmatriculado com sucesso!', 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            return new JsonResponse('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.', Response::HTTP_BAD_REQUEST, [], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
     public function getRelatorio($turmaId, $ofertaId, $situacao = null)
     {
         $alunos = $this->matriculaOfertaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao);
@@ -174,6 +281,5 @@ class MatriculaOfertaDisciplina extends BaseController
             throw $e;
         }
 
-//        return new JsonResponse(200);
     }
 }
