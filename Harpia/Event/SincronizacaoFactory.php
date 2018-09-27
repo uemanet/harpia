@@ -129,7 +129,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      */
     final private static function isDeleteEvent(Sincronizacao $sincronizacao)
     {
-        return (bool)strtolower($sincronizacao->sym_action) == 'delete';
+        return (bool)(strtolower($sincronizacao->sym_action) == 'delete');
     }
 
     /**
@@ -142,6 +142,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      */
     final public static function getEventEntry($endpoint, $id, $isDelete = false)
     {
+
         if (in_array($endpoint, array_keys(self::EVENTS['Turma']))) {
             return !$isDelete ? Turma::find($id) : self::mockDeletedEntry(Turma::class, 'trm_id', $id);
         }
