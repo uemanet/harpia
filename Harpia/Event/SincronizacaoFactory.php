@@ -35,6 +35,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
         'Matricula' => [
             'local_integracao_enrol_student' => \Modulos\Academico\Events\CreateMatriculaTurmaEvent::class,
+            'local_integracao_unenrol_student' => \Modulos\Academico\Events\DeleteMatriculaTurmaEvent::class,
             'local_integracao_change_role_student_course' => \Modulos\Academico\Events\UpdateSituacaoMatriculaEvent::class,
             'local_integracao_change_student_group' => \Modulos\Academico\Events\UpdateGrupoAlunoEvent::class,
             'local_integracao_unenrol_student_group' => \Modulos\Academico\Events\DeleteGrupoAlunoEvent::class,
@@ -42,6 +43,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
         'MatriculaOfertaDisciplina' => [
             'local_integracao_enrol_student_discipline' => \Modulos\Academico\Events\CreateMatriculaDisciplinaEvent::class,
+            'local_integracao_unenrol_student_discipline' => \Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent::class
         ],
 
         'TutorGrupo' => [
@@ -127,7 +129,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      */
     final private static function isDeleteEvent(Sincronizacao $sincronizacao)
     {
-        return (bool)strpos(strtolower($sincronizacao->sym_action), 'delete');
+        return (bool)strtolower($sincronizacao->sym_action) == 'delete';
     }
 
     /**
@@ -161,11 +163,11 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
         }
 
         if (in_array($endpoint, array_keys(self::EVENTS['TutorGrupo']))) {
-            return !$isDelete ? TutorGrupo::find($id) : self::mockDeletedEntry(TutorGrupo::class, 'ttg_id', $id);
+            return TutorGrupo::find($id);
         }
 
         if (in_array($endpoint, array_keys(self::EVENTS['Pessoa']))) {
-            return !$isDelete ? Pessoa::find($id) : self::mockDeletedEntry(Pessoa::class, 'pes_id', $id);
+            return Pessoa::find($id);
         }
 
         throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");

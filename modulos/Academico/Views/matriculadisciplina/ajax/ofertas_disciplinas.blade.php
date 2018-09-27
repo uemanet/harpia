@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-md-12">
                 @if(!empty($naomatriculadas))
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-matricular">
                         <thead>
                             <tr>
                                 <th width="1%"><label><input type="checkbox" id="select_all"></label></th>
@@ -30,7 +30,7 @@
                             @foreach($naomatriculadas as $naomatriculada)
                                 <tr>
                                     @if($naomatriculada->status == 1)
-                                        <td><label><input type="checkbox" class="ofertas" value="{{ $naomatriculada->ofd_id }}"></label></td>
+                                        <td><label><input type="checkbox" class="matricular" value="{{ $naomatriculada->ofd_id }}"></label></td>
                                     @else
                                         <td></td>
                                     @endif
@@ -80,9 +80,10 @@
         <div class="row">
             <div class="col-md-12">
                 @if($matriculadas->count())
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-desmatricular">
                     <thead>
                         <tr>
+                            <th width="1%"><label><input type="checkbox" id="select_all_desmatricular"></label></th>
                             <th>Disciplina</th>
                             <th>Carga Horária</th>
                             <th>Créditos</th>
@@ -94,6 +95,11 @@
                     <tbody>
                         @foreach($matriculadas as $matriculada)
                             <tr>
+                                @if($matriculada->status == 1)
+                                    <td><label><input type="checkbox" class="desmatricular" value="{{ $matriculada->ofd_id }}"></label></td>
+                                @else
+                                    <td></td>
+                                @endif
                                 <td>{{ $matriculada->dis_nome }}</td>
                                 <td>{{ $matriculada->dis_carga_horaria }} horas</td>
                                 <td>{{ $matriculada->dis_creditos }}</td>
@@ -116,6 +122,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="form-group">
+                    <button class="btn btn-danger pull-right hidden" id="confirmDesmatricular">Desmatricular Aluno</button>
+                </div>
                 @else
                     <p>Aluno não está matriculado em disciplinas deste período</p>
                 @endif

@@ -213,8 +213,24 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                     ->where('mof_situacao_matricula', '=', 'cursando')
                     ->count();
                 $disciplinas[$i]->quant_matriculas = $quantMatriculas;
+                $disciplinas[$i]->status = 0;
+
+                $toEvaluate = [
+					$disciplinas[$i]->mof_nota1,
+					$disciplinas[$i]->mof_nota2,
+					$disciplinas[$i]->mof_nota3,
+					$disciplinas[$i]->mof_conceito,
+					$disciplinas[$i]->mof_recuperacao,
+					$disciplinas[$i]->mof_final,
+					$disciplinas[$i]->mof_mediafinal,
+				];
+
+                if (!strlen(implode($toEvaluate)) && $disciplinas[$i]->mof_situacao_matricula == 'cursando'){
+                    $disciplinas[$i]->status = 1;
+                }
             }
         }
+
         return $disciplinas;
     }
 
@@ -335,18 +351,19 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
             foreach ($preRequisitos as $req) {
                 // busca a oferta de disciplina
-                $oferta = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id])->first();
+                $ofertasDisciplinaAnteriores = $this->ofertaDisciplinaRepository->findAll(['ofd_mdc_id' => $req->mdc_id, 'ofd_trm_id' => $ofertaDisciplina->ofd_trm_id]);
+                $results = [];
 
-                // busca a matricula do aluno nessa disciplina
-                $matriculaOferta = $this->findBy([
-                    ['mof_mat_id', '=', $matriculaId],
-                    ['mof_ofd_id', '=', $oferta->ofd_id]
-                ], null, ['mof_id' => 'desc'])->first();
+                foreach ($ofertasDisciplinaAnteriores as $oferta) {
+                  $result = $this->findBy([
+                      ['mof_mat_id', '=', $matriculaId],
+                      ['mof_ofd_id', '=', $oferta->ofd_id]
+                  ], null, ['mof_id' => 'desc'])->first();
 
-                if ($matriculaOferta) {
-                    if (in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                        $quantAprovadas++;
-                    }
+                  if ($result && in_array($result->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                    $quantAprovadas++;
+                    break;
+                  }
                 }
             }
 
@@ -405,6 +422,42 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return array('type' => 'success', 'message' => 'Aluno matriculado com sucesso!', 'obj' => $obj);
     }
 
+    public function deleteMatricula(array $data)
+    {
+        // verifica se o aluno ainda está cursando a disciplina
+        $matricula = MatriculaOfertaDisciplina::where('mof_ofd_id', '=', $data['ofd_id'])
+                        ->where('mof_mat_id', '=', $data['mat_id'])
+                        ->orderBy('mof_situacao_matricula', 'asc')
+                        ->first();
+
+        if (!$matricula) {
+          return array("type" => "error", "message" => "Aluno não está matriculado na disciplina");
+        }
+
+        if ($matricula->mof_situacao_matricula != 'cursando'){
+            return array("type" => "error", "message" => "O aluno não está cursando essa disciplina");
+        }
+
+        $toEvaluate = [
+            $matricula->mof_nota1,
+            $matricula->mof_nota2,
+            $matricula->mof_nota3,
+            $matricula->mof_conceito,
+            $matricula->mof_recuperacao,
+            $matricula->mof_final,
+            $matricula->mof_mediafinal,
+        ];
+
+        if (strlen(implode($toEvaluate))){
+            return array("type" => "error", "message" => "Aluno já tem notas lançadas no sistema");
+        }
+
+        $matricula->mof_situacao_matricula = 'cancelado';
+        $matricula->save();
+
+        return array('type' => 'success', 'message' => 'Matrícula cancelada com sucesso!', 'obj' => $matricula);
+    }
+
     public function getAlunosMatriculasLote(array $parameters)
     {
         $ofertaDisciplina = $this->ofertaDisciplinaRepository->find($parameters['ofd_id']);
@@ -447,6 +500,21 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 }
 
                 if ($matriculaDisciplina->mof_situacao_matricula == 'cursando') {
+
+                    $toEvaluate = [
+                        $matricula->mof_nota1,
+                        $matricula->mof_nota2,
+                        $matricula->mof_nota3,
+                        $matricula->mof_conceito,
+                        $matricula->mof_recuperacao,
+                        $matricula->mof_final,
+                        $matricula->mof_mediafinal,
+                    ];
+
+                    if (!strlen(implode($toEvaluate))){
+                        $matricula->status = 'apto';
+                    }
+
                     if ($matriculaDisciplina->ofd_id == $ofertaDisciplina->ofd_id) {
                         $cursando[] = $matricula;
                     }

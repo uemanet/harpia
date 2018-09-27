@@ -2,18 +2,20 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use DB;
 use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Academico\Events\UpdateGrupoAlunoEvent;
-use Modulos\Academico\Events\UpdateMatriculaCursoEvent;
 use Modulos\Academico\Events\DeleteGrupoAlunoEvent;
-use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
-use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
-use Modulos\Academico\Listeners\UpdateMatriculaCursoListener;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Events\DeleteMatriculaTurmaEvent;
+use Modulos\Academico\Events\UpdateMatriculaCursoEvent;
+use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
+use Modulos\Academico\Http\Requests\MatriculaCursoRequest;
 use Modulos\Academico\Repositories\MatriculaCursoRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
-use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
 class MatriculaCursoController extends BaseController
@@ -22,17 +24,20 @@ class MatriculaCursoController extends BaseController
     protected $alunoRepository;
     protected $cursoRepository;
     protected $turmaRepository;
+    protected $ambienteVirtualRepository;
 
     public function __construct(
         MatriculaCursoRepository $matricula,
         AlunoRepository $aluno,
         CursoRepository $curso,
-        TurmaRepository $turmaRepository
+        TurmaRepository $turmaRepository,
+        AmbienteVirtualRepository $ambienteVirtualRepository
     ) {
         $this->matriculaCursoRepository = $matricula;
         $this->alunoRepository = $aluno;
         $this->cursoRepository = $curso;
         $this->turmaRepository = $turmaRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
     public function getIndex(Request $request)
@@ -205,5 +210,48 @@ class MatriculaCursoController extends BaseController
             'aluno' => $aluno,
             'situacao' => $situacao
         ]);
+    }
+
+    public function postDelete(Request $request)
+    {
+        try {
+            $data = $request->except('_token');
+            $matricula = $this->matriculaCursoRepository->find($data['id']);
+
+            if (!$matricula) {
+                flash()->error('Matricula não existe!');
+                return redirect()->route('academico.matricularalunocurso.index');
+            }
+
+            DB::beginTransaction();
+            $matriculaDelete = $this->matriculaCursoRepository->deleteMatricula($data['id']);
+            DB::commit();
+
+            if ($matriculaDelete['type'] == 'error'){
+                flash()->error($matriculaDelete['message']);
+                return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
+            }
+
+            $turma = $matricula->turma;
+            if ($turma->trm_integrada) {
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
+                if (!$ambiente) {
+                    flash()->error('Esta turma é integrada, porém não está vinculada a um ambiente virtual!');
+                    return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
+                }
+                event(new DeleteMatriculaTurmaEvent($matricula, $ambiente->amb_id));
+            }
+
+            flash()->success($matriculaDelete['message']);
+            return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
+
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar atualizar. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
     }
 }
