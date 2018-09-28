@@ -82,6 +82,7 @@ class MapeamentoNotasController extends BaseController
 
         $search = $request->all();
         $search['mof_ofd_id'] = $ofertaId;
+        $search['mof_situacao_matricula'] = 'cancelado';
 
         $tableData = $this->matriculaOfertaDisciplinaRepository->paginateRequest($search);
 
