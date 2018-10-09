@@ -29,7 +29,7 @@ class PerfilRequest extends BaseRequest
                 return [
                     'prf_mod_id' => 'required',
                     'prf_nome' => 'required|min:3|max:150',
-                    'prf_descricao' => 'max:300',
+                    'prf_descricao' => 'nullable|max:300',
                 ];
 
             }
@@ -38,7 +38,7 @@ class PerfilRequest extends BaseRequest
             {
                 return [
                     'prf_nome' => 'required|min:3|max:150',
-                    'prf_descricao' => 'max:300',
+                    'prf_descricao' => 'nullable|max:300',
                 ];
             }
             default: return [];

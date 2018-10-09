@@ -27,8 +27,8 @@ class MenuItemRequest extends BaseRequest
             'mit_mod_id' => 'required',
             'mit_nome' => 'required|min:3',
             'mit_icone' => 'required|min:3',
-            'mit_rota' => 'min:3',
-            'mit_descricao' => 'min:3'
+            'mit_rota' => 'nullable|min:3',
+            'mit_descricao' => 'nullable|min:3'
         ];
     }
 }
