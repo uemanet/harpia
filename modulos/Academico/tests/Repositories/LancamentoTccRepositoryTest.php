@@ -191,9 +191,9 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
         $search = [
             [
-                'field' => 'mdc_id',
+                'field' => 'trm_id',
                 'type' => '=',
-                'term' => $modulodisciplina->mdc_id
+                'term' => $matricula->mat_trm_id
             ]
         ];
 

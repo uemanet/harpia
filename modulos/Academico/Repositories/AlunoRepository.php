@@ -227,7 +227,7 @@ class AlunoRepository extends BaseRepository
             return $this->paginateOnlyWithBonds($sort, $search);
         }
 
-        return $this->orderBy('alu_id', 'asc')->paginate($sort, $search);
+        return $this->paginate($sort, $search);
     }
 
 
