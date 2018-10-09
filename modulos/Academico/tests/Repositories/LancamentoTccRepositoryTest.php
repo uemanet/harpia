@@ -213,7 +213,6 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
         $response = $this->repo->paginate();
 
-
         factory(LancamentoTcc::class, 2)->create();
 
         $requestParameters = [

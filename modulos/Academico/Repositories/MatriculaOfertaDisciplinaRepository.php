@@ -647,8 +647,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ];
             $query = $query->orderBy($sort['field'], $sort['sort']);
         }
-
-        if ($requestParameters['mof_situacao_matricula'] != null) {
+                
+        if (array_key_exists('mof_situacao_matricula', $requestParameters)) {
             $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
         }
 
@@ -657,7 +657,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
             }
         }
-
 
         return $query->paginate(15);
     }
