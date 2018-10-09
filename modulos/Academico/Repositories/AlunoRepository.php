@@ -180,12 +180,11 @@ class AlunoRepository extends BaseRepository
             }
         }
 
-        if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
+        if (empty($sort)) {
+            return $result->orderBy('alu_id', 'asc')->paginate(15);
         }
 
-        $result = $result->paginate(15);
-        return $result;
+        return $result->orderBy($sort['field'], $sort['sort'])->paginate(15);
     }
 
     /**
