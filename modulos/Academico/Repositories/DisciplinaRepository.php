@@ -111,7 +111,7 @@ class DisciplinaRepository extends BaseRepository
         }
 
         if (empty($sort)) {
-            return $result->orderBy('nvc_id', 'asc')->paginate(15);
+            return $result->orderBy('dis_id', 'asc')->paginate(15);
         }
 
         return $result->orderBy($sort['field'], $sort['sort'])->paginate(15);
