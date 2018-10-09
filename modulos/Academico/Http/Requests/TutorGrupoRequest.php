@@ -28,7 +28,7 @@ class TutorGrupoRequest extends BaseRequest
             'ttg_grp_id' => 'required',
             'ttg_tipo_tutoria' => 'required',
             'ttg_data_inicio'=>'required|date_format:"d/m/Y"',
-            'ttg_data_fim' => 'date_format:"d/m/Y"'
+            'ttg_data_fim' => 'nullable|date_format:"d/m/Y"'
         ];
 
 

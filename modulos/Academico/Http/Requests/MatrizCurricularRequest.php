@@ -33,6 +33,7 @@ class MatrizCurricularRequest extends BaseRequest
                     'mtc_data' => 'required|date_format:"d/m/Y"',
                     'mtc_titulo' => 'required',
                     'mtc_horas' => 'required',
+                    'mtc_horas_praticas' => 'nullable|integer',
                 ];
 
             }
@@ -46,6 +47,7 @@ class MatrizCurricularRequest extends BaseRequest
                     'mtc_data' => 'required|date_format:"d/m/Y"',
                     'mtc_titulo' => 'required',
                     'mtc_horas' => 'required',
+                    'mtc_horas_praticas' => 'nullable|integer',
                 ];
             }
             default: return [];
