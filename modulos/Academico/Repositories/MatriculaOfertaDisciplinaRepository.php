@@ -647,7 +647,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ];
             $query = $query->orderBy($sort['field'], $sort['sort']);
         }
-                
+
         if (array_key_exists('mof_situacao_matricula', $requestParameters)) {
             $query = $query->where('mof_situacao_matricula', $requestParameters['mof_situacao_matricula']);
         }
