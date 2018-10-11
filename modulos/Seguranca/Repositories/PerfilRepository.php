@@ -88,8 +88,7 @@ class PerfilRepository extends BaseRepository
     {
         $subquery = DB::table('seg_modulos')
             ->leftJoin('seg_perfis', 'mod_id', '=', 'prf_mod_id')
-            ->select('mod_id', 'mod_nome', 'prf_id')
-            ->groupBy('mod_id');
+            ->select('mod_id', 'mod_nome', 'prf_id');
 
         $result = DB::table(DB::raw("({$subquery->toSql()}) as modulos"))
             ->leftJoin('seg_perfis_usuarios', function ($join) use ($usuarioId) {
