@@ -36,6 +36,16 @@ services:
       - POSTGRES_USER=harpia
       - POSTGRES_PASSWORD=harpia
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: harpia-phpmyadmin
+    links:
+      - mysql
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
 
   web:
     image: ambientum/php:7.1-apache
@@ -47,3 +57,5 @@ services:
     links:
       - mysql
       - pgsql
+      - phpmyadmin
+
