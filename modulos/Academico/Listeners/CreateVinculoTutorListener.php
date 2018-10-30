@@ -41,7 +41,7 @@ class CreateVinculoTutorListener
             $tutorGrupo = $event->getData();
             $tutor = $this->tutorRepository->find($tutorGrupo->ttg_tut_id);
             $grupo = $this->grupoRepository->find($tutorGrupo->ttg_grp_id);
-
+            
             // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($grupo->grp_trm_id);
 
@@ -59,8 +59,7 @@ class CreateVinculoTutorListener
                 $firstName = array_shift($name);
                 $lastName = implode(" ", $name);
 
-                $data['tutor']['ttg_tipo_tutoria'] = $this->tutorGrupoRepository
-                    ->getTipoTutoria($tutor->tut_id, $grupo->grp_id);
+                $data['tutor']['ttg_tipo_tutoria'] = $tutorGrupo->getOriginal('ttg_tipo_tutoria');
 
                 $data['tutor']['grp_id'] = $grupo->grp_id;
                 $data['tutor']['pes_id'] = $tutor->tut_pes_id;
