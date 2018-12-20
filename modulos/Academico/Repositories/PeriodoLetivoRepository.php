@@ -60,7 +60,7 @@ class PeriodoLetivoRepository extends BaseRepository
     public function getPeriodosValidos($ofc_ano, $periodo)
     {
         $periodosvalidos = $this->model
-            ->whereYear('per_inicio', '>=', $ofc_ano)
+            ->where('per_inicio', '<=', date('Y-m-d'))
             ->where('per_fim', '>=', date('Y-m-d'))
             ->orderBy('per_inicio', 'ASC')
             ->pluck('per_nome', 'per_id')
