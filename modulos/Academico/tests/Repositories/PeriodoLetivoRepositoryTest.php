@@ -278,7 +278,7 @@ class PeriodoLetivoRepositoryTest extends ModulosTestCase
 
         $periodosLetivos[] = factory(PeriodoLetivo::class)->create([
             'per_inicio' => '04/06/' . $currentYear,
-            'per_fim' => '11/12/' . $currentYear
+            'per_fim' => '31/12/' . $currentYear
         ]);
 
         $nextYear = $currentYear + 1;
@@ -290,7 +290,7 @@ class PeriodoLetivoRepositoryTest extends ModulosTestCase
 
         $periodosLetivos[] = factory(PeriodoLetivo::class)->create([
             'per_inicio' => '04/06/' . $nextYear,
-            'per_fim' => '18/12/' . $nextYear
+            'per_fim' => '31/12/' . $nextYear
         ]);
 
         // Sao validos 4 periodos para o primeiro periodo letivo do ano corrente
