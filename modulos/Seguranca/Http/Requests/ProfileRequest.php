@@ -32,7 +32,7 @@ class ProfileRequest extends BaseRequest
                 'pes_nascimento' => 'required',
                 'pes_estado_civil' => 'required',
                 'pes_mae' => 'required|min:6',
-                'pes_pai' => 'min:6',
+                'pes_pai' => 'nullable|min:6',
                 'pes_naturalidade' => 'required|min:3',
                 'pes_nacionalidade' => 'required|min:3',
                 'pes_raca' => 'required',

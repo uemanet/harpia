@@ -2,6 +2,8 @@
 
 namespace Modulos\Academico\Repositories;
 
+use Modulos\Academico\Models\MatriculaOfertaDisciplina;
+use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\LancamentoTcc;
 use DB;
@@ -13,11 +15,15 @@ use Modulos\Academico\Models\ModuloDisciplina;
 class LancamentoTccRepository extends BaseRepository
 {
     protected $moduloDisciplina;
+    protected $matriculaOfertaDisciplina;
+    protected $turma;
 
-    public function __construct(LancamentoTcc $lancamentotcc, ModuloDisciplina $moduloDisciplina)
+    public function __construct(LancamentoTcc $lancamentotcc, ModuloDisciplina $moduloDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, Turma $turma)
     {
         $this->model = $lancamentotcc;
         $this->moduloDisciplina = $moduloDisciplina;
+        $this->matriculaOfertaDisciplina = $matriculaOfertaDisciplina;
+        $this->turma = $turma;
     }
 
     /**
@@ -27,16 +33,13 @@ class LancamentoTccRepository extends BaseRepository
      */
     public function paginate($sort = null, $search = null)
     {
-        $result = $this->moduloDisciplina
-            ->join('acd_disciplinas', function ($join) {
-                $join->on('mdc_dis_id', '=', 'dis_id');
-            })
-            ->join('acd_ofertas_disciplinas', function ($join) {
-                $join->on('ofd_mdc_id', '=', 'mdc_id');
-            })
-            ->join('acd_matriculas_ofertas_disciplinas', function ($join) {
-                $join->on('mof_ofd_id', '=', 'ofd_id');
-            })
+
+        //buscar todas as disciplinas do tipo Tcc
+        $disciplinas_tcc = $this->moduloDisciplina
+            ->where('mdc_tipo_disciplina', '=', 'tcc')->pluck('mdc_id');
+
+        //busca todas as ofertas de curso que possuem alunos matriculados em disciplina do tipo TCC
+        $turmas = $this->matriculaOfertaDisciplina
             ->join('acd_matriculas', function ($join) {
                 $join->on('mof_mat_id', '=', 'mat_id');
             })
@@ -49,8 +52,23 @@ class LancamentoTccRepository extends BaseRepository
             ->join('acd_cursos', function ($join) {
                 $join->on('ofc_crs_id', '=', 'crs_id');
             })
-            ->where('mdc_tipo_disciplina', '=', 'tcc')
-            ->groupby('trm_id')->distinct();
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->whereIn('mdc_id', $disciplinas_tcc)->pluck('trm_id');
+
+        //Busca todas as turmas que tem alunos matriculados em disciplinas do tipo TCC
+        $result = $this->turma
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
+            })
+            ->whereIn('trm_id', $turmas);
 
         if (!empty($search)) {
             foreach ($search as $value) {
