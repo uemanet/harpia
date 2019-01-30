@@ -16,6 +16,10 @@ class AlterGraAnexosTable extends Migration
             $table->dropForeign(['anx_tax_id']);
             $table->dropColumn(['anx_tax_id']);
         });
+
+        Schema::table('gra_anexos', function ($table) {
+            $table->string('anx_mime', 255)->change();
+        });
     }
 
     /**
