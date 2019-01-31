@@ -26,11 +26,11 @@ class DocumentoRequest extends BaseRequest
         return [
             'doc_pes_id' => 'required',
             'doc_tpd_id' => 'required',
-            'doc_file' => 'mimes:pdf,jpg,bpm,png,jpeg',
+            'doc_file' => 'nullable|mimes:pdf,jpg,bpm,png,jpeg',
             'doc_conteudo' => 'required:max:255',
-            'doc_data_expedicao' => 'date_format:d/m/Y',
-            'doc_orgao' => 'max:255',
-            'doc_observacao' => 'max:255'
+            'doc_data_expedicao' => 'nullable|date_format:d/m/Y',
+            'doc_orgao' => 'nullable|max:255',
+            'doc_observacao' => 'nullable|max:255'
         ];
     }
 }

@@ -57,11 +57,14 @@ class AlunoRepository extends BaseRepository
             }
         }
 
-        if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
-        }
+        if (empty($sort)) {
+            $result = $result->orderBy('alu_id', 'asc');
+            return $this->model->paginateWithBonds($result->get(), 15);
 
+        }
+        $result = $result->orderBy($sort['field'], $sort['sort']);
         return $this->model->paginateWithBonds($result->get(), 15);
+
     }
 
     public function search(array $options, array $select = null)

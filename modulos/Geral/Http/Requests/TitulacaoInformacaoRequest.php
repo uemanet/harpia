@@ -31,7 +31,7 @@ class TitulacaoInformacaoRequest extends BaseRequest
             'tin_instituicao_sigla' => 'required|max:10',
             'tin_instituicao_sede' => 'required|min:3|max:45',
             'tin_anoinicio' => 'required|max:4|min:4',
-            'tin_anofim' => 'max:4|min:4'
+            'tin_anofim' => 'nullable|max:4|min:4'
         ];
 
         return $rules;
