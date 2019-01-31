@@ -29,7 +29,8 @@ class MatriculaOfertaDisciplina extends BaseModel
         'mof_ofd_id' => '=',
         'pes_nome' => 'like',
         'pes_email' => 'like',
-        'pes_cpf' => '='
+        'pes_cpf' => '=',
+        'mof_situacao_matricula' => '<>'
     ];
 
     public function matriculaCurso()

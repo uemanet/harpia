@@ -191,9 +191,9 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
         $search = [
             [
-                'field' => 'mdc_id',
+                'field' => 'trm_id',
                 'type' => '=',
-                'term' => $modulodisciplina->mdc_id
+                'term' => $matricula->mat_trm_id
             ]
         ];
 
@@ -212,7 +212,6 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
         $matriculaOferta = factory(\Modulos\Academico\Models\MatriculaOfertaDisciplina::class)->create(['mof_mat_id' => $matricula->mat_id, 'mof_ofd_id' => $oferta->ofd_id]);
 
         $response = $this->repo->paginate();
-
 
         factory(LancamentoTcc::class, 2)->create();
 

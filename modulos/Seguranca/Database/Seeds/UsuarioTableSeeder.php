@@ -21,6 +21,12 @@ class UsuarioTableSeeder extends Seeder
         $pessoa->pes_estado_civil = 'solteiro';
         $pessoa->pes_naturalidade = 'São Luís';
         $pessoa->pes_nacionalidade = 'Brasil';
+        $pessoa->pes_endereco = 'Endereço de Administrador';
+        $pessoa->pes_numero = 12;
+        $pessoa->pes_cep = 651300000;
+        $pessoa->pes_cidade = 'São Luís';
+        $pessoa->pes_bairro = 'Cohama';
+        $pessoa->pes_estado = 'MA';
         $pessoa->pes_raca = 'Branco';
         $pessoa->pes_necessidade_especial = 'Não';
         $pessoa->pes_estrangeiro = 0;

@@ -221,15 +221,6 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function testgetTipoTutoria()
-    {
-        $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create(['ttg_tipo_tutoria' => 'presencial']);
-        $response = $this->repo->getTipoTutoria($tutorgrupo->ttg_tut_id, $tutorgrupo->ttg_grp_id);
-
-        $this->assertEquals('Presencial', $response);
-        $this->assertNotEmpty($response);
-    }
-
     public function testpaginateRequestByGrupo()
     {
         $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create();
