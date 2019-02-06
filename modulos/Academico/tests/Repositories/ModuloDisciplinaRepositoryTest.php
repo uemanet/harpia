@@ -309,6 +309,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
         $updateArray = $moduloDis->toArray();
         $updateArray['mdc_pre_requisitos'][] = $moduloDisciplina->mdc_id;
+        $updateArray['mdc_tipo_disciplina'] = $moduloDis->getOriginal('mdc_tipo_disciplina');
 
         $modulodisciplinaId = $updateArray['mdc_id'];
         unset($updateArray['mdc_id']);
@@ -796,7 +797,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
             'mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'aprovado'
+            'mof_situacao_matricula' => 'aprovado_media'
         ]);
 
         $rg = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);

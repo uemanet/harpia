@@ -2,12 +2,13 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Modulos\Academico\Repositories\AlunoRepository;
-use Modulos\Academico\Repositories\HistoricoParcialRepository;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
-use Modulos\Core\Http\Controller\BaseController;
+use Mpdf\Mpdf;
 use ActionButton;
+use Illuminate\Http\Request;
+use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\AlunoRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Repositories\HistoricoParcialRepository;
 
 class HistoricoParcialController extends BaseController
 {
@@ -131,7 +132,7 @@ class HistoricoParcialController extends BaseController
 
         $data = 'São Luís, '.strftime('%d de %B de %Y', strtotime('today'));
 
-        $mpdf = new \mPDF();
+        $mpdf = new Mpdf();
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
         $mpdf->addPage('P');

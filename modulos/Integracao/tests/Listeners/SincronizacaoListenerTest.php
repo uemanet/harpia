@@ -58,7 +58,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
             'ser_slug' => "local_integracao"
         ]);
 
-        $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+        factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
             'asr_token' => "aksjhdeuig2768125sahsjhdvjahsy"
@@ -77,7 +77,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
             'ser_slug' => "get_tutor_online_time"
         ]);
 
-        $ambienteServico = factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
+        factory(\Modulos\Integracao\Models\AmbienteServico::class)->create([
             'asr_amb_id' => $this->ambiente->amb_id,
             'asr_ser_id' => $servico->ser_id,
             'asr_token' => "abcdefgh12345"
@@ -116,7 +116,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
     {
         // Cria a turma
         $data = [
-            'trm_id' => random_int(50, 100),
+            'trm_id' => random_int(50, 1000),
             'trm_ofc_id' => factory(Modulos\Academico\Models\OfertaCurso::class)->create()->ofc_id,
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",

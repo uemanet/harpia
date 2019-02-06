@@ -10,7 +10,7 @@ $factory->define(Modulos\Geral\Models\Pessoa::class, function (Faker\Generator $
         'pes_nascimento' => $faker->date('d/m/Y'),
         'pes_mae' => $faker->name,
         'pes_pai' => $faker->name,
-        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'divorciado', 'viuvo(a)', 'uniao_estavel']),
+        'pes_estado_civil' => $faker->randomElement(['solteiro', 'casado', 'divorciado', 'viuvo(a)', 'uniao_estavel', 'outros']),
         'pes_naturalidade' => $faker->city,
         'pes_nacionalidade' => $faker->country,
         'pes_raca' => $faker->randomElement(['branco', 'negro', 'amarelo']),
@@ -311,7 +311,7 @@ $factory->define(Modulos\Academico\Models\TutorGrupo::class, function (Faker\Gen
     return [
         'ttg_tut_id' => $tutor->tut_id,
         'ttg_grp_id' => $grupo->grp_id,
-        'ttg_tipo_tutoria' => $faker->randomElement($array = array('presencial', 'distancia')),
+        'ttg_tipo_tutoria' => $faker->randomElement(['presencial', 'distancia']),
         'ttg_data_inicio' => '10/11/2010',
         'ttg_data_fim' => null
     ];
@@ -547,7 +547,12 @@ $factory->define(\Modulos\Integracao\Models\MapeamentoNota::class, function (Fak
         'min_id_nota2' => $faker->numberBetween(0, 10),
         'min_id_nota3' => $faker->numberBetween(0, 10),
         'min_id_recuperacao' => $faker->numberBetween(0, 5),
-        'min_id_conceito' => $faker->randomElement(['aprovado', 'aprovado_final', 'reprovado', 'reprovado_final']),
+        'min_id_conceito' => $faker->randomElement([
+            'aprovado_media',
+            'aprovado_final',
+            'reprovado_media',
+            'reprovado_final'
+        ]),
         'min_id_final' => $faker->numberBetween(0, 10),
         'min_id_aproveitamento' => $faker->numberBetween(0, 10)
     ];
