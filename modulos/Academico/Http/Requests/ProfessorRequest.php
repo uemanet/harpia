@@ -25,7 +25,7 @@ class ProfessorRequest extends BaseRequest
     {
         $rules = [
             'prf_pes_id' => 'required|unique:acd_professores',
-            'prf_codigo' => 'max:11'
+            'prf_codigo' => 'nullable|max:11'
         ];
 
         if ($this->method() == 'PUT') {

@@ -849,7 +849,7 @@ class MatriculaCursoRepository extends BaseRepository
             $query = $query->orderBy($sort['field'], $sort['sort']);
         }
 
-        if ($requestParameters['mat_situacao'] != null) {
+        if (array_key_exists('mat_situacao', $requestParameters)) {
             $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
         }
 

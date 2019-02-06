@@ -9,7 +9,6 @@ volumes:
   harpia-postgres-data:
     driver: local
 
-
 services:
   # MySQL (5.7)
   mysql:
@@ -58,4 +57,3 @@ services:
       - mysql
       - pgsql
       - phpmyadmin
-
