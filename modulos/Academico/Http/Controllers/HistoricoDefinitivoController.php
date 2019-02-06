@@ -2,11 +2,12 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Modulos\Academico\Http\Requests\HistoricoDefinitivoRequest;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\HistoricoDefinitivoRepository;
-use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Mpdf\Mpdf;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Academico\Repositories\CursoRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
+use Modulos\Academico\Repositories\HistoricoDefinitivoRepository;
+use Modulos\Academico\Http\Requests\HistoricoDefinitivoRequest;
 
 class HistoricoDefinitivoController extends BaseController
 {
@@ -38,7 +39,7 @@ class HistoricoDefinitivoController extends BaseController
         if (!empty($matriculas)) {
             $matr = $this->matriculaCursoRepository->find($matriculas['matriculas'][0])->first();
 
-            $mpdf = new \mPDF();
+            $mpdf = new Mpdf();
 
             $cursoNome = $matr->turma->ofertacurso->curso->crs_nome;
             $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $cursoNome);

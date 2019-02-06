@@ -122,7 +122,8 @@ class AproveitamentoEstudosRepository extends BaseRepository
 
         $matriculaoferta = $this->model
             ->where('mof_mat_id', '=', $matriculaId)
-            ->where('mof_ofd_id', '=', $ofertaId)->get();
+            ->where('mof_ofd_id', '=', $ofertaId)
+            ->where('mof_situacao_matricula', '<>',  'cancelado')->get();
 
         if ($matriculaoferta->count()){
             return array("type" => "error", "message" => "Aluno já foi matriculado nessa disciplina");

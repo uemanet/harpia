@@ -47,7 +47,7 @@
                   _________________________________________________<br>
                   <b>NOME DO PROFISSIONAL RESPONSÁVEL</b><br><br>
               </p>
-              <b style="margin-left: 40px;font-size:9 px;">DIPLOMA VÁLIDO EM TODO TERRITÓRIO NACIONAL</b>
+              <b style="margin-left: 40px;font-size:9px;">DIPLOMA VÁLIDO EM TODO TERRITÓRIO NACIONAL</b>
       </div>
 
       <div class="divdireita">

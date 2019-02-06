@@ -68,7 +68,7 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(Livro::class, 2)->create();
+        factory(Livro::class, 2)->create();
 
         $model = new Livro();
         $expected = $model->pluck('liv_tipo_livro', 'liv_id');
@@ -79,13 +79,15 @@ class LivroRepositorytTest extends ModulosTestCase
 
     public function testSearch()
     {
-        $entries = factory(Livro::class, 2)->create();
-
-        factory(Livro::class)->create([
-            'liv_tipo_livro' => 'search_tipo_livro'
+        factory(Livro::class, 2)->create([
+            'liv_tipo_livro' => 'CERTIFICADO'
         ]);
 
-        $searchResult = $this->repo->search(array(['liv_tipo_livro', '=', 'search_tipo_livro']));
+        factory(Livro::class)->create([
+            'liv_tipo_livro' => 'DIPLOMA'
+        ]);
+
+        $searchResult = $this->repo->search(array(['liv_tipo_livro', '=', 'DIPLOMA']));
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -96,7 +98,7 @@ class LivroRepositorytTest extends ModulosTestCase
         factory(Livro::class, 2)->create();
 
         $entry = factory(Livro::class)->create([
-            'liv_tipo_livro' => "tipo_livro_to_find"
+            'liv_tipo_livro' => "CERTIFICADO"
         ]);
 
         $expected = [
@@ -104,7 +106,7 @@ class LivroRepositorytTest extends ModulosTestCase
             'liv_tipo_livro' => $entry->liv_tipo_livro
         ];
 
-        $searchResult = $this->repo->search(array(['liv_tipo_livro', '=', "tipo_livro_to_find"]), ['liv_id', 'liv_tipo_livro']);
+        $searchResult = $this->repo->search(array(['liv_tipo_livro', '=', "CERTIFICADO"]), ['liv_id', 'liv_tipo_livro']);
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -128,7 +130,6 @@ class LivroRepositorytTest extends ModulosTestCase
     public function testCount()
     {
         $created = factory(Livro::class, 10)->create();
-        $collection = $this->repo->all();
 
         $this->assertEquals($created->count(), $this->repo->count());
     }
@@ -168,21 +169,21 @@ class LivroRepositorytTest extends ModulosTestCase
     {
         factory(Livro::class, 2)->create();
         factory(Livro::class)->create([
-            'liv_tipo_livro' => 'livro_to_search',
+            'liv_tipo_livro' => 'CERTIFICADO',
         ]);
 
         $search = [
             [
                 'field' => 'liv_tipo_livro',
                 'type' => '=',
-                'term' => 'livro_to_search'
+                'term' => 'CERTIFICADO'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-        $this->assertEquals('livro_to_search', $response->first()->liv_tipo_livro);
+        $this->assertEquals('CERTIFICADO', $response->first()->liv_tipo_livro);
     }
 
     public function testPaginateRequest()

@@ -143,7 +143,7 @@ class MatrizesCurricularesController extends BaseController
     public function getMatrizAnexo($matrizCurricularId)
     {
         $matrizCurricular = $this->matrizCurricularRepository->find($matrizCurricularId);
-        
+
         if (!$matrizCurricular) {
             flash()->error('Matriz curricular não existe.');
             return redirect()->back();

@@ -27,7 +27,7 @@ class RelatoriosAtasFinaisRequest extends BaseRequest
             'crs_id' => 'required|integer',
             'ofc_id' => 'required|integer',
             'trm_id' => 'required|integer',
-            'pol_id' => 'integer',
+            'pol_id' => 'nullable|integer',
             'mat_situacao' => 'string|nullable'
         ];
     }

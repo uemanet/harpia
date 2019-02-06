@@ -122,7 +122,7 @@ class TurmasController extends BaseController
 
         $curso = $oferta->curso->where('crs_id', $oferta->curso->crs_id)->pluck('crs_nome', 'crs_id');
 
-        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, date('Y'));
+        $periodosletivos = $this->periodoletivoRepository->getPeriodosValidos($oferta->ofc_ano, null);
 
         return view('Academico::turmas.create', compact('curso', 'periodosletivos', 'oferta'));
     }

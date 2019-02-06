@@ -42,12 +42,15 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testUpdate()
     {
-        $entry = factory(TutorGrupo::class)->create();
+        $entry = factory(TutorGrupo::class)->create([
+            'ttg_tipo_tutoria' => "distancia"
+        ]);
+
         $id = $entry->ttg_id;
 
         $data = $entry->toArray();
 
-        $data['ttg_tipo_tutoria'] = "slug";
+        $data['ttg_tipo_tutoria'] = "presencial";
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
@@ -71,7 +74,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(TutorGrupo::class, 2)->create();
+        factory(TutorGrupo::class, 2)->create();
 
         $model = new TutorGrupo();
         $expected = $model->pluck('ttg_tipo_tutoria', 'ttg_id');
@@ -82,13 +85,15 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testSearch()
     {
-        $entries = factory(TutorGrupo::class, 2)->create();
-
-        factory(TutorGrupo::class)->create([
-            'ttg_tipo_tutoria' => 'Presencial'
+        factory(TutorGrupo::class, 2)->create([
+            'ttg_tipo_tutoria' => 'distancia'
         ]);
 
-        $searchResult = $this->repo->search(array(['ttg_tipo_tutoria', '=', 'Presencial']));
+        factory(TutorGrupo::class)->create([
+            'ttg_tipo_tutoria' => 'presencial'
+        ]);
+
+        $searchResult = $this->repo->search(array(['ttg_tipo_tutoria', '=', 'presencial']));
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -96,10 +101,12 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testSearchWithSelect()
     {
-        factory(TutorGrupo::class, 2)->create();
+        factory(TutorGrupo::class, 2)->create([
+            'ttg_tipo_tutoria' => 'distancia'
+        ]);
 
         $entry = factory(TutorGrupo::class)->create([
-            'ttg_tipo_tutoria' => "Presencial"
+            'ttg_tipo_tutoria' => 'presencial'
         ]);
 
         $expected = [
@@ -107,7 +114,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
             'ttg_tipo_tutoria' => $entry->ttg_tipo_tutoria
         ];
 
-        $searchResult = $this->repo->search(array(['ttg_tipo_tutoria', '=', "Presencial"]), ['ttg_id', 'ttg_tipo_tutoria']);
+        $searchResult = $this->repo->search(array(['ttg_tipo_tutoria', '=', "presencial"]), ['ttg_id', 'ttg_tipo_tutoria']);
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -169,16 +176,19 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
     public function testPaginateWithSearch()
     {
-        factory(TutorGrupo::class, 2)->create();
+        factory(TutorGrupo::class, 2)->create([
+            'ttg_tipo_tutoria' => 'distancia'
+        ]);
+
         factory(TutorGrupo::class)->create([
-            'ttg_tipo_tutoria' => 'Presencial',
+            'ttg_tipo_tutoria' => 'presencial'
         ]);
 
         $search = [
             [
                 'field' => 'ttg_tipo_tutoria',
                 'type' => '=',
-                'term' => 'Presencial'
+                'term' => 'presencial'
             ]
         ];
 
@@ -208,15 +218,6 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
         $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create();
         $response = $this->repo->getTiposTutoria($tutorgrupo->grupo->grp_id);
 
-        $this->assertNotEmpty($response);
-    }
-
-    public function testgetTipoTutoria()
-    {
-        $tutorgrupo = factory(\Modulos\Academico\Models\TutorGrupo::class)->create(['ttg_tipo_tutoria' => 'presencial']);
-        $response = $this->repo->getTipoTutoria($tutorgrupo->ttg_tut_id, $tutorgrupo->ttg_grp_id);
-
-        $this->assertEquals('Presencial', $response);
         $this->assertNotEmpty($response);
     }
 

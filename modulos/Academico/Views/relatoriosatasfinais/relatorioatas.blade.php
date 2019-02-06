@@ -50,7 +50,9 @@
 
         // Quantidade de colunas para as disciplinas
         foreach (array_pop($matrizCurricular) as $nome => $modulo){
-            $colModulos += count($modulo["disciplinas"]);
+            if(is_array($modulo)) {
+                $colModulos += count($modulo["disciplinas"]);
+            }
         }
 
         $data = "";
@@ -103,7 +105,6 @@
 
                     foreach($modulos as $nome => $modulo) {
                         $colspan = count($modulo['disciplinas']);
-
                         echo '<td class="center" colspan="' . $colspan . '"><strong>' . $nome . '</strong></td>';
                     }
                 @endphp

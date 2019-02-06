@@ -77,8 +77,8 @@ class TutorRepositoryTest extends ModulosTestCase
         $entries = factory(Tutor::class, 2)->create();
 
         $model = new Tutor();
-        $expected = $model->pluck('tut_nome', 'tut_id');
-        $fromRepository = $this->repo->lists('tut_id', 'tut_nome');
+        $expected = $model->pluck('tut_pes_id', 'tut_id');
+        $fromRepository = $this->repo->lists('tut_id', 'tut_pes_id');
 
         $this->assertEquals($expected, $fromRepository);
     }

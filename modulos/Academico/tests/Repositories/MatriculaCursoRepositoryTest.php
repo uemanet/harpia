@@ -128,7 +128,7 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
 
         $data = $entry->toArray();
         $data['mat_modo_entrada'] = $entry->getOriginal('mat_modo_entrada');
-        $data['mat_situacao'] = 'Evadido';
+        $data['mat_situacao'] = 'evadido';
 
         $return = $this->repo->update($data, $id);
         $data['mat_data_conclusao'] = $entry->getOriginal('mat_data_conclusao');
@@ -190,10 +190,10 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
         $entries = factory(\Modulos\Academico\Models\Matricula::class, 2)->create();
 
         factory(\Modulos\Academico\Models\Matricula::class)->create([
-            'mat_situacao' => 'search_mat_situacao'
+            'mat_situacao' => 'desistente'
         ]);
 
-        $searchResult = $this->repo->search(array(['mat_situacao', '=', 'search_mat_situacao']));
+        $searchResult = $this->repo->search(array(['mat_situacao', '=', 'desistente']));
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -204,7 +204,7 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
         factory(\Modulos\Academico\Models\Matricula::class, 2)->create();
 
         $entry = factory(\Modulos\Academico\Models\Matricula::class)->create([
-            'mat_situacao' => "mat_situacao_to_find"
+            'mat_situacao' => "desistente"
         ]);
 
         $expected = [
@@ -212,7 +212,7 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
             'mat_situacao' => $entry->mat_situacao
         ];
 
-        $searchResult = $this->repo->search(array(['mat_situacao', '=', "mat_situacao_to_find"]), ['mat_id', 'mat_situacao']);
+        $searchResult = $this->repo->search(array(['mat_situacao', '=', "desistente"]), ['mat_id', 'mat_situacao']);
 
         $this->assertInstanceOf(TableCollection::class, $searchResult);
         $this->assertEquals(1, $searchResult->count());
@@ -276,21 +276,21 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
     {
         factory(\Modulos\Academico\Models\Matricula::class, 2)->create();
         factory(\Modulos\Academico\Models\Matricula::class)->create([
-            'mat_situacao' => 'mat_situacao_to_search',
+            'mat_situacao' => 'desistente',
         ]);
 
         $search = [
             [
                 'field' => 'mat_situacao',
                 'type' => '=',
-                'term' => 'mat_situacao_to_search'
+                'term' => 'desistente'
             ]
         ];
 
         $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-        $this->assertEquals('mat_situacao_to_search', $response->first()->mat_situacao);
+        $this->assertEquals('desistente', $response->first()->mat_situacao);
     }
 
     public function testPaginateRequest()
@@ -847,7 +847,7 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
             'mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'aprovado'
+            'mof_situacao_matricula' => 'aprovado_media'
         ]);
 
         //Com matricula em TCC
