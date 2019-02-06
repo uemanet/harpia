@@ -136,18 +136,17 @@ class AlunoRepositoryTest extends ModulosTestCase
 
     public function testLists()
     {
-        $entries = factory(Aluno::class, 2)->create();
+        factory(Aluno::class, 2)->create();
 
-        $model = new Aluno();
-        $expected = $model->pluck('alu_nome', 'alu_id');
-        $fromRepository = $this->repo->lists('alu_id', 'alu_nome');
+        $expected = Aluno::all()->pluck('alu_pes_id', 'alu_id');
+        $fromRepository = $this->repo->lists('alu_pes_id', 'alu_id');
 
         $this->assertEquals($expected, $fromRepository);
     }
 
     public function testSearch()
     {
-        $entries = factory(Aluno::class, 2)->create();
+        factory(Aluno::class, 2)->create();
 
         $pessoa = factory(Pessoa::class)->create([
             'pes_nome' => 'Irineu',

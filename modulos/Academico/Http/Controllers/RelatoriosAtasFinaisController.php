@@ -3,8 +3,9 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use Harpia\Matriz\MatrizCurricularTree;
+use Mpdf\Mpdf;
 use Illuminate\Http\Request;
+use Harpia\Matriz\MatrizCurricularTree;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Repositories\PoloRepository;
 use Modulos\Academico\Repositories\CursoRepository;
@@ -75,7 +76,8 @@ class RelatoriosAtasFinaisController extends BaseController
         TurmaRepository $turmaRepository,
         OfertaCursoRepository $ofertaCursoRepository,
         ResultadosFinaisRepository $resultadosFinaisRepository
-    ) {
+    )
+    {
         $this->cursoRepository = $cursoRepository;
         $this->poloRepository = $poloRepository;
         $this->turmaRepository = $turmaRepository;
@@ -100,7 +102,7 @@ class RelatoriosAtasFinaisController extends BaseController
             $sqlOfertas = $this->ofertaCursoRepository->findAllByCurso($crs_id);
             $turmas = $this->turmaRepository->findAllByOfertaCurso($ofc_id)->pluck('trm_nome', 'trm_id');
             foreach ($sqlOfertas as $oferta) {
-                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '('.$oferta->mdl_nome.')';
+                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
             }
             $oferta = $this->ofertaCursoRepository->find($ofc_id);
             $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
@@ -160,12 +162,13 @@ class RelatoriosAtasFinaisController extends BaseController
             'meses' => $this->meses
         ])->render();
 
-        // mpdf
-        $mpdf = new \mPDF('c', 'A4', '', '', 10, 10, 10, 10, 9, 9);
+        // Mpdf
+        $configs = ['c', 'A4', '', '', 10, 10, 10, 10, 9, 9];
+        $mpdf = new Mpdf($configs);
         $mpdf->debug = true;
 
         $mpdf->mirrorMargins = 0;
-        $mpdf->SetTitle('Relatório de Atas Finais '. $curso->crs_nome);
+        $mpdf->SetTitle('Relatório de Atas Finais ' . $curso->crs_nome);
         $mpdf->defaultheaderfontsize = 10;
         $mpdf->defaultheaderfontstyle = 'B';
         $mpdf->defaultheaderline = 0;

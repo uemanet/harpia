@@ -90,7 +90,7 @@ class HistoricoDefinitivoRepositorytTest extends ModulosTestCase
             'mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'aprovado'
+            'mof_situacao_matricula' => 'aprovado_media'
         ]);
 
         $rg = $this->docrepo->create(['doc_pes_id' => $matricula->aluno->pessoa->pes_id, 'doc_tpd_id' => 2, 'doc_conteudo' => '123456', 'doc_data_expedicao' => '10/10/2000']);
@@ -203,7 +203,7 @@ class HistoricoDefinitivoRepositorytTest extends ModulosTestCase
             'mof_mat_id' => $matricula->mat_id,
             'mof_ofd_id' => $ofertaDisciplina->ofd_id,
             'mof_tipo_matricula' => 'matriculacomum',
-            'mof_situacao_matricula' => 'aprovado'
+            'mof_situacao_matricula' => 'aprovado_media'
         ]);
 
         $lancamentoTcc = factory(\Modulos\Academico\Models\LancamentoTcc::class)->create([

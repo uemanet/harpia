@@ -58,12 +58,14 @@ class PessoaRepositoryTest extends ModulosTestCase
         $data = $entry->toArray();
 
         $data['pes_bairro'] = "bairro novo";
+        $data['pes_estado_civil'] = $entry->getOriginal('pes_estado_civil');
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
 
         // Accessor
         $data['pes_estrangeiro'] = $entry->getOriginal('pes_estrangeiro');
+        $data['pes_estado_civil'] = $entry->getOriginal('pes_estado_civil');
         $data['pes_nascimento'] = $entry->getOriginal('pes_nascimento');
 
         $fromRepositoryArray = $fromRepository->getOriginal();

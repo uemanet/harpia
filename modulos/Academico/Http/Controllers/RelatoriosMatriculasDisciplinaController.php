@@ -4,6 +4,7 @@ namespace Modulos\Academico\Http\Controllers;
 
 use Excel;
 use Validator;
+use Mpdf\Mpdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
@@ -92,14 +93,14 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         }
 
         $situacao = [
-                      "" => "Selecione o status",
-                      "cursando" => "Cursando",
-                      "aprovado_media" => "Aprovado por Média",
-                      "aprovado_final" => "Aprovado por Final",
-                      "reprovado_media" => "Reprovado por Média",
-                      "reprovado_final" => "Reprovado por Final",
-                      "cancelado" => "Cancelado"
-                   ];
+            "" => "Selecione o status",
+            "cursando" => "Cursando",
+            "aprovado_media" => "Aprovado por Média",
+            "aprovado_final" => "Aprovado por Final",
+            "reprovado_media" => "Reprovado por Média",
+            "reprovado_final" => "Reprovado por Final",
+            "cancelado" => "Cancelado"
+        ];
 
         return view('Academico::relatoriosmatriculasdisciplina.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'periodos', 'disciplinas', 'polos', 'situacao'));
     }
@@ -132,7 +133,8 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
         $date = new Carbon();
 
-        $mpdf = new \mPDF('c', 'A4', '', '', 15, 15, 16, 16, 9, 9);
+        $configs = ['c', 'A4', '', '', 15, 15, 16, 16, 9, 9];
+        $mpdf = new Mpdf($configs);
 
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Relatório de alunos da Disciplina: ' . $disciplina[0]);
@@ -179,7 +181,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
         $date = new Carbon();
 
-        Excel::create('Relatorio de matrículas da disciplina '.$disciplina[0], function ($excel) use ($turma, $date, $alunos, $disciplina) {
+        Excel::create('Relatorio de matrículas da disciplina ' . $disciplina[0], function ($excel) use ($turma, $date, $alunos, $disciplina) {
             $excel->sheet($turma->trm_nome, function ($sheet) use ($turma, $date, $alunos, $disciplina) {
                 // Cabecalho
                 $objDraw = new \PHPExcel_Worksheet_Drawing();
@@ -216,16 +218,16 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
                 foreach ($alunos as $aluno) {
                     $data = [
-                      $aluno->mat_id,
-                      $aluno->pes_nome,
-                      $aluno->pes_email,
-                      $aluno->pol_nome,
-                      $aluno->pes_nascimento,
-                      $aluno->rg,
-                      $aluno->cpf,
-                      $aluno->pes_pai,
-                      $aluno->pes_mae,
-                      $aluno->situacao_matricula
+                        $aluno->mat_id,
+                        $aluno->pes_nome,
+                        $aluno->pes_email,
+                        $aluno->pol_nome,
+                        $aluno->pes_nascimento,
+                        $aluno->rg,
+                        $aluno->cpf,
+                        $aluno->pes_pai,
+                        $aluno->pes_mae,
+                        $aluno->situacao_matricula
                     ];
 
                     $sheet->appendRow($data);
