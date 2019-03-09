@@ -331,7 +331,7 @@ class MapeamentoNotasRepository extends BaseRepository
             $conceitosAprovacao = json_decode($configuracoesCurso['conceitos_aprovacao'], true);
 
             $situacaoMatricula = 'reprovado_media';
-            if (in_array($notas['mof_conceito'], $conceitosAprovacao)) {
+            if (in_array($notas['mof_conceito'], $conceitosAprovacao, true)) {
                 $situacaoMatricula = 'aprovado_media';
             }
 
