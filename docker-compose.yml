@@ -1,50 +1,47 @@
-# v2 sintax
-version: '2'
+version: '3'
 
-# Named volumes
 volumes:
-  # MySQL Data
   harpia-mysql-data:
     driver: local
   harpia-postgres-data:
     driver: local
 
 services:
-  # MySQL (5.7)
   mysql:
-    image: ambientum/mysql:5.7
+    image: mysql:5.7
     container_name: harpia-mysql
     volumes:
       - harpia-mysql-data:/var/lib/mysql
     ports:
       - "3307:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=harpia
+      - MYSQL_ROOT_PASSWORD=toor
       - MYSQL_DATABASE=harpia
       - MYSQL_USER=harpia
       - MYSQL_PASSWORD=harpia
 
   pgsql:
-    image: postgres
+    image: postgres:11-alpine
     container_name: harpia-postgres
     volumes:
       - harpia-postgres-data:/var/lib/postgresql/data
     ports:
       - "5436:5432"
     environment:
+      - POSTGRES_DB=harpia
       - POSTGRES_USER=harpia
       - POSTGRES_PASSWORD=harpia
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
+    image: phpmyadmin/phpmyadmin:4.6
     container_name: harpia-phpmyadmin
-    links:
-      - mysql
     ports:
       - "8080:80"
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
+    links:
+      - mysql
 
   web:
     image: ambientum/php:7.1-apache
