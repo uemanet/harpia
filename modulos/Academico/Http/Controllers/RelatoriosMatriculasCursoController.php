@@ -113,6 +113,7 @@ class RelatoriosMatriculasCursoController extends BaseController
         $date = new Carbon();
 
         $configs = ['c', 'A4', '', '', 15, 15, 16, 16, 9, 9];
+        define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
         $mpdf = new mPDF($configs);
 
         $mpdf->mirrorMargins = 1;
