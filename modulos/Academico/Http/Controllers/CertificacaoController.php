@@ -45,8 +45,8 @@ class CertificacaoController
             flash()->error('Esse registro não existe.');
             return redirect()->back();
         }
-        define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
-        $mpdf = new Mpdf();
+
+        $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir() . '/']);
         $mpdf->addPage('L');
         $mpdf->WriteHTML(view('Academico::certificacao.print', compact('dados'))->render());
         $mpdf->Output();
