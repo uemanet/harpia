@@ -132,8 +132,7 @@ class HistoricoParcialController extends BaseController
 
         $data = 'São Luís, '.strftime('%d de %B de %Y', strtotime('today'));
 
-        define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
-        $mpdf = new Mpdf();
+        $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir() . '/']);
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Histórico Parcial - ' . $aluno->pessoa->pes_nome);
         $mpdf->addPage('P');

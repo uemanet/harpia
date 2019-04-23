@@ -39,8 +39,7 @@ class HistoricoDefinitivoController extends BaseController
         if (!empty($matriculas)) {
             $matr = $this->matriculaCursoRepository->find($matriculas['matriculas'][0])->first();
 
-            define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
-            $mpdf = new Mpdf();
+            $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir() . '/']);
 
             $cursoNome = $matr->turma->ofertacurso->curso->crs_nome;
             $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $cursoNome);
