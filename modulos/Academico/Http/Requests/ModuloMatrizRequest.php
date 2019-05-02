@@ -27,8 +27,7 @@ class ModuloMatrizRequest extends BaseRequest
             'mdo_mtc_id' => 'required',
             'mdo_nome' => 'required|min:3|max:45|',
             'mdo_descricao' => 'required|min:3|max:255',
-            'mdo_qualificacao' => 'required|min:3|max:255',
-            'mdo_competencias' => 'nullable|max:255'
+            'mdo_qualificacao' => 'required|min:3|max:255'
         ];
 
         return $rules;
