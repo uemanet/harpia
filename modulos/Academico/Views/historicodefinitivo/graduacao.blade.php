@@ -164,7 +164,7 @@
                 <td width="10%" class="center">Aprovado</td>
             </tr>
             <tr>
-                <td class="center"><strong>{{mb_strtoupper($dados['tcc']->ltc_titulo, 'UTF-8')}}</strong></td>
+                <td class="center"><strong>{{$dados['tcc']->ltc_titulo}}</strong></td>
                 <td colspan="3" class="center">
                     <p><strong>DATA</strong></p>
                     <p>{{$dados['tcc']->ltc_data_apresentacao}}</p>
