@@ -5,6 +5,11 @@ use Illuminate\Database\Migrations\Migration;
 
 class AlterAcdLancamentosTccsTable extends Migration
 {
+
+    public function __construct()
+    {
+        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+    }
     /**
      * Run the migrations.
      *
@@ -12,9 +17,9 @@ class AlterAcdLancamentosTccsTable extends Migration
      */
     public function up()
     {
-
-      DB::statement('ALTER TABLE `acd_lancamentos_tccs` CHANGE `ltc_titulo` `ltc_titulo` VARCHAR(400) NOT NULL');
-
+      Schema::table('acd_lancamentos_tccs', function (Blueprint $table) {
+          $table->string('ltc_titulo', 400)->change();
+      });
     }
 
     /**
@@ -24,8 +29,6 @@ class AlterAcdLancamentosTccsTable extends Migration
      */
     public function down()
     {
-
-      DB::statement('ALTER TABLE `acd_lancamentos_tccs` CHANGE `ltc_titulo` `ltc_titulo` VARCHAR(200) NOT NULL');
-
+      $table->string('ltc_titulo', 200)->change();
     }
 }
