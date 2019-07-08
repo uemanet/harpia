@@ -27,7 +27,7 @@ class LancamentoTccRequest extends BaseRequest
 
             'ltc_prf_id' => 'required',
             'ltc_mof_id' => 'required',
-            'ltc_titulo' => 'required|max:200',
+            'ltc_titulo' => 'required|max:400',
             'ltc_file' => 'nullable|mimes:pdf',
             'ltc_tipo' => 'required',
             'ltc_data_apresentacao'=>'required|date_format:"d/m/Y"',
