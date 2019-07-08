@@ -8,7 +8,7 @@ class AlterAcdLancamentosTccsTable extends Migration
 
     public function __construct()
     {
-        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        // DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
     }
     /**
      * Run the migrations.
@@ -29,6 +29,8 @@ class AlterAcdLancamentosTccsTable extends Migration
      */
     public function down()
     {
-      $table->string('ltc_titulo', 200)->change();
+      Schema::table('acd_lancamentos_tccs', function (Blueprint $table) {
+          $table->string('ltc_titulo', 200)->change();
+      });
     }
 }
