@@ -8,7 +8,7 @@ class AlterAcdLancamentosTccsTable extends Migration
 
     public function __construct()
     {
-        // DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
     }
     /**
      * Run the migrations.
