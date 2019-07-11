@@ -202,7 +202,7 @@
         <td class="center"><strong>REGULAMENTAÇÃO</strong></td>
     </tr>
     <tr>
-        <td style="text-align: justify;">O curso está em conformidade com a Resolução Nº 01 do CNE/CES de 08 de junho de 2007, e normas dos cursos de Pós-Graduação "Lato Sensu" da Universidade Estadual do Maranhão, aprovada pela Resolução 909/2009-CEPE/UEMA de 15 de dezembro de 2009</td>
+        <td style="text-align: justify;">“O Curso está em conformidade com a Resolução n ° 01 CNE/CES de 08 de junho de 2007 e Normas dos cursos de Pós-Graduação “Lato Sensu” da Universidade Estadual do Maranhão aprovada pela Resolução N° {{$dados['curso']->crs_resolucao}}-{{$dados['curso']->crs_autorizacao}} de {{utf8_encode(strftime('%d de %B de %Y', strtotime($dados['curso']->crs_data_autorizacao)))}}”.</td>
     </tr>
     </tbody>
 </table>
