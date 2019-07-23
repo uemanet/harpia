@@ -623,8 +623,15 @@ class MatriculaCursoRepository extends BaseRepository
             ->first();
 
         if ($disciplinaTcc) {
+
             $matriculaOferta = $this->matriculaOfertaDisciplinaRepository->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
-                ['ofd_mdc_id' => $disciplinaTcc->mdc_id, 'ofd_trm_id' => $matricula->mat_trm_id])[0];
+                ['ofd_mdc_id' => $disciplinaTcc->mdc_id, 'ofd_trm_id' => $matricula->mat_trm_id]);
+
+            if(!$matriculaOferta){
+                return false;
+            }
+
+            $matriculaOferta = array_shift($matriculaOferta);
 
             return in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final']);
         }
