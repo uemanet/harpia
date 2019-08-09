@@ -21,7 +21,7 @@
         }
 
         .heightMin td{
-            height: 7em;
+            height: 5em;
             vertical-align: top;
         }
 
@@ -202,7 +202,8 @@
         <td class="center"><strong>REGULAMENTAÇÃO</strong></td>
     </tr>
     <tr>
-        <td style="text-align: justify;">“O Curso está em conformidade com a Resolução n ° 01 CNE/CES de 08 de junho de 2007 e Normas dos cursos de Pós-Graduação “Lato Sensu” da Universidade Estadual do Maranhão aprovada pela Resolução N° {{$dados['curso']->crs_resolucao}}-{{$dados['curso']->crs_autorizacao}} de {{utf8_encode(strftime('%d de %B de %Y', strtotime($dados['curso']->crs_data_autorizacao)))}}”.</td>
+        <td style="text-align: justify;">“O Curso está em conformidade com a Resolução n ° 01 CNE/CES de 08 de junho de 2007 e Normas dos cursos de Pós-Graduação “Lato Sensu” da Universidade Estadual do Maranhão aprovada pela Resolução N° 1244/2017-CEPE/UEMA de 04 de
+            abril de 2017”.</td>
     </tr>
     </tbody>
 </table>
