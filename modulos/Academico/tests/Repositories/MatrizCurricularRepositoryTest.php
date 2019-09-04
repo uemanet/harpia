@@ -16,7 +16,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $this->table = 'acd_matrizes_curriculares';
     }
 
-    public function mock(Curso $curso, array $matriz = [])
+    public function mockData(Curso $curso, array $matriz = [])
     {
         $matriz = array_merge($matriz, ['mtc_crs_id' => $curso->crs_id]);
         $matrizCurricular = factory(Modulos\Academico\Models\MatrizCurricular::class)->create($matriz);
@@ -245,13 +245,13 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $curso = factory(Curso::class)->create();
 
         // Duas matrizes para o mesmo curso
-        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, ) = $this->mockData($curso, ['mtc_titulo' => 'Taylor']);
         $matrizes[] = $matriz;
 
-        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'May']);
+        list($matriz, ) = $this->mockData($curso, ['mtc_titulo' => 'May']);
         $matrizes[] = $matriz;
 
-        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
+        list($matriz, ) = $this->mockData($curso, ['mtc_titulo' => 'Deacon']);
         $matrizes[] = $matriz;
 
         // Paginacao sem request params
@@ -275,18 +275,18 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $curso = factory(Curso::class)->create();
 
         // Duas matrizes para o mesmo curso
-        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, ) = $this->mockData($curso, ['mtc_titulo' => 'Taylor']);
         $matrizes[] = $matriz;
 
-        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'May']);
+        list($matriz, ) = $this->mockData($curso, ['mtc_titulo' => 'May']);
         $matrizes[] = $matriz;
 
-        list($matriz, ) = $this->mock($curso, ['mtc_titulo' => 'Deacon']);
+        list($matriz, ) = $this->mockData($curso, ['mtc_titulo' => 'Deacon']);
         $matrizes[] = $matriz;
 
         // Mais um curso e mais uma matriz
         $outroCurso = factory(Curso::class)->create();
-        $this->mock($outroCurso, ['mtc_titulo' => 'Mercury']);
+        $this->mockData($outroCurso, ['mtc_titulo' => 'Mercury']);
 
         $result = $this->repo->findAllByCurso($curso->crs_id);
 
@@ -299,8 +299,8 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $curso = factory(Curso::class)->create();
 
         // Duas matrizes para o curso
-        list($primeiraMatriz, , $disciplinasPrimeiraMatriz) = $this->mock($curso);
-        list($segundaMatriz, , $disciplinasSegundaMatriz) = $this->mock($curso);
+        list($primeiraMatriz, , $disciplinasPrimeiraMatriz) = $this->mockData($curso);
+        list($segundaMatriz, , $disciplinasSegundaMatriz) = $this->mockData($curso);
 
         $ofertaCurso = factory(\Modulos\Academico\Models\OfertaCurso::class)->create([
             'ofc_crs_id' => $curso->crs_id,
@@ -316,7 +316,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
     public function testGetDisciplinasByMatrizId()
     {
         $curso = factory(Curso::class)->create();
-        list($matriz, , $disciplinas) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, , $disciplinas) = $this->mockData($curso, ['mtc_titulo' => 'Taylor']);
 
         // Sem opcoes
         $id = $matriz->mtc_id;
@@ -337,7 +337,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
     public function testVerifyIfDisciplinaExistsInMatriz()
     {
         $curso = factory(Curso::class)->create();
-        list($matriz, $modulosMatriz, $disciplinas) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, $modulosMatriz, $disciplinas) = $this->mockData($curso, ['mtc_titulo' => 'Taylor']);
         $id = $matriz->mtc_id;
 
         // Cadastra disciplina TCC
@@ -379,7 +379,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
     public function testVerifyIfNomeDisciplinaExistsInMatriz()
     {
         $curso = factory(Curso::class)->create();
-        list($matriz, $modulosMatriz, $disciplinas) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, $modulosMatriz, $disciplinas) = $this->mockData($curso, ['mtc_titulo' => 'Taylor']);
         $id = $matriz->mtc_id;
 
         $nome = 'Algebra Linear';
@@ -405,7 +405,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
     public function testVerifyIfExistsDisciplinaTccInMatriz()
     {
         $curso = factory(Curso::class)->create();
-        list($matriz, $modulosMatriz) = $this->mock($curso, ['mtc_titulo' => 'Taylor']);
+        list($matriz, $modulosMatriz) = $this->mockData($curso, ['mtc_titulo' => 'Taylor']);
         $id = $matriz->mtc_id;
 
         $result = $this->repo->verifyIfExistsDisciplinaTccInMatriz($id);

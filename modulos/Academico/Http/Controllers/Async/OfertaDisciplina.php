@@ -133,7 +133,7 @@ class OfertaDisciplina extends BaseController
                 ->getQuantMatriculasByOfertaDisciplina($oferta->ofd_id);
         }
 
-        $html = view('Academico::ofertasdisciplinas.ajax.table_ofertas_disciplinas', compact('ofertas', 'buttonDelete'))->render();
+        $html = view('Academico::ofertasdisciplinas.ajax.table_ofertas_disciplinas', compact('ofertas'))->render();
 
         return new JsonResponse(['html' => $html], 200);
     }
