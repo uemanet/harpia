@@ -247,7 +247,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testUpdateExistsDisciplinaTcc()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $moduloMatriz, $moduloDisciplina) = $data;
 
@@ -274,7 +274,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testUpdateDisciplinaTcc()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, , $moduloDisciplina) = $data;
 
@@ -291,7 +291,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testUpdatePreRequisito()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $moduloMtc, $moduloDisciplina) = $data;
 
@@ -321,7 +321,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testUpdateNoAptasPreRequisito()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $moduloMatriz, $moduloDisciplina) = $data;
 
@@ -553,7 +553,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testPaginateWithSearch()
     {
-        $this->mock();
+        $this->mockData();
         factory(ModuloDisciplina::class, 2)->create();
         factory(ModuloDisciplina::class)->create([
             'mdc_tipo_disciplina' => 'eletiva',
@@ -576,7 +576,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testPaginateWithSortAndSearch()
     {
-        $this->mock();
+        $this->mockData();
         factory(ModuloDisciplina::class, 2)->create();
         factory(ModuloDisciplina::class)->create([
             'mdc_tipo_disciplina' => 'eletiva',
@@ -619,7 +619,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testVerifyDisciplinaModulo()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list($disciplina, $modulo) = $data;
 
@@ -630,7 +630,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testVerifyDisciplinaModuloFalse()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         $disciplina = factory(Modulos\Academico\Models\Disciplina::class)->create();
 
@@ -643,7 +643,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testGetAllDisciplinasByModulo()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $modulo) = $data;
 
@@ -654,7 +654,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testGetAllDisciplinasByModuloPreRequisitos()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $modulo, $moduloDisciplina) = $data;
 
@@ -678,7 +678,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testGetAllDisciplinasNotOfertadasByModulo()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $modulo, $moduloDisciplina) = $data;
 
@@ -705,7 +705,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     public function testGetDisciplinasPreRequisitos()
     {
-        $data = $this->mock();
+        $data = $this->mockData();
 
         list(, $modulo, $moduloDisciplina) = $data;
 
@@ -728,7 +728,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
     }
 
 
-    private function mock()
+    private function mockData()
     {
         $curso = factory(Modulos\Academico\Models\Curso::class)->create([
             'crs_nvc_id' => 1,

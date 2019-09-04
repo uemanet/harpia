@@ -15,7 +15,7 @@ class DisciplinaRepositoryTest extends ModulosTestCase
         $this->table = 'acd_disciplinas';
     }
 
-    private function mock()
+    private function mockData()
     {
         $curso = factory(Modulos\Academico\Models\Curso::class)->create([
             'crs_nvc_id' => 2,
@@ -295,7 +295,7 @@ class DisciplinaRepositoryTest extends ModulosTestCase
 
     public function testBuscar()
     {
-        list($curso, $matrizCurricular) = $this->mock();
+        list($curso, $matrizCurricular) = $this->mockData();
 
         $disciplinasRainbow = factory(Disciplina::class, 4)->create([
             'dis_nvc_id' => $curso->crs_nvc_id,
@@ -320,7 +320,7 @@ class DisciplinaRepositoryTest extends ModulosTestCase
 
     public function testGetDisciplinasModulosAnteriores()
     {
-        list(, $matrizCurricular, $modulosMatriz) = $this->mock();
+        list(, $matrizCurricular, $modulosMatriz) = $this->mockData();
 
         $result = $this->repo->getDisciplinasModulosAnteriores($matrizCurricular->mtc_id, $modulosMatriz->last()->mdo_id);
 
