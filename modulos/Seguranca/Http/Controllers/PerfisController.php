@@ -198,7 +198,7 @@ class PerfisController extends BaseController
     {
         $perfil = $this->perfilRepository->find($perfilId);
 
-        if (!sizeof($perfil)) {
+        if (!$perfil) {
             flash()->error('Perfil não existe.');
             return redirect()->route('seguranca.perfis.index');
         }
