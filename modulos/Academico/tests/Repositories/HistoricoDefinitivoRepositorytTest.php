@@ -14,7 +14,7 @@ class HistoricoDefinitivoRepositorytTest extends ModulosTestCase
     protected $repo;
     protected $docrepo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(HistoricoDefinitivoRepository::class);

@@ -13,7 +13,7 @@ class ProfessorRepositoryTest extends ModulosTestCase
 {
     protected $repo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(ProfessorRepository::class);

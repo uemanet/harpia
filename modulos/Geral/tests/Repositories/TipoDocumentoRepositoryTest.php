@@ -11,7 +11,7 @@ use Modulos\Geral\Repositories\TipoDocumentoRepository;
 
 class TipoDocumentoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(TipoDocumentoRepository::class);

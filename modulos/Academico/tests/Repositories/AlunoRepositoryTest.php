@@ -18,7 +18,7 @@ class AlunoRepositoryTest extends ModulosTestCase
 {
     use Reflection;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AlunoRepository::class);

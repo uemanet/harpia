@@ -9,7 +9,7 @@ use Modulos\Academico\Repositories\MatrizCurricularRepository;
 
 class MatrizCurricularRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(MatrizCurricularRepository::class);

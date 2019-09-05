@@ -10,7 +10,7 @@ use Modulos\Geral\Repositories\TitulacaoInformacaoRepository;
 
 class TitulacaoInformacaoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(TitulacaoInformacaoRepository::class);

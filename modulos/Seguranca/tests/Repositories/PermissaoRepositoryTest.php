@@ -8,7 +8,7 @@ use Modulos\Seguranca\Repositories\PermissaoRepository;
 
 class PermissaoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(PermissaoRepository::class);

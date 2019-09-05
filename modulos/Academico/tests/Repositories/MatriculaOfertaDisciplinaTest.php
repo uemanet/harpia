@@ -13,7 +13,7 @@
 		use Reflection;
 		protected $docrepo;
 
-		public function setUp()
+		public function setUp(): void
 		{
 			parent::setUp();
 			$this->repo = $this->app->make(MatriculaOfertaDisciplinaRepository::class);
@@ -890,7 +890,7 @@
 			$this->assertEquals(1, $response);
 		}
 
-		public function tearDown()
+		public function tearDown(): void
 		{
 			Artisan::call('migrate:reset');
 			parent::tearDown();

@@ -12,7 +12,7 @@ use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 
 class SegurancaTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         putenv("IS_SECURITY_ENNABLED=TRUE");
         parent::setUp();

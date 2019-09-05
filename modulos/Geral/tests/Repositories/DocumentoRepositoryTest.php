@@ -8,7 +8,7 @@ use Modulos\Geral\Repositories\DocumentoRepository;
 
 class DocumentoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(DocumentoRepository::class);

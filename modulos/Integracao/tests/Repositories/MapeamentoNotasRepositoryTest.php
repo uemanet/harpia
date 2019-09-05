@@ -28,7 +28,7 @@ class MapeamentoNotasRepositoryTest extends ModulosTestCase
         "conceitos_aprovacao" => '["Bom","Muito Bom","Excelente"]',
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(MapeamentoNotasRepository::class);

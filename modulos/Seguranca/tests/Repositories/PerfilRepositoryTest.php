@@ -11,7 +11,7 @@ use Modulos\Seguranca\Repositories\PerfilRepository;
 
 class PerfilRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(PerfilRepository::class);

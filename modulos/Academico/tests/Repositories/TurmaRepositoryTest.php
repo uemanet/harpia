@@ -11,7 +11,7 @@ class TurmaRepositoryTest extends ModulosTestCase
 {
     protected $AmbienteTurmarepo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->AmbienteTurmarepo = $this->app->make(AmbienteTurmaRepository::class);

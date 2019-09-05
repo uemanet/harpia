@@ -10,7 +10,7 @@ use Modulos\Academico\Repositories\VinculoRepository;
 
 class VinculoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(VinculoRepository::class);

@@ -8,7 +8,7 @@ use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 
 class OfertaDisciplinaRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(OfertaDisciplinaRepository::class);

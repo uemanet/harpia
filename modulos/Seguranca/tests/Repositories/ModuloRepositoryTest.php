@@ -12,7 +12,7 @@ use Modulos\Seguranca\Repositories\ModuloRepository;
 
 class ModuloRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(ModuloRepository::class);
