@@ -11,7 +11,7 @@ class RegistroRepositorytTest extends ModulosTestCase
 {
     protected $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(Usuario::class)->create();

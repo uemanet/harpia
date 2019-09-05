@@ -10,7 +10,7 @@ use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
 class AmbienteVirtualRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AmbienteVirtualRepository::class);

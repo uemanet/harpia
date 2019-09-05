@@ -8,7 +8,7 @@ use Modulos\Academico\Repositories\DepartamentoRepository;
 
 class DepartamentoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(DepartamentoRepository::class);

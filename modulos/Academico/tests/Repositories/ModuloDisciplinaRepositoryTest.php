@@ -23,7 +23,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
     protected $docrepo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

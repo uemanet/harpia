@@ -70,13 +70,13 @@ class ModulosTestCase extends \TestCase
         parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Artisan::call('modulos:migrate');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Artisan::call('migrate:reset');
         parent::tearDown();

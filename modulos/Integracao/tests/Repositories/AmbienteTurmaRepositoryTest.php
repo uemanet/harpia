@@ -8,7 +8,7 @@ use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 
 class AmbienteTurmaRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AmbienteTurmaRepository::class);

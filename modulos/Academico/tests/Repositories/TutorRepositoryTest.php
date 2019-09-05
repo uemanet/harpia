@@ -15,7 +15,7 @@ class TutorRepositoryTest extends ModulosTestCase
 {
     use Reflection;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(TutorRepository::class);
@@ -269,7 +269,7 @@ class TutorRepositoryTest extends ModulosTestCase
         $this->assertNotEmpty($tutores, '');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Artisan::call('migrate:reset');
         parent::tearDown();

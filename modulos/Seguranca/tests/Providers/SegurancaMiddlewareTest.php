@@ -24,13 +24,13 @@ class SegurancaMiddlewareTest extends Illuminate\Foundation\Testing\TestCase
         return $app;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Artisan::call('modulos:migrate');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Artisan::call('migrate:reset');
         parent::tearDown();

@@ -11,7 +11,7 @@ use Modulos\Seguranca\Repositories\UsuarioRepository;
 
 class UsuarioRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(UsuarioRepository::class);

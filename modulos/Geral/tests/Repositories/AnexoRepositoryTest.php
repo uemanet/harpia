@@ -10,14 +10,14 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AnexoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AnexoRepository::class);
         $this->table = 'gra_anexos';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Storage::deleteDirectory('uploads');
         parent::tearDown();

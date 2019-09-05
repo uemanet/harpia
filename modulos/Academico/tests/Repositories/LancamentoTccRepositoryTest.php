@@ -11,7 +11,7 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 {
     protected $modulodisciplinaRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(LancamentoTccRepository::class);

@@ -9,7 +9,7 @@ use Modulos\Seguranca\Repositories\MenuItemRepository;
 
 class MenuItemRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(MenuItemRepository::class);

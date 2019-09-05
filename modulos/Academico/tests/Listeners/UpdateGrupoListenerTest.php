@@ -21,7 +21,7 @@ class UpdateGrupoListenerTest extends ModulosTestCase
     protected $ambiente;
     protected $sincronizacaoRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

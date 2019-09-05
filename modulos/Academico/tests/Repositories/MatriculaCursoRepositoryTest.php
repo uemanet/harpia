@@ -27,7 +27,7 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
 
     protected $docrepo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -764,9 +764,8 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
         $result = $this->repo->createMatricula($aluno->alu_id, $options);
         $this->assertEquals('error', $result['type']);
 
-        $this->expectException(\Exception::class);
-        putenv("APP_DEBUG=true");
         $result = $this->repo->createMatricula($aluno->alu_id, $options);
+        $this->assertEquals('error', $result['type']);
     }
 
     public function testFindMatriculaIdByTurmaAluno()

@@ -4,7 +4,7 @@ use Harpia\Matriz\MatrizCurricularTree;
 
 class MatrizCurricularTreeTest extends \Tests\ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }

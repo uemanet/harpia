@@ -8,7 +8,7 @@ use Modulos\Integracao\Repositories\AmbienteServicoRepository;
 
 class AmbienteServicoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AmbienteServicoRepository::class);
