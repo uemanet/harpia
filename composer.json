@@ -4,6 +4,12 @@
     "keywords": ["php", "harpia", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type":"vcs",
+            "url": "https://github.com/PedroFellipe/eloquent-table.git"
+        }
+    ],
     "require": {
         "php": "^7.2",
         "laravel/framework": "~6.0",
@@ -14,7 +20,8 @@
         "doctrine/dbal": "^2.5",
         "maatwebsite/excel": "^3.1",
         "laravel/tinker": "^1.0",
-        "stevebauman/eloquenttable": "1.1.*"
+        "stevebauman/eloquenttable": "dev-master",
+        "laravel/helpers": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

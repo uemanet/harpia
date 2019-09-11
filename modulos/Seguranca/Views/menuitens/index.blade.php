@@ -28,13 +28,13 @@
             <div class="row">
                 <form method="GET" action="{{ route('seguranca.menuitens.index') }}">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" name="mit_nome" id="mit_nome" value="{{Input::get('mit_nome')}}" placeholder="Nome">
+                        <input type="text" class="form-control" name="mit_nome" id="mit_nome" value="{{Request::input('mit_nome')}}" placeholder="Nome">
                     </div>
                     <div class="col-md-3">
                         <select name="mit_mod_id" id="mit_mod_id" class="form-control">
                             <option value="">Selecione um módulo</option>
                             @foreach($modulos as $key => $value)
-                                <option value="{{$key}}" @if($key == Input::get('mit_mod_id')) selected @endif>{{$value}}</option>
+                                <option value="{{$key}}" @if($key == Request::input('mit_mod_id')) selected @endif>{{$value}}</option>
                             @endforeach
                         </select>
                     </div>

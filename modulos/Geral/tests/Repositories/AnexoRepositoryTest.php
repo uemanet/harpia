@@ -1,6 +1,7 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
 use Stevebauman\EloquentTable\TableCollection;
@@ -31,7 +32,7 @@ class AnexoRepositoryTest extends ModulosTestCase
     private function mockUploaded($file = 'test.png')
     {
         $stub = base_path() . DIRECTORY_SEPARATOR . 'modulos/Geral/tests/Repositories/stubs/' . $file;
-        $name = str_random(8) . '.png';
+        $name = Str::random(8) . '.png';
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $name;
 
         copy($stub, $path);

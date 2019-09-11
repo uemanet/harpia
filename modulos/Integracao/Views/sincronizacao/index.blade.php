@@ -24,7 +24,7 @@
             <div class="row">
                 <form method="GET" action="{{ route('integracao.sincronizacao.index') }}">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" name="sym_table" id="sym_table" value="{{Input::get('sym_table')}}" placeholder="Nome da tabela">
+                        <input type="text" class="form-control" name="sym_table" id="sym_table" value="{{Request::input('sym_table')}}" placeholder="Nome da tabela">
                     </div>
                     <div class="col-md-3">
                       <select class="form-control" id="sym_status" name="sym_status">

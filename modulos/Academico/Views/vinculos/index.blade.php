@@ -24,7 +24,7 @@
             <div class="row">
                 <form method="GET" action="{{ route('academico.vinculos.index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Input::get('pes_nome')}}" placeholder="Nome do usuário">
+                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Request::input('pes_nome')}}" placeholder="Nome do usuário">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

@@ -23,7 +23,7 @@ class RouteResolver
     public function getName()
     {
         if ($this->permissions) {
-            return array_random($this->permissions);
+            return $this->permissions[array_rand($this->permissions)];
         }
 
         return $this->name;

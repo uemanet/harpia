@@ -27,21 +27,21 @@
                     <div class="col-md-4 @if ($errors->has('crs_id')) has-error @endif">
                         {!! Form::label('crs_id', 'Curso*') !!}
                         <div class="form-group">
-                            {!! Form::select('crs_id', $cursos, Input::get('crs_id'), ['class' => 'form-control', 'placeholder' => 'Escolha o Curso']) !!}
+                            {!! Form::select('crs_id', $cursos, Request::input('crs_id'), ['class' => 'form-control', 'placeholder' => 'Escolha o Curso']) !!}
                             @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-4 @if ($errors->has('ofc_id')) has-error @endif">
                         {!! Form::label('ofc_id', 'Oferta de Curso*') !!}
                         <div class="form-group">
-                            {!! Form::select('ofc_id', $ofertasCurso, Input::get('ofc_id'), ['class' => 'form-control']) !!}
+                            {!! Form::select('ofc_id', $ofertasCurso, Request::input('ofc_id'), ['class' => 'form-control']) !!}
                             @if ($errors->has('ofc_id')) <p class="help-block">{{ $errors->first('ofc_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-4 @if ($errors->has('trm_id')) has-error @endif">
                         {!! Form::label('trm_id', 'Turma*') !!}
                         <div class="form-group">
-                            {!! Form::select('trm_id', $turmas, Input::get('trm_id'), ['class' => 'form-control']) !!}
+                            {!! Form::select('trm_id', $turmas, Request::input('trm_id'), ['class' => 'form-control']) !!}
                             @if ($errors->has('trm_id')) <p class="help-block">{{ $errors->first('trm_id') }}</p> @endif
                         </div>
                     </div>
@@ -50,14 +50,14 @@
                     <div class="col-md-5 @if ($errors->has('pol_id')) has-error @endif">
                         {!! Form::label('pol_id', 'Polo') !!}
                         <div class="form-group">
-                            {!! Form::select('pol_id', $polos, Input::get('pol_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o polo']) !!}
+                            {!! Form::select('pol_id', $polos, Request::input('pol_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o polo']) !!}
                             @if ($errors->has('pol_id')) <p class="help-block">{{ $errors->first('pol_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-4 @if ($errors->has('mat_situacao')) has-error @endif">
                         {!! Form::label('mat_situacao', 'Situação') !!}
                         <div class="form-group">
-                            {!! Form::select('mat_situacao', $situacao, Input::get('mat_situacao'), ['class' => 'form-control']) !!}
+                            {!! Form::select('mat_situacao', $situacao, Request::input('mat_situacao'), ['class' => 'form-control']) !!}
                             @if ($errors->has('mat_situacao')) <p class="help-block">{{ $errors->first('mat_situacao') }}</p> @endif
                         </div>
                     </div>
