@@ -1,6 +1,7 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Tests\Helpers\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
@@ -153,13 +154,13 @@ class ActionButtonTest extends ModulosTestCase
          */
 
         // Modulos
-        $nomeModulo = str_replace(" ", "", str_random(7));
+        $nomeModulo = str_replace(" ", "", Str::random(7));
         factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo)
         ]);
 
-        $nomeModulo = str_replace(" ", "", str_random(7));
+        $nomeModulo = str_replace(" ", "", Str::random(7));
         factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo)
@@ -194,7 +195,7 @@ class ActionButtonTest extends ModulosTestCase
             $this->app['router']->match(['GET', 'POST'], $routeUri, $action)->name($routeName)->middleware('web', 'auth');
 
             for ($i = 0; $i < 10; $i++) {
-                $routeName = strtolower($nomeModulo . "." . str_replace(" ", "", str_random(5)));
+                $routeName = strtolower($nomeModulo . "." . str_replace(" ", "", Str::random(5)));
 
                 $permissoes[] = factory(Permissao::class)->create([
                     'prm_rota' => $routeName

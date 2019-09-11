@@ -28,7 +28,7 @@
             <div class="row">
                 <form method="GET" action="{{ route('academico.disciplinas.index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="dis_nome" id="dis_nome" value="{{Input::get('dis_nome')}}" placeholder="Nome da disciplina">
+                        <input type="text" class="form-control" name="dis_nome" id="dis_nome" value="{{Request::input('dis_nome')}}" placeholder="Nome da disciplina">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

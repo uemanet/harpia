@@ -28,7 +28,7 @@
             <div class="row">
                 <form method="GET" action="{{ route('seguranca.perfis.index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="prf_nome" id="prf_nome" value="{{Input::get('prf_nome')}}" placeholder="Nome do perfil">
+                        <input type="text" class="form-control" name="prf_nome" id="prf_nome" value="{{Request::input('prf_nome')}}" placeholder="Nome do perfil">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

@@ -121,11 +121,10 @@ class DiplomaRepositoryTest extends ModulosTestCase
         return [$matriculas, $registros];
     }
 
-    /**
-     * @expectedException \Exception
-     */
+
     public function testCreate()
     {
+        $this->expectException('Exception');
         $this->expectException(\Exception::class);
         list(, $registros) = $this->seedTable();
 

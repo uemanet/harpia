@@ -2,6 +2,7 @@
 
 use Illuminate\View\View;
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Tests\Helpers\RouteResolver;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
@@ -23,13 +24,13 @@ class MasterMenuTest extends ModulosTestCase
          */
 
         // Modulos
-        $nomeModulo = str_replace(" ", "", str_random(7));
+        $nomeModulo = str_replace(" ", "", Str::random(7));
         factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo)
         ]);
 
-        $nomeModulo = str_replace(" ", "", str_random(7));
+        $nomeModulo = str_replace(" ", "", Str::random(7));
         factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo)
@@ -57,7 +58,7 @@ class MasterMenuTest extends ModulosTestCase
             ])->prm_id;
 
             for ($i = 0; $i < 10; $i++) {
-                $routeName = strtolower($nomeModulo . "." . str_replace(" ", "", str_random(5)));
+                $routeName = strtolower($nomeModulo . "." . str_replace(" ", "", Str::random(5)));
 
                 $permissoes[] = factory(Permissao::class)->create([
                     'prm_rota' => $routeName
@@ -154,10 +155,10 @@ class MasterMenuTest extends ModulosTestCase
         $tree = array_pop($menus);
 
         $menuItem = MenuItem::where('mit_rota', '=', null)->get()->last();
-        $nonActive = new MenuNode(str_random(5), $menuItem, false);  // No nao eh folha
+        $nonActive = new MenuNode(Str::random(5), $menuItem, false);  // No nao eh folha
 
         $childItem = MenuItem::where('mit_rota', '=', null)->get()->first();
-        $nonActive->addChild(new MenuNode(str_random(5), $childItem));
+        $nonActive->addChild(new MenuNode(Str::random(5), $childItem));
 
         $this->app['request']->setRouteResolver(function () use ($userId) {
             $resolver = new RouteResolver("");
@@ -168,7 +169,7 @@ class MasterMenuTest extends ModulosTestCase
         $this->assertFalse($this->app['MasterMenu']->checkLeafIsActive($nonActive));
 
         $menuItem = MenuItem::where('mit_rota', '!=', null)->get()->last();
-        $active = new MenuNode(str_random(5), $menuItem);
+        $active = new MenuNode(Str::random(5), $menuItem);
 
         $this->app['request']->setRouteResolver(function () use ($userId, $menuItem) {
             $resolver = new RouteResolver($menuItem->mit_rota);

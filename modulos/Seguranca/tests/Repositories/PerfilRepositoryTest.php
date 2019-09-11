@@ -1,6 +1,7 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Usuario;
@@ -206,7 +207,7 @@ class PerfilRepositoryTest extends ModulosTestCase
         $usuario = factory(Usuario::class)->create();
         factory(Modulo::class, 5)->create();
 
-        $nomeModulo = str_random(7);
+        $nomeModulo = Str::random(7);
         $modulo = factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo),
@@ -220,7 +221,7 @@ class PerfilRepositoryTest extends ModulosTestCase
 
         for ($i = 0; $i < 10; $i++) {
             $permissoes[] = factory(Permissao::class)->create([
-                'prm_rota' => $nomeModulo . "." . str_random(5)
+                'prm_rota' => $nomeModulo . "." . Str::random(5)
             ]);
         }
 

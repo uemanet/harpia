@@ -28,10 +28,10 @@
             <div class="row">
                 <form method="GET" action="{{ route('seguranca.permissoes.index') }}">
                     <div class="col-md-5">
-                        <input type="text" class="form-control" name="prm_nome" id="prm_nome" value="{{Input::get('prm_nome')}}" placeholder="Nome da permissão">
+                        <input type="text" class="form-control" name="prm_nome" id="prm_nome" value="{{Request::input('prm_nome')}}" placeholder="Nome da permissão">
                     </div>
                     <div class="col-md-5">
-                        <input type="text" class="form-control" name="prm_rota" id="prm_rota" value="{{Input::get('prm_rota')}}" placeholder="Nome da rota">
+                        <input type="text" class="form-control" name="prm_rota" id="prm_rota" value="{{Request::input('prm_rota')}}" placeholder="Nome da rota">
                     </div>
                     <div class="col-md-2">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

@@ -41,11 +41,9 @@ class NodeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @expectedException \ErrorException
-     */
     public function testAddChildThrowsErrorException()
     {
+        $this->expectException('Exception');
         $node = new Node(); // Is a leaf
         $toAdd = new Node(); // Also a leaf
         $node->addChild($toAdd);

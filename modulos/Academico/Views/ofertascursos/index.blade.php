@@ -28,10 +28,10 @@
             <div class="row">
                 <form method="GET" action="{{ route('academico.ofertascursos.index') }}">
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="ofc_ano" id="ofc_ano" value="{{Input::get('ofc_ano')}}" placeholder="Ano da Oferta">
+                        <input type="text" class="form-control" name="ofc_ano" id="ofc_ano" value="{{Request::input('ofc_ano')}}" placeholder="Ano da Oferta">
                     </div>
                     <div class="col-md-5">
-                        <input type="text" class="form-control" name="crs_nome" id="crs_nome" value="{{Input::get('crs_nome')}}" placeholder="Nome do Curso">
+                        <input type="text" class="form-control" name="crs_nome" id="crs_nome" value="{{Request::input('crs_nome')}}" placeholder="Nome do Curso">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
