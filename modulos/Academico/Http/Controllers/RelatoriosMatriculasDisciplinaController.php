@@ -2,6 +2,8 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use App\Exports\MatriculaDisciplinaReportExport;
+use App\Exports\MatriculaReportExport;
 use Excel;
 use Validator;
 use Mpdf\Mpdf;
@@ -178,70 +180,10 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
         $alunos = $this->matriculaDisciplinaRepository->getAllAlunosBySituacao($turmaId, $ofertaId, $situacao, $poloId);
 
         $disciplina = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome');
+
         $turma = $this->turmaRepository->find($turmaId);
 
-        $date = new Carbon();
+        return Excel::download(new MatriculaDisciplinaReportExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $alunos, $disciplina, $turma), 'Relatório de alunos da disciplina: ' . $disciplina[0].'.xlsx');
 
-        Excel::create('Relatorio de matrículas da disciplina ' . $disciplina[0], function ($excel) use ($turma, $date, $alunos, $disciplina) {
-            $excel->sheet($turma->trm_nome, function ($sheet) use ($turma, $date, $alunos, $disciplina) {
-                // Cabecalho
-                $objDraw = new \PHPExcel_Worksheet_Drawing();
-                $objDraw->setPath(public_path('/img/logo_oficial.png'));
-                $objDraw->setCoordinates('A1');
-                $objDraw->setWidthAndHeight(230, 70);
-                $objDraw->setWorksheet($sheet);
-
-                $sheet->cell('B1', function ($cell) use ($disciplina) {
-                    $cell->setValue('Relatório de alunos da disciplina: ' . $disciplina[0]);
-                });
-
-                $sheet->cell('B2', function ($cell) use ($date) {
-                    $cell->setValue('Emitido em: ' . $date->format('d/m/Y H:i:s'));
-                });
-
-                $sheet->cell('B3', function ($cell) use ($turma) {
-                    $cell->setValue('Turma: ' . $turma->trm_nome);
-                });
-
-                // Dados
-                $sheet->appendRow(5, [
-                    'Matrícula',
-                    'Aluno',
-                    'Email',
-                    'Polo',
-                    'Data de Nascimento',
-                    'Identidade',
-                    'CPF',
-                    'Nome do Pai',
-                    'Nome da Mãe',
-                    'Situação'
-                ]);
-
-                foreach ($alunos as $aluno) {
-                    $data = [
-                        $aluno->mat_id,
-                        $aluno->pes_nome,
-                        $aluno->pes_email,
-                        $aluno->pol_nome,
-                        $aluno->pes_nascimento,
-                        $aluno->rg,
-                        $aluno->cpf,
-                        $aluno->pes_pai,
-                        $aluno->pes_mae,
-                        $aluno->situacao_matricula
-                    ];
-
-                    $sheet->appendRow($data);
-                }
-
-                $sheet->mergeCells('B1:F1');
-                $sheet->mergeCells('B2:F2');
-                $sheet->mergeCells('B3:F3');
-
-                $sheet->cells('B1:B3', function ($cells) {
-                    $cells->setAlignment('center');
-                });
-            });
-        })->download('xls');
     }
 }

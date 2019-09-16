@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\ExcelStyleServiceProvider;
+
 return [
 
     /*
@@ -156,6 +158,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        ExcelStyleServiceProvider::class,
 
         /*
          * Provider de configuracao dos modulos

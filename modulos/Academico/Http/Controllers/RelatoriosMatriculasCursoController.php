@@ -2,7 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
-use App\Exports\MatriculaExport;
+use App\Exports\MatriculaReportExport;
 use Excel;
 use Validator;
 use Mpdf\Mpdf;
@@ -137,8 +137,6 @@ class RelatoriosMatriculasCursoController extends BaseController
 
     public function postXls(Request $request)
     {
-
-
         $rules = [
             'crs_id' => 'required',
             'ofc_id' => 'required',
@@ -164,73 +162,7 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $turma = $this->turmaRepository->find($turmaId);
 
-        return Excel::download(new MatriculaExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $matriculas, $curso, $turma), 'Relatório de alunos do curso: ' . $curso->crs_nome.'.xlsx');
+        return Excel::download(new MatriculaReportExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $matriculas, $curso, $turma), 'Relatório de alunos do curso: ' . $curso->crs_nome.'.xlsx');
 
-
-        $date = new Carbon();
-
-        Excel::create('Relatorio de matrículas da turma '.$turma->trm_nome, function ($excel) use ($curso, $turma, $date, $matriculas) {
-            $excel->sheet($turma->trm_nome, function ($sheet) use ($curso, $turma, $date, $matriculas) {
-                // Cabecalho
-                $objDraw = new \PHPExcel_Worksheet_Drawing();
-                $objDraw->setPath(public_path('/img/logo_oficial.png'));
-                $objDraw->setCoordinates('A1');
-                $objDraw->setWidthAndHeight(230, 70);
-                $objDraw->setWorksheet($sheet);
-
-                $sheet->cell('B1', function ($cell) use ($curso) {
-                    $cell->setValue('Relatório de alunos do curso: ' . $curso->crs_nome);
-                });
-
-                $sheet->cell('B2', function ($cell) use ($date) {
-                    $cell->setValue('Emitido em: ' . $date->format('d/m/Y H:i:s'));
-                });
-
-                $sheet->cell('B3', function ($cell) use ($turma) {
-                    $cell->setValue('Turma: ' . $turma->trm_nome);
-                });
-
-                // Dados
-                $sheet->appendRow(5, [
-                    'Matrícula',
-                    'Aluno',
-                    'Email',
-                    'Polo',
-                    'Grupo',
-                    'Data de Nascimento',
-                    'Identidade',
-                    'CPF',
-                    'Nome do Pai',
-                    'Nome da Mãe',
-                    'Situação',
-                ]);
-
-                foreach ($matriculas as $matricula) {
-                    $data = [
-                        $matricula->mat_id,
-                        $matricula->pes_nome,
-                        $matricula->pes_email,
-                        $matricula->pol_nome,
-                        $matricula->grp_nome,
-                        $matricula->pes_nascimento,
-                        $matricula->rg,
-                        $matricula->cpf,
-                        $matricula->pes_pai,
-                        $matricula->pes_mae,
-                        $matricula->situacao_matricula_curso
-                    ];
-
-                    $sheet->appendRow($data);
-                }
-
-                $sheet->mergeCells('B1:F1');
-                $sheet->mergeCells('B2:F2');
-                $sheet->mergeCells('B3:F3');
-
-                $sheet->cells('B1:B3', function ($cells) {
-                    $cells->setAlignment('center');
-                });
-            });
-        })->download('xls');
     }
 }
