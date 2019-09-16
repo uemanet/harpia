@@ -9,9 +9,10 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Events\BeforeExport;
 
 
-class MatriculaExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithEvents
+class MatriculaReportExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithEvents
 {
 
     protected $invoices;
@@ -33,19 +34,47 @@ class MatriculaExport implements FromCollection, WithMapping, WithHeadings, Shou
     public function registerEvents(): array
     {
         return [
+
             AfterSheet::class => function(AfterSheet $event) {
                 $event->sheet->getDelegate()->mergeCells('A1:K1');
                 $event->sheet->getDelegate()->mergeCells('A2:K2');
                 $event->sheet->getDelegate()->mergeCells('A3:K3');
+                $event->sheet->styleCells(
+                    'A1:K1',
+                    [
+                        'font' => [
+                            'bold' => true,
+                        ]
+                    ]
+                );
+                $event->sheet->styleCells(
+                    'A2:K2',
+                    [
+                        'font' => [
+                            'bold' => true,
+                        ]
+                    ]
+                );
+                $event->sheet->styleCells(
+                    'A3:K3',
+                    [
+                        'font' => [
+                            'bold' => true,
+                        ]
+                    ]
+                );
+                $event->sheet->styleCells(
+                    'A4:K4',
+                    [
+                        'font' => [
+                            'bold' => true,
+                        ]
+                    ]
+                );
             },
+
         ];
     }
-
-    public static function afterSheet(AfterSheet $event)
-    {
-        //
-    }
-
 
     public function headings(): array
     {
