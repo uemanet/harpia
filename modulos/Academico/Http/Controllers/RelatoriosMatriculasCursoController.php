@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use App\Exports\MatriculaExport;
 use Excel;
 use Validator;
 use Mpdf\Mpdf;
@@ -136,6 +137,8 @@ class RelatoriosMatriculasCursoController extends BaseController
 
     public function postXls(Request $request)
     {
+
+
         $rules = [
             'crs_id' => 'required',
             'ofc_id' => 'required',
@@ -158,7 +161,11 @@ class RelatoriosMatriculasCursoController extends BaseController
         ]);
 
         $curso = $this->turmaRepository->findCursoByTurma($turmaId);
+
         $turma = $this->turmaRepository->find($turmaId);
+
+        return Excel::download(new MatriculaExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $matriculas, $curso, $turma), 'Relatório de alunos do curso: ' . $curso->crs_nome.'.xlsx');
+
 
         $date = new Carbon();
 
