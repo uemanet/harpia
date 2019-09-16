@@ -36,11 +36,11 @@ class MatriculaDisciplinaReportExport implements FromCollection, WithMapping, Wi
         return [
 
             AfterSheet::class => function(AfterSheet $event) {
-                $event->sheet->getDelegate()->mergeCells('A1:K1');
-                $event->sheet->getDelegate()->mergeCells('A2:K2');
-                $event->sheet->getDelegate()->mergeCells('A3:K3');
+                $event->sheet->getDelegate()->mergeCells('A1:J1');
+                $event->sheet->getDelegate()->mergeCells('A2:J2');
+                $event->sheet->getDelegate()->mergeCells('A3:J3');
                 $event->sheet->styleCells(
-                    'A1:K1',
+                    'A1:J1',
                     [
                         'font' => [
                             'bold' => true,
@@ -48,7 +48,7 @@ class MatriculaDisciplinaReportExport implements FromCollection, WithMapping, Wi
                     ]
                 );
                 $event->sheet->styleCells(
-                    'A2:K2',
+                    'A2:J2',
                     [
                         'font' => [
                             'bold' => true,
@@ -56,7 +56,7 @@ class MatriculaDisciplinaReportExport implements FromCollection, WithMapping, Wi
                     ]
                 );
                 $event->sheet->styleCells(
-                    'A3:K3',
+                    'A3:J3',
                     [
                         'font' => [
                             'bold' => true,
@@ -64,7 +64,7 @@ class MatriculaDisciplinaReportExport implements FromCollection, WithMapping, Wi
                     ]
                 );
                 $event->sheet->styleCells(
-                    'A4:K4',
+                    'A4:J4',
                     [
                         'font' => [
                             'bold' => true,
