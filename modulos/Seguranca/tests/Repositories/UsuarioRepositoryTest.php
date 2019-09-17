@@ -5,7 +5,7 @@ use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Models\Documento;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Usuario;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Seguranca\Repositories\UsuarioRepository;
 

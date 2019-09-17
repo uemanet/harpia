@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\QueryException;
 use Modulos\Academico\Models\NivelCurso;
 use Modulos\Academico\Models\MatrizCurricular;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Models\ConfiguracaoCurso;
 use Modulos\Academico\Repositories\CursoRepository;

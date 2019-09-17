@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 use Modulos\Academico\Models\Curso;
 use Modulos\Geral\Repositories\DocumentoRepository;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Tests\ModulosTestCase;
 
 class ModuloDisciplinaRepositoryTest extends ModulosTestCase

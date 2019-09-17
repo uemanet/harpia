@@ -11,7 +11,7 @@ use Modulos\Academico\Models\Registro;
 use Modulos\Academico\Models\Matricula;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\Collection;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Academico\Repositories\RegistroRepository;

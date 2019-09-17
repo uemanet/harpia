@@ -3,7 +3,7 @@
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\ModuloMatriz;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Modulos\Academico\Repositories\ModuloMatrizRepository;
 
 class ModuloMatrizRepositoryTest extends ModulosTestCase

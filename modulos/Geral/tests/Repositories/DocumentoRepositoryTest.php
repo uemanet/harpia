@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Documento;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\DocumentoRepository;
 

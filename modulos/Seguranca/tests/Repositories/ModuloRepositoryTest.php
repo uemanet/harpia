@@ -6,7 +6,7 @@ use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Seguranca\Models\Permissao;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 use Modulos\Seguranca\Repositories\ModuloRepository;

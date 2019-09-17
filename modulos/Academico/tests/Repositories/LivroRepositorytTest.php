@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Livro;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\LivroRepository;
 

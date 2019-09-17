@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Turma;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Repositories\AmbienteTurmaRepository;

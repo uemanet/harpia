@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Titulacao;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\TitulacaoRepository;
 

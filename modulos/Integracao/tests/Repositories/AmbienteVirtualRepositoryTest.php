@@ -4,7 +4,7 @@ use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Turma;
 use Modulos\Integracao\Models\AmbienteTurma;
 use Modulos\Integracao\Models\AmbienteVirtual;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 

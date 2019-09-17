@@ -7,7 +7,7 @@ use Modulos\Academico\Models\Tutor;
 use Modulos\Geral\Models\Documento;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Academico\Models\TutorGrupo;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TutorRepository;
 
