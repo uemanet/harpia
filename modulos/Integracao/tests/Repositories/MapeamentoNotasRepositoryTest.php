@@ -11,7 +11,7 @@ use Harpia\Moodle\Facades\Moodle;
 use GuzzleHttp\Handler\MockHandler;
 use Illuminate\Support\Facades\Schema;
 use Modulos\Integracao\Models\MapeamentoNota;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Modulos\Academico\Models\OfertaDisciplina;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Integracao\Repositories\MapeamentoNotasRepository;

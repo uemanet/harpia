@@ -3,7 +3,7 @@
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Models\NivelCurso;
 use Modulos\Academico\Repositories\NivelCursoRepository;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Tests\ModulosTestCase;
 use Illuminate\Database\Eloquent\Collection;
 use Modulos\Academico\Repositories\LivroRepository;

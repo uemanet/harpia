@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Seguranca\Models\Permissao;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Seguranca\Repositories\PermissaoRepository;
 

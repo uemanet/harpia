@@ -170,7 +170,7 @@ return [
          * Extra providers
          */
         Collective\Html\HtmlServiceProvider::class,
-        Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
+        Uemanet\EloquentTable\Provider\EloquentTableServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
 

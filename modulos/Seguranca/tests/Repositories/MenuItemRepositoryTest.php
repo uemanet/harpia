@@ -3,7 +3,7 @@
 use Tests\ModulosTestCase;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\MenuItem;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Seguranca\Repositories\MenuItemRepository;
 

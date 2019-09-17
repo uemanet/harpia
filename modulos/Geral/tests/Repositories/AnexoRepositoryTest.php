@@ -4,7 +4,7 @@ use Tests\ModulosTestCase;
 use Illuminate\Support\Str;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\AnexoRepository;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;

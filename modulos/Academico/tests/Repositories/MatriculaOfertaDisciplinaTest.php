@@ -2,7 +2,7 @@
 
 	use Tests\ModulosTestCase;
 	use Tests\Helpers\Reflection;
-	use Stevebauman\EloquentTable\TableCollection;
+	use Uemanet\EloquentTable\TableCollection;
 	use Illuminate\Pagination\LengthAwarePaginator;
 	use Modulos\Geral\Repositories\DocumentoRepository;
 	use Modulos\Academico\Models\MatriculaOfertaDisciplina;

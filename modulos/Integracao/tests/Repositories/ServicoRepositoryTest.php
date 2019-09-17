@@ -4,7 +4,7 @@ use Tests\ModulosTestCase;
 use Modulos\Integracao\Models\Servico;
 use Modulos\Integracao\Models\AmbienteVirtual;
 use Modulos\Integracao\Models\AmbienteServico;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Integracao\Repositories\ServicoRepository;
 

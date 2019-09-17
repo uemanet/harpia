@@ -3,7 +3,7 @@
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Models\PeriodoLetivo;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 

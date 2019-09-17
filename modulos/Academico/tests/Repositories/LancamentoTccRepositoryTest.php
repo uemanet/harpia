@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\LancamentoTcc;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\LancamentoTccRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
