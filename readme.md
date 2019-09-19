@@ -92,4 +92,4 @@ Laravel
 
 O sistema foi desenvolvido utilizando o framework Laravel 6.0. Caso tenha alguma dúvida na configuração, instalação de dependências, ou para entender o funcionamento do framework, você pode utilizar a documentação no site oficial do Laravel.
 
-[https://laravel.com/docs/5.5](https://laravel.com/docs/6.0)
+[https://laravel.com/docs/6.0](https://laravel.com/docs/6.0)
