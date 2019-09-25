@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\LancamentoTcc;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\LancamentoTccRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
@@ -11,7 +11,7 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 {
     protected $modulodisciplinaRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(LancamentoTccRepository::class);

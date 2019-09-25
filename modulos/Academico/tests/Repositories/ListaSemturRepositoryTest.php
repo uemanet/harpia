@@ -9,7 +9,7 @@ class ListaSemturRepositoryTest extends ModulosTestCase
 {
     protected $repo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(ListaSemturRepository::class);

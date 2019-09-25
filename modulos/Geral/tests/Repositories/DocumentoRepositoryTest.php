@@ -2,13 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Documento;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\DocumentoRepository;
 
 class DocumentoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(DocumentoRepository::class);

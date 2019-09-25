@@ -21,7 +21,7 @@ class UpdateProfessorDisciplinaListenerTest extends ModulosTestCase
     protected $ofertaDisciplina;
     protected $sincronizacaoRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

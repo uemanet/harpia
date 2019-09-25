@@ -3,13 +3,13 @@
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Turma;
 use Modulos\Academico\Models\PeriodoLetivo;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 
 class PeriodoLetivoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(PeriodoLetivoRepository::class);

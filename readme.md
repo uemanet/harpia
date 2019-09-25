@@ -11,8 +11,8 @@ Tecnologias utilizadas:
 -----------------------
 Backend:
 --------
- * PHP 7.1+
- * Laravel Framework 5.5
+ * PHP 7.2+
+ * Laravel Framework 6.0
 
 Frontend:
 ---------
@@ -24,7 +24,7 @@ Frontend:
 
 Requerimentos do sistema
 ------------
- * PHP >= 7.1
+ * PHP >= 7.2
  * OpenSSL PHP Extension
  * PDO PHP Extension
  * Mbstring PHP Extension
@@ -90,6 +90,6 @@ Criando um virtual host(opcional)
 Laravel
 ------------
 
-O sistema foi desenvolvido utilizando o framework Laravel 5.5. Caso tenha alguma dúvida na configuração, instalação de dependências, ou para entender o funcionamento do framework, você pode utilizar a documentação no site oficial do Laravel.
+O sistema foi desenvolvido utilizando o framework Laravel 6.0. Caso tenha alguma dúvida na configuração, instalação de dependências, ou para entender o funcionamento do framework, você pode utilizar a documentação no site oficial do Laravel.
 
-[https://laravel.com/docs/5.5](https://laravel.com/docs/5.5)
+[https://laravel.com/docs/6.0](https://laravel.com/docs/6.0)

@@ -2,13 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Polo;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\PoloRepository;
 
 class PoloRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(PoloRepository::class);

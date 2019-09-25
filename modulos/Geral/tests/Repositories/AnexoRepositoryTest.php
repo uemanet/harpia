@@ -1,23 +1,24 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\AnexoRepository;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AnexoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AnexoRepository::class);
         $this->table = 'gra_anexos';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Storage::deleteDirectory('uploads');
         parent::tearDown();
@@ -31,7 +32,7 @@ class AnexoRepositoryTest extends ModulosTestCase
     private function mockUploaded($file = 'test.png')
     {
         $stub = base_path() . DIRECTORY_SEPARATOR . 'modulos/Geral/tests/Repositories/stubs/' . $file;
-        $name = str_random(8) . '.png';
+        $name = Str::random(8) . '.png';
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $name;
 
         copy($stub, $path);

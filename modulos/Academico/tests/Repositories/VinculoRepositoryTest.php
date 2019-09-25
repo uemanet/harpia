@@ -4,13 +4,13 @@ use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Curso;
 use Modulos\Academico\Models\Vinculo;
 use Modulos\Seguranca\Models\Usuario;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\VinculoRepository;
 
 class VinculoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(VinculoRepository::class);

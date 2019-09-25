@@ -21,7 +21,7 @@ class CreateGrupoListenerTest extends ModulosTestCase
     protected $turma;
     protected $grupo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);

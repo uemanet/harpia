@@ -26,7 +26,7 @@ class ConfiguracaoRepositoryTest extends TestCase
         return $app;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -202,7 +202,7 @@ class ConfiguracaoRepositoryTest extends TestCase
         $this->assertEquals($this->repo->getAll(), $data);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Artisan::call('migrate:reset');
         parent::tearDown();

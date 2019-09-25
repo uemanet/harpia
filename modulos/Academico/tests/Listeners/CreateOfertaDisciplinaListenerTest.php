@@ -21,7 +21,7 @@ class CreateOfertaDisciplinaListenerTest extends ModulosTestCase
     protected $ofertaDisciplina;
     protected $sincronizacaoRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);

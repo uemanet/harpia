@@ -23,7 +23,7 @@ class UpdateSituacaoMatriculaListenerTest extends ModulosTestCase
     protected $grupo;
     protected $matricula;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);

@@ -2,13 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Modalidade;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\ModalidadeRepository;
 
 class ModalidadeRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(ModalidadeRepository::class);

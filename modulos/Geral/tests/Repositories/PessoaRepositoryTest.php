@@ -6,14 +6,14 @@ use Modulos\Academico\Models\Aluno;
 use Modulos\Geral\Models\Documento;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Integracao\Models\Sincronizacao;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
 use Modulos\Geral\Repositories\PessoaRepository;
 
 class PessoaRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(PessoaRepository::class);

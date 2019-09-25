@@ -13,7 +13,9 @@ class AlterGraAnexosTable extends Migration
     public function up()
     {
         Schema::table('gra_anexos', function (Blueprint $table) {
-            $table->dropForeign(['anx_tax_id']);
+            if (DB::getDriverName() != 'sqlite') {
+                $table->dropForeign(['anx_tax_id']);
+            }
             $table->dropColumn(['anx_tax_id']);
         });
 
