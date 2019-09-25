@@ -1,6 +1,8 @@
 <?php
 
+
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\Usuario;
@@ -26,7 +28,7 @@ class ReloadCacheListenerTest extends ModulosTestCase
 
         // Modulos
         factory(Modulo::class, 2)->create();
-        $nomeModulo = str_random(7);
+        $nomeModulo = Str::random(7);
         $modulo = factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo),
@@ -49,7 +51,7 @@ class ReloadCacheListenerTest extends ModulosTestCase
 
         for ($i = 0; $i < 10; $i++) {
             $permissoes[] = factory(Permissao::class)->create([
-                'prm_rota' => strtolower($nomeModulo) . "." . str_random(5)
+                'prm_rota' => strtolower($nomeModulo) . "." . Str::random(5)
             ])->prm_id;
         }
 

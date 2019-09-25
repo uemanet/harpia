@@ -2,13 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\TutorGrupo;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
 
 class TutorGrupoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(TutorGrupoRepository::class);
@@ -240,7 +240,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
         $this->assertNotEmpty($response);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Artisan::call('migrate:reset');
         parent::tearDown();

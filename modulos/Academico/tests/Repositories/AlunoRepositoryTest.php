@@ -10,7 +10,7 @@ use Modulos\Academico\Models\Vinculo;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\Matricula;
 use Illuminate\Support\Facades\Artisan;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\AlunoRepository;
 
@@ -18,7 +18,7 @@ class AlunoRepositoryTest extends ModulosTestCase
 {
     use Reflection;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AlunoRepository::class);

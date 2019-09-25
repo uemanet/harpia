@@ -5,7 +5,7 @@ use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Models\Documento;
 use Modulos\Academico\Models\Professor;
 use Illuminate\Database\Eloquent\Collection;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\ProfessorRepository;
 
@@ -13,7 +13,7 @@ class ProfessorRepositoryTest extends ModulosTestCase
 {
     protected $repo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(ProfessorRepository::class);

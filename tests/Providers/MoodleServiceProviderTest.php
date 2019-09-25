@@ -11,7 +11,7 @@ class MoodleServiceProviderTest extends TestCase
 {
     protected $moodleServiceProvider;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->moodleServiceProvider = new Moodle();
     }

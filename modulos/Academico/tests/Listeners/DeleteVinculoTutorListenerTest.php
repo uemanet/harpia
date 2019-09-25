@@ -24,7 +24,7 @@ class DeleteVinculoTutorListenerTest extends ModulosTestCase
     protected $tutor;
     protected $tutorGrupo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);

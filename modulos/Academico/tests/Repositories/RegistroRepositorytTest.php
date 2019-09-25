@@ -3,7 +3,7 @@
 use Tests\ModulosTestCase;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\Registro;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\RegistroRepository;
 
@@ -11,7 +11,7 @@ class RegistroRepositorytTest extends ModulosTestCase
 {
     protected $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(Usuario::class)->create();

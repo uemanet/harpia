@@ -2,7 +2,7 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Turma;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
@@ -11,7 +11,7 @@ class TurmaRepositoryTest extends ModulosTestCase
 {
     protected $AmbienteTurmarepo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->AmbienteTurmarepo = $this->app->make(AmbienteTurmaRepository::class);

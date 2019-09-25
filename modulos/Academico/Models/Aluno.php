@@ -5,7 +5,7 @@ namespace Modulos\Academico\Models;
 use Illuminate\Pagination\Paginator;
 use Modulos\Core\Model\BaseModel;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 
 class Aluno extends BaseModel
 {

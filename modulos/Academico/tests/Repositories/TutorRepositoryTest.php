@@ -7,7 +7,7 @@ use Modulos\Academico\Models\Tutor;
 use Modulos\Geral\Models\Documento;
 use Illuminate\Support\Facades\Artisan;
 use Modulos\Academico\Models\TutorGrupo;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\TutorRepository;
 
@@ -15,7 +15,7 @@ class TutorRepositoryTest extends ModulosTestCase
 {
     use Reflection;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(TutorRepository::class);
@@ -269,7 +269,7 @@ class TutorRepositoryTest extends ModulosTestCase
         $this->assertNotEmpty($tutores, '');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Artisan::call('migrate:reset');
         parent::tearDown();

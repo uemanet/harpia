@@ -2,7 +2,7 @@
 
 	use Tests\ModulosTestCase;
 	use Tests\Helpers\Reflection;
-	use Stevebauman\EloquentTable\TableCollection;
+	use Uemanet\EloquentTable\TableCollection;
 	use Illuminate\Pagination\LengthAwarePaginator;
 	use Modulos\Geral\Repositories\DocumentoRepository;
 	use Modulos\Academico\Models\MatriculaOfertaDisciplina;
@@ -13,7 +13,7 @@
 		use Reflection;
 		protected $docrepo;
 
-		public function setUp()
+		public function setUp(): void
 		{
 			parent::setUp();
 			$this->repo = $this->app->make(MatriculaOfertaDisciplinaRepository::class);
@@ -272,7 +272,7 @@
 
 		public function testGetAllMatriculasByAlunoModuloMatriz()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			$matriculaoferta = $data[0];
 			$modulomatriz = $data[1];
@@ -282,7 +282,7 @@
 			$this->assertNotEmpty($response);
 		}
 
-		private function mock()
+		private function mockData()
 		{
 			$curso = factory(Modulos\Academico\Models\Curso::class)->create([
 				'crs_nvc_id' => 1,
@@ -420,7 +420,7 @@
 
 		public function testPaginateWithSearchAndOrder()
 		{
-			$this->mock();
+			$this->mockData();
 
 			$sort = [
 				'field' => 'pes_nome',
@@ -444,7 +444,7 @@
 
 		public function testPaginateWithSearchAndOrderByCpf()
 		{
-			$this->mock();
+			$this->mockData();
 
 			$sort = [
 				'field' => 'pes_nome',
@@ -471,7 +471,7 @@
 
 		public function testGetMatriculasOfertasDisciplinasByMatricula()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			$matriculaoferta = $data[0];
 
@@ -484,7 +484,7 @@
 
 		public function testGetDisciplinasCursadasByAluno()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			$matriculaoferta = $data[0];
 
@@ -519,7 +519,7 @@
 
 		public function testGetDisciplinasOfertadasNotCursadasByAluno()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			$matriculaoferta = $data[0];
 
@@ -531,7 +531,7 @@
 
 		public function testCreateMatricula()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			list(, , $ofertaDisciplina, $matriculaCurso) = $data;
 
@@ -544,7 +544,7 @@
 
 		public function testCreateMatriculaAlunoSemPreRequisitos()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			list(, $moduloMatriz, $ofertaDisciplina, $matriculaCurso, $modulodisciplina) = $data;
 
@@ -562,7 +562,7 @@
 
 		public function testCreateMatriculaAlunoReprovadoNoCurso()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			list(, , $ofertaDisciplina, $matriculaCurso) = $data;
 
@@ -613,7 +613,7 @@
 
 		public function testCreateMatriculaDuplicada()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			list(, , $ofertaDisciplina, $matriculaCurso) = $data;
 
@@ -679,7 +679,7 @@
 
 		public function testGetAlunosMatriculasLoteSemPreRequisitos()
 		{
-			$data = $this->mock();
+			$data = $this->mockData();
 
 			list(, $moduloMatriz, $ofertaDisciplina, $matriculaCurso, $modulodisciplina) = $data;
 
@@ -890,7 +890,7 @@
 			$this->assertEquals(1, $response);
 		}
 
-		public function tearDown()
+		public function tearDown(): void
 		{
 			Artisan::call('migrate:reset');
 			parent::tearDown();

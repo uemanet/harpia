@@ -5,7 +5,7 @@ namespace Modulos\Academico\Models;
 use Modulos\Core\Model\BaseModel;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 
 class Registro extends BaseModel
 {

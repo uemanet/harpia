@@ -3,7 +3,7 @@
 namespace Modulos\Core\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Stevebauman\EloquentTable\TableTrait;
+use Uemanet\EloquentTable\TableTrait;
 use Modulos\Seguranca\Observers\AuditoriaObserver;
 
 class BaseModel extends Model

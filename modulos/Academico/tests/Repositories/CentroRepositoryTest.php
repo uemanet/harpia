@@ -2,13 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Centro;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\CentroRepository;
 
 class CentroRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(CentroRepository::class);

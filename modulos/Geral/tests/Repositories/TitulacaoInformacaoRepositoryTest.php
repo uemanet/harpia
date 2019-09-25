@@ -4,13 +4,13 @@ use Tests\ModulosTestCase;
 use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Models\Titulacao;
 use Modulos\Geral\Models\TitulacaoInformacao;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Geral\Repositories\TitulacaoInformacaoRepository;
 
 class TitulacaoInformacaoRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(TitulacaoInformacaoRepository::class);

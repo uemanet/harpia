@@ -50,7 +50,7 @@ class OfertasDisciplinasController extends BaseController
 
         $cursos = $this->cursoRepository->lists('crs_id', 'crs_nome');
 
-        return view('Academico::ofertasdisciplinas.index', compact('cursos', 'periodoletivo', 'actionButton'));
+        return view('Academico::ofertasdisciplinas.index', compact('cursos', 'actionButton'));
     }
 
     public function getCreate()

@@ -28,13 +28,13 @@
             <div class="row">
                 <form method="GET" action="{{ route('geral.pessoas.index') }}">
                     <div class="col-md-3">
-                        <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Input::get('pes_cpf')}}" placeholder="CPF">
+                        <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}" placeholder="CPF">
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Input::get('pes_nome')}}" placeholder="Nome">
+                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Request::input('pes_nome')}}" placeholder="Nome">
                     </div>
                     <div class="col-md-3">
-                        <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Input::get('pes_email')}}" placeholder="Email">
+                        <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Request::input('pes_email')}}" placeholder="Email">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

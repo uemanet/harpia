@@ -11,7 +11,7 @@ class AproveitamentoEstudosRepositoryTest extends ModulosTestCase
     use Reflection;
     protected $docrepo;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AproveitamentoEstudosRepository::class);

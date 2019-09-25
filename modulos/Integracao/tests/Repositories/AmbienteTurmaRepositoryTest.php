@@ -2,13 +2,13 @@
 
 use Tests\ModulosTestCase;
 use Modulos\Integracao\Models\AmbienteTurma;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Integracao\Repositories\AmbienteTurmaRepository;
 
 class AmbienteTurmaRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(AmbienteTurmaRepository::class);

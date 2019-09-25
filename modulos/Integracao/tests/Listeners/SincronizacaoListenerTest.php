@@ -18,7 +18,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
     protected $ambiente;
     protected $sincronizacaoRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->sincronizacaoRepository = $this->app->make(\Modulos\Integracao\Repositories\SincronizacaoRepository::class);

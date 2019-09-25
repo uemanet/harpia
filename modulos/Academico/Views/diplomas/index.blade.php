@@ -32,15 +32,15 @@
                 </div>
                 <div class="form-group col-md-3">
                     {!! Form::label('ofc_id', 'Oferta*', ['class' => 'control-label']) !!}
-                    {{ Form::select('ofc_id', [], null, ['class' => 'form-control', 'id' => 'ofc_id', 'value' => Input::get('ofc_id'), 'placeholder' => 'Oferta']) }}
+                    {{ Form::select('ofc_id', [], null, ['class' => 'form-control', 'id' => 'ofc_id', 'value' => Request::input('ofc_id'), 'placeholder' => 'Oferta']) }}
                 </div>
                 <div class="form-group col-md-3">
                     {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
-                    {{ Form::select('trm_id', [], null, ['class' => 'form-control', 'id' => 'trm_id', 'value' => Input::get('trm_id'), 'placeholder' => 'Turma']) }}
+                    {{ Form::select('trm_id', [], null, ['class' => 'form-control', 'id' => 'trm_id', 'value' => Request::input('trm_id'), 'placeholder' => 'Turma']) }}
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('pol_id', 'Polo*', ['class' => 'control-label']) !!}
-                    {{ Form::select('pol_id', [], null, ['class' => 'form-control', 'id' => 'pol_id', 'value' => Input::get('pol_id'), 'placeholder' => 'Polo']) }}
+                    {{ Form::select('pol_id', [], null, ['class' => 'form-control', 'id' => 'pol_id', 'value' => Request::input('pol_id'), 'placeholder' => 'Polo']) }}
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>

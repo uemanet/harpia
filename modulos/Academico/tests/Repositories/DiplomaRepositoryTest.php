@@ -4,7 +4,7 @@ use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Diploma;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Academico\Models\Registro;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\DiplomaRepository;
 
@@ -12,7 +12,7 @@ class DiplomaRepositoryTest extends ModulosTestCase
 {
     protected $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(Usuario::class)->create();
@@ -121,11 +121,10 @@ class DiplomaRepositoryTest extends ModulosTestCase
         return [$matriculas, $registros];
     }
 
-    /**
-     * @expectedException \Exception
-     */
+
     public function testCreate()
     {
+        $this->expectException('Exception');
         $this->expectException(\Exception::class);
         list(, $registros) = $this->seedTable();
 

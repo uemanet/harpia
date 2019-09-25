@@ -1,18 +1,19 @@
 <?php
 
 use Tests\ModulosTestCase;
+use Illuminate\Support\Str;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Seguranca\Models\Perfil;
 use Modulos\Seguranca\Models\Usuario;
 use Modulos\Seguranca\Models\Permissao;
-use Stevebauman\EloquentTable\TableCollection;
+use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Seguranca\Providers\Seguranca\Seguranca;
 use Modulos\Seguranca\Repositories\ModuloRepository;
 
 class ModuloRepositoryTest extends ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repo = $this->app->make(ModuloRepository::class);
@@ -209,7 +210,7 @@ class ModuloRepositoryTest extends ModulosTestCase
 
         // Modulos
         factory(Modulo::class, 2)->create();
-        $nomeModulo = str_random(7);
+        $nomeModulo = Str::random(7);
         $modulo = factory(Modulo::class)->create([
             'mod_nome' => $nomeModulo,
             'mod_slug' => strtolower($nomeModulo),
@@ -232,7 +233,7 @@ class ModuloRepositoryTest extends ModulosTestCase
 
         for ($i = 0; $i < 10; $i++) {
             $permissoes[] = factory(Permissao::class)->create([
-                'prm_rota' => strtolower($nomeModulo) . "." . str_random(5)
+                'prm_rota' => strtolower($nomeModulo) . "." . Str::random(5)
             ])->prm_id;
         }
 

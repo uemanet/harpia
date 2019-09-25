@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\ExcelStyleServiceProvider;
+
 return [
 
     /*
@@ -147,6 +149,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -155,6 +158,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        ExcelStyleServiceProvider::class,
 
         /*
          * Provider de configuracao dos modulos
@@ -166,7 +170,7 @@ return [
          * Extra providers
          */
         Collective\Html\HtmlServiceProvider::class,
-        Stevebauman\EloquentTable\EloquentTableServiceProvider::class,
+        Uemanet\EloquentTable\Provider\EloquentTableServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
 

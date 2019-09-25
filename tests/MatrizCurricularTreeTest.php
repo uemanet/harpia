@@ -4,12 +4,12 @@ use Harpia\Matriz\MatrizCurricularTree;
 
 class MatrizCurricularTreeTest extends \Tests\ModulosTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
 
-    private function mock()
+    private function mockData()
     {
         // Mock da estrutura de matriz
         $curso = factory(Modulos\Academico\Models\Curso::class)->create([
@@ -98,7 +98,7 @@ class MatrizCurricularTreeTest extends \Tests\ModulosTestCase
 
     public function testToArray()
     {
-        list($matrizCurricular, $expected) = $this->mock();
+        list($matrizCurricular, $expected) = $this->mockData();
 
         $matrizTree = new MatrizCurricularTree($matrizCurricular);
         $result = $matrizTree->toArray();
