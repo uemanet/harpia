@@ -183,7 +183,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
 
         $turma = $this->turmaRepository->find($turmaId);
 
-        return Excel::download(new MatriculaDisciplinaReportExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $alunos, $disciplina, $turma), 'Relatório de alunos da disciplina: ' . $disciplina[0].'.xlsx');
+        return Excel::download(new MatriculaDisciplinaReportExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $alunos, $disciplina, $turma), 'Relatório de alunos da disciplina: ' . str_replace("/", "-", $disciplina[0]).'.xlsx');
 
     }
 }
