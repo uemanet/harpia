@@ -174,7 +174,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'aproveitamentoestudos'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@getIndex')->name('academico.aproveitamentoestudos.index');
-        Route::get('/show/{idAluno}', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@getShow')->name('academico.aproveitamentoestudos.show');
+        Route::get('/show/{id}', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@getShow')->name('academico.aproveitamentoestudos.show');
         Route::post('/aproveitar/{ofertaId}/{matriculaId}', '\Modulos\Academico\Http\Controllers\AproveitamentoEstudosController@postAproveitarDisciplina')->name('academico.aproveitamentoestudos.aproveitardisciplina');
     });
 
