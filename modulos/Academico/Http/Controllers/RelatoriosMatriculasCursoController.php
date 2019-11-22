@@ -162,7 +162,7 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $turma = $this->turmaRepository->find($turmaId);
 
-        return Excel::download(new MatriculaReportExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $matriculas, $curso, $turma), 'Relatório de alunos do curso: ' . $curso->crs_nome.'.xlsx');
+        return Excel::download(new MatriculaReportExport(array('trm_id' => $turmaId, 'mat_situacao' => $situacao, 'pol_id' => $poloId), $matriculas, $curso, $turma), 'Relatório de alunos do curso: ' . str_replace("/", "-", $curso->crs_nome).'.xlsx');
 
     }
 }
