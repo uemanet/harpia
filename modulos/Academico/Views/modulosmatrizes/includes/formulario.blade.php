@@ -48,7 +48,7 @@
 </div>
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('mdo_qualificacao')) has-error @endif">
-        {!! Form::label('mdo_qualificacao', 'Qualificação*', ['class' => 'control-label']) !!}
+        {!! Form::label('mdo_qualificacao', 'Qualificação', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('mdo_qualificacao', old('mdo_qualificacao'), ['class' => 'form-control']) !!}
             @if ($errors->has('mdo_qualificacao')) <p class="help-block">{{ $errors->first('mdo_qualificacao') }}</p> @endif
