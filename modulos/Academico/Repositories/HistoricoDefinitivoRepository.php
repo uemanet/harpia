@@ -87,6 +87,7 @@ class HistoricoDefinitivoRepository
             })
             ->where('mdc_tipo_disciplina', '=', 'tcc')
             ->where('mof_mat_id', '=', $matricula->mat_id)
+            ->where('mof_situacao_matricula', '<>','cancelado')
             ->select('mof_id')
             ->first();
 

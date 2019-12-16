@@ -89,7 +89,7 @@ class LancamentosTccsController extends BaseController
         $turma = $this->turmaRepository->find($turmaId);
 
         $dados = $this->matriculacursoRepository->findDadosByTurmaId($turmaId);
-      
+
         if (!$turma) {
             flash()->error('Turma não existe!');
             return redirect()->back();
@@ -241,7 +241,7 @@ class LancamentosTccsController extends BaseController
 
         $disciplina = $this->lancamentotccRepository->findDisciplinaByTurma($lancamentoTcc->matriculaOferta->matriculaCurso->turma->trm_id);
 
-        return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'turma', 'aluno', 'professores', 'disciplina', 'tiposdetcc', 'matricula', 'anexo'));
+        return view('Academico::lancamentostccs.edit', compact('lancamentoTcc', 'professores', 'disciplina', 'tiposdetcc', 'anexo'));
     }
 
     public function putEdit($lancamentotccId, LancamentoTccRequest $request)
