@@ -149,7 +149,7 @@ class RelatoriosAtasFinaisController extends BaseController
         $matrizTree = new MatrizCurricularTree($ofertaCurso->matriz);
 
         // Resultados das matriculas
-        $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao);
+        $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao ? null : '');
 
         $content = view('Academico::relatoriosatasfinais.relatorioatas', [
             'curso' => $curso,
