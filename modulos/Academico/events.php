@@ -15,6 +15,7 @@
 return [
     'Modulos\Academico\Events\CreateMatriculaTurmaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateMatriculaTurmaV2Listener',
         'Modulos\Academico\Listeners\CreateMatriculaTurmaListener'
     ],
 
@@ -31,16 +32,17 @@ return [
     'Modulos\Academico\Events\CreateGrupoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateGrupoListener',
+        'Modulos\Academico\Listeners\CreateGrupoV2Listener'
     ],
 
     'Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaListener',
     ],
-
     'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
+        'Modulos\Academico\Listeners\CreateMatriculaDisciplinaV2Listener'
     ],
 
     'Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent' => [
@@ -56,10 +58,12 @@ return [
     'Modulos\Academico\Events\CreateVinculoTutorEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateVinculoTutorListener',
+        'Modulos\Academico\Listeners\CreateVinculoTutorV2Listener',
     ],
 
     'Modulos\Academico\Events\CreateOfertaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Academico\Listeners\CreateOfertaDisciplinaV2Listener',
         'Modulos\Academico\Listeners\CreateOfertaDisciplinaListener',
     ],
 

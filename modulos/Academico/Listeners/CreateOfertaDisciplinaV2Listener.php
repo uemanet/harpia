@@ -13,7 +13,7 @@ use Modulos\Academico\Events\CreateOfertaDisciplinaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Academico\Repositories\ModuloDisciplinaRepository;
 
-class CreateOfertaDisciplinaListener
+class CreateOfertaDisciplinaV2Listener
 {
     protected $pessoaRepository;
     protected $professorRepository;
@@ -48,12 +48,12 @@ class CreateOfertaDisciplinaListener
                 return;
             }
 
-            if ($oferta->turma->trm_tipo_integracao != 'v1') {
+            if ($oferta->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $professor = $this->professorRepository->find($oferta->ofd_prf_id);
@@ -71,8 +71,18 @@ class CreateOfertaDisciplinaListener
                 $teacher['password'] = "changeme";
                 $teacher['city'] = $pessoa->pes_cidade;
 
-                $data['discipline']['trm_id'] = $oferta->ofd_trm_id;
-                $data['discipline']['ofd_id'] = $oferta->ofd_id;
+                $data['discipline']['category'] = 1;
+                $data['discipline']['shortname'] = $oferta->moduloDisciplina->disciplina->dis_nome.' '.$oferta->ofd_id;
+                $data['discipline']['fullname'] = $oferta->moduloDisciplina->disciplina->dis_nome.' '.$oferta->ofd_id;
+                $data['discipline']['summaryformat'] = 1;
+                $data['discipline']['format'] = 'topics';
+                $data['discipline']['numsections'] = 0;
+
+                $data['discipline']['per_nome'] = $oferta->periodoLetivo->per_nome;
+                $data['discipline']['per_id'] = (int)$oferta->ofd_per_id;
+                $data['discipline']['trm_id'] = (int)$oferta->ofd_trm_id;
+                $data['discipline']['crs_id'] = (int)$oferta->turma->ofertaCurso->curso->crs_id;
+                $data['discipline']['ofd_id'] = (int)$oferta->ofd_id;
                 $data['discipline']['teacher'] = $teacher;
 
                 $moduloDisciplina = $this->moduloDisciplinaRepository->find($oferta->ofd_mdc_id);
@@ -87,7 +97,6 @@ class CreateOfertaDisciplinaListener
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
-
 
                 $status = 3;
 

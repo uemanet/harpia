@@ -2,10 +2,11 @@
 
 namespace Modulos\Integracao\Listeners;
 
+use Modulos\Integracao\Events\TurmaRemovidaV2Event;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
-use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
@@ -13,7 +14,7 @@ use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class TurmaMapeadaListener
+class TurmaRemovidaV2Listener
 {
     private $turmaRepository;
     private $cursoRepository;
@@ -35,38 +36,29 @@ class TurmaMapeadaListener
         $this->sincronizacaoRepository = $sincronizacaoRepository;
     }
 
-    public function handle(TurmaMapeadaEvent $event)
+    public function handle(TurmaRemovidaV2Event $event)
     {
         try {
+
             $turma = $event->getData();
 
             // ambiente virtual vinculado à turma do grupo
-            $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
+            $ambiente = $this->ambienteVirtualRepository->find($event->getExtra());
 
             if (!$ambiente) {
                 return;
             }
 
-            if ($turma->trm_tipo_integracao != 'v1') {
-                return;
-            }
-
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $data['course']['trm_id'] = $turma->trm_id;
-                $data['course']['category'] = 1;
-                $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
-                $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
-                $data['course']['summaryformat'] = 1;
-                $data['course']['format'] = 'topics';
-                $data['course']['numsections'] = 0;
 
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
@@ -76,14 +68,22 @@ class TurmaMapeadaListener
                     $status = 2;
                 }
 
-                event(new UpdateSincronizacaoEvent($turma, $status, $response['message']));
+
+                event(new UpdateSincronizacaoEvent(
+                    $turma,
+                    $status,
+                    $response['message'],
+                    $event->getAction(),
+                    null,
+                    $event->getExtra()
+                ));
             }
         } catch (ConnectException | ClientException | \Exception $exception) {
             if (env('app.debug')) {
                 throw $exception;
             }
 
-            event(new UpdateSincronizacaoEvent($event->getData(), 3, get_class($exception), $event->getAction()));
+            event(new UpdateSincronizacaoEvent($event->getData(), 3, get_class($exception), $event->getAction(), null, $event->getExtra()));
         } finally {
             return true;
         }

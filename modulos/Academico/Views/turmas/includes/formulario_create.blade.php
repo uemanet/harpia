@@ -44,11 +44,18 @@
             @if ($errors->has('trm_qtd_vagas')) <p class="help-block">{{ $errors->first('trm_qtd_vagas') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-4 @if ($errors->has('trm_integrada')) has-error @endif">
+    <div class="form-group col-md-2 @if ($errors->has('trm_integrada')) has-error @endif">
         {!! Form::label('trm_integrada', 'É integrada?*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('trm_integrada', array('0' => 'Não', '1' => 'Sim'), null, ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
             @if ($errors->has('trm_integrada')) <p class="help-block">{{ $errors->first('trm_integrada') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-2 @if ($errors->has('trm_tipo_integracao')) has-error @endif">
+        {!! Form::label('trm_tipo_integracao', 'Tipo de integração*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('trm_tipo_integracao', array('v1' => 'Versão 1', 'v2' => 'Versão 2'), null, ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
+            @if ($errors->has('trm_tipo_integracao')) <p class="help-block">{{ $errors->first('trm_tipo_integracao') }}</p> @endif
         </div>
     </div>
 </div>

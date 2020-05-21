@@ -10,7 +10,7 @@ use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class CreateMatriculaDisciplinaListener
+class CreateMatriculaDisciplinaV2Listener
 {
     protected $alunoRepository;
     protected $ambienteVirtualRepository;
@@ -39,12 +39,12 @@ class CreateMatriculaDisciplinaListener
                 return;
             }
 
-            if ($matriculaCurso->turma->trm_tipo_integracao != 'v1') {
+            if ($matriculaCurso->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
@@ -52,7 +52,7 @@ class CreateMatriculaDisciplinaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['action'] = 'CREATE';
 
                 $param['data']['enrol']['mof_id'] = $matriculaOfertaDisciplina->mof_id;
@@ -62,8 +62,13 @@ class CreateMatriculaDisciplinaListener
 
                 $param['data']['enrol']['pes_id'] = $aluno->alu_pes_id;
                 $param['data']['enrol']['ofd_id'] = $matriculaOfertaDisciplina->mof_ofd_id;
+                $param['data']['enrol']['mat_id'] = $matriculaCurso->mat_id;
+                $param['data']['enrol']['grp_id'] = $matriculaCurso->mat_grp_id;
+                $param['data']['enrol']['trm_id'] = $matriculaCurso->mat_grp_id;
 
                 $response = Moodle::send($param);
+
+
 
                 $status = 3;
 

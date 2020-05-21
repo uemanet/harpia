@@ -27,7 +27,8 @@ class TurmaRemovidaListener
         PeriodoLetivoRepository $periodoLetivoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository,
         SincronizacaoRepository $sincronizacaoRepository
-    ) {
+    )
+    {
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
