@@ -50,6 +50,32 @@ abstract class SincronizacaoEvent extends Event
         ]
     ];
 
+    /**
+     * Array com os endpoints do plugin de integração ( [tabela][acao] => endpoint )
+     * @var array
+     */
+    protected const ENDPOINTS_V2 = [
+        'acd_turmas' => [
+            'CREATE' => 'local_integracao_v2_create_course',
+            'DELETE' => 'local_integracao_v2_delete_course'
+        ],
+        'acd_ofertas_disciplinas' => [
+            'CREATE' => 'local_integracao_v2_create_discipline',
+        ],
+        'acd_grupos' => [
+            'CREATE' => 'local_integracao_v2_create_group',
+        ],
+        'acd_tutores_grupos' => [
+            'CREATE' => 'local_integracao_v2_enrol_tutor'
+        ],
+        'acd_matriculas' => [
+            'CREATE' => 'local_integracao_v2_enrol_student',
+        ],
+        'acd_matriculas_ofertas_disciplinas' => [
+            'CREATE' => 'local_integracao_v2_enrol_student_discipline'
+        ],
+    ];
+
     protected $firstAttempt = true;
 
     public function __construct(BaseModel $entry, $action, $extra = null)
@@ -65,6 +91,19 @@ abstract class SincronizacaoEvent extends Event
     {
         if (isset(self::ENDPOINTS[$this->entry->getTable()][$this->action])) {
             return self::ENDPOINTS[$this->entry->getTable()][$this->action];
+        }
+
+        return "";
+    }
+
+    /**
+     * Retorna o endpoint correspondente ao evento de sincronizacao na versão 2 da API
+     * @return string
+     */
+    public function getEndpointV2()
+    {
+        if (isset(self::ENDPOINTS_V2[$this->entry->getTable()][$this->action])) {
+            return self::ENDPOINTS_V2[$this->entry->getTable()][$this->action];
         }
 
         return "";

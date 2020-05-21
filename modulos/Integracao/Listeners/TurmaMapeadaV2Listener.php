@@ -13,7 +13,7 @@ use Modulos\Academico\Repositories\PeriodoLetivoRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class TurmaMapeadaListener
+class TurmaMapeadaV2Listener
 {
     private $turmaRepository;
     private $cursoRepository;
@@ -27,7 +27,8 @@ class TurmaMapeadaListener
         PeriodoLetivoRepository $periodoLetivoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository,
         SincronizacaoRepository $sincronizacaoRepository
-    ) {
+    )
+    {
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
@@ -47,29 +48,28 @@ class TurmaMapeadaListener
                 return;
             }
 
-            if ($turma->trm_tipo_integracao != 'v1') {
+            if ($turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $data['course']['trm_id'] = $turma->trm_id;
-                $data['course']['category'] = 1;
-                $data['course']['shortname'] = $this->turmaRepository->shortName($turma);
-                $data['course']['fullname'] = $this->turmaRepository->fullName($turma);
-                $data['course']['summaryformat'] = 1;
-                $data['course']['format'] = 'topics';
-                $data['course']['numsections'] = 0;
+                $data['course']['per_id'] = $turma->periodo->per_id;
+                $data['course']['crs_id'] = $turma->ofertacurso->curso->crs_id;
+                $data['course']['crs_nome'] = $turma->ofertacurso->curso->crs_nome;
+                $data['course']['per_nome'] = $turma->periodo->per_nome;
 
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
+
                 $status = 3;
 
                 if (array_key_exists('status', $response) && $response['status'] == 'success') {

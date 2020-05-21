@@ -5,6 +5,7 @@ namespace Modulos\Integracao\Http\Controllers;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
+use Modulos\Integracao\Events\TurmaRemovidaV2Event;
 use Modulos\Integracao\Models\AmbienteServico;
 use Modulos\Integracao\Models\Servico;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -427,10 +428,6 @@ class AmbientesVirtuaisController extends BaseController
             }
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
-
-            if ($turma->trm_integrada) {
-                event(new TurmaRemovidaEvent($turma, $ambiente));
-            }
 
             flash()->success('Turma excluída com sucesso.');
 

@@ -9,7 +9,7 @@ use Modulos\Academico\Events\CreateGrupoEvent;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class CreateGrupoListener
+class CreateGrupoV2Listener
 {
     protected $ambienteVirtualRepository;
 
@@ -30,12 +30,12 @@ class CreateGrupoListener
                 return;
             }
 
-            if ($grupo->turma->trm_tipo_integracao != 'v1') {
+            if ($grupo->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
@@ -43,13 +43,13 @@ class CreateGrupoListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['action'] = 'CREATE';
 
                 $param['data']['group']['trm_id'] = $grupo->grp_trm_id;
                 $param['data']['group']['grp_id'] = $grupo->grp_id;
                 $param['data']['group']['name'] = $grupo->grp_nome;
-                $param['data']['group']['description'] = '';
+                $param['data']['group']['description'] = 'Descrição';
 
                 $response = Moodle::send($param);
 

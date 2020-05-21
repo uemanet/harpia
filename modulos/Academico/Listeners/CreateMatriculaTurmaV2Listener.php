@@ -11,7 +11,7 @@ use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class CreateMatriculaTurmaListener
+class CreateMatriculaTurmaV2Listener
 {
     protected $alunoRepository;
     protected $pessoaRepository;
@@ -42,12 +42,12 @@ class CreateMatriculaTurmaListener
                 return;
             }
 
-            if ($matriculaTurma->turma->trm_tipo_integracao != 'v1') {
+            if ($matriculaTurma->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
@@ -55,7 +55,7 @@ class CreateMatriculaTurmaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['action'] = 'CREATE';
 
                 $nome = explode(" ", $pessoa->pes_nome);
