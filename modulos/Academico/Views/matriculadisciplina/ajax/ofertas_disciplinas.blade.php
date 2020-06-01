@@ -19,6 +19,7 @@
                             <tr>
                                 <th width="1%"><label><input type="checkbox" id="select_all"></label></th>
                                 <th>Disciplina</th>
+                                <th>Turma</th>
                                 <th>Carga Horária</th>
                                 <th>Créditos</th>
                                 <th>Vagas</th>
@@ -35,6 +36,7 @@
                                         <td></td>
                                     @endif
                                     <td>{{ $naomatriculada->dis_nome }}</td>
+                                    <td>{{ $naomatriculada->trm_nome }}</td>
                                     <td>{{ $naomatriculada->dis_carga_horaria }} horas</td>
                                     <td>{{ $naomatriculada->dis_creditos }}</td>
                                     <td>{{ $naomatriculada->quant_matriculas }}/<strong>{{ $naomatriculada->ofd_qtd_vagas }}</strong></td>
@@ -85,6 +87,7 @@
                         <tr>
                             <th width="1%"><label><input type="checkbox" id="select_all_desmatricular"></label></th>
                             <th>Disciplina</th>
+                            <th>Turma</th>
                             <th>Carga Horária</th>
                             <th>Créditos</th>
                             <th>Vagas</th>
@@ -101,6 +104,7 @@
                                     <td></td>
                                 @endif
                                 <td>{{ $matriculada->dis_nome }}</td>
+                                <td>{{ $matriculada->trm_nome }}</td>
                                 <td>{{ $matriculada->dis_carga_horaria }} horas</td>
                                 <td>{{ $matriculada->dis_creditos }}</td>
                                 <td>{{ $matriculada->quant_matriculas }}/<strong>{{ $matriculada->ofd_qtd_vagas }}</strong></td>

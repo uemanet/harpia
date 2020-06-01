@@ -10,7 +10,7 @@ use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 
-class CreateMatriculaDisciplinaLoteListener
+class CreateMatriculaDisciplinaLoteV2Listener
 {
     protected $alunoRepository;
     protected $ambienteVirtualRepository;
@@ -32,7 +32,7 @@ class CreateMatriculaDisciplinaLoteListener
             // Reunir os dados para envio em lote
             foreach ($event->getItems() as $matriculaOfertaDisciplina) {
 
-                if ($matriculaOfertaDisciplina->matriculaCurso->turma->trm_tipo_integracao != 'v1') {
+                if ($matriculaOfertaDisciplina->matriculaCurso->turma->trm_tipo_integracao != 'v2') {
                     return;
                 }
 
@@ -43,6 +43,9 @@ class CreateMatriculaDisciplinaLoteListener
                 $enrol['mof_id'] = $matriculaOfertaDisciplina->mof_id;
                 $enrol['pes_id'] = $aluno->alu_pes_id;
                 $enrol['ofd_id'] = $matriculaOfertaDisciplina->mof_ofd_id;
+                $enrol['mat_id'] = $matriculaOfertaDisciplina->mof_mat_id;
+                $enrol['trm_id'] = $matriculaOfertaDisciplina->matriculaCurso->mat_trm_id;
+                $enrol['grp_id'] = $matriculaOfertaDisciplina->matriculaCurso->mat_grp_id;
 
                 $param['data']['enrol'][] = $enrol;
                 unset($enrol);
@@ -55,12 +58,12 @@ class CreateMatriculaDisciplinaLoteListener
                 return;
             }
 
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             // url do ambiente
             $param['url'] = $ambiente->amb_url;
             $param['token'] = $ambServico->asr_token;
-            $param['functionname'] = $event->getEndpoint();
+            $param['functionname'] = $event->getEndpointV2();
             $param['action'] = 'CREATE';
 
             // TODO verificar formato de resposta do ambiente

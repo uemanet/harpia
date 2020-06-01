@@ -48,6 +48,7 @@ return [
     'Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaLoteListener',
+        'Modulos\Academico\Listeners\CreateMatriculaDisciplinaLoteV2Listener',
     ],
 
     'Modulos\Academico\Events\DeleteMatriculaDisciplinaLoteEvent' => [
