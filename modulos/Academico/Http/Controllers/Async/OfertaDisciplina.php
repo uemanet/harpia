@@ -51,6 +51,7 @@ class OfertaDisciplina extends BaseController
 
     public function getFindall(Request $request)
     {
+
         $retorno = $this->ofertaDisciplinaRepository->findAll($request->all(), [
             'dis_id',
             'dis_nome',

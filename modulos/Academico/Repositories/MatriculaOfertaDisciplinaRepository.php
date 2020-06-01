@@ -171,9 +171,19 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
 
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
     {
+
         $query = $this->model
             ->join('acd_matriculas', function ($join) {
                 $join->on('mof_mat_id', '=', 'mat_id');
+            })
+            ->join('acd_turmas', function ($join) {
+                $join->on('mat_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->join('acd_cursos', function ($join) {
+                $join->on('ofc_crs_id', '=', 'crs_id');
             })
             ->join('acd_ofertas_disciplinas', function ($join) {
                 $join->on('mof_ofd_id', '=', 'ofd_id');
@@ -192,11 +202,16 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             })
             ->where('mat_alu_id', '=', $alunoId);
 
-
         if (!is_null($options)) {
             foreach ($options as $key => $value) {
                 if ($key == 'mof_situacao_matricula') {
                     $query = $query->whereIn($key, $value);
+                    continue;
+                }
+
+                if ($key == 'ofd_trm_id') {
+                    $turma = $this->turmaRepository->find($value);
+                    $query = $query->where('crs_id', $turma->ofertacurso->curso->crs_id);
                     continue;
                 }
 
@@ -216,16 +231,16 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $disciplinas[$i]->status = 0;
 
                 $toEvaluate = [
-					$disciplinas[$i]->mof_nota1,
-					$disciplinas[$i]->mof_nota2,
-					$disciplinas[$i]->mof_nota3,
-					$disciplinas[$i]->mof_conceito,
-					$disciplinas[$i]->mof_recuperacao,
-					$disciplinas[$i]->mof_final,
-					$disciplinas[$i]->mof_mediafinal,
-				];
+                    $disciplinas[$i]->mof_nota1,
+                    $disciplinas[$i]->mof_nota2,
+                    $disciplinas[$i]->mof_nota3,
+                    $disciplinas[$i]->mof_conceito,
+                    $disciplinas[$i]->mof_recuperacao,
+                    $disciplinas[$i]->mof_final,
+                    $disciplinas[$i]->mof_mediafinal,
+                ];
 
-                if (!strlen(implode($toEvaluate)) && $disciplinas[$i]->mof_situacao_matricula == 'cursando'){
+                if (!strlen(implode($toEvaluate)) && $disciplinas[$i]->mof_situacao_matricula == 'cursando') {
                     $disciplinas[$i]->status = 1;
                 }
             }
@@ -234,11 +249,42 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $disciplinas;
     }
 
+    //V2
+    public function getDisciplinasIntegracao($turmaId, $periodoId)
+    {
+
+        // busca as disciplinas ofertadas para a turma e periodo
+        $turma = $this->turmaRepository->find($turmaId);
+
+        if ($turma->trm_tipo_integracao == 'v1') {
+
+            return $this->ofertaDisciplinaRepository->findAll([
+                'ofd_trm_id' => $turmaId, 'ofd_per_id' => $periodoId]);
+
+        }
+
+        return $ofertasDisciplinas = $this->ofertaDisciplinaRepository->model
+            ->join('acd_modulos_disciplinas', function ($join) {
+                $join->on('ofd_mdc_id', '=', 'mdc_id');
+            })
+            ->join('acd_disciplinas', function ($join) {
+                $join->on('mdc_dis_id', '=', 'dis_id');
+            })
+            ->join('acd_turmas', function ($join) {
+                $join->on('ofd_trm_id', '=', 'trm_id');
+            })
+            ->join('acd_ofertas_cursos', function ($join) {
+                $join->on('trm_ofc_id', '=', 'ofc_id');
+            })
+            ->where('ofc_crs_id', '=', $turma->ofertacurso->curso->crs_id)
+            ->where('ofd_per_id', '=', $periodoId)->get();
+
+    }
+
     public function getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId)
     {
-        // busca as disciplinas ofertadas para a turma e periodo
-        $ofertasDisciplinas = $this->ofertaDisciplinaRepository->findAll([
-            'ofd_trm_id' => $turmaId, 'ofd_per_id' => $periodoId]);
+
+        $ofertasDisciplinas = $this->getDisciplinasIntegracao($turmaId, $periodoId);
 
         // busca o aluno
         $aluno = $this->alunoRepository->find($alunoId);
@@ -270,6 +316,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                         $status = 0;
                     }
 
+                    $ofertasDisciplina->trm_nome = $ofertasDisciplina->turma->trm_nome;
                     $ofertasDisciplina->status = $status;
                     $ofertasDisciplina->quant_matriculas = $this->getQuantMatriculasByOfertaDisciplina($ofd_id);
                     $naomatriculadas[] = $ofertasDisciplina;
@@ -294,10 +341,12 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $status = 0;
             }
 
+            $ofertasDisciplina->trm_nome = $ofertasDisciplina->turma->trm_nome;
             $ofertasDisciplina->status = $status;
             $ofertasDisciplina->quant_matriculas = $this->getQuantMatriculasByOfertaDisciplina($ofd_id);
             $naomatriculadas[] = $ofertasDisciplina;
         }
+
 
         return $naomatriculadas;
     }
@@ -322,7 +371,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         $query = $this->model
             ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
             ->where('mof_ofd_id', '=', $ofertaId)
-            ->whereNotIn('mof_situacao_matricula',  ['cancelado', 'aproveitamento'])
+            ->whereNotIn('mof_situacao_matricula', ['cancelado', 'aproveitamento'])
             ->get();
 
 
@@ -355,15 +404,15 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $results = [];
 
                 foreach ($ofertasDisciplinaAnteriores as $oferta) {
-                  $result = $this->findBy([
-                      ['mof_mat_id', '=', $matriculaId],
-                      ['mof_ofd_id', '=', $oferta->ofd_id]
-                  ], null, ['mof_id' => 'desc'])->first();
+                    $result = $this->findBy([
+                        ['mof_mat_id', '=', $matriculaId],
+                        ['mof_ofd_id', '=', $oferta->ofd_id]
+                    ], null, ['mof_id' => 'desc'])->first();
 
-                  if ($result && in_array($result->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
-                    $quantAprovadas++;
-                    break;
-                  }
+                    if ($result && in_array($result->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                        $quantAprovadas++;
+                        break;
+                    }
                 }
             }
 
@@ -426,15 +475,15 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     {
         // verifica se o aluno ainda está cursando a disciplina
         $matricula = MatriculaOfertaDisciplina::where('mof_ofd_id', '=', $data['ofd_id'])
-                        ->where('mof_mat_id', '=', $data['mat_id'])
-                        ->orderBy('mof_situacao_matricula', 'asc')
-                        ->first();
+            ->where('mof_mat_id', '=', $data['mat_id'])
+            ->orderBy('mof_situacao_matricula', 'asc')
+            ->first();
 
         if (!$matricula) {
-          return array("type" => "error", "message" => "Aluno não está matriculado na disciplina");
+            return array("type" => "error", "message" => "Aluno não está matriculado na disciplina");
         }
 
-        if ($matricula->mof_situacao_matricula != 'cursando'){
+        if ($matricula->mof_situacao_matricula != 'cursando') {
             return array("type" => "error", "message" => "O aluno não está cursando essa disciplina");
         }
 
@@ -448,7 +497,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             $matricula->mof_mediafinal,
         ];
 
-        if (strlen(implode($toEvaluate))){
+        if (strlen(implode($toEvaluate))) {
             return array("type" => "error", "message" => "Aluno já tem notas lançadas no sistema");
         }
 
@@ -511,7 +560,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                         $matricula->mof_mediafinal,
                     ];
 
-                    if (!strlen(implode($toEvaluate))){
+                    if (!strlen(implode($toEvaluate))) {
                         $matricula->status = 'apto';
                     }
 

@@ -36,4 +36,12 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
     {
         return 'local_integracao_batch_enrol_student_discipline';
     }
+
+    /**
+     * @return string
+     */
+    public function getEndpointV2()
+    {
+        return 'local_integracao_v2_batch_enrol_student_discipline';
+    }
 }
