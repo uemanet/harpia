@@ -41,6 +41,9 @@ class UpdatePessoaListener
 
             // Web service de integracao
             $ambServico = $ambiente->integracao();
+            if ($event->getVersion() == 'v2') {
+                $ambServico = $ambiente->integracaoV2();
+            }
 
             if ($ambServico) {
                 $param = [];
@@ -49,8 +52,10 @@ class UpdatePessoaListener
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
                 $param['functionname'] = $event->getEndpoint();
+                if ($event->getVersion() == 'v2') {
+                    $param['functionname'] = $event->getEndpointV2();
+                }
                 $param['action'] = 'UPDATE';
-
                 $nome = explode(" ", $pessoa->pes_nome);
                 $firstName = array_shift($nome);
                 $lastName = implode(" ", $nome);

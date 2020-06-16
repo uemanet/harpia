@@ -13,7 +13,7 @@ use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Repositories\TutorGrupoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class DeleteVinculoTutorListener
+class DeleteVinculoTutorV2Listener
 {
     protected $tutorRepository;
     protected $grupoRepository;
@@ -49,12 +49,12 @@ class DeleteVinculoTutorListener
                 return;
             }
 
-            if ($grupo->turma->trm_tipo_integracao != 'v1') {
+            if ($grupo->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $pessoa = $this->pessoaRepository->find($tutor->tut_pes_id);
@@ -65,7 +65,7 @@ class DeleteVinculoTutorListener
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);

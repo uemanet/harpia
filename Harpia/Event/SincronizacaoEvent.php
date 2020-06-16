@@ -64,23 +64,30 @@ abstract class SincronizacaoEvent extends Event
         ],
         'acd_grupos' => [
             'CREATE' => 'local_integracao_v2_create_group',
+            'UPDATE' => 'local_integracao_v2_update_group',
+            'DELETE' => 'local_integracao_v2_delete_group',
         ],
         'acd_tutores_grupos' => [
-            'CREATE' => 'local_integracao_v2_enrol_tutor'
+            'CREATE' => 'local_integracao_v2_enrol_tutor',
+            'DELETE' => 'local_integracao_v2_unenrol_tutor_group'
         ],
         'acd_matriculas' => [
             'CREATE' => 'local_integracao_v2_enrol_student',
+            'DELETE' => 'local_integracao_v2_unenrol_student',
         ],
         'acd_matriculas_ofertas_disciplinas' => [
             'CREATE' => 'local_integracao_v2_enrol_student_discipline'
         ],
+        'gra_pessoas' => [
+            'UPDATE' => 'local_integracao_v2_update_user'
+        ]
     ];
 
     protected $firstAttempt = true;
 
-    public function __construct(BaseModel $entry, $action, $extra = null)
+    public function __construct(BaseModel $entry, $action, $extra = null, $version = 'v1')
     {
-        parent::__construct($entry, $action, $extra);
+        parent::__construct($entry, $action, $extra, $version);
     }
 
     /**
