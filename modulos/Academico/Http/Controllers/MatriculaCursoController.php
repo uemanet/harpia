@@ -32,7 +32,8 @@ class MatriculaCursoController extends BaseController
         CursoRepository $curso,
         TurmaRepository $turmaRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
-    ) {
+    )
+    {
         $this->matriculaCursoRepository = $matricula;
         $this->alunoRepository = $aluno;
         $this->cursoRepository = $curso;
@@ -227,7 +228,7 @@ class MatriculaCursoController extends BaseController
             $matriculaDelete = $this->matriculaCursoRepository->deleteMatricula($data['id']);
             DB::commit();
 
-            if ($matriculaDelete['type'] == 'error'){
+            if ($matriculaDelete['type'] == 'error') {
                 flash()->error($matriculaDelete['message']);
                 return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
             }
@@ -239,7 +240,7 @@ class MatriculaCursoController extends BaseController
                     flash()->error('Esta turma é integrada, porém não está vinculada a um ambiente virtual!');
                     return redirect()->route('academico.matricularalunocurso.show', $matricula->mat_alu_id);
                 }
-                event(new DeleteMatriculaTurmaEvent($matricula, $ambiente->amb_id));
+                event(new DeleteMatriculaTurmaEvent($matricula, $ambiente->amb_id, $turma->trm_tipo_integracao));
             }
 
             flash()->success($matriculaDelete['message']);

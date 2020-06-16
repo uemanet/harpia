@@ -429,6 +429,10 @@ class AmbientesVirtuaisController extends BaseController
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
+            if ($turma->trm_integrada) {
+                event(new TurmaRemovidaEvent($turma, $ambiente, $turma->trm_tipo_integracao));
+            }
+
             flash()->success('Turma excluída com sucesso.');
 
             DB::commit();

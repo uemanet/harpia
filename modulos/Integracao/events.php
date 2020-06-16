@@ -34,11 +34,7 @@ return [
 
     'Modulos\Integracao\Events\TurmaRemovidaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Integracao\Listeners\TurmaRemovidaV2Listener'
-    ],
-
-    'Modulos\Integracao\Events\TurmaRemovidaV2Event' => [
-        'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
+        'Modulos\Integracao\Listeners\TurmaRemovidaListener',
         'Modulos\Integracao\Listeners\TurmaRemovidaV2Listener'
     ],
 

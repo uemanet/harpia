@@ -1,48 +1,29 @@
 <?php
 
-namespace Modulos\Integracao\Listeners;
+namespace Modulos\Academico\Listeners;
 
-use Modulos\Integracao\Events\TurmaRemovidaV2Event;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
-use Modulos\Integracao\Events\TurmaRemovidaEvent;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Events\DeleteMatriculaTurmaEvent;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
-use Modulos\Academico\Repositories\PeriodoLetivoRepository;
-use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class TurmaRemovidaV2Listener
+class DeleteMatriculaTurmaV2Listener
 {
-    private $turmaRepository;
-    private $cursoRepository;
-    private $periodoLetivoRepository;
-    private $ambienteVirtualRepository;
-    private $sincronizacaoRepository;
+    protected $ambienteVirtualRepository;
 
-    public function __construct(
-        TurmaRepository $turmaRepository,
-        CursoRepository $cursoRepository,
-        PeriodoLetivoRepository $periodoLetivoRepository,
-        AmbienteVirtualRepository $ambienteVirtualRepository,
-        SincronizacaoRepository $sincronizacaoRepository
-    ) {
-        $this->turmaRepository = $turmaRepository;
-        $this->cursoRepository = $cursoRepository;
-        $this->periodoLetivoRepository = $periodoLetivoRepository;
+    public function __construct(AmbienteVirtualRepository $ambienteVirtualRepository)
+    {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
-        $this->sincronizacaoRepository = $sincronizacaoRepository;
     }
 
-    public function handle(TurmaRemovidaEvent $event)
+    public function handle(DeleteMatriculaTurmaEvent $event)
     {
         try {
+            $matricula = $event->getData();
 
-            $turma = $event->getData();
-
-            // ambiente virtual vinculado à turma do grupo
+            // ambiente virtual vinculado à turma da matricula em disciplina
             $ambiente = $this->ambienteVirtualRepository->find($event->getExtra());
 
             if (!$ambiente) {
@@ -52,29 +33,32 @@ class TurmaRemovidaV2Listener
             if ($event->getVersion() != 'v2') {
                 return;
             }
-
             // Web service de integracao
             $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
-                $data['course']['trm_id'] = $turma->trm_id;
+                $param = [];
 
+                // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['action'] = 'post';
                 $param['functionname'] = $event->getEndpointV2();
-                $param['data'] = $data;
+                $param['action'] = 'DELETE';
+
+                $param['data']['student']['mat_id'] = $matricula->mat_id;
 
                 $response = Moodle::send($param);
+
                 $status = 3;
 
-                if (array_key_exists('status', $response) && $response['status'] == 'success') {
-                    $status = 2;
+                if (array_key_exists('status', $response)) {
+                    if ($response['status'] == 'success') {
+                        $status = 2;
+                    }
                 }
 
-
                 event(new UpdateSincronizacaoEvent(
-                    $turma,
+                    $matricula,
                     $status,
                     $response['message'],
                     $event->getAction(),
