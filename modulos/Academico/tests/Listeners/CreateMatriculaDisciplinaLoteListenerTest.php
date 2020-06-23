@@ -99,7 +99,9 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
+
         ];
 
         $turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
@@ -114,7 +116,7 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
         // Eventos de turma
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($turma, null, $turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
 
@@ -126,7 +128,7 @@ class CreateMatriculaDisciplinaLoteListenerTest extends ModulosTestCase
         ]);
 
         // Eventos de grupo
-        $createGroupEvent = new CreateGrupoEvent($grupo);
+        $createGroupEvent = new CreateGrupoEvent($grupo, null, $grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($createGroupEvent);
 

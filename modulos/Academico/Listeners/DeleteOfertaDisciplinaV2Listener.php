@@ -2,14 +2,14 @@
 
 namespace Modulos\Academico\Listeners;
 
-use Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
+use Modulos\Academico\Events\DeleteOfertaDisciplinaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class DeleteMatriculaDisciplinaListener
+class DeleteOfertaDisciplinaV2Listener
 {
     protected $ambienteVirtualRepository;
 
@@ -18,48 +18,44 @@ class DeleteMatriculaDisciplinaListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
-    public function handle(DeleteMatriculaDisciplinaEvent $event)
+    public function handle(DeleteOfertaDisciplinaEvent $event)
     {
-        try {
-            $matricula = $event->getData();
+        $oferta = $event->getData();
 
-            // ambiente virtual vinculado à turma da matricula em disciplina
+        try {
+            // ambiente virtual vinculado à turma do grupo
             $ambiente = $this->ambienteVirtualRepository->find($event->getExtra());
 
             if (!$ambiente) {
                 return;
             }
 
-            if ($event->getVersion() != 'v1') {
+
+            if ($event->getVersion() != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
-                $param = [];
+                $data['discipline']['ofd_id'] = $oferta->ofd_id;
 
-                // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
-                $param['action'] = 'DELETE';
-
-                $param['data']['enrol']['mof_id'] = $matricula->mof_id;
+                $param['action'] = 'post';
+                $param['functionname'] = $event->getEndpointV2();
+                $param['data'] = $data;
 
                 $response = Moodle::send($param);
-
                 $status = 3;
 
-                if (array_key_exists('status', $response)) {
-                    if ($response['status'] == 'success') {
-                        $status = 2;
-                    }
+                if (array_key_exists('status', $response) && $response['status'] == 'success') {
+                    $status = 2;
                 }
 
                 event(new UpdateSincronizacaoEvent(
-                    $matricula,
+                    $oferta,
                     $status,
                     $response['message'],
                     $event->getAction(),

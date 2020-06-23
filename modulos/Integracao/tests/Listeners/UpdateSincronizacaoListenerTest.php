@@ -116,7 +116,7 @@ class UpdateSincronizacaoListenerTest extends ModulosTestCase
     {
         $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
 

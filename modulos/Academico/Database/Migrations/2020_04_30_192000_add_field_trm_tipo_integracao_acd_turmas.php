@@ -14,7 +14,7 @@ class AddFieldTrmTipoIntegracaoAcdTurmas extends Migration
     public function up()
     {
         Schema::table('acd_turmas', function (Blueprint $table) {
-            $table->enum('trm_tipo_integracao', ['v1', 'v2']);
+            $table->enum('trm_tipo_integracao', ['v1', 'v2'])->default('v1')->nullable();
         });
     }
 

@@ -119,7 +119,7 @@ class MatriculaCursoController extends BaseController
                 $matricula = $result['matricula'];
 
                 if ($matricula->turma->trm_integrada) {
-                    event(new CreateMatriculaTurmaEvent($matricula));
+                    event(new CreateMatriculaTurmaEvent($matricula, null, $matricula->turma->trm_tipo_integracao));
                 }
             }
 
@@ -161,11 +161,11 @@ class MatriculaCursoController extends BaseController
             // caso a turma seja integrada, manda as alterações pro moodle
             if ($turma->trm_integrada) {
                 if (($oldMatricula->mat_grp_id != $matricula->mat_grp_id) && ($matricula->mat_grp_id)) {
-                    event(new UpdateGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id));
+                    event(new UpdateGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id, $turma->trm_tipo_integracao));
                 }
 
                 if (($oldMatricula->mat_grp_id) && (!$matricula->mat_grp_id)) {
-                    event(new DeleteGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id));
+                    event(new DeleteGrupoAlunoEvent($matricula, $oldMatricula->mat_grp_id, $turma->trm_tipo_integracao));
                 }
             }
 

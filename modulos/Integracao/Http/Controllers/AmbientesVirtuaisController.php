@@ -5,7 +5,6 @@ namespace Modulos\Integracao\Http\Controllers;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
-use Modulos\Integracao\Events\TurmaRemovidaV2Event;
 use Modulos\Integracao\Models\AmbienteServico;
 use Modulos\Integracao\Models\Servico;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -392,7 +391,7 @@ class AmbientesVirtuaisController extends BaseController
                 $turma = $this->turmaRepository->find($dados['atr_trm_id']);
 
                 if ($turma->trm_integrada) {
-                    event(new TurmaMapeadaEvent($turma));
+                    event(new TurmaMapeadaEvent($turma, null, $turma->trm_tipo_integracao));
                 }
 
                 return redirect()->back();

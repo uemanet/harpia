@@ -61,6 +61,8 @@ abstract class SincronizacaoEvent extends Event
         ],
         'acd_ofertas_disciplinas' => [
             'CREATE' => 'local_integracao_v2_create_discipline',
+            'DELETE' => 'local_integracao_v2_delete_discipline',
+            'UPDATE_PROFESSOR_OFERTA_DISCIPLINA' => 'local_integracao_v2_change_teacher',
         ],
         'acd_grupos' => [
             'CREATE' => 'local_integracao_v2_create_group',
@@ -74,9 +76,12 @@ abstract class SincronizacaoEvent extends Event
         'acd_matriculas' => [
             'CREATE' => 'local_integracao_v2_enrol_student',
             'DELETE' => 'local_integracao_v2_unenrol_student',
+            'UPDATE_GRUPO_ALUNO' => 'local_integracao_v2_change_student_group',
+            'DELETE_GRUPO_ALUNO' => 'local_integracao_v2_unenrol_student_group',
         ],
         'acd_matriculas_ofertas_disciplinas' => [
-            'CREATE' => 'local_integracao_v2_enrol_student_discipline'
+            'CREATE' => 'local_integracao_v2_enrol_student_discipline',
+            'DELETE' => 'local_integracao_v2_unenrol_student_discipline'
         ],
         'gra_pessoas' => [
             'UPDATE' => 'local_integracao_v2_update_user'
