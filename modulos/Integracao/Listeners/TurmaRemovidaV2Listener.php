@@ -2,7 +2,6 @@
 
 namespace Modulos\Integracao\Listeners;
 
-use Modulos\Integracao\Events\TurmaRemovidaV2Event;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;

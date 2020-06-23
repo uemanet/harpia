@@ -13,7 +13,7 @@ class AddFieldSymPluginIntSyncMoodle extends Migration
     public function up()
     {
         Schema::table('int_sync_moodle', function (Blueprint $table) {
-            $table->enum('sym_version', ['v1', 'v2']);
+            $table->enum('sym_version', ['v1', 'v2'])->default('v1')->nullable();;
         });
     }
 

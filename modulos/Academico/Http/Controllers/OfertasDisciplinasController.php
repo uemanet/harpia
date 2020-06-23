@@ -32,7 +32,8 @@ class OfertasDisciplinasController extends BaseController
         CursoRepository $cursoRepository,
         MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository
-    ) {
+    )
+    {
         $this->ofertadisciplinaRepository = $ofertadisciplinaRepository;
         $this->turmaRepository = $turmaRepository;
         $this->professorRepository = $professorRepository;
@@ -89,7 +90,7 @@ class OfertasDisciplinasController extends BaseController
             $ofertaDisciplina->fill($request->all())->save();
 
             if ($ofertaDisciplina->turma->trm_integrada && ($ofertaDisciplina->ofd_prf_id != $oldProfessor)) {
-                event(new UpdateProfessorDisciplinaEvent($ofertaDisciplina));
+                event(new UpdateProfessorDisciplinaEvent($ofertaDisciplina, null, $ofertaDisciplina->turma->trm_tipo_integracao));
             }
 
             flash()->success('Oferta de Disciplina atualizada com sucesso.');
@@ -128,7 +129,7 @@ class OfertasDisciplinasController extends BaseController
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($turma->trm_id);
 
             if ($turma->trm_integrada && $ambiente) {
-                event(new DeleteOfertaDisciplinaEvent($ofertaDisciplina, $ambiente->amb_id));
+                event(new DeleteOfertaDisciplinaEvent($ofertaDisciplina, $ambiente->amb_id, $turma->trm_tipo_integracao));
             }
 
             DB::commit();

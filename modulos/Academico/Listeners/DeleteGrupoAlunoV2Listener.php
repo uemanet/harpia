@@ -2,14 +2,14 @@
 
 namespace Modulos\Academico\Listeners;
 
-use Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use Modulos\Academico\Events\DeleteGrupoAlunoEvent;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class DeleteMatriculaDisciplinaListener
+class DeleteGrupoAlunoV2Listener
 {
     protected $ambienteVirtualRepository;
 
@@ -18,24 +18,24 @@ class DeleteMatriculaDisciplinaListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
-    public function handle(DeleteMatriculaDisciplinaEvent $event)
+    public function handle(DeleteGrupoAlunoEvent $event)
     {
         try {
             $matricula = $event->getData();
 
-            // ambiente virtual vinculado à turma da matricula em disciplina
-            $ambiente = $this->ambienteVirtualRepository->find($event->getExtra());
+            // ambiente virtual vinculado à turma do grupo
+            $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($matricula->mat_trm_id);
 
             if (!$ambiente) {
                 return;
             }
 
-            if ($event->getVersion() != 'v1') {
+            if ($matricula->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
@@ -43,10 +43,12 @@ class DeleteMatriculaDisciplinaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
-                $param['action'] = 'DELETE';
+                $param['functionname'] = $event->getEndpointV2();
+                $param['action'] = 'DELETE_GRUPO_ALUNO';
 
-                $param['data']['enrol']['mof_id'] = $matricula->mof_id;
+                $param['data']['student']['mat_id'] = $matricula->mat_id;
+                $param['data']['student']['pes_id'] = $matricula->aluno->alu_pes_id;
+                $param['data']['student']['grp_id'] = $event->getExtra();
 
                 $response = Moodle::send($param);
 
@@ -62,7 +64,7 @@ class DeleteMatriculaDisciplinaListener
                     $matricula,
                     $status,
                     $response['message'],
-                    $event->getAction(),
+                    $param['action'],
                     null,
                     $event->getExtra()
                 ));

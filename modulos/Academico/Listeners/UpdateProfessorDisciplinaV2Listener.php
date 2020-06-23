@@ -11,7 +11,7 @@ use Modulos\Academico\Events\UpdateProfessorDisciplinaEvent;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class UpdateProfessorDisciplinaListener
+class UpdateProfessorDisciplinaV2Listener
 {
     protected $sincronizacaoRepository;
     protected $ofertaDisciplinaRepository;
@@ -39,19 +39,19 @@ class UpdateProfessorDisciplinaListener
                 return;
             }
 
-            if ($ofertaDisciplina->turma->trm_tipo_integracao != 'v1') {
+            if ($ofertaDisciplina->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
 
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['action'] = "UPDATE";
 
                 $nome = explode(" ", $ofertaDisciplina->professor->pessoa->pes_nome);

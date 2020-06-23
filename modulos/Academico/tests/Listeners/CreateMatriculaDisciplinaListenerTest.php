@@ -108,7 +108,8 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
         ];
 
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
@@ -126,7 +127,7 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
         $createMatriculaTurmaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaTurmaListener::class);
 
         // Eventos de turma
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -139,7 +140,7 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
         ]);
 
         // Eventos de grupo
-        $createGroupEvent = new CreateGrupoEvent($this->grupo);
+        $createGroupEvent = new CreateGrupoEvent($this->grupo, null, $this->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($createGroupEvent);
         $createGroupListener->handle($createGroupEvent);
@@ -150,7 +151,7 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
             'mat_grp_id' => $this->grupo->grp_id,
         ]);
 
-        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matriculaCurso);
+        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matriculaCurso, null, $this->matriculaCurso->turma->trm_tipo_integracao);
 
         // Eventos de Matricula no curso
         $sincronizacaoListener->handle($createMatriculaTurmaEvent);
@@ -189,7 +190,7 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
 
         $this->assertEquals(3, $this->sincronizacaoRepository->count());
 
-        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina);
+        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina, null, $this->matriculaDisciplina->matriculaCurso->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createMatriculaDisciplinaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [
@@ -227,7 +228,7 @@ class CreateMatriculaDisciplinaListenerTest extends ModulosTestCase
 
         $this->assertEquals(3, $this->sincronizacaoRepository->count());
 
-        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina);
+        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina, null, $this->matriculaDisciplina->matriculaCurso->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createMatriculaDisciplinaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [

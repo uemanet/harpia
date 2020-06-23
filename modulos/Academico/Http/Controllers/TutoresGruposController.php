@@ -181,7 +181,7 @@ class TutoresGruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 // Event tutor vinculado
-                event(new CreateVinculoTutorEvent($tutorgrupo));
+                event(new CreateVinculoTutorEvent($tutorgrupo, null, $turma->trm_tipo_integracao));
             }
 
             flash()->success('Vínculo criado com sucesso.');
@@ -268,7 +268,7 @@ class TutoresGruposController extends BaseController
                 //Dispara evento para deletar o antigo tutor do grupo
                 event(new DeleteVinculoTutorEvent($tutorGrupoOld,null, $grupo->turma->trm_tipo_integracao));
                 //Dispara evento para vincular novo tutor no grupo
-                event(new CreateVinculoTutorEvent($tutorgrupo));
+                event(new CreateVinculoTutorEvent($tutorgrupo, null, $grupo->turma->trm_tipo_integracao));
             }
 
             DB::commit();

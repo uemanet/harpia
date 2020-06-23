@@ -33,7 +33,8 @@ class OfertaDisciplina extends BaseController
         AmbienteVirtualRepository $ambienteRepository,
         ModuloDisciplinaRepository $moduloDisciplinaRepository,
         ProfessorRepository $professorRepository
-    ) {
+    )
+    {
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matricula;
         $this->turmaRepository = $turmaRepository;
@@ -101,7 +102,7 @@ class OfertaDisciplina extends BaseController
                 $turma = $this->turmaRepository->find($ofertadisciplina->ofd_trm_id);
 
                 if ($turma->trm_integrada) {
-                    event(new CreateOfertaDisciplinaEvent($ofertadisciplina));
+                    event(new CreateOfertaDisciplinaEvent($ofertadisciplina, null, $turma->trm_tipo_integracao));
                 }
 
                 return new JsonResponse(['message' => 'Disciplina ofertada com sucesso!'], Response::HTTP_OK);
@@ -150,7 +151,7 @@ class OfertaDisciplina extends BaseController
         }
 
         $disciplinas = $this->moduloDisciplinaRepository
-                            ->getAllDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId);
+            ->getAllDisciplinasNotOfertadasByModulo($moduloId, $turmaId, $periodoId);
 
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 

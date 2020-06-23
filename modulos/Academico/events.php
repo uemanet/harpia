@@ -39,6 +39,7 @@ return [
     'Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaListener',
+        'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaV2Listener',
     ],
     'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
@@ -85,6 +86,7 @@ return [
     'Modulos\Academico\Events\DeleteOfertaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\DeleteOfertaDisciplinaListener',
+        'Modulos\Academico\Listeners\DeleteOfertaDisciplinaV2Listener',
     ],
 
     'Modulos\Academico\Events\DeleteVinculoTutorEvent' => [
@@ -96,11 +98,13 @@ return [
     'Modulos\Academico\Events\UpdateGrupoAlunoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\UpdateGrupoAlunoListener',
+        'Modulos\Academico\Listeners\UpdateGrupoAlunoV2Listener',
     ],
 
     'Modulos\Academico\Events\DeleteGrupoAlunoEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\DeleteGrupoAlunoListener',
+        'Modulos\Academico\Listeners\DeleteGrupoAlunoV2Listener',
     ],
 
     'Modulos\Academico\Events\UpdateSituacaoMatriculaEvent' => [
@@ -114,6 +118,7 @@ return [
 
     'Modulos\Academico\Events\UpdateProfessorDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Academico\Listeners\UpdateProfessorDisciplinaListener'
+        'Modulos\Academico\Listeners\UpdateProfessorDisciplinaListener',
+        'Modulos\Academico\Listeners\UpdateProfessorDisciplinaV2Listener'
     ],
 ];

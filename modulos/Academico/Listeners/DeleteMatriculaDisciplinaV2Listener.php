@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\ConnectException;
 use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class DeleteMatriculaDisciplinaListener
+class DeleteMatriculaDisciplinaV2Listener
 {
     protected $ambienteVirtualRepository;
 
@@ -30,12 +30,12 @@ class DeleteMatriculaDisciplinaListener
                 return;
             }
 
-            if ($event->getVersion() != 'v1') {
+            if ($event->getVersion() != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
@@ -43,7 +43,7 @@ class DeleteMatriculaDisciplinaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['action'] = 'DELETE';
 
                 $param['data']['enrol']['mof_id'] = $matricula->mof_id;
