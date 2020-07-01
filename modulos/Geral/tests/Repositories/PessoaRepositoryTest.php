@@ -344,7 +344,7 @@ class PessoaRepositoryTest extends ModulosTestCase
 
         // Mapeia a turma
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($turma, null, $turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($turmaMapeadaEvent);
 
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);

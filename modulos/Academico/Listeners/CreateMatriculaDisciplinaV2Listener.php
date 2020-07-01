@@ -68,8 +68,6 @@ class CreateMatriculaDisciplinaV2Listener
 
                 $response = Moodle::send($param);
 
-
-
                 $status = 3;
 
                 if (array_key_exists('status', $response)) {

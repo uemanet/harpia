@@ -24,6 +24,7 @@ class DeleteMatriculaDisciplinaLoteV2Listener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
+
     public function handle(DeleteMatriculaDisciplinaLoteEvent $event)
     {
         try {
@@ -44,12 +45,12 @@ class DeleteMatriculaDisciplinaLoteV2Listener
                 return;
             }
 
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             // url do ambiente
             $param['url'] = $ambiente->amb_url;
             $param['token'] = $ambServico->asr_token;
-            $param['functionname'] = $event->getEndpoint();
+            $param['functionname'] = $event->getEndpointV2();
             $param['action'] = 'DELETE';
 
             // TODO verificar formato de resposta do ambiente
