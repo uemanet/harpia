@@ -41,6 +41,7 @@ return [
         'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaListener',
         'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaV2Listener',
     ],
+
     'Modulos\Academico\Events\CreateMatriculaDisciplinaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\CreateMatriculaDisciplinaListener',
@@ -110,6 +111,7 @@ return [
     'Modulos\Academico\Events\UpdateSituacaoMatriculaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\UpdateSituacaoMatriculaListener',
+        'Modulos\Academico\Listeners\UpdateSituacaoMatriculaV2Listener',
     ],
 
     'Modulos\Academico\Events\UpdateMatriculaCursoEvent' => [

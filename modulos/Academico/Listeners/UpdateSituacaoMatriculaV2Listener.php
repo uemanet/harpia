@@ -9,7 +9,7 @@ use Modulos\Integracao\Events\UpdateSincronizacaoEvent;
 use Modulos\Academico\Events\UpdateSituacaoMatriculaEvent;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 
-class UpdateSituacaoMatriculaListener
+class UpdateSituacaoMatriculaV2Listener
 {
     protected $ambienteVirtualRepository;
 
@@ -30,12 +30,12 @@ class UpdateSituacaoMatriculaListener
                 return;
             }
 
-            if ($matriculaTurma->turma->trm_tipo_integracao != 'v1') {
+            if ($matriculaTurma->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
 
             // Web service de integracao
-            $ambServico = $ambiente->integracao();
+            $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
@@ -43,11 +43,12 @@ class UpdateSituacaoMatriculaListener
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['action'] = 'UPDATE_SITUACAO_MATRICULA';
 
-                $param['data']['student']['trm_id'] = $matriculaTurma->mat_trm_id;
-                $param['data']['student']['pes_id'] = $matriculaTurma->aluno->alu_pes_id;
+                $param['data']['student']['trm_id'] = (int)$matriculaTurma->mat_trm_id;
+                $param['data']['student']['pes_id'] = (int)$matriculaTurma->aluno->alu_pes_id;
+                $param['data']['student']['mat_id'] = (int)$matriculaTurma->id;
                 $param['data']['student']['new_status'] = $matriculaTurma->mat_situacao;
 
                 $response = Moodle::send($param);

@@ -24,6 +24,7 @@ class DeleteMatriculaDisciplinaLoteListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
+
     public function handle(DeleteMatriculaDisciplinaLoteEvent $event)
     {
         try {

@@ -40,12 +40,12 @@ class CreateMatriculaDisciplinaLoteV2Listener
 
                 $aluno = $this->alunoRepository->find($matriculaOfertaDisciplina->matriculaCurso->mat_alu_id);
 
-                $enrol['mof_id'] = $matriculaOfertaDisciplina->mof_id;
-                $enrol['pes_id'] = $aluno->alu_pes_id;
-                $enrol['ofd_id'] = $matriculaOfertaDisciplina->mof_ofd_id;
-                $enrol['mat_id'] = $matriculaOfertaDisciplina->mof_mat_id;
-                $enrol['trm_id'] = $matriculaOfertaDisciplina->matriculaCurso->mat_trm_id;
-                $enrol['grp_id'] = $matriculaOfertaDisciplina->matriculaCurso->mat_grp_id;
+                $enrol['mof_id'] = (int)$matriculaOfertaDisciplina->mof_id;
+                $enrol['pes_id'] = (int)$aluno->alu_pes_id;
+                $enrol['ofd_id'] = (int)$matriculaOfertaDisciplina->mof_ofd_id;
+                $enrol['mat_id'] = (int)$matriculaOfertaDisciplina->mof_mat_id;
+                $enrol['trm_id'] = (int)$matriculaOfertaDisciplina->matriculaCurso->mat_trm_id;
+                $enrol['grp_id'] = (int)$matriculaOfertaDisciplina->matriculaCurso->mat_grp_id;
 
                 $param['data']['enrol'][] = $enrol;
                 unset($enrol);
