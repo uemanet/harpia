@@ -31,9 +31,14 @@ class DeleteMatriculaDisciplinaLoteV2Listener
             $param = [];
             // Reunir os dados para envio em lote
             foreach ($event->getItems() as $matriculaOfertaDisciplina) {
+
+                if ($event->getVersion() != 'v2') {
+                    return;
+                }
+
                 $enrol = [];
 
-                $enrol['mof_id'] = $matriculaOfertaDisciplina->mof_id;
+                $enrol['mof_id'] = (int)$matriculaOfertaDisciplina->mof_id;
 
                 $param['data']['enrol'][] = $enrol;
                 unset($enrol);
@@ -67,7 +72,15 @@ class DeleteMatriculaDisciplinaLoteV2Listener
 
             // Log individual de cada item
             foreach ($event->getItems() as $item) {
-                event(new UpdateSincronizacaoEvent($item, $status, $response['message'], $event->getAction()));
+
+                event(new UpdateSincronizacaoEvent(
+                    $item,
+                    $status,
+                    $response['message'],
+                    $event->getAction(),
+                    null,
+                    $event->getExtra()
+                ));
             }
         } catch (ConnectException | ClientException | \Exception $exception) {
 
@@ -76,7 +89,7 @@ class DeleteMatriculaDisciplinaLoteV2Listener
             }
 
             foreach ($event->getItems() as $item) {
-                event(new UpdateSincronizacaoEvent($item, 3, get_class($exception), $event->getAction()));
+                event(new UpdateSincronizacaoEvent($item, 3, get_class($exception), $event->getAction(), null, $event->getExtra()));
             }
 
         }

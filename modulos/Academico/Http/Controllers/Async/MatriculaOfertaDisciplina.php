@@ -81,7 +81,7 @@ class MatriculaOfertaDisciplina extends BaseController
 
             if ($turma->trm_integrada) {
                 if (!empty($matriculasCollection)) {
-                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection));
+                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection, 'CREATE', null, $turma->trm_tipo_integracao));
                 }
             }
 
@@ -126,11 +126,11 @@ class MatriculaOfertaDisciplina extends BaseController
 
             if ($turma->trm_integrada) {
                 if (!$ambiente) {
-                  return new JsonResponse('Turma não vinculada a um Ambiente Virtual!', 200);
+                    return new JsonResponse('Turma não vinculada a um Ambiente Virtual!', 200);
                 }
                 DB::commit();
                 if (!empty($matriculasCollection)) {
-                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id));
+                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id, $turma->trm_tipo_integracao));
                 }
             }
             DB::commit();

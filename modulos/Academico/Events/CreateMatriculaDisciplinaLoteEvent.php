@@ -16,7 +16,7 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
      * @param null $extra
      * @throws \Exception
      */
-    public function __construct(Collection $matriculas, string $action = "CREATE", $extra = null)
+    public function __construct(Collection $matriculas, string $action = "CREATE", $extra = null, $version = 'v1')
     {
         $this->baseClass = CreateMatriculaDisciplinaEvent::class;
 
@@ -26,7 +26,7 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
             }
         }
 
-        parent::__construct($matriculas, $action, $extra);
+        parent::__construct($matriculas, $action, $extra, $version);
     }
 
     /**

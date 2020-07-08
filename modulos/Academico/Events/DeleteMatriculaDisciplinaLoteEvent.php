@@ -18,6 +18,7 @@ class DeleteMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
      */
     public function __construct(Collection $matriculas, string $action = "DELETE", $extra = null, $version ='v1')
     {
+
         $this->baseClass = DeleteMatriculaDisciplinaEvent::class;
 
         foreach ($matriculas as $matricula) {
@@ -26,7 +27,7 @@ class DeleteMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
             }
         }
 
-        parent::__construct($matriculas, $action, $extra);
+        parent::__construct($matriculas, $action, $extra, $version);
     }
 
     /**
