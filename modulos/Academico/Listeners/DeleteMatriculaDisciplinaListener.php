@@ -46,7 +46,7 @@ class DeleteMatriculaDisciplinaListener
                 $param['functionname'] = $event->getEndpoint();
                 $param['action'] = 'DELETE';
 
-                $param['data']['enrol']['mof_id'] = $matricula->mof_id;
+                $param['data']['enrol']['mof_id'] = (int)$matricula->mof_id;
 
                 $response = Moodle::send($param);
 

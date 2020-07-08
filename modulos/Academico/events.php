@@ -57,6 +57,8 @@ return [
     'Modulos\Academico\Events\DeleteMatriculaDisciplinaLoteEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
         'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaLoteListener',
+        'Modulos\Academico\Listeners\DeleteMatriculaDisciplinaLoteV2Listener',
+
     ],
 
     'Modulos\Academico\Events\CreateVinculoTutorEvent' => [
