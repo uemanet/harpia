@@ -32,7 +32,7 @@ class CreateMatriculaDisciplinaLoteListener
             // Reunir os dados para envio em lote
             foreach ($event->getItems() as $matriculaOfertaDisciplina) {
 
-                if ($matriculaOfertaDisciplina->matriculaCurso->turma->trm_tipo_integracao != 'v1') {
+                if ($event->getVersion() != 'v1') {
                     return;
                 }
 

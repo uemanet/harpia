@@ -100,8 +100,10 @@ class OfertaDisciplina extends BaseController
                 }
 
                 $turma = $this->turmaRepository->find($ofertadisciplina->ofd_trm_id);
-
+                
                 if ($turma->trm_integrada) {
+                    $ofertadisciplina->ofd_tipo_integracao = $turma->trm_tipo_integracao;
+                    $ofertadisciplina->save();
                     event(new CreateOfertaDisciplinaEvent($ofertadisciplina, null, $turma->trm_tipo_integracao));
                 }
 

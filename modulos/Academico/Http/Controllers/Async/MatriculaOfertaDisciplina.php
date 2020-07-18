@@ -14,16 +14,19 @@ use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 
 class MatriculaOfertaDisciplina extends BaseController
 {
     protected $matriculaOfertaDisciplinaRepository;
+    protected $ofertaDisciplinaRepository;
     protected $matriculaCursoRepository;
     protected $ambienteRepository;
 
-    public function __construct(MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository, MatriculaCursoRepository $matriculaCursoRepository, AmbienteVirtualRepository $ambienteRepository)
+    public function __construct(MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository, OfertaDisciplinaRepository $ofertaDisciplinaRepository, MatriculaCursoRepository $matriculaCursoRepository, AmbienteVirtualRepository $ambienteRepository)
     {
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
+        $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaCursoRepository = $matriculaCursoRepository;
         $this->ambienteRepository = $ambienteRepository;
     }
@@ -81,7 +84,8 @@ class MatriculaOfertaDisciplina extends BaseController
 
             if ($turma->trm_integrada) {
                 if (!empty($matriculasCollection)) {
-                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection, 'CREATE', null, $turma->trm_tipo_integracao));
+                    $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
+                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection, 'CREATE', null, $oferta->ofd_tipo_integracao));
                 }
             }
 
@@ -130,7 +134,8 @@ class MatriculaOfertaDisciplina extends BaseController
                 }
                 DB::commit();
                 if (!empty($matriculasCollection)) {
-                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id, $turma->trm_tipo_integracao));
+                    $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
+                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id, $oferta->ofd_tipo_integracao));
                 }
             }
             DB::commit();
@@ -177,7 +182,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculas)) {
                     foreach ($matriculas as $obj) {
-                        event(new CreateMatriculaDisciplinaEvent($obj, null, $turma->trm_tipo_integracao));
+                        event(new CreateMatriculaDisciplinaEvent($obj, null, $obj->ofertaDisciplina->ofd_tipo_integracao));
                     }
                 }
             }
@@ -229,7 +234,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculas)) {
                     foreach ($matriculas as $obj) {
-                        event(new DeleteMatriculaDisciplinaEvent($obj, $ambiente->amb_id, $turma->trm_tipo_integracao));
+                        event(new DeleteMatriculaDisciplinaEvent($obj, $ambiente->amb_id, $obj->ofertaDisciplina->ofd_tipo_integracao));
                     }
                 }
             }

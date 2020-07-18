@@ -39,7 +39,7 @@ class CreateMatriculaDisciplinaV2Listener
                 return;
             }
 
-            if ($matriculaCurso->turma->trm_tipo_integracao != 'v2') {
+            if ($event->getVersion() != 'v2') {
                 return;
             }
 
