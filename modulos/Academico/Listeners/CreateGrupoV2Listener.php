@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Listeners;
 
+use DB;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -40,6 +41,11 @@ class CreateGrupoV2Listener
             if ($ambServico) {
                 $param = [];
 
+                $periodo = DB::table('acd_periodos_letivos')
+                    ->where('per_inicio', '<=', date('Y-m-d'))
+                    ->where('per_fim', '>=', date('Y-m-d'))
+                    ->first();
+
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
@@ -48,6 +54,7 @@ class CreateGrupoV2Listener
 
                 $param['data']['group']['trm_id'] = $grupo->grp_trm_id;
                 $param['data']['group']['grp_id'] = $grupo->grp_id;
+                $param['data']['group']['per_id'] = $periodo->per_id;
                 $param['data']['group']['name'] = $grupo->grp_nome;
                 $param['data']['group']['description'] = 'Descrição';
 

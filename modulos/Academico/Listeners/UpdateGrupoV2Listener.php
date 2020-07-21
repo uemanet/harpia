@@ -46,6 +46,15 @@ class UpdateGrupoV2Listener
             if ($ambServico) {
                 $param = [];
 
+
+                $professor = DB::table('acd_professores')->inRandomOrder()->first();
+
+
+                $periodo = DB::table('acd_periodos_letivos')
+                    ->where('per_inicio', '<=', date('Y-m-d'))
+                    ->where('per_fim', '>=', date('Y-m-d'))
+                    ->first();
+
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
@@ -54,6 +63,7 @@ class UpdateGrupoV2Listener
 
                 $param['data']['group']['grp_id'] = $grupo->grp_id;
                 $param['data']['group']['grp_nome'] = $grupo->grp_nome;
+                $param['data']['group']['per_id'] = $periodo->per_id;
 
                 $response = Moodle::send($param);
 

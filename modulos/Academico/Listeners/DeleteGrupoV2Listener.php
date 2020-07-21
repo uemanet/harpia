@@ -40,6 +40,11 @@ class DeleteGrupoV2Listener
             if ($ambServico) {
                 $param = [];
 
+                $periodo = DB::table('acd_periodos_letivos')
+                    ->where('per_inicio', '<=', date('Y-m-d'))
+                    ->where('per_fim', '>=', date('Y-m-d'))
+                    ->first();
+
                 // url do ambiente
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
@@ -47,6 +52,7 @@ class DeleteGrupoV2Listener
                 $param['action'] = 'DELETE';
 
                 $param['data']['group']['grp_id'] = $grupo->grp_id;
+                $param['data']['group']['per_id'] = $periodo->per_id;
 
                 $response = Moodle::send($param);
 
