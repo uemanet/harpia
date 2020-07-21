@@ -2,16 +2,17 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Mpdf\Mpdf;
 use Harpia\Format\Format;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modulos\Academico\Http\Requests\ListaSemturRequest;
-use Modulos\Academico\Repositories\CursoRepository;
-use Modulos\Academico\Repositories\ListaSemturRepository;
-use Modulos\Academico\Repositories\TurmaRepository;
+use Illuminate\Http\JsonResponse;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
+use Modulos\Academico\Repositories\TurmaRepository;
+use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
+use Modulos\Academico\Http\Requests\ListaSemturRequest;
+use Modulos\Academico\Repositories\ListaSemturRepository;
+use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
 class ListaSemturController extends BaseController
 {
@@ -335,7 +336,7 @@ class ListaSemturController extends BaseController
             }
         }
 
-        $mpdf = new \mPDF();
+        $mpdf = new mPDF();
         $mpdf->mirrorMargins = 1;
 
         $title = $turma->ofertacurso->curso->crs_nome . ' - '. $turma->trm_nome;
