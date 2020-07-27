@@ -612,7 +612,6 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $join->on('alu_pes_id', '=', 'pes_id');
             })
             ->where('mof_ofd_id', '=', $ofertaId)
-            ->where('mat_trm_id', $turmaId)
             ->orderBy('pes_nome', 'asc')
             ->get();
 
@@ -676,8 +675,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->join('acd_alunos', 'mat_alu_id', '=', 'alu_id')
             ->join('gra_pessoas', 'alu_pes_id', '=', 'pes_id')
             ->select('mat_id', 'pes_nome', 'mof_situacao_matricula', 'trm_nome', 'pol_nome', 'pes_email', 'mat_pol_id')
-            ->where('mof_ofd_id', '=', $requestParameters['ofd_id'])
-            ->where('mat_trm_id', $requestParameters['trm_id']);
+            ->where('mof_ofd_id', '=', $requestParameters['ofd_id']);
 
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
             $sort = [
