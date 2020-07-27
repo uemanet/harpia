@@ -169,24 +169,27 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
         return $matriculas;
     }
 
+    //V2
     public function getDisciplinasCursadasByAluno($alunoId, $options = null)
     {
+
+        $turma = $this->turmaRepository->find($options['ofd_trm_id']);
 
         $query = $this->model
             ->join('acd_matriculas', function ($join) {
                 $join->on('mof_mat_id', '=', 'mat_id');
             })
+            ->join('acd_ofertas_disciplinas', function ($join) {
+                $join->on('mof_ofd_id', '=', 'ofd_id');
+            })
             ->join('acd_turmas', function ($join) {
-                $join->on('mat_trm_id', '=', 'trm_id');
+                $join->on('ofd_trm_id', '=', 'trm_id');
             })
             ->join('acd_ofertas_cursos', function ($join) {
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
             ->join('acd_cursos', function ($join) {
                 $join->on('ofc_crs_id', '=', 'crs_id');
-            })
-            ->join('acd_ofertas_disciplinas', function ($join) {
-                $join->on('mof_ofd_id', '=', 'ofd_id');
             })
             ->join('acd_modulos_disciplinas', function ($join) {
                 $join->on('ofd_mdc_id', '=', 'mdc_id');
@@ -200,29 +203,15 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
             ->join('gra_pessoas', function ($join) {
                 $join->on('prf_pes_id', '=', 'pes_id');
             })
-            ->where('mat_alu_id', '=', $alunoId);
-
-        if (!is_null($options)) {
-            foreach ($options as $key => $value) {
-                if ($key == 'mof_situacao_matricula') {
-                    $query = $query->whereIn($key, $value);
-                    continue;
-                }
-
-                if ($key == 'ofd_trm_id') {
-                    $turma = $this->turmaRepository->find($value);
-                    $query = $query->where('crs_id', $turma->ofertacurso->curso->crs_id);
-                    continue;
-                }
-
-                $query = $query->where($key, '=', $value);
-            }
-        }
+            ->where('mat_alu_id', '=', $alunoId)
+            ->where('crs_id', '=', $turma->ofertacurso->curso->crs_id);
 
         $disciplinas = $query->get();
 
+
         if ($disciplinas->count()) {
             for ($i = 0; $i < $disciplinas->count(); $i++) {
+
                 $quantMatriculas = $this->model
                     ->where('mof_ofd_id', '=', $disciplinas[$i]->ofd_id)
                     ->where('mof_situacao_matricula', '=', 'cursando')
@@ -277,6 +266,7 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
                 $join->on('trm_ofc_id', '=', 'ofc_id');
             })
             ->where('ofc_crs_id', '=', $turma->ofertacurso->curso->crs_id)
+            ->where('trm_tipo_integracao', '=', $turma->trm_tipo_integracao)
             ->where('ofd_per_id', '=', $periodoId)->get();
 
     }
