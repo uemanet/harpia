@@ -52,5 +52,15 @@ class MenuRHSeeder extends Seeder
             'mit_ordem' => 1
         ]);
 
+        // Item bancos
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Bancos',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-bank',
+            'mit_rota' => 'rh.bancos.index',
+            'mit_ordem' => 1
+        ]);
+
     }
 }
