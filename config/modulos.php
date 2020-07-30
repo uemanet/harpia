@@ -6,6 +6,7 @@ return [
         'Seguranca',
         'Academico',
         'Integracao',
-        'Monitoramento'
+        'Monitoramento',
+        'RH'
     ]
 ];
