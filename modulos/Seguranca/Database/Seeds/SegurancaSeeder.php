@@ -28,6 +28,8 @@ class SegurancaSeeder extends Seeder
 
         $this->call(MenuMonitoramentoSeeder::class);
 
+        $this->call(MenuRHSeeder::class);
+
         $this->call(PermissoesSegurancaSeeder::class);
 
         $this->call(PermissoesGeralSeeder::class);
@@ -37,5 +39,7 @@ class SegurancaSeeder extends Seeder
         $this->call(PermissoesIntegracaoSeeder::class);
 
         $this->call(PermissoesMonitoramentoSeeder::class);
+
+        $this->call(PermissoesRHSeeder::class);
     }
 }
