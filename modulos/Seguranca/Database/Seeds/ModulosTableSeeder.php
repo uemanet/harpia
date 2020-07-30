@@ -54,5 +54,13 @@ class ModulosTableSeeder extends Seeder
             'mod_icone' => 'fa fa-line-chart',
             'mod_classes' => 'bg-yellow'
         ]);
+
+        // Modulo RH
+        $modulo = Modulo::create([ //Id 6
+            'mod_nome' => 'RH',
+            'mod_slug' => 'rh',
+            'mod_icone' => 'fa fa-file-text',
+            'mod_classes' => 'bg-orange'
+        ]);
     }
 }
