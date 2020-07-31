@@ -54,10 +54,61 @@ class PermissoesRHSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso bancos
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'rh.bancos.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.bancos.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.bancos.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.bancos.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        //permissões do recurso de vinculos
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'rh.vinculos.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.vinculos.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.vinculos.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.vinculos.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 
         // Atribuir perfil de Administrador ao usuario criado
         $perfil->usuarios()->attach(1);
+
     }
 }
