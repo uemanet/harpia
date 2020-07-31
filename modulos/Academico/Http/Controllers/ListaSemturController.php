@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Http\Controllers;
 
+use Mpdf\Mpdf;
 use Harpia\Format\Format;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -335,7 +336,7 @@ class ListaSemturController extends BaseController
             }
         }
 
-        $mpdf = new \mPDF();
+        $mpdf = new mPDF();
         $mpdf->mirrorMargins = 1;
 
         $title = $turma->ofertacurso->curso->crs_nome . ' - '. $turma->trm_nome;
