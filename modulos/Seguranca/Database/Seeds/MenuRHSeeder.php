@@ -62,7 +62,7 @@ class MenuRHSeeder extends Seeder
             'mit_ordem' => 2
         ]);
 
-        // Item bancos
+        // Item vinculos
         MenuItem::create([
             'mit_mod_id' => 6,
             'mit_nome' => 'Vínculos',
@@ -70,6 +70,16 @@ class MenuRHSeeder extends Seeder
             'mit_icone' => 'fa fa-link',
             'mit_rota' => 'rh.vinculos.index',
             'mit_ordem' => 3
+        ]);
+
+        // Item funcoes
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Funções',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-user',
+            'mit_rota' => 'rh.funcoes.index',
+            'mit_ordem' => 4
         ]);
     }
 }
