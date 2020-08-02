@@ -129,6 +129,31 @@ class PermissoesRHSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso de setores
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'rh.setores.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.setores.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.setores.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.setores.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 
