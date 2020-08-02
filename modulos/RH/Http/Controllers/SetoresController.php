@@ -3,47 +3,46 @@
 namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\RH\Http\Requests\BancoRequest;
-use Modulos\RH\Repositories\BancoRepository;
+use Modulos\RH\Http\Requests\SetorRequest;
+use Modulos\RH\Repositories\SetorRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Illuminate\Http\Request;
 
-class BancosController extends BaseController
+class SetoresController extends BaseController
 {
-    protected $bancoRepository;
+    protected $setorRepository;
 
-    public function __construct(BancoRepository $bancoRepository)
+    public function __construct(SetorRepository $setorRepository)
     {
-        $this->bancoRepository = $bancoRepository;
+        $this->setorRepository = $setorRepository;
     }
 
     public function getIndex(Request $request)
     {
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.bancos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.setores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->bancoRepository->paginateRequest($request->all());
+        $tableData = $this->setorRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'ban_id' => '#',
-                'ban_nome' => 'Nome',
-                'ban_codigo' => 'Código',
-                'ban_sigla' => 'Sigla',
-                'ban_action' => 'Ações'
+                'set_id' => '#',
+                'set_descricao' => 'Descrição',
+                'set_sigla' => 'Sigla',
+                'set_action' => 'Ações'
             ))
-                ->modifyCell('ban_action', function () {
+                ->modifyCell('set_action', function () {
                     return array('style' => 'width: 140px;');
                 })
-                ->means('ban_action', 'ban_id')
-                ->modify('ban_action', function ($id) {
+                ->means('set_action', 'set_id')
+                ->modify('set_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -54,7 +53,7 @@ class BancosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'route' => 'rh.bancos.edit',
+                                'route' => 'rh.setores.edit',
                                 'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
@@ -62,7 +61,7 @@ class BancosController extends BaseController
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'route' => 'rh.bancos.delete',
+                                'route' => 'rh.setores.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -70,32 +69,32 @@ class BancosController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('ban_id', 'ban_nome'));
+                ->sortable(array('set_id', 'set_descricao'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('RH::bancos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('RH::setores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
     {
-        return view('RH::bancos.create');
+        return view('RH::setores.create');
     }
 
-    public function postCreate(BancoRequest $request)
+    public function postCreate(SetorRequest $request)
     {
         try {
-            $banco = $this->bancoRepository->create($request->all());
+            $setor = $this->setorRepository->create($request->all());
 
-            if (!$banco) {
+            if (!$setor) {
                 flash()->error('Erro ao tentar salvar.');
 
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Banco criada com sucesso.');
-            return redirect()->route('rh.bancos.index');
+            flash()->success('Setor criado com sucesso.');
+            return redirect()->route('rh.setores.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -106,37 +105,37 @@ class BancosController extends BaseController
         }
     }
 
-    public function getEdit($bancoId)
+    public function getEdit($setorId)
     {
-        $banco = $this->bancoRepository->find($bancoId);
+        $setor = $this->setorRepository->find($setorId);
 
-        if (!$banco) {
-            flash()->error('Banco não existe.');
+        if (!$setor) {
+            flash()->error('Setor não existe.');
             return redirect()->back();
         }
 
-        return view('RH::bancos.edit', compact('banco'));
+        return view('RH::setores.edit', compact('setor'));
     }
 
-    public function putEdit($bancoId, BancoRequest $request)
+    public function putEdit($setorId, SetorRequest $request)
     {
         try {
-            $banco = $this->bancoRepository->find($bancoId);
+            $setor = $this->setorRepository->find($setorId);
 
-            if (!$banco) {
-                flash()->error('Banco não existe.');
-                return redirect()->route('rh.bancos.index');
+            if (!$setor) {
+                flash()->error('Setor não existe.');
+                return redirect()->route('rh.setores.index');
             }
 
-            $requestData = $request->only($this->bancoRepository->getFillableModelFields());
+            $requestData = $request->only($this->setorRepository->getFillableModelFields());
 
-            if (!$this->bancoRepository->update($requestData, $banco->ban_id, 'ban_id')) {
+            if (!$this->setorRepository->update($requestData, $setor->set_id, 'set_id')) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Banco atualizada com sucesso.');
-            return redirect()->route('rh.bancos.index');
+            flash()->success('Setor atualizado com sucesso.');
+            return redirect()->route('rh.setores.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -150,11 +149,11 @@ class BancosController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-            $bancoId = $request->get('id');
+            $setorId = $request->get('id');
 
-            $this->bancoRepository->delete($bancoId);
+            $this->setorRepository->delete($setorId);
 
-            flash()->success('Banco excluído com sucesso.');
+            flash()->success('Setor excluído com sucesso.');
 
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -169,5 +168,4 @@ class BancosController extends BaseController
             return redirect()->back();
         }
     }
-
 }

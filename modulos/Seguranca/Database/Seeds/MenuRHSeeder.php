@@ -81,5 +81,15 @@ class MenuRHSeeder extends Seeder
             'mit_rota' => 'rh.funcoes.index',
             'mit_ordem' => 4
         ]);
+
+        // Item setores
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Setores',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-users',
+            'mit_rota' => 'rh.setores.index',
+            'mit_ordem' => 5
+        ]);
     }
 }
