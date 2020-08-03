@@ -63,7 +63,6 @@ class ColaboradorRequest extends BaseRequest
             ];
         }
 
-
         return [
             'pes_nome' => 'required|min:3|max:150',
             'pes_sexo' => 'required',
@@ -85,9 +84,6 @@ class ColaboradorRequest extends BaseRequest
             'pes_bairro' => 'required|min:2',
             'pes_cidade' => 'required|min:2',
             'pes_estado' => 'required',
-
-
-
 
             //            'col_pes_id' => 'required',
             'col_fun_id' => 'required',
