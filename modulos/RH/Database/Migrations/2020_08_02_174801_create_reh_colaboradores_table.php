@@ -15,9 +15,9 @@ class CreateRehColaboradoresTable extends Migration
     {
         Schema::create('reh_colaboradores', function (Blueprint $table) {
             $table->increments('col_id');
-//            $table->integer('col_set_id')->unsigned();
-//            $table->integer('col_fun_id')->unsigned();
             $table->integer('col_pes_id')->unsigned();
+            $table->integer('col_set_id')->unsigned();
+            $table->integer('col_fun_id')->unsigned();
             $table->integer('col_qtd_filho')->nullable();
             $table->date('col_data_admissao');
             $table->integer('col_ch_diaria');
@@ -34,8 +34,8 @@ class CreateRehColaboradoresTable extends Migration
             $table->timestamps();
 
             $table->foreign('col_pes_id')->references('pes_id')->on('gra_pessoas');
-//            $table->foreign('col_set_id')->references('set_id')->on('rh_setores');
-//            $table->foreign('col_fun_id')->references('fun_id')->on('rh_funcoes');
+            $table->foreign('col_set_id')->references('set_id')->on('reh_setores');
+            $table->foreign('col_fun_id')->references('fun_id')->on('reh_funcoes');
 
         });
     }

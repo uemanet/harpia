@@ -62,7 +62,7 @@ class MenuRHSeeder extends Seeder
             'mit_ordem' => 2
         ]);
 
-        // Item bancos
+        // Item vinculos
         MenuItem::create([
             'mit_mod_id' => 6,
             'mit_nome' => 'Vínculos',
@@ -72,6 +72,26 @@ class MenuRHSeeder extends Seeder
             'mit_ordem' => 3
         ]);
 
+        // Item funcoes
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Funções',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-user',
+            'mit_rota' => 'rh.funcoes.index',
+            'mit_ordem' => 4
+        ]);
+
+        // Item setores
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Setores',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-users',
+            'mit_rota' => 'rh.setores.index',
+            'mit_ordem' => 5
+        ]);
+
         // Item períodos laborais
         MenuItem::create([
             'mit_mod_id' => 6,
@@ -79,7 +99,7 @@ class MenuRHSeeder extends Seeder
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-calendar',
             'mit_rota' => 'rh.periodoslaborais.index',
-            'mit_ordem' => 4
+            'mit_ordem' => 6
         ]);
 
         // Item períodos laborais
@@ -89,7 +109,7 @@ class MenuRHSeeder extends Seeder
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-user',
             'mit_rota' => 'rh.colaboradores.index',
-            'mit_ordem' => 5
+            'mit_ordem' => 7
         ]);
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.modulos.rh')
 
 @section('title')
-    Bancos
+    Setores
 @stop
 
 @section('subtitle')
@@ -26,9 +26,9 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.bancos.index') }}">
+                <form method="GET" action="{{ route('rh.setores.index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="ban_descricao" id="ban_descricao" value="{{Request::input('ban_descricao')}}" placeholder="Nome, sigla ou código do banco">
+                        <input type="text" class="form-control" name="set_descricao" id="set_id" value="{{Request::input('set_descricao')}}" placeholder="Descrição do setor">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

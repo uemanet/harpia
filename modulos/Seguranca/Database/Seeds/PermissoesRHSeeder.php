@@ -22,12 +22,14 @@ class PermissoesRHSeeder extends Seeder
         ]);
         $arrPermissoes = [];
 
+
         // Criar permissao index do modulo RH (DASHBOARD)
         $permissao = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'rh.index.index'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
+
 
         //permissões do recurso áreas de conhecimentos
         $permissao = Permissao::create([
@@ -107,7 +109,59 @@ class PermissoesRHSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
 
-        //permissões do recurso de períodos laborais
+        //permissões do recurso de funcoes
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'rh.funcoes.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.funcoes.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.funcoes.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.funcoes.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
+        //permissões do recurso de setores
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'rh.setores.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.setores.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.setores.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.setores.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
+        //permissões do recurso de periodoslaborais
         $permissao = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'rh.periodoslaborais.index'
@@ -133,7 +187,7 @@ class PermissoesRHSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
 
-        //permissões do recurso colaboradores
+        //permissões do recurso de colaboradores
         $permissao = Permissao::create([
             'prm_nome' => 'index',
             'prm_rota' => 'rh.colaboradores.index'
@@ -153,11 +207,10 @@ class PermissoesRHSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
         $permissao = Permissao::create([
-            'prm_nome' => 'show',
-            'prm_rota' => 'rh.colaboradores.show'
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.colaboradores.delete'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
-
 
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);

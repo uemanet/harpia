@@ -48,16 +48,17 @@ class ColaboradorRequest extends BaseRequest
                 'pes_cidade' => 'required|min:2',
                 'pes_estado' => 'required',
 
-
                 //            'col_pes_id' => 'required',
-            'col_qtd_filho' => 'required',
-            'col_data_admissao' => 'required',
-            'col_ch_diaria' => 'required',
-            'col_codigo_catraca' => 'required',
-            'col_vinculo_universidade' => 'required',
-            'col_matricula_universidade' => 'required',
-            'col_observacao' => 'required',
-            'col_status' => 'required',
+                'col_fun_id' => 'required',
+                'col_set_id' => 'required',
+                'col_qtd_filho' => 'required',
+                'col_data_admissao' => 'required',
+                'col_ch_diaria' => 'required',
+                'col_codigo_catraca' => 'required',
+                'col_vinculo_universidade' => 'required',
+                'col_matricula_universidade' => 'required',
+                'col_observacao' => 'required',
+                'col_status' => 'required',
 
             ];
         }
@@ -89,6 +90,8 @@ class ColaboradorRequest extends BaseRequest
 
 
             //            'col_pes_id' => 'required',
+            'col_fun_id' => 'required',
+            'col_set_id' => 'required',
             'col_qtd_filho' => 'required',
             'col_data_admissao' => 'required',
             'col_ch_diaria' => 'required',

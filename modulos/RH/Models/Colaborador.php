@@ -13,8 +13,8 @@ class Colaborador extends BaseModel
 
     protected $fillable = [
         'col_pes_id',
-//        'col_set_id',
-//        'col_fun_id',
+        'col_set_id',
+        'col_fun_id',
         'col_qtd_filho',
         'col_data_admissao',
         'col_ch_diaria',
@@ -39,6 +39,15 @@ class Colaborador extends BaseModel
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'col_pes_id');
     }
 
+    public function setor()
+    {
+        return $this->belongsTo('Modulos\RH\Models\Setor', 'col_set_id');
+    }
+
+    public function funcao()
+    {
+        return $this->belongsTo('Modulos\RH\Models\Funcao', 'col_fun_id');
+    }
 
     // Accessors
     public function getColDataAdmissaoAttribute($value)
