@@ -71,5 +71,25 @@ class MenuRHSeeder extends Seeder
             'mit_rota' => 'rh.vinculos.index',
             'mit_ordem' => 3
         ]);
+
+        // Item períodos laborais
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Períodos Laborais',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-calendar',
+            'mit_rota' => 'rh.periodoslaborais.index',
+            'mit_ordem' => 4
+        ]);
+
+        // Item períodos laborais
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Colaboradores',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-user',
+            'mit_rota' => 'rh.colaboradores.index',
+            'mit_ordem' => 5
+        ]);
     }
 }
