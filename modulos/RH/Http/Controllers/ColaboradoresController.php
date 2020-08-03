@@ -10,6 +10,8 @@ use Modulos\RH\Http\Requests\ColaboradorRequest;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
+use Modulos\RH\Repositories\FuncaoRepository;
+use Modulos\RH\Repositories\SetorRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -20,12 +22,16 @@ class ColaboradoresController extends BaseController
     protected $colaboradorRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
+    protected $funcaoRepository;
+    protected $setorRepository;
 
-    public function __construct(ColaboradorRepository $colaborador, PessoaRepository $pessoa, DocumentoRepository $documento)
+    public function __construct(ColaboradorRepository $colaborador, PessoaRepository $pessoa, DocumentoRepository $documento, FuncaoRepository $funcao, SetorRepository $setor)
     {
         $this->colaboradorRepository = $colaborador;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
+        $this->funcaoRepository = $funcao;
+        $this->setorRepository = $setor;
     }
 
     public function getIndex(Request $request)
@@ -45,12 +51,22 @@ class ColaboradoresController extends BaseController
                 'col_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'col_set_id' => 'Setor',
+                'col_fun_id' => 'Função',
                 'col_action' => 'Ações'
             ))
                 ->modifyCell('col_action', function () {
                     return array('style' => 'width: 140px;');
                 })
                 ->means('col_action', 'col_id')
+                ->means('col_set_id', 'setor')
+                ->modify('col_set_id', function ($setor) {
+                    return $setor->set_descricao;
+                })
+                ->means('col_fun_id', 'funcao')
+                ->modify('col_fun_id', function ($funcao) {
+                    return $funcao->fun_descricao;
+                })
                 ->modify('col_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
@@ -89,10 +105,12 @@ class ColaboradoresController extends BaseController
     public function getCreate(Request $request)
     {
         $pessoaId = $request->get('id');
+        $funcoes = $this->funcaoRepository->lists('fun_id', 'fun_descricao');
+        $setores = $this->setorRepository->lists('set_id', 'set_descricao');
 
-        $colaboradors = $this->colaboradorRepository->search(array(['col_pes_id', '=', $pessoaId]));
+        $colaboradores = $this->colaboradorRepository->search(array(['col_pes_id', '=', $pessoaId]));
 
-        if (!$colaboradors->isEmpty()) {
+        if (!$colaboradores->isEmpty()) {
             flash()->error('Este CPF já tem um colaborador cadastrado!');
             return redirect()->route('rh.colaboradores.index');
         }
@@ -101,11 +119,11 @@ class ColaboradoresController extends BaseController
             $pessoa = $this->pessoaRepository->findById($pessoaId);
 
             if ($pessoa) {
-                return view('RH::colaboradores.create', ['pessoa' => $pessoa]);
+                return view('RH::colaboradores.create', ['pessoa' => $pessoa, 'funcoes' => $funcoes, 'setores' => $setores]);
             }
         }
 
-        return view('RH::colaboradores.create', ['pessoa' => []]);
+        return view('RH::colaboradores.create', ['pessoa' => [],'funcoes' => $funcoes, 'setores' => $setores]);
     }
 
     public function postCreate(Request $request)
@@ -180,6 +198,8 @@ class ColaboradoresController extends BaseController
     public function getEdit($colaboradorId)
     {
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
+        $funcoes = $this->funcaoRepository->lists('fun_id', 'fun_descricao');
+        $setores = $this->setorRepository->lists('set_id', 'set_descricao');
 
         if (!$colaborador) {
             flash()->error('Colaborador não existe.');
@@ -188,7 +208,7 @@ class ColaboradoresController extends BaseController
 
         $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
 
-        return view('RH::colaboradores.edit', ['pessoa' => $pessoa, 'colaborador' => $colaborador]);
+        return view('RH::colaboradores.edit', compact(['pessoa', 'colaborador','funcoes', 'setores']) );
     }
 
     public function putEdit($colaboradorId, Request $request)

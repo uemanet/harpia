@@ -1,49 +1,48 @@
 <?php
 
+
 namespace Modulos\RH\Http\Controllers;
 
+
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\RH\Http\Requests\BancoRequest;
-use Modulos\RH\Repositories\BancoRepository;
+use Modulos\RH\Http\Requests\FuncaoRequest;
+use Modulos\RH\Repositories\FuncaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Illuminate\Http\Request;
 
-class BancosController extends BaseController
+class FuncoesController extends BaseController
 {
-    protected $bancoRepository;
+    protected $funcaoRepository;
 
-    public function __construct(BancoRepository $bancoRepository)
+    public function __construct(FuncaoRepository $funcaoRepository)
     {
-        $this->bancoRepository = $bancoRepository;
+        $this->funcaoRepository = $funcaoRepository;
     }
 
-    public function getIndex(Request $request)
+    public function getIndex(\Illuminate\Http\Request $request)
     {
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.bancos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.funcoes.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
         $paginacao = null;
         $tabela = null;
 
-        $tableData = $this->bancoRepository->paginateRequest($request->all());
+        $tableData = $this->funcaoRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'ban_id' => '#',
-                'ban_nome' => 'Nome',
-                'ban_codigo' => 'Código',
-                'ban_sigla' => 'Sigla',
-                'ban_action' => 'Ações'
+                'fun_id' => '#',
+                'fun_descricao' => 'Descrição',
+                'fun_action' => 'Ações'
             ))
-                ->modifyCell('ban_action', function () {
+                ->modifyCell('fun_action', function () {
                     return array('style' => 'width: 140px;');
                 })
-                ->means('ban_action', 'ban_id')
-                ->modify('ban_action', function ($id) {
+                ->means('fun_action', 'fun_id')
+                ->modify('fun_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -54,7 +53,7 @@ class BancosController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
-                                'route' => 'rh.bancos.edit',
+                                'route' => 'rh.funcoes.edit',
                                 'parameters' => ['id' => $id],
                                 'label' => 'Editar',
                                 'method' => 'get'
@@ -62,7 +61,7 @@ class BancosController extends BaseController
                             [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
-                                'route' => 'rh.bancos.delete',
+                                'route' => 'rh.funcoes.delete',
                                 'id' => $id,
                                 'label' => 'Excluir',
                                 'method' => 'post'
@@ -70,32 +69,32 @@ class BancosController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('ban_id', 'ban_nome'));
+                ->sortable(array('fun_id', 'fun_descricao'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('RH::bancos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        return view('RH::funcoes.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
     public function getCreate()
     {
-        return view('RH::bancos.create');
+        return view('RH::funcoes.create');
     }
 
-    public function postCreate(BancoRequest $request)
+    public function postCreate(FuncaoRequest $request)
     {
         try {
-            $banco = $this->bancoRepository->create($request->all());
+            $funcao = $this->funcaoRepository->create($request->all());
 
-            if (!$banco) {
+            if (!$funcao) {
                 flash()->error('Erro ao tentar salvar.');
 
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Banco criada com sucesso.');
-            return redirect()->route('rh.bancos.index');
+            flash()->success('Função criada com sucesso.');
+            return redirect()->route('rh.funcoes.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -106,37 +105,37 @@ class BancosController extends BaseController
         }
     }
 
-    public function getEdit($bancoId)
+    public function getEdit($funcaoId)
     {
-        $banco = $this->bancoRepository->find($bancoId);
+        $funcao = $this->funcaoRepository->find($funcaoId);
 
-        if (!$banco) {
-            flash()->error('Banco não existe.');
+        if (!$funcao) {
+            flash()->error('Função não existe.');
             return redirect()->back();
         }
 
-        return view('RH::bancos.edit', compact('banco'));
+        return view('RH::funcoes.edit', compact('funcao'));
     }
 
-    public function putEdit($bancoId, BancoRequest $request)
+    public function putEdit($funcaoId, FuncaoRequest $request)
     {
         try {
-            $banco = $this->bancoRepository->find($bancoId);
+            $funcao = $this->funcaoRepository->find($funcaoId);
 
-            if (!$banco) {
-                flash()->error('Banco não existe.');
-                return redirect()->route('rh.bancos.index');
+            if (!$funcao) {
+                flash()->error('Vínculo não existe.');
+                return redirect()->route('rh.funcoes.index');
             }
 
-            $requestData = $request->only($this->bancoRepository->getFillableModelFields());
+            $requestData = $request->only($this->funcaoRepository->getFillableModelFields());
 
-            if (!$this->bancoRepository->update($requestData, $banco->ban_id, 'ban_id')) {
+            if (!$this->funcaoRepository->update($requestData, $funcao->fun_id, 'fun_id')) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Banco atualizada com sucesso.');
-            return redirect()->route('rh.bancos.index');
+            flash()->success('Função atualizada com sucesso.');
+            return redirect()->route('rh.funcoes.index');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -147,14 +146,14 @@ class BancosController extends BaseController
         }
     }
 
-    public function postDelete(Request $request)
+    public function postDelete(\Illuminate\Http\Request $request)
     {
         try {
-            $bancoId = $request->get('id');
+            $funcaoId = $request->get('id');
 
-            $this->bancoRepository->delete($bancoId);
+            $this->funcaoRepository->delete($funcaoId);
 
-            flash()->success('Banco excluído com sucesso.');
+            flash()->success('Função excluída com sucesso.');
 
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -169,5 +168,6 @@ class BancosController extends BaseController
             return redirect()->back();
         }
     }
+
 
 }
