@@ -68,4 +68,13 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
     });
 
+    Route::group(['prefix' => 'fontespagadoras'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getIndex')->name('rh.fontespagadoras.index');
+        Route::get('/create', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getCreate')->name('rh.fontespagadoras.create');
+        Route::post('/create', '\Modulos\RH\Http\Controllers\FontesPagadorasController@postCreate')->name('rh.fontespagadoras.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getEdit')->name('rh.fontespagadoras.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\FontesPagadorasController@putEdit')->name('rh.fontespagadoras.edit');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\FontesPagadorasController@postDelete')->name('rh.fontespagadoras.delete');
+    });
+
 });

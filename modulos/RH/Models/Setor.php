@@ -20,4 +20,4 @@ class Setor extends BaseModel
     protected $searchable = [
         'set_descricao' => 'like'
     ];
-}   
+}
