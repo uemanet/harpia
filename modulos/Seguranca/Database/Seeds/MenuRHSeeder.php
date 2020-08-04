@@ -102,7 +102,7 @@ class MenuRHSeeder extends Seeder
             'mit_ordem' => 6
         ]);
 
-        // Item períodos laborais
+        // Item colaboradores
         MenuItem::create([
             'mit_mod_id' => 6,
             'mit_nome' => 'Colaboradores',
@@ -110,6 +110,16 @@ class MenuRHSeeder extends Seeder
             'mit_icone' => 'fa fa-user',
             'mit_rota' => 'rh.colaboradores.index',
             'mit_ordem' => 7
+        ]);
+
+        // Item fontes pagadora
+        MenuItem::create([
+            'mit_mod_id' => 6,
+            'mit_nome' => 'Fontes Pagadoras',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-money',
+            'mit_rota' => 'rh.fontespagadoras.index',
+            'mit_ordem' => 8
         ]);
     }
 }
