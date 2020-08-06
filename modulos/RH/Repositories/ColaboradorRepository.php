@@ -8,9 +8,9 @@ use Modulos\RH\Models\Colaborador;
 
 class ColaboradorRepository extends BaseRepository
 {
-    public function __construct(Colaborador $professor)
+    public function __construct(Colaborador $colaborador)
     {
-        $this->model = $professor;
+        $this->model = $colaborador;
     }
 
 //    /**

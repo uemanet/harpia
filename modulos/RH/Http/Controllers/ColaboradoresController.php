@@ -9,7 +9,6 @@ use Illuminate\Validation\ValidationException;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\Core\Http\Controller\BaseController;
-use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\RH\Repositories\FuncaoRepository;
 use Modulos\RH\Repositories\SetorRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;

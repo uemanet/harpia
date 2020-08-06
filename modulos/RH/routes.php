@@ -77,4 +77,20 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\RH\Http\Controllers\FontesPagadorasController@postDelete')->name('rh.fontespagadoras.delete');
     });
 
+    Route::group(['prefix' => 'atividadesextrascolaboradores'], function () {
+        Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\AtividadeExtraColaboradorController@getCreate')->name('rh.colaboradores.atividadesextrascolaboradores.create');
+        Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\AtividadeExtraColaboradorController@postCreate')->name('rh.colaboradores.atividadesextrascolaboradores.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\AtividadeExtraColaboradorController@getEdit')->name('rh.colaboradores.atividadesextrascolaboradores.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\AtividadeExtraColaboradorController@putEdit')->name('rh.colaboradores.atividadesextrascolaboradores.edit');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\AtividadeExtraColaboradorController@postDelete')->name('rh.colaboradores.atividadesextrascolaboradores.delete');
+    });
+
+    Route::group(['prefix' => 'contascolaboradores'], function () {
+        Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@getCreate')->name('rh.colaboradores.contascolaboradores.create');
+        Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@postCreate')->name('rh.colaboradores.contascolaboradores.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@getEdit')->name('rh.colaboradores.contascolaboradores.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@putEdit')->name('rh.colaboradores.contascolaboradores.edit');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@postDelete')->name('rh.colaboradores.contascolaboradores.delete');
+    });
+
 });
