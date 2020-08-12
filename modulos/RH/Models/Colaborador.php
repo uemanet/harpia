@@ -34,6 +34,16 @@ class Colaborador extends BaseModel
         'pes_cpf' => '='
     ];
 
+    public function atividades_extras()
+    {
+        return $this->hasMany('Modulos\RH\Models\AtividadeExtraColaborador', 'atc_col_id', 'col_id');
+    }
+
+    public function contas_colaboradores()
+    {
+        return $this->hasMany('Modulos\RH\Models\ContaColaborador', 'ccb_col_id', 'col_id');
+    }
+
     public function pessoa()
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'col_pes_id');

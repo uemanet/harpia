@@ -53,6 +53,14 @@ class FontesPagadorasController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-eye',
+                                'route' => 'rh.fontespagadoras.show',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Visualizar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-pencil',
                                 'route' => 'rh.fontespagadoras.edit',
                                 'parameters' => ['id' => $id],
@@ -76,6 +84,18 @@ class FontesPagadorasController extends BaseController
         }
 
         return view('RH::fontespagadoras.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+    }
+
+    public function getShow($fonte_pagadoraId)
+    {
+        $fonte_pagadora = $this->fontePagadoraRepository->find($fonte_pagadoraId);
+
+        if (!$fonte_pagadora) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        return view('RH::fontespagadoras.show', ['fonte_pagadora' => $fonte_pagadora]);
     }
 
     public function getCreate()

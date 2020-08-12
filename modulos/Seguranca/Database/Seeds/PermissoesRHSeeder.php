@@ -237,6 +237,63 @@ class PermissoesRHSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso de Atividates Extras
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.colaboradores.atividadesextrascolaboradores.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.colaboradores.atividadesextrascolaboradores.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.colaboradores.atividadesextrascolaboradores.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        //permissões do recurso de Contas de Colaboradores
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.colaboradores.contascolaboradores.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.colaboradores.contascolaboradores.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.colaboradores.contascolaboradores.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        //permissões do recurso de Contas de Colaboradores
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.fontespagadoras.vinculosfontespagadoras.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'rh.fontespagadoras.vinculosfontespagadoras.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'rh.fontespagadoras.vinculosfontespagadoras.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 

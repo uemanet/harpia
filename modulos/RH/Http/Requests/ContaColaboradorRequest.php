@@ -2,9 +2,10 @@
 
 namespace Modulos\RH\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Modulos\Core\Http\Request\BaseRequest;
 
-class BancoRequest extends BaseRequest
+class ContaColaboradorRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +24,12 @@ class BancoRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
-            'ban_nome' => 'required|min:|max:80',
-            'ban_codigo' => 'required|min:3|max:10',
-            'ban_sigla' => 'required|min:2|max:25',
+        return [
+            'ccb_ban_id' => 'required|integer',
+            'ccb_agencia' => 'required|integer',
+            'ccb_conta' => 'required|integer',
+            'ccb_variacao' => 'required|integer'
         ];
 
-        return $rules;
     }
 }

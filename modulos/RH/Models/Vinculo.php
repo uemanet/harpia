@@ -19,4 +19,10 @@ class Vinculo extends  BaseModel
     protected  $searchable = [
       'vin_descricao' => 'like'
     ];
+
+    public function vinculos_fontes_pagadoras()
+    {
+        return $this->hasMany('Modulos\RH\Models\VinculoFontePagadora', 'vfp_vin_id', 'vin_id');
+    }
+
 }

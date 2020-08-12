@@ -32,4 +32,9 @@ class FontePagadora extends BaseModel
     protected $searchable = [
         'fpg_razao_social' => 'like'
     ];
+
+    public function vinculos_fontes_pagadoras()
+    {
+        return $this->hasMany('Modulos\RH\Models\VinculoFontePagadora', 'vfp_fpg_id', 'fpg_id');
+    }
 }
