@@ -70,6 +70,7 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'fontespagadoras'], function () {
         Route::get('/', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getIndex')->name('rh.fontespagadoras.index');
+        Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getShow')->name('rh.fontespagadoras.show');
         Route::get('/create', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getCreate')->name('rh.fontespagadoras.create');
         Route::post('/create', '\Modulos\RH\Http\Controllers\FontesPagadorasController@postCreate')->name('rh.fontespagadoras.create');
         Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getEdit')->name('rh.fontespagadoras.edit');
@@ -91,6 +92,14 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@getEdit')->name('rh.colaboradores.contascolaboradores.edit');
         Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@putEdit')->name('rh.colaboradores.contascolaboradores.edit');
         Route::post('/delete', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@postDelete')->name('rh.colaboradores.contascolaboradores.delete');
+    });
+
+    Route::group(['prefix' => 'vinculosfontespagadoras'], function () {
+        Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\VinculosFontesPagadorasController@getCreate')->name('rh.fontespagadoras.vinculosfontespagadoras.create');
+        Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\VinculosFontesPagadorasController@postCreate')->name('rh.fontespagadoras.vinculosfontespagadoras.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\VinculosFontesPagadorasController@getEdit')->name('rh.fontespagadoras.vinculosfontespagadoras.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\VinculosFontesPagadorasController@putEdit')->name('rh.fontespagadoras.vinculosfontespagadoras.edit');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\VinculosFontesPagadorasController@postDelete')->name('rh.fontespagadoras.vinculosfontespagadoras.delete');
     });
 
 });
