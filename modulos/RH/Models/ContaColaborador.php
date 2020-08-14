@@ -33,4 +33,9 @@ class ContaColaborador extends BaseModel
         return $this->belongsTo('Modulos\RH\Models\Banco', 'ccb_ban_id');
     }
 
+    public function salarios_colaboradores()
+    {
+        return $this->hasMany('Modulos\RH\Models\SalarioColaborador', 'scb_ccb_id');
+    }
+
 }
