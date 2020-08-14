@@ -9,5 +9,6 @@
     @include('Geral::pessoas.includes.titulacoes')
     @include('RH::colaboradores.includes.atividadesextras')
     @include('RH::colaboradores.includes.contascolaboradores')
+    @include('RH::colaboradores.includes.salarioscolaboradores')
 
 @endsection

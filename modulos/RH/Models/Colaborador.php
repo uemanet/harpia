@@ -44,6 +44,8 @@ class Colaborador extends BaseModel
         return $this->hasMany('Modulos\RH\Models\ContaColaborador', 'ccb_col_id', 'col_id');
     }
 
+
+
     public function pessoa()
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'col_pes_id');
@@ -58,6 +60,8 @@ class Colaborador extends BaseModel
     {
         return $this->belongsTo('Modulos\RH\Models\Funcao', 'col_fun_id');
     }
+
+
 
     // Accessors
     public function getColDataAdmissaoAttribute($value)
