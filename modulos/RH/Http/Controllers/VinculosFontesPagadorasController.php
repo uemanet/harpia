@@ -43,7 +43,7 @@ class VinculosFontesPagadorasController extends BaseController
 
             $vinculo_fpg->vfp_fpg_id = $data['vfp_fpg_id'];
             $vinculo_fpg->vfp_vin_id = $data['vfp_vin_id'];
-            $vinculo_fpg->vfp_unidade =isset($data['vfp_unidade']) ? isset($data['vfp_unidade']) : null ;
+            $vinculo_fpg->vfp_unidade =isset($data['vfp_unidade']) ? $data['vfp_unidade'] : null ;
             $vinculo_fpg->vfp_valor = isset($data['vfp_valor']) ? $data['vfp_valor'] : null;
 
             $vinculo_fpg->save();

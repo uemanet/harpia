@@ -26,7 +26,7 @@
                             <th>Data de Fim</th>
                             <th>Data de Cadastro</th>
                         </tr>
-                        @foreach($colaboradores->contas_colaboradores as $conta_colaborador)
+                        @foreach($colaborador->contas_colaboradores as $conta_colaborador)
                             @foreach($conta_colaborador->salarios_colaboradores as $salario_colaborador)
                             <tr>
                                 <td>{{$salario_colaborador->conta->ccb_conta}}</td>
@@ -39,6 +39,27 @@
                                 <td>{{$salario_colaborador->scb_data_cadastro}}</td>
                                 <td>
 
+                                    {!! ActionButton::grid([
+                                      'type' => 'LINE',
+                                      'buttons' => [
+                                         [
+                                             'classButton' => 'btn btn-primary btn-sm',
+                                             'icon' => 'fa fa-pencil',
+                                             'route' => 'rh.colaboradores.salarioscolaboradores.edit',
+                                             'parameters' => ['id' => $salario_colaborador->scb_id],
+                                             'label' => '',
+                                             'method' => 'get'
+                                         ],
+                                         [
+                                             'classButton' => 'btn-delete btn btn-danger btn-sm',
+                                             'icon' => 'fa fa-trash',
+                                             'route' => 'rh.colaboradores.salarioscolaboradores.delete',
+                                             'id' => $salario_colaborador->scb_id,
+                                             'label' => '',
+                                             'method' => 'post'
+                                         ]
+                                     ]
+                             ]) !!}
 
                                 </td>
                             </tr>

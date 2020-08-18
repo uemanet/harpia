@@ -24,15 +24,16 @@ class SalarioColaboradorRequest extends BaseRequest
      */
     public function rules()
     {
+
         return [
             'scb_ccb_id' => 'required|integer',
             'scb_vfp_id' => 'required|integer',
-            'scb_unidade' => 'nullable|integer',
-            'scb_valor' => 'required|integer',
-            'scb_valor_liquido' => 'required|integer',
+//            'scb_unidade' => 'nullable|integer',
+            'scb_valor' => 'required|numeric',
+//            'scb_valor_liquido' => 'required|integer',
             'scb_data_inicio' => 'required|date_format:d/m/Y',
             'scb_data_fim' => 'nullable|date_format:d/m/Y',
-            'scb_data_cadastro' => 'required|date_format:d/m/Y',
+//            'scb_data_cadastro' => 'required|date_format:d/m/Y',
         ];
 
     }

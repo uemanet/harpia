@@ -102,19 +102,4 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\RH\Http\Controllers\VinculosFontesPagadorasController@postDelete')->name('rh.fontespagadoras.vinculosfontespagadoras.delete');
     });
 
-    Route::group(['prefix' => 'salarioscolaboradores'], function () {
-        Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\SalariosColaboradoresController@getCreate')->name('rh.colaboradores.salarioscolaboradores.create');
-        Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\SalariosColaboradoresController@postCreate')->name('rh.colaboradores.salarioscolaboradores.create');
-        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\SalariosColaboradoresController@getEdit')->name('rh.colaboradores.salarioscolaboradores.edit');
-        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\SalariosColaboradoresController@putEdit')->name('rh.colaboradores.salarioscolaboradores.edit');
-        Route::post('/delete', '\Modulos\RH\Http\Controllers\SalariosColaboradoresController@postDelete')->name('rh.colaboradores.salarioscolaboradores.delete');
-    });
-
-    //Rotas de funções assíncronas
-    Route::group(['prefix' => 'async'], function () {
-        Route::group(['prefix' => 'fontespagadoras'], function () {
-            Route::get('/{id}/vinculosfontespagadoras', '\Modulos\RH\Http\Async\FontesPagadoras@getVinculosFontesPagadoras')->name('rh.async.fontespagadoras.vinculosfontespagadoras');
-        });
-    });
-
 });
