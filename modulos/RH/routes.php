@@ -110,6 +110,12 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\RH\Http\Controllers\SalariosColaboradoresController@postDelete')->name('rh.colaboradores.salarioscolaboradores.delete');
     });
 
+    Route::group(['prefix' => 'calendarios'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\CalendariosController@getIndex')->name('rh.calendarios.index');
+
+    });
+
+
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'fontespagadoras'], function () {
