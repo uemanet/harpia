@@ -1,19 +1,19 @@
 <?php
 
-namespace Modulos\Matriculas\Http\Controllers;
+namespace Modulos\RH\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
 /**
  * Class IndexController.
  */
-class IndexController extends Controller
+class CalendariosController extends Controller
 {
     /**
      * @return \Illuminate\View\View
      */
     public function getIndex()
     {
-        return view('Matriculas::index.index');
+        return view('RH::calendarios.index');
     }
 }
