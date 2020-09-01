@@ -51,6 +51,7 @@ elixir(function(mix) {
     mix.copy('node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.js', 'public/js');
 
     mix.copy('node_modules/admin-lte/bower_components/moment/moment.js', 'public/js');
+    mix.copy('node_modules/jquery-validation/dist/jquery.validate.min.js', 'public/js');
 
     // FONTS
     mix.copy("node_modules/bootstrap/fonts", "public/fonts");
