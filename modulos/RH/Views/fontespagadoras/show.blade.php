@@ -4,6 +4,8 @@
 
 @section('content')
 
+
+    @include('RH::fontespagadoras.includes.dadosfontepagadora')
     @include('RH::fontespagadoras.includes.vinculosfontespagadoras')
 
 @endsection

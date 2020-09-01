@@ -115,11 +115,19 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
     });
 
-
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'fontespagadoras'], function () {
             Route::get('/{id}/vinculosfontespagadoras', '\Modulos\RH\Http\Async\FontesPagadoras@getVinculosFontesPagadoras')->name('rh.async.fontespagadoras.vinculosfontespagadoras');
+        });
+
+        Route::group(['prefix' => 'calendarios'], function () {
+            Route::get('/', '\Modulos\RH\Http\Async\Calendarios@index')->name('rh.async.calendarios.index');
+            Route::post('/create', '\Modulos\RH\Http\Async\Calendarios@postCreate')->name('rh.async.calendarios.create');
+            Route::get('/edit/{id}', '\Modulos\RH\Http\Async\Calendarios@getEdit')->name('rh.async.calendarios.edit');
+            Route::put('/edit/{id}', '\Modulos\RH\Http\Async\Calendarios@putEdit')->name('rh.async.calendarios.edit');
+            Route::post('/delete', '\Modulos\RH\Http\Async\Calendarios@postDelete')->name('rh.async.calendarios.delete');
+
         });
     });
 
