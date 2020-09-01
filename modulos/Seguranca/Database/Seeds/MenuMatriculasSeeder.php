@@ -27,11 +27,21 @@ class MenuMatriculasSeeder extends Seeder
         // Item Dashboard
         MenuItem::create([
             'mit_mod_id' => 7,
-            'mit_nome' => 'Dashboard',
+            'mit_nome' => 'Seletivos',
             'mit_item_pai' => $matriculas->mit_id,
             'mit_icone' => 'fa fa-tachometer',
             'mit_rota' => 'matriculas.index.index',
             'mit_ordem' => 1
+        ]);
+
+        // Item Chamadas
+        MenuItem::create([
+            'mit_mod_id' => 7,
+            'mit_nome' => 'Chamadas',
+            'mit_item_pai' => $matriculas->mit_id,
+            'mit_icone' => 'fa fa-clipboard-list',
+            'mit_rota' => 'matriculas.chamadas.index',
+            'mit_ordem' => 2
         ]);
 
 
