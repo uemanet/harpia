@@ -3,8 +3,9 @@
 namespace Modulos\Matriculas\Models;
 
 use Modulos\Core\Model\BaseModel;
+use Illuminate\Foundation\Auth\User as Model;
 
-class SeletivoUser extends BaseModel
+class SeletivoUser extends Model
 {
     public $table = 'seletivos_users';
     protected $connection = 'mysql1';
@@ -45,4 +46,10 @@ class SeletivoUser extends BaseModel
         'email' => '=',
         'cpf' => '=',
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+
 }

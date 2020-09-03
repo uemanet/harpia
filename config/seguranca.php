@@ -3,7 +3,11 @@
 return [
     'prelogin_openroutes' => array(
         'auth.login',
-        'index'
+        'index',
+        'auth.matriculas-alunos.login',
+        'auth.matriculas-alunos.logout',
+        'matriculas-alunos.index.alunos'
+
     ),
 
     'postlogin_openroutes' => array(
@@ -11,6 +15,9 @@ return [
         'index',
         'seguranca.profile.index',
         'seguranca.profile.edit',
-        'seguranca.profile.updatepassword'
+        'seguranca.profile.updatepassword',
+        'auth.matriculas-alunos.login',
+        'auth.matriculas-alunos.logout',
+        'matriculas-alunos.index.alunos'
     )
 ];

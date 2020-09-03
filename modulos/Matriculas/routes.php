@@ -15,3 +15,10 @@ Route::group(['prefix' => 'matriculas', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\Matriculas\Http\Controllers\ChamadaController@postDelete')->name('matriculas.chamadas.delete');
     });
 });
+
+Route::group(['prefix' => 'matriculas-alunos'], function () {
+
+    Route::group(['prefix' => 'index'], function () {
+        Route::get('/', '\Modulos\Matriculas\Http\Controllers\IndexController@getIndex')->name('matriculas-alunos.index.alunos');
+    });
+});
