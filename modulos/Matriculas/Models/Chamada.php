@@ -37,6 +37,6 @@ class Chamada extends BaseModel
 
     public function seletivo()
     {
-        return $this->belongsTo(Seletivo::class);
+        return $this->belongsTo(Seletivo::class, 'seletivo_id');
     }
 }

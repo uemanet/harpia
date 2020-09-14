@@ -20,5 +20,14 @@ Route::group(['prefix' => 'matriculas-alunos'], function () {
 
     Route::group(['prefix' => 'index'], function () {
         Route::get('/', '\Modulos\Matriculas\Http\Controllers\IndexController@getIndex')->name('matriculas-alunos.index.alunos');
+
+    });
+
+    Route::group(['prefix' => 'seletivo-matricula'], function () {
+
+        Route::get('/{id}', '\Modulos\Matriculas\Http\Controllers\IndexController@getConfirmar')->name('matriculas-alunos.seletivo-matricula.confirmar');
+        Route::post('/{id}', '\Modulos\Matriculas\Http\Controllers\IndexController@postConfirmar')->name('matriculas-alunos.seletivo-matricula.confirmar');
+        Route::get('/{id}/comprovante', '\Modulos\Matriculas\Http\Controllers\IndexController@getComprovante')->name('matriculas-alunos.seletivo-matricula.comprovante');
+
     });
 });

@@ -74,10 +74,10 @@ class AuthMatriculasController extends Controller
 
         if (Auth::guard('matriculas-alunos')->attempt($credentials, $request->has('remember'))) {
 
-            return redirect()->intended('/matriculas-alunos/index');
+            return redirect('/matriculas-alunos/index');
         }
 
-        return redirect('/matriculas-alunos/index')
+        return redirect('/matriculas-alunos/login')
             ->withInput($request->only('usr_usuario', 'remember'))
             ->withErrors([
                 'Usuário e/ou senha inválidos.',

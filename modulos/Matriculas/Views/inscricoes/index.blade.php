@@ -68,9 +68,9 @@
             <div class="box-header">
                 <div class="row">
                     <div class="form-group col-md-6 @if ($errors->has('chamada_id')) has-error @endif">
-                        {!! Form::label('chamada_id', 'Seletivo*', ['class' => 'control-label']) !!}
+                        {!! Form::label('chamada_id', 'Chamada*', ['class' => 'control-label']) !!}
                         <div class="controls">
-                            {!! Form::select('chamada_id', $chamadas, old('chamada_id'), ['class' => 'form-control', 'placeholder' => 'Escolha o Seletivo', 'id' => 'chamada_id']) !!}
+                            {!! Form::select('chamada_id', $chamadas, old('chamada_id'), ['class' => 'form-control', 'placeholder' => 'Escolha a Chamada', 'id' => 'chamada_id']) !!}
                             @if ($errors->has('chamada_id')) <p class="help-block">{{ $errors->first('chamada_id') }}</p> @endif
                         </div>
                     </div>

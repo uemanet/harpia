@@ -33,9 +33,9 @@
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('tipo_chamada')) has-error @endif">
-        {!! Form::label('tipo_chamada', 'Seletivo*', ['class' => 'control-label']) !!}
+        {!! Form::label('tipo_chamada', 'Tipo de chamada*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('tipo_chamada', ['normal' => 'Normal', 'excedente' => 'Excedente'], old('tipo_chamada'), ['class' => 'form-control', 'placeholder' => 'Escolha o Seletivo']) !!}
+            {!! Form::select('tipo_chamada', ['normal' => 'Normal', 'excedente' => 'Excedente'], old('tipo_chamada'), ['class' => 'form-control', 'placeholder' => 'Escolha o tipo de chamada']) !!}
             @if ($errors->has('tipo_chamada')) <p class="help-block">{{ $errors->first('tipo_chamada') }}</p> @endif
         </div>
     </div>

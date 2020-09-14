@@ -52,4 +52,9 @@ class SeletivoUser extends Model
         return $this->password;
     }
 
+    public function seletivos_matriculas()
+    {
+        return $this->hasMany(SeletivoMatricula::class, 'seletivo_user_id');
+    }
+
 }

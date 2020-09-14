@@ -20,8 +20,8 @@ class SeletivoMatricula extends BaseModel
         return $this->belongsTo(User::class, 'seletivo_user_id');
     }
 
-    public function chamadas()
+    public function chamada()
     {
-        return $this->hasMany(Chamada::class);
+        return $this->belongsTo(Chamada::class, 'chamada_id');
     }
 }
