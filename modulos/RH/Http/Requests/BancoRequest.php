@@ -24,9 +24,9 @@ class BancoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'ban_nome' => 'required|min:3|max:80',
+            'ban_nome' => 'required|min:|max:80',
             'ban_codigo' => 'required|min:3|max:10',
-            'ban_sigla' => 'required|min:3|max:25',
+            'ban_sigla' => 'required|min:2|max:25',
         ];
 
         return $rules;

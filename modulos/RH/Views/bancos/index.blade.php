@@ -28,7 +28,7 @@
             <div class="row">
                 <form method="GET" action="{{ route('rh.bancos.index') }}">
                     <div class="col-md-9">
-                        <input type="text" class="form-control" name="ban_descricao" id="ban_descricao" value="{{Request::input('ban_descricao')}}" placeholder="Nome da área de conhecimento">
+                        <input type="text" class="form-control" name="ban_descricao" id="ban_descricao" value="{{Request::input('ban_descricao')}}" placeholder="Nome, sigla ou código do banco">
                     </div>
                     <div class="col-md-3">
                         <input type="submit" class="form-control btn-primary" value="Buscar">

@@ -2,11 +2,11 @@
 
 namespace Modulos\RH\Http\Controllers;
 
+use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\BancoRequest;
 use Modulos\RH\Repositories\BancoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
-use Modulos\Core\Http\Controller\BaseController;
 use Illuminate\Http\Request;
 
 class BancosController extends BaseController
