@@ -17,7 +17,7 @@ class PermissoesRHSeeder extends Seeder
 
         // Cria perfil de Administrador
         $perfil = Perfil::create([
-            'prf_mod_id' => 6,
+            'prf_mod_id' => 7,
             'prf_nome' => 'Administrador RH'
         ]);
         $arrPermissoes = [];
@@ -291,6 +291,13 @@ class PermissoesRHSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'delete',
             'prm_rota' => 'rh.fontespagadoras.vinculosfontespagadoras.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        //permissões do recurso de Calendário
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'rh.calendarios.index'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
