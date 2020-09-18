@@ -3,6 +3,7 @@
 namespace Modulos\Matriculas\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
@@ -115,7 +116,7 @@ class IndexController extends Controller
             $mpdf->defaultfooterfontsize = 10;
             $mpdf->defaultfooterfontstyle = 'BI';
             $mpdf->defaultfooterline = 0;
-//            $mpdf->addPage('L');
+            $mpdf->addPage('L');
 
             $mpdf->WriteHTML(view('Matriculas::matriculas-alunos.comprovante', compact('user', 'date', 'seletivo_matricula'))->render());
             $mpdf->Output();

@@ -32,3 +32,4 @@ Route::group(['prefix' => 'matriculas-alunos'], function () {
 
     });
 });
+
