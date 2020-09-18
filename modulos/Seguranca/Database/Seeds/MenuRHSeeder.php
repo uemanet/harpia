@@ -18,7 +18,7 @@ class MenuRHSeeder extends Seeder
 
         // Categoria Monitoramento
         $rh = MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Recursos Humanos',
             'mit_icone' => 'fa fa-file-text',
             'mit_ordem' => 1
@@ -26,7 +26,7 @@ class MenuRHSeeder extends Seeder
 
         // Item Dashboard
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Dashboard',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-tachometer',
@@ -36,7 +36,7 @@ class MenuRHSeeder extends Seeder
 
         // Categoria cadastros
         $rh = MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Cadastros',
             'mit_icone' => 'fa fa-plus',
             'mit_ordem' => 1
@@ -44,7 +44,7 @@ class MenuRHSeeder extends Seeder
 
         // Item areas conhecimentos
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Áreas de Conhecimento',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-tachometer',
@@ -54,7 +54,7 @@ class MenuRHSeeder extends Seeder
 
         // Item bancos
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Bancos',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-bank',
@@ -64,7 +64,7 @@ class MenuRHSeeder extends Seeder
 
         // Item vinculos
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Vínculos',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-link',
@@ -74,7 +74,7 @@ class MenuRHSeeder extends Seeder
 
         // Item funcoes
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Funções',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-user',
@@ -84,7 +84,7 @@ class MenuRHSeeder extends Seeder
 
         // Item setores
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Setores',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-users',
@@ -94,17 +94,17 @@ class MenuRHSeeder extends Seeder
 
         // Item períodos laborais
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Períodos Laborais',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-calendar',
             'mit_rota' => 'rh.periodoslaborais.index',
-            'mit_ordem' => 6
+            'mit_ordem' => 7
         ]);
 
         // Item colaboradores
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Colaboradores',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-user',
@@ -114,11 +114,21 @@ class MenuRHSeeder extends Seeder
 
         // Item fontes pagadora
         MenuItem::create([
-            'mit_mod_id' => 6,
+            'mit_mod_id' => 7,
             'mit_nome' => 'Fontes Pagadoras',
             'mit_item_pai' => $rh->mit_id,
             'mit_icone' => 'fa fa-money',
             'mit_rota' => 'rh.fontespagadoras.index',
+            'mit_ordem' => 8
+        ]);
+
+        // Item calendário
+        MenuItem::create([
+            'mit_mod_id' => 7,
+            'mit_nome' => 'Calendários',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-calendar',
+            'mit_rota' => 'rh.calendarios.index',
             'mit_ordem' => 8
         ]);
     }

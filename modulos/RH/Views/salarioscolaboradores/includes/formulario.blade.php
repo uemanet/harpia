@@ -29,11 +29,10 @@
     <div class=" form-group col-md-3 @if ($errors->has('scb_qtd_pagamento')) has-error @endif"  id= "unidade" >
         {!! Form::label('scb_qtd_pagamento', 'Qtd. Pagamento', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::number('scb_qtd_pagamento', old('scb_qtd_pagamento'), ['min' => 1, 'max' => 9999, 'maxlength' => 4 ,'class' => 'form-control',  'oninput'=>"javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"]) !!}
+            {!! Form::number('scb_qtd_pagamento', old('scb_qtd_pagamento'), ['class' => 'form-control',  'oninput'=>"javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"]) !!}
             @if ($errors->has('scb_qtd_pagamento')) <p class="help-block">{{ $errors->first('scb_qtd_pagamento') }}</p> @endif
         </div>
     </div>
-
     <div class="form-group col-md-3  @if ($errors->has('scb_valor')) has-error @endif">
         {!! Form::label('scb_valor', 'Valor Bruto (R$)*', ['class' => 'control-label']) !!}
         <div class="controls">
@@ -77,7 +76,7 @@
         $(document).ready(function(){
             $('#fpg_id').prop('selectedIndex',0);
 
-            $("#unidade").hide();
+            // $("#unidade").hide();
 
             $('#fpg_id').change(function() {
 
@@ -105,11 +104,11 @@
                                     unitario = 'Não';
                                 }
 
-
-
                                 $('#scb_vfp_id').append('<option value=' + value.vfp_id + ' data-valor=' + value.vfp_valor + ' data-uni=' + unitario + '>' + value.vin_descricao + " | Salário Base (R$"+ value.vfp_valor + ") Uni:"+ unitario +'</option>');
                             } else{
-                                $('#scb_vfp_id').append('<option value=' + value.vfp_id + ' >' + value.vin_descricao + '</option>');
+                                unitario = 'Não';
+
+                                $('#scb_vfp_id').append('<option value=' + value.vfp_id + ' data-uni=' + unitario + ' >' + value.vin_descricao + '</option>');
                             }
                         });
                     }

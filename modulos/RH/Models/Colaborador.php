@@ -19,7 +19,6 @@ class Colaborador extends BaseModel
         'col_data_admissao',
         'col_ch_diaria',
         'col_codigo_catraca',
-        'col_codigo_catraca',
         'col_vinculo_universidade',
         'col_matricula_universidade',
         'col_observacao',

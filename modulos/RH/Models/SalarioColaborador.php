@@ -61,7 +61,9 @@ class SalarioColaborador extends BaseModel
     // Mutators
     public function setScbDataFimAttribute($value)
     {
-        $this->attributes['scb_data_fim'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        if($value){
+            $this->attributes['scb_data_fim'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+        }
     }
 
 

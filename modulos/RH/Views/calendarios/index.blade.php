@@ -17,12 +17,12 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-3">
-            <div class="jarviswidget jarviswidget-color-blueDark">
+            <div class=" box box-primary jarviswidget jarviswidget-color-blueDark">
                 <header>
-                    <h2>Adicionar Eventos</h2>
+                    <h2 style="padding-left: 10px">Adicionar Eventos</h2>
                 </header>
                 <div>
-                    <div class="widget-body">
+                    <div class="widget-body" style="padding: 10px">
                         <form id="formEvent" action="javascript:func()" method="post">
                             <input type="hidden" id="cld_id" name="cld_id" value="">
                             <fieldset>

@@ -84,6 +84,22 @@ class ColaboradoresController extends BaseController
                             ],
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-exchange',
+                                'route' => 'rh.colaboradores.status',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Afastamento/Desligamento',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-exchange',
+                                'route' => 'rh.colaboradores.movimentacaosetor',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Movimentação de Setor/Função',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-eye',
                                 'route' => 'rh.colaboradores.show',
                                 'parameters' => ['id' => $id],
@@ -261,6 +277,100 @@ class ColaboradoresController extends BaseController
 
             flash()->success('Colaborador editado com sucesso!');
             return redirect()->route('rh.colaboradores.show', $pessoa->colaborador->col_id);
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
+
+    public function getStatus($colaboradorId)
+    {
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
+
+        return view('RH::colaboradores.status', compact(['colaborador']) );
+    }
+
+    public function putStatus($colaboradorId, Request $request)
+    {
+
+        $data = $request->all();
+
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        DB::beginTransaction();
+        try {
+
+            $this->colaboradorRepository->update($data,$colaboradorId);
+
+            DB::commit();
+
+            flash()->success('Status atualizado com sucesso!');
+
+            return redirect()->route('rh.colaboradores.show', $colaborador->col_id);
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
+
+    public function getMovimentacaoSetor($colaboradorId)
+    {
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+        $funcoes = $this->funcaoRepository->lists('fun_id', 'fun_descricao');
+        $setores = $this->setorRepository->lists('set_id', 'set_descricao');
+
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
+
+        return view('RH::colaboradores.movimentacaosetor', compact(['pessoa', 'colaborador','funcoes', 'setores']) );
+    }
+
+    public function putMovimentacaoSetor($colaboradorId, Request $request)
+    {
+
+        $data = $request->all();
+
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        DB::beginTransaction();
+        try {
+
+            $this->colaboradorRepository->update($data,$colaboradorId);
+
+            DB::commit();
+
+            flash()->success('Status atualizado com sucesso!');
+
+            return redirect()->route('rh.colaboradores.show', $colaborador->col_id);
         } catch (ValidationException $e) {
             DB::rollback();
             return redirect()->back()->withInput($request->all())->withErrors($e);

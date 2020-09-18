@@ -37,6 +37,8 @@
                         <p><strong>Função: </strong> {{$colaborador->funcao->fun_descricao}}</p>
                         <p><strong>Vínculo com a universidade: </strong> {{($colaborador->col_vinculo_universidade == 1) ? 'Sim' : 'Não' }}</p>
                         <p><strong>Matrícula na universidade: </strong> {{$colaborador->col_matricula_universidade}}</p>
+                        <p><strong>Status: </strong> {{$colaborador->col_status}}</p>
+
                     </div>
                 </div>
                 <div class="row">

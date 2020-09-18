@@ -46,6 +46,12 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/create', '\Modulos\RH\Http\Controllers\ColaboradoresController@postCreate')->name('rh.colaboradores.create');
         Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getEdit')->name('rh.colaboradores.edit');
         Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putEdit')->name('rh.colaboradores.edit');
+
+        Route::get('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getStatus')->name('rh.colaboradores.status');
+        Route::put('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putStatus')->name('rh.colaboradores.status');
+        Route::get('/movimentacaosetor/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor');
+        Route::put('/movimentacaosetor/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor');
+
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getShow')->name('rh.colaboradores.show');
     });
 
@@ -55,6 +61,7 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/create', '\Modulos\RH\Http\Controllers\FuncoesController@postCreate')->name('rh.funcoes.create');
         Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\FuncoesController@getEdit')->name('rh.funcoes.edit');
         Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\FuncoesController@putEdit')->name('rh.funcoes.edit');
+
         Route::post('/delete', '\Modulos\RH\Http\Controllers\FuncoesController@postDelete')->name('rh.funcoes.delete');
     });
 
