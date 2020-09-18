@@ -14,39 +14,17 @@ class SeletivoMatriculaRepository extends BaseRepository
         parent::__construct($seletivoMatricula);
     }
 
-    public function getInscricaoBySeletivoAndUser($seletivoId, $usuarioId)
-    {
-        $inscricao = $this->model->where('seletivo_id', $seletivoId)->where('user_id', $usuarioId)->first();
-
-        return $inscricao;
-    }
-
-    public function getCamposExtrasRespostasBySeletivoUserId($seletivoId, $userId)
-    {
-        return DB::table('inscricoes')->join('users', function ($join) {
-            $join->on('users.id', '=', 'inscricoes.user_id');
-        })->join('campos_extras_respostas', function ($join) {
-            $join->on('users.id', '=', 'campos_extras_respostas.user_id');
-        })->join('campos_extras', function ($join) {
-            $join->on('campos_extras.id', '=', 'campos_extras_respostas.campo_extra_id');
-        })->where('inscricoes.seletivo_id', $seletivoId)
-          ->where('campos_extras.seletivo_id', $seletivoId)
-          ->where('inscricoes.user_id', $userId)
-          ->select('campos_extras.label','campos_extras.nome', 'campos_extras_respostas.resposta')
-          ->get();
-    }
-
     public function paginateInscricoes($id, $sort = null, $search = null)
     {
-        $result = $this->model->join('users', function ($join) {
-            $join->on('users.id', '=', 'inscricoes.user_id');
+        $result = $this->model->join('seletivos_users', function ($join) {
+            $join->on('seletivos_users.id', '=', 'seletivos_matriculas.seletivo_user_id');
         });
 
-        $result = $result->whereIn('inscricoes.status', ['classificado', 'deferido', 'completo']);
+        $result = $result->where('seletivos_matriculas.matriculado', 1);
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
-                $value['field'] = ($value['field'] == 'seletivo_id') ? 'inscricoes.seletivo_id' : $value['field'];
+                $value['field'] = ($value['field'] == 'chamada_id') ? 'seletivos_matriculas.chamada_id' : $value['field'];
                 switch ($value['type']) {
                     case 'like':
                         $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
@@ -65,7 +43,7 @@ class SeletivoMatriculaRepository extends BaseRepository
             $result = $result->orderBy('id', 'DESC');
         }
 
-        $result = $result->select('inscricoes.*', 'users.nome', 'users.email', 'users.cpf');
+        $result = $result->select('seletivos_matriculas.*', 'seletivos_users.nome', 'seletivos_users.email', 'seletivos_users.cpf');
 
         return $result->paginate(15);
     }
@@ -82,7 +60,7 @@ class SeletivoMatriculaRepository extends BaseRepository
 
         $searchable = $this->model->searchable();
         $search = [];
-        $seletivoId = null;
+        $chamadaId = null;
         foreach ($requestParameters as $key => $value) {
             if (array_key_exists($key, $searchable) and !empty($value)) {
                 $search[] = [
@@ -92,11 +70,11 @@ class SeletivoMatriculaRepository extends BaseRepository
                 ];
             }
 
-            if ($key == 'seletivo_id') {
-                $seletivoId = $value;
+            if ($key == 'chamada_id') {
+                $chamadaId = $value;
             }
         }
 
-        return $this->paginateInscricoes($seletivoId, $sort, $search);
+        return $this->paginateInscricoes($chamadaId, $sort, $search);
     }
 }

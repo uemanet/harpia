@@ -39,7 +39,7 @@ class MenuMatriculasSeeder extends Seeder
             'mit_mod_id' => 7,
             'mit_nome' => 'Chamadas',
             'mit_item_pai' => $matriculas->mit_id,
-            'mit_icone' => 'fa fa-clipboard-list',
+            'mit_icone' => 'fa fa-list-alt',
             'mit_rota' => 'matriculas.chamadas.index',
             'mit_ordem' => 2
         ]);

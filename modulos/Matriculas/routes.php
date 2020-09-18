@@ -9,6 +9,7 @@ Route::group(['prefix' => 'matriculas', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'chamadas'], function () {
         Route::get('/', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getIndex')->name('matriculas.chamadas.index');
         Route::get('/create', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getCreate')->name('matriculas.chamadas.create');
+        Route::get('/{id}/candidatos', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getMatriculas')->name('matriculas.chamadas.candidatos');
         Route::post('/create', '\Modulos\Matriculas\Http\Controllers\ChamadaController@postCreate')->name('matriculas.chamadas.create');
         Route::get('/edit/{id}', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getEdit')->name('matriculas.chamadas.edit');
         Route::put('/edit/{id}', '\Modulos\Matriculas\Http\Controllers\ChamadaController@putEdit')->name('matriculas.chamadas.edit');

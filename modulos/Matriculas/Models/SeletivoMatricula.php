@@ -15,9 +15,17 @@ class SeletivoMatricula extends BaseModel
         'matriculado',
     ];
 
+    protected $searchable = [
+        'matriculado' => '=',
+        'chamada_id' => '=',
+        'nome' => 'like',
+        'email' => '=',
+        'cpf' => '='
+    ];
+
     public function user()
     {
-        return $this->belongsTo(User::class, 'seletivo_user_id');
+        return $this->belongsTo(SeletivoUser::class, 'seletivo_user_id');
     }
 
     public function chamada()

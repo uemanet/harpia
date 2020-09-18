@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Modulos\Matriculas\Http\Requests\ChamadaRequest;
 use Modulos\Matriculas\Models\Seletivo;
 use Modulos\Matriculas\Repositories\ChamadaRepository;
-use Modulos\Matriculas\Repositories\InscricaoRepository;
+use Modulos\Matriculas\Repositories\SeletivoMatriculaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Illuminate\Http\Request;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -18,10 +18,12 @@ use Modulos\Seguranca\Providers\ActionButton\TButton;
 class ChamadaController extends Controller
 {
     protected $chamadaRepository;
+    protected $seletivoMatriculaRepository;
 
-    public function __construct(ChamadaRepository $chamadaRepository)
+    public function __construct(ChamadaRepository $chamadaRepository, SeletivoMatriculaRepository $seletivoMatriculaRepository)
     {
         $this->chamadaRepository = $chamadaRepository;
+        $this->seletivoMatriculaRepository = $seletivoMatriculaRepository;
     }
 
     public function getIndex(Request $request)
@@ -67,6 +69,14 @@ class ChamadaController extends Controller
                             'label' => 'Selecione'
                         ],
                         'buttons' => [
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-eye',
+                                'route' => 'matriculas.chamadas.candidatos',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Matriculados',
+                                'method' => 'get'
+                            ],
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-pencil',
@@ -185,5 +195,67 @@ class ChamadaController extends Controller
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
+    }
+
+    public function getMatriculas($chamadaId, Request $request)
+    {
+        $chamada = $this->chamadaRepository->find($chamadaId);
+        if (!$chamada) {
+            flash()->error('Chamada não encontrada');
+            return redirect()->back();
+        }
+
+        $requestData = $request->all();
+        $requestData['chamada_id'] = $chamadaId;
+
+        $tableData = $this->seletivoMatriculaRepository->paginateRequest($requestData);
+
+        $headers = array(
+            'select_all' => 'Selecione',
+            'id' => 'ID',
+            'nome' => 'Nome',
+            'cpf' => 'CPF',
+            'email' => 'Email',
+            'matriculado' => 'Status',
+        );
+
+        $tabela = null;
+        $paginacao = null;
+        if ($tableData->count()) {
+            $tabela = $tableData->columns($headers)
+                ->attributes(array(
+                    'class' => 'table'
+                ))
+                ->modifyCell('select_all', function () {
+                    return array('style' => 'width: 1%');
+                })
+                ->modify('select_all', function ($inscricao) {
+                    return '<label><input class="matriculas" type="checkbox" value="'.$inscricao->user->id.'"></label>';
+                })
+                ->modify('nome', function ($inscricao) {
+                    return '<p>'.$inscricao->user->nome.'</p>';
+                })
+                ->modify('cpf', function ($inscricao) {
+                    return '<p>'.$inscricao->user->cpf.'</p>';
+                }) ->modify('email', function ($inscricao) {
+                    return '<p>'.$inscricao->user->email.'</p>';
+                })
+                ->modify('matriculado', function ($inscricao) {
+                    if ($inscricao->matriculado) {
+                        return '<span class="label label-primary">Matrícula Confirmada</span>';
+                    }
+                    if (!$inscricao->matriculado) {
+                        return '<span class="label label-danger">Não Confirmado</span>';
+                    }
+
+                    return $inscricao->matriculado;
+                });
+
+            $tabela = $tabela->sortable(array('id', 'nome', 'matriculado'));
+
+            $paginacao = $tableData->appends($request->except('page'));
+        }
+
+        return view('Matriculas::chamadas.candidatos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'chamada' => $chamada]);
     }
 }

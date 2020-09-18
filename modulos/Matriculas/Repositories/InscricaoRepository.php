@@ -5,6 +5,7 @@ namespace Modulos\Matriculas\Repositories;
 use Modulos\Core\Repository\BaseRepository;
 use Illuminate\Support\Facades\DB;
 use Modulos\Matriculas\Models\Inscricao;
+use Modulos\Matriculas\Models\SeletivoMatricula;
 
 class InscricaoRepository extends BaseRepository
 {
@@ -41,7 +42,18 @@ class InscricaoRepository extends BaseRepository
             $join->on('users.id', '=', 'inscricoes.user_id');
         });
 
-        $result = $result->whereIn('inscricoes.status', ['classificado', 'deferido', 'completo']);
+        $key = array_search('seletivo_id', array_column($search, 'field'));
+        $seletivoId = $search[$key]['term'];
+        $seletivosMatriculas = SeletivoMatricula::whereHas('chamada', function ($query) use ($seletivoId){
+          return $query->where('seletivo_id', $seletivoId);
+        })->get();
+
+        $cpf = [];
+        foreach ($seletivosMatriculas as $seletivoMatricula){
+            $cpf[] = $seletivoMatricula->user->cpf;
+        }
+
+        $result = $result->whereIn('inscricoes.status', ['deferido']);
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
@@ -64,6 +76,7 @@ class InscricaoRepository extends BaseRepository
             $result = $result->orderBy('id', 'DESC');
         }
 
+        $result = $result->whereNotIn('users.cpf', $cpf);
         $result = $result->select('inscricoes.*', 'users.nome', 'users.email', 'users.cpf');
 
         return $result->paginate(15);

@@ -107,8 +107,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <p><strong>Complemento: </strong> {{$user->complemento}}</p>
-                                        <p><strong>Número: </strong> {{$user->pes_numero}}</p>
-                                        <p><strong>Bairro: </strong> {{$user->pes_bairro}}</p>
+                                        <p><strong>Número: </strong> {{$user->numero}}</p>
+                                        <p><strong>Bairro: </strong> {{$user->bairro}}</p>
                                     </div>
                                     <div class="col-md-4">
                                         <p><strong>CEP: </strong> {{$user->cep}}</p>
