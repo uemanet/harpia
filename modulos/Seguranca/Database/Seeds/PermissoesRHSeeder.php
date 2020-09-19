@@ -14,7 +14,7 @@ class PermissoesRHSeeder extends Seeder
 {
     public function run()
     {
-        
+
         $modulo = Modulo::where('mod_slug','rh')->first();
 
         // Cria perfil de Administrador
