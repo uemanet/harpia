@@ -13,7 +13,7 @@ class CreateSeletivosMatriculasTable extends Migration
      */
     public function up()
     {
-        Schema::create('seletivos_matriculas', function (Blueprint $table) {
+        Schema::create('mat_seletivos_matriculas', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('seletivo_user_id')->unsigned();
             $table->integer('chamada_id')->unsigned();
@@ -21,8 +21,8 @@ class CreateSeletivosMatriculasTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('seletivo_user_id')->references('id')->on('seletivos_users');
-            $table->foreign('chamada_id')->references('id')->on('chamadas');
+            $table->foreign('seletivo_user_id')->references('id')->on('mat_seletivos_users');
+            $table->foreign('chamada_id')->references('id')->on('mat_chamadas');
         });
     }
 
@@ -33,6 +33,6 @@ class CreateSeletivosMatriculasTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seletivos_matriculas');
+        Schema::drop('mat_seletivos_matriculas');
     }
 }

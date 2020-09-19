@@ -6,7 +6,7 @@ use Modulos\Core\Model\BaseModel;
 
 class SeletivoMatricula extends BaseModel
 {
-    public $table = 'seletivos_matriculas';
+    public $table = 'mat_seletivos_matriculas';
     protected $connection = 'mysql1';
 
     protected $fillable = [

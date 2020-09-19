@@ -13,7 +13,7 @@ class CreateSeletivosUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('seletivos_users', function (Blueprint $table) {
+        Schema::create('mat_seletivos_users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome', 150);
             $table->string('email')->unique();
@@ -49,6 +49,6 @@ class CreateSeletivosUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('seletivos_users');
+        Schema::drop('mat_seletivos_users');
     }
 }

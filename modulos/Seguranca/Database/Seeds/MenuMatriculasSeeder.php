@@ -14,11 +14,13 @@ class MenuMatriculasSeeder extends Seeder
 {
     public function run()
     {
-        // Criando itens no menu
 
+        $modulo = Modulo::where('mod_slug','matriculas')->first();
+
+        // Criando itens no menu
         // Categoria Matriculas
         $matriculas = MenuItem::create([
-            'mit_mod_id' => 7,
+            'mit_mod_id' => $modulo->mod_id,
             'mit_nome' => 'Matriculas',
             'mit_icone' => 'fa fa-link',
             'mit_ordem' => 1
@@ -26,7 +28,7 @@ class MenuMatriculasSeeder extends Seeder
 
         // Item Dashboard
         MenuItem::create([
-            'mit_mod_id' => 7,
+            'mit_mod_id' => $modulo->mod_id,
             'mit_nome' => 'Seletivos',
             'mit_item_pai' => $matriculas->mit_id,
             'mit_icone' => 'fa fa-tachometer',
@@ -36,7 +38,7 @@ class MenuMatriculasSeeder extends Seeder
 
         // Item Chamadas
         MenuItem::create([
-            'mit_mod_id' => 7,
+            'mit_mod_id' => $modulo->mod_id,
             'mit_nome' => 'Chamadas',
             'mit_item_pai' => $matriculas->mit_id,
             'mit_icone' => 'fa fa-list-alt',

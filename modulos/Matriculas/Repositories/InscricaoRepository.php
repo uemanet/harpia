@@ -14,27 +14,7 @@ class InscricaoRepository extends BaseRepository
         parent::__construct($inscricao);
     }
 
-    public function getInscricaoBySeletivoAndUser($seletivoId, $usuarioId)
-    {
-        $inscricao = $this->model->where('seletivo_id', $seletivoId)->where('user_id', $usuarioId)->first();
 
-        return $inscricao;
-    }
-
-    public function getCamposExtrasRespostasBySeletivoUserId($seletivoId, $userId)
-    {
-        return DB::table('inscricoes')->join('users', function ($join) {
-            $join->on('users.id', '=', 'inscricoes.user_id');
-        })->join('campos_extras_respostas', function ($join) {
-            $join->on('users.id', '=', 'campos_extras_respostas.user_id');
-        })->join('campos_extras', function ($join) {
-            $join->on('campos_extras.id', '=', 'campos_extras_respostas.campo_extra_id');
-        })->where('inscricoes.seletivo_id', $seletivoId)
-          ->where('campos_extras.seletivo_id', $seletivoId)
-          ->where('inscricoes.user_id', $userId)
-          ->select('campos_extras.label','campos_extras.nome', 'campos_extras_respostas.resposta')
-          ->get();
-    }
 
     public function paginateInscricoes($id, $sort = null, $search = null)
     {

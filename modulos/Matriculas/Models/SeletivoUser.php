@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Model;
 
 class SeletivoUser extends Model
 {
-    public $table = 'seletivos_users';
+    public $table = 'mat_seletivos_users';
     protected $connection = 'mysql1';
 
     protected $fillable = [

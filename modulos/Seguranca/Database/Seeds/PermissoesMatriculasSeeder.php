@@ -15,9 +15,11 @@ class PermissoesMatriculasSeeder extends Seeder
     public function run()
     {
 
+        $modulo = Modulo::where('mod_slug','matriculas')->first();
+
         // Cria perfil de Administrador
         $perfil = Perfil::create([
-            'prf_mod_id' => 7,
+            'prf_mod_id' => $modulo->mod_id,
             'prf_nome' => 'Administrador Matriculas'
         ]);
         $arrPermissoes = [];

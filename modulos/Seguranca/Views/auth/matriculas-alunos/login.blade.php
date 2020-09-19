@@ -43,9 +43,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="box-footer" style="padding-top:5px">
-                    <a class="text-right col-md-12" href="#">Esqueceu sua senha?</a>
-                </div>
+
             </div>
         </div>
         <footer class="main-footer" style="margin-left:0px;padding:5px;text-align:center;">

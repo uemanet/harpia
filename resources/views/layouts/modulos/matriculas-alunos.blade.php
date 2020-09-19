@@ -23,7 +23,7 @@
     @show
 </head>
 
-<body class="hold-transition skin-blue-light sidebar-mini">
+<body class="skin-blue-light sidebar-mini sidebar-collapse">
 
 <div class="wrapper">
 

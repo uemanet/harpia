@@ -16,15 +16,15 @@ class SeletivoMatriculaRepository extends BaseRepository
 
     public function paginateInscricoes($id, $sort = null, $search = null)
     {
-        $result = $this->model->join('seletivos_users', function ($join) {
-            $join->on('seletivos_users.id', '=', 'seletivos_matriculas.seletivo_user_id');
+        $result = $this->model->join('mat_seletivos_users', function ($join) {
+            $join->on('mat_seletivos_users.id', '=', 'mat_seletivos_matriculas.seletivo_user_id');
         });
 
-        $result = $result->where('seletivos_matriculas.matriculado', 1);
+//        $result = $result->where('seletivos_matriculas.matriculado', 1);
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
-                $value['field'] = ($value['field'] == 'chamada_id') ? 'seletivos_matriculas.chamada_id' : $value['field'];
+                $value['field'] = ($value['field'] == 'chamada_id') ? 'mat_seletivos_matriculas.chamada_id' : $value['field'];
                 switch ($value['type']) {
                     case 'like':
                         $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
@@ -43,7 +43,7 @@ class SeletivoMatriculaRepository extends BaseRepository
             $result = $result->orderBy('id', 'DESC');
         }
 
-        $result = $result->select('seletivos_matriculas.*', 'seletivos_users.nome', 'seletivos_users.email', 'seletivos_users.cpf');
+        $result = $result->select('mat_seletivos_matriculas.*', 'mat_seletivos_users.nome', 'mat_seletivos_users.email', 'mat_seletivos_users.cpf');
 
         return $result->paginate(15);
     }

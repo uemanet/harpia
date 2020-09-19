@@ -13,7 +13,7 @@ class CreateChamadasTable extends Migration
      */
     public function up()
     {
-        Schema::create('chamadas', function (Blueprint $table) {
+        Schema::create('mat_chamadas', function (Blueprint $table) {
             $db = DB::connection('mysql2')->getDatabaseName();
 
             $table->increments('id');
@@ -36,6 +36,6 @@ class CreateChamadasTable extends Migration
      */
     public function down()
     {
-        Schema::drop('chamadas');
+        Schema::drop('mat_chamadas');
     }
 }

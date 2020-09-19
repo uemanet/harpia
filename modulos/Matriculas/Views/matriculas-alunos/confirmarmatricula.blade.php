@@ -43,7 +43,7 @@
                     <div class="col-md-8">
                         <p><strong>Nome: </strong> {{$seletivo_matricula->chamada->seletivo->nome}}</p>
                         <p><strong>Período para
-                                confirmação: </strong> {{date("d/m/Y h:i:s", strtotime($seletivo_matricula->chamada->inicio_matricula)).' a '.date("d/m/Y h:i:s", strtotime($seletivo_matricula->chamada->fim_matricula))}}
+                                confirmação: </strong> {{date("d/m/Y H:i:s", strtotime($seletivo_matricula->chamada->inicio_matricula)).' a '.date("d/m/Y H:i:s", strtotime($seletivo_matricula->chamada->fim_matricula))}}
                         </p>
                         <p><strong>Chamada: </strong> {{ $seletivo_matricula->chamada->nome }}</p>
                         <p><strong>Tipo de chamada: </strong> {{ $seletivo_matricula->chamada->tipo_chamada}}</p>
@@ -86,7 +86,7 @@
                         <p><strong>Estado Civil: </strong> {{ucfirst($user->estado_civil)}}</p>
                     </div>
                     <div class="col-md-4">
-                        <p><strong>Data de Nascimento: </strong> {{$user->nascimento}}</p>
+                        <p><strong>Data de Nascimento: </strong> {{date("d/m/Y", strtotime($user->nascimento))}}</p>
                         <p><strong>Nome da Mãe: </strong> {{$user->mae}}</p>
                         <p><strong>Nome do Pai: </strong> {{$user->pai}}</p>
                     </div>
@@ -138,7 +138,7 @@
         <div class="row">
 
             <div class="form-group col-md-3 @if ($errors->has('celular')) has-error @endif">
-                {!! Form::label('celular', 'Celular*', ['class' => 'control-label']) !!}
+                {!! Form::label('celular', 'Celular', ['class' => 'control-label']) !!}
                 <div class="controls">
                     {!! Form::text('celular', isset($user->celular) ? $user->celular : old('celular'), ['class' => 'form-control']) !!}
                     @if ($errors->has('celular')) <p class="help-block">{{ $errors->first('celular') }}</p> @endif
@@ -146,7 +146,7 @@
             </div>
 
             <div class="form-group col-md-3 @if ($errors->has('telefone')) has-error @endif">
-                {!! Form::label('telefone', 'Telefone*', ['class' => 'control-label']) !!}
+                {!! Form::label('telefone', 'Telefone', ['class' => 'control-label']) !!}
                 <div class="controls">
                     {!! Form::text('telefone', isset($user->telefone) ? $user->telefone : old('telefone'), ['class' => 'form-control']) !!}
                     @if ($errors->has('telefone')) <p class="help-block">{{ $errors->first('telefone') }}</p> @endif

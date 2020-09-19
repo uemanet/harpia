@@ -37,7 +37,7 @@
                         @foreach($user->seletivos_matriculas as $item)
                             <tr>
                                 <td>{{$item->chamada->seletivo->nome}}</td>
-                                <td>{{date("d/m/Y h:i:s", strtotime($item->chamada->inicio_matricula)).' a '.date("d/m/Y h:i:s", strtotime($item->chamada->fim_matricula))}}</td>
+                                <td>{{date("d/m/Y H:i:s", strtotime($item->chamada->inicio_matricula)).' a '.date("d/m/Y H:i:s", strtotime($item->chamada->fim_matricula))}}</td>
                                 <td>{{$item->chamada->nome}}</td>
                                 <td>{{$item->chamada->tipo_chamada}}</td>
                                 <td>

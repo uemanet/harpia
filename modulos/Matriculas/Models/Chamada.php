@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class Chamada extends BaseModel
 {
     protected $connection = 'mysql1';
-    public $table = 'chamadas';
+    public $table = 'mat_chamadas';
 
     protected $fillable = [
         'nome',

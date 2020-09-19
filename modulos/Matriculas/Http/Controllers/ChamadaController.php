@@ -74,7 +74,7 @@ class ChamadaController extends Controller
                                 'icon' => 'fa fa-eye',
                                 'route' => 'matriculas.chamadas.candidatos',
                                 'parameters' => ['id' => $id],
-                                'label' => 'Matriculados',
+                                'label' => 'Cadidatos',
                                 'method' => 'get'
                             ],
                             [
