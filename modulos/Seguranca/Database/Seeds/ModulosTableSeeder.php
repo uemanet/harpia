@@ -63,12 +63,5 @@ class ModulosTableSeeder extends Seeder
             'mod_classes' => 'bg-orange'
         ]);
 
-        // Modulo RH
-        $modulo = Modulo::create([ //Id 7
-            'mod_nome' => 'Matriculas',
-            'mod_slug' => 'matriculas',
-            'mod_icone' => 'fa fa-file-link',
-            'mod_classes' => 'bg-blue'
-        ]);
     }
 }
