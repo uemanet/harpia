@@ -6,7 +6,9 @@ return [
         'index',
         'auth.matriculas-alunos.login',
         'auth.matriculas-alunos.logout',
-        'matriculas-alunos.index.alunos'
+        'matriculas-alunos.index.alunos',
+        'matriculas-alunos.seletivo-matricula.confirmar',
+        'matriculas-alunos.seletivo-matricula.comprovante'
 
     ),
 
