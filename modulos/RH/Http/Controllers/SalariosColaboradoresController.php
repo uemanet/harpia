@@ -7,6 +7,7 @@ use Modulos\RH\Http\Requests\SalarioColaboradorRequest;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\RH\Repositories\FontePagadoraRepository;
 use Modulos\RH\Repositories\SalarioColaboradorRepository;
+use Harpia\Util\Util;
 use Illuminate\Http\Request;
 use Modulos\RH\Repositories\ContaColaboradorRepository;
 
@@ -39,6 +40,7 @@ class SalariosColaboradoresController extends BaseController
     public function postCreate($idColaborador, SalarioColaboradorRequest $request)
     {
         $data = $request->all();
+        $util = new Util();
         $data['scb_data_cadastro'] = date("d/m/Y");
 
         try {

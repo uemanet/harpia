@@ -20,7 +20,6 @@
                             <th>Conta Colaborador</th>
                             <th>Fonte Pagadora</th>
                             <th>Tipo de Vínculo</th>
-                            <th>Unidade</th>
                             <th>Valor</th>
                             <th>Valor Liquido</th>
                             <th>Data de Inicio</th>
@@ -30,10 +29,9 @@
                         @foreach($colaborador->contas_colaboradores as $conta_colaborador)
                             @foreach($conta_colaborador->salarios_colaboradores as $salario_colaborador)
                             <tr>
-                                <td>{{$salario_colaborador->conta->ccb_conta}}</td>
+                                <td>Ag: {{$salario_colaborador->conta->ccb_agencia}} Cc: {{$salario_colaborador->conta->ccb_conta}}-{{$salario_colaborador->conta->ccb_variacao}}</td>
                                 <td>{{$salario_colaborador->vinculo->fonte_pagadora->fpg_nome_fantasia}}</td>
                                 <td>{{$salario_colaborador->vinculo->vinculo->vin_descricao}}</td>
-                                <td>{{$salario_colaborador->scb_unidade}}</td>
                                 <td>{{$salario_colaborador->scb_valor}}</td>
                                 <td>{{$salario_colaborador->scb_valor_liquido}}</td>
                                 <td>{{$salario_colaborador->scb_data_inicio}}</td>

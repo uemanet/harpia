@@ -29,7 +29,7 @@
     <div class=" form-group col-md-3 @if ($errors->has('scb_qtd_pagamento')) has-error @endif"  id= "unidade" >
         {!! Form::label('scb_qtd_pagamento', 'Qtd. Pagamento', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::number('scb_qtd_pagamento', old('scb_qtd_pagamento'), ['class' => 'form-control',  'oninput'=>"javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"]) !!}
+            {!! Form::number('scb_qtd_pagamento', old('scb_qtd_pagamento'), ['class' => 'form-control']) !!}
             @if ($errors->has('scb_qtd_pagamento')) <p class="help-block">{{ $errors->first('scb_qtd_pagamento') }}</p> @endif
         </div>
     </div>
@@ -140,7 +140,7 @@
 
             $('#scb_qtd_pagamento').change(function (e){
                 var uni = parseInt($('#scb_qtd_pagamento').val());
-
+console.log(uni);
                 var valor = parseFloat($("#scb_vfp_id").find(":selected").data('valor'));
 
                 var valorFinal = uni * valor;

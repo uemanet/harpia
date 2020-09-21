@@ -19,12 +19,12 @@ class CreateRehSalariosColaboradoresTable extends Migration
             $table->integer('scb_vfp_id')->unsigned();
 
             $table->integer('scb_unidade')->nullable();
-            $table->decimal('scb_valor', 12, 2);
-            $table->decimal('scb_valor_liquido', 12, 2);
+            $table->binary('scb_valor');
+            $table->binary('scb_valor_liquido');
             $table->date('scb_data_inicio');
             $table->date('scb_data_fim')->nullable();
             $table->date('scb_data_cadastro');
-
+            $table->binary('scb_tag');
 
             $table->timestamps();
 
