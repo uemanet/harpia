@@ -2,6 +2,7 @@
 
 namespace Modulos\RH\Repositories;
 
+use Harpia\Util\Util;
 use Illuminate\Support\Facades\DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\RH\Models\SalarioColaborador;
@@ -51,15 +52,21 @@ class SalarioColaboradorRepository extends BaseRepository
     {
 
         $vinculoFpg = new VinculoFontePagadora();
-
         $vinculoFpg = $vinculoFpg->find($data['scb_vfp_id']);
 
-        if($vinculoFpg->vinculo->vin_descricao == 'Pessoa Física'){
+        $data['scb_valor_liquido'] = $data['scb_valor'];
+
+        if ($vinculoFpg->vinculo->vin_descricao == 'Pessoa Física') {
             $data['scb_valor_liquido'] = $this->salarioPessoaFisica($data['scb_valor']);
-//            dd($data['scb_valor_liquido']);
+
         }
 
-//        dd($data);
+        $util = new Util();
+        $encrypt = $util->encrypt($data['scb_valor']);
+        $data['scb_valor'] = $encrypt['ciphertext'];
+
+        $encrypt = $util->encrypt($data['scb_valor_liquido']);
+        $data['scb_valor_liquido'] = $encrypt['ciphertext'];
 
         return $this->model->create($data);
     }
@@ -91,7 +98,7 @@ class SalarioColaboradorRepository extends BaseRepository
                     $expression = $valorLiquidoParcial > $item['max'];
                 }
 
-                if($expression == true) {
+                if ($expression == true) {
                     $valorIR = $item['valor'];
                     break;
                 }

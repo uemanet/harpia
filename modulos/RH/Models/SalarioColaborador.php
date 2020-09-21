@@ -3,6 +3,7 @@
 namespace Modulos\RH\Models;
 
 use Carbon\Carbon;
+use Harpia\Util\Util;
 use Modulos\Core\Model\BaseModel;
 
 class SalarioColaborador extends BaseModel
@@ -20,6 +21,7 @@ class SalarioColaborador extends BaseModel
         'scb_data_inicio',
         'scb_data_fim',
         'scb_data_cadastro',
+        'scb_tag'
     ];
 
     public function conta()
@@ -74,6 +76,21 @@ class SalarioColaborador extends BaseModel
             setlocale(LC_ALL, 'pt_BR');
             return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
         }
+    }
+
+    // Accessors
+    public function getScbValorAttribute($value)
+    {
+        $util = new Util();
+        return $util->decrypt($value);
+    }
+
+    // Accessors
+    public function getScbValorLiquidoAttribute($value)
+    {
+        $util = new Util();
+
+        return $util->decrypt($value);
     }
 
     // Mutators

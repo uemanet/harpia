@@ -14,10 +14,11 @@ class PermissoesRHSeeder extends Seeder
 {
     public function run()
     {
+        $modulo= Modulo::where('mod_slug', 'rh')->first();
 
         // Cria perfil de Administrador
         $perfil = Perfil::create([
-            'prf_mod_id' => 7,
+            'prf_mod_id' => $modulo->mod_id,
             'prf_nome' => 'Administrador RH'
         ]);
         $arrPermissoes = [];
