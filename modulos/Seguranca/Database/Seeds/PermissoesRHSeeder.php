@@ -14,6 +14,7 @@ class PermissoesRHSeeder extends Seeder
 {
     public function run()
     {
+        $modulo= Modulo::where('mod_slug', 'rh')->first();
 
         $modulo = Modulo::where('mod_slug','rh')->first();
 

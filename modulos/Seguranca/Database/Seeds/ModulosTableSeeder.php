@@ -70,5 +70,6 @@ class ModulosTableSeeder extends Seeder
             'mod_icone' => 'fa fa-link',
             'mod_classes' => 'bg-blue'
         ]);
+
     }
 }
