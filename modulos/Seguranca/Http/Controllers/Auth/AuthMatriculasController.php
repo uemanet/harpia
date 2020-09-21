@@ -101,7 +101,7 @@ class AuthMatriculasController extends Controller
     protected function getCredentials(Request $request)
     {
         return [
-            'cpf' => $request->input('usr_usuario'),
+            'email' => $request->input('usr_usuario'),
             'password' => $request->input('usr_senha')
         ];
     }
