@@ -230,7 +230,12 @@ class ChamadaController extends Controller
                     return array('style' => 'width: 1%');
                 })
                 ->modify('select_all', function ($inscricao) {
-                    return '<label><input class="matriculas" type="checkbox" value="'.$inscricao->user->id.'"></label>';
+                    if ($inscricao->matriculado and !$inscricao->migrado) {
+                        return '<label><input class="matriculas" type="checkbox" value="'.$inscricao->user->id.'"></label>';;
+                    } else {
+                        return '';
+                    }
+
                 })
                 ->modify('nome', function ($inscricao) {
                     return '<p>'.$inscricao->user->nome.'</p>';
@@ -241,7 +246,10 @@ class ChamadaController extends Controller
                     return '<p>'.$inscricao->user->email.'</p>';
                 })
                 ->modify('matriculado', function ($inscricao) {
-                    if ($inscricao->matriculado) {
+                    if ($inscricao->matriculado and $inscricao->migrado) {
+                        return '<span class="label label-success">Aluno Migrado</span>';
+                    }
+                    if ($inscricao->matriculado and !$inscricao->migrado) {
                         return '<span class="label label-primary">Matrícula Confirmada</span>';
                     }
                     if (!$inscricao->matriculado) {

@@ -6,6 +6,8 @@ Route::group(['prefix' => 'matriculas', 'middleware' => ['auth']], function () {
     Route::get('/{id}/inscritos', '\Modulos\Matriculas\Http\Controllers\SeletivoController@getShow')->name('matriculas.index.inscricoes.index');
     Route::post('/chamada', '\Modulos\Matriculas\Http\Controllers\SeletivoController@createChamada')->name('matriculas.listachamadas.create');
 
+    Route::post('/migracao', '\Modulos\Matriculas\Http\Controllers\SeletivoController@migracao')->name('matriculas.migracao.create');
+
     Route::group(['prefix' => 'chamadas'], function () {
         Route::get('/', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getIndex')->name('matriculas.chamadas.index');
         Route::get('/create', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getCreate')->name('matriculas.chamadas.create');

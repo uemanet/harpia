@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Modulos\Matriculas\Models\SeletivoMatricula;
 use Modulos\Matriculas\Models\SeletivoUser;
 use Modulos\Matriculas\Models\User;
+use Modulos\Matriculas\Repositories\ChamadaRepository;
 use Modulos\Matriculas\Repositories\InscricaoRepository;
 use Modulos\Matriculas\Repositories\SeletivoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -20,11 +21,14 @@ class SeletivoController extends Controller
 {
     protected $seletivoRepository;
     protected $inscricaoRepository;
+    protected $chamadaRepository;
 
-    public function __construct(SeletivoRepository $seletivoRepository, InscricaoRepository $inscricaoRepository)
+    public function __construct(SeletivoRepository $seletivoRepository, InscricaoRepository $inscricaoRepository, ChamadaRepository $chamadaRepository)
     {
         $this->seletivoRepository = $seletivoRepository;
         $this->inscricaoRepository = $inscricaoRepository;
+        $this->chamadaRepository = $chamadaRepository;
+
     }
 
     /**
@@ -256,6 +260,16 @@ class SeletivoController extends Controller
                 ]);
             }
         }
+
+        return new JsonResponse(['message' => 'Sucesso']);
+    }
+
+    public function migracao(Request $request)
+    {
+
+        $data = $request->except('_token');
+
+        $this->chamadaRepository->migrarAlunos($data['matriculas']);
 
         return new JsonResponse(['message' => 'Sucesso']);
     }

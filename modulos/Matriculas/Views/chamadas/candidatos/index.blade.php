@@ -89,41 +89,40 @@
                 }
             });
 
-            var userIds = new Array();
+            var matriculasIds = new Array();
 
             $('.matriculas:checked').each(function () {
-                userIds.push($(this).val());
+                matriculasIds.push($(this).val());
             });
 
             $('.btnChamada').on('click',function () {
                 var quant = $('.matriculas:checked').length;
 
-                var chamdaId = $('#chamada_id').val();
-
-                if ((!(quant > 0)) || (!chamdaId || chamdaId === '')) {
+                if ((!(quant > 0)) ) {
                     return false;
                 }
 
-                var userIds = new Array();
+                var matriculasIds = new Array();
+
+                console.log(matriculasIds);
 
                 $('.matriculas:checked').each(function () {
-                    userIds.push($(this).val());
+                    matriculasIds.push($(this).val());
                 });
 
-                sendChamadas(chamdaId, userIds);
+                sendChamadas(matriculasIds);
             });
 
-            var sendChamadas = function (chamdaId, userIds) {
+            var sendChamadas = function (matriculasIds) {
 
                 var dados = {
-                    users: userIds,
-                    chamada_id: chamdaId,
+                    matriculas: matriculasIds,
                     _token: token
                 };
 
                 $.harpia.showloading();
 
-                url = '{{ route('matriculas.listachamadas.create') }}';
+                url = '{{ route('matriculas.migracao.create') }}';
 
                 $.ajax({
                     type: 'POST',
@@ -131,11 +130,13 @@
                     data: dados,
                     success: function (data) {
                         $.harpia.hideloading();
-                        toastr.success('Chamada criada com sucesso!', null, {progressBar: true});
+                        toastr.success('Migração realizada com sucesso!', null, {progressBar: true});
+                        location.reload()
 
-                        setTimeout(function () {
-                            window.location.href = "{{ route('matriculas.index.index')}}";
-                        }, 2000);
+
+                        {{--setTimeout(function () {--}}
+                        {{--    window.location.href = "{{ route('matriculas.chamadas.index')}}";--}}
+                        {{--}, 2000);--}}
 
                         // var turma = turmaSelect.val();
                         // var ofertaDisciplina = disciplinasOfertadasSelect.val();

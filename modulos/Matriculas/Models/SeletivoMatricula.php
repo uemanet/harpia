@@ -13,6 +13,7 @@ class SeletivoMatricula extends BaseModel
         'seletivo_user_id',
         'chamada_id',
         'matriculado',
+        'migrado'
     ];
 
     protected $searchable = [
