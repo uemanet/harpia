@@ -41,6 +41,7 @@
                                 <p><strong>Hora: </strong> - </p>
                             @endif
                             <p><strong>Mensagem: </strong> {{ $sincronizacao->sym_mensagem }}</p>
+                            <p><strong>Versão de Integração: </strong> {{ $sincronizacao->sym_version }}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>Tabela: </strong> {{ $sincronizacao->sym_table }}</p>

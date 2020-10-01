@@ -34,4 +34,10 @@ class Grupo extends BaseModel
     {
         return $this->hasMany('Modulos\Academico\Models\TutorGrupo', 'ttg_grp_id', 'grp_id');
     }
+
+    public function tutores()
+    {
+        return $this->belongsToMany('Modulos\Academico\Models\Tutor', 'acd_tutores_grupos', 'ttg_grp_id', 'ttg_tut_id');
+    }
+
 }

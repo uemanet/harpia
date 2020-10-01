@@ -104,7 +104,9 @@ class UpdateProfessorDisciplinaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
+
         ];
 
 
@@ -128,7 +130,7 @@ class UpdateProfessorDisciplinaListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -176,7 +178,7 @@ class UpdateProfessorDisciplinaListenerTest extends ModulosTestCase
         $this->assertEquals(1, $ofertaDisciplinaRepository->count());
 
         // Dispara evento de atualizacao de professor
-        $updateProfessorDisciplinaEvent = new UpdateProfessorDisciplinaEvent($this->ofertaDisciplina);
+        $updateProfessorDisciplinaEvent = new UpdateProfessorDisciplinaEvent($this->ofertaDisciplina, null, $this->ofertaDisciplina->trm_tipo_integracao);
         $sincronizacaoListener->handle($updateProfessorDisciplinaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [
@@ -229,7 +231,7 @@ class UpdateProfessorDisciplinaListenerTest extends ModulosTestCase
         $this->assertEquals(1, $ofertaDisciplinaRepository->count());
 
         // Dispara evento de atualizacao de professor
-        $updateProfessorDisciplinaEvent = new UpdateProfessorDisciplinaEvent($this->ofertaDisciplina);
+        $updateProfessorDisciplinaEvent = new UpdateProfessorDisciplinaEvent($this->ofertaDisciplina, null, $this->ofertaDisciplina->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($updateProfessorDisciplinaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [

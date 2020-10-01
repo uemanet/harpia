@@ -163,8 +163,17 @@ class PessoaRepository extends BaseRepository
 
         $ambientesId = array_unique($ambientesdapessoaId);
 
-        foreach ($ambientesId as $id) {
-            event(new UpdatePessoaEvent($pessoaAtt, $id));
+        $versions = [];
+        foreach ($pessoaturmas as $key => $value) {
+            $versions[] = $value->trm_tipo_integracao;
+        }
+
+        $versions = array_unique($versions);
+
+        foreach ($versions as $version) {
+            foreach ($ambientesId as $id) {
+                event(new UpdatePessoaEvent($pessoaAtt, $id, $version));
+            }
         }
     }
 }

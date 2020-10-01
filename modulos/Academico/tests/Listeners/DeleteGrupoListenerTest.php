@@ -104,7 +104,9 @@ class DeleteGrupoListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
+
         ];
 
 
@@ -120,7 +122,7 @@ class DeleteGrupoListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -160,7 +162,7 @@ class DeleteGrupoListenerTest extends ModulosTestCase
 
         $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
-        $deleteGroupEvent = new DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id);
+        $deleteGroupEvent = new DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id, $this->grupo->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($deleteGroupEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [
@@ -198,7 +200,7 @@ class DeleteGrupoListenerTest extends ModulosTestCase
 
         $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
-        $deleteGroupEvent = new DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id);
+        $deleteGroupEvent = new DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id, $this->grupo->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($deleteGroupEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [

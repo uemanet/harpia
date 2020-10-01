@@ -7,8 +7,8 @@ use Modulos\Academico\Models\OfertaDisciplina;
 
 class DeleteOfertaDisciplinaEvent extends SincronizacaoEvent
 {
-    public function __construct(OfertaDisciplina $entry, $extra)
+    public function __construct(OfertaDisciplina $entry, $extra, $version)
     {
-        parent::__construct($entry, "DELETE", $extra);
+        parent::__construct($entry, "DELETE", $extra, $version);
     }
 }

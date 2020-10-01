@@ -17,17 +17,22 @@ abstract class Event implements EventInterface
     protected $entry;
     protected $action;
     protected $extra;
+    protected $version;
 
     /**
      * Event constructor.
      * Recebe um objeto model associado ao evento
      * @param BaseModel $entry
+     * @param $action
+     * @param null $extra
+     * @param string $version
      */
-    public function __construct(BaseModel $entry, $action, $extra = null)
+    public function __construct(BaseModel $entry, $action, $extra = null, $version = 'v1')
     {
         $this->entry = $entry;
         $this->action = $action;
         $this->extra = $extra;
+        $this->version = $version;
     }
 
     /**
@@ -47,5 +52,10 @@ abstract class Event implements EventInterface
     public function getExtra()
     {
         return $this->extra;
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
     }
 }

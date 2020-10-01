@@ -16,8 +16,9 @@ class DeleteMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
      * @param null $extra
      * @throws \Exception
      */
-    public function __construct(Collection $matriculas, string $action = "DELETE", $extra = null)
+    public function __construct(Collection $matriculas, string $action = "DELETE", $extra = null, $version ='v1')
     {
+
         $this->baseClass = DeleteMatriculaDisciplinaEvent::class;
 
         foreach ($matriculas as $matricula) {
@@ -26,7 +27,7 @@ class DeleteMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
             }
         }
 
-        parent::__construct($matriculas, $action, $extra);
+        parent::__construct($matriculas, $action, $extra, $version);
     }
 
     /**
@@ -35,5 +36,13 @@ class DeleteMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
     public function getEndpoint()
     {
         return 'local_integracao_batch_unenrol_student_discipline';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndpointV2()
+    {
+        return 'local_integracao_v2_batch_unenrol_student_discipline';
     }
 }

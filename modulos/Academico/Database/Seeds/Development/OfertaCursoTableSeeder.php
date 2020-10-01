@@ -19,7 +19,7 @@ class OfertaCursoTableSeeder extends Seeder
             $oferta->ofc_crs_id = $matriz->mtc_crs_id;
             $oferta->ofc_mtc_id = $matriz->mtc_id;
             $oferta->ofc_mdl_id = 3;
-            $oferta->ofc_ano = 2017;
+            $oferta->ofc_ano = 2020;
 
             $oferta->save();
 

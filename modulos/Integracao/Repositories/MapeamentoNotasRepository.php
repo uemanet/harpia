@@ -3,6 +3,7 @@
 namespace Modulos\Integracao\Repositories;
 
 use DB;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Moodle;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\MapeamentoNota;
@@ -18,6 +19,7 @@ class MapeamentoNotasRepository extends BaseRepository
 
     protected $periodoLetivoRepository;
     protected $ambienteVirtualRepository;
+    protected $turmaRepository;
     protected $ofertaDisciplinaRepository;
     protected $matriculaOfertaDisciplinaRepository;
 
@@ -26,7 +28,8 @@ class MapeamentoNotasRepository extends BaseRepository
         PeriodoLetivoRepository $periodoLetivoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository,
         OfertaDisciplinaRepository $ofertaDisciplinaRepository,
-        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository
+        MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository,
+        TurmaRepository $turmaRepository
     )
     {
         parent::__construct($model);
@@ -34,6 +37,8 @@ class MapeamentoNotasRepository extends BaseRepository
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
+        $this->turmaRepository = $turmaRepository;
+
     }
 
     public function getGradeCurricularByTurma($turmaId)
@@ -303,8 +308,15 @@ class MapeamentoNotasRepository extends BaseRepository
             return null;
         }
 
+        $turma = $this->turmaRepository->find($trm_id);
+
         // Web service de integracao
         $ambServico = $ambiente->integracao();
+
+        if ($turma->trm_tipo_integracao == 'v2') {
+            $ambServico = $ambiente->integracaoV2();
+
+        }
 
         if ($ambServico) {
             $parametros = [];
@@ -313,6 +325,11 @@ class MapeamentoNotasRepository extends BaseRepository
             $parametros['url'] = $ambiente->amb_url;
             $parametros['token'] = $ambServico->asr_token;
             $parametros['functionname'] = 'local_integracao_get_grades_batch';
+
+            if ($turma->trm_tipo_integracao == 'v2') {
+                $parametros['functionname'] = 'local_integracao_v2_get_grades_batch';
+            }
+
             $parametros['action'] = 'MAPEAR_NOTAS_ALUNO';
 
             $parametros['data']['grades'] = $data;

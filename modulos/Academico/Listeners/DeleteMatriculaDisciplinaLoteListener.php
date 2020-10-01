@@ -24,15 +24,21 @@ class DeleteMatriculaDisciplinaLoteListener
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
+
     public function handle(DeleteMatriculaDisciplinaLoteEvent $event)
     {
         try {
             $param = [];
             // Reunir os dados para envio em lote
             foreach ($event->getItems() as $matriculaOfertaDisciplina) {
+
+                if ($event->getVersion() != 'v1') {
+                    return;
+                }
+
                 $enrol = [];
 
-                $enrol['mof_id'] = $matriculaOfertaDisciplina->mof_id;
+                $enrol['mof_id'] = (int)$matriculaOfertaDisciplina->mof_id;
 
                 $param['data']['enrol'][] = $enrol;
                 unset($enrol);
@@ -66,7 +72,14 @@ class DeleteMatriculaDisciplinaLoteListener
 
             // Log individual de cada item
             foreach ($event->getItems() as $item) {
-                event(new UpdateSincronizacaoEvent($item, $status, $response['message'], $event->getAction()));
+                event(new UpdateSincronizacaoEvent(
+                    $item,
+                    $status,
+                    $response['message'],
+                    $event->getAction(),
+                    null,
+                    $event->getExtra()
+                ));
             }
         } catch (ConnectException | ClientException | \Exception $exception) {
 
@@ -75,7 +88,14 @@ class DeleteMatriculaDisciplinaLoteListener
             }
 
             foreach ($event->getItems() as $item) {
-                event(new UpdateSincronizacaoEvent($item, 3, get_class($exception), $event->getAction()));
+                event(new UpdateSincronizacaoEvent(
+                    $item,
+                    3,
+                    get_class($exception),
+                    $event->getAction(),
+                    null,
+                    $event->getExtra()
+                ));
             }
 
         }

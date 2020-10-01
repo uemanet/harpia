@@ -31,7 +31,8 @@ class TurmaRequest extends BaseRequest
                     'trm_per_id' => 'required',
                     'trm_nome' => 'required|min:3|max:45',
                     'trm_qtd_vagas' => 'integer|required|min:1|max:9999',
-                    'trm_integrada' => 'integer|required'
+                    'trm_integrada' => 'integer|required',
+                    'trm_tipo_integracao' => 'required|in:v1,v2'
                 ];
 
             }

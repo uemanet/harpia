@@ -28,12 +28,14 @@ return [
 
     'Modulos\Integracao\Events\TurmaMapeadaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Integracao\Listeners\TurmaMapeadaListener'
+        'Modulos\Integracao\Listeners\TurmaMapeadaListener',
+        'Modulos\Integracao\Listeners\TurmaMapeadaV2Listener'
     ],
 
     'Modulos\Integracao\Events\TurmaRemovidaEvent' => [
         'Modulos\Integracao\Listeners\SincronizacaoListener' => 10,
-        'Modulos\Integracao\Listeners\TurmaRemovidaListener'
+        'Modulos\Integracao\Listeners\TurmaRemovidaListener',
+        'Modulos\Integracao\Listeners\TurmaRemovidaV2Listener'
     ],
 
     'Modulos\Integracao\Events\SincronizacaoEvent' => [

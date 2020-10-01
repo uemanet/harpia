@@ -122,7 +122,7 @@ class TurmaRemovidaListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(TurmaMapeadaListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
     }
@@ -154,7 +154,7 @@ class TurmaRemovidaListenerTest extends ModulosTestCase
 
         $this->assertEquals(1, Sincronizacao::all()->count());
 
-        $turmaRemovidaEvent = new TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id);
+        $turmaRemovidaEvent = new TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaRemovidaEvent);
 
@@ -183,7 +183,7 @@ class TurmaRemovidaListenerTest extends ModulosTestCase
 
         $this->assertEquals(1, Sincronizacao::all()->count());
 
-        $turmaRemovidaEvent = new TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id);
+        $turmaRemovidaEvent = new TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaRemovidaEvent);
 

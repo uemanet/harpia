@@ -107,7 +107,9 @@ class DeleteVinculoTutorListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
+
         ];
 
 
@@ -124,7 +126,7 @@ class DeleteVinculoTutorListenerTest extends ModulosTestCase
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
         $createVinculoListener = $this->app->make(\Modulos\Academico\Listeners\CreateVinculoTutorListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -146,7 +148,7 @@ class DeleteVinculoTutorListenerTest extends ModulosTestCase
         ]);
 
         // Eventos de vincular tutor ao grupo
-        $createVinculoEvent = new CreateVinculoTutorEvent($this->tutorGrupo);
+        $createVinculoEvent = new CreateVinculoTutorEvent($this->tutorGrupo, null, $this->tutorGrupo->grupo->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createVinculoEvent);
         $createVinculoListener->handle($createVinculoEvent);
     }
@@ -178,7 +180,7 @@ class DeleteVinculoTutorListenerTest extends ModulosTestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $deleteVinculoEvent = new DeleteVinculoTutorEvent($this->tutorGrupo);
+        $deleteVinculoEvent = new DeleteVinculoTutorEvent($this->tutorGrupo, null, $this->tutorGrupo->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteVinculoEvent);
 
@@ -217,7 +219,7 @@ class DeleteVinculoTutorListenerTest extends ModulosTestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $deleteVinculoEvent = new DeleteVinculoTutorEvent($this->tutorGrupo);
+        $deleteVinculoEvent = new DeleteVinculoTutorEvent($this->tutorGrupo, null, $this->tutorGrupo->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteVinculoEvent);
 
