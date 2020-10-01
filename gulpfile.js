@@ -27,6 +27,8 @@ elixir(function(mix) {
     mix.copy("node_modules/toastr/build/toastr.min.css", "public/css/plugins");
     mix.copy("node_modules/select2/dist/css/select2.css", "public/css/plugins");
     mix.copy("node_modules/admin-lte/plugins/datepicker/datepicker3.css", "public/css/plugins");
+    mix.copy("node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.css", "public/css/plugins");
+    mix.copy("node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.print.min.css", "public/css/plugins");
 
     // JAVASCRIPT
     mix.copy("node_modules/admin-lte/plugins/jQuery/jquery-2.2.3.min.js", "public/js");
@@ -45,6 +47,11 @@ elixir(function(mix) {
     mix.copy("node_modules/jquery.inputmask/dist/inputmask/inputmask.date.extensions.js", "public/js/plugins/input-mask/inputmask.date.extensions.js");
     mix.copy("node_modules/jquery.inputmask/dist/inputmask/inputmask.extensions.js", "public/js/plugins/input-mask/inputmask.extensions.js");
     mix.copy('node_modules/jquery.inputmask/dist/inputmask/jquery.inputmask.js', 'public/js/plugins/input-mask/jquery.inputmask.js');
+    mix.copy('node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.min.js', 'public/js');
+    mix.copy('node_modules/admin-lte/bower_components/fullcalendar/dist/fullcalendar.js', 'public/js');
+
+    mix.copy('node_modules/admin-lte/bower_components/moment/moment.js', 'public/js');
+    mix.copy('node_modules/jquery-validation/dist/jquery.validate.min.js', 'public/js');
 
     // FONTS
     mix.copy("node_modules/bootstrap/fonts", "public/fonts");
