@@ -75,55 +75,24 @@
             $('select').select2();
 
             var token = "{{csrf_token()}}";
-            $('.inscritos table tr:first th:first').html("<label><input id='select_all' type='checkbox'></label>");
 
-            $('.inscritos').on('click', '#select_all', function (event) {
-                if (this.checked) {
-                    $('.matriculas').each(function () {
-                        this.checked = true;
-                    });
-                } else {
-                    $('.matriculas').each(function () {
-                        this.checked = false;
-                    });
-                }
-            });
-
-            var userIds = new Array();
-
-            $('.matriculas:checked').each(function () {
-                userIds.push($(this).val());
-            });
 
             $('.btnChamada').on('click',function () {
-                var quant = $('.matriculas:checked').length;
 
-                var chamdaId = $('#chamada_id').val();
 
-                if ((!(quant > 0)) || (!chamdaId || chamdaId === '')) {
-                    return false;
-                }
-
-                var userIds = new Array();
-
-                $('.matriculas:checked').each(function () {
-                    userIds.push($(this).val());
-                });
-
-                sendChamadas(chamdaId, userIds);
+                sendChamadas();
             });
 
-            var sendChamadas = function (chamdaId, userIds) {
+            var sendChamadas = function () {
 
                 var dados = {
-                    users: userIds,
-                    chamada_id: chamdaId,
+                    chamada: {{$chamada->id}},
                     _token: token
                 };
 
                 $.harpia.showloading();
 
-                url = '{{ route('matriculas.listachamadas.create') }}';
+                url = '{{ route('matriculas.migracao.create') }}';
 
                 $.ajax({
                     type: 'POST',
@@ -131,11 +100,13 @@
                     data: dados,
                     success: function (data) {
                         $.harpia.hideloading();
-                        toastr.success('Chamada criada com sucesso!', null, {progressBar: true});
+                        toastr.success('Migração realizada com sucesso!', null, {progressBar: true});
+                        // location.reload()
 
-                        setTimeout(function () {
-                            window.location.href = "{{ route('matriculas.index.index')}}";
-                        }, 2000);
+
+                        {{--setTimeout(function () {--}}
+                        {{--    window.location.href = "{{ route('matriculas.chamadas.index')}}";--}}
+                        {{--}, 2000);--}}
 
                         // var turma = turmaSelect.val();
                         // var ofertaDisciplina = disciplinasOfertadasSelect.val();

@@ -29,7 +29,9 @@ class SeletivoUser extends Model
         'numero',
         'celular',
         'telefone',
-        'password'
+        'password',
+        'pes_id',
+        'alu_id'
     ];
 
     /**

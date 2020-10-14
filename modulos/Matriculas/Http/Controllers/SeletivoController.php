@@ -8,10 +8,12 @@ use Illuminate\Http\JsonResponse;
 use Modulos\Matriculas\Models\SeletivoMatricula;
 use Modulos\Matriculas\Models\SeletivoUser;
 use Modulos\Matriculas\Models\User;
+use Modulos\Matriculas\Repositories\ChamadaRepository;
 use Modulos\Matriculas\Repositories\InscricaoRepository;
 use Modulos\Matriculas\Repositories\SeletivoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Illuminate\Http\Request;
+use DB;
 
 /**
  * Class SeletivoController.
@@ -20,11 +22,14 @@ class SeletivoController extends Controller
 {
     protected $seletivoRepository;
     protected $inscricaoRepository;
+    protected $chamadaRepository;
 
-    public function __construct(SeletivoRepository $seletivoRepository, InscricaoRepository $inscricaoRepository)
+    public function __construct(SeletivoRepository $seletivoRepository, InscricaoRepository $inscricaoRepository, ChamadaRepository $chamadaRepository)
     {
         $this->seletivoRepository = $seletivoRepository;
         $this->inscricaoRepository = $inscricaoRepository;
+        $this->chamadaRepository = $chamadaRepository;
+
     }
 
     /**
@@ -119,10 +124,10 @@ class SeletivoController extends Controller
                     return array('style' => 'width: 1%');
                 })
                 ->modify('select_all', function ($inscricao) {
-                    return '<label><input class="matriculas" type="checkbox" value="'.$inscricao->user->id.'"></label>';
+                    return '<label><input class="matriculas" type="checkbox" value="' . $inscricao->user->id . '"></label>';
                 })
                 ->modify('nome', function ($inscricao) {
-                    return '<p>'.$inscricao->user->nome.'</p>';
+                    return '<p>' . $inscricao->user->nome . '</p>';
                 })
                 ->modify('status', function ($inscricao) {
                     if ($inscricao->status == 'inscrito') {
@@ -132,13 +137,13 @@ class SeletivoController extends Controller
                         return '<span class="label label-info">Completo</span>';
                     }
                     if (in_array($inscricao->status, ['eliminado', 'indeferido'])) {
-                        return '<span class="label label-danger">'.ucfirst($inscricao->status).'</span>';
+                        return '<span class="label label-danger">' . ucfirst($inscricao->status) . '</span>';
                     }
                     if (in_array($inscricao->status, ['classificado', 'deferido'])) {
-                        return '<span class="label label-success">'.ucfirst($inscricao->status).'</span>';
+                        return '<span class="label label-success">' . ucfirst($inscricao->status) . '</span>';
                     }
                     if ($inscricao->status == 'avaliado') {
-                        return '<span class="label label-warning">'.ucfirst($inscricao->status).'</span>';
+                        return '<span class="label label-warning">' . ucfirst($inscricao->status) . '</span>';
                     }
 
                     return $inscricao->status;
@@ -191,10 +196,10 @@ class SeletivoController extends Controller
                     return array('style' => 'width: 1%');
                 })
                 ->modify('select_all', function ($inscricao) {
-                    return '<label><input class="matriculas" type="checkbox" value="'.$inscricao->user->id.'"></label>';
+                    return '<label><input class="matriculas" type="checkbox" value="' . $inscricao->user->id . '"></label>';
                 })
                 ->modify('nome', function ($inscricao) {
-                    return '<p>'.$inscricao->user->nome.'</p>';
+                    return '<p>' . $inscricao->user->nome . '</p>';
                 })
                 ->modify('status', function ($inscricao) {
                     if ($inscricao->status == 'inscrito') {
@@ -204,13 +209,13 @@ class SeletivoController extends Controller
                         return '<span class="label label-info">Completo</span>';
                     }
                     if (in_array($inscricao->status, ['eliminado', 'indeferido'])) {
-                        return '<span class="label label-danger">'.ucfirst($inscricao->status).'</span>';
+                        return '<span class="label label-danger">' . ucfirst($inscricao->status) . '</span>';
                     }
                     if (in_array($inscricao->status, ['classificado', 'deferido'])) {
-                        return '<span class="label label-success">'.ucfirst($inscricao->status).'</span>';
+                        return '<span class="label label-success">' . ucfirst($inscricao->status) . '</span>';
                     }
                     if ($inscricao->status == 'avaliado') {
-                        return '<span class="label label-warning">'.ucfirst($inscricao->status).'</span>';
+                        return '<span class="label label-warning">' . ucfirst($inscricao->status) . '</span>';
                     }
 
                     return $inscricao->status;
@@ -228,25 +233,25 @@ class SeletivoController extends Controller
     {
         $data = $request->all();
 
-        foreach ($data['users'] as $userSeletivo){
+        foreach ($data['users'] as $userSeletivo) {
             $user = User::find($userSeletivo);
 
-            if ($user){
+            if ($user) {
                 $userData = $user->toArray();
 
                 $seletivoUserUpdate = SeletivoUser::where('cpf', $userData['cpf'])->first();
                 $userData['password'] = bcrypt($user->cpf);
 
-                if ($seletivoUserUpdate){
+                if ($seletivoUserUpdate) {
                     $checkChamada = SeletivoMatricula::where('seletivo_user_id', $seletivoUserUpdate->id)
                         ->where('chamada_id', $data['chamada_id'])->first();
 
-                    if ($checkChamada){
+                    if ($checkChamada) {
                         continue;
                     }
 
                     $seletivoUserUpdate->update($userData);
-                }else{
+                } else {
                     $seletivoUser = SeletivoUser::create($userData);
                 }
 
@@ -258,5 +263,30 @@ class SeletivoController extends Controller
         }
 
         return new JsonResponse(['message' => 'Sucesso']);
+    }
+
+    public function migracao(Request $request)
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $data = $request->except('_token');
+
+            $this->chamadaRepository->migrarAlunos($data['chamada']);
+
+            DB::commit();
+
+            return new JsonResponse(['message' => 'Sucesso']);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+            return redirect()->back();
+        }
+
+
     }
 }

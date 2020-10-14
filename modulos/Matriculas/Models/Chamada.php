@@ -17,6 +17,7 @@ class Chamada extends BaseModel
         'fim_matricula',
         'numero_chamada',
         'tipo_chamada',
+        'trm_id'
     ];
 
     protected $searchable = [
