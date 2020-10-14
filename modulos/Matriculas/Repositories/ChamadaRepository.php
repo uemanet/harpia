@@ -2,9 +2,12 @@
 
 namespace Modulos\Matriculas\Repositories;
 
+use Modulos\Academico\Models\Matricula;
+use Modulos\Academico\Models\Turma;
 use Modulos\Geral\Models\Pessoa;
 use Modulos\Geral\Models\Documento;
 use Modulos\Academico\Models\Aluno;
+use Modulos\Integracao\Models\Sincronizacao;
 use Modulos\Matriculas\Models\Chamada;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -34,16 +37,18 @@ class ChamadaRepository extends BaseRepository
         $this->seletivoUserRepository = $seletivoUserRepository;
     }
 
-    public function migrarAlunos(array $matriculas)
+    public function migrarAlunos($chamada_id)
     {
 
-        $seletivo_matriculas = SeletivoMatricula::whereIn('id', $matriculas)->get();
+
+        $seletivo_matriculas = SeletivoMatricula::where('chamada_id', $chamada_id)->get();
         $estadocivil = [
             'casado' => "casado",
             'divorciado' => "divorciado",
             'outros' => "outros",
             'solteiro' => "solteiro",
-            'uniao_estavel' => "uniao_estavel"
+            'uniao_estavel' => "uniao_estavel",
+            'viuvo' => 'viuvo(a)'
         ];
 
         foreach ($seletivo_matriculas as $key => $seletivo_matricula) {
@@ -61,7 +66,7 @@ class ChamadaRepository extends BaseRepository
             $pessoa['pes_necessidade_especial'] = $seletivo_matricula->user->necessidadesespeciais;
             $pessoa['pes_estrangeiro'] = 0;
             $pessoa['pes_endereco'] = $seletivo_matricula->user->endereco;
-            $pessoa['pes_numero'] = $seletivo_matricula->user->numero;
+            $pessoa['pes_numero'] = $seletivo_matricula->user->numero ? $seletivo_matricula->user->numero : ' ';
             $pessoa['pes_complemento'] = $seletivo_matricula->user->complemento;
             $pessoa['pes_cep'] = $seletivo_matricula->user->cep;
             $pessoa['pes_cidade'] = $seletivo_matricula->user->cidade;
@@ -128,6 +133,50 @@ class ChamadaRepository extends BaseRepository
 
         }
 
+
+        $seletivo_matriculas = SeletivoMatricula::join('mat_seletivos_users', 'mat_seletivos_users.id', '=', 'mat_seletivos_matriculas.id')
+            ->where('chamada_id', $chamada_id)
+            ->where('matriculado', 1)->get()->toArray();
+
+        //Busca a chamada
+        $chamada = Chamada::find($chamada_id);
+        $turma = Turma::find($chamada->trm_id);
+
+        //Migração de alunos para os grupos
+        $quantidadeGrupos = count($turma->grupos);
+        $quantidadePessoas = count($seletivo_matriculas);
+        $pessoasPorGrupo = (int)ceil($quantidadePessoas / $quantidadeGrupos);
+        $pessoas = $seletivo_matriculas;
+
+
+        foreach ($turma->grupos as $grupo) {
+
+            for ($j = 0; $j < $pessoasPorGrupo; $j++) {
+                $aluno = array_pop($pessoas);
+
+                if ($aluno['alu_id'] > 0) {
+
+                    $matricula = new Matricula();
+                    $matricula->mat_alu_id = $aluno['alu_id'];
+                    $matricula->mat_trm_id = $turma->trm_id;
+                    $matricula->mat_pol_id = $grupo->grp_pol_id;
+                    $matricula->mat_grp_id = $grupo->grp_id;
+                    $matricula->mat_situacao = 'cursando';
+                    $matricula->mat_modo_entrada = 'vestibular';
+                    $matricula->save();
+
+                    $sync = new Sincronizacao();
+                    $sync->sym_table = 'acd_matriculas';
+                    $sync->sym_table_id = $matricula->mat_id;
+                    $sync->sym_action = 'CREATE';
+                    $sync->sym_status = 3;
+                    $sync->save();
+                }
+            }
+
+        }
+
+
     }
 
     public function cadastrarDocumentos($idPessoa, array $data)
@@ -155,7 +204,7 @@ class ChamadaRepository extends BaseRepository
                 return array('status' => 'error_email');
             }
 
-            $pessoa  = $this->pessoaRepository->create($data);
+            $pessoa = $this->pessoaRepository->create($data);
 
             $pessoaId = $pessoa->pes_id;
 

@@ -25,14 +25,21 @@
     </div>
 </div>
 <div class="row">
-    <div class="form-group col-md-6 @if ($errors->has('seletivo_id')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('seletivo_id')) has-error @endif">
         {!! Form::label('seletivo_id', 'Seletivo*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('seletivo_id', $seletivos, null, ['class' => 'form-control', 'placeholder' => 'Escolha o Seletivo']) !!}
             @if ($errors->has('seletivo_id')) <p class="help-block">{{ $errors->first('seletivo_id') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-6 @if ($errors->has('tipo_chamada')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('trm_id')) has-error @endif">
+        {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('trm_id', $turmas, null, ['class' => 'form-control', 'placeholder' => 'Escolha a Turma']) !!}
+            @if ($errors->has('trm_id')) <p class="help-block">{{ $errors->first('trm_id') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-4 @if ($errors->has('tipo_chamada')) has-error @endif">
         {!! Form::label('tipo_chamada', 'Tipo de chamada*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::select('tipo_chamada', ['normal' => 'Normal', 'excedente' => 'Excedente'], old('tipo_chamada'), ['class' => 'form-control', 'placeholder' => 'Escolha o tipo de chamada']) !!}

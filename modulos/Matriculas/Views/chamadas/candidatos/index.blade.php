@@ -75,48 +75,18 @@
             $('select').select2();
 
             var token = "{{csrf_token()}}";
-            $('.inscritos table tr:first th:first').html("<label><input id='select_all' type='checkbox'></label>");
 
-            $('.inscritos').on('click', '#select_all', function (event) {
-                if (this.checked) {
-                    $('.matriculas').each(function () {
-                        this.checked = true;
-                    });
-                } else {
-                    $('.matriculas').each(function () {
-                        this.checked = false;
-                    });
-                }
-            });
-
-            var matriculasIds = new Array();
-
-            $('.matriculas:checked').each(function () {
-                matriculasIds.push($(this).val());
-            });
 
             $('.btnChamada').on('click',function () {
-                var quant = $('.matriculas:checked').length;
 
-                if ((!(quant > 0)) ) {
-                    return false;
-                }
 
-                var matriculasIds = new Array();
-
-                console.log(matriculasIds);
-
-                $('.matriculas:checked').each(function () {
-                    matriculasIds.push($(this).val());
-                });
-
-                sendChamadas(matriculasIds);
+                sendChamadas();
             });
 
-            var sendChamadas = function (matriculasIds) {
+            var sendChamadas = function () {
 
                 var dados = {
-                    matriculas: matriculasIds,
+                    chamada: {{$chamada->id}},
                     _token: token
                 };
 
@@ -131,7 +101,7 @@
                     success: function (data) {
                         $.harpia.hideloading();
                         toastr.success('Migração realizada com sucesso!', null, {progressBar: true});
-                        location.reload()
+                        // location.reload()
 
 
                         {{--setTimeout(function () {--}}

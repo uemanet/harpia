@@ -4,6 +4,7 @@ namespace Modulos\Matriculas\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Modulos\Academico\Models\Turma;
 use Modulos\Matriculas\Http\Requests\ChamadaRequest;
 use Modulos\Matriculas\Models\Seletivo;
 use Modulos\Matriculas\Repositories\ChamadaRepository;
@@ -106,7 +107,9 @@ class ChamadaController extends Controller
     public function getCreate()
     {
         $seletivos = Seletivo::all()->pluck('nome', 'id');
-        return view('Matriculas::chamadas.create', ['seletivos' => $seletivos]);
+        $turmas = Turma::all()->pluck('trm_nome', 'trm_id');
+
+        return view('Matriculas::chamadas.create', ['seletivos' => $seletivos, 'turmas' => $turmas]);
     }
 
     public function postCreate(ChamadaRequest $request)
@@ -136,13 +139,14 @@ class ChamadaController extends Controller
     {
         $chamada = $this->chamadaRepository->find($chamadaId);
         $seletivos = Seletivo::all()->pluck('nome', 'id');
+        $turmas = Turma::all()->pluck('trm_nome', 'trm_id');
 
         if (!$chamada) {
             flash()->error('Chamada não existe.');
             return redirect()->back();
         }
 
-        return view('Matriculas::chamadas.edit', compact('chamada', 'seletivos'));
+        return view('Matriculas::chamadas.edit', compact('chamada', 'seletivos', 'turmas'));
     }
 
     public function putEdit($chamadaId, ChamadaRequest $request)
@@ -211,7 +215,7 @@ class ChamadaController extends Controller
         $tableData = $this->seletivoMatriculaRepository->paginateRequest($requestData);
 
         $headers = array(
-            'select_all' => 'Selecione',
+
             'id' => 'ID',
             'nome' => 'Nome',
             'cpf' => 'CPF',
@@ -226,17 +230,7 @@ class ChamadaController extends Controller
                 ->attributes(array(
                     'class' => 'table'
                 ))
-                ->modifyCell('select_all', function () {
-                    return array('style' => 'width: 1%');
-                })
-                ->modify('select_all', function ($inscricao) {
-                    if ($inscricao->matriculado and !$inscricao->migrado) {
-                        return '<label><input class="matriculas" type="checkbox" value="'.$inscricao->user->id.'"></label>';;
-                    } else {
-                        return '';
-                    }
 
-                })
                 ->modify('nome', function ($inscricao) {
                     return '<p>'.$inscricao->user->nome.'</p>';
                 })
@@ -263,6 +257,7 @@ class ChamadaController extends Controller
 
             $paginacao = $tableData->appends($request->except('page'));
         }
+
 
         return view('Matriculas::chamadas.candidatos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'chamada' => $chamada]);
     }
