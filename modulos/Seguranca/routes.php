@@ -2,6 +2,12 @@
 
 Route::get('/', '\Modulos\Seguranca\Http\Controllers\SelecionaModulosController@getIndex')->name('index');
 
+
+Route::get('matriculas-alunos/login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthMatriculasController@showLoginForm')->name('auth.matriculas-alunos.login');
+Route::post('matriculas-alunos/login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthMatriculasController@postLogin')->name('auth.matriculas-alunos.login');
+Route::get('matriculas-alunos/logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthMatriculasController@logout')->name('auth.matriculas-alunos.logout');
+
+
 Route::get('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@showLoginForm')->name('auth.login');
 Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@postLogin')->name('auth.login');
 Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogout')->name('auth.logout');
