@@ -67,6 +67,19 @@ class RelatoriosAtasFinaisController extends BaseController
         34 => '2016-12-11',
         35 => '2014-11-03',
         36 => '2016-12-11',
+        //new
+        45 => '2019-02-14',
+        47 => '2019-02-21',
+        46 => '2019-03-14',
+        41 => '2019-01-02',
+        65 => '2019-02-21',
+        64 => '2019-02-01',
+        66 => '2019-02-01',
+        79 => '2019-11-08',
+        84 => '2019-11-26',
+        80 => '2019-11-08',
+        83 => '2019-11-08',
+        81 => '2019-07-09'
     ];
 
     public function __construct(
@@ -151,6 +164,8 @@ class RelatoriosAtasFinaisController extends BaseController
         // Resultados das matriculas
         $resultados = $this->resultadosFinaisRepository->getResultadosFinais($turma, $polo, $situacao ? $situacao : '');
 
+;
+
         $content = view('Academico::relatoriosatasfinais.relatorioatas', [
             'curso' => $curso,
             'polo' => $polo,
@@ -167,6 +182,8 @@ class RelatoriosAtasFinaisController extends BaseController
         define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
         $mpdf = new Mpdf($configs);
         $mpdf->debug = true;
+        $mpdf->allow_charset_conversion = true;
+        $mpdf->charset_in = 'UTF-8';
 
         $mpdf->mirrorMargins = 0;
         $mpdf->SetTitle('Relatório de Atas Finais ' . $curso->crs_nome);
