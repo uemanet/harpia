@@ -22,10 +22,10 @@ class ResultadosFinaisRepository
 
         $matriculas = $turma->matriculas;
 
-        // Retira alunos que ainda estao cursando na turma
-        $matriculas = $matriculas->filter(function ($value, $key) {
-            return $value->mat_situacao != "cursando";
-        });
+//        // Retira alunos que ainda estao cursando na turma
+//        $matriculas = $matriculas->filter(function ($value, $key) {
+//            return $value->mat_situacao != "cursando";
+//        });
 
         // Filtra por polo
         if ($polo) {
@@ -45,7 +45,7 @@ class ResultadosFinaisRepository
         foreach ($matriculas as $matricula) {
             $resultados[$matricula->polo->pol_nome][$matricula->aluno->pessoa->pes_nome] = $this->getResultadosMatricula($matricula);
         }
-
+;
         return $resultados;
     }
 
@@ -75,6 +75,9 @@ class ResultadosFinaisRepository
 
         $resultadosMatricula["idAluno"] = $matricula->mat_alu_id;
         $resultadosMatricula["situacao"] = $matricula->situacao_matricula_curso;
+        if($resultadosMatricula["situacao"] == 'Cursando' ){
+            $resultadosMatricula["situacao"] = 'Reprovado';
+        }
         return $resultadosMatricula;
     }
 }
