@@ -108,7 +108,7 @@
                         echo '<td class="center" colspan="' . $colspan . '"><strong>' . $nome . '</strong></td>';
                     }
                 @endphp
-                <td rowspan="3" text-rotate="90" style="text-align: center;"><span style="bottom: 30%;"><strong>Prática Profissional</strong></span></td>
+{{--                <td rowspan="3" text-rotate="90" style="text-align: center;"><span style="bottom: 30%;"><strong>Prática Profissional</strong></span></td>--}}
                 <td rowspan="5" text-rotate="90" style="text-align: center;"><span style="bottom: 30%;"><strong>Resultado Final</strong></span></td>
             </tr>
             <tr>
@@ -134,11 +134,12 @@
                     $modulos = array_pop($matrizCurricular);
                     unset($modulos["carga_horaria_matriz"]);
                     unset($modulos["VIVÊNCIA PRÁTICA"]);
+                    unset($modulos["Vivência"]);
 
                     foreach($modulos as $nome => $modulo) {
                        foreach ($modulo['disciplinas'] as $disciplina){
                             echo '<td class="disciplina" text-rotate="90" style="vertical-align: bottom; text-align: center; padding-top: 20px;">'.
-                                '<span>' . $disciplina['nome'] . '</span></td>';
+                                '<span><strong>' . $disciplina['nome'] . '</span></strong></td>';
                        }
                     }
                 @endphp
