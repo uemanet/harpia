@@ -23,14 +23,14 @@ class Colaborador extends BaseModel
         'col_matricula_universidade',
         'col_observacao',
         'col_status',
-
-
     ];
 
     protected $searchable = [
         'pes_nome' => 'like',
         'pes_email' => 'like',
-        'pes_cpf' => '='
+        'pes_cpf' => '=',
+        'col_set_id' => '=',
+        'col_status' => 'like',
     ];
 
     public function atividades_extras()
@@ -42,8 +42,6 @@ class Colaborador extends BaseModel
     {
         return $this->hasMany('Modulos\RH\Models\ContaColaborador', 'ccb_col_id', 'col_id');
     }
-
-
 
     public function pessoa()
     {
@@ -60,7 +58,17 @@ class Colaborador extends BaseModel
         return $this->belongsTo('Modulos\RH\Models\Funcao', 'col_fun_id');
     }
 
+    public function funcoes()
+    {
+        return $this->belongsToMany('Modulos\RH\Models\Funcao', 'reh_colaboradores_funcoes', 'cfn_col_id', 'cfn_fun_id')->wherePivot('cfn_data_fim', null)->withPivot('cfn_id');
+    }
 
+    public function funcoes_historico()
+    {
+        return $this->belongsToMany('Modulos\RH\Models\Funcao', 'reh_colaboradores_funcoes', 'cfn_col_id', 'cfn_fun_id')
+            ->wherePivot('cfn_data_fim', '<>',null)
+            ->withPivot(['cfn_id', 'cfn_data_inicio', 'cfn_data_fim']);
+    }
 
     // Accessors
     public function getColDataAdmissaoAttribute($value)

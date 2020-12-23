@@ -14,38 +14,112 @@
 @stop
 
 @section('content')
+
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Alteração de Setor e Função de Colaboradores</h3>
+            <h3 class="box-title">Gerenciamento de funções de colaborador</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($colaborador,['route' => ['rh.colaboradores.movimentacaosetor', $colaborador->col_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-
-
-            @include('RH::colaboradores.includes.formulario_movimentacao_setor', ['colaborador' => $colaborador])
-
+            <h4>Funções do Colaborador</h4>
             <div class="row">
-                <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+                {!! Form::open(array('route' => ['rh.colaboradores.movimentacaosetor.funcao.create', $colaborador->col_id], 'method' => 'POST', 'id' => 'form')) !!}
+
+                <div class="form-group col-md-3">
+                    {!! Form::select('col_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                    @if ($errors->has('col_set_id')) <p class="help-block">{{ $errors->first('col_set_id') }}</p> @endif
+                </div>
+
+                <div class="form-group col-md-3">
+                    {!! Form::select('cfn_fun_id', $funcoes,[] , ['class' => 'form-control', 'placeholder' => 'Selecione a função']) !!}
+                    @if ($errors->has('cfn_fun_id')) <p class="help-block">{{ $errors->first('cfn_fun_id') }}</p> @endif
+                </div>
+
+                <div class="form-group col-md-3">
+                    {!! Form::text('cfn_data_inicio', old('cfn_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Início']) !!}
+                    @if ($errors->has('cfn_data_inicio')) <p
+                            class="help-block">{{ $errors->first('cfn_data_inicio') }}</p> @endif
+                </div>
+
+                <div class="form-group col-md-3">
+                    {!! Form::submit('Adicionar Função', ['class' => 'btn btn-primary', 'id' => 'btnAtribuir']) !!}
+                </div>
+                {!! Form::close() !!}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    @if(count($colaborador->funcoes))
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                            <th style="width: 10px">Função</th>
+                            <th style="width: 20px"></th>
+                            </thead>
+                            <tbody>
+                            @foreach($colaborador->funcoes as $funcao)
+                                <tr>
+                                    <td>{{$funcao->fun_descricao}}</td>
+                                    <td>
+                                        {!! ActionButton::grid([
+                                            'type' => 'LINE',
+                                            'buttons' => [
+                                                [
+                                                    'classButton' => 'btn-delete text-red',
+                                                    'icon' => 'fa fa-trash',
+                                                    'route' => 'rh.colaboradores.movimentacaosetor.funcao.delete',
+                                                    'id' => $funcao->fun_id,
+                                                    'parameters' => [$colaborador->col_id,$funcao->getOriginal()['pivot_cfn_id']],
+                                                    'label' => 'Desvincular',
+                                                    'method' => 'post'
+                                                ]
+                                            ]
+                                        ]) !!}
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <p>Colaborador sem funções cadastradas</p>
+                    @endif
                 </div>
             </div>
-            {!! Form::close() !!}
+            <h4>Histórico de Funções</h4>
+            <div class="row">
+                <div class="col-md-12">
+                    @if(count($colaborador->funcoes_historico))
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                            <th style="width: 10px">Função</th>
+                            <th style="width: 20px">Início</th>
+                            <th style="width: 20px">Fim</th>
+                            </thead>
+                            <tbody>
+                            @foreach($colaborador->funcoes_historico as $funcao)
+                                <tr>
+                                    <td>{{$funcao->fun_descricao}}</td>
+                                    <td>{{date("d/m/Y", strtotime($funcao->getOriginal()['pivot_cfn_data_inicio']))}}</td>
+                                    <td>{{date("d/m/Y", strtotime($funcao->getOriginal()['pivot_cfn_data_fim']))}}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <p>Colaborador sem histórico de movimentação de funções</p>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 @stop
 
-
 @section('scripts')
-
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("select").select2();
         });
     </script>
-
 @endsection
 
 

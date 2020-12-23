@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
+use Modulos\RH\Models\Setor;
+use Modulos\RH\Repositories\ColaboradorFuncaoRepository;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Repositories\FuncaoRepository;
@@ -23,9 +25,11 @@ class ColaboradoresController extends BaseController
     protected $documentoRepository;
     protected $funcaoRepository;
     protected $setorRepository;
+    protected $colaboradorFuncaoRepository;
 
-    public function __construct(ColaboradorRepository $colaborador, PessoaRepository $pessoa, DocumentoRepository $documento, FuncaoRepository $funcao, SetorRepository $setor)
+    public function __construct(ColaboradorRepository $colaborador, PessoaRepository $pessoa, DocumentoRepository $documento, FuncaoRepository $funcao, SetorRepository $setor, ColaboradorFuncaoRepository $colaborador_funcao)
     {
+        $this->colaboradorFuncaoRepository = $colaborador_funcao;
         $this->colaboradorRepository = $colaborador;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
@@ -51,7 +55,7 @@ class ColaboradoresController extends BaseController
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
                 'col_set_id' => 'Setor',
-                'col_fun_id' => 'Função',
+                'col_status' => 'Status',
                 'col_action' => 'Ações'
             ))
                 ->modifyCell('col_action', function () {
@@ -93,7 +97,7 @@ class ColaboradoresController extends BaseController
                             [
                                 'classButton' => '',
                                 'icon' => 'fa fa-exchange',
-                                'route' => 'rh.colaboradores.movimentacaosetor',
+                                'route' => 'rh.colaboradores.movimentacaosetor.index',
                                 'parameters' => ['id' => $id],
                                 'label' => 'Movimentação de Setor/Função',
                                 'method' => 'get'
@@ -109,12 +113,14 @@ class ColaboradoresController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('col_id', 'pes_nome'));
+                ->sortable(array('col_id', 'pes_nome', 'col_status'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
 
-        return view('RH::colaboradores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
+        $setores = Setor::all()->sortBy('set_descricao')->pluck('set_descricao', 'set_id');
+
+        return view('RH::colaboradores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'setores' => $setores]);
     }
 
     public function getCreate(Request $request)
@@ -138,7 +144,7 @@ class ColaboradoresController extends BaseController
             }
         }
 
-        return view('RH::colaboradores.create', ['pessoa' => [],'funcoes' => $funcoes, 'setores' => $setores]);
+        return view('RH::colaboradores.create', ['pessoa' => [], 'funcoes' => $funcoes, 'setores' => $setores]);
     }
 
     public function postCreate(Request $request)
@@ -184,8 +190,18 @@ class ColaboradoresController extends BaseController
                 $data['col_pes_id'] = $pessoa->pes_id;
             }
 
-
             $colaborador = $this->colaboradorRepository->create($data);
+
+            if (isset($data['funcoes']) && !is_null($data['funcoes'])) {
+                foreach ($data['funcoes'] as $id) {
+
+                    $data_funcao['cfn_fun_id'] = $id;
+                    $data_funcao['cfn_col_id'] = $colaborador->col_id;
+                    $data_funcao['cfn_data_inicio'] = date('d/m/Y');
+
+                    $this->colaboradorFuncaoRepository->create($data_funcao);
+                }
+            }
 
             $dataDocumento = array(
                 'doc_tpd_id' => 2,
@@ -223,7 +239,7 @@ class ColaboradoresController extends BaseController
 
         $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
 
-        return view('RH::colaboradores.edit', compact(['pessoa', 'colaborador','funcoes', 'setores']) );
+        return view('RH::colaboradores.edit', compact(['pessoa', 'colaborador', 'funcoes', 'setores']));
     }
 
     public function putEdit($colaboradorId, Request $request)
@@ -259,7 +275,7 @@ class ColaboradoresController extends BaseController
 
             $pessoa->fill($request->all())->save();
 
-            $this->colaboradorRepository->update($data,$colaboradorId);
+            $this->colaboradorRepository->update($data, $colaboradorId);
 
             $dataDocumento = [
                 'doc_pes_id' => $pessoa->pes_id,
@@ -303,7 +319,7 @@ class ColaboradoresController extends BaseController
 
         $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
 
-        return view('RH::colaboradores.status', compact(['colaborador']) );
+        return view('RH::colaboradores.status', compact(['colaborador']));
     }
 
     public function putStatus($colaboradorId, Request $request)
@@ -316,7 +332,7 @@ class ColaboradoresController extends BaseController
         DB::beginTransaction();
         try {
 
-            $this->colaboradorRepository->update($data,$colaboradorId);
+            $this->colaboradorRepository->update($data, $colaboradorId);
 
             DB::commit();
 
@@ -341,6 +357,7 @@ class ColaboradoresController extends BaseController
     public function getMovimentacaoSetor($colaboradorId)
     {
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
         $funcoes = $this->funcaoRepository->lists('fun_id', 'fun_descricao');
         $setores = $this->setorRepository->lists('set_id', 'set_descricao');
 
@@ -349,9 +366,11 @@ class ColaboradoresController extends BaseController
             return redirect()->back();
         }
 
+        $historico_setores = $this->colaboradorRepository->getHistory($colaborador->col_id);
+
         $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
 
-        return view('RH::colaboradores.movimentacaosetor', compact(['pessoa', 'colaborador','funcoes', 'setores']) );
+        return view('RH::colaboradores.movimentacaosetor', compact(['pessoa', 'colaborador', 'funcoes', 'setores']));
     }
 
     public function putMovimentacaoSetor($colaboradorId, Request $request)
@@ -364,13 +383,13 @@ class ColaboradoresController extends BaseController
         DB::beginTransaction();
         try {
 
-            $this->colaboradorRepository->update($data,$colaboradorId);
+            $this->colaboradorRepository->update($data, $colaboradorId);
 
             DB::commit();
 
             flash()->success('Status atualizado com sucesso!');
 
-            return redirect()->route('rh.colaboradores.show', $colaborador->col_id);
+            return redirect()->back();
         } catch (ValidationException $e) {
             DB::rollback();
             return redirect()->back()->withInput($request->all())->withErrors($e);
@@ -381,6 +400,86 @@ class ColaboradoresController extends BaseController
             }
 
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
+
+    public function attachFuncao($colaboradorId, Request $request)
+    {
+
+        $data = $request->except('_token');
+
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $data['cfn_col_id'] = $colaborador->col_id;
+            $colaborador_funcao = $this->colaboradorFuncaoRepository->create($data);
+
+            DB::commit();
+
+            flash()->success('Função adicionada ao colaborador com sucesso!');
+
+            return redirect()->back();
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar adicionar função ao colaborador. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
+
+    public function detachFuncao($colaboradorId, $colaboradorFuncaoId, Request $request)
+    {
+
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        $colaborador_funcao = $this->colaboradorFuncaoRepository->find($colaboradorFuncaoId);
+
+        if (!$colaborador_funcao) {
+            flash()->error('Requisição inválida.');
+            return redirect()->back();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $colaborador_funcao = $this->colaboradorFuncaoRepository->update(['cfn_data_fim' => date('Y-m-d')], $colaborador_funcao->cfn_id);
+
+            DB::commit();
+
+            flash()->success('Função removida do colaborador com sucesso!');
+
+            return redirect()->back();
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar adicionar função ao colaborador. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         }

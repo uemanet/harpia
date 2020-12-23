@@ -5,6 +5,7 @@ namespace Modulos\RH\Repositories;
 use Illuminate\Support\Facades\DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\RH\Models\Colaborador;
+use Modulos\Seguranca\Models\Auditoria;
 
 class ColaboradorRepository extends BaseRepository
 {
@@ -76,11 +77,11 @@ class ColaboradorRepository extends BaseRepository
     public function search(array $options, array $select = null)
     {
         $query = $this->model->select('reh_colaboradores.*', 'gra_pessoas.*', 'gra_documentos.*')
-           ->join('gra_pessoas', function ($join) {
-               $join->on('col_pes_id', '=', 'pes_id');
-           })->leftJoin('gra_documentos', function ($join) {
-               $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
-           });
+            ->join('gra_pessoas', function ($join) {
+                $join->on('col_pes_id', '=', 'pes_id');
+            })->leftJoin('gra_documentos', function ($join) {
+                $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+            });
 
         foreach ($options as $op) {
             $query = $query->where($op[0], $op[1], $op[2]);
@@ -92,4 +93,19 @@ class ColaboradorRepository extends BaseRepository
 
         return $query->get();
     }
+
+    public function getHistory($col_id)
+    {
+
+        $history = Auditoria::where('log_table_id', $col_id)
+            ->where('log_table', 'reh_colaboradores')->get()->toArray();
+
+        foreach ($history as $key => $item){
+            $history[$key]['log_object'] = json_decode($item['log_object'], true);
+
+        }
+
+    }
+
+
 }

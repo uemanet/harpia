@@ -1,20 +1,5 @@
 <div class="row">
-    <div class="form-group col-md-3 @if ($errors->has('col_set_id')) has-error @endif">
-        {!! Form::label('col_set_id', 'Setor*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('col_set_id', $setores, isset($colaborador->col_set_id) ? $colaborador->col_set_id : old('col_set_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
-            @if ($errors->has('col_set_id')) <p class="help-block">{{ $errors->first('col_set_id') }}</p> @endif
-        </div>
-    </div>
-
-    <div class="form-group col-md-3 @if ($errors->has('funcoes')) has-error @endif">
-        {!! Form::label('funcoes', 'Funções*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('funcoes[]', $funcoes, old('funcoes[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
-            @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
-        </div>
-    </div>
-    <div class="form-group col-md-2 @if ($errors->has('col_data_admissao')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_data_admissao')) has-error @endif">
         {!! Form::label('col_data_admissao', 'Data de admissão*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('col_data_admissao',isset($colaborador->col_data_admissao) ? $colaborador->col_data_admissao : old('col_data_admissao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
@@ -22,14 +7,14 @@
                     class="help-block">{{ $errors->first('col_data_admissao') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-2 @if ($errors->has('col_ch_diaria')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_ch_diaria')) has-error @endif">
         {!! Form::label('col_ch_diaria', 'Carga Horária diária*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::number('col_ch_diaria', isset($colaborador->col_ch_diaria) ? $colaborador->col_ch_diaria : old('col_ch_diaria'),['class' => 'form-control']) !!}
             @if ($errors->has('col_ch_diaria')) <p class="help-block">{{ $errors->first('col_ch_diaria') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-1 @if ($errors->has('col_codigo_catraca')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_codigo_catraca')) has-error @endif">
         {!! Form::label('col_codigo_catraca', 'Código da Catraca*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('col_codigo_catraca', isset($colaborador->col_codigo_catraca) ? $colaborador->col_codigo_catraca : old('col_codigo_catraca'), ['class' => 'form-control']) !!}
@@ -48,7 +33,7 @@
                     class="help-block">{{ $errors->first('col_vinculo_universidade') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('col_matricula_universidade')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_matricula_universidade')) has-error @endif">
         {!! Form::label('col_matricula_universidade', 'Código da matrícula na universidade*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('col_matricula_universidade', isset($colaborador->col_matricula_universidade) ? $colaborador->col_matricula_universidade : old('col_matricula_universidade'), ['class' => 'form-control']) !!}
@@ -57,19 +42,11 @@
         </div>
     </div>
 
-    <div class="form-group col-md-2 @if ($errors->has('col_qtd_filho')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_qtd_filho')) has-error @endif">
         {!! Form::label('col_qtd_filho', 'Quantidade de filhos*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::number('col_qtd_filho', isset($colaborador->col_qtd_filho) ? $colaborador->col_qtd_filho : old('col_qtd_filho'),['class' => 'form-control']) !!}
             @if ($errors->has('col_qtd_filho')) <p class="help-block">{{ $errors->first('col_qtd_filho') }}</p> @endif
-        </div>
-    </div>
-
-    <div class="form-group col-md-2 @if ($errors->has('col_status')) has-error @endif">
-        {!! Form::label('col_status', 'Status*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('col_status', array('ativo' => 'ativo', 'afastado' => 'afastado', 'desligado' => 'desligado'), isset($colaborador->col_status) ? $colaborador->col_status : old('col_status'), ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
-            @if ($errors->has('col_status')) <p class="help-block">{{ $errors->first('col_status') }}</p> @endif
         </div>
     </div>
 </div>
