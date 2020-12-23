@@ -34,8 +34,18 @@
 
                     </div>
                     <div class="col-md-4">
-                        <p><strong>Função: </strong> {{$colaborador->funcao->fun_descricao}}</p>
-                        <p><strong>Vínculo com a universidade: </strong> {{($colaborador->col_vinculo_universidade == 1) ? 'Sim' : 'Não' }}</p>
+                        <p><strong>Funções: </strong>
+                            @foreach($colaborador->funcoes as $funcao)
+                                @if($loop->last)
+                                    {{$funcao->fun_descricao}}.
+                                @else
+                                    {{$funcao->fun_descricao}},
+                                @endif
+                            @endforeach
+                        </p>
+                        <p><strong>Vínculo com a
+                                universidade: </strong> {{($colaborador->col_vinculo_universidade == 1) ? 'Sim' : 'Não' }}
+                        </p>
                         <p><strong>Matrícula na universidade: </strong> {{$colaborador->col_matricula_universidade}}</p>
                         <p><strong>Status: </strong> {{$colaborador->col_status}}</p>
 
