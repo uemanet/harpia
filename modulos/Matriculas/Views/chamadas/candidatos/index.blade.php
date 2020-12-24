@@ -54,7 +54,7 @@
             </div>
             <div class="box-footer">
                 <div class="col-md-12">
-                    <button class="btn btn-success btnChamada">Matricular</button>
+                    <button class="btn btn-success btnChamada">Migrar Dados</button>
                 </div>
             </div>
         </div>

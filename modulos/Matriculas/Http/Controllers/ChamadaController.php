@@ -221,6 +221,8 @@ class ChamadaController extends Controller
             'cpf' => 'CPF',
             'email' => 'Email',
             'matriculado' => 'Status',
+            'polo' => 'Polo',
+            'action' => 'Ações',
         );
 
         $tabela = null;
@@ -251,9 +253,59 @@ class ChamadaController extends Controller
                     }
 
                     return $inscricao->matriculado;
+                })
+                ->means('action', 'id')
+                ->modify('action', function ($id, $inscricao) {
+
+                    if ($inscricao->matriculado and !$inscricao->migrado) {
+
+
+                        return ActionButton::grid([
+                            'type' => 'LINE',
+                            'config' => [
+                                'classButton' => 'btn-default',
+                                'label' => 'Selecione'
+                            ],
+                            'buttons' => [
+                                [
+                                    'classButton' => 'btn btn-danger',
+                                    'icon' => 'fa fa-trash',
+                                    'route' => 'matriculas.chamadas.desmatricular',
+                                    'parameters' => ['id' => $id],
+                                    'id' => $id,
+                                    'label' => 'Desmatricular',
+                                    'method' => 'post'
+                                ],
+                            ]
+                        ]);
+                    }
+
+
+                    if (!$inscricao->matriculado) {
+                        return ActionButton::grid([
+                            'type' => 'LINE',
+                            'config' => [
+                                'classButton' => 'btn-default',
+                                'label' => 'Selecione'
+                            ],
+                            'buttons' => [
+                                [
+                                    'classButton' => 'btn btn-success',
+                                    'icon' => 'fa fa-check',
+                                    'route' => 'matriculas.chamadas.matricular',
+                                    'parameters' => ['id' => $id],
+                                    'id' => $id,
+                                    'label' => 'Matricular',
+                                    'method' => 'post'
+                                ],
+                            ]
+                        ]);
+                    }
+
+                    return;
                 });
 
-            $tabela = $tabela->sortable(array('id', 'nome', 'matriculado'));
+            $tabela = $tabela->sortable(array('id', 'nome', 'matriculado', 'migrado','polo'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -261,4 +313,53 @@ class ChamadaController extends Controller
 
         return view('Matriculas::chamadas.candidatos.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'chamada' => $chamada]);
     }
+
+    public function postMatricular($id,Request $request)
+    {
+        try {
+
+            $seletivo_matricula = $this->seletivoMatriculaRepository->find($id);
+            $seletivo_matricula->matriculado = 1;
+            $seletivo_matricula->save();
+
+            flash()->success('Aluno matriculado com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar atualizar.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function postDesmatricular($id ,Request $request)
+    {
+        try {
+            $seletivo_matricula = $this->seletivoMatriculaRepository->find($id);
+            $seletivo_matricula->matriculado = 0;
+            $seletivo_matricula->save();
+
+
+            flash()->success('Aluno desmatriculado com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar atualizar.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
 }

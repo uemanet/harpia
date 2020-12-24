@@ -5,6 +5,9 @@ namespace Modulos\Matriculas\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Modulos\Matriculas\Models\CampoExtra;
+use Modulos\Matriculas\Models\CampoExtraResposta;
+use Modulos\Matriculas\Models\Chamada;
 use Modulos\Matriculas\Models\SeletivoMatricula;
 use Modulos\Matriculas\Models\SeletivoUser;
 use Modulos\Matriculas\Models\User;
@@ -255,10 +258,26 @@ class SeletivoController extends Controller
                     $seletivoUser = SeletivoUser::create($userData);
                 }
 
-                SeletivoMatricula::create([
+                $chamada = $this->chamadaRepository->find($data['chamada_id']);
+
+                //verifica se existe algum polo para concorrer
+                $campo_extra = CampoExtra::where([
+                    'seletivo_id' => $chamada->seletivo_id, 'nome' => 'polo_concorrer'
+                ])->first();
+
+                $campo_extra_resposta = null;
+                if($campo_extra){
+                    $campo_extra_resposta = CampoExtraResposta::where([
+                        'campo_extra_id' => $campo_extra->id, 'user_id' => $user->id
+                    ])->first();
+                }
+
+                $seletivo_matricula = SeletivoMatricula::create([
                     'seletivo_user_id' => $seletivoUserUpdate ? $seletivoUserUpdate->id : $seletivoUser->id,
                     'chamada_id' => $data['chamada_id'],
+                    'polo' => $campo_extra_resposta ? $campo_extra_resposta->resposta : null
                 ]);
+
             }
         }
 

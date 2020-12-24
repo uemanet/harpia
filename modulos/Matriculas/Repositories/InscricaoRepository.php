@@ -59,7 +59,7 @@ class InscricaoRepository extends BaseRepository
         $result = $result->whereNotIn('users.cpf', $cpf);
         $result = $result->select('inscricoes.*', 'users.nome', 'users.email', 'users.cpf');
 
-        return $result->paginate(15);
+        return $result->paginate(100);
     }
 
     public function paginateRequest(array $requestParameters = null)

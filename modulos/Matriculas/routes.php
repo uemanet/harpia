@@ -16,6 +16,10 @@ Route::group(['prefix' => 'matriculas', 'middleware' => ['auth']], function () {
         Route::get('/edit/{id}', '\Modulos\Matriculas\Http\Controllers\ChamadaController@getEdit')->name('matriculas.chamadas.edit');
         Route::put('/edit/{id}', '\Modulos\Matriculas\Http\Controllers\ChamadaController@putEdit')->name('matriculas.chamadas.edit');
         Route::post('/delete', '\Modulos\Matriculas\Http\Controllers\ChamadaController@postDelete')->name('matriculas.chamadas.delete');
+
+        Route::post('/matricular/{id}', '\Modulos\Matriculas\Http\Controllers\ChamadaController@postMatricular')->name('matriculas.chamadas.matricular');
+        Route::post('/desmatricular/{id}', '\Modulos\Matriculas\Http\Controllers\ChamadaController@postDesmatricular')->name('matriculas.chamadas.desmatricular');
+
     });
 });
 

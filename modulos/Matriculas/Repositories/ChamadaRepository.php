@@ -14,7 +14,7 @@ use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Matriculas\Models\SeletivoMatricula;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
-
+use DB;
 class ChamadaRepository extends BaseRepository
 {
 
@@ -22,11 +22,12 @@ class ChamadaRepository extends BaseRepository
     protected $pessoaRepository;
     protected $documentoRepository;
     protected $seletivoUserRepository;
-
+    protected $seletivoMatriculaRepositoryRepository;
     public function __construct(Chamada $chamada,
                                 PessoaRepository $pessoaRepository,
                                 DocumentoRepository $documentoRepository,
                                 AlunoRepository $alunoRepository,
+                                SeletivoMatriculaRepository $seletivoMatriculaRepositoryRepository,
                                 SeletivoUserRepository $seletivoUserRepository)
     {
         parent::__construct($chamada);
@@ -35,13 +36,17 @@ class ChamadaRepository extends BaseRepository
         $this->pessoaRepository = $pessoaRepository;
         $this->documentoRepository = $documentoRepository;
         $this->seletivoUserRepository = $seletivoUserRepository;
+        $this->seletivoMatriculaRepositoryRepository = $seletivoMatriculaRepositoryRepository;
+
     }
 
     public function migrarAlunos($chamada_id)
     {
 
+        $seletivo_matriculas = SeletivoMatricula::where('chamada_id', $chamada_id)
+            ->where('matriculado', 1)
+            ->where('migrado', 0)->get();
 
-        $seletivo_matriculas = SeletivoMatricula::where('chamada_id', $chamada_id)->get();
         $estadocivil = [
             'casado' => "casado",
             'divorciado' => "divorciado",
@@ -97,7 +102,6 @@ class ChamadaRepository extends BaseRepository
                         'doc_orgao' => null,
                         'doc_observacao' => null
                     ];
-
                     $this->cadastrarDocumentos((int)$idPessoa['id'], $rg);
                 }
 
@@ -110,11 +114,8 @@ class ChamadaRepository extends BaseRepository
                         'doc_orgao' => null,
                         'doc_observacao' => null
                     ];
-
                     $this->cadastrarDocumentos((int)$idPessoa['id'], $cpf);
                 }
-
-
             }
 
             $aluno = Aluno::where('alu_pes_id', (int)$idPessoa['id'])->first();
@@ -130,53 +131,65 @@ class ChamadaRepository extends BaseRepository
             $seletivo_matricula = SeletivoMatricula::find($seletivo_matricula->id);
             $seletivo_matricula->migrado = 1;
             $seletivo_matricula->save();
-
         }
-
-
-        $seletivo_matriculas = SeletivoMatricula::join('mat_seletivos_users', 'mat_seletivos_users.id', '=', 'mat_seletivos_matriculas.id')
-            ->where('chamada_id', $chamada_id)
-            ->where('matriculado', 1)->get()->toArray();
 
         //Busca a chamada
         $chamada = Chamada::find($chamada_id);
         $turma = Turma::find($chamada->trm_id);
+        $polos = DB::table('acd_grupos')->groupBy('grp_pol_id')
+            ->orderBy('grp_pol_id')
+            ->select('grp_pol_id')
+            ->where('grp_trm_id', $chamada->trm_id)
+            ->get();
 
-        //Migração de alunos para os grupos
-        $quantidadeGrupos = count($turma->grupos);
-        $quantidadePessoas = count($seletivo_matriculas);
-        $pessoasPorGrupo = (int)ceil($quantidadePessoas / $quantidadeGrupos);
-        $pessoas = $seletivo_matriculas;
+        foreach ($polos as $polo) {
+            $seletivo_matriculas = SeletivoMatricula::join('mat_seletivos_users', 'mat_seletivos_users.id', '=', 'mat_seletivos_matriculas.seletivo_user_id')
+                ->where('chamada_id', $chamada_id)
+                ->where('polo_id', $polo->grp_pol_id)
+                ->where('matriculado', 1)
+                ->where('mat_seletivos_users.pes_id' , '<>', 0)->get()->toArray();
 
+            //Migração de alunos para os grupos
+            $grupos = DB::table('acd_grupos')
+                ->where('grp_pol_id', $polo->grp_pol_id)
+                ->where('grp_trm_id', $chamada->trm_id)
+                ->get();
 
-        foreach ($turma->grupos as $grupo) {
+            $quantidadeGrupos = count($grupos);
+            $quantidadePessoas = count($seletivo_matriculas);
+            $pessoasPorGrupo = (int)ceil($quantidadePessoas / $quantidadeGrupos);
+            $pessoas = $seletivo_matriculas;
 
-            for ($j = 0; $j < $pessoasPorGrupo; $j++) {
-                $aluno = array_pop($pessoas);
+            foreach ($grupos as $grupo) {
+                for ($j = 0; $j < $pessoasPorGrupo; $j++) {
+                    $aluno = array_pop($pessoas);
 
-                if ($aluno['alu_id'] > 0) {
+                    if ($aluno['alu_id'] > 0) {
 
-                    $matricula = new Matricula();
-                    $matricula->mat_alu_id = $aluno['alu_id'];
-                    $matricula->mat_trm_id = $turma->trm_id;
-                    $matricula->mat_pol_id = $grupo->grp_pol_id;
-                    $matricula->mat_grp_id = $grupo->grp_id;
-                    $matricula->mat_situacao = 'cursando';
-                    $matricula->mat_modo_entrada = 'vestibular';
-                    $matricula->save();
+                        $matricula = new Matricula();
+                        $matricula->mat_alu_id = $aluno['alu_id'];
+                        $matricula->mat_trm_id = $turma->trm_id;
+                        $matricula->mat_pol_id = $grupo->grp_pol_id;
+                        $matricula->mat_grp_id = $grupo->grp_id;
+                        $matricula->mat_situacao = 'cursando';
+                        $matricula->mat_modo_entrada = 'vestibular';
+                        $matricula->save();
 
-                    $sync = new Sincronizacao();
-                    $sync->sym_table = 'acd_matriculas';
-                    $sync->sym_table_id = $matricula->mat_id;
-                    $sync->sym_action = 'CREATE';
-                    $sync->sym_status = 3;
-                    $sync->save();
+                        $sync = new Sincronizacao();
+                        $sync->sym_table = 'acd_matriculas';
+                        $sync->sym_table_id = $matricula->mat_id;
+                        $sync->sym_action = 'CREATE';
+                        $sync->sym_status = 3;
+                        $sync->save();
+
+                        $teste = $this->seletivoMatriculaRepositoryRepository->find($aluno['id']);
+                        $teste->mat_id = $matricula->mat_id;
+                        $teste->save();
+
+                    }
                 }
             }
-
         }
-
-
     }
 
     public function cadastrarDocumentos($idPessoa, array $data)
