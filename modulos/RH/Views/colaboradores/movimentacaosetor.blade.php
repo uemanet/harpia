@@ -25,8 +25,8 @@
                 {!! Form::open(array('route' => ['rh.colaboradores.movimentacaosetor.funcao.create', $colaborador->col_id], 'method' => 'POST', 'id' => 'form')) !!}
 
                 <div class="form-group col-md-3">
-                    {!! Form::select('col_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
-                    @if ($errors->has('col_set_id')) <p class="help-block">{{ $errors->first('col_set_id') }}</p> @endif
+                    {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                    @if ($errors->has('cfn_set_id')) <p class="help-block">{{ $errors->first('cfn_set_id') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
@@ -50,29 +50,34 @@
                     @if(count($colaborador->funcoes))
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
-                            <th style="width: 10px">Função</th>
-                            <th style="width: 20px"></th>
+                            <th>Setor</th>
+                            <th>Função</th>
+                            <th>Início</th>
+                            <th></th>
                             </thead>
                             <tbody>
                             @foreach($colaborador->funcoes as $funcao)
                                 <tr>
-                                    <td>{{$funcao->fun_descricao}}</td>
-                                    <td>
-                                        {!! ActionButton::grid([
-                                            'type' => 'LINE',
-                                            'buttons' => [
-                                                [
-                                                    'classButton' => 'btn-delete text-red',
-                                                    'icon' => 'fa fa-trash',
-                                                    'route' => 'rh.colaboradores.movimentacaosetor.funcao.delete',
-                                                    'id' => $funcao->fun_id,
-                                                    'parameters' => [$colaborador->col_id,$funcao->getOriginal()['pivot_cfn_id']],
-                                                    'label' => 'Desvincular',
-                                                    'method' => 'post'
-                                                ]
-                                            ]
-                                        ]) !!}
-                                    </td>
+                                    <td>{{$funcao->setor->set_descricao}}</td>
+                                    <td>{{$funcao->funcao->fun_descricao}}</td>
+                                    <td>{{$funcao->cfn_data_inicio}}</td>
+
+
+                                    @haspermission('rh.colaboradores.movimentacaosetor.funcao.delete')
+                                    <div class="row">
+
+                                        <form method="POST" class="delete"
+                                              action="{{ route('rh.colaboradores.movimentacaosetor.funcao.delete', [$colaborador->col_id,$funcao->cfn_id] ) }}">
+                                            <?php echo e(csrf_field()); ?>
+                                            <td>{!! Form::text('cfn_data_fim', old('cfn_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Fim']) !!}</td>
+                                            <td>
+                                                <button class="btn-danger"><i class="fa fa-trash"></i> Desvincular
+                                                </button>
+                                            </td>
+                                        </form>
+
+                                        @endhaspermission
+                                    </div>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -88,6 +93,7 @@
                     @if(count($colaborador->funcoes_historico))
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
+                            <th style="width: 10px">Setor</th>
                             <th style="width: 10px">Função</th>
                             <th style="width: 20px">Início</th>
                             <th style="width: 20px">Fim</th>
@@ -95,9 +101,11 @@
                             <tbody>
                             @foreach($colaborador->funcoes_historico as $funcao)
                                 <tr>
-                                    <td>{{$funcao->fun_descricao}}</td>
-                                    <td>{{date("d/m/Y", strtotime($funcao->getOriginal()['pivot_cfn_data_inicio']))}}</td>
-                                    <td>{{date("d/m/Y", strtotime($funcao->getOriginal()['pivot_cfn_data_fim']))}}</td>
+
+                                    <td>{{$funcao->setor->set_descricao}}</td>
+                                    <td>{{$funcao->funcao->fun_descricao}}</td>
+                                    <td>{{$funcao->cfn_data_inicio}}</td>
+                                    <td>{{$funcao->cfn_data_fim}}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -119,7 +127,44 @@
         $(document).ready(function () {
             $("select").select2();
         });
+
+        $('form').submit(function (e) {
+
+            if (!$(e.target).hasClass('delete')) {
+                return
+            }
+            e.preventDefault();
+
+            swal({
+                title: "Tem certeza que deseja desvincular a função?",
+                text: "Esta operação não poderá ser desfeita!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, pode excluir!",
+                cancelButtonText: "Não, quero cancelar!",
+                closeOnConfirm: true
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    console.log('chegou')
+                    //continue submitting
+                    e.currentTarget.submit();
+                }
+            });
+
+        });
+
+
     </script>
+
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR'
+        });
+    </script>
+
+
 @endsection
 
 

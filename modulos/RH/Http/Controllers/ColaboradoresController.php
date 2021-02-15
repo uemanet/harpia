@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Modulos\RH\Http\Requests\ColaboradorFuncaoDeleteRequest;
+use Modulos\RH\Http\Requests\ColaboradorFuncaoRequest;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
+use Modulos\RH\Models\ColaboradorFuncao;
+use Modulos\RH\Models\Funcao;
 use Modulos\RH\Models\Setor;
 use Modulos\RH\Repositories\ColaboradorFuncaoRepository;
 use Modulos\RH\Repositories\ColaboradorRepository;
@@ -47,6 +51,7 @@ class ColaboradoresController extends BaseController
         $paginacao = null;
         $tabela = null;
 
+
         $tableData = $this->colaboradorRepository->paginateRequest($request->all());
 
         if ($tableData->count()) {
@@ -54,7 +59,8 @@ class ColaboradoresController extends BaseController
                 'col_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
-                'col_set_id' => 'Setor',
+                'setores_index' => 'Setor',
+                'funcoes_index' => 'Função',
                 'col_status' => 'Status',
                 'col_action' => 'Ações'
             ))
@@ -62,14 +68,6 @@ class ColaboradoresController extends BaseController
                     return array('style' => 'width: 140px;');
                 })
                 ->means('col_action', 'col_id')
-                ->means('col_set_id', 'setor')
-                ->modify('col_set_id', function ($setor) {
-                    return $setor->set_descricao;
-                })
-                ->means('col_fun_id', 'funcao')
-                ->modify('col_fun_id', function ($funcao) {
-                    return $funcao->fun_descricao;
-                })
                 ->modify('col_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
@@ -119,8 +117,9 @@ class ColaboradoresController extends BaseController
         }
 
         $setores = Setor::all()->sortBy('set_descricao')->pluck('set_descricao', 'set_id');
+        $funcoes = Funcao::all()->sortBy('fun_descricao')->pluck('fun_descricao', 'fun_id');
 
-        return view('RH::colaboradores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'setores' => $setores]);
+        return view('RH::colaboradores.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons, 'setores' => $setores, 'funcoes' => $funcoes]);
     }
 
     public function getCreate(Request $request)
@@ -405,7 +404,7 @@ class ColaboradoresController extends BaseController
         }
     }
 
-    public function attachFuncao($colaboradorId, Request $request)
+    public function attachFuncao($colaboradorId, ColaboradorFuncaoRequest $request)
     {
 
         $data = $request->except('_token');
@@ -421,6 +420,7 @@ class ColaboradoresController extends BaseController
             DB::beginTransaction();
 
             $data['cfn_col_id'] = $colaborador->col_id;
+//            dd($data);
             $colaborador_funcao = $this->colaboradorFuncaoRepository->create($data);
 
             DB::commit();
@@ -443,9 +443,10 @@ class ColaboradoresController extends BaseController
         }
     }
 
-    public function detachFuncao($colaboradorId, $colaboradorFuncaoId, Request $request)
+    public function detachFuncao($colaboradorId, $colaboradorFuncaoId, ColaboradorFuncaoDeleteRequest $request)
     {
 
+        $data = $request->except('_token');
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
 
         if (!$colaborador) {
@@ -463,7 +464,7 @@ class ColaboradoresController extends BaseController
         try {
             DB::beginTransaction();
 
-            $colaborador_funcao = $this->colaboradorFuncaoRepository->update(['cfn_data_fim' => date('Y-m-d')], $colaborador_funcao->cfn_id);
+            $colaborador_funcao = $this->colaboradorFuncaoRepository->update($data, $colaborador_funcao->cfn_id);
 
             DB::commit();
 

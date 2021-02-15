@@ -29,8 +29,10 @@ class Colaborador extends BaseModel
         'pes_nome' => 'like',
         'pes_email' => 'like',
         'pes_cpf' => '=',
-        'col_set_id' => '=',
+        'cfn_set_id' => 'like',
         'col_status' => 'like',
+        'funcoes' => 'like',
+
     ];
 
     public function atividades_extras()
@@ -60,14 +62,14 @@ class Colaborador extends BaseModel
 
     public function funcoes()
     {
-        return $this->belongsToMany('Modulos\RH\Models\Funcao', 'reh_colaboradores_funcoes', 'cfn_col_id', 'cfn_fun_id')->wherePivot('cfn_data_fim', null)->withPivot('cfn_id');
+        return $this->hasMany('Modulos\RH\Models\ColaboradorFuncao', 'cfn_col_id', 'col_id');
     }
 
     public function funcoes_historico()
     {
-        return $this->belongsToMany('Modulos\RH\Models\Funcao', 'reh_colaboradores_funcoes', 'cfn_col_id', 'cfn_fun_id')
-            ->wherePivot('cfn_data_fim', '<>',null)
-            ->withPivot(['cfn_id', 'cfn_data_inicio', 'cfn_data_fim']);
+
+        return $this->hasMany('Modulos\RH\Models\ColaboradorFuncao', 'cfn_col_id', 'col_id')
+            ->where('cfn_data_fim', '<>',null);
     }
 
     // Accessors
