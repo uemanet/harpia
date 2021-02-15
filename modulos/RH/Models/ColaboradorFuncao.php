@@ -27,12 +27,12 @@ class ColaboradorFuncao extends BaseModel
 
     public function funcao()
     {
-        return $this->belongsTo('Modulos\RH\Models\Funcao', 'col_fun_id');
+        return $this->belongsTo('Modulos\RH\Models\Funcao', 'cfn_fun_id');
     }
 
     public function setor()
     {
-        return $this->belongsTo('Modulos\RH\Models\Setor', 'col_set_id');
+        return $this->belongsTo('Modulos\RH\Models\Setor', 'cfn_set_id');
     }
 
     public function colaborador()
@@ -53,6 +53,21 @@ class ColaboradorFuncao extends BaseModel
     public function setCfnDataInicioAttribute($value)
     {
         $this->attributes['cfn_data_inicio'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+    }
+
+    // Accessors
+    public function getCfnDataFimAttribute($value)
+    {
+        if (!is_null($value)) {
+            setlocale(LC_ALL, 'pt_BR');
+            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        }
+    }
+
+    // Mutators
+    public function setCfnDataFimAttribute($value)
+    {
+        $this->attributes['cfn_data_fim'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 
 }

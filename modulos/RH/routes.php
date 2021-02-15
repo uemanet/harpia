@@ -51,7 +51,6 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::put('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putStatus')->name('rh.colaboradores.status');
 
         Route::get('/{id}/movimentacaosetor/', '\Modulos\RH\Http\Controllers\ColaboradoresController@getMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor.index');
-        Route::put('{id}/movimentacaosetor', '\Modulos\RH\Http\Controllers\ColaboradoresController@putMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor.edit');
 
         Route::post('/{id_coladorador}/movimentacaosetor/', '\Modulos\RH\Http\Controllers\ColaboradoresController@attachFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.create');
         Route::post('/{id_coladorador}/movimentacaosetor/{id_colaborador_funcao}', '\Modulos\RH\Http\Controllers\ColaboradoresController@detachFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.delete');
