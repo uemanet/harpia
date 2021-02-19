@@ -48,10 +48,8 @@ class ColaboradorRequest extends BaseRequest
                 'pes_cidade' => 'required|min:2',
                 'pes_estado' => 'required',
 
-                //            'col_pes_id' => 'required',
-//                'col_fun_id' => 'required',
-                'funcoes' => 'required',
-                'col_set_id' => 'required',
+                //'col_pes_id' => 'required',
+
                 'col_qtd_filho' => 'required',
                 'col_data_admissao' => 'required',
                 'col_ch_diaria' => 'required',

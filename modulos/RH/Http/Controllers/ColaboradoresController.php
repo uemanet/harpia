@@ -443,8 +443,15 @@ class ColaboradoresController extends BaseController
         }
     }
 
-    public function detachFuncao($colaboradorId, $colaboradorFuncaoId, ColaboradorFuncaoDeleteRequest $request)
+    public function detachFuncao($colaboradorId, $colaboradorFuncaoId, Request $request)
     {
+
+        $validatorRequest = new ColaboradorFuncaoDeleteRequest();
+        $validator = Validator::make($request->all(), $validatorRequest->rules());
+        if ($validator->fails()) {
+            flash()->error('Data de fim é obrigatória.');
+            return redirect()->back();
+        }
 
         $data = $request->except('_token');
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
@@ -481,6 +488,50 @@ class ColaboradoresController extends BaseController
             }
 
             flash()->error('Erro ao tentar adicionar função ao colaborador. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
+
+    public function removeFuncao($colaboradorId, $colaboradorFuncaoId, Request $request)
+    {
+
+        $data = $request->except('_token');
+
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        $colaborador_funcao = $this->colaboradorFuncaoRepository->find($colaboradorFuncaoId);
+
+        if (!$colaborador_funcao) {
+            flash()->error('Requisição inválida.');
+            return redirect()->back();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $colaborador_funcao = $this->colaboradorFuncaoRepository->delete($colaborador_funcao->cfn_id);
+
+            DB::commit();
+
+            flash()->success('Função removida do colaborador com sucesso!');
+
+            return redirect()->back();
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar remover função ao colaborador. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         }
