@@ -13,8 +13,6 @@ class Colaborador extends BaseModel
 
     protected $fillable = [
         'col_pes_id',
-        'col_set_id',
-        'col_fun_id',
         'col_qtd_filho',
         'col_data_admissao',
         'col_ch_diaria',
@@ -23,14 +21,16 @@ class Colaborador extends BaseModel
         'col_matricula_universidade',
         'col_observacao',
         'col_status',
-
-
     ];
 
     protected $searchable = [
         'pes_nome' => 'like',
         'pes_email' => 'like',
-        'pes_cpf' => '='
+        'pes_cpf' => '=',
+        'cfn_set_id' => 'like',
+        'col_status' => 'like',
+        'funcoes' => 'like',
+
     ];
 
     public function atividades_extras()
@@ -43,24 +43,23 @@ class Colaborador extends BaseModel
         return $this->hasMany('Modulos\RH\Models\ContaColaborador', 'ccb_col_id', 'col_id');
     }
 
-
-
     public function pessoa()
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'col_pes_id');
     }
 
-    public function setor()
+    public function funcoes()
     {
-        return $this->belongsTo('Modulos\RH\Models\Setor', 'col_set_id');
+        return $this->hasMany('Modulos\RH\Models\ColaboradorFuncao', 'cfn_col_id', 'col_id')
+            ->where('cfn_data_fim', null);
     }
 
-    public function funcao()
+    public function funcoes_historico()
     {
-        return $this->belongsTo('Modulos\RH\Models\Funcao', 'col_fun_id');
+
+        return $this->hasMany('Modulos\RH\Models\ColaboradorFuncao', 'cfn_col_id', 'col_id')
+            ->where('cfn_data_fim', '<>',null);
     }
-
-
 
     // Accessors
     public function getColDataAdmissaoAttribute($value)

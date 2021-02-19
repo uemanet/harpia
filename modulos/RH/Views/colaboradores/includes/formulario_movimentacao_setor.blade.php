@@ -6,11 +6,10 @@
             @if ($errors->has('col_set_id')) <p class="help-block">{{ $errors->first('col_set_id') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('col_fun_id')) has-error @endif">
-        {!! Form::label('col_fun_id', 'Função*', ['class' => 'control-label']) !!}
+
+    <div class="form-group col-md-3">
         <div class="controls">
-            {!! Form::select('col_fun_id', $funcoes, isset($colaborador->col_fun_id) ? $colaborador->col_fun_id : old('col_fun_id'), ['class' => 'form-control', 'placeholder' => 'Selecione a função']) !!}
-            @if ($errors->has('col_fun_id')) <p class="help-block">{{ $errors->first('col_fun_id') }}</p> @endif
+            {!! Form::submit('Atualizar setor', ['class' => 'btn btn-primary pull-left']) !!}
         </div>
     </div>
 </div>

@@ -1,5 +1,10 @@
 @extends('layouts.modulos.rh')
 
+@section('stylesheets')
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+@endsection
+
 @section('title')
     Colaboradores
 @stop
@@ -27,16 +32,29 @@
         <div class="box-body">
             <div class="row">
                 <form method="GET" action="{{ route('rh.colaboradores.index') }}">
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}" placeholder="CPF">
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="pes_cpf" id="pes_cpf"
+                               value="{{Request::input('pes_cpf')}}" placeholder="CPF">
                     </div>
-                    <div class="col-md-3">
-                        <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Request::input('pes_nome')}}" placeholder="Nome">
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" name="pes_nome" id="pes_nome"
+                               value="{{Request::input('pes_nome')}}" placeholder="Nome">
                     </div>
-                    <div class="col-md-3">
-                        <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Request::input('pes_email')}}" placeholder="Email">
+                    <div class="col-md-2">
+                        <input type="email" class="form-control" name="pes_email" id="pes_email"
+                               value="{{Request::input('pes_email')}}" placeholder="Email">
                     </div>
-                    <div class="col-md-3">
+
+                    <div class="form-group col-md-2">
+                        {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        {!! Form::select('funcoes[]', $funcoes, old('funcoes[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+                        @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
+                    </div>
+
+                    <div class="col-md-1">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
                     </div>
                 </form>
@@ -58,3 +76,24 @@
         </div>
     @endif
 @stop
+
+
+
+@section('scripts')
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("select").select2();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR'
+        });
+    </script>
+@endsection
+
