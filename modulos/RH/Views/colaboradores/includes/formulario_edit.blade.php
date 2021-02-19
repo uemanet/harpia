@@ -33,7 +33,7 @@
                     class="help-block">{{ $errors->first('col_vinculo_universidade') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('col_matricula_universidade')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_matricula_universidade')) has-error @endif">
         {!! Form::label('col_matricula_universidade', 'Código da matrícula na universidade*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('col_matricula_universidade', isset($colaborador->col_matricula_universidade) ? $colaborador->col_matricula_universidade : old('col_matricula_universidade'), ['class' => 'form-control']) !!}
@@ -42,19 +42,11 @@
         </div>
     </div>
 
-    <div class="form-group col-md-2 @if ($errors->has('col_qtd_filho')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('col_qtd_filho')) has-error @endif">
         {!! Form::label('col_qtd_filho', 'Quantidade de filhos*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::number('col_qtd_filho', isset($colaborador->col_qtd_filho) ? $colaborador->col_qtd_filho : old('col_qtd_filho'),['class' => 'form-control']) !!}
             @if ($errors->has('col_qtd_filho')) <p class="help-block">{{ $errors->first('col_qtd_filho') }}</p> @endif
-        </div>
-    </div>
-
-    <div class="form-group col-md-2 @if ($errors->has('col_status')) has-error @endif">
-        {!! Form::label('col_status', 'Status*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('col_status', array('ativo' => 'ativo', 'afastado' => 'afastado', 'desligado' => 'desligado'), isset($colaborador->col_status) ? $colaborador->col_status : old('col_status'), ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
-            @if ($errors->has('col_status')) <p class="help-block">{{ $errors->first('col_status') }}</p> @endif
         </div>
     </div>
 </div>
