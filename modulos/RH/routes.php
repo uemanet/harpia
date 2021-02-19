@@ -49,8 +49,14 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
         Route::get('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getStatus')->name('rh.colaboradores.status');
         Route::put('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putStatus')->name('rh.colaboradores.status');
-        Route::get('/movimentacaosetor/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor');
-        Route::put('/movimentacaosetor/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor');
+
+        Route::get('/{id}/movimentacaosetor/', '\Modulos\RH\Http\Controllers\ColaboradoresController@getMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor.index');
+
+        Route::post('/{id_coladorador}/movimentacaosetor/', '\Modulos\RH\Http\Controllers\ColaboradoresController@attachFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.create');
+        Route::post('/{id_coladorador}/movimentacaosetor/{id_colaborador_funcao}', '\Modulos\RH\Http\Controllers\ColaboradoresController@detachFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.delete');
+
+        Route::post('/{id_coladorador}/movimentacaosetor/{id_colaborador_funcao}/remove', '\Modulos\RH\Http\Controllers\ColaboradoresController@removeFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.remove');
+
 
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getShow')->name('rh.colaboradores.show');
     });

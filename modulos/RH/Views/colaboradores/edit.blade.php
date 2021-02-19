@@ -24,7 +24,7 @@
             <h4 class="box-title">
                 Dados do colaborador
             </h4>
-            @include('RH::colaboradores.includes.formulario', ['colaborador' => $colaborador])
+            @include('RH::colaboradores.includes.formulario_edit', ['colaborador' => $colaborador])
 
             <div class="row">
                 <div class="form-group col-md-12">
