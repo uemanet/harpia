@@ -13,7 +13,7 @@ before_script:
   - cp .env.travis .env
   - phpenv config-rm xdebug.ini
   - composer self-update
-  - composer install --no-interaction
+  - composer update --no-interaction
 
 jobs:
   include:
