@@ -27,10 +27,11 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <p><strong>Setor: </strong> {{$colaborador->setor->set_descricao}}</p>
+{{--                        <p><strong>Setor: </strong> {{$colaborador->setor->set_descricao}}</p>--}}
                         <p><strong>Data de Admissão: </strong> {{$colaborador->col_data_admissao}}</p>
                         <p><strong>Carga Horária: </strong> {{$colaborador->col_ch_diaria}}</p>
                         <p><strong>Código da catraca: </strong> {{$colaborador->col_codigo_catraca}}</p>
+                        <p><strong>Status: </strong> {{$colaborador->col_status}}</p>
 
                     </div>
                     <div class="col-md-4">
@@ -46,8 +47,7 @@
                         <p><strong>Vínculo com a
                                 universidade: </strong> {{($colaborador->col_vinculo_universidade == 1) ? 'Sim' : 'Não' }}
                         </p>
-                        <p><strong>Matrícula na universidade: </strong> {{$colaborador->col_matricula_universidade}}</p>
-                        <p><strong>Status: </strong> {{$colaborador->col_status}}</p>
+                        <p><strong>Matrícula    na universidade: </strong> {{$colaborador->col_matricula_universidade}}</p>
 
                     </div>
                 </div>

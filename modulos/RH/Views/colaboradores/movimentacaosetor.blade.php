@@ -26,18 +26,17 @@
 
                 <div class="form-group col-md-3">
                     {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
-                    @if ($errors->has('cfn_set_id')) <p class="help-block">{{ $errors->first('cfn_set_id') }}</p> @endif
+                    @if ($errors->has('cfn_set_id')) <p style="color: red" class="help-block">{{ $errors->first('cfn_set_id') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
                     {!! Form::select('cfn_fun_id', $funcoes,[] , ['class' => 'form-control', 'placeholder' => 'Selecione a função']) !!}
-                    @if ($errors->has('cfn_fun_id')) <p class="help-block">{{ $errors->first('cfn_fun_id') }}</p> @endif
+                    @if ($errors->has('cfn_fun_id')) <p style="color: red"  class="help-block">{{ $errors->first('cfn_fun_id') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
                     {!! Form::text('cfn_data_inicio', old('cfn_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Início']) !!}
-                    @if ($errors->has('cfn_data_inicio')) <p
-                            class="help-block">{{ $errors->first('cfn_data_inicio') }}</p> @endif
+                    @if ($errors->has('cfn_data_inicio')) <p style="color: red" class="help-block">{{ $errors->first('cfn_data_inicio') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
@@ -62,22 +61,36 @@
                                     <td>{{$funcao->funcao->fun_descricao}}</td>
                                     <td>{{$funcao->cfn_data_inicio}}</td>
 
-
                                     @haspermission('rh.colaboradores.movimentacaosetor.funcao.delete')
                                     <div class="row">
-
                                         <form method="POST" class="delete"
                                               action="{{ route('rh.colaboradores.movimentacaosetor.funcao.delete', [$colaborador->col_id,$funcao->cfn_id] ) }}">
                                             <?php echo e(csrf_field()); ?>
                                             <td>{!! Form::text('cfn_data_fim', old('cfn_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Fim']) !!}</td>
                                             <td>
-                                                <button class="btn-danger"><i class="fa fa-trash"></i> Desvincular
+                                                <button class="btn btn-danger"><i class="fa fa-trash"></i> Desvincular
                                                 </button>
                                             </td>
                                         </form>
-
                                         @endhaspermission
                                     </div>
+
+                                    <td>
+                                        {!! ActionButton::grid([
+                                            'type' => 'LINE',
+                                            'buttons' => [
+                                                [
+                                                    'classButton' => 'btn btn-danger btn-delete',
+                                                    'icon' => 'fa fa-warning',
+                                                    'route' => 'rh.colaboradores.movimentacaosetor.funcao.remove',
+                                                    'parameters' => [$colaborador->col_id,$funcao->cfn_id],
+                                                    'id' => $funcao->cfn_id,
+                                                    'label' => 'Remover',
+                                                    'method' => 'post'
+                                                ]
+                                            ]
+                                        ]) !!}
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -101,7 +114,6 @@
                             <tbody>
                             @foreach($colaborador->funcoes_historico as $funcao)
                                 <tr>
-
                                     <td>{{$funcao->setor->set_descricao}}</td>
                                     <td>{{$funcao->funcao->fun_descricao}}</td>
                                     <td>{{$funcao->cfn_data_inicio}}</td>
