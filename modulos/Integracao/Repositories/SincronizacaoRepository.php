@@ -3,8 +3,13 @@
 namespace Modulos\Integracao\Repositories;
 
 use DB;
+use Modulos\Academico\Models\Matricula;
+use Modulos\Academico\Models\OfertaDisciplina;
+use Modulos\Academico\Models\Turma;
+use Modulos\Academico\Models\TutorGrupo;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Integracao\Models\Sincronizacao;
+use PhpParser\Node\Expr\Array_;
 
 class SincronizacaoRepository extends BaseRepository
 {
@@ -85,5 +90,39 @@ class SincronizacaoRepository extends BaseRepository
         }
 
         return $result->paginate(15);
+    }
+
+    public function getSyncData(Sincronizacao $sincronizacao): array
+    {
+        switch ($sincronizacao->sym_table) {
+            case 'acd_ofertas_disciplinas':
+                $model = OfertaDisciplina::find($sincronizacao->sym_table_id);
+                $turma = $model->turma;
+                $pessoa = $model->professor->pessoa;
+                break;
+            case 'acd_matriculas':
+                $model = Matricula::find($sincronizacao->sym_table_id);
+                $turma = $model->turma;
+                $pessoa = $model->aluno->pessoa;
+                break;
+            case 'acd_tutores_grupos':
+                $model = TutorGrupo::find($sincronizacao->sym_table_id);
+                $turma = $model->grupo->turma;
+                $pessoa = $model->tutor->pessoa;
+                break;
+            default:
+                $turma = null;
+                $pessoa = null;
+        }
+
+        $nome = explode(" ", $pessoa->pes_nome);
+        $user['user']['pes_id'] = $pessoa->pes_id;
+        $user['user']['firstname'] = array_shift($nome);
+        $user['user']['lastname'] = implode(" ", $nome);
+        $user['user']['email'] = $pessoa->pes_email;
+        $user['user']['username'] = $pessoa->pes_email;
+        $user['user']['city'] = $pessoa->pes_cidade;
+
+        return ['user' => $user, 'turma' => $turma, 'pessoa' => $pessoa];
     }
 }
