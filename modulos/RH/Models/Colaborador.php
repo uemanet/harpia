@@ -14,7 +14,6 @@ class Colaborador extends BaseModel
     protected $fillable = [
         'col_pes_id',
         'col_qtd_filho',
-        'col_data_admissao',
         'col_ch_diaria',
         'col_codigo_catraca',
         'col_vinculo_universidade',
@@ -54,26 +53,20 @@ class Colaborador extends BaseModel
             ->where('cfn_data_fim', null);
     }
 
+    public function periodos_aquisitivos()
+    {
+        return $this->hasMany('Modulos\RH\Models\PeriodoAquisitivo', 'paq_col_id', 'col_id');
+    }
+
+    public function matriculas()
+    {
+        return $this->hasMany('Modulos\RH\Models\MatriculaColaborador', 'mtc_col_id', 'col_id');
+    }
+
     public function funcoes_historico()
     {
 
         return $this->hasMany('Modulos\RH\Models\ColaboradorFuncao', 'cfn_col_id', 'col_id')
             ->where('cfn_data_fim', '<>',null);
     }
-
-    // Accessors
-    public function getColDataAdmissaoAttribute($value)
-    {
-        if (!is_null($value)) {
-            setlocale(LC_ALL, 'pt_BR');
-            return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
-        }
-    }
-
-    // Mutators
-    public function setColDataAdmissaoAttribute($value)
-    {
-        $this->attributes['col_data_admissao'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
-    }
-
 }

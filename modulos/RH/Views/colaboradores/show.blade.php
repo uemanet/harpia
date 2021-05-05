@@ -10,5 +10,5 @@
     @include('RH::colaboradores.includes.atividadesextras')
     @include('RH::colaboradores.includes.contascolaboradores')
     @include('RH::colaboradores.includes.salarioscolaboradores')
-
+    @include('RH::colaboradores.includes.periodosaquisitivos')
 @endsection
