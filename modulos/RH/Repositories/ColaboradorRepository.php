@@ -45,8 +45,6 @@ class ColaboradorRepository extends BaseRepository
 
     public function paginateRequest(array $requestParameters = [])
     {
-
-
         $sort = [];
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
             $sort = [
@@ -173,6 +171,4 @@ class ColaboradorRepository extends BaseRepository
         }
 
     }
-
-
 }
