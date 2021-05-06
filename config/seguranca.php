@@ -8,7 +8,8 @@ return [
         'auth.matriculas-alunos.logout',
         'matriculas-alunos.index.alunos',
         'matriculas-alunos.seletivo-matricula.confirmar',
-        'matriculas-alunos.seletivo-matricula.comprovante'
+        'matriculas-alunos.seletivo-matricula.comprovante',
+        'auth.matriculas-alunos.alunos'
 
     ),
 
