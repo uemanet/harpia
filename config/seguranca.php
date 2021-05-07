@@ -21,6 +21,7 @@ return [
         'seguranca.profile.updatepassword',
         'auth.matriculas-alunos.login',
         'auth.matriculas-alunos.logout',
-        'matriculas-alunos.index.alunos'
+        'matriculas-alunos.index.alunos',
+        'auth.matriculas-alunos.alunos'
     )
 ];
