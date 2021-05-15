@@ -33,7 +33,7 @@ class InscricaoRepository extends BaseRepository
             $cpf[] = $seletivoMatricula->user->cpf;
         }
 
-        $result = $result->whereIn('inscricoes.status', ['deferido']);
+        $result = $result->whereIn('inscricoes.status', ['deferido', 'classificado']);
 
         if (!empty($search)) {
             foreach ($search as $key => $value) {
