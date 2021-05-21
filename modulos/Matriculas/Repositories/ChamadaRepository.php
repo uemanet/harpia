@@ -182,10 +182,10 @@ class ChamadaRepository extends BaseRepository
                         $sync->sym_status = 3;
                         $sync->save();
 
-                        $teste = $this->seletivoMatriculaRepositoryRepository->find($aluno['id']);
+                        $teste = SeletivoMatricula::where('seletivo_user_id', $aluno['seletivo_user_id'])
+                            ->first();
                         $teste->mat_id = $matricula->mat_id;
                         $teste->save();
-
                     }
                 }
             }
