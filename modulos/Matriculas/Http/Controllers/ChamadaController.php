@@ -320,6 +320,7 @@ class ChamadaController extends Controller
 
             $seletivo_matricula = $this->seletivoMatriculaRepository->find($id);
             $seletivo_matricula->matriculado = 1;
+            $seletivo_matricula->data_confirmacao = date('Y-m-d H:i:s');
             $seletivo_matricula->save();
 
             flash()->success('Aluno matriculado com sucesso.');
@@ -343,8 +344,8 @@ class ChamadaController extends Controller
         try {
             $seletivo_matricula = $this->seletivoMatriculaRepository->find($id);
             $seletivo_matricula->matriculado = 0;
+            $seletivo_matricula->data_confirmacao = null;
             $seletivo_matricula->save();
-
 
             flash()->success('Aluno desmatriculado com sucesso.');
 

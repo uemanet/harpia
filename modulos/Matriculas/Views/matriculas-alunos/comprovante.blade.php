@@ -56,7 +56,7 @@
 
 <p><strong>Aluno: </strong> {{$user->nome}}</p>
 <p><strong>Seletivo: </strong> {{$seletivo_matricula->chamada->seletivo->nome}}</p>
-<p><strong>Data de confirmação: </strong> {{date("d/m/Y H:i:s", strtotime($seletivo_matricula->updated_at))}}
+<p><strong>Data de confirmação: </strong> {{date("d/m/Y H:i:s", strtotime($seletivo_matricula->data_confirmacao))}}
 </p>
 <p><strong>Chamada: </strong> {{ $seletivo_matricula->chamada->nome }}</p>
 <p><strong>Tipo de chamada: </strong> {{ $seletivo_matricula->chamada->tipo_chamada}}</p>

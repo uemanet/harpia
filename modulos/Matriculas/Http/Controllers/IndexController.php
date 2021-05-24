@@ -64,11 +64,12 @@ class IndexController extends Controller
 
             $seletivo_matricula = $this->seletivoMatriculaRepository->find($seletivo_matricula_id);
             if (!$seletivo_matricula) {
-                flash()->error('Banco não existe.');
-                return redirect()->route('rh.bancos.index');
+                flash()->error('Matrícula inexistente');
+                return redirect()->back();
             }
 
-            if (!$this->seletivoMatriculaRepository->update(['matriculado' => 1], $seletivo_matricula_id, 'id')) {
+            $seletivoMatriculaData = ['matriculado' => 1 , 'data_confirmacao' => date('Y-m-d H:i:s')];
+            if (!$this->seletivoMatriculaRepository->update($seletivoMatriculaData, $seletivo_matricula_id, 'id')) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
@@ -77,7 +78,6 @@ class IndexController extends Controller
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
-
             flash()->success('Matrícula confirmada com sucesso.');
             return redirect()->route('matriculas-alunos.index.alunos');
         } catch (\Exception $e) {

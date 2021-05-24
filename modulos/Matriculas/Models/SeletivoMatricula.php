@@ -11,6 +11,7 @@ class SeletivoMatricula extends BaseModel
 
     protected $fillable = [
         'seletivo_user_id',
+        'data_confirmacao',
         'chamada_id',
         'matriculado',
         'migrado',
