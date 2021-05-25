@@ -1,12 +1,4 @@
 <div class="row">
-    <div class="form-group col-md-4 @if ($errors->has('col_data_admissao')) has-error @endif">
-        {!! Form::label('col_data_admissao', 'Data de admissão*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::text('col_data_admissao',isset($colaborador->col_data_admissao) ? $colaborador->col_data_admissao : old('col_data_admissao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
-            @if ($errors->has('col_data_admissao')) <p
-                    class="help-block">{{ $errors->first('col_data_admissao') }}</p> @endif
-        </div>
-    </div>
     <div class="form-group col-md-4 @if ($errors->has('col_ch_diaria')) has-error @endif">
         {!! Form::label('col_ch_diaria', 'Carga Horária diária*', ['class' => 'control-label']) !!}
         <div class="controls">

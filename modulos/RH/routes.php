@@ -48,17 +48,19 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putEdit')->name('rh.colaboradores.edit');
 
         Route::get('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getStatus')->name('rh.colaboradores.status');
-        Route::put('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putStatus')->name('rh.colaboradores.status');
+        Route::post('/matricula/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putMatricula')->name('rh.colaboradores.matricula');
+        Route::get('/create-matricula/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getCreateMatricula')->name('rh.colaboradores.matricula.create');
+        Route::post('/create-matricula/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@createMatricula')->name('rh.colaboradores.matricula.create');
+        Route::post('/delete-matricula', '\Modulos\RH\Http\Controllers\ColaboradoresController@postDeleteMatricula')->name('rh.colaboradores.matricula.delete-matricula');
 
         Route::get('/{id}/movimentacaosetor/', '\Modulos\RH\Http\Controllers\ColaboradoresController@getMovimentacaoSetor')->name('rh.colaboradores.movimentacaosetor.index');
-
         Route::post('/{id_coladorador}/movimentacaosetor/', '\Modulos\RH\Http\Controllers\ColaboradoresController@attachFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.create');
         Route::post('/{id_coladorador}/movimentacaosetor/{id_colaborador_funcao}', '\Modulos\RH\Http\Controllers\ColaboradoresController@detachFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.delete');
-
         Route::post('/{id_coladorador}/movimentacaosetor/{id_colaborador_funcao}/remove', '\Modulos\RH\Http\Controllers\ColaboradoresController@removeFuncao')->name('rh.colaboradores.movimentacaosetor.funcao.remove');
 
 
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getShow')->name('rh.colaboradores.show');
+
     });
 
     Route::group(['prefix' => 'funcoes'], function () {
@@ -99,6 +101,15 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\RH\Http\Controllers\AtividadeExtraColaboradorController@postDelete')->name('rh.colaboradores.atividadesextrascolaboradores.delete');
     });
 
+    Route::group(['prefix' => 'periodosaquisitivos'], function () {
+        Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@getCreate')->name('rh.colaboradores.periodosaquisitivos.create');
+        Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@postCreate')->name('rh.colaboradores.periodosaquisitivos.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@getEdit')->name('rh.colaboradores.periodosaquisitivos.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@putEdit')->name('rh.colaboradores.periodosaquisitivos.edit');
+        Route::post('/confirm/{id}', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@putConfirm')->name('rh.colaboradores.periodosaquisitivos.confirm');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@postDelete')->name('rh.colaboradores.periodosaquisitivos.delete');
+    });
+
     Route::group(['prefix' => 'contascolaboradores'], function () {
         Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@getCreate')->name('rh.colaboradores.contascolaboradores.create');
         Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@postCreate')->name('rh.colaboradores.contascolaboradores.create');
@@ -125,7 +136,10 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'calendarios'], function () {
         Route::get('/', '\Modulos\RH\Http\Controllers\CalendariosController@getIndex')->name('rh.calendarios.index');
+    });
 
+    Route::group(['prefix' => 'relatorios'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\RelatoriosPeriodosAquisitivosController@getIndex')->name('rh.relatorios.periodosaquisitivos');
     });
 
     //Rotas de funções assíncronas
