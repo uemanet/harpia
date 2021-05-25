@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoDeleteRequest;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoRequest;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
+use Modulos\RH\Http\Requests\MatriculaColaboradorRequest;
 use Modulos\RH\Models\ColaboradorFuncao;
 use Modulos\RH\Models\Funcao;
 use Modulos\RH\Models\Setor;
@@ -16,6 +17,8 @@ use Modulos\RH\Repositories\ColaboradorFuncaoRepository;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Repositories\FuncaoRepository;
+use Modulos\RH\Repositories\MatriculaColaboradorRepository;
+use Modulos\RH\Repositories\PeriodoAquisitivoRepository;
 use Modulos\RH\Repositories\SetorRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -30,8 +33,19 @@ class ColaboradoresController extends BaseController
     protected $funcaoRepository;
     protected $setorRepository;
     protected $colaboradorFuncaoRepository;
+    protected $periodosAquisitivosRepository;
+    protected $matriculaColaboradorRepository;
 
-    public function __construct(ColaboradorRepository $colaborador, PessoaRepository $pessoa, DocumentoRepository $documento, FuncaoRepository $funcao, SetorRepository $setor, ColaboradorFuncaoRepository $colaborador_funcao)
+    public function __construct(
+        ColaboradorRepository $colaborador,
+        PessoaRepository $pessoa,
+        DocumentoRepository $documento,
+        FuncaoRepository $funcao,
+        SetorRepository $setor,
+        ColaboradorFuncaoRepository $colaborador_funcao,
+        PeriodoAquisitivoRepository $periodo_aquisitivo,
+        MatriculaColaboradorRepository $matricula_colaborador
+    )
     {
         $this->colaboradorFuncaoRepository = $colaborador_funcao;
         $this->colaboradorRepository = $colaborador;
@@ -39,6 +53,8 @@ class ColaboradoresController extends BaseController
         $this->documentoRepository = $documento;
         $this->funcaoRepository = $funcao;
         $this->setorRepository = $setor;
+        $this->periodosAquisitivosRepository = $periodo_aquisitivo;
+        $this->matriculaColaboradorRepository = $matricula_colaborador;
     }
 
     public function getIndex(Request $request)
@@ -89,7 +105,7 @@ class ColaboradoresController extends BaseController
                                 'icon' => 'fa fa-exchange',
                                 'route' => 'rh.colaboradores.status',
                                 'parameters' => ['id' => $id],
-                                'label' => 'Afastamento/Desligamento',
+                                'label' => 'Matrículas',
                                 'method' => 'get'
                             ],
                             [
@@ -166,6 +182,7 @@ class ColaboradoresController extends BaseController
                 return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($errors);
             }
 
+            $data['col_status'] = 'ativo';
             if ($pes_id) {
 
                 $data['col_pes_id'] = $pes_id;
@@ -190,17 +207,7 @@ class ColaboradoresController extends BaseController
             }
 
             $colaborador = $this->colaboradorRepository->create($data);
-
-            if (isset($data['funcoes']) && !is_null($data['funcoes'])) {
-                foreach ($data['funcoes'] as $id) {
-
-                    $data_funcao['cfn_fun_id'] = $id;
-                    $data_funcao['cfn_col_id'] = $colaborador->col_id;
-                    $data_funcao['cfn_data_inicio'] = date('d/m/Y');
-
-                    $this->colaboradorFuncaoRepository->create($data_funcao);
-                }
-            }
+            $matricula = $this->matriculaColaboradorRepository->create(['mtc_col_id' => $colaborador->col_id,'mtc_data_inicio' => $data['col_data_admissao']]);
 
             $dataDocumento = array(
                 'doc_tpd_id' => 2,
@@ -307,9 +314,32 @@ class ColaboradoresController extends BaseController
         }
     }
 
-    public function getStatus($colaboradorId)
+    public function getCreateMatricula($colaboradorId)
     {
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe');
+            return redirect()->back();
+        }
+
+        return view('RH::colaboradores.create-status', compact('colaborador'));
+    }
+
+
+    public function getStatus($colaboradorId)
+    {
+        $actionButtons = [];
+
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+        if($colaborador->col_status === 'desligado'){
+            $btnNovo = new TButton();
+            $btnNovo->setName('Nova Matrícula')->setRoute('rh.colaboradores.matricula.create')->setParameters(['id' => $colaboradorId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+            $actionButtons[] = $btnNovo;
+        }
+
+
+        $matriculas = $this->matriculaColaboradorRepository->getMatriculasByColId($colaboradorId);
 
         if (!$colaborador) {
             flash()->error('Colaborador não existe.');
@@ -318,26 +348,31 @@ class ColaboradoresController extends BaseController
 
         $pessoa = $this->pessoaRepository->findById($colaborador->col_pes_id);
 
-        return view('RH::colaboradores.status', compact(['colaborador']));
+        return view('RH::colaboradores.status', compact(['colaborador', 'matriculas', 'actionButtons']));
     }
 
-    public function putStatus($colaboradorId, Request $request)
+    public function createMatricula($colaboradorId, Request $request)
     {
-
-        $data = $request->all();
-
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
 
+        if (!$colaborador) {
+            flash()->error('Colaborador não existe.');
+            return redirect()->back();
+        }
+
+        $data = $request->all();
+        $data['mtc_col_id'] = $colaboradorId;
         DB::beginTransaction();
         try {
 
-            $this->colaboradorRepository->update($data, $colaboradorId);
-
+            $this->matriculaColaboradorRepository->create($data);
+            $colaborador->col_status = 'ativo';
+            $colaborador->save();
             DB::commit();
 
             flash()->success('Status atualizado com sucesso!');
 
-            return redirect()->route('rh.colaboradores.show', $colaborador->col_id);
+            return redirect()->route('rh.colaboradores.status', $colaboradorId);
         } catch (ValidationException $e) {
             DB::rollback();
             return redirect()->back()->withInput($request->all())->withErrors($e);
@@ -349,6 +384,77 @@ class ColaboradoresController extends BaseController
 
             flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
+            return redirect()->back();
+        }
+    }
+
+
+
+    public function putMatricula($matriculaId, Request $request)
+    {
+
+        $data = $request->all();
+        $matricula = $this->matriculaColaboradorRepository->find($matriculaId);
+        $colaborador = $this->colaboradorRepository->find($matricula->mtc_col_id);
+        $funcoes = $colaborador->funcoes;
+
+        $validatorRequest = new MatriculaColaboradorRequest();
+        $validator = Validator::make($request->all(), $validatorRequest->rules());
+        if ($validator->fails()) {
+            flash()->error('Data de fim é obrigatória.');
+            return redirect()->back();
+        }
+
+        DB::beginTransaction();
+        try {
+
+            $this->matriculaColaboradorRepository->update($data, $matriculaId);
+
+            foreach ($funcoes as $funcao) {
+                $funcao->cfn_data_fim = $data['mtc_data_fim'];
+                $funcao->save();
+            }
+            $colaborador->col_status = 'desligado';
+            $colaborador->save();
+            DB::commit();
+
+            flash()->success('Status atualizado com sucesso!');
+
+            return redirect()->route('rh.colaboradores.status', $colaborador->col_id);
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return redirect()->back()->withInput($request->all())->withErrors($e);
+        } catch (\Exception $e) {
+            DB::rollback();
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+
+            return redirect()->back();
+        }
+    }
+
+    public function postDeleteMatricula(Request $request)
+    {
+        $matriculaId = $request->get('id');
+        try {
+
+            $this->matriculaColaboradorRepository->delete($matriculaId);
+
+            flash()->success('Matrícula excluída com sucesso.');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro ao tentar deletar. O recurso contém dependências no sistema.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }
@@ -420,7 +526,6 @@ class ColaboradoresController extends BaseController
             DB::beginTransaction();
 
             $data['cfn_col_id'] = $colaborador->col_id;
-//            dd($data);
             $colaborador_funcao = $this->colaboradorFuncaoRepository->create($data);
 
             DB::commit();
@@ -547,6 +652,15 @@ class ColaboradoresController extends BaseController
             return redirect()->back();
         }
 
+        $periodos_matriculas = [];
+        $matriculas_colaborador = $colaborador->matriculas;
+        foreach ($matriculas_colaborador as $matricula){
+
+            $data['data'] = $this->periodosAquisitivosRepository->periodData($matricula);
+            $data['matricula'] = $matricula;
+            $periodos_matriculas[] = $data;
+        }
+
         $situacao = [
             'cursando' => 'Cursando',
             'reprovado' => 'Reprovado',
@@ -555,7 +669,7 @@ class ColaboradoresController extends BaseController
             'desistente' => 'Desistente'
         ];
 
-        return view('RH::colaboradores.show', ['pessoa' => $colaborador->pessoa, 'colaborador' => $colaborador, 'situacao' => $situacao]);
+        return view('RH::colaboradores.show', ['pessoa' => $colaborador->pessoa, 'colaborador' => $colaborador, 'situacao' => $situacao, 'periodos_matriculas' => $periodos_matriculas]);
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)
