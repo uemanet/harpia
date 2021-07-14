@@ -147,6 +147,8 @@ class ChamadaRepository extends BaseRepository
                 ->where('chamada_id', $chamada_id)
                 ->where('polo_id', $polo->grp_pol_id)
                 ->where('matriculado', 1)
+                ->where('migrado', 1)
+                ->where('mat_id', null)
                 ->where('mat_seletivos_users.pes_id' , '<>', 0)->get()->toArray();
 
             //Migração de alunos para os grupos
@@ -183,6 +185,7 @@ class ChamadaRepository extends BaseRepository
                         $sync->save();
 
                         $teste = SeletivoMatricula::where('seletivo_user_id', $aluno['seletivo_user_id'])
+                            ->where('chamada_id', $chamada_id)
                             ->first();
                         $teste->mat_id = $matricula->mat_id;
                         $teste->save();
