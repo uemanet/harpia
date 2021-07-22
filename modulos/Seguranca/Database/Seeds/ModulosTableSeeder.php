@@ -63,5 +63,13 @@ class ModulosTableSeeder extends Seeder
             'mod_classes' => 'bg-orange'
         ]);
 
+        // Modulo Alunos
+        $modulo = Modulo::create([ //Id 7
+            'mod_nome' => 'Alunos',
+            'mod_slug' => 'alunos',
+            'mod_icone' => 'fa fa-link',
+            'mod_classes' => 'bg-blue'
+        ]);
+
     }
 }
