@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  Configuracoes de eventos do modulo Monitoramento
+ *  Configuracoes de eventos do modulo Alunos
  *
  * 'EventClass' => [
  *      'FirstListenerClass',
@@ -13,7 +13,7 @@
  */
 
 return [
-    'Modulos\Monitoramento\Events\HelloMonitoramento' => [
-        'Modulos\Monitoramento\Listeners\MonitoramentoListener',
+    'Modulos\Alunos\Events\HelloAlunos' => [
+        'Modulos\Alunos\Listeners\AlunosListener',
     ],
 ];

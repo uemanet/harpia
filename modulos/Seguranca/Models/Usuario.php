@@ -67,6 +67,11 @@ class Usuario extends BaseModel implements
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'usr_pes_id', 'pes_id');
     }
 
+    public function aluno()
+    {
+        return $this->hasOne('Modulos\Academico\Models\Aluno', 'alu_pes_id', 'usr_pes_id');
+    }
+
     /**
      * Get the unique identifier for the user.
      *
