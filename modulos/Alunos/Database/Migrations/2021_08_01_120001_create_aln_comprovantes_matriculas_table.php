@@ -17,6 +17,7 @@ class CreateAlnComprovantesMatriculasTable extends Migration
             $table->increments('aln_id');
             $table->integer('aln_mat_id')->unsigned();
             $table->longText('aln_dados_matricula');
+            $table->string('aln_codigo');
 
             $table->timestamps();
 

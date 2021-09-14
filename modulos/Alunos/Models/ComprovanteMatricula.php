@@ -12,7 +12,8 @@ class ComprovanteMatricula extends BaseModel
 
     protected $fillable = [
         'aln_mat_id',
-        'aln_dados_matricula'
+        'aln_dados_matricula',
+        'aln_codigo'
     ];
 
     public function matriculaCurso()

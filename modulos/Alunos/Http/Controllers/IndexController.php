@@ -3,6 +3,7 @@
 namespace Modulos\Alunos\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modulos\Academico\Repositories\AlunoRepository;
 use Modulos\Academico\Repositories\HistoricoParcialRepository;
@@ -70,7 +71,9 @@ class IndexController extends Controller
             return redirect()->back();
         }
 
-        $comprovanteMatricula = $this->comprovanteMatriculaRepository->getComprovanteMatricula($matriculaId);
+        $comprovanteMatricula = $this
+            ->comprovanteMatriculaRepository
+            ->getComprovanteMatricula($matriculaId);
 
         $aluno = $matricula->aluno;
         $nome = explode(' ', $aluno->pessoa->pes_nome);
@@ -136,10 +139,16 @@ class IndexController extends Controller
 
         $data = json_encode($data);
 
-        $this->comprovanteMatriculaRepository->create(['aln_dados_matricula' => $data, 'aln_mat_id' => $matriculaId]);
+        $this->comprovanteMatriculaRepository->create(
+            [
+                'aln_dados_matricula' => $data,
+                'aln_mat_id' => $matriculaId,
+                'aln_codigo' =>
+                    $uuid->toString()
+            ]
+        );
 
         $data = json_decode($data);
-
 
         $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir() . '/']);
         $mpdf->mirrorMargins = 1;
@@ -148,5 +157,32 @@ class IndexController extends Controller
 
         $mpdf->WriteHTML(view('Alunos::comprovante.matricula', compact('aluno', 'data'))->render());
         $mpdf->Output('Historico_Parcial_' . $nome[0] . '_' . end($nome) . '.pdf', 'I');
+    }
+
+    public function getVerificaComprovanteMatricula()
+    {
+        return view('Alunos::comprovante.verifica');
+    }
+
+    public function postVerificaComprovanteMatricula(Request $request)
+    {
+
+        $data = $request->all();
+
+        $comprovante = $this
+            ->comprovanteMatriculaRepository
+            ->getComprovanteMatriculaByCodigo($data['aln_codigo']);
+
+        if (!$comprovante) {
+            flash()->error('Código não existe');
+            return redirect()->back();
+        }
+
+        $data = json_decode($comprovante->aln_dados_matricula);
+
+        $matricula = $this->matriculaCursoRepository->find($comprovante->aln_mat_id);
+        $aluno = $matricula->aluno;
+
+        return view('Alunos::comprovante.verificado', ['data' => $data, 'aluno' => $aluno]);
     }
 }
