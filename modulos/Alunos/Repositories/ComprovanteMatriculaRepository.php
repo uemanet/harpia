@@ -16,7 +16,14 @@ class ComprovanteMatriculaRepository extends BaseRepository
     {
         return $this->model
             ->where('aln_mat_id', $matriculaId)
-            ->where('created_at', '>', date('d.m.Y', strtotime("-1 days")))
+            ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+            ->first();
+    }
+
+    public function getComprovanteMatriculaByCodigo($codigo)
+    {
+        return $this->model
+            ->where('aln_codigo', strtolower($codigo))
             ->first();
     }
 }

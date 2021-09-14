@@ -6,6 +6,11 @@ Route::get('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@sho
 Route::post('login', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@postLogin')->name('auth.login');
 Route::get('logout', '\Modulos\Seguranca\Http\Controllers\Auth\AuthController@getLogout')->name('auth.logout');
 
+Route::get('forget-password', '\Modulos\Seguranca\Http\Controllers\Auth\PasswordController@getForgetPassword')->name('auth.forget-password');
+Route::post('forget-password', '\Modulos\Seguranca\Http\Controllers\Auth\PasswordController@postForgetPassword')->name('auth.forget-password');
+Route::get('reset-password/{token}', '\Modulos\Seguranca\Http\Controllers\Auth\PasswordController@getResetPassword')->name('auth.reset-password');
+Route::post('reset-password', '\Modulos\Seguranca\Http\Controllers\Auth\PasswordController@postResetPassword')->name('auth.reset-password');
+
 Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
     Route::get('/', '\Modulos\Seguranca\Http\Controllers\IndexController@getIndex')->name('seguranca.index.index');
 

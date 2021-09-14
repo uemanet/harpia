@@ -79,7 +79,8 @@
             <img height="10%" src="{{public_path('/img/logo_uema.png')}}">
         </td>
         <td width="55%" style="padding-top: 0.8em;">Universidade Estadual do Maranhão - <strong>UEMA</strong></td>
-        <td width="35%" style="padding-top: 0.8em;padding-left: 0.8em;">Polo: <b>{{mb_strtoupper($data->matricula->polo->pol_nome, 'UTF-8')}}</b></td>
+        <td width="35%" style="padding-top: 0.8em;padding-left: 0.8em;">Polo:
+            <b>{{mb_strtoupper($data->matricula->polo->pol_nome, 'UTF-8')}}</b></td>
     </tr>
     <tr>
         <td style="padding-bottom: 0.8em;">Sistema Acadêmico de Educação à Distância - <b>SAED/UEMA</b></td>
@@ -101,9 +102,9 @@
 
 <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
     <thead>
-        <tr class="thead-left thead-config background-thead">
-            <th colspan="2" style="border-bottom: 0.1mm solid #000000;">DADOS PESSOAIS</th>
-        </tr>
+    <tr class="thead-left thead-config background-thead">
+        <th colspan="2" style="border-bottom: 0.1mm solid #000000;">DADOS PESSOAIS</th>
+    </tr>
     </thead>
     <tbody>
     <tr class="padding">
@@ -154,62 +155,62 @@
 </table>
 
 @php $cargaHorariaTotal = 0; $coeficienteParcial = 0; @endphp
-    <table class="table-bordered" style="margin-top: 0.8em;">
-        <thead>
-            <tr class="thead-left thead-config background-thead">
-                <th colspan="12">Período: 2021.2</th>
-            </tr>
-            <tr class="thead-left thead-config thead-border">
-                <th width="25%">Disciplina</th>
-                <th width="10%">Tipo</th>
-                <th width="30%">Módulo</th>
-                <th width="8%">CH</th>
-                <th width="27%">Situação</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($data->disciplinas as $disciplina)
-            <tr class="padding border-td">
-                <td style="border-bottom: 0.1mm solid;">{{$disciplina->dis_nome}}</td>
+<table class="table-bordered" style="margin-top: 0.8em;">
+    <thead>
+    <tr class="thead-left thead-config background-thead">
+        <th colspan="12">Período: 2021.2</th>
+    </tr>
+    <tr class="thead-left thead-config thead-border">
+        <th width="25%">Disciplina</th>
+        <th width="10%">Tipo</th>
+        <th width="30%">Módulo</th>
+        <th width="8%">CH</th>
+        <th width="27%">Situação</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($data->disciplinas as $disciplina)
+        <tr class="padding border-td">
+            <td style="border-bottom: 0.1mm solid;">{{$disciplina->dis_nome}}</td>
 
-                <td style="border-bottom: 0.1mm solid;">
-                    @php
-                        if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
-                            echo "OBR";
-                        } elseif ($disciplina->mdc_tipo_disciplina == 'eletiva') {
-                            echo "ELT";
-                        } elseif ($disciplina->mdc_tipo_disciplina == 'tcc') {
-                            echo "TCC";
-                        } elseif ($disciplina->mdc_tipo_disciplina == 'optativa') {
-                            echo "OPT";
-                        }
-                    @endphp
-                </td>
-                <td style="border-bottom: 0.1mm solid;">{{$disciplina->mdo_nome}}</td>
-                <td style="border-bottom: 0.1mm solid;">{{$disciplina->dis_carga_horaria}} h</td>
-                <td style="border-bottom: 0.1mm solid;">
-                    @php
-                        if ($disciplina->mof_tipo_matricula == 'aproveitamento'){
-                            echo "APROVEITAMENTO";
-                        } else if ($disciplina->mof_situacao_matricula == 'aprovado_media') {
-                            echo "APROVADO POR MÉDIA";
-                        } elseif ($disciplina->mof_situacao_matricula == 'aprovado_final') {
-                            echo "APROVADO POR FINAL";
-                        } elseif ($disciplina->mof_situacao_matricula == 'reprovado_media') {
-                            echo "REPROVADO POR MÉDIA";
-                        } elseif ($disciplina->mof_situacao_matricula == 'reprovado_final') {
-                            echo "REPROVADO POR FINAL";
-                        } elseif ($disciplina->mof_situacao_matricula == 'cursando') {
-                            echo "CURSANDO";
-                        } elseif ($disciplina->mof_situacao_matricula == 'cancelado') {
-                            echo "CANCELADO";
-                        }
-                    @endphp
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+            <td style="border-bottom: 0.1mm solid;">
+                @php
+                    if ($disciplina->mdc_tipo_disciplina == 'obrigatoria') {
+                        echo "OBR";
+                    } elseif ($disciplina->mdc_tipo_disciplina == 'eletiva') {
+                        echo "ELT";
+                    } elseif ($disciplina->mdc_tipo_disciplina == 'tcc') {
+                        echo "TCC";
+                    } elseif ($disciplina->mdc_tipo_disciplina == 'optativa') {
+                        echo "OPT";
+                    }
+                @endphp
+            </td>
+            <td style="border-bottom: 0.1mm solid;">{{$disciplina->mdo_nome}}</td>
+            <td style="border-bottom: 0.1mm solid;">{{$disciplina->dis_carga_horaria}} h</td>
+            <td style="border-bottom: 0.1mm solid;">
+                @php
+                    if ($disciplina->mof_tipo_matricula == 'aproveitamento'){
+                        echo "APROVEITAMENTO";
+                    } else if ($disciplina->mof_situacao_matricula == 'aprovado_media') {
+                        echo "APROVADO POR MÉDIA";
+                    } elseif ($disciplina->mof_situacao_matricula == 'aprovado_final') {
+                        echo "APROVADO POR FINAL";
+                    } elseif ($disciplina->mof_situacao_matricula == 'reprovado_media') {
+                        echo "REPROVADO POR MÉDIA";
+                    } elseif ($disciplina->mof_situacao_matricula == 'reprovado_final') {
+                        echo "REPROVADO POR FINAL";
+                    } elseif ($disciplina->mof_situacao_matricula == 'cursando') {
+                        echo "CURSANDO";
+                    } elseif ($disciplina->mof_situacao_matricula == 'cancelado') {
+                        echo "CANCELADO";
+                    }
+                @endphp
+            </td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
 
 <table class="margin-top">
     <tbody>
@@ -223,7 +224,14 @@
             <b>Código de Autenticação</b>: {{$data->uuid}}
         </td>
     </tr>
+    <tr>
+        <td class="center data">
+            <b>Você pode verificar este documento em:</b> {{url('/')}}//alunos/verifica-comprovante
+        </td>
+    </tr>
     </tbody>
 </table>
 </body>
-</htmldaria certo n
+
+
+</html>
