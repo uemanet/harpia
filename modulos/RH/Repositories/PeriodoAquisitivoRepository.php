@@ -80,7 +80,8 @@ class PeriodoAquisitivoRepository extends BaseRepository
                 break;
             }
 
-            if( strtotime($inicioPeriodo) <  time() and time()  < strtotime($finalPeriodo)){
+            $finalPeriodoCompare = $this->getDate('+1 months', $finalPeriodo);
+            if( strtotime($inicioPeriodo) <  time() and time()  < strtotime($finalPeriodoCompare)){
                 $ano_valido = false;
                 break;
             }
