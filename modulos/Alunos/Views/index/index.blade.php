@@ -9,68 +9,49 @@
 @stop
 
 @section('content')
-
-    <div class="row">
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Coeficiente de Rendimento</span>
-                    <span class="info-box-number">8.58</span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Likes</span>
-                    <span class="info-box-number">41,410</span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-
-        <!-- fix for small devices only -->
-        <div class="clearfix visible-sm-block"></div>
-
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Sales</span>
-                    <span class="info-box-number">760</span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">New Members</span>
-                    <span class="info-box-number">2,000</span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-    </div>
     <!-- Matriculas -->
     <div class="row">
-        <div class="col-md-12">
+
+        <div class="col-md-3">
+
+            <div class="box box-primary">
+                <div class="box-body box-profile">
+                    <img class="profile-user-img img-responsive img-circle" src="http://localhost:8000/img/avatar.png" alt="User profile picture">
+
+                    <h3 class="profile-username text-center">{{$aluno->pessoa->pes_nome}}</h3>
+
+                    <p class="text-muted text-center">Software Engineer</p>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Sobre</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <strong><i class="fa fa-book margin-r-5"></i> Período Letivo Atual</strong>
+
+                    <p class="text-muted">
+                        2021.2 - 02/08/2021 a 23/12/2021
+                    </p>
+
+                    <hr>
+
+                    <strong><i class="fa fa-map-marker margin-r-5"></i> Meus dados gerais</strong>
+
+                    <p class="text-muted"><strong>Email: </strong> {{$aluno->pessoa->pes_email}}</p>
+                    <p class="text-muted"><strong>Telefone: </strong> {{Format::mask($aluno->pessoa->pes_telefone, '(##) #####-####')}}</p>
+                    <p class="text-muted"><strong>Sexo: </strong> {{($aluno->pessoa->pes_sexo == 'M') ? 'Masculino' : 'Feminino' }}</p>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+        </div>
+
+        <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Cursos Matriculados</h3>
@@ -93,21 +74,37 @@
                                 @endphp
                                 <div class=" box box-success">
                                     <div class="box-header with-border">
-                                        <h4 class="box-title">
-                                            <a data-toggle="collapse" data-parent="#accordion"
-                                               href="#collapse{{$loop->index}}">
-                                                {{ $matricula->turma->ofertacurso->curso->crs_nome }}
-                                            </a>
-                                        </h4>
-                                        @if($matricula->mat_situacao == 'cursando')
-                                            <span class="label label-info pull-right">Cursando</span>
-                                        @elseif($matricula->mat_situacao == 'reprovado')
-                                            <span class="label label-danger pull-right">Reprovado</span>
-                                        @elseif($matricula->mat_situacao == 'concluido')
-                                            <span class="label label-success pull-right">Concluído</span>
-                                        @else
-                                            <span class="label label-warning pull-right">{{ucfirst($matricula->mat_situacao)}}</span>
-                                        @endif
+
+                                        <div class="row">
+                                            <div class="box-title col-sm-4">
+                                                <a data-toggle="collapse" data-parent="#accordion"
+                                                   href="#collapse{{$loop->index}}">
+                                                    {{ $matricula->turma->ofertacurso->curso->crs_nome }}
+                                                </a>
+                                            </div>
+                                            <div class=" col-sm-4">
+                                                <!-- Progress bars -->
+                                                <div class="clearfix">
+                                                    <span class="pull-left">Progresso no curso</span>
+                                                    <small class="label label-info pull-right">70%</small>
+                                                </div>
+                                                <div class="progress xs">
+                                                    <div class="progress-bar progress-bar-aqua" style="width: 70%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+
+                                            @if($matricula->mat_situacao == 'cursando')
+                                                <span class="label label-info pull-right">Cursando</span>
+                                            @elseif($matricula->mat_situacao == 'reprovado')
+                                                <span class="label label-danger pull-right">Reprovado</span>
+                                            @elseif($matricula->mat_situacao == 'concluido')
+                                                <span class="label label-success pull-right">Concluído</span>
+                                            @else
+                                                <span class="label label-warning pull-right">{{ucfirst($matricula->mat_situacao)}}</span>
+                                            @endif
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="panel-collapse collapse in" id="collapse{{ $loop->index }}">
                                         <div class="box-body">
@@ -172,7 +169,7 @@
                                                                         ],
                                                                     ],
                                                                      [
-                                                                        'classButton' => 'btn btn-success pull-right',
+                                                                        'classButton' => 'btn btn-primary pull-right',
                                                                         'icon' => 'fa fa-download',
                                                                         'route' => 'alunos.comprovante.matricula',
                                                                         'parameters' => ['id' => $matricula->mat_id],
