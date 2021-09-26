@@ -12,7 +12,6 @@ return [
         'index',
         'alunos.comprovante.verifica',
         'seguranca.profile.index',
-        'seguranca.profile.edit',
         'seguranca.profile.updatepassword'
     )
 ];
