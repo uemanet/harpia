@@ -35,7 +35,7 @@ class PermissoesSegurancaSeeder extends Seeder
             'prm_rota' => 'seguranca.profile.edit'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
-        
+
         //permissões do recurso perfis
         $permissao = Permissao::create([
             'prm_nome' => 'index',

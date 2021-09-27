@@ -65,9 +65,9 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    @if(!$aluno->matriculas->isEmpty())
+                    @if(!$matriculas->isEmpty())
                         <div class="box-group" id="accordion">
-                            @foreach($aluno->matriculas as $matricula)
+                            @foreach($matriculas as $matricula)
                                 @php
                                     $situacaoArray = $situacao;
                                     unset($situacaoArray[$matricula->mat_situacao]);
@@ -86,10 +86,10 @@
                                                 <!-- Progress bars -->
                                                 <div class="clearfix">
                                                     <span class="pull-left">Progresso no curso</span>
-                                                    <small class="label label-info pull-right">70%</small>
+                                                    <small class="label label-info pull-right">{{ $matricula->progress }}%</small>
                                                 </div>
                                                 <div class="progress xs">
-                                                    <div class="progress-bar progress-bar-aqua" style="width: 70%;"></div>
+                                                    <div class="progress-bar progress-bar-aqua" style="width: {{ $matricula->progress }}%;"></div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
@@ -122,27 +122,31 @@
                                                         </div>
                                                         <div class="box-body">
                                                             <div class="col-md-4">
+                                                                <p><strong>Coeficiente de rendimento:</strong> 8,55
+                                                                </p>
                                                                 <p><strong>Nível do
                                                                         Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}
                                                                 </p>
                                                                 <p>
                                                                     <strong>Modalidade:</strong> {{ $matricula->turma->ofertacurso->modalidade->mdl_nome }}
                                                                 </p>
+
+                                                            </div>
+                                                            <div class="col-md-4">
                                                                 <p><strong>Modo de
                                                                         Entrada:</strong> {{ $matricula->mat_modo_entrada }}
                                                                 </p>
-                                                            </div>
-                                                            <div class="col-md-4">
                                                                 <p><strong>Oferta de
                                                                         Curso:</strong> {{$matricula->turma->ofertacurso->ofc_ano}}
                                                                 </p>
                                                                 <p>
                                                                     <strong>Turma:</strong> {{$matricula->turma->trm_nome}}
                                                                 </p>
-                                                                <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}
-                                                                </p>
+
                                                             </div>
                                                             <div class="col-md-4">
+                                                                <p><strong>Polo:</strong> {{$matricula->polo->pol_nome}}
+                                                                </p>
                                                                 <p>
                                                                     <strong>Grupo:</strong> @if($matricula->grupo) {{$matricula->grupo->grp_nome}} @else
                                                                         Sem Grupo @endif</p>
