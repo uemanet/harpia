@@ -612,6 +612,33 @@ class MatriculaCursoRepository extends BaseRepository
         return $cargaHorariaAluno >= $matrizCurricular->mtc_horas;
     }
 
+    public function getStudentProgress(Matricula $matricula)
+    {
+        // busca a matriz curricular do curso
+        $matrizCurricular = $matricula->turma->ofertacurso->matriz;
+
+        // busca todas as disciplinas da matriz do curso
+        $disciplinasMatriz = $this->matrizCurricularRepository
+            ->getDisciplinasByMatrizId($matrizCurricular->mtc_id)
+            ->pluck('mdc_id')
+            ->toArray();
+
+        $matriculasAluno = $this->matriculaOfertaDisciplinaRepository
+            ->getMatriculasOfertasDisciplinasByMatricula($matricula->mat_id,
+                ['ofd_trm_id' => $matricula->mat_trm_id]);
+
+        $cargaHorariaAluno = 0;
+
+        foreach ($matriculasAluno as $matriculaOferta) {
+            if (in_array($matriculaOferta->mdc_id, $disciplinasMatriz)
+                && in_array($matriculaOferta->mof_situacao_matricula, ['aprovado_media', 'aprovado_final'])) {
+                $cargaHorariaAluno += $matriculaOferta->dis_carga_horaria;
+            }
+        }
+
+        return $cargaHorariaAluno/$matrizCurricular->mtc_horas;
+    }
+
     private function verifyIfAlunoAprovadoTcc(Matricula $matricula)
     {
         // busca a matriz curricular do curso

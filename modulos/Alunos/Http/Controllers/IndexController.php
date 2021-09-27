@@ -59,7 +59,13 @@ class IndexController extends Controller
             'desistente' => 'Desistente'
         ];
 
-        return view('Alunos::index.index', compact('aluno', 'situacao'));
+        $matriculas = $aluno->matriculas;
+
+        foreach ($matriculas as $matricula){
+            $matricula->progress = (int)($this->matriculaCursoRepository->getStudentProgress($matricula)*100);
+        }
+
+        return view('Alunos::index.index', compact('aluno', 'situacao', 'matriculas'));
     }
 
     public function getComprovanteMatricula($matriculaId)
