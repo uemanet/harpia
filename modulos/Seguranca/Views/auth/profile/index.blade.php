@@ -21,7 +21,7 @@
                 <!-- Profile Image -->
                 <div class="box box-primary">
                     <div class="box-body box-profile">
-                        <img class="profile-user-img img-responsive img-circle" src="{{url('/')}}/img/avatar.png"
+                        <img class="profile-user-img img-responsive img-circle" src="{{ route('seguranca.profile.profile-picture') }}"
                              alt="User profile picture">
 
                         <h3 class="profile-username text-center">{{$usuario->pessoa->pes_nome}}</h3>
@@ -39,6 +39,7 @@
                         <li class="active"><a href="#dados" data-toggle="tab">Dados pessoais</a></li>
                         <li><a href="#endereco" data-toggle="tab">Endereço</a></li>
                         <li><a href="#senha" data-toggle="tab">Alterar Senha</a></li>
+                        <li><a href="#foto" data-toggle="tab">Alterar Foto</a></li>
                     </ul>
                     <div class="tab-content">
 
@@ -458,6 +459,24 @@
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <button type="submit" class="btn btn-danger">Alterar senha</button>
+                                </div>
+                            </div>
+                            {!! Form::close() !!}
+                        </div>
+
+                        <div class="tab-pane" id="foto">
+                            {!! Form::model($usuario->pessoa,["route" => "seguranca.profile.picture", "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal", "enctype" => "multipart/form-data"]) !!}
+
+                            <div class="form-group @if ($errors->has('usr_picture')) has-error @endif">
+                                <div class="col-sm-9">
+                                    {!! Form::file('usr_picture', ['class' => 'form-control file']) !!}
+                                    @if ($errors->has('usr_picture')) <p class="help-block">{{ $errors->first('usr_picture') }}</p> @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-danger">Alterar foto</button>
                                 </div>
                             </div>
                             {!! Form::close() !!}
