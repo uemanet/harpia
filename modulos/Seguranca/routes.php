@@ -40,8 +40,11 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'profile'], function () {
         Route::get('/', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@getIndex')->name('seguranca.profile.index');
         Route::put('/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
+        Route::get('/profile-picture', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@getProfilePicture')->name('seguranca.profile.profile-picture');
+
         Route::post('/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putEdit')->name('seguranca.profile.edit');
         Route::put('/password/edit', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@postUpdatepassword')->name('seguranca.profile.updatepassword');
+        Route::put('/picture', '\Modulos\Seguranca\Http\Controllers\Auth\ProfileController@putPicture')->name('seguranca.profile.picture');
     });
 
     Route::group(['prefix' => 'permissoes'], function () {
