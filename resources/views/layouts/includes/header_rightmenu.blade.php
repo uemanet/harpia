@@ -6,12 +6,12 @@
         <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="{{url('/')}}/img/avatar.png" class="user-image" alt="User Image">
+                    <img src="{{ route('seguranca.profile.profile-picture') }}" class="user-image" alt="User Image">
                     <span class="hidden-xs">{{ Auth::user()->pessoa->pes_nome }}</span>
                 </a>
                 <ul class="dropdown-menu">
                     <li class="user-header">
-                        <img src="{{url('/')}}/img/avatar.png" alt="User Image" class="img-circle">
+                        <img src="{{ route('seguranca.profile.profile-picture') }}" alt="User Image" class="img-circle">
                         <p>{{ Auth::user()->pessoa->pes_nome }}</p>
                     </li>
                     <li class="user-footer">

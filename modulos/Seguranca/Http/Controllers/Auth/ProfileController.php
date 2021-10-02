@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -156,11 +157,14 @@ class ProfileController extends BaseController
     public function getProfilePicture()
     {
 
+        if (!$this->auth->user()->usr_profile_picture_id) {
+            return Response::download(public_path('/img/avatar.png'));
+        }
+
         $anexo = $this->anexoRepository->recuperarAnexo($this->auth->user()->usr_profile_picture_id);
 
         if ($anexo == 'error_non_existent') {
-            flash()->error('Anexo não existe');
-            return redirect()->back();
+            return Response::download(public_path('/img/avatar.png'));
         }
 
         return $anexo;
@@ -174,7 +178,7 @@ class ProfileController extends BaseController
 
         try {
 
-            if ($request->file('usr_picture') != null) {
+            if ($request->file('usr_picture')) {
                 // Novo Anexo
                 $anexoDocumento = $request->file('usr_picture');
 
