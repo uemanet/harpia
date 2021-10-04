@@ -122,7 +122,7 @@
                                                         </div>
                                                         <div class="box-body">
                                                             <div class="col-md-4">
-                                                                <p><strong>Coeficiente de rendimento:</strong> 8,55
+                                                                <p><strong>Coeficiente de rendimento:</strong> {{ $matricula->coefficient }}
                                                                 </p>
                                                                 <p><strong>Nível do
                                                                         Curso:</strong> {{ $matricula->turma->ofertacurso->curso->nivelcurso->nvc_nome }}
