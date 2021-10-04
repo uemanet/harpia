@@ -63,6 +63,7 @@ class IndexController extends Controller
 
         foreach ($matriculas as $matricula){
             $matricula->progress = (int)($this->matriculaCursoRepository->getStudentProgress($matricula)*100);
+            $matricula->coefficient = $this->matriculaCursoRepository->getStudentCoefficient($matricula);
         }
 
         return view('Alunos::index.index', compact('aluno', 'situacao', 'matriculas'));

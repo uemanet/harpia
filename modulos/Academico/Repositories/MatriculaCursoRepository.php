@@ -639,6 +639,34 @@ class MatriculaCursoRepository extends BaseRepository
         return $cargaHorariaAluno/$matrizCurricular->mtc_horas;
     }
 
+    public function getStudentCoefficient(Matricula $matricula)
+    {
+        $matriculasAluno = DB::table('acd_matriculas_ofertas_disciplinas')
+            ->join('acd_ofertas_disciplinas', 'mof_ofd_id', '=', 'ofd_id')
+            ->join('acd_modulos_disciplinas', 'ofd_mdc_id', '=', 'mdc_id')
+            ->join('acd_disciplinas', 'mdc_dis_id', '=', 'dis_id')
+            ->where('mof_mat_id', '=', $matricula->mat_id)
+            ->where('mof_situacao_matricula', '<>', 'cancelado')
+            ->where('mof_situacao_matricula', '<>', 'cursando')
+            ->where('ofd_tipo_avaliacao', 'numerica')
+            ->get();
+
+        if($matriculasAluno->isEmpty()){
+            return null;
+        }
+
+        $totalCreditos = 0;
+        $numerador = 0;
+        foreach ($matriculasAluno as $matriculaOferta) {
+
+            $numerador += $matriculaOferta->mof_mediafinal*$matriculaOferta->dis_creditos;
+            $totalCreditos += $matriculaOferta->dis_creditos;
+        }
+
+        return number_format($numerador/$totalCreditos, 2, '.', '');
+    }
+
+
     private function verifyIfAlunoAprovadoTcc(Matricula $matricula)
     {
         // busca a matriz curricular do curso
