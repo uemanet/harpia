@@ -78,6 +78,11 @@ class IndexController extends Controller
             return redirect()->back();
         }
 
+        if ($matricula->mat_situacao !== 'cursando') {
+            flash()->error('Apenas alunos com situação cursando podem emitir o comprovante de matrícula');
+            return redirect()->back();
+        }
+
         $comprovanteMatricula = $this
             ->comprovanteMatriculaRepository
             ->getComprovanteMatricula($matriculaId);

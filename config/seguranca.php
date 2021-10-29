@@ -4,7 +4,9 @@ return [
     'prelogin_openroutes' => array(
         'auth.login',
         'index',
-        'alunos.comprovante.verifica'
+        'alunos.comprovante.verifica',
+        'auth.forget-password',
+        'auth.reset-password'
     ),
 
     'postlogin_openroutes' => array(
