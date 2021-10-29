@@ -74,6 +74,7 @@ class PasswordController extends Controller
         ]);
 
         Mail::send('Seguranca::email.forget-password', ['token' => $token], function($message) use($request){
+            $message->from('noreply@admin.com');
             $message->to($request->email);
             $message->subject('Reset Password');
         });
