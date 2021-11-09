@@ -38,7 +38,9 @@ class SelecionaModulosController extends BaseController
         );
 
         if ($modulos->count() == 1 && env('REDIRECT_MODULE')) {
-            return redirect()->route(current($modulos)->mod_slug.'.index.index');
+            $modulo = current($modulos);
+            $modulo = array_pop($modulo);
+            return redirect()->route($modulo->mod_slug.'.index.index');
         }
 
         return view('Seguranca::selecionamodulos.index')->with(array('modulos'=>$modulos, 'infoUser'=>$infoUser));
