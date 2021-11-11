@@ -164,7 +164,7 @@
                                                                     [
                                                                         'classButton' => 'btn btn-primary pull-right',
                                                                         'icon' => 'fa fa-download',
-                                                                        'route' => 'academico.historicoparcial.print',
+                                                                        'route' => 'alunos.comprovante.historico',
                                                                         'parameters' => ['id' => $matricula->mat_id],
                                                                         'label' => 'Histórico Parcial',
                                                                         'method' => 'get',
