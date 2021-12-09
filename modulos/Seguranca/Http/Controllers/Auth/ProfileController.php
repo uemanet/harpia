@@ -27,7 +27,7 @@ class ProfileController extends BaseController
                                 PessoaRepository $pessoaRepository,
                                 AnexoRepository $anexoRepository,
                                 UsuarioRepository $usuarioRepository
-)
+    )
     {
         $this->auth = $auth;
         $this->pessoaRepository = $pessoaRepository;
@@ -154,14 +154,14 @@ class ProfileController extends BaseController
         }
     }
 
-    public function getProfilePicture()
+    public function getProfilePicture($pictureId)
     {
 
-        if (!$this->auth->user()->usr_profile_picture_id) {
+        if (!(int)$pictureId) {
             return Response::download(public_path('/img/avatar.png'));
         }
 
-        $anexo = $this->anexoRepository->recuperarAnexo($this->auth->user()->usr_profile_picture_id);
+        $anexo = $this->anexoRepository->recuperarAnexo($pictureId);
 
         if ($anexo == 'error_non_existent') {
             return Response::download(public_path('/img/avatar.png'));
@@ -173,55 +173,32 @@ class ProfileController extends BaseController
 
     public function putPicture(UpdateProfilePictureRequest $request)
     {
-
-        $dados['usr_profile_picture_id'] = $this->auth->user()->usr_profile_picture_id;
-
         try {
+            $anexoDocumento = $request->file('usr_picture');
 
-            if ($request->file('usr_picture')) {
-                // Novo Anexo
-                $anexoDocumento = $request->file('usr_picture');
+            $oldPicture = $this->auth->user()->usr_profile_picture_id;
 
-                if ($this->auth->user()->usr_profile_picture_id != null) {
-                    // Atualiza anexo
-                    $atualizaAnexo = $this->anexoRepository->atualizarAnexo($this->auth->user()->usr_profile_picture_id, $anexoDocumento);
 
-                    if ($atualizaAnexo['type'] == 'error_non_existent') {
-                        flash()->error($atualizaAnexo['message']);
-                        return redirect()->back();
-                    }
+            $anexo = $this->anexoRepository->salvarAnexo($anexoDocumento);
 
-                    if ($atualizaAnexo['type'] == 'error_exists') {
-                        flash()->error($atualizaAnexo['message']);
-                        return redirect()->back()->withInput($request->all());
-                    }
-
-                    if (!$atualizaAnexo) {
-                        flash()->error('ocorreu um problema ao salvar o arquivo');
-                        return redirect()->back()->withInput($request->all());
-                    }
-                } else {
-                    // Cria um novo anexo caso o documento nao tenha anteriormente
-                    $anexo = $this->anexoRepository->salvarAnexo($anexoDocumento);
-
-                    if ($anexo['type'] == 'error_exists') {
-                        flash()->error($anexo['message']);
-                        return redirect()->back()->withInput($request->all());
-                    }
-
-                    if (!$anexo) {
-                        flash()->error('ocorreu um problema ao salvar o arquivo');
-                        return redirect()->back()->withInput($request->all());
-                    }
-
-                    $dados['usr_profile_picture_id'] = $anexo->anx_id;
-                }
+            if ($anexo['type'] == 'error_exists') {
+                flash()->error($anexo['message']);
+                return redirect()->back()->withInput($request->all());
             }
+            if (!$anexo) {
+                flash()->error('ocorreu um problema ao salvar o arquivo');
+                return redirect()->back()->withInput($request->all());
+            }
+            $dados['usr_profile_picture_id'] = $anexo->anx_id;
 
             if (!$this->usuarioRepository->update($dados, $this->auth->user()->usr_id, 'usr_id')) {
                 DB::rollBack();
                 flash()->error('Erro ao tentar atualizar');
                 return redirect()->back()->withInput($request->all());
+            }
+
+            if ($oldPicture) {
+                $this->anexoRepository->deletarAnexo($this->auth->user()->usr_profile_picture_id);
             }
 
             DB::commit();
