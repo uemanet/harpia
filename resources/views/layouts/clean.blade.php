@@ -40,12 +40,12 @@
                         <ul class="nav navbar-nav">
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="{{ route('seguranca.profile.profile-picture') }}" class="user-image" alt="User Image">
+                                    <img src="{{ route('seguranca.profile.profile-picture', \Illuminate\Support\Facades\Auth::user()->usr_profile_picture_id ?? 0) }}" class="user-image" alt="User Image">
                                     <span class="hidden-xs">{{ Auth::user()->pessoa->pes_nome }}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li class="user-header">
-                                        <img src="{{ route('seguranca.profile.profile-picture') }}" alt="User Image" class="img-circle">
+                                        <img src="{{ route('seguranca.profile.profile-picture', \Illuminate\Support\Facades\Auth::user()->usr_profile_picture_id ?? 0) }}" alt="User Image" class="img-circle">
                                         <p>{{ Auth::user()->pessoa->pes_nome }}</p>
                                     </li>
                                     <li class="user-footer">
