@@ -2,19 +2,23 @@
 
 namespace Modulos\Integracao\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Harpia\Event\SincronizacaoFactory;
 use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
 use Modulos\Integracao\Repositories\SincronizacaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 
 class SincronizacaoController extends BaseController
 {
     protected $sincronizacaoRepository;
+    protected $ambienteVirtualRepository;
 
-    public function __construct(SincronizacaoRepository $sincronizacaoRepository)
+    public function __construct(SincronizacaoRepository $sincronizacaoRepository, AmbienteVirtualRepository $ambienteVirtualRepository)
     {
         $this->sincronizacaoRepository = $sincronizacaoRepository;
+        $this->ambienteVirtualRepository = $ambienteVirtualRepository;
     }
 
     public function index(Request $request)
@@ -97,9 +101,34 @@ class SincronizacaoController extends BaseController
 
     public function show($id)
     {
-        if ($this->sincronizacaoRepository->find($id)) {
+        $sincronizacao = $this->sincronizacaoRepository->find($id);
+
+        if ($sincronizacao) {
+
+            if ($sincronizacao->sym_status == 3 and (
+                    $sincronizacao->sym_table === 'acd_ofertas_disciplinas' or
+                    $sincronizacao->sym_table === 'acd_matriculas' or
+                    $sincronizacao->sym_table === 'acd_tutores_grupos'
+                )
+            ) {
+                $syncData = $this->sincronizacaoRepository->getSyncData($sincronizacao);
+
+                $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($syncData['turma']->trm_id);
+                $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
+                $url .= $ambiente->integracao()->asr_token . '&wsfunction=local_integracao_get_user&moodlewsrestformat=json';
+
+                $client = new Client();
+
+                $response = $client->request('POST', $url, ['form_params' => $syncData['user']]);
+
+                $data = (array)json_decode($response->getBody());
+
+            }
+
             return view('Integracao::sincronizacao.show', [
-                'sincronizacao' => $this->sincronizacaoRepository->find($id)
+                'sincronizacao' => $this->sincronizacaoRepository->find($id),
+                'pessoa' => $syncData['pessoa'] ?? null,
+                'user' => $data['data'] ?? null
             ]);
         }
 
@@ -115,7 +144,7 @@ class SincronizacaoController extends BaseController
             flash()->error('Registro não encontrado.');
             return redirect()->route('integracao.sincronizacao.index');
         }
-        
+
         if ($sincronizacao->sym_status == 2) {
             flash()->error('Sincronização já realizada com sucesso anteriormente.');
             return redirect()->route('integracao.sincronizacao.index');
@@ -135,5 +164,37 @@ class SincronizacaoController extends BaseController
             flash()->error('Não foi possível migrar esta sincronização.');
             return redirect()->route('integracao.sincronizacao.index');
         }
+    }
+
+    public function postMapear($id, Request $request)
+    {
+        $sincronizacao = $this->sincronizacaoRepository->find($id);
+
+        if ($sincronizacao) {
+
+            $syncData = $this->sincronizacaoRepository->getSyncData($sincronizacao);
+
+            $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($syncData['turma']->trm_id);
+            $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
+            $url .= $ambiente->integracao()->asr_token . '&wsfunction=local_integracao_map_user&moodlewsrestformat=json';
+
+            $client = new Client();
+
+            $response = $client->request('POST', $url, ['form_params' => $syncData['user']]);
+
+            $data = (array)json_decode($response->getBody());
+
+            flash()->success('Usuário mapeado com sucesso');
+            return redirect()->back();
+
+            return view('Integracao::sincronizacao.show', [
+                'sincronizacao' => $this->sincronizacaoRepository->find($id),
+                'pessoa' => $syncData['pessoa'],
+                'user' => $data['data']
+            ]);
+        }
+
+        flash()->error('Registro não encontrado.');
+        return redirect()->back();
     }
 }
