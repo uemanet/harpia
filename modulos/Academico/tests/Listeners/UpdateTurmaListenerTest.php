@@ -102,7 +102,8 @@ class UpdateTurmaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
         ];
 
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
@@ -117,7 +118,7 @@ class UpdateTurmaListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -154,7 +155,7 @@ class UpdateTurmaListenerTest extends ModulosTestCase
         // Atualiza o grupo
         $turmaRepository->update(["trm_nome" => "Teste Mudança de Nome"], $this->turma->trm_id);
 
-        $updateTurmaEvent = new UpdateTurmaEvent($this->turma);
+        $updateTurmaEvent = new UpdateTurmaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($updateTurmaEvent);
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
@@ -198,7 +199,7 @@ class UpdateTurmaListenerTest extends ModulosTestCase
         // Atualiza o grupo
         $turmaRepository->update(["trm_nome" => "Teste Mudança de Nome"], $this->turma->trm_id);
 
-        $updateTurmaEvent = new UpdateTurmaEvent($this->turma);
+        $updateTurmaEvent = new UpdateTurmaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($updateTurmaEvent);
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());

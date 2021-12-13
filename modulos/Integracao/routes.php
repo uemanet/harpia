@@ -16,6 +16,9 @@ Route::group(['prefix' => 'integracao', 'middleware' => ['auth']], function () {
         Route::get('/adicionarturma/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getAdicionarTurma')->name('integracao.ambientesvirtuais.adicionarturma');
         Route::post('/adicionarturma/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postAdicionarTurma')->name('integracao.ambientesvirtuais.adicionarturma');
         Route::post('/deletarturma', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postDeletarTurma')->name('integracao.ambientesvirtuais.deletarturma');
+
+        Route::get('/controleversao/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@getControleVersao')->name('integracao.ambientesvirtuais.controleversao');
+        Route::post('/controleversao/{id}', '\Modulos\Integracao\Http\Controllers\AmbientesVirtuaisController@postControleVersao')->name('integracao.ambientesvirtuais.controleversao');
     });
 
     Route::group(['prefix' => 'mapeamentonotas'], function () {

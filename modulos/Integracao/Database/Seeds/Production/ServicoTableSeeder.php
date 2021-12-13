@@ -17,5 +17,10 @@ class ServicoTableSeeder extends Seeder
         $servico->ser_nome = 'Integracao';
         $servico->ser_slug = 'local_integracao';
         $servico->save();
+
+        $servico = new Servico();
+        $servico->ser_nome = 'Integracao_v2';
+        $servico->ser_slug = 'local_integracao_v2';
+        $servico->save();
     }
 }

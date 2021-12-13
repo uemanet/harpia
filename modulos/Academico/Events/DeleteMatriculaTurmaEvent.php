@@ -6,8 +6,8 @@ use Modulos\Academico\Models\Matricula;
 
 class DeleteMatriculaTurmaEvent extends SincronizacaoEvent
 {
-    public function __construct(Matricula $entry, $extra = null)
+    public function __construct(Matricula $entry, $extra = null, $version)
     {
-        parent::__construct($entry, "DELETE", $extra);
+        parent::__construct($entry, "DELETE", $extra, $version);
     }
 }

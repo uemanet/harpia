@@ -7,8 +7,8 @@ use Modulos\Academico\Models\Matricula;
 
 class CreateMatriculaTurmaEvent extends SincronizacaoEvent
 {
-    public function __construct(Matricula $entry, $extra = null)
+    public function __construct(Matricula $entry, $extra = null, $version)
     {
-        parent::__construct($entry, "CREATE", $extra);
+        parent::__construct($entry, "CREATE", $extra, $version);
     }
 }

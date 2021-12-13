@@ -30,6 +30,10 @@ class DeleteMatriculaTurmaListener
                 return;
             }
 
+            if ($event->getVersion() != 'v1') {
+                return;
+            }
+
             // Web service de integracao
             $ambServico = $ambiente->integracao();
 
