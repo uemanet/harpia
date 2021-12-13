@@ -103,7 +103,9 @@ class DeleteOfertaDisciplinaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
+
         ];
 
 
@@ -128,12 +130,12 @@ class DeleteOfertaDisciplinaListenerTest extends ModulosTestCase
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
         $createOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\CreateOfertaDisciplinaListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
 
-        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
+        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina, null, $this->ofertaDisciplina->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
         $createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
     }
@@ -165,7 +167,7 @@ class DeleteOfertaDisciplinaListenerTest extends ModulosTestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $deleteOfertaDisciplinaEvent = new DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id);
+        $deleteOfertaDisciplinaEvent = new DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id, $this->ofertaDisciplina->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteOfertaDisciplinaEvent);
 
@@ -204,7 +206,7 @@ class DeleteOfertaDisciplinaListenerTest extends ModulosTestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $deleteOfertaDisciplinaEvent = new DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id);
+        $deleteOfertaDisciplinaEvent = new DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id, $this->ofertaDisciplina->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteOfertaDisciplinaEvent);
 

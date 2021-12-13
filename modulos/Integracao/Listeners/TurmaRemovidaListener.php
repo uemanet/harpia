@@ -27,7 +27,8 @@ class TurmaRemovidaListener
         PeriodoLetivoRepository $periodoLetivoRepository,
         AmbienteVirtualRepository $ambienteVirtualRepository,
         SincronizacaoRepository $sincronizacaoRepository
-    ) {
+    )
+    {
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->periodoLetivoRepository = $periodoLetivoRepository;
@@ -44,6 +45,10 @@ class TurmaRemovidaListener
             $ambiente = $this->ambienteVirtualRepository->find($event->getExtra());
 
             if (!$ambiente) {
+                return;
+            }
+
+            if ($event->getVersion() != 'v1') {
                 return;
             }
 
