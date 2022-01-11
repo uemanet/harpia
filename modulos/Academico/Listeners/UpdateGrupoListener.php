@@ -35,6 +35,10 @@ class UpdateGrupoListener
                 return;
             }
 
+            if ($grupo->turma->trm_tipo_integracao != 'v1') {
+                return;
+            }
+
             // Web service de integracao
             $ambServico = $ambiente->integracao();
 

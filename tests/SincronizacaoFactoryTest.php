@@ -117,7 +117,8 @@ class SincronizacaoFactoryTest extends TestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
         ];
 
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
@@ -146,7 +147,7 @@ class SincronizacaoFactoryTest extends TestCase
         $createVinculoListener = $this->app->make(\Modulos\Academico\Listeners\CreateVinculoTutorListener::class);
 
         // Eventos de turma
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -159,7 +160,7 @@ class SincronizacaoFactoryTest extends TestCase
         ]);
 
         // Eventos de grupo
-        $createGroupEvent = new CreateGrupoEvent($this->grupo);
+        $createGroupEvent = new CreateGrupoEvent($this->grupo, null, $this->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($createGroupEvent);
         $createGroupListener->handle($createGroupEvent);
@@ -179,7 +180,7 @@ class SincronizacaoFactoryTest extends TestCase
             'mat_grp_id' => $this->grupo->grp_id,
         ]);
 
-        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matriculaCurso);
+        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matriculaCurso, null, $this->matriculaCurso->turma->trm_tipo_integracao);
 
         // Eventos de Matricula no curso
         $sincronizacaoListener->handle($createMatriculaTurmaEvent);
@@ -191,17 +192,17 @@ class SincronizacaoFactoryTest extends TestCase
         ]);
 
         // Eventos de Matricula em disciplina
-        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina);
+        $createMatriculaDisciplinaEvent = new CreateMatriculaDisciplinaEvent($this->matriculaDisciplina, null, $this->matriculaDisciplina->matriculaCurso->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createMatriculaDisciplinaEvent);
         $createMatriculaDisciplinaListener->handle($createMatriculaDisciplinaEvent);
 
         // Eventos de oferta disciplina
-        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
+        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina, null,$this->ofertaDisciplina->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
         $createOfertaDisciplinaListener->handle($createOfertaDisciplinaEvent);
 
         // Eventos de vincular tutor ao grupo
-        $createVinculoEvent = new CreateVinculoTutorEvent($this->tutorGrupo);
+        $createVinculoEvent = new CreateVinculoTutorEvent($this->tutorGrupo, null, $this->tutorGrupo->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($createVinculoEvent);
         $createVinculoListener->handle($createVinculoEvent);
@@ -231,7 +232,8 @@ class SincronizacaoFactoryTest extends TestCase
         // Atualiza a turma
         $turmaRepository->update(["trm_nome" => "Teste Mudança de Nome"], $this->turma->trm_id);
 
-        $updateTurmaEvent = new \Modulos\Academico\Events\UpdateTurmaEvent($this->turma);
+        $updateTurmaEvent = new \Modulos\Academico\Events\UpdateTurmaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
+
         $sincronizacaoListener->handle($updateTurmaEvent);
         $updateTurmaListener->handle($updateTurmaEvent);
 
@@ -253,7 +255,7 @@ class SincronizacaoFactoryTest extends TestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaRemovidaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaRemovidaListener::class);
 
-        $turmaRemovidaEvent = new \Modulos\Integracao\Events\TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id);
+        $turmaRemovidaEvent = new \Modulos\Integracao\Events\TurmaRemovidaEvent($this->turma, $this->ambiente->amb_id, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaRemovidaEvent);
         $turmaRemovidaListener->handle($turmaRemovidaEvent);
@@ -293,7 +295,7 @@ class SincronizacaoFactoryTest extends TestCase
         // Atualiza o grupo
         $grupoRepository->update(["grp_nome" => "Grupo B"], $this->grupo->grp_id);
 
-        $updateGrupoEvent = new \Modulos\Academico\Events\UpdateGrupoEvent($this->grupo);
+        $updateGrupoEvent = new \Modulos\Academico\Events\UpdateGrupoEvent($this->grupo, null, $this->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($updateGrupoEvent);
         $updateGrupoListener->handle($updateGrupoEvent);
@@ -316,7 +318,7 @@ class SincronizacaoFactoryTest extends TestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $deleteGroupListener = $this->app->make(\Modulos\Academico\Listeners\DeleteGrupoListener::class);
 
-        $deleteGroupEvent = new \Modulos\Academico\Events\DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id);
+        $deleteGroupEvent = new \Modulos\Academico\Events\DeleteGrupoEvent($this->grupo, $this->ambiente->amb_id, $this->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteGroupEvent);
         $deleteGroupListener->handle($deleteGroupEvent);
@@ -361,7 +363,7 @@ class SincronizacaoFactoryTest extends TestCase
         ], $this->ofertaDisciplina->ofd_id);
 
         // Evento de atualizacao de professor
-        $updateProfessorDisciplinaEvent = new \Modulos\Academico\Events\UpdateProfessorDisciplinaEvent($this->ofertaDisciplina);
+        $updateProfessorDisciplinaEvent = new \Modulos\Academico\Events\UpdateProfessorDisciplinaEvent($this->ofertaDisciplina, null, $this->ofertaDisciplina->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($updateProfessorDisciplinaEvent);
         $updateProfessorDisciplinaListener->handle($updateProfessorDisciplinaEvent);
 
@@ -383,7 +385,7 @@ class SincronizacaoFactoryTest extends TestCase
         $deleteOfertaDisciplinaListener = $this->app->make(\Modulos\Academico\Listeners\DeleteOfertaDisciplinaListener::class);
 
         // Eventos de exclusao de disciplina
-        $deleteOfertaDisciplinaEvent = new \Modulos\Academico\Events\DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id);
+        $deleteOfertaDisciplinaEvent = new \Modulos\Academico\Events\DeleteOfertaDisciplinaEvent($this->ofertaDisciplina, $this->ambiente->amb_id, $this->ofertaDisciplina->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteOfertaDisciplinaEvent);
         $deleteOfertaDisciplinaListener->handle($deleteOfertaDisciplinaEvent);
@@ -421,7 +423,7 @@ class SincronizacaoFactoryTest extends TestCase
         // Eventos de atualizacao de pessoa
         $pessoa = \Modulos\Geral\Models\Pessoa::all()->first();
 
-        $updatePessoaEvent = new \Modulos\Geral\Events\UpdatePessoaEvent($pessoa, $this->ambiente->amb_id);
+        $updatePessoaEvent = new \Modulos\Geral\Events\UpdatePessoaEvent($pessoa, $this->ambiente->amb_id, 'v1');
 
         $sincronizacaoListener->handle($updatePessoaEvent);
         $updatePessoaListener->handle($updatePessoaEvent);
@@ -497,7 +499,7 @@ class SincronizacaoFactoryTest extends TestCase
         ], $this->matriculaCurso->mat_id);
 
         // Eventos de atualizacao de grupo
-        $updateGrupoAlunoEvent = new \Modulos\Academico\Events\UpdateGrupoAlunoEvent($this->matriculaCurso, $oldGrupo);
+        $updateGrupoAlunoEvent = new \Modulos\Academico\Events\UpdateGrupoAlunoEvent($this->matriculaCurso, $oldGrupo, $this->matriculaCurso->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($updateGrupoAlunoEvent);
         $updateGrupoAlunoListener->handle($updateGrupoAlunoEvent);
@@ -522,7 +524,7 @@ class SincronizacaoFactoryTest extends TestCase
         $oldGrupo = $this->matriculaCurso->mat_grp_id;
 
         // Dispara evento e remocao de grupo
-        $deleteGrupoAlunoEvent = new \Modulos\Academico\Events\DeleteGrupoAlunoEvent($this->matriculaCurso, $oldGrupo);
+        $deleteGrupoAlunoEvent = new \Modulos\Academico\Events\DeleteGrupoAlunoEvent($this->matriculaCurso, $oldGrupo, $this->matriculaCurso->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteGrupoAlunoEvent);
         $deleteGrupoAlunoListener->handle($deleteGrupoAlunoEvent);
@@ -558,7 +560,7 @@ class SincronizacaoFactoryTest extends TestCase
         $deleteVinculoListener = $this->app->make(\Modulos\Academico\Listeners\DeleteVinculoTutorListener::class);
 
         // Evento de exclusao de vinculo de tutor
-        $deleteVinculoEvent = new \Modulos\Academico\Events\DeleteVinculoTutorEvent($this->tutorGrupo);
+        $deleteVinculoEvent = new \Modulos\Academico\Events\DeleteVinculoTutorEvent($this->tutorGrupo, null, $this->tutorGrupo->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($deleteVinculoEvent);
         $deleteVinculoListener->handle($deleteVinculoEvent);

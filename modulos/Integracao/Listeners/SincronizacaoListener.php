@@ -61,7 +61,8 @@ class SincronizacaoListener
             'sym_status' => 1,
             'sym_mensagem' => null,
             'sym_data_envio' => null,
-            'sym_extra' => $event->getExtra()
+            'sym_extra' => $event->getExtra(),
+            'sym_version' => $event->getVersion()
         ];
     }
 }

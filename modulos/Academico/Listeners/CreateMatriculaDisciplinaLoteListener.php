@@ -31,6 +31,11 @@ class CreateMatriculaDisciplinaLoteListener
 
             // Reunir os dados para envio em lote
             foreach ($event->getItems() as $matriculaOfertaDisciplina) {
+
+                if ($event->getVersion() != 'v1') {
+                    return;
+                }
+
                 $enrol = [];
 
                 $aluno = $this->alunoRepository->find($matriculaOfertaDisciplina->matriculaCurso->mat_alu_id);

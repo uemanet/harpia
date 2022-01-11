@@ -139,7 +139,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
         $createMatriculaTurmaListener = $this->app->make(\Modulos\Academico\Listeners\CreateMatriculaTurmaListener::class);
 
         // Eventos de turma
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -152,7 +152,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
         ]);
 
         // Eventos de grupo
-        $createGroupEvent = new CreateGrupoEvent($grupo);
+        $createGroupEvent = new CreateGrupoEvent($grupo, null, $grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($createGroupEvent);
         $createGroupListener->handle($createGroupEvent);
@@ -163,7 +163,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
             'mat_grp_id' => $grupo->grp_id,
         ]);
 
-        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($matriculaCurso);
+        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($matriculaCurso, null, $matriculaCurso->turma->trm_tipo_integracao);
 
         // Eventos de Matricula no curso
         $sincronizacaoListener->handle($createMatriculaTurmaEvent);
@@ -185,7 +185,7 @@ class SincronizacaoListenerTest extends ModulosTestCase
     {
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
 

@@ -16,7 +16,7 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
      * @param null $extra
      * @throws \Exception
      */
-    public function __construct(Collection $matriculas, string $action = "CREATE", $extra = null)
+    public function __construct(Collection $matriculas, string $action = "CREATE", $extra = null, $version = 'v1')
     {
         $this->baseClass = CreateMatriculaDisciplinaEvent::class;
 
@@ -26,7 +26,7 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
             }
         }
 
-        parent::__construct($matriculas, $action, $extra);
+        parent::__construct($matriculas, $action, $extra, $version);
     }
 
     /**
@@ -35,5 +35,13 @@ class CreateMatriculaDisciplinaLoteEvent extends SincronizacaoLoteEvent
     public function getEndpoint()
     {
         return 'local_integracao_batch_enrol_student_discipline';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndpointV2()
+    {
+        return 'local_integracao_v2_batch_enrol_student_discipline';
     }
 }
