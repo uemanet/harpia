@@ -106,7 +106,9 @@ class CreateMatriculaTurmaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
+
         ];
 
         $this->turma = factory(Modulos\Academico\Models\Turma::class)->create($data);
@@ -123,7 +125,7 @@ class CreateMatriculaTurmaListenerTest extends ModulosTestCase
         $createGroupListener = $this->app->make(\Modulos\Academico\Listeners\CreateGrupoListener::class);
 
         // Eventos de turma
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -136,7 +138,7 @@ class CreateMatriculaTurmaListenerTest extends ModulosTestCase
         ]);
 
         // Eventos de grupo
-        $createGroupEvent = new CreateGrupoEvent($this->grupo);
+        $createGroupEvent = new CreateGrupoEvent($this->grupo, null, $this->grupo->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($createGroupEvent);
         $createGroupListener->handle($createGroupEvent);
@@ -175,7 +177,7 @@ class CreateMatriculaTurmaListenerTest extends ModulosTestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matricula);
+        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matricula, null, $this->matricula->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createMatriculaTurmaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [
@@ -213,7 +215,7 @@ class CreateMatriculaTurmaListenerTest extends ModulosTestCase
 
         $this->assertEquals(2, $this->sincronizacaoRepository->count());
 
-        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matricula);
+        $createMatriculaTurmaEvent = new CreateMatriculaTurmaEvent($this->matricula, null, $this->matricula->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createMatriculaTurmaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [

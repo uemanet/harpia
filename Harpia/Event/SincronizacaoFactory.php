@@ -19,18 +19,31 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
             'local_integracao_create_course' => \Modulos\Integracao\Events\TurmaMapeadaEvent::class,
             'local_integracao_update_course' => \Modulos\Academico\Events\UpdateTurmaEvent::class,
             'local_integracao_delete_course' => \Modulos\Integracao\Events\TurmaRemovidaEvent::class,
+
+            'local_integracao_v2_create_course' => \Modulos\Integracao\Events\TurmaMapeadaEvent::class,
+            'local_integracao_v2_update_course' => \Modulos\Academico\Events\UpdateTurmaEvent::class,
+            'local_integracao_v2_delete_course' => \Modulos\Integracao\Events\TurmaRemovidaEvent::class,
+
         ],
 
         'Grupo' => [
             'local_integracao_create_group' => \Modulos\Academico\Events\CreateGrupoEvent::class,
             'local_integracao_update_group' => \Modulos\Academico\Events\UpdateGrupoEvent::class,
             'local_integracao_delete_group' => \Modulos\Academico\Events\DeleteGrupoEvent::class,
+
+            'local_integracao_v2_create_group' => \Modulos\Academico\Events\CreateGrupoEvent::class,
+            'local_integracao_v2_update_group' => \Modulos\Academico\Events\UpdateGrupoEvent::class,
+            'local_integracao_v2_delete_group' => \Modulos\Academico\Events\DeleteGrupoEvent::class,
         ],
 
         'OfertaDisciplina' => [
             'local_integracao_create_discipline' => \Modulos\Academico\Events\CreateOfertaDisciplinaEvent::class,
             'local_integracao_delete_discipline' => \Modulos\Academico\Events\DeleteOfertaDisciplinaEvent::class,
             'local_integracao_change_teacher' => \Modulos\Academico\Events\UpdateProfessorDisciplinaEvent::class,
+
+            'local_integracao_v2_create_discipline' => \Modulos\Academico\Events\CreateOfertaDisciplinaEvent::class,
+            'local_integracao_v2_delete_discipline' => \Modulos\Academico\Events\DeleteOfertaDisciplinaEvent::class,
+            'local_integracao_v2_change_teacher' => \Modulos\Academico\Events\UpdateProfessorDisciplinaEvent::class,
         ],
 
         'Matricula' => [
@@ -39,20 +52,34 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
             'local_integracao_change_role_student_course' => \Modulos\Academico\Events\UpdateSituacaoMatriculaEvent::class,
             'local_integracao_change_student_group' => \Modulos\Academico\Events\UpdateGrupoAlunoEvent::class,
             'local_integracao_unenrol_student_group' => \Modulos\Academico\Events\DeleteGrupoAlunoEvent::class,
+
+            'local_integracao_v2_enrol_student' => \Modulos\Academico\Events\CreateMatriculaTurmaEvent::class,
+            'local_integracao_v2_unenrol_student' => \Modulos\Academico\Events\DeleteMatriculaTurmaEvent::class,
+            'local_integracao_v2_change_role_student_course' => \Modulos\Academico\Events\UpdateSituacaoMatriculaEvent::class,
+            'local_integracao_v2_change_student_group' => \Modulos\Academico\Events\UpdateGrupoAlunoEvent::class,
+            'local_integracao_v2_unenrol_student_group' => \Modulos\Academico\Events\DeleteGrupoAlunoEvent::class,
         ],
 
         'MatriculaOfertaDisciplina' => [
             'local_integracao_enrol_student_discipline' => \Modulos\Academico\Events\CreateMatriculaDisciplinaEvent::class,
-            'local_integracao_unenrol_student_discipline' => \Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent::class
+            'local_integracao_unenrol_student_discipline' => \Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent::class,
+
+            'local_integracao_v2_enrol_student_discipline' => \Modulos\Academico\Events\CreateMatriculaDisciplinaEvent::class,
+            'local_integracao_v2_unenrol_student_discipline' => \Modulos\Academico\Events\DeleteMatriculaDisciplinaEvent::class
         ],
 
         'TutorGrupo' => [
             'local_integracao_enrol_tutor' => \Modulos\Academico\Events\CreateVinculoTutorEvent::class,
             'local_integracao_unenrol_tutor_group' => \Modulos\Academico\Events\DeleteVinculoTutorEvent::class,
+
+            'local_integracao_v2_enrol_tutor' => \Modulos\Academico\Events\CreateVinculoTutorEvent::class,
+            'local_integracao_v2_unenrol_tutor_group' => \Modulos\Academico\Events\DeleteVinculoTutorEvent::class,
         ],
 
         'Pessoa' => [
-            'local_integracao_update_user' => \Modulos\Geral\Events\UpdatePessoaEvent::class
+            'local_integracao_update_user' => \Modulos\Geral\Events\UpdatePessoaEvent::class,
+
+            'local_integracao_v2_update_user' => \Modulos\Geral\Events\UpdatePessoaEvent::class
         ],
     ];
 
@@ -75,18 +102,18 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
     /**
      * Recria o evento correspodente para a classe passada
-     * @throws \Exception
      * @param Sincronizacao $sincronizacao
      * @return \Harpia\Event\SincronizacaoEvent
+     * @throws \Exception
      */
     final private static function makeEvent(Sincronizacao $sincronizacao)
     {
-        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action);
+        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action, $sincronizacao->sym_version);
 
         $dependencies = self::getDependencies($sincronizacao);
         $eventClass = self::getEventClass($endpoint);
 
-        return new $eventClass($dependencies['entry'], $dependencies['extra']);
+        return new $eventClass($dependencies['entry'], $dependencies['extra'], $sincronizacao->sym_version);
     }
 
     /**
@@ -95,10 +122,14 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @param $action
      * @return string
      */
-    final private static function getEventEndpoint($table, $action)
+    final private static function getEventEndpoint($table, $action, $version)
     {
         if (isset(self::ENDPOINTS[$table][$action])) {
-            return self::ENDPOINTS[$table][$action];
+
+            if ($version == 'v1') {
+                return self::ENDPOINTS[$table][$action];
+            }
+            return self::ENDPOINTS_V2[$table][$action];
         }
 
         return "";
@@ -106,13 +137,13 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
 
     /**
      * Resolve as dependencias para um evento especifico
-     * @throws \Exception
      * @param Sincronizacao $sincronizacao
      * @return array
+     * @throws \Exception
      */
     final private static function getDependencies(Sincronizacao $sincronizacao)
     {
-        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action);
+        $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action, $sincronizacao->sym_version);
         $isDelete = self::isDeleteEvent($sincronizacao);
 
         return [
@@ -142,6 +173,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      */
     final public static function getEventEntry($endpoint, $id, $isDelete = false)
     {
+
         if (in_array($endpoint, array_keys(self::EVENTS['Turma']))) {
             return !$isDelete ? Turma::find($id) : self::mockDeletedEntry(Turma::class, 'trm_id', $id);
         }
@@ -170,6 +202,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
             return Pessoa::find($id);
         }
 
+
         throw new \Exception("Endpoint não corresponde a nenhum evento mapeado");
     }
 
@@ -191,8 +224,8 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
     /**
      * Retorna a classe correspondente ao evento
      * @param $endpoint
-     * @throws \Exception
      * @return string
+     * @throws \Exception
      */
     final private static function getEventClass($endpoint)
     {

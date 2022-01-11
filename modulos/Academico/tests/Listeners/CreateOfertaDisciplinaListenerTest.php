@@ -104,7 +104,8 @@ class CreateOfertaDisciplinaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
         ];
 
 
@@ -128,7 +129,7 @@ class CreateOfertaDisciplinaListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $turmaMapeadaListener = $this->app->make(\Modulos\Integracao\Listeners\TurmaMapeadaListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($turmaMapeadaEvent);
         $turmaMapeadaListener->handle($turmaMapeadaEvent);
@@ -161,7 +162,7 @@ class CreateOfertaDisciplinaListenerTest extends ModulosTestCase
 
         $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
-        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
+        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina, null, $this->ofertaDisciplina->turma_trm_tipo_integracao);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [
@@ -199,7 +200,7 @@ class CreateOfertaDisciplinaListenerTest extends ModulosTestCase
 
         $this->assertEquals(1, $this->sincronizacaoRepository->count());
 
-        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina);
+        $createOfertaDisciplinaEvent = new CreateOfertaDisciplinaEvent($this->ofertaDisciplina, null, $this->ofertaDisciplina->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($createOfertaDisciplinaEvent);
 
         $this->assertDatabaseHas('int_sync_moodle', [

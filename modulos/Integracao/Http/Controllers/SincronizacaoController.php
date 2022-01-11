@@ -36,6 +36,7 @@ class SincronizacaoController extends BaseController
                 'sym_status' => 'Status',
                 'sym_mensagem' => 'Mensagem',
                 'sym_data_envio' => 'Data de Envio',
+                'sym_version' => 'Versão',
                 'sym_actions' => 'Ações'
             ))->modifyCell('sym_actions', function () {
                 return array('style' => 'width: 140px;');

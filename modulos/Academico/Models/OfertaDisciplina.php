@@ -16,7 +16,8 @@ class OfertaDisciplina extends BaseModel
         'ofd_per_id',
         'ofd_prf_id',
         'ofd_tipo_avaliacao',
-        'ofd_qtd_vagas'
+        'ofd_qtd_vagas',
+        'ofd_tipo_integracao'
     ];
 
     protected $searchable = [

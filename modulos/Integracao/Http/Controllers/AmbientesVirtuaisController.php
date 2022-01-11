@@ -2,6 +2,9 @@
 
 namespace Modulos\Integracao\Http\Controllers;
 
+use Modulos\Academico\Events\CreateGrupoEvent;
+use Modulos\Academico\Events\CreateMatriculaTurmaEvent;
+use Modulos\Academico\Events\CreateVinculoTutorEvent;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Integracao\Events\TurmaRemovidaEvent;
 use Modulos\Integracao\Events\TurmaMapeadaEvent;
@@ -38,7 +41,8 @@ class AmbientesVirtuaisController extends BaseController
         CursoRepository $cursoRepository,
         AmbienteTurmaRepository $ambienteTurmaRepository,
         TurmaRepository $turmaRepository
-    ) {
+    )
+    {
         $this->ambienteVirtualRepository = $ambienteVirtualRepository;
         $this->servicoRepository = $servicoRepository;
         $this->ambienteServicoRepository = $ambienteServicoRepository;
@@ -99,6 +103,14 @@ class AmbientesVirtuaisController extends BaseController
                                 'route' => 'integracao.ambientesvirtuais.edit',
                                 'parameters' => ['id' => $id],
                                 'label' => 'Editar',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-circle-o-notch',
+                                'route' => 'integracao.ambientesvirtuais.controleversao',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Controle de Versão',
                                 'method' => 'get'
                             ],
                             [
@@ -391,7 +403,7 @@ class AmbientesVirtuaisController extends BaseController
                 $turma = $this->turmaRepository->find($dados['atr_trm_id']);
 
                 if ($turma->trm_integrada) {
-                    event(new TurmaMapeadaEvent($turma));
+                    event(new TurmaMapeadaEvent($turma, null, $turma->trm_tipo_integracao));
                 }
 
                 return redirect()->back();
@@ -429,7 +441,7 @@ class AmbientesVirtuaisController extends BaseController
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
             if ($turma->trm_integrada) {
-                event(new TurmaRemovidaEvent($turma, $ambiente));
+                event(new TurmaRemovidaEvent($turma, $ambiente, $turma->trm_tipo_integracao));
             }
 
             flash()->success('Turma excluída com sucesso.');
@@ -451,4 +463,85 @@ class AmbientesVirtuaisController extends BaseController
             return redirect()->back();
         }
     }
+
+
+    public function getControleVersao($ambienteId)
+    {
+        $ambiente = $this->ambienteVirtualRepository->find($ambienteId);
+
+        if (!$ambiente) {
+            flash()->error('Ambiente não existe!');
+            return redirect()->back();
+        }
+
+        $ambServicos = new AmbienteServico();
+        $idsAmbientesAdicionados = $ambServicos
+            ->where("asr_amb_id", "=", $ambienteId)
+            ->get()->pluck("asr_ser_id")->toArray();
+
+        $servicoModel = new Servico();
+
+        $servicos = $servicoModel->whereNotIn("ser_id", $idsAmbientesAdicionados)->pluck('ser_nome', 'ser_id');
+        $servicosdoambiente = $ambiente->servicos;
+
+        return view('Integracao::ambientesvirtuais.controleversao', compact('ambiente'));
+    }
+
+    public function postControleVersao($id, Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+//            dd('parou');
+
+            $ambienteTurma = $this->ambienteTurmaRepository->find($id);
+
+            $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
+
+            $turma->trm_tipo_integracao = 'v2';
+            $turma->save();
+
+            //mapeamento da turma
+            event(new TurmaMapeadaEvent($turma, null, $turma->trm_tipo_integracao));
+
+            //mapeamento dos grupo
+            $grupos = $turma->grupos;
+            foreach ($grupos as $grupo) {
+
+                event(new CreateGrupoEvent($grupo, null, $turma->trm_tipo_integracao));
+                $movimentacoes = $grupo->movimentacoes;
+
+                //mapeamento dos tutores
+                foreach ($movimentacoes as $movimentacao) {
+                    event(new CreateVinculoTutorEvent($movimentacao, null, $turma->trm_tipo_integracao));
+
+                }
+
+            }
+
+            //mapeamento das matrículas
+            $matriculas = $turma->matriculas;
+            foreach ($matriculas as $matricula) {
+                event(new CreateMatriculaTurmaEvent($matricula, null, $turma->trm_tipo_integracao));
+
+            }
+
+            $ambiente = $turma->ambientes->first()->amb_id;
+
+            flash()->success('Versão alterada com sucesso.');
+
+            DB::commit();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar alterar a versão de integração da turma.');
+            return redirect()->back();
+        }
+    }
+
 }

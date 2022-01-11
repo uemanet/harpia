@@ -7,8 +7,8 @@ use Modulos\Academico\Models\TutorGrupo;
 
 class DeleteVinculoTutorEvent extends SincronizacaoEvent
 {
-    public function __construct(TutorGrupo $entry, $extra = null)
+    public function __construct(TutorGrupo $entry, $extra = null, $version)
     {
-        parent::__construct($entry, "DELETE", $extra);
+        parent::__construct($entry, "DELETE", $extra, $version);
     }
 }
