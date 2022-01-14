@@ -10,12 +10,6 @@ class PeriodoLetivoSeeder extends Seeder
     public function run()
     {
         $periodo = new PeriodoLetivo();
-        $periodo->per_nome = '2020.1';
-        $periodo->per_inicio = '01/02/2020';
-        $periodo->per_fim = '30/06/2020';
-        $periodo->save();
-
-        $periodo = new PeriodoLetivo();
         $periodo->per_nome = '2020.2';
         $periodo->per_inicio = '01/08/2020';
         $periodo->per_fim = '10/12/2020';
@@ -31,6 +25,12 @@ class PeriodoLetivoSeeder extends Seeder
         $periodo->per_nome = '2021.2';
         $periodo->per_inicio = '01/08/2021';
         $periodo->per_fim = '12/12/2021';
+        $periodo->save();
+
+        $periodo = new PeriodoLetivo();
+        $periodo->per_nome = '2022.1';
+        $periodo->per_inicio = '10/01/2022';
+        $periodo->per_fim = '30/06/2022';
         $periodo->save();
     }
 }
