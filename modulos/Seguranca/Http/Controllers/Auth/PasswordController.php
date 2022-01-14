@@ -91,6 +91,7 @@ class PasswordController extends Controller
                 'email' => $request->email,
                 'token' => $request->token
             ])
+            ->where('created_at', '>', date('Y-m-d', strtotime("-30 minutes")))
             ->first();
 
         if(!$updatePassword){
