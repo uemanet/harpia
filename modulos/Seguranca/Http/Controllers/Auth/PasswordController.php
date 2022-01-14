@@ -47,8 +47,6 @@ class PasswordController extends Controller
     public function postForgetPassword(ForgetPasswordRequest $request)
     {
 
-
-
         $user = DB::table('seg_usuarios')
             ->join('gra_pessoas', function ($join) {
                 $join->on('usr_pes_id', '=', 'pes_id');
@@ -57,15 +55,12 @@ class PasswordController extends Controller
             ->first();
 
 
-
         if(!$user){
             flash()->error('Não encontramos um usuário com esse e-mail');
             return back();
         }
 
         $token = Str::random(64);
-
-
 
         $password_reset = DB::table('seg_password_resets')->insert([
             'email' => $request->email,

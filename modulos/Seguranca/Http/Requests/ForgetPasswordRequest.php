@@ -24,9 +24,16 @@ class ForgetPasswordRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'email' => 'required|email'
+            'email' => 'required|email|exists:Modulos\Geral\Models\Pessoa,pes_email'
         ];
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'email.exists' => 'Este email não está cadastrado na base de dados',
+        ];
     }
 }
