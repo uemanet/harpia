@@ -37,7 +37,7 @@ class SelecionaModulosController extends BaseController
             'usr_usuario' => $user->usr_usuario
         );
 
-        if ($modulos->count() == 1 && env('REDIRECT_MODULE')) {
+        if ($modulos->count() == 1) {
             $modulo = current($modulos);
             $modulo = array_pop($modulo);
             return redirect()->route($modulo->mod_slug.'.index.index');
