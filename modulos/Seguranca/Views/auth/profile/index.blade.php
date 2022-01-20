@@ -36,14 +36,14 @@
             <div class="col-md-9">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#dados" data-toggle="tab">Dados pessoais</a></li>
+                        <li class="@if (!$errors->has('usr_senha') and !$errors->has('usr_senha_nova') and !$errors->has('usr_senha_nova_confirmation')) active @endif"><a href="#dados" data-toggle="tab">Dados pessoais</a></li>
                         <li><a href="#endereco" data-toggle="tab">Endereço</a></li>
-                        <li><a href="#senha" data-toggle="tab">Alterar Senha</a></li>
+                        <li class = "@if ($errors->has('usr_senha') or $errors->has('usr_senha_nova') or $errors->has('usr_senha_nova_confirmation')) active @endif"><a href="#senha" data-toggle="tab">Alterar Senha</a></li>
                         <li><a href="#foto" data-toggle="tab">Alterar Foto</a></li>
                     </ul>
                     <div class="tab-content">
 
-                        <div class="tab-pane active" id="dados">
+                        <div class="tab-pane @if (!$errors->has('usr_senha') and !$errors->has('usr_senha_nova') and !$errors->has('usr_senha_nova_confirmation')) active @endif" id="dados">
                             {!! Form::model($usuario->pessoa,["route" => ['seguranca.profile.edit'], "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal"]) !!}
                             <div class="form-group @if ($errors->has('pes_nome')) has-error @endif">
                                 {!! Form::label('pes_nome', 'Nome completo*', ['class' => 'col-sm-3 control-label']) !!}
@@ -427,7 +427,9 @@
                         </div>
                         <!-- /.tab-pane -->
 
-                        <div class="tab-pane" id="senha">
+
+
+                        <div class="tab-pane @if ($errors->has('usr_senha') or $errors->has('usr_senha_nova') or $errors->has('usr_senha_nova_confirmation')) active @endif" id="senha">
                             {!! Form::model($usuario->pessoa,["route" => "seguranca.profile.updatepassword", "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal"]) !!}
                             <div class="form-group @if ($errors->has('usr_senha')) has-error @endif">
                                 {!! Form::label('usr_senha', 'Senha atual*', ['class' => 'col-sm-3 control-label']) !!}
