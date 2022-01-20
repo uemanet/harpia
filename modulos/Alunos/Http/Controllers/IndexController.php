@@ -106,11 +106,20 @@ class IndexController extends Controller
         }
 
         $periodo = $this->periodoLetivoRepository->getPeriodoAtual();
+        if(sizeof($periodo) === 0){
+            flash()->error('O período vigente não possui período letivo cadastrado');
+            return redirect()->back();
+        }
         $disciplinasCursadas = $this->matriculaOfertaDisciplinaRepository->findBy([
             ['mof_mat_id', '=', $matricula->mat_id],
             ['mof_situacao_matricula', '<>', 'cancelado'],
             ['ofd_per_id', '=', $periodo->per_id]
         ], null, ['dis_nome' => 'asc', 'mdo_id' => 'asc']);
+
+        if(sizeof($disciplinasCursadas) === 0){
+            flash()->error('Você não está cadastrado em disciplinas no período letivo atual');
+            return redirect()->back();
+        }
 
         $curso = $matricula->turma->ofertacurso->curso;
 
