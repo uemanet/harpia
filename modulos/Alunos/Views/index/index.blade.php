@@ -20,7 +20,6 @@
 
                     <h3 class="profile-username text-center">{{$aluno->pessoa->pes_nome}}</h3>
 
-                    <p class="text-muted text-center">Software Engineer</p>
 
                 </div>
                 <!-- /.box-body -->
