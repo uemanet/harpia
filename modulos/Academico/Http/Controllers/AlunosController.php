@@ -14,18 +14,24 @@ use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use ActionButton;
+use Modulos\Seguranca\Repositories\UsuarioRepository;
 
 class AlunosController extends BaseController
 {
     protected $alunoRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
+    protected $usuarioRepository;
 
-    public function __construct(AlunoRepository $aluno, PessoaRepository $pessoa, DocumentoRepository $documento)
+    public function __construct(AlunoRepository $aluno,
+                                PessoaRepository $pessoa,
+                                DocumentoRepository $documento,
+                                UsuarioRepository $usuario)
     {
         $this->alunoRepository = $aluno;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
+        $this->usuarioRepository = $usuario;
     }
 
     public function getIndex(Request $request)
@@ -184,6 +190,15 @@ class AlunosController extends BaseController
             }
 
             $aluno = $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
+
+            $dataUsuario = array(
+                'usr_usuario' => $cpf,
+                'usr_senha' => $cpf,
+                'usr_ativo' => 1,
+                'usr_pes_id' => $pes_id
+            );
+
+            $this->usuarioRepository->create($dataUsuario);
 
             DB::commit();
 

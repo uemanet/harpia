@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\TipoDocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
+use Modulos\Seguranca\Repositories\UsuarioRepository;
 use Validator;
 
 class DocumentosController extends BaseController
@@ -18,10 +19,14 @@ class DocumentosController extends BaseController
     protected $tipodocumentoRepository;
     protected $pessoaRepository;
     protected $anexoRepository;
+    protected $usuarioRepository;
 
     public function __construct(DocumentoRepository $documentoRepository,
                                 TipoDocumentoRepository $tipodocumentoRepository,
-                                PessoaRepository $pessoaRepository, AnexoRepository $anexoRepository)
+                                PessoaRepository $pessoaRepository,
+                                AnexoRepository $anexoRepository,
+                                UsuarioRepository $usuarioRepository
+    )
     {
         $this->documentoRepository = $documentoRepository;
         $this->tipodocumentoRepository = $tipodocumentoRepository;

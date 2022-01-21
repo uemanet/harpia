@@ -99,6 +99,25 @@ class AnexoRepository extends BaseRepository
     }
 
     /**
+     * @param $anexoId
+     * @return null
+     */
+    public function recoveryProfilePictureLocation($anexoId)
+    {
+        $anexo = $this->find($anexoId);
+
+        if (!$anexo) {
+            $anexo = 'error_non_existent';
+            return $anexo;
+        }
+
+        list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
+
+        $caminhoArquivo = $this->basePath . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . $anexo->anx_localizacao. ".".$anexo->anx_extensao;
+        return $caminhoArquivo;
+    }
+
+    /**
      * Atualiza o registro de um anexo
      * @param $anexoId
      * @param UploadedFile $uploadedFile
@@ -154,6 +173,7 @@ class AnexoRepository extends BaseRepository
             }
         }
     }
+    
 
     /**
      * Deleta um anexo do servidor e seu registro no banco
