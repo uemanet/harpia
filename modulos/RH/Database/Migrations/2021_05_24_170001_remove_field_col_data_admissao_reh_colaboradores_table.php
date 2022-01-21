@@ -25,7 +25,7 @@ class RemoveFieldColDataAdmissaoRehColaboradoresTable extends Migration
     public function down()
     {
         Schema::table('reh_colaboradores', function (Blueprint $table) {
-            $table->date('col_data_admissao');
+            $table->date('col_data_admissao')->nullable();
         });
     }
 }

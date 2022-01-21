@@ -43,7 +43,7 @@
                     </form>
                 </div>
                 <div class="box-footer" style="padding-top:5px">
-                    <a class="text-right col-md-12" href="#">Esqueceu sua senha?</a>
+                    <a class="text-right col-md-12" href="{{url('/forget-password')}}">Esqueceu sua senha?</a>
                 </div>
             </div>
         </div>

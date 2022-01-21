@@ -5,21 +5,34 @@ namespace Modulos\Seguranca\Http\Controllers\Auth;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Http\Requests\ProfileRequest;
+use Modulos\Seguranca\Http\Requests\UpdateProfilePictureRequest;
+use Modulos\Seguranca\Repositories\UsuarioRepository;
 use Validator;
 
 class ProfileController extends BaseController
 {
     protected $auth;
     protected $pessoaRepository;
+    protected $anexoRepository;
+    protected $usuarioRepository;
 
-    public function __construct(Guard $auth, PessoaRepository $pessoaRepository)
+    public function __construct(Guard $auth,
+                                PessoaRepository $pessoaRepository,
+                                AnexoRepository $anexoRepository,
+                                UsuarioRepository $usuarioRepository
+    )
     {
         $this->auth = $auth;
         $this->pessoaRepository = $pessoaRepository;
+        $this->anexoRepository = $anexoRepository;
+        $this->usuarioRepository = $usuarioRepository;
     }
 
     public function getIndex()
@@ -126,6 +139,74 @@ class ProfileController extends BaseController
             flash()->success('Senha atualizada com sucesso.');
 
             return redirect()->route('index');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            flash()->error('Não foi possível alterar a senha. Por favor, tente novamente.');
+
+            return redirect()->back()->withErrors($e->validator);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            } else {
+                flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+
+                return redirect()->back();
+            }
+        }
+    }
+
+    public function getProfilePicture($pictureId)
+    {
+
+        if (!(int)$pictureId) {
+            return Response::download(public_path('/img/avatar.png'));
+        }
+
+        $anexo = $this->anexoRepository->recuperarAnexo($pictureId);
+
+        if ($anexo == 'error_non_existent') {
+            return Response::download(public_path('/img/avatar.png'));
+        }
+
+        return $anexo;
+    }
+
+
+    public function putPicture(UpdateProfilePictureRequest $request)
+    {
+        try {
+            $anexoDocumento = $request->file('usr_picture');
+
+            $oldPicture = $this->auth->user()->usr_profile_picture_id;
+
+
+            $anexo = $this->anexoRepository->salvarAnexo($anexoDocumento);
+
+            if ($anexo['type'] == 'error_exists') {
+                flash()->error($anexo['message']);
+                return redirect()->back()->withInput($request->all());
+            }
+            if (!$anexo) {
+                flash()->error('ocorreu um problema ao salvar o arquivo');
+                return redirect()->back()->withInput($request->all());
+            }
+            $dados['usr_profile_picture_id'] = $anexo->anx_id;
+
+            if (!$this->usuarioRepository->update($dados, $this->auth->user()->usr_id, 'usr_id')) {
+                DB::rollBack();
+                flash()->error('Erro ao tentar atualizar');
+                return redirect()->back()->withInput($request->all());
+            }
+
+            if ($oldPicture) {
+                $this->anexoRepository->deletarAnexo($this->auth->user()->usr_profile_picture_id);
+            }
+
+            DB::commit();
+
+            flash()->success('Documento atualizado com sucesso.');
+
+            return redirect()->back();
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             flash()->error('Não foi possível alterar a senha. Por favor, tente novamente.');
 

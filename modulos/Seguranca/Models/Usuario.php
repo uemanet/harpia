@@ -36,7 +36,7 @@ class Usuario extends BaseModel implements
      *
      * @var array
      */
-    protected $fillable = ['usr_usuario', 'usr_senha', 'usr_ativo', 'usr_pes_id'];
+    protected $fillable = ['usr_usuario', 'usr_senha', 'usr_ativo', 'usr_pes_id', 'usr_profile_picture_id'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -65,6 +65,11 @@ class Usuario extends BaseModel implements
     public function pessoa()
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'usr_pes_id', 'pes_id');
+    }
+
+    public function aluno()
+    {
+        return $this->hasOne('Modulos\Academico\Models\Aluno', 'alu_pes_id', 'usr_pes_id');
     }
 
     /**

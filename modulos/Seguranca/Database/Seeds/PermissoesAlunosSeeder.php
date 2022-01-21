@@ -25,6 +25,18 @@ class PermissoesAlunosSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        $permissao = Permissao::create([
+            'prm_nome' => 'comprovante de matrícula',
+            'prm_rota' => 'alunos.comprovante.matricula'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'histórico parcial',
+            'prm_rota' => 'alunos.comprovante.historico'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         $perfil->permissoes()->attach($arrPermissoes);
         $perfil->usuarios()->attach(1);
 
