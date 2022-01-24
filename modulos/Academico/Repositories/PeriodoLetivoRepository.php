@@ -97,4 +97,12 @@ class PeriodoLetivoRepository extends BaseRepository
 
         return false;
     }
+
+    public function getPeriodoAtual()
+    {
+        return $this->model
+            ->where('per_inicio', '<=', date('Y-m-d'))
+            ->where('per_fim', '>=', date('Y-m-d'))
+            ->first();
+    }
 }

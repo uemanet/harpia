@@ -106,7 +106,8 @@ class UpdatePessoaListenerTest extends ModulosTestCase
             'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
             'trm_nome' => "Turma de Teste",
             'trm_integrada' => 1,
-            'trm_qtd_vagas' => 50
+            'trm_qtd_vagas' => 50,
+            'trm_tipo_integracao' => 'v1'
         ];
 
 
@@ -121,7 +122,7 @@ class UpdatePessoaListenerTest extends ModulosTestCase
         // Mapeia a turma
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
-        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma);
+        $turmaMapeadaEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
         $sincronizacaoListener->handle($turmaMapeadaEvent);
     }
 
@@ -150,7 +151,7 @@ class UpdatePessoaListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $this->assertEquals(1, Sincronizacao::all()->count());
         $pessoa = Pessoa::all()->first();
-        $updatePessoaEvent = new UpdatePessoaEvent($pessoa, $this->ambiente->amb_id);
+        $updatePessoaEvent = new UpdatePessoaEvent($pessoa, $this->ambiente->amb_id, 'v1');
         $sincronizacaoListener->handle($updatePessoaEvent);
         $this->assertEquals(2, Sincronizacao::all()->count());
         $updatePessoaListener = $this->app->make(\Modulos\Geral\Listeners\UpdatePessoaListener::class);
@@ -175,7 +176,7 @@ class UpdatePessoaListenerTest extends ModulosTestCase
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
         $this->assertEquals(1, Sincronizacao::all()->count());
         $pessoa = Pessoa::all()->first();
-        $updatePessoaEvent = new UpdatePessoaEvent($pessoa, $this->ambiente->amb_id);
+        $updatePessoaEvent = new UpdatePessoaEvent($pessoa, $this->ambiente->amb_id, 'v1');
         $sincronizacaoListener->handle($updatePessoaEvent);
         $this->assertEquals(2, Sincronizacao::all()->count());
         $updatePessoaListener = $this->app->make(\Modulos\Geral\Listeners\UpdatePessoaListener::class);

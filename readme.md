@@ -62,11 +62,11 @@ Por fim execute o comando abaixo parar criar uma chave para a aplicação:
 
 Nosso último passo é executar os comandos para criar a base de dados do sistema. Você pode com um único comando executar as migrations que irão criar as tabelas do banco de dados e também popular as tabelas básicas para o sistema em produção. O comando é:
 
-    modulos:migrate --seed=prod
+    php artisan modulos:migrate --seed=prod
 
 Caso queira, você pode executar um comando para criar as tabelas e populá-las com dados fictícios. Isso é muito bom para fins de desenvolvimento e também para conhecer as funcionalidades do sistema, uma vez que vários dados serão criados de forma prática. O comando está logo abaixo:
 
-    modulos:migrate --seed=dev
+    php artisan modulos:migrate --seed=dev
 
 Pronto! Se você seguiu todos os passos corretamente o sistema já está disponível para você. Para fazer login utilize as credenciais abaixo:
 

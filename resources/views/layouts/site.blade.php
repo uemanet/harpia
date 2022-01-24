@@ -30,6 +30,7 @@
 <script src="{{ asset('/js/bootstrap.min.js')}}"></script>
 <script src="{{ asset('/js/plugins/icheck/icheck.min.js')}}"></script>
 
+
 @section('scripts')
     <script>
         $(function () {
@@ -40,6 +41,9 @@
             });
         });
     </script>
+
+    {!! Flash::render() !!}
+
 @show
 </body>
 </html>

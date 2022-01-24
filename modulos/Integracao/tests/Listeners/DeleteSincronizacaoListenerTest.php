@@ -113,7 +113,7 @@ class DeleteSincronizacaoListenerTest extends ModulosTestCase
     {
         $sincronizacaoListener = $this->app->make(\Modulos\Integracao\Listeners\SincronizacaoListener::class);
 
-        $syncEvent = new TurmaMapeadaEvent($this->turma);
+        $syncEvent = new TurmaMapeadaEvent($this->turma, null, $this->turma->trm_tipo_integracao);
 
         $sincronizacaoListener->handle($syncEvent);
 

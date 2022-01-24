@@ -14,16 +14,19 @@ use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Events\CreateMatriculaDisciplinaLoteEvent;
 use Modulos\Academico\Repositories\MatriculaOfertaDisciplinaRepository;
 use Modulos\Integracao\Repositories\AmbienteVirtualRepository;
+use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 
 class MatriculaOfertaDisciplina extends BaseController
 {
     protected $matriculaOfertaDisciplinaRepository;
+    protected $ofertaDisciplinaRepository;
     protected $matriculaCursoRepository;
     protected $ambienteRepository;
 
-    public function __construct(MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository, MatriculaCursoRepository $matriculaCursoRepository, AmbienteVirtualRepository $ambienteRepository)
+    public function __construct(MatriculaOfertaDisciplinaRepository $matriculaOfertaDisciplinaRepository, OfertaDisciplinaRepository $ofertaDisciplinaRepository, MatriculaCursoRepository $matriculaCursoRepository, AmbienteVirtualRepository $ambienteRepository)
     {
         $this->matriculaOfertaDisciplinaRepository = $matriculaOfertaDisciplinaRepository;
+        $this->ofertaDisciplinaRepository = $ofertaDisciplinaRepository;
         $this->matriculaCursoRepository = $matriculaCursoRepository;
         $this->ambienteRepository = $ambienteRepository;
     }
@@ -81,7 +84,8 @@ class MatriculaOfertaDisciplina extends BaseController
 
             if ($turma->trm_integrada) {
                 if (!empty($matriculasCollection)) {
-                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection));
+                    $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
+                    event(new CreateMatriculaDisciplinaLoteEvent($matriculasCollection, 'CREATE', null, $oferta->ofd_tipo_integracao));
                 }
             }
 
@@ -126,11 +130,12 @@ class MatriculaOfertaDisciplina extends BaseController
 
             if ($turma->trm_integrada) {
                 if (!$ambiente) {
-                  return new JsonResponse('Turma não vinculada a um Ambiente Virtual!', 200);
+                    return new JsonResponse('Turma não vinculada a um Ambiente Virtual!', 200);
                 }
                 DB::commit();
                 if (!empty($matriculasCollection)) {
-                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id));
+                    $oferta = $this->ofertaDisciplinaRepository->find($ofertaId);
+                    event(new DeleteMatriculaDisciplinaLoteEvent($matriculasCollection, "DELETE", $ambiente->amb_id, $oferta->ofd_tipo_integracao));
                 }
             }
             DB::commit();
@@ -177,7 +182,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculas)) {
                     foreach ($matriculas as $obj) {
-                        event(new CreateMatriculaDisciplinaEvent($obj));
+                        event(new CreateMatriculaDisciplinaEvent($obj, null, $obj->ofertaDisciplina->ofd_tipo_integracao));
                     }
                 }
             }
@@ -229,7 +234,7 @@ class MatriculaOfertaDisciplina extends BaseController
             if ($turma->trm_integrada) {
                 if (!empty($matriculas)) {
                     foreach ($matriculas as $obj) {
-                        event(new DeleteMatriculaDisciplinaEvent($obj, $ambiente->amb_id ));
+                        event(new DeleteMatriculaDisciplinaEvent($obj, $ambiente->amb_id, $obj->ofertaDisciplina->ofd_tipo_integracao));
                     }
                 }
             }

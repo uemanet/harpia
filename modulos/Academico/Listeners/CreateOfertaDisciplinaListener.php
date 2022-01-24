@@ -48,6 +48,10 @@ class CreateOfertaDisciplinaListener
                 return;
             }
 
+            if ($oferta->turma->trm_tipo_integracao != 'v1') {
+                return;
+            }
+
             // Web service de integracao
             $ambServico = $ambiente->integracao();
 
@@ -79,10 +83,12 @@ class CreateOfertaDisciplinaListener
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
-                $param['functionname'] = $event->getEndpoint();
+                $param['functionname'] = $event->getEndpointV2();
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
+
+
                 $status = 3;
 
                 if (array_key_exists('status', $response) && $response['status'] == 'success') {

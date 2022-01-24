@@ -170,7 +170,7 @@ class GruposController extends BaseController
             $turma = $this->turmaRepository->find($grupo->grp_trm_id);
 
             if ($turma->trm_integrada) {
-                event(new CreateGrupoEvent($grupo));
+                event(new CreateGrupoEvent($grupo, null, $turma->trm_tipo_integracao));
             }
 
             flash()->success('Grupo criado com sucesso.');
@@ -240,7 +240,7 @@ class GruposController extends BaseController
 
             if ($turma->trm_integrada) {
                 $grupoAtt = $this->grupoRepository->find($id);
-                event(new UpdateGrupoEvent($grupoAtt));
+                event(new UpdateGrupoEvent($grupoAtt, null, $turma->trm_tipo_integracao));
             }
 
             flash()->success('Grupo atualizado com sucesso.');
@@ -271,7 +271,7 @@ class GruposController extends BaseController
             $ambiente = $this->ambienteRepository->getAmbienteByTurma($turmaId);
 
             if ($ambiente) {
-                event(new DeleteGrupoEvent($grupo, $ambiente->amb_id));
+                event(new DeleteGrupoEvent($grupo, $ambiente->amb_id, $grupo->turma->trm_tipo_integracao));
             }
 
             flash()->success('Grupo excluído com sucesso.');
