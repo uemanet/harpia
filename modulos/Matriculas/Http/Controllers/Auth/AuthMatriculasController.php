@@ -1,11 +1,8 @@
 <?php
 
-namespace Modulos\Seguranca\Http\Controllers\Auth;
+namespace Modulos\Matriculas\Http\Controllers\Auth;
 
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Support\Facades\Cache;
-use Modulos\Seguranca\Events\LogoutOtherDevicesEvent;
-use Modulos\Seguranca\Events\ReloadCacheEvent;
 use Modulos\Seguranca\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

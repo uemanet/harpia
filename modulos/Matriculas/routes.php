@@ -1,5 +1,10 @@
 <?php
 
+Route::get('matriculas-alunos/', '\Modulos\Matriculas\Http\Controllers\Auth\AuthMatriculasController@logout')->name('auth.matriculas-alunos.alunos');
+Route::get('matriculas-alunos/login', '\Modulos\Matriculas\Http\Controllers\Auth\AuthMatriculasController@showLoginForm')->name('auth.matriculas-alunos.login');
+Route::post('matriculas-alunos/login', '\Modulos\Matriculas\Http\Controllers\Auth\AuthMatriculasController@postLogin')->name('auth.matriculas-alunos.login');
+Route::get('matriculas-alunos/logout', '\Modulos\Matriculas\Http\Controllers\Auth\AuthMatriculasController@logout')->name('auth.matriculas-alunos.logout');
+
 Route::group(['prefix' => 'matriculas', 'middleware' => ['auth']], function () {
 
     Route::get('/', '\Modulos\Matriculas\Http\Controllers\SeletivoController@getIndex')->name('matriculas.index.index');
