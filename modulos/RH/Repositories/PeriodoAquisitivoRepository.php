@@ -47,7 +47,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
             $fimPeriodoAdquirido = $this->getDate('1 year', $inicioPeriodoAdquirido);
 
             $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
-            $finalPeriodo = $this->getDate('+11 months', $inicioPeriodo);
+            $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
 
             $feriasPeriodos = $this->model
                 ->where('paq_data_inicio' , '>', $inicioPeriodo)
@@ -108,7 +108,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
         $inicioPeriodo = $this->getDate('+0 year', $matricula_colaborador->getOriginal('mtc_data_inicio'));
         while (1){
             $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
-            $finalPeriodo = $this->getDate('+11 months', $inicioPeriodo);
+            $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
 
             $inicioTimestamp = strtotime($inicioPeriodo);
             $fimTimestamp = strtotime($finalPeriodo);
@@ -143,7 +143,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
         $inicioPeriodo = $this->getDate('+0 year', $colaborador->getOriginal('col_data_admissao'));
         while (1){
             $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
-            $finalPeriodo = $this->getDate('+11 months', $inicioPeriodo);
+            $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
             $finalAno = $this->getDate('+12 months', $inicioPeriodo);
 
             $data['inicio'] = date('d/m/Y',strtotime($inicioPeriodo));

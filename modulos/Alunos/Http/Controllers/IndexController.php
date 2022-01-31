@@ -106,7 +106,7 @@ class IndexController extends Controller
         }
 
         $periodo = $this->periodoLetivoRepository->getPeriodoAtual();
-        if(sizeof($periodo) === 0){
+        if($periodo->exists() === 0){
             flash()->error('O período vigente não possui período letivo cadastrado');
             return redirect()->back();
         }

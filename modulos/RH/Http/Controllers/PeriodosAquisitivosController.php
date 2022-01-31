@@ -155,7 +155,7 @@ class PeriodosAquisitivosController extends BaseController
         }
     }
 
-    public function putConfirm($periodo_aquisitivoId, PeriodoAquisitivoRequest $request)
+    public function putConfirm($periodo_aquisitivoId, Request $request)
     {
         try {
             $periodo_aquisitivo = $this->periodoAquisitivoRepository->find($periodo_aquisitivoId);
