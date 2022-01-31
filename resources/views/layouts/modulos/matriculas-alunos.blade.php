@@ -28,13 +28,66 @@
 <div class="wrapper">
 
     <header class="main-header">
-        @include('layouts.matriculas-alunos.includes.logo')
+        <!-- Logo -->
+        <a href="{{route('matriculas-alunos.index.alunos')}}" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>M</b>AT</span>
+            <!-- logo for regular state and mobile devices -->
+            <span style="background-color: #3c8dbc" class="logo-lg"><b>Matrículas</span>
+        </a>
 
-        @include('layouts.matriculas-alunos.includes.header_rightmenu')
+        <nav class="navbar navbar-static-top">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="{{url('/')}}/img/avatar.png" class="user-image" alt="User Image">
+                            <span class="hidden-xs">{{ Auth::guard('matriculas-alunos')->user()->nome }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="user-header">
+                                <img src="{{url('/')}}/img/avatar.png" alt="User Image" class="img-circle">
+                                <p>{{ Auth::guard('matriculas-alunos')->user()->nome }}</p>
+                            </li>
+                            <li class="user-footer">
+
+                                <div class="pull-right">
+                                    <a href="{{ route('auth.matriculas-alunos.logout') }}" class="btn btn-default btn-flat">
+                                        <i class="fa fa-sign-out"></i> Sair
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </header>
 
     <!-- Left side column. contains the main navigation menu-->
-    @include('layouts.matriculas-alunos.includes.left')
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar" style="height: auto;">
+
+            <ul class="sidebar-menu tree" data-widget="tree">
+
+
+                <li class="active">
+                    <a href="{{route('matriculas-alunos.index.alunos')}}">
+                        <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        <span class="pull-right-container">
+
+            </span>
+                    </a>
+                </li>
+
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -55,7 +108,12 @@
     </div><!-- /.content-wrapper -->
 
     <!-- Footer bar. -->
-    @include('layouts.matriculas-alunos.includes.footer')
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Versão</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2006-{{ date('Y') }} <a href="http://www.uemanet.uema.br">UemaNet</a>.</strong> Todos os direitos reservados.
+    </footer>
 
 </div><!-- ./wrapper -->
 
