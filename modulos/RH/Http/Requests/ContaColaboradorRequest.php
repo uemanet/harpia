@@ -26,7 +26,7 @@ class ContaColaboradorRequest extends BaseRequest
     {
         return [
             'ccb_ban_id' => 'required|integer',
-            'ccb_agencia' => 'required|integer',
+            'ccb_agencia' => 'required|string',
             'ccb_conta' => 'required|string',
             'ccb_variacao' => 'required|integer'
         ];

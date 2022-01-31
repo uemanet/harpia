@@ -117,7 +117,7 @@ class SincronizacaoController extends BaseController
                 $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
                 $url .= $ambiente->integracao()->asr_token . '&wsfunction=local_integracao_get_user&moodlewsrestformat=json';
 
-                $client = new Client();
+                $client = new Client(['verify' => false ]);
 
                 $response = $client->request('POST', $url, ['form_params' => $syncData['user']]);
 
@@ -178,7 +178,7 @@ class SincronizacaoController extends BaseController
             $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
             $url .= $ambiente->integracao()->asr_token . '&wsfunction=local_integracao_map_user&moodlewsrestformat=json';
 
-            $client = new Client();
+            $client = new Client(['verify' => false ]);
 
             $response = $client->request('POST', $url, ['form_params' => $syncData['user']]);
 
