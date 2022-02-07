@@ -4,8 +4,20 @@ namespace Harpia\Util;
 
 class Util
 {
-
     const SECRET_KEY = 'be3494ff4904fd83bf78e3cec0d38dda';
+
+    /**
+     * Removes created_at and updated_at from a given array
+     *
+     * @param $array
+     * @return array $array
+     */
+    public function removeDatesPropertiesFromArray($array): array
+    {
+        unset($array['created_at']);
+        unset($array['updated_at']);
+        return $array;
+    }
 
     /**
      * Recebe um timestamp e retorna o valor do dia por extenso.

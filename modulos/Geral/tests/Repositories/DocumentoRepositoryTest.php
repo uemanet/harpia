@@ -22,7 +22,7 @@ class DocumentoRepositoryTest extends ModulosTestCase
 
         // Accessor
         $checkData = $data;
-        $checkData['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+        $checkData['doc_data_expedicao'] = $entry->getRawOriginal('doc_data_expedicao');
 
         $this->assertInstanceOf(Documento::class, $entry);
         $this->assertDatabaseHas($this->table, $checkData);
@@ -36,10 +36,10 @@ class DocumentoRepositoryTest extends ModulosTestCase
 
         $data = $entry->toArray();
         // Accessor
-        $data['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+        $data['doc_data_expedicao'] = $entry->getRawOriginal('doc_data_expedicao');
 
         $fromRepositoryArray = $fromRepository->toArray();
-        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getOriginal('doc_data_expedicao');
+        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getRawOriginal('doc_data_expedicao');
 
         $this->assertInstanceOf(Documento::class, $fromRepository);
         $this->assertDatabaseHas($this->table, $fromRepositoryArray);
@@ -59,10 +59,10 @@ class DocumentoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         // Accessor
-        $data['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+        $data['doc_data_expedicao'] = $entry->getRawOriginal('doc_data_expedicao');
 
         $fromRepositoryArray = $fromRepository->toArray();
-        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getOriginal('doc_data_expedicao');
+        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getRawOriginal('doc_data_expedicao');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);
@@ -275,10 +275,10 @@ class DocumentoRepositoryTest extends ModulosTestCase
 
         // Accessor
         $data = $entry->toArray();
-        $data['doc_data_expedicao'] = $entry->getOriginal('doc_data_expedicao');
+        $data['doc_data_expedicao'] = $entry->getRawOriginal('doc_data_expedicao');
 
         $fromRepositoryArray = $fromRepository->toArray();
-        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getOriginal('doc_data_expedicao');
+        $fromRepositoryArray['doc_data_expedicao'] = $fromRepository->getRawOriginal('doc_data_expedicao');
 
         $this->assertTrue($return);
         $this->assertDatabaseMissing($this->table, $data);

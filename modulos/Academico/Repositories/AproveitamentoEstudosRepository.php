@@ -142,7 +142,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
             return array("type" => "error", "message" => "Oferta de disciplina não existe");
         }
 
-        if ($ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'numerica' && !$ofertaDisciplina->turma->trm_integrada) {
+        if ($ofertaDisciplina->getRawOriginal('ofd_tipo_avaliacao') == 'numerica' && !$ofertaDisciplina->turma->trm_integrada) {
             $rules = [
                 'mof_observacao' => 'required',
                 'mof_mediafinal' => 'required|numeric'
@@ -159,7 +159,7 @@ class AproveitamentoEstudosRepository extends BaseRepository
             if ($dados['mof_mediafinal'] < $mediaminima || $dados['mof_mediafinal'] > 10 ){
                 return array("type" => "error", "message" => "O cadastro contém erros no formulário");
             }
-        } else if ($ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'conceitual' && !$ofertaDisciplina->turma->trm_integrada){
+        } else if ($ofertaDisciplina->getRawOriginal('ofd_tipo_avaliacao') == 'conceitual' && !$ofertaDisciplina->turma->trm_integrada){
             $rules = [
                 'mof_observacao' => 'required',
                 'mof_conceito' => 'required'
