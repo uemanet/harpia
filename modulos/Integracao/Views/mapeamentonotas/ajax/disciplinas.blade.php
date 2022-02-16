@@ -57,7 +57,7 @@
                                             $numerica = '';
                                             $conceito = 'disabled';
 
-                                            if ($value->getOriginal('ofd_tipo_avaliacao') == 'conceitual') {
+                                            if ($value->getRawOriginal('ofd_tipo_avaliacao') == 'conceitual') {
                                                 $numerica = 'disabled';
                                                 $conceito = '';
                                             }

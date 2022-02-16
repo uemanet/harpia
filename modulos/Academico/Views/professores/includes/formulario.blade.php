@@ -86,7 +86,7 @@
                                  "divorciado" => "Divorciado(a)",
                                  "uniao_estavel" => "União estável",
                                  "viuvo(a)" => "Viúvo(a)"],
-                                 isset($pessoa->pes_estado_civil) ? $pessoa->getOriginal('pes_estado_civil') : old('pes_estado_civil'),
+                                 isset($pessoa->pes_estado_civil) ? $pessoa->getRawOriginal('pes_estado_civil') : old('pes_estado_civil'),
                                  ['class' => 'form-control', 'placeholder' => 'Selecione o estado civil']) !!}
             @if ($errors->has('pes_estado_civil')) <p class="help-block">{{ $errors->first('pes_estado_civil') }}</p> @endif
         </div>

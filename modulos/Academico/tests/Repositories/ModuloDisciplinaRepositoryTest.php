@@ -309,7 +309,7 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
 
         $updateArray = $moduloDis->toArray();
         $updateArray['mdc_pre_requisitos'][] = $moduloDisciplina->mdc_id;
-        $updateArray['mdc_tipo_disciplina'] = $moduloDis->getOriginal('mdc_tipo_disciplina');
+        $updateArray['mdc_tipo_disciplina'] = $moduloDis->getRawOriginal('mdc_tipo_disciplina');
 
         $modulodisciplinaId = $updateArray['mdc_id'];
         unset($updateArray['mdc_id']);

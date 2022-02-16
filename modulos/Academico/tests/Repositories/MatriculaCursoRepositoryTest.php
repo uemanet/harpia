@@ -127,16 +127,16 @@ class MatriculaCursoRepositoryTest extends ModulosTestCase
         $id = $entry->mat_id;
 
         $data = $entry->toArray();
-        $data['mat_modo_entrada'] = $entry->getOriginal('mat_modo_entrada');
+        $data['mat_modo_entrada'] = $entry->getRawOriginal('mat_modo_entrada');
         $data['mat_situacao'] = 'evadido';
 
         $return = $this->repo->update($data, $id);
-        $data['mat_data_conclusao'] = $entry->getOriginal('mat_data_conclusao');
+        $data['mat_data_conclusao'] = $entry->getRawOriginal('mat_data_conclusao');
 
         $fromRepository = $this->repo->find($id);
         $fromRepositoryData = $fromRepository->toArray();
-        $fromRepositoryData['mat_modo_entrada'] = $fromRepository->getOriginal('mat_modo_entrada');
-        $fromRepositoryData['mat_data_conclusao'] = $fromRepository->getOriginal('mat_data_conclusao');
+        $fromRepositoryData['mat_modo_entrada'] = $fromRepository->getRawOriginal('mat_modo_entrada');
+        $fromRepositoryData['mat_data_conclusao'] = $fromRepository->getRawOriginal('mat_data_conclusao');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);

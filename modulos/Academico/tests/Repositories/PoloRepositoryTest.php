@@ -1,5 +1,6 @@
 <?php
 
+use Harpia\Util\Util;
 use Tests\ModulosTestCase;
 use Modulos\Academico\Models\Polo;
 use Uemanet\EloquentTable\TableCollection;
@@ -21,6 +22,7 @@ class PoloRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $this->assertInstanceOf(Polo::class, $entry);
+
         $this->assertDatabaseHas($this->table, $entry->toArray());
     }
 

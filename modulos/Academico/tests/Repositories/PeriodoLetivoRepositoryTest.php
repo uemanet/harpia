@@ -22,8 +22,8 @@ class PeriodoLetivoRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $fromRepository = $entry->toArray();
-        $fromRepository['per_fim'] = $entry->getOriginal('per_fim');
-        $fromRepository['per_inicio'] = $entry->getOriginal('per_inicio');
+        $fromRepository['per_fim'] = $entry->getRawOriginal('per_fim');
+        $fromRepository['per_inicio'] = $entry->getRawOriginal('per_inicio');
 
         $this->assertInstanceOf(PeriodoLetivo::class, $entry);
         $this->assertDatabaseHas($this->table, $fromRepository);
@@ -36,12 +36,12 @@ class PeriodoLetivoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $fromRepositoryArray = $fromRepository->toArray();
-        $fromRepositoryArray['per_fim'] = $fromRepository->getOriginal('per_fim');
-        $fromRepositoryArray['per_inicio'] = $fromRepository->getOriginal('per_inicio');
+        $fromRepositoryArray['per_fim'] = $fromRepository->getRawOriginal('per_fim');
+        $fromRepositoryArray['per_inicio'] = $fromRepository->getRawOriginal('per_inicio');
 
         $entryArray = $entry->toArray();
-        $entryArray['per_fim'] = $entry->getOriginal('per_fim');
-        $entryArray['per_inicio'] = $entry->getOriginal('per_inicio');
+        $entryArray['per_fim'] = $entry->getRawOriginal('per_fim');
+        $entryArray['per_inicio'] = $entry->getRawOriginal('per_inicio');
 
         $this->assertInstanceOf(PeriodoLetivo::class, $fromRepository);
         $this->assertDatabaseHas($this->table, $fromRepositoryArray);
@@ -59,12 +59,12 @@ class PeriodoLetivoRepositoryTest extends ModulosTestCase
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
 
-        $data['per_fim'] = $entry->getOriginal('per_fim');
-        $data['per_inicio'] = $entry->getOriginal('per_inicio');
+        $data['per_fim'] = $entry->getRawOriginal('per_fim');
+        $data['per_inicio'] = $entry->getRawOriginal('per_inicio');
 
         $fromRepositoryArray = $fromRepository->toArray();
-        $fromRepositoryArray['per_fim'] = $fromRepository->getOriginal('per_fim');
-        $fromRepositoryArray['per_inicio'] = $fromRepository->getOriginal('per_inicio');
+        $fromRepositoryArray['per_fim'] = $fromRepository->getRawOriginal('per_fim');
+        $fromRepositoryArray['per_inicio'] = $fromRepository->getRawOriginal('per_inicio');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);

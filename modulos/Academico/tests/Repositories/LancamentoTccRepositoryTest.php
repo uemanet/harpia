@@ -26,7 +26,7 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
         $this->assertInstanceOf(LancamentoTcc::class, $entry);
         $entryData = $entry->toArray();
-        $entryData['ltc_data_apresentacao'] = $entry->getOriginal('ltc_data_apresentacao');
+        $entryData['ltc_data_apresentacao'] = $entry->getRawOriginal('ltc_data_apresentacao');
         $this->assertDatabaseHas($this->table, $entryData);
     }
 
@@ -37,10 +37,10 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $entryData = $entry->toArray();
-        $entryData['ltc_data_apresentacao'] = $entry->getOriginal('ltc_data_apresentacao');
+        $entryData['ltc_data_apresentacao'] = $entry->getRawOriginal('ltc_data_apresentacao');
 
         $fromRepositoryData = $fromRepository->toArray();
-        $fromRepositoryData['ltc_data_apresentacao'] = $fromRepository->getOriginal('ltc_data_apresentacao');
+        $fromRepositoryData['ltc_data_apresentacao'] = $fromRepository->getRawOriginal('ltc_data_apresentacao');
 
         $this->assertInstanceOf(LancamentoTcc::class, $fromRepository);
         $this->assertDatabaseHas($this->table, $fromRepositoryData);
@@ -58,12 +58,12 @@ class LancamentoTccRepositoryTest extends ModulosTestCase
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
-        $data['ltc_data_apresentacao'] = $entry->getOriginal('ltc_data_apresentacao');
+        $data['ltc_data_apresentacao'] = $entry->getRawOriginal('ltc_data_apresentacao');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);
         $this->assertInstanceOf(LancamentoTcc::class, $fromRepository);
-        $this->assertEquals($data, $fromRepository->getOriginal());
+        $this->assertEquals($data, $fromRepository->getRawOriginal());
     }
 
     public function testDelete()

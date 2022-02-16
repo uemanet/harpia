@@ -19,7 +19,7 @@ class WhoopsHandler extends BaseExceptionHandler
      * @return Response|\Symfony\Component\HttpFoundation\Response
      * @throws Exception
      */
-    public function render($request, Exception $e)
+    public function render($request, \Throwable $e)
     {
         if ($this->isHttpException($e)) {
             return $this->renderHttpException($e);
@@ -43,7 +43,7 @@ class WhoopsHandler extends BaseExceptionHandler
      * @param  \Exception $e
      * @return \Illuminate\Http\Response
      */
-    protected function renderExceptionWithWhoops(Exception $e)
+    protected function renderExceptionWithWhoops(\Throwable $e)
     {
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());

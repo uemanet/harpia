@@ -118,7 +118,9 @@ $factory->define(Modulos\Seguranca\Models\Usuario::class, function (Faker\Genera
         'usr_pes_id' => factory(Modulos\Geral\Models\Pessoa::class)->create()->pes_id,
         'usr_usuario' => $faker->unique()->email,
         'usr_senha' => $faker->password,
-        'usr_ativo' => 1
+        'usr_ativo' => 1,
+        'usr_profile_picture_id' => null
+
     ];
 });
 
@@ -275,7 +277,8 @@ $factory->define(Modulos\Academico\Models\Turma::class, function (Faker\Generato
         'trm_per_id' => factory(Modulos\Academico\Models\PeriodoLetivo::class)->create()->per_id,
         'trm_nome' => $faker->sentence(3),
         'trm_integrada' => 0,
-        'trm_qtd_vagas' => 50
+        'trm_qtd_vagas' => 50,
+        'trm_tipo_integracao' => 'v1'
     ];
 });
 
@@ -388,7 +391,8 @@ $factory->define(Modulos\Academico\Models\OfertaDisciplina::class, function (Fak
         'ofd_per_id' => $turma->trm_per_id,
         'ofd_prf_id' => factory(Modulos\Academico\Models\Professor::class)->create()->prf_id,
         'ofd_tipo_avaliacao' => $faker->randomElement(['numerica', 'conceitual']),
-        'ofd_qtd_vagas' => random_int(10, 50)
+        'ofd_qtd_vagas' => random_int(10, 50),
+        'ofd_tipo_integracao' => 'v1'
     ];
 });
 
@@ -621,6 +625,7 @@ $factory->define(Modulos\Integracao\Models\Sincronizacao::class, function (Faker
         'sym_status' => $faker->randomElement([1, 2, 3]),
         'sym_mensagem' => $faker->words(3, true),
         'sym_data_envio' => $faker->dateTime->format("Y-m-d H:i:s"),
-        'sym_extra' => $faker->word
+        'sym_extra' => $faker->word,
+        'sym_version' => 'v1'
     ];
 });

@@ -169,11 +169,11 @@ class ResultadosFinaisRepositoryTest extends ModulosTestCase
             $disciplinaMatriculaOfertaDisciplina = $matriculaOfertaDisciplina->ofertaDisciplina->moduloDisciplina->disciplina;
             $fromRepository = $result[$polo->pol_nome][$aluno->pes_nome][$moduloMatrizMatriculaOfertaDisciplina->mdo_nome];
 
-            if ($matriculaOfertaDisciplina->ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'conceitual') {
+            if ($matriculaOfertaDisciplina->ofertaDisciplina->getRawOriginal('ofd_tipo_avaliacao') == 'conceitual') {
                 $this->assertEquals($matriculaOfertaDisciplina->mof_conceito, $fromRepository[$disciplinaMatriculaOfertaDisciplina->dis_nome]['media']);
             }
 
-            if ($matriculaOfertaDisciplina->ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'numerica') {
+            if ($matriculaOfertaDisciplina->ofertaDisciplina->getRawOriginal('ofd_tipo_avaliacao') == 'numerica') {
                 $this->assertEquals($matriculaOfertaDisciplina->mof_mediafinal, $fromRepository[$disciplinaMatriculaOfertaDisciplina->dis_nome]['media']);
             }
         }
@@ -213,11 +213,11 @@ class ResultadosFinaisRepositoryTest extends ModulosTestCase
             $disciplinaMatriculaOfertaDisciplina = $matriculaOfertaDisciplina->ofertaDisciplina->moduloDisciplina->disciplina;
             $fromRepository = $result[$polo->pol_nome][$aluno->pes_nome][$moduloMatrizMatriculaOfertaDisciplina->mdo_nome];
 
-            if ($matriculaOfertaDisciplina->ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'conceitual') {
+            if ($matriculaOfertaDisciplina->ofertaDisciplina->getRawOriginal('ofd_tipo_avaliacao') == 'conceitual') {
                 $this->assertEquals($matriculaOfertaDisciplina->mof_conceito, $fromRepository[$disciplinaMatriculaOfertaDisciplina->dis_nome]['media']);
             }
 
-            if ($matriculaOfertaDisciplina->ofertaDisciplina->getOriginal('ofd_tipo_avaliacao') == 'numerica') {
+            if ($matriculaOfertaDisciplina->ofertaDisciplina->getRawOriginal('ofd_tipo_avaliacao') == 'numerica') {
                 $this->assertEquals($matriculaOfertaDisciplina->mof_mediafinal, $fromRepository[$disciplinaMatriculaOfertaDisciplina->dis_nome]['media']);
             }
         }

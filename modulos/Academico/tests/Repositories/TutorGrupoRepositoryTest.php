@@ -21,7 +21,7 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $this->assertInstanceOf(TutorGrupo::class, $entry);
-        $this->assertDatabaseHas($this->table, $entry->getOriginal());
+        $this->assertDatabaseHas($this->table, $entry->getRawOriginal());
     }
 
     public function testFind()
@@ -31,13 +31,13 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $entryData = $entry->toArray();
-        $entryData['ttg_data_inicio'] = $entry->getOriginal('ttg_data_inicio');
-        $entryData['ttg_tipo_tutoria'] = $entry->getOriginal('ttg_tipo_tutoria');
+        $entryData['ttg_data_inicio'] = $entry->getRawOriginal('ttg_data_inicio');
+        $entryData['ttg_tipo_tutoria'] = $entry->getRawOriginal('ttg_tipo_tutoria');
 
         $this->assertInstanceOf(TutorGrupo::class, $fromRepository);
-        $this->assertDatabaseHas($this->table, $fromRepository->getOriginal());
+        $this->assertDatabaseHas($this->table, $fromRepository->getRawOriginal());
 
-        $this->assertEquals($entryData, $fromRepository->getOriginal());
+        $this->assertEquals($entryData, $fromRepository->getRawOriginal());
     }
 
     public function testUpdate()
@@ -54,11 +54,11 @@ class TutorGrupoRepositoryTest extends ModulosTestCase
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
-        $data['ttg_data_inicio'] = $entry->getOriginal('ttg_data_inicio');
+        $data['ttg_data_inicio'] = $entry->getRawOriginal('ttg_data_inicio');
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);
         $this->assertInstanceOf(TutorGrupo::class, $fromRepository);
-        $this->assertEquals($data, $fromRepository->getOriginal());
+        $this->assertEquals($data, $fromRepository->getRawOriginal());
     }
 
     public function testDelete()

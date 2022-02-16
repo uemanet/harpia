@@ -115,10 +115,10 @@ class CursoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $entryData = $entry->toArray();
-        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+        $entryData['crs_data_autorizacao'] = $entry->getRawOriginal('crs_data_autorizacao');
 
         $data = $fromRepository->toArray();
-        $data['crs_data_autorizacao'] = $fromRepository->getOriginal('crs_data_autorizacao');
+        $data['crs_data_autorizacao'] = $fromRepository->getRawOriginal('crs_data_autorizacao');
 
         $this->assertInstanceOf(Curso::class, $fromRepository);
         $this->assertDatabaseHas($this->table, $data);
@@ -138,10 +138,10 @@ class CursoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $entryData = $entry->toArray();
-        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+        $entryData['crs_data_autorizacao'] = $entry->getRawOriginal('crs_data_autorizacao');
 
         $data = $fromRepository->toArray();
-        $data['crs_data_autorizacao'] = $fromRepository->getOriginal('crs_data_autorizacao');
+        $data['crs_data_autorizacao'] = $fromRepository->getRawOriginal('crs_data_autorizacao');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);
@@ -179,10 +179,10 @@ class CursoRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $entryData = $entry->toArray();
-        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+        $entryData['crs_data_autorizacao'] = $entry->getRawOriginal('crs_data_autorizacao');
 
         $data = $fromRepository->toArray();
-        $data['crs_data_autorizacao'] = $fromRepository->getOriginal('crs_data_autorizacao');
+        $data['crs_data_autorizacao'] = $fromRepository->getRawOriginal('crs_data_autorizacao');
 
         $this->assertTrue(is_array($return));
         $this->assertDatabaseHas($this->table, $data);
@@ -228,7 +228,7 @@ class CursoRepositoryTest extends ModulosTestCase
         $id = $entry->crs_id;
 
         $entryData = $entry->toArray();
-        $entryData['crs_data_autorizacao'] = $entry->getOriginal('crs_data_autorizacao');
+        $entryData['crs_data_autorizacao'] = $entry->getRawOriginal('crs_data_autorizacao');
         $this->assertDatabaseHas($this->table, $entryData);
 
         $return = $this->repo->delete($id);

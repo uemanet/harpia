@@ -63,7 +63,7 @@ class CreateVinculoTutorV2Listener
                 $firstName = array_shift($name);
                 $lastName = implode(" ", $name);
 
-                $data['tutor']['ttg_tipo_tutoria'] = $tutorGrupo->getOriginal('ttg_tipo_tutoria');
+                $data['tutor']['ttg_tipo_tutoria'] = $tutorGrupo->getRawOriginal('ttg_tipo_tutoria');
 
                 $data['tutor']['grp_id'] = $grupo->grp_id;
                 $data['tutor']['pes_id'] = $tutor->tut_pes_id;

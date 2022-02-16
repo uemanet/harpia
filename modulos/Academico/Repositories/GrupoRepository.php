@@ -100,7 +100,7 @@ class GrupoRepository extends BaseRepository
             $entry = $movimentacao->toArray();
 
             $entry["ttg_tut_id"] = $movimentacao->tutor->pessoa->pes_nome;
-            $entry["ttg_data_inicio"] = $movimentacao->getOriginal('ttg_data_inicio');
+            $entry["ttg_data_inicio"] = $movimentacao->getRawOriginal('ttg_data_inicio');
             $entry["action"] = null;
             $entry["usuario"] = null;
 
