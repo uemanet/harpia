@@ -23,7 +23,7 @@ class TitulacaoInformacaoRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $this->assertInstanceOf(TitulacaoInformacao::class, $entry);
-        $this->assertDatabaseHas($this->table, $entry->getOriginal());
+        $this->assertDatabaseHas($this->table, $entry->getRawOriginal());
     }
 
     public function testFind()

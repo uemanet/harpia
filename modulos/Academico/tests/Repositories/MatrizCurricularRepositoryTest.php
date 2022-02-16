@@ -50,7 +50,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $fromRepository = $entry->toArray();
-        $fromRepository['mtc_data'] = $entry->getOriginal('mtc_data');
+        $fromRepository['mtc_data'] = $entry->getRawOriginal('mtc_data');
 
         $this->assertInstanceOf(MatrizCurricular::class, $entry);
         $this->assertDatabaseHas($this->table, $fromRepository);
@@ -63,7 +63,7 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         $fromRepositoryArray = $entry->toArray();
-        $fromRepositoryArray['mtc_data'] = $entry->getOriginal('mtc_data');
+        $fromRepositoryArray['mtc_data'] = $entry->getRawOriginal('mtc_data');
 
         $this->assertInstanceOf(MatrizCurricular::class, $fromRepository);
 
@@ -85,8 +85,8 @@ class MatrizCurricularRepositoryTest extends ModulosTestCase
 
         $fromRepositoryArray = $fromRepository->toArray();
 
-        $data['mtc_data'] = $entry->getOriginal('mtc_data');
-        $fromRepositoryArray['mtc_data'] = $entry->getOriginal('mtc_data');
+        $data['mtc_data'] = $entry->getRawOriginal('mtc_data');
+        $fromRepositoryArray['mtc_data'] = $entry->getRawOriginal('mtc_data');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);

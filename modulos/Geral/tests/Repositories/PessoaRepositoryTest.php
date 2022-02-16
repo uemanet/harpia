@@ -26,7 +26,7 @@ class PessoaRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $this->assertInstanceOf(Pessoa::class, $entry);
-        $this->assertDatabaseHas($this->table, $entry->getOriginal());
+        $this->assertDatabaseHas($this->table, $entry->getRawOriginal());
     }
 
     public function testFind()
@@ -37,17 +37,17 @@ class PessoaRepositoryTest extends ModulosTestCase
         $fromRepository = $this->repo->find($id);
 
         // Accessors
-        $data['pes_estrangeiro'] = $entry->getOriginal('pes_estrangeiro');
-        $data['pes_nascimento'] = $entry->getOriginal('pes_nascimento');
+        $data['pes_estrangeiro'] = $entry->getRawOriginal('pes_estrangeiro');
+        $data['pes_nascimento'] = $entry->getRawOriginal('pes_nascimento');
 
-        $fromRepositoryArray = $fromRepository->getOriginal();
+        $fromRepositoryArray = $fromRepository->getRawOriginal();
 
-        $fromRepositoryArray['pes_estrangeiro'] = (bool)$fromRepository->getOriginal('pes_estrangeiro');
-        $fromRepositoryArray['pes_nascimento'] = $fromRepository->getOriginal('pes_nascimento');
+        $fromRepositoryArray['pes_estrangeiro'] = (bool)$fromRepository->getRawOriginal('pes_estrangeiro');
+        $fromRepositoryArray['pes_nascimento'] = $fromRepository->getRawOriginal('pes_nascimento');
 
         $this->assertInstanceOf(Pessoa::class, $fromRepository);
-        $this->assertDatabaseHas($this->table, $fromRepository->getOriginal());
-        $this->assertEquals($entry->getOriginal(), $fromRepositoryArray);
+        $this->assertDatabaseHas($this->table, $fromRepository->getRawOriginal());
+        $this->assertEquals($entry->getRawOriginal(), $fromRepositoryArray);
     }
 
     public function testUpdate()
@@ -58,21 +58,21 @@ class PessoaRepositoryTest extends ModulosTestCase
         $data = $entry->toArray();
 
         $data['pes_bairro'] = "bairro novo";
-        $data['pes_estado_civil'] = $entry->getOriginal('pes_estado_civil');
+        $data['pes_estado_civil'] = $entry->getRawOriginal('pes_estado_civil');
 
         $return = $this->repo->update($data, $id);
         $fromRepository = $this->repo->find($id);
 
         // Accessor
-        $data['pes_estrangeiro'] = $entry->getOriginal('pes_estrangeiro');
-        $data['pes_estado_civil'] = $entry->getOriginal('pes_estado_civil');
-        $data['pes_nascimento'] = $entry->getOriginal('pes_nascimento');
+        $data['pes_estrangeiro'] = $entry->getRawOriginal('pes_estrangeiro');
+        $data['pes_estado_civil'] = $entry->getRawOriginal('pes_estado_civil');
+        $data['pes_nascimento'] = $entry->getRawOriginal('pes_nascimento');
 
-        $fromRepositoryArray = $fromRepository->getOriginal();
+        $fromRepositoryArray = $fromRepository->getRawOriginal();
 
-        $fromRepositoryArray['pes_id'] = $fromRepository->getOriginal('pes_id');
-        $fromRepositoryArray['pes_estrangeiro'] = (bool)$fromRepository->getOriginal('pes_estrangeiro');
-        $fromRepositoryArray['pes_nascimento'] = $fromRepository->getOriginal('pes_nascimento');
+        $fromRepositoryArray['pes_id'] = $fromRepository->getRawOriginal('pes_id');
+        $fromRepositoryArray['pes_estrangeiro'] = (bool)$fromRepository->getRawOriginal('pes_estrangeiro');
+        $fromRepositoryArray['pes_nascimento'] = $fromRepository->getRawOriginal('pes_nascimento');
 
         $this->assertEquals(1, $return);
         $this->assertEquals(0, $this->repo->update($data, 4));

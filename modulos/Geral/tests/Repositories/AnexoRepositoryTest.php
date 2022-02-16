@@ -37,7 +37,7 @@ class AnexoRepositoryTest extends ModulosTestCase
 
         copy($stub, $path);
 
-        return new UploadedFile($path, $name, 'image/png', filesize($path), null, true);
+        return new UploadedFile($path, $file, 'image/png', null, true);
     }
 
     private function mockHashDirectories($location)
@@ -275,7 +275,9 @@ class AnexoRepositoryTest extends ModulosTestCase
     {
         // Mock de upload
         $uploaded = $this->mockUploaded();
+
         $anexo = $this->repo->salvarAnexo($uploaded);
+//        dd($anexo);
 
         $id = $anexo->anx_id;
 

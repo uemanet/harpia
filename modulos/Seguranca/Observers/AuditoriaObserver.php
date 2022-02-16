@@ -30,7 +30,7 @@ class AuditoriaObserver
     public function updated(BaseModel $model)
     {
         if (Auth::check()) {
-            $jsonObject = json_encode($model->getOriginal(), JSON_UNESCAPED_UNICODE);
+            $jsonObject = json_encode($model->getRawOriginal(), JSON_UNESCAPED_UNICODE);
 
             $data = [
                 'log_usr_id' => Auth::user()->usr_id,
@@ -49,7 +49,7 @@ class AuditoriaObserver
     public function deleted(BaseModel $model)
     {
         if (Auth::check()) {
-            $jsonObject = json_encode($model->getOriginal(), JSON_UNESCAPED_UNICODE);
+            $jsonObject = json_encode($model->getRawOriginal(), JSON_UNESCAPED_UNICODE);
 
             $data = [
                 'log_usr_id' => Auth::user()->usr_id,

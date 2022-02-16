@@ -57,7 +57,7 @@
                 <div class="form-group col-md-6">
                     {!! Form::label('tipo_disciplina', 'Tipo da Disciplina', ['class' => 'control-label']) !!}
                     <div class="controls">
-                        {!! Form::select('tipo_disciplina', $tipos, $disciplina->getOriginal('mdc_tipo_disciplina'), ['class' => 'form-control']) !!}
+                        {!! Form::select('tipo_disciplina', $tipos, $disciplina->getRawOriginal('mdc_tipo_disciplina'), ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="form-group col-md-6">

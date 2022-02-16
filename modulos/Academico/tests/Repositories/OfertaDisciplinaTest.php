@@ -21,7 +21,7 @@ class OfertaDisciplinaRepositoryTest extends ModulosTestCase
         $entry = $this->repo->create($data);
 
         $entryData = $entry->toArray();
-        $entryData['ofd_tipo_avaliacao'] = $entry->getOriginal('ofd_tipo_avaliacao');
+        $entryData['ofd_tipo_avaliacao'] = $entry->getRawOriginal('ofd_tipo_avaliacao');
 
         $this->assertInstanceOf(OfertaDisciplina::class, $entry);
         $this->assertDatabaseHas($this->table, $entryData);
@@ -31,13 +31,13 @@ class OfertaDisciplinaRepositoryTest extends ModulosTestCase
     {
         $entry = factory(OfertaDisciplina::class)->create();
         $entryData = $entry->toArray();
-        $entryData['ofd_tipo_avaliacao'] = $entry->getOriginal('ofd_tipo_avaliacao');
+        $entryData['ofd_tipo_avaliacao'] = $entry->getRawOriginal('ofd_tipo_avaliacao');
 
         $id = $entry->ofd_id;
         $fromRepository = $this->repo->find($id);
 
         $fromRepositoryData = $fromRepository->toArray();
-        $fromRepositoryData['ofd_tipo_avaliacao'] = $fromRepository->getOriginal('ofd_tipo_avaliacao');
+        $fromRepositoryData['ofd_tipo_avaliacao'] = $fromRepository->getRawOriginal('ofd_tipo_avaliacao');
 
         $this->assertInstanceOf(OfertaDisciplina::class, $fromRepository);
         $this->assertDatabaseHas($this->table, $fromRepositoryData);
@@ -58,7 +58,7 @@ class OfertaDisciplinaRepositoryTest extends ModulosTestCase
 
         $fromRepository = $this->repo->find($id);
         $fromRepositoryData = $fromRepository->toArray();
-        $fromRepositoryData['ofd_tipo_avaliacao'] = $fromRepository->getOriginal('ofd_tipo_avaliacao');
+        $fromRepositoryData['ofd_tipo_avaliacao'] = $fromRepository->getRawOriginal('ofd_tipo_avaliacao');
 
         $this->assertEquals(1, $return);
         $this->assertDatabaseHas($this->table, $data);
@@ -198,7 +198,7 @@ class OfertaDisciplinaRepositoryTest extends ModulosTestCase
         $response = $this->repo->paginate(null, $search);
         $this->assertInstanceOf(LengthAwarePaginator::class, $response);
         $this->assertGreaterThan(0, $response->total());
-        $this->assertEquals('numerica', $response->first()->getOriginal('ofd_tipo_avaliacao'));
+        $this->assertEquals('numerica', $response->first()->getRawOriginal('ofd_tipo_avaliacao'));
     }
 
     public function testPaginateRequest()

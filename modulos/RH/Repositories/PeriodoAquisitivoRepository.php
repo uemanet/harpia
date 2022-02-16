@@ -24,19 +24,19 @@ class PeriodoAquisitivoRepository extends BaseRepository
     public function periodData(MatriculaColaborador $matricula_colaborador):array
     {
 
-        $primeiro_periodo_adquirido = $this->getDate('+1 year', $matricula_colaborador->getOriginal('mtc_data_inicio'));
+        $primeiro_periodo_adquirido = $this->getDate('+1 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio'));
         if(time() <  strtotime($primeiro_periodo_adquirido)){
             return [];
         }
 
         if( $matricula_colaborador->mtc_data_fim and
-            strtotime($primeiro_periodo_adquirido) > strtotime($matricula_colaborador->getOriginal('mtc_data_fim')) ){
+            strtotime($primeiro_periodo_adquirido) > strtotime($matricula_colaborador->getRawOriginal('mtc_data_fim')) ){
             return [];
         }
 
         $returnData = [];
 
-        $inicioPeriodo = $this->getDate('+0 year', $matricula_colaborador->getOriginal('mtc_data_inicio'));
+        $inicioPeriodo = $this->getDate('+0 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio'));
         $inicioPeriodoAdquirido = $inicioPeriodo;
         $countYear = 0;
         $ano_valido = true;
@@ -58,8 +58,8 @@ class PeriodoAquisitivoRepository extends BaseRepository
 
             $between = 0;
             foreach ($feriasPeriodos as $feriasPeriodo) {
-                $date1 = $feriasPeriodo->getOriginal('paq_data_inicio');
-                $date2 = $feriasPeriodo->getOriginal('paq_data_fim');
+                $date1 = $feriasPeriodo->getRawOriginal('paq_data_inicio');
+                $date2 = $feriasPeriodo->getRawOriginal('paq_data_fim');
                 $between += $this->daysBetween($date1, $date2)+1;
             }
 
@@ -74,7 +74,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
             $returnData[$countYear] = $data;
 
             if( $matricula_colaborador->mtc_data_fim and
-                strtotime($finalPeriodo) > strtotime($matricula_colaborador->getOriginal('mtc_data_fim')) ){
+                strtotime($finalPeriodo) > strtotime($matricula_colaborador->getRawOriginal('mtc_data_fim')) ){
                 $returnData[$countYear]['fim'] = $matricula_colaborador->mtc_data_fim;
                 $ano_valido = false;
                 break;
@@ -101,11 +101,11 @@ class PeriodoAquisitivoRepository extends BaseRepository
      */
     public function isInPeriodData(MatriculaColaborador $matricula_colaborador, $dateTimestamp):bool
     {
-        if(time() < $this->getDate('+1 year', $matricula_colaborador->getOriginal('mtc_data_inicio')) ){
+        if(time() < $this->getDate('+1 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio')) ){
             return false;
         }
 
-        $inicioPeriodo = $this->getDate('+0 year', $matricula_colaborador->getOriginal('mtc_data_inicio'));
+        $inicioPeriodo = $this->getDate('+0 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio'));
         while (1){
             $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
             $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
@@ -115,7 +115,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
 
             if($inicioTimestamp < $dateTimestamp and $dateTimestamp < $fimTimestamp){
                 if( $matricula_colaborador->mtc_data_fim and
-                    $dateTimestamp > strtotime($matricula_colaborador->getOriginal('mtc_data_fim')) ){
+                    $dateTimestamp > strtotime($matricula_colaborador->getRawOriginal('mtc_data_fim')) ){
                     return false;
                 }
                 return true;
@@ -136,11 +136,11 @@ class PeriodoAquisitivoRepository extends BaseRepository
      */
     public function currentPeriod(Colaborador $colaborador):array
     {
-        if(time() < $this->getDate('+1 year', $colaborador->getOriginal('col_data_admissao')) ){
+        if(time() < $this->getDate('+1 year', $colaborador->getRawOriginal('col_data_admissao')) ){
             return 0;
         }
 
-        $inicioPeriodo = $this->getDate('+0 year', $colaborador->getOriginal('col_data_admissao'));
+        $inicioPeriodo = $this->getDate('+0 year', $colaborador->getRawOriginal('col_data_admissao'));
         while (1){
             $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
             $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
