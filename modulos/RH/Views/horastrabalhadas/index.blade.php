@@ -1,15 +1,16 @@
 @extends('layouts.modulos.rh')
 
+@section('stylesheets')
+    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
+    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+@endsection
+
 @section('title')
-    Áreas de Conhecimento
+    Horas Trabalhadas
 @stop
 
 @section('subtitle')
-    Módulo RH
-@stop
-
-@section('actionButton')
-    {!!ActionButton::render($actionButton)!!}
+    Gerenciamento de Horas de Colaboradores
 @stop
 
 @section('content')
@@ -26,11 +27,12 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.areasconhecimentos.index') }}">
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" name="arc_descricao" id="arc_descricao" value="{{Request::input('arc_descricao')}}" placeholder="Nome da área de conhecimento">
+                <form method="GET" action="{{ route('rh.horastrabalhadas.index') }}">
+                    <div class="form-group col-md-4">
+                        {!! Form::select('htr_pel_id', $periodosLaborais, [], ['class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
                     </div>
-                    <div class="col-md-3">
+
+                    <div class="col-md-1">
                         <input type="submit" class="form-control btn-primary" value="Buscar">
                     </div>
                 </form>
@@ -46,10 +48,30 @@
         </div>
 
         <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
-
     @else
         <div class="box box-primary">
             <div class="box-body">Sem registros para apresentar</div>
         </div>
     @endif
 @stop
+
+
+
+@section('scripts')
+    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("select").select2();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR'
+        });
+    </script>
+@endsection
+

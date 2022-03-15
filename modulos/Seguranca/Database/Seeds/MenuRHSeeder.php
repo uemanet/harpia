@@ -134,5 +134,15 @@ class MenuRHSeeder extends Seeder
             'mit_rota' => 'rh.calendarios.index',
             'mit_ordem' => 8
         ]);
+
+        // Item calendário
+        MenuItem::create([
+            'mit_mod_id' => $modulo->mod_id,
+            'mit_nome' => 'Horas Trabalhadas',
+            'mit_item_pai' => $rh->mit_id,
+            'mit_icone' => 'fa fa-calendar',
+            'mit_rota' => 'rh.horastrabalhadas.index',
+            'mit_ordem' => 8
+        ]);
     }
 }
