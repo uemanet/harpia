@@ -302,6 +302,13 @@ class PermissoesRHSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+        //permissões do recurso de Horas Trabalhadas
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'rh.horastrabalhadas.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
         // Atirbuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Modulos\RH\Database\Seeds\Development\BancoTableSeeder;
 use Modulos\RH\Database\Seeds\Development\FontePagadoraTableSeeder;
 use Modulos\RH\Database\Seeds\Development\FuncaoTableSeeder;
+use Modulos\RH\Models\Colaborador;
 
 class RHSeeder extends Seeder
 {
@@ -46,6 +47,14 @@ class RHSeeder extends Seeder
         $this->call(VinculoTableSeeder::class);
         $this->command->info('Vínculo Table seeded!');
 
+        $this->call(PeriodosLaboraisTableSeeder::class);
+        $this->command->info('Periodos Laborais Table seeded!');
+
+        $this->call(ColaboradoresTableSeeder::class);
+        $this->command->info('Colaborador Table seeded!');
+
+        $this->call(HorasTrabalhadasTableSeeder::class);
+        $this->command->info('Horas Trabalhadas Table seeded!');
 
     }
 }

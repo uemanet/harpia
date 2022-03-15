@@ -83,6 +83,10 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
     });
 
+    Route::group(['prefix' => 'horastrabalhadas'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\HorasTrabalhadasController@getIndex')->name('rh.horastrabalhadas.index');
+    });
+
     Route::group(['prefix' => 'fontespagadoras'], function () {
         Route::get('/', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getIndex')->name('rh.fontespagadoras.index');
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\FontesPagadorasController@getShow')->name('rh.fontespagadoras.show');

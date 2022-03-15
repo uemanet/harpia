@@ -129,7 +129,7 @@
             </div>
         </div>
 
-        <div class="text-center">{!! $paginacao->links() !!}</div>
+        <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
 
     @else
         <div id="boxInfo" class="box box-primary ">
