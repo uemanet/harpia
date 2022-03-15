@@ -10,6 +10,7 @@ services:
   mysql:
     image: mysql:5.7
     container_name: harpia-mysql
+    platform: 'linux/x86_64'
     volumes:
       - harpia-mysql-data:/var/lib/mysql
     ports:
