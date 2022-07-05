@@ -20,12 +20,19 @@ class HoraTrabalhada extends BaseModel
     ];
 
     protected $searchable = [
-        'htr_pel_id' => 'like'
+        'htr_pel_id' => 'like',
+        'htr_col_id' => '=',
+        'cfn_set_id' => '='
     ];
 
     public function colaborador()
     {
         return $this->hasOne('Modulos\RH\Models\Colaborador', 'col_id','htr_col_id');
+    }
+
+    public function periodo()
+    {
+        return $this->hasOne('Modulos\RH\Models\PeriodoLaboral', 'pel_id','htr_pel_id');
     }
 
 }

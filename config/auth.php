@@ -45,6 +45,12 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+        'matriculas-alunos' => [
+            'redirectTo' => 'matriculas-alunos.index.index',
+            'driver' => 'session',
+            'provider' => 'matriculas-alunos',
+        ],
+
     ],
 
     /*
@@ -74,6 +80,10 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        'matriculas-alunos' => [
+            'driver' => 'eloquent',
+            'model' => \Modulos\Matriculas\Models\SeletivoUser::class,
+        ],
     ],
 
     /*

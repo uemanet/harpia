@@ -8,6 +8,7 @@ return [
         'Integracao',
         'Monitoramento',
         'RH',
-        'Alunos'
+        'Alunos',
+        'Matriculas'
     ]
 ];
