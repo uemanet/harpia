@@ -14,7 +14,7 @@
     "font-awesome": "^4.6.3",
     "gulp": "^3.9.1",
     "gulp-install": "^0.6.0",
-    "jquery-validation": "^1.19.2",
+    "jquery-validation": "^1.19.5",
     "jquery.inputmask": "^3.3.3",
     "moment": "^2.13.0",
     "select2": "^4.0.3",
