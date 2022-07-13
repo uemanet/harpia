@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql1'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,35 +71,6 @@ return [
             'strict' => false,
             'engine' => null,
         ],
-
-        'mysql1' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
-            'engine' => null,
-        ],
-
-        'mysql2' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST_SECOND', 'localhost'),
-            'port' => env('DB_PORT_SECOND', '3306'),
-            'database' => env('DB_DATABASE_SECOND', 'forge'),
-            'username' => env('DB_USERNAME_SECOND', 'forge'),
-            'password' => env('DB_PASSWORD_SECOND', ''),
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
-            'engine' => null,
-        ],
-
 
         'pgsql' => [
             'driver' => 'pgsql',
