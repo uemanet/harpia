@@ -37,6 +37,11 @@ class Colaborador extends BaseModel
         return $this->hasMany('Modulos\RH\Models\AtividadeExtraColaborador', 'atc_col_id', 'col_id');
     }
 
+    public function horas_diarias()
+    {
+        return $this->hasMany('Modulos\RH\Models\HoraTrabalhadaDiaria', 'htd_col_id', 'col_id');
+    }
+
     public function contas_colaboradores()
     {
         return $this->hasMany('Modulos\RH\Models\ContaColaborador', 'ccb_col_id', 'col_id');

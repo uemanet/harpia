@@ -123,6 +123,14 @@ class ColaboradoresController extends BaseController
                                 'parameters' => ['id' => $id],
                                 'label' => 'Visualizar',
                                 'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-eye',
+                                'route' => 'rh.colaboradores.horastrabalhadas',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Horas Trabalhadas',
+                                'method' => 'get'
                             ]
                         ]
                     ]);

@@ -6,7 +6,7 @@ return [
         'index',
         'alunos.comprovante.verifica',
         'auth.forget-password',
-        'auth.reset-password'
+        'auth.reset-password',
     ),
 
     'postlogin_openroutes' => array(
@@ -16,6 +16,7 @@ return [
         'seguranca.profile.profile-picture',
         'seguranca.profile.picture',
         'seguranca.profile.index',
-        'seguranca.profile.updatepassword'
+        'seguranca.profile.updatepassword',
+
     )
 ];
