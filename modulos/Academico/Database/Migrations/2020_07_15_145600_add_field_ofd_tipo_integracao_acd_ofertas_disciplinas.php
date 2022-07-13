@@ -14,7 +14,7 @@ class AddFieldOfdTipoIntegracaoAcdOfertasDisciplinas extends Migration
     public function up()
     {
         Schema::table('acd_ofertas_disciplinas', function (Blueprint $table) {
-            $table->enum('ofd_tipo_integracao', ['v1', 'v2'])->nullable();
+            $table->enum('ofd_tipo_integracao', ['v1', 'v2'])->default('v1')->nullable();
         });
     }
 

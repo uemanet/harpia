@@ -12,4 +12,11 @@ class PeriodoLaboralRepository extends BaseRepository
         $this->model = $periodolaboral;
     }
 
+    /**
+     * Busca períodos laborais que estão entre as dadas recebidas.
+     */
+    public function buscaPeriodosLaboraisEntreDatas($dataInicial, $dataFinal)
+    {
+       return $this->model->where('pel_inicio', '<=', $dataInicial)->where('pel_termino', '>=', $dataFinal)->get();
+    }
 }

@@ -8,31 +8,32 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\CalendarioRequest;
 use Modulos\RH\Repositories\CalendarioRepository;
 use Illuminate\Http\Request;
+use Modulos\RH\Repositories\HoraTrabalhadaRepository;
+use Modulos\RH\Repositories\PeriodoLaboralRepository;
 
 
 class Calendarios extends BaseController
 {
     protected $calendarioRepository;
 
-    public function __construct(CalendarioRepository $calendario)
+    public function __construct(CalendarioRepository $calendario,
+                                HoraTrabalhadaRepository $horaTrabalhadaRepository,
+                                PeriodoLaboralRepository $periodoLaboralRepository)
     {
         $this->calendarioRepository = $calendario;
+        $this->horaTrabalhadaRepository = $horaTrabalhadaRepository;
+        $this->periodoLaboralRepository = $periodoLaboralRepository;
     }
 
     public function index()
     {
-
         $calendarios = $this->calendarioRepository->all();
-
         return new JsonResponse($calendarios, JsonResponse::HTTP_OK);
-
     }
 
     public function postCreate(CalendarioRequest $request)
     {
-
         $data = $request->all();
-
 
         if ($data['cld_id']) {
 
@@ -44,8 +45,14 @@ class Calendarios extends BaseController
 
         }
 
-
         $calendario = $this->calendarioRepository->create($request->all());
+
+        $periodosQueDevemSerSincronizados = $this->periodoLaboralRepository
+            ->buscaPeriodosLaboraisEntreDatas($calendario->cld_data, $calendario->cld_data);
+
+        foreach ($periodosQueDevemSerSincronizados as $periodo){
+            $this->horaTrabalhadaRepository->sincronizarHorasTrabalhadas($periodo);
+        }
 
         return new JsonResponse($calendario, JsonResponse::HTTP_CREATED);
 
