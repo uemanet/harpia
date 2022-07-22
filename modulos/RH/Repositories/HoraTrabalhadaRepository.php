@@ -46,8 +46,12 @@ class HoraTrabalhadaRepository extends BaseRepository
 
         $horasPrevistas = $diasUteis*$colaborador->col_ch_diaria.':00:00';
         $horasTrabalhadas = $this->sumTimes(array_map(function ($horaDiaria): string {
-            return $horaDiaria['htd_horas'];
-        }, $colaborador->horas_diarias->toArray() ));
+            return $horaDiaria->htd_horas;
+        }, $this->buscaHorasTrabalhadasNoPeriodoLaboral(
+            $periodoLaboral->getRawOriginal('pel_inicio'),
+            $periodoLaboral->getRawOriginal('pel_termino'),
+            $colaborador->col_id
+        )));
 
         $saldo = $this->calculaDiferencaEntreTempos($horasTrabalhadas, $horasPrevistas);
 
@@ -59,6 +63,16 @@ class HoraTrabalhadaRepository extends BaseRepository
             'htr_saldo' => $saldo
         ];
 
+    }
+
+    public function buscaHorasTrabalhadasNoPeriodoLaboral($pelInicio, $pelFim, $colId){
+        $select = DB::table('reh_horas_trabalhadas_diarias')
+            ->where('htd_data', '>=', $pelInicio)
+            ->where('htd_data', '<=', $pelFim)
+            ->where('htd_col_id', $colId)
+            ->get();
+
+        return$select->toArray();
     }
 
     public function sumTimes(array $times): string
