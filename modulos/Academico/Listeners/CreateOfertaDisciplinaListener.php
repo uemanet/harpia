@@ -83,7 +83,7 @@ class CreateOfertaDisciplinaListener
                 $param['url'] = $ambiente->amb_url;
                 $param['token'] = $ambServico->asr_token;
                 $param['action'] = 'post';
-                $param['functionname'] = $event->getEndpointV2();
+                $param['functionname'] = $event->getEndpoint();
                 $param['data'] = $data;
 
                 $response = Moodle::send($param);
