@@ -42,13 +42,12 @@ class HorasTrabalhadasController extends BaseController
                 'htr_horas_trabalhadas' => 'Horas Trabalhadas',
                 'htr_horas_justificadas' => 'Horas Justificadas',
                 'htr_saldo' => 'Saldo',
-                'col_action' => 'Ações'
+                'htr_action' => 'Ações'
             ))
                 ->modify('htr_col_id', function ($obj) {
                     return $obj->colaborador->pessoa->pes_nome;
                 })
-                ->means('col_action', 'htr_col_id')
-                ->modify('col_action', function ($id) use ($request) {
+                ->modify('htr_action', function ($id) use ($request) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -58,9 +57,17 @@ class HorasTrabalhadasController extends BaseController
                         'buttons' => [
                             [
                                 'classButton' => '',
+                                'icon' => 'fa fa-plus',
+                                'route' => 'rh.horastrabalhadas.justificativas.index',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Justificativas',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
                                 'icon' => 'fa fa-eye',
                                 'route' => 'rh.horastrabalhadas.horastrabalhadasdiariasporperiodolaboral',
-                                'parameters' => [ $id,$request->all()['htr_pel_id']],
+                                'parameters' => [ $id->colaborador->col_id,$request->all()['htr_pel_id']],
                                 'label' => 'Horas Trabalhadas',
                                 'method' => 'get'
                             ]
