@@ -39,7 +39,6 @@ class CreateOfertaDisciplinaListener
     public function handle(CreateOfertaDisciplinaEvent $event)
     {
         try {
-
             $oferta = $event->getData();
 
             // ambiente virtual vinculado à turma do grupo
@@ -53,12 +52,8 @@ class CreateOfertaDisciplinaListener
                 return;
             }
 
-
-
             // Web service de integracao
             $ambServico = $ambiente->integracao();
-
-
 
             if ($ambServico) {
                 $professor = $this->professorRepository->find($oferta->ofd_prf_id);
