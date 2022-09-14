@@ -129,10 +129,6 @@ class HoraTrabalhadaRepository extends BaseRepository
 
     public function calculaSaldo($horasTrabalhadas, $horasPrevistas, $horasJustificadas = null): string
     {
-
-        var_dump($horasTrabalhadas, $horasPrevistas, $horasJustificadas);
-        echo '<pre>';
-
         $explodedTime1 = explode(':', $horasTrabalhadas);
         $seconds1 = $explodedTime1[0]*3600+$explodedTime1[1]*60+$explodedTime1[2];
         $explodedTime2 = explode(':', $horasPrevistas);
