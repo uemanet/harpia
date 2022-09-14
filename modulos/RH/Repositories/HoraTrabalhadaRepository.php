@@ -39,7 +39,6 @@ class HoraTrabalhadaRepository extends BaseRepository
                 $horasTrabalhadas = $this->calculaDadosDeHorasTrabalhadasDoColaborador($colaborador, $periodoLaboral);
                 $horasTrabalhadas['htr_horas_justificadas'] = '00:00:00';
                 $this->create($horasTrabalhadas);
-                $this->create($horasTrabalhadas);
             }
         }
 
