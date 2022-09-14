@@ -26,15 +26,49 @@ class HoraTrabalhadaRepository extends BaseRepository
                     'htr_pel_id' => $periodoLaboral->pel_id])->first();
             if($colaboradorHoraTrabalhada){
                 $horasTrabalhadas = $this->calculaDadosDeHorasTrabalhadasDoColaborador($colaborador, $periodoLaboral);
+
+                $horasJustificadas = $this->buscaHorasJustificadasDoPeriodo($colaboradorHoraTrabalhada);
+                $horasTrabalhadas['htr_horas_justificadas'] =   str_pad($horasJustificadas, 2, '0', STR_PAD_LEFT).':00:00';
+                $horasTrabalhadas['htr_saldo'] = $this->calculaSaldo(
+                    $horasTrabalhadas['htr_horas_trabalhadas'],
+                    $horasTrabalhadas['htr_horas_previstas'],
+                    $horasTrabalhadas['htr_horas_justificadas']
+                );
                 $colaboradorHoraTrabalhada->update($horasTrabalhadas);
             } else{
                 $horasTrabalhadas = $this->calculaDadosDeHorasTrabalhadasDoColaborador($colaborador, $periodoLaboral);
                 $horasTrabalhadas['htr_horas_justificadas'] = '00:00:00';
                 $this->create($horasTrabalhadas);
+                $this->create($horasTrabalhadas);
             }
         }
 
         return true;
+    }
+
+    public function sincronizarJustificativa(HoraTrabalhada $horaTrabalhada){
+
+        $horasJustificadas = $this->buscaHorasJustificadasDoPeriodo($horaTrabalhada);
+
+        $horasTrabalhadas = $this->calculaDadosDeHorasTrabalhadasDoColaborador(
+            $horaTrabalhada->colaborador, $horaTrabalhada->periodo);
+
+        $horasTrabalhadas['htr_horas_justificadas'] =
+            str_pad($horasJustificadas, 2, '0', STR_PAD_LEFT).':00:00';
+
+        $horasTrabalhadas['htr_saldo'] = $this->calculaSaldo(
+            $horasTrabalhadas['htr_horas_trabalhadas'],
+            $horasTrabalhadas['htr_horas_previstas'],
+            $horasTrabalhadas['htr_horas_justificadas']
+        );
+
+        $horaTrabalhada->update($horasTrabalhadas);
+    }
+
+    public function buscaHorasJustificadasDoPeriodo(HoraTrabalhada $horaTrabalhada){
+        return array_sum( array_map(function ($justificativa): string {
+            return $justificativa['jus_horas'];
+        }, $horaTrabalhada->justificativas->toArray()));
     }
 
     public function calculaDadosDeHorasTrabalhadasDoColaborador(Colaborador $colaborador, PeriodoLaboral $periodoLaboral){
@@ -53,7 +87,7 @@ class HoraTrabalhadaRepository extends BaseRepository
             $colaborador->col_id
         )));
 
-        $saldo = $this->calculaDiferencaEntreTempos($horasTrabalhadas, $horasPrevistas);
+        $saldo = $this->calculaSaldo($horasTrabalhadas, $horasPrevistas);
 
         return [
             'htr_col_id' => $colaborador->col_id,
@@ -94,13 +128,24 @@ class HoraTrabalhadaRepository extends BaseRepository
     }
 
 
-    public function calculaDiferencaEntreTempos($time1, $time2): string
+    public function calculaSaldo($horasTrabalhadas, $horasPrevistas, $horasJustificadas = null): string
     {
-        $explodedTime1 = explode(':', $time1);
+
+        var_dump($horasTrabalhadas, $horasPrevistas, $horasJustificadas);
+        echo '<pre>';
+
+        $explodedTime1 = explode(':', $horasTrabalhadas);
         $seconds1 = $explodedTime1[0]*3600+$explodedTime1[1]*60+$explodedTime1[2];
-        $explodedTime2 = explode(':', $time2);
+        $explodedTime2 = explode(':', $horasPrevistas);
         $seconds2 = $explodedTime2[0]*3600+$explodedTime2[1]*60+$explodedTime2[2];
-        $secondsDiff = $seconds1-$seconds2;
+
+        $seconds3 = null;
+        if($horasJustificadas){
+            $explodedTime3 = explode(':', $horasJustificadas);
+            $seconds3 = $explodedTime3[0]*3600+$explodedTime3[1]*60+$explodedTime3[2];
+        }
+
+        $secondsDiff = $seconds1-$seconds2+$seconds3;
 
         $hours = floor($secondsDiff/3600);
         $minutes = abs(floor(($secondsDiff % 3600)/60));

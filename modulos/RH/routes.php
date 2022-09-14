@@ -89,6 +89,8 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
         Route::group(['prefix' => 'justificativas'], function () {
             Route::get('/index/{id}', '\Modulos\RH\Http\Controllers\JustificativasController@getIndex')->name('rh.horastrabalhadas.justificativas.index');
+            Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\JustificativasController@getShow')->name('rh.horastrabalhadas.justificativas.show');
+            Route::get('/anexo/{id}', '\Modulos\RH\Http\Controllers\JustificativasController@getAnexo')->name('rh.horastrabalhadas.justificativas.anexo');
             Route::get('/create', '\Modulos\RH\Http\Controllers\JustificativasController@getCreate')->name('rh.horastrabalhadas.justificativas.create');
             Route::post('/create', '\Modulos\RH\Http\Controllers\JustificativasController@postCreate')->name('rh.horastrabalhadas.justificativas.create');
             Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\JustificativasController@getEdit')->name('rh.horastrabalhadas.justificativas.edit');

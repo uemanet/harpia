@@ -80,7 +80,7 @@ class HorasTrabalhadasController extends BaseController
 
         }
 
-        $periodosLaboraisTest = PeriodoLaboral::all()->sortBy('pel_inicio');
+        $periodosLaboraisTest = PeriodoLaboral::all();
 
         $periodosLaborais = [];
 
