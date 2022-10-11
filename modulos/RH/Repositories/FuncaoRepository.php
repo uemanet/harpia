@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Modulos\RH\Repositories;
-
 
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\RH\Models\Funcao;

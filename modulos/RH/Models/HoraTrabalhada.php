@@ -25,6 +25,12 @@ class HoraTrabalhada extends BaseModel
         'cfn_set_id' => '='
     ];
 
+    public function justificativas()
+    {
+        return $this->hasMany('Modulos\RH\Models\Justificativa', 'jus_htr_id', 'htr_id');
+    }
+
+
     public function colaborador()
     {
         return $this->hasOne('Modulos\RH\Models\Colaborador', 'col_id','htr_col_id');
