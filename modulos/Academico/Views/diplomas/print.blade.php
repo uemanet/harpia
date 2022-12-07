@@ -70,6 +70,7 @@
 
       </div>
     </div>
+    <p style="font-family: Arial; margin-left:30px;font-weight: normal;">Documento isento de autenticação pelo sistema educacional com base na Resolução nº 228/02 CEE-MA de 17.10.2002.</p>
 
     <pagebreak>
 
