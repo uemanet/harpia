@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('prf_codigo')) has-error @endif">
-        {!! Form::label('prf_codigo', 'Código', ['class' => 'control-label']) !!}
+        {!! Form::label('prf_codigo', 'Código/Matrícula', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('prf_codigo', isset($pessoa->prf_codigo) ? $pessoa->prf_codigo : old('prf_codigo'), ['class' => 'form-control']) !!}
             @if ($errors->has('prf_codigo')) <p class="help-block">{{ $errors->first('prf_codigo') }}</p> @endif

@@ -221,7 +221,7 @@
                         </td>
                     </tr>
                     <tr class="padding-0_3">
-                        <td colspan="5">
+                        <td style="text-align: justify" colspan="5">
                             <strong>COMPETÊNCIAS:</strong> {{$modulo['competencias']}}
                         </td>
                     </tr>
