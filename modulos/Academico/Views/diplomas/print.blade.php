@@ -3,36 +3,64 @@
 <style type="text/css">
 
     .tudo {
-      margin-left:30px;
-      margin-right: 56px;
-      border: 0.4mm solid;
+        margin-left:30px;
+        margin-right: 56px;
+        border: 0.4mm solid;
 
     }
     .divesquerda {
-      float: left;
-      width: 350px;
-      height: 360px;
-      border: 0.4mm solid;
-      border-top-style: none;
-      border-bottom-style: none;
-      border-left-style: none;
-      padding: 20px 20px 0px 20px;
+        float: left;
+        width: 350px;
+        height: 360px;
+        border: 0.4mm solid;
+        border-top-style: none;
+        border-bottom-style: none;
+        border-left-style: none;
+        padding: 20px 20px 0px 20px;
 
     }
+
+    .cabecalhoesquerda {
+        float: left;
+        width: 350px;
+        height: 40px;
+
+    }
+
+    .cabecalho {
+        margin-right: 56px;
+    }
+
+    .cabecalhodireita {
+        /*border: 0.4mm solid;*/
+        height: 40px;
+        margin-left:500px;
+
+    }
+
     .divdireita {
-      /*border: 0.4mm solid;*/
-      height: 360px;
-      margin-left:350px;
+        /*border: 0.4mm solid;*/
+        height: 360px;
+        margin-left:350px;
 
     }
 </style>
 @foreach($retorno as $dados)
     <br>
     <br>
-      <h4 style="font-family: Arial; margin-left:30px;font-weight: normal;"> EIXO: <b>{{$dados['EIXOCURSO']}} </b> </h4>
-      <h4 style="font-family: Arial; margin-left:30px;font-weight: normal;"> HABILITAÇÃO: <b>{{$dados['HABILITAÇÂO']}}</b> </h4>
-    <br>
-    <br>
+    <div class="cabecalho" style="font-family: Arial; font-size:13px">
+
+        <div class="cabecalhoesquerda">
+            <h4 style="font-family: Arial; margin-left:30px;font-weight: normal;"> EIXO: <b>{{$dados['EIXOCURSO']}} </b> </h4>
+            <h4 style="font-family: Arial; margin-left:30px;font-weight: normal;"> HABILITAÇÃO: <b>{{$dados['HABILITAÇÂO']}}</b> </h4>
+        </div>
+
+        <div class="cabecalhodireita">
+            <h4 style="font-family: Arial; margin-left:150px;font-weight: normal; text-align: justify"> UNIVERSIDADE ESTADUAL DO MARANHÃO
+                Recredenciamento renovado junto ao Conselho Estadual de Educação,  através da Resolução N° 225 de 15 setembro de 2022 – CEE/MA. </h4>
+
+        </div>
+    </div>
     <!-- HTML -->
     <div class="tudo" style="font-family: Arial; font-size:13px">
 
