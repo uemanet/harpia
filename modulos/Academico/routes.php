@@ -5,11 +5,12 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 //    Route::get('/', '\Modulos\Academico\Http\Controllers\NoticiasController@getIndex')->name('academico.noticias.index');
 
     Route::group(['prefix' => 'noticias'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\NoticiasController@getIndex')->name('academico.noticias.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\NoticiasController@getCreate')->name('academico.noticias.create');
         Route::post('/create', '\Modulos\Academico\Http\Controllers\NoticiasController@postCreate')->name('academico.noticias.create');
-//        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\PolosController@getEdit')->name('academico.polos.edit');
-//        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\PolosController@putEdit')->name('academico.polos.edit');
-//        Route::post('/delete', '\Modulos\Academico\Http\Controllers\PolosController@postDelete')->name('academico.polos.delete');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\NoticiasController@getEdit')->name('academico.noticias.edit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\NoticiasController@putEdit')->name('academico.noticias.edit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\NoticiasController@postDelete')->name('academico.noticias.delete');
     });
 
     Route::group(['prefix' => 'polos'], function () {

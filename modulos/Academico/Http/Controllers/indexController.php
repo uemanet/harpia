@@ -39,14 +39,14 @@ class indexController extends Controller
      */
     public function getIndex()
     {
-        $noticias = $this->noticiaRepository->all();
+        $noticias = $this->noticiaRepository->all()->sortDesc();
 
         $btnNovo = new TButton();
         $btnNovo->setName('Novo')->setRoute('academico.noticias.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
 
         $actionButtons[] = $btnNovo;
 
-        return view('Academico::noticias.index', [
+        return view('Academico::noticias.indexShow', [
             'alunos' => $this->alunoRepository->count(),
             'matriculas' => $this->matriculaRepository->count(),
             'cursos' => $this->cursoRepository->count(),
