@@ -2,6 +2,15 @@
 
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
+//    Route::get('/', '\Modulos\Academico\Http\Controllers\NoticiasController@getIndex')->name('academico.noticias.index');
+
+    Route::group(['prefix' => 'noticias'], function () {
+        Route::get('/create', '\Modulos\Academico\Http\Controllers\NoticiasController@getCreate')->name('academico.noticias.create');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\NoticiasController@postCreate')->name('academico.noticias.create');
+//        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\PolosController@getEdit')->name('academico.polos.edit');
+//        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\PolosController@putEdit')->name('academico.polos.edit');
+//        Route::post('/delete', '\Modulos\Academico\Http\Controllers\PolosController@postDelete')->name('academico.polos.delete');
+    });
 
     Route::group(['prefix' => 'polos'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\PolosController@getIndex')->name('academico.polos.index');
