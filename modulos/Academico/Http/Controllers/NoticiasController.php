@@ -47,6 +47,8 @@ class NoticiasController extends BaseController
      */
     public function postCreate(Request $request)
     {
+//        dd($request);
+//        exit();
 
         try {
             $noticia = $this->noticiaRepository->create($request->all());

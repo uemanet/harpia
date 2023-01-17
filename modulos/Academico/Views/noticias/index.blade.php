@@ -123,23 +123,43 @@
                             <div class="elementor-element elementor-element-93c5691 elementor-grid-1 elementor-posts--thumbnail-left elementor-posts--align-left elementor-grid-tablet-2 elementor-grid-mobile-1 elementor-widget elementor-widget-posts" data-id="93c5691" data-element_type="widget" data-settings="{&quot;classic_columns&quot;:&quot;1&quot;,&quot;classic_row_gap&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:30,&quot;sizes&quot;:[]},&quot;classic_columns_tablet&quot;:&quot;2&quot;,&quot;classic_columns_mobile&quot;:&quot;1&quot;}" data-widget_type="posts.classic">
                                 <div class="elementor-widget-container">
                                     <div class="elementor-posts-container elementor-posts elementor-posts--skin-classic elementor-grid elementor-has-item-ratio">
-                                        <article class="elementor-post elementor-grid-item post-8155 post type-post status-publish format-standard hentry category-geral">
-                                            <div class="elementor-post__text">
-                                                <h3 class="elementor-post__title">
-                                                    <a href="https://uemanet.uema.br/blog/2023/01/13/edital-no-38-2022-convocacao-para-entrevista-processo-de-selecao-simplificado-para-preenchimento-de-vagas-e-formacao-de-cadastro-de-reserva-de-professores-supervisores-de-estagio-p/">
-                                                        EDITAL Nº 38/2022 – CONVOCAÇÃO PARA ENTREVISTA – PROCESSO DE SELEÇÃO SIMPLIFICADO PARA PREENCHIMENTO DE VAGAS E FORMAÇÃO DE CADASTRO DE RESERVA DE PROFESSORES SUPERVISORES DE ESTÁGIO PARA ATUAÇÃO NOS CURSOS DE LICENCIATURA EM MÚSICA E PEDAGOGIA, NA MODALIDADE A DISTÂNCIA, DA UNIVERSIDADE ESTADUAL DO MARANHÃO – UEMA.			</a>
-                                                </h3>
-                                                <div class="elementor-post__meta-data">
-					<span class="elementor-post-date">
-			13 de janeiro de 2023		</span>
+{{--                                        <article class="elementor-post elementor-grid-item post-8155 post type-post status-publish format-standard hentry category-geral">--}}
+{{--                                            <div class="elementor-post__text">--}}
+{{--                                                <h3 class="elementor-post__title">--}}
+{{--                                                    <a href="https://uemanet.uema.br/blog/2023/01/13/edital-no-38-2022-convocacao-para-entrevista-processo-de-selecao-simplificado-para-preenchimento-de-vagas-e-formacao-de-cadastro-de-reserva-de-professores-supervisores-de-estagio-p/">--}}
+{{--                                                        EDITAL Nº 38/2022 – CONVOCAÇÃO PARA ENTREVISTA – PROCESSO DE SELEÇÃO SIMPLIFICADO PARA PREENCHIMENTO DE VAGAS E FORMAÇÃO DE CADASTRO DE RESERVA DE PROFESSORES SUPERVISORES DE ESTÁGIO PARA ATUAÇÃO NOS CURSOS DE LICENCIATURA EM MÚSICA E PEDAGOGIA, NA MODALIDADE A DISTÂNCIA, DA UNIVERSIDADE ESTADUAL DO MARANHÃO – UEMA.			</a>--}}
+{{--                                                </h3>--}}
+{{--                                                <div class="elementor-post__meta-data">--}}
+{{--					<span class="elementor-post-date">--}}
+{{--			13 de janeiro de 2023		</span>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="elementor-post__excerpt">--}}
+{{--                                                    <p>A Universidade Estadual do Maranhão (UEMA), por meio do Núcleo de Tecnologias para Educação (UEMAnet), torna público, para conhecimento dos interessados, a convocação para entrevista relativo ao processo para preenchimento de vagas e formação de cadastro de reserva para&nbsp;para Professor Supervisor de Estágio dos cursos de&nbsp;Licenciatura em Música e Pedagogia, na modalidade a distância, observadas as condições contidas no edital nº 38/2022.</p>--}}
+{{--                                                </div>--}}
+{{--                                                <a class="elementor-post__read-more" href="https://uemanet.uema.br/blog/2023/01/13/edital-no-38-2022-convocacao-para-entrevista-processo-de-selecao-simplificado-para-preenchimento-de-vagas-e-formacao-de-cadastro-de-reserva-de-professores-supervisores-de-estagio-p/">--}}
+{{--                                                    Ver mais »			</a>--}}
+{{--                                            </div>--}}
+{{--                                        </article>--}}
+
+                                        @foreach($noticias as $noticia)
+                                            <article class="elementor-post elementor-grid-item post-8155 post type-post status-publish format-standard hentry category-geral">
+                                                <div class="elementor-post__text">
+                                                    <h3 class="elementor-post__title">
+{{--                                                        <a href="https://uemanet.uema.br/blog/2023/01/13/edital-no-38-2022-convocacao-para-entrevista-processo-de-selecao-simplificado-para-preenchimento-de-vagas-e-formacao-de-cadastro-de-reserva-de-professores-supervisores-de-estagio-p/">--}}
+{{--                                                            EDITAL Nº 38/2022 – CONVOCAÇÃO PARA ENTREVISTA – PROCESSO DE SELEÇÃO SIMPLIFICADO PARA PREENCHIMENTO DE VAGAS E FORMAÇÃO DE CADASTRO DE RESERVA DE PROFESSORES SUPERVISORES DE ESTÁGIO PARA ATUAÇÃO NOS CURSOS DE LICENCIATURA EM MÚSICA E PEDAGOGIA, NA MODALIDADE A DISTÂNCIA, DA UNIVERSIDADE ESTADUAL DO MARANHÃO – UEMA.			</a>--}}
+                                                        {{$noticia->not_titulo}}
+                                                    </h3>
+                                                    <div class="elementor-post__meta-data">
+					                                    <span class="elementor-post-date"> {{$noticia->created_at->format('d/m/Y')}}	</span>
+                                                    </div>
+                                                    <div class="elementor-post__excerpt">
+                                                        <p>{{$noticia->not_descricao}}</p>
+                                                    </div>
+                                                    <a class="elementor-post__read-more" href="{{$noticia->not_link}}">
+                                                        Ver mais »			</a>
                                                 </div>
-                                                <div class="elementor-post__excerpt">
-                                                    <p>A Universidade Estadual do Maranhão (UEMA), por meio do Núcleo de Tecnologias para Educação (UEMAnet), torna público, para conhecimento dos interessados, a convocação para entrevista relativo ao processo para preenchimento de vagas e formação de cadastro de reserva para&nbsp;para Professor Supervisor de Estágio dos cursos de&nbsp;Licenciatura em Música e Pedagogia, na modalidade a distância, observadas as condições contidas no edital nº 38/2022.</p>
-                                                </div>
-                                                <a class="elementor-post__read-more" href="https://uemanet.uema.br/blog/2023/01/13/edital-no-38-2022-convocacao-para-entrevista-processo-de-selecao-simplificado-para-preenchimento-de-vagas-e-formacao-de-cadastro-de-reserva-de-professores-supervisores-de-estagio-p/">
-                                                    Ver mais »			</a>
-                                            </div>
-                                        </article>
+                                            </article>
+                                        @endforeach
                                     </div>
                                     {{--                                <nav class="elementor-pagination" role="navigation" aria-label="Pagination">--}}
                                     {{--                                    <span class="page-numbers prev">« Anterior</span>--}}

@@ -13,7 +13,7 @@ class Noticia extends BaseModel
     protected $primaryKey = 'not_id';
 
     protected $fillable = [
-        'not_pes_id', 'not_titulo', 'not_descricao', 'not_corpo'
+        'not_pes_id', 'not_titulo', 'not_descricao','not_link', 'not_corpo'
     ];
 
     protected $searchable = [
