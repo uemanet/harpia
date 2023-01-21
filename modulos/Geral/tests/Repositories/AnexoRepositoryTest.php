@@ -277,7 +277,6 @@ class AnexoRepositoryTest extends ModulosTestCase
         $uploaded = $this->mockUploaded();
 
         $anexo = $this->repo->salvarAnexo($uploaded);
-//        dd($anexo);
 
         $id = $anexo->anx_id;
 

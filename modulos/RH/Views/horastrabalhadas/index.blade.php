@@ -29,11 +29,11 @@
             <div class="row">
                 <form method="GET" action="{{ route('rh.horastrabalhadas.index') }}">
                     <div class="form-group col-md-3">
-                        {!! Form::select('htr_pel_id', $periodosLaborais, [], ['id' => 'htr_pel_id', 'class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
+                        {!! Form::select('htr_pel_id', $periodosLaborais, Request::input('htr_pel_id'), ['id' => 'htr_pel_id', 'class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
                     </div>
 
                     <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                        {!! Form::select('cfn_set_id', $setores, Request::input('cfn_set_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
                     </div>
 
                     <div class="col-md-2">
@@ -114,11 +114,12 @@
                                         'label' => 'Exportar para PDF',
                                         'method' => 'post',
                                         'id' => '',
-                                        'attributes' => ['id' => 'formPdf','target' => '_blank']
+                                        'attributes' => ['id' => 'formPdf']
                                         ]
                                     ]
                             ]) !!}
-                            <input type="hidden" name="pel_id" id="periodoLaboralId" value="">
+                            <input type="hidden" name="pel_id" id="periodoLaboralId" value="{{ Request::input('htr_pel_id')}}">
+                            <input type="hidden" name="set_id" id="setorId" value="{{ Request::input('cfn_set_id')}}">
                         </form>
                     </div>
                 </div>
@@ -156,26 +157,4 @@
         });
     </script>
 
-    <script type="text/javascript">
-        // Alteracao de polo e grupo
-
-        //htr_pel_id
-        $(function () {
-
-            var periodosLaboraisSelect = $('#htr_pel_id');
-
-            $('#htr_pel_id').change(function () {
-
-                console.log($(this).val());
-                $('#periodoLaboralId').attr('value', periodosLaboraisSelect.val());
-            });
-
-            console.log(periodosLaboraisSelect.val());
-            $('.modal-update-polo').click(function (event) {
-                event.preventDefault();
-                $('.modalUpdatePolo').modal();
-            });
-        });
-    </script>
 @endsection
-
