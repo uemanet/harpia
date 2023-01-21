@@ -24,8 +24,8 @@ class HorasTrabalhadasDiariasController extends BaseController
 
     public function __construct(HoraTrabalhadaDiariaRepository $horaTrabalhadaDiariaRepository,
                                 HoraTrabalhadaRepository $horaTrabalhadaRepository,
-                                    ColaboradorRepository $colaboradorRepository,
-                                    PeriodoLaboralRepository $periodoLaboralRepository)
+                                ColaboradorRepository $colaboradorRepository,
+                                PeriodoLaboralRepository $periodoLaboralRepository)
 
     {
         $this->horaTrabalhadaDiariaRepository = $horaTrabalhadaDiariaRepository;
@@ -119,7 +119,8 @@ class HorasTrabalhadasDiariasController extends BaseController
             flash()->error('Período Laboral não existe.');
             return redirect()->back();
         }
-        $horasTrabalhadas = $this->horaTrabalhadaDiariaRepository->buscarDadosParaRelatorioDeHorasTrabalhadas($data['pel_id']);
+
+        $horasTrabalhadas = $this->horaTrabalhadaDiariaRepository->buscarDadosParaRelatorioDeHorasTrabalhadas($data['pel_id'], $data['set_id'] ?? null);
 
         $date = new Carbon();
 
@@ -138,6 +139,7 @@ class HorasTrabalhadasDiariasController extends BaseController
         $mpdf->defaultfooterfontstyle = 'BI';
         $mpdf->defaultfooterline = 0;
         $mpdf->addPage('L');
+
 
 
         $mpdf->WriteHTML(view('RH::horastrabalhadas.relatoriohorastrabalhadas', compact('horasTrabalhadas', 'date', 'periodoLaboral'))->render());

@@ -492,8 +492,6 @@ class AmbientesVirtuaisController extends BaseController
         try {
             DB::beginTransaction();
 
-//            dd('parou');
-
             $ambienteTurma = $this->ambienteTurmaRepository->find($id);
 
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);

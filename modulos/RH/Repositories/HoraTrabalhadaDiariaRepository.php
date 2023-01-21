@@ -45,14 +45,23 @@ class HoraTrabalhadaDiariaRepository extends BaseRepository
         return ['menorData' => $menorData, 'maiorData' => $maiorData];
     }
 
-    public function buscarDadosParaRelatorioDeHorasTrabalhadas(int $periodoLaboralId)
+    public function buscarDadosParaRelatorioDeHorasTrabalhadas(int $periodoLaboralId, $setorId = null)
     {
-        return DB::table('reh_horas_trabalhadas')
+        $result = DB::table('reh_horas_trabalhadas')
             ->where('htr_pel_id', $periodoLaboralId)
             ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
-            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
-            ->orderBy('pes_nome', 'ASC')
-            ->get();
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id');
+
+        if($setorId){
+            $result = DB::table('reh_horas_trabalhadas')
+                ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
+                ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+                ->join('reh_colaboradores_funcoes', 'col_id', '=', 'cfn_col_id')
+                ->where('cfn_set_id', $setorId)
+                ->where('htr_pel_id', $periodoLaboralId);
+        }
+
+        return $result->groupBy('pes_id')->orderBy('pes_nome', 'ASC')->get();
     }
 
     public function paginate($sort = null, $search = null)
