@@ -2,7 +2,6 @@
 
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
-//    Route::get('/', '\Modulos\Academico\Http\Controllers\NoticiasController@getIndex')->name('academico.noticias.index');
 
     Route::group(['prefix' => 'noticias'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\NoticiasController@getIndex')->name('academico.noticias.index');

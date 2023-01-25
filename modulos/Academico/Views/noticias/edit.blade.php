@@ -14,7 +14,7 @@
             <h3 class="box-title">Formulário de edição de notícias</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($noticia, ["route" => ['academico.noticias.edit',$noticia->not_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            {!! Form::model($noticia, ["route" => ['academico.noticias.edit',$noticia->ntc_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
                 @include('Academico::noticias.includes.formulario')
             {!! Form::close() !!}
 

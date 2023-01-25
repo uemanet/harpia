@@ -10,16 +10,14 @@ class Noticia extends BaseModel
 {
     protected $table = 'acd_noticias';
 
-    protected $primaryKey = 'not_id';
+    protected $primaryKey = 'ntc_id';
 
     protected $fillable = [
-        'not_pes_id', 'not_titulo', 'not_descricao','not_link', 'not_corpo'
+        'ntc_titulo', 'ntc_descricao'
     ];
 
     protected $searchable = [
-        'not_pes_id' => '=',
-        'not_titulo' => 'like',
-        'not_descricao' => 'like',
-        'not_corpo' => 'like'
+        'ntc_titulo' => 'like',
+        'ntc_descricao' => 'like'
     ];
 }

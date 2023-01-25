@@ -35,15 +35,15 @@ class NoticiasController extends BaseController
 
         if ($tableData->count()) {
             $tabela = $tableData->columns(array(
-                'not_id' => '#',
-                'not_titulo' => 'Título',
-                'not_action' => 'Ações'
+                'ntc_id' => '#',
+                'ntc_titulo' => 'Título',
+                'ntc_action' => 'Ações'
             ))
-                ->modifyCell('not_action', function () {
+                ->modifyCell('ntc_action', function () {
                     return array('style' => 'width: 140px;');
                 })
-                ->means('not_action', 'not_id')
-                ->modify('not_action', function ($id) {
+                ->means('ntc_action', 'ntc_id')
+                ->modify('ntc_action', function ($id) {
                     return ActionButton::grid([
                         'type' => 'SELECT',
                         'config' => [
@@ -70,7 +70,7 @@ class NoticiasController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('not_id', 'not_titulo'));
+                ->sortable(array('ntc_id', 'ntc_titulo'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -95,9 +95,6 @@ class NoticiasController extends BaseController
      */
     public function postCreate(Request $request)
     {
-//        dd($request);
-//        exit();
-
         try {
             $noticia = $this->noticiaRepository->create($request->all());
 
@@ -157,6 +154,7 @@ class NoticiasController extends BaseController
      */
     public function putEdit($noticiaId, NoticiaRequest $request)
     {
+
         try {
             $noticia = $this->noticiaRepository->find($noticiaId);
 
@@ -167,7 +165,7 @@ class NoticiasController extends BaseController
 
             $requestData = $request->only($this->noticiaRepository->getFillableModelFields());
 
-            if (!$this->noticiaRepository->update($requestData, $noticia->not_id, 'not_id')) {
+            if (!$this->noticiaRepository->update($requestData, $noticia->ntc_id, 'ntc_id')) {
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }

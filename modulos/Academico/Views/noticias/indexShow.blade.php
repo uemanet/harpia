@@ -26,16 +26,14 @@
                                             <article class="elementor-post elementor-grid-item post-8155 post type-post status-publish format-standard hentry category-geral">
                                                 <div class="elementor-post__text">
                                                     <h3 class="elementor-post__title">
-                                                        {{$noticia->not_titulo}}
+                                                        {{$noticia->ntc_titulo}}
                                                     </h3>
                                                     <div class="elementor-post__meta-data">
 					                                    <span class="elementor-post-date"> {{$noticia->created_at->format('d/m/Y')}}	</span>
                                                     </div>
                                                     <div class="elementor-post__excerpt">
-                                                        <p>{{$noticia->not_descricao}}</p>
+                                                        <p>{{$noticia->ntc_descricao}}</p>
                                                     </div>
-                                                    <a class="elementor-post__read-more" href="{{$noticia->not_link}}" target="_blank">
-                                                        Ver mais »			</a>
                                                 </div>
                                             </article>
                                         @endforeach
