@@ -3,6 +3,15 @@
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
 
+    Route::group(['prefix' => 'instituicoes'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\InstituicoesController@getIndex')->name('academico.instituicoes.index');
+        Route::get('/create', '\Modulos\Academico\Http\Controllers\InstituicoesController@getCreate')->name('academico.instituicoes.create');
+        Route::post('/create', '\Modulos\Academico\Http\Controllers\InstituicoesController@postCreate')->name('academico.instituicoes.create');
+        Route::get('/edit/{id}', '\Modulos\Academico\Http\Controllers\InstituicoesController@getEdit')->name('academico.instituicoes.edit');
+        Route::put('/edit/{id}', '\Modulos\Academico\Http\Controllers\InstituicoesController@putEdit')->name('academico.instituicoes.edit');
+        Route::post('/delete', '\Modulos\Academico\Http\Controllers\InstituicoesController@postDelete')->name('academico.instituicoes.delete');
+    });
+
     Route::group(['prefix' => 'noticias'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\NoticiasController@getIndex')->name('academico.noticias.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\NoticiasController@getCreate')->name('academico.noticias.create');
