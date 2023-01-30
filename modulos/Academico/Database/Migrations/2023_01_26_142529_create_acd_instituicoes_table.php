@@ -16,6 +16,7 @@ class CreateAcdInstituicoesTable extends Migration
         Schema::create('acd_instituicoes', function (Blueprint $table) {
             $table->increments('itt_id');
             $table->string('itt_nome');
+            $table->string('itt_sigla');
             $table->timestamps();
         });
     }

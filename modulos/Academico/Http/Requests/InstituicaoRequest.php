@@ -23,7 +23,8 @@ class InstituicaoRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'itt_nome' => 'required|min:3|max:100'
+            'itt_nome' => 'required|min:3|max:100',
+            'itt_sigla' => 'required|min:3|max:10'
         ];
 
         return $rules;

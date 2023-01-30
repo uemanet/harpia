@@ -13,10 +13,12 @@ class Instituicao extends BaseModel
     protected $primaryKey = 'itt_id';
 
     protected $fillable = [
-        'itt_nome'
+        'itt_nome',
+        'itt_sigla'
     ];
 
     protected $searchable = [
-        'itt_nome' => 'like'
+        'itt_nome' => 'like',
+        'itt_sigla' => 'like'
     ];
 }
