@@ -34,6 +34,7 @@ class InstituicoesController extends BaseController
             $tabela = $tableData->columns(array(
                 'itt_id' => '#',
                 'itt_nome' => 'Instituição',
+                'itt_sigla' => 'Sigla',
                 'itt_action' => 'Ações'
             ))
                 ->modifyCell('itt_action', function () {
@@ -67,7 +68,7 @@ class InstituicoesController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('itt_id', 'itt_nome'));
+                ->sortable(array('itt_id', 'itt_nome', 'itt_sigla'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
