@@ -36,6 +36,15 @@
         .centerAssinatura {
             text-align: center;
         }
+        #byUemanet {
+            font-family: monospace;
+            position: absolute;
+            font-size: xx-small;
+            right: 10px;
+            bottom: 0;
+            width: 100%;
+            height: 2.5rem;
+        }
     </style>
 </head>
 <body>
@@ -43,9 +52,8 @@
         <tbody>
             <tr>
                 <td width="50%" class="center">
-                    UEMA<br>
-                    Pró-Reitoria de Pesquisa e Pós-Graduação<br>
-                    Coordenadoria de Pós-Graduação
+                    CAPES<br>
+                    Coordenação de Aperfeiçoamento de Pessoal de Nível Superior<br>
                 </td>
                 <td width="50%" class="center">
                     <strong>HISTÓRICO ESCOLAR</strong>
@@ -96,7 +104,7 @@
                 <td width="20%" class="center"><strong>PERIODO</strong></td>
             </tr>
             <tr>
-                <td class="center">UEMA</td>
+                <td class="center">NOME DA INSTITUIÇÃO</td>
                 <td class="center">{{$dados['curso']->crs_resolucao}}</td>
                 <td class="center">{{$dados['curso']->crs_autorizacao}}</td>
                 <td class="center">{{$dados['turma']->periodo_letivo}}</td>
@@ -186,5 +194,8 @@
         </tr>
         </tbody>
     </table>
+    <footer id="byUemanet">
+        <p align="right">DESENVOLVIDO PELO NÚCLEO DE TECNOLOGIAS PARA EDUCAÇÃO – UEMANET/UEMA</p>
+    </footer>
 </body>
 </html>
