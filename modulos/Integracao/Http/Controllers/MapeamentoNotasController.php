@@ -61,6 +61,14 @@ class MapeamentoNotasController extends BaseController
 
             $ofertas = $this->mapeamentoNotasRepository->getGradeCurricularByTurma($turmaId);
 
+            $turma = $this->turmaRepository->find($turmaId);
+
+            if($turma->trm_tipo_integracao === 'v2'){
+
+                $html = view('Integracao::mapeamentonotas.ajax.disciplinasV2', compact('cursos', 'ofertas', 'turma'))->render();
+                return response()->json(['html' => $html]);
+            }
+
             $html = view('Integracao::mapeamentonotas.ajax.disciplinas', compact('cursos', 'ofertas', 'turma'))->render();
 
             return response()->json(['html' => $html]);
@@ -211,7 +219,12 @@ class MapeamentoNotasController extends BaseController
         // Busca as configurações de notas do curso
         $configuracoesCurso = $ofertaDisciplina->turma->ofertaCurso->curso->configuracoes->pluck('cfc_valor', 'cfc_nome')->toArray();
 
-        $response = $this->mapeamentoNotasRepository->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $configuracoesCurso);
+        if($ofertaDisciplina->turma->trm_tipo_integracao == 'v2'){
+            $response = $this->mapeamentoNotasRepository->mapearNotasAlunoV2($ofertaDisciplina, $matriculaOfertaDisciplina, $configuracoesCurso);
+        } else {
+            $response = $this->mapeamentoNotasRepository->mapearNotasAluno($ofertaDisciplina, $matriculaOfertaDisciplina, $configuracoesCurso);
+        }
+
 
         flash()->{$response['status']}($response['message']);
 

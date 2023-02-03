@@ -238,6 +238,42 @@ class MapeamentoNotasRepository extends BaseRepository
         return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
     }
 
+    public function mapearNotasAlunoV2(OfertaDisciplina $ofertaDisciplina, $matriculaOfertaDisciplina, $configuracoesCurso)
+    {
+
+        $response = $this->sendDataMoodleV2([$matriculaOfertaDisciplina->getAluno->pessoa->pes_id], $ofertaDisciplina);
+
+        // Buscar tipo de avaliacao da disciplina.
+        $tipoAvaliacao = $ofertaDisciplina->ofd_tipo_avaliacao;
+        if ($tipoAvaliacao == 'Conceitual') {
+            $select = ['min_id_conceito'];
+        }
+
+        // Verifica se veio alguma resposta do moodle e qual status ela será encaixada.
+        $status = 3;
+        if ($response) {
+            $status = (array_key_exists('status', $response) && $response['status'] == 'success') ? 2 : 3;
+        }
+
+        if ($status == 2) {
+
+            $notas['mof_nota1'] = $response['grades'][0]->grade;
+            // calcula a media final e o status de matricula do aluno
+            $notas = $this->calcularMedia($notas, $configuracoesCurso, $tipoAvaliacao);
+
+            // atualizar o registro de notas
+            foreach ($notas as $key => $value) {
+                $matriculaOfertaDisciplina->{$key} = $value;
+            }
+
+            $matriculaOfertaDisciplina->save();
+
+            return array('status' => 'success', 'message' => 'Notas mapeadas com sucesso.');
+        }
+
+        return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
+    }
+
     private function aproveitamentoEstudos(OfertaDisciplina $ofertaDisciplina, MatriculaOfertaDisciplina $matriculaOfertaDisciplina, array $configuracoesCurso)
     {
         // Itens nota
@@ -292,6 +328,46 @@ class MapeamentoNotasRepository extends BaseRepository
         }
 
         return array('status' => 'error', 'message' => 'Erro na comunicação com o web service no Moodle. Entre em contato com o suporte.');
+    }
+
+    private function sendDataMoodleV2($pesIds, OfertaDisciplina $ofertaDisciplina)
+    {
+        $data = [
+            'pes_ids' => json_encode($pesIds),
+            'ofd_id' => $ofertaDisciplina->ofd_id
+        ];
+
+        // buscar ambiente virtual vinculado à turma do aluno
+        $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($ofertaDisciplina->ofd_trm_id);
+
+        if (!$ambiente) {
+            return null;
+        }
+
+        $turma = $this->turmaRepository->find($ofertaDisciplina->ofd_trm_id);
+
+        // Web service de integracao
+        $ambServico = $ambiente->integracaoV2();
+
+
+        if ($ambServico) {
+            $parametros = [];
+
+            // url do ambiente
+            $parametros['url'] = $ambiente->amb_url;
+            $parametros['token'] = $ambServico->asr_token;
+            $parametros['functionname'] = 'local_integracao_v2_get_course_grades_batch';
+
+            $parametros['action'] = 'MAPEAR_NOTAS_ALUNO';
+
+            $parametros['data']['grades'] = $data;
+
+            $retorno = Moodle::send($parametros);
+
+            return $retorno;
+        }
+
+        return null;
     }
 
     private function sendDataMoodle($pesId, array $itens, $trm_id)
