@@ -24,8 +24,8 @@ class NoticiaRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-            'ntc_titulo' => 'required|min:10|max:400',
-            'ntc_descricao' => 'required|min:10|max:600'
+            'ntc_titulo' => 'required|min:10|max:300',
+            'ntc_descricao' => 'required|min:10|max:800'
         ];
 
         return $rules;

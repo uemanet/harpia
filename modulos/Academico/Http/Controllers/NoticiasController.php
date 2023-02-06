@@ -77,23 +77,11 @@ class NoticiasController extends BaseController
         return view('Academico::noticias.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'actionButton' => $actionButtons]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getCreate()
     {
         return view('Academico::noticias.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function postCreate(Request $request)
+    public function postCreate(NoticiaRequest $request)
     {
         try {
             $noticia = $this->noticiaRepository->create($request->all());
@@ -116,23 +104,11 @@ class NoticiasController extends BaseController
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \Modulos\Academico\Models\Noticia  $noticia
-     * @return \Illuminate\Http\Response
-     */
     public function show(Noticia $noticia)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \Modulos\Academico\Models\Noticia  $noticia
-     * @return \Illuminate\Http\Response
-     */
     public function getEdit($noticiaId)
     {
         $noticia = $this->noticiaRepository->find($noticiaId);
@@ -145,13 +121,6 @@ class NoticiasController extends BaseController
         return view('Academico::noticias.edit', compact('noticia'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Modulos\Academico\Models\Noticia  $noticia
-     * @return \Illuminate\Http\Response
-     */
     public function putEdit($noticiaId, NoticiaRequest $request)
     {
 
@@ -182,12 +151,6 @@ class NoticiasController extends BaseController
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Modulos\Academico\Models\Noticia  $noticia
-     * @return \Illuminate\Http\Response
-     */
     public function postDelete(Request $request)
     {
         try {
