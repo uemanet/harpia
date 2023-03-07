@@ -126,6 +126,18 @@ class OfertaCursoRepository extends BaseRepository
             $result = $result->orderBy($sort['field'], $sort['sort']);
         }
 
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+
+            $ofertas = DB::table('acd_turmas')
+                ->join('acd_ofertas_cursos', 'ofc_id', 'trm_ofc_id')
+                ->where('trm_itt_id', '=', $user->pessoa->pes_itt_id)
+                ->groupBy('ofc_id')->distinct('ofc_id')->get();
+
+            $ofc_ids = $ofertas->pluck('ofc_id')->toArray();
+
+            $result = $result->whereIn('ofc_id', $ofc_ids);
+        }
         return $result->paginate(15);
     }
 
@@ -136,6 +148,22 @@ class OfertaCursoRepository extends BaseRepository
      */
     public function findAllByCurso($cursoid)
     {
+        $user = Auth::user();
+        if (!$user->isAdmin()) {
+            $ofertas = DB::table('acd_turmas')
+                ->join('acd_ofertas_cursos', 'ofc_id', 'trm_ofc_id')
+                ->where('trm_itt_id', '=', $user->pessoa->pes_itt_id)
+                ->where('ofc_crs_id', $cursoid)
+                ->groupBy('ofc_id')->distinct('ofc_id')->get();
+
+            $ofc_ids = $ofertas->pluck('ofc_id')->toArray();
+
+            return $this->model
+                ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                ->whereIn('ofc_id', $ofc_ids)
+                ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+        }
+
         return $this->model
             ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
             ->where('ofc_crs_id', $cursoid)

@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Illuminate\Support\Facades\DB;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Professor;
+use Auth;
 
 class ProfessorRepository extends BaseRepository
 {
@@ -24,6 +25,11 @@ class ProfessorRepository extends BaseRepository
     {
         $sql = DB::table('gra_pessoas')
             ->join('acd_professores', 'pes_id', '=', 'acd_professores.prf_pes_id');
+
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $sql = $sql->where('pes_itt_id', $user->pessoa->pes_itt_id);
+        }
 
         if (!$all) {
             $sql = $sql->leftJoin('acd_centros', 'cen_prf_diretor', '=', 'prf_id')
@@ -67,6 +73,11 @@ class ProfessorRepository extends BaseRepository
 
         if (!empty($sort)) {
             $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $result = $result->where('pes_itt_id', $user->pessoa->pes_itt_id);
         }
 
         $result = $result->paginate(15);

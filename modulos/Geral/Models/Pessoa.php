@@ -12,6 +12,7 @@ class Pessoa extends BaseModel
     protected $primaryKey = 'pes_id';
 
     protected $fillable = [
+        'pes_itt_id',
         'pes_nome',
         'pes_sexo',
         'pes_email',

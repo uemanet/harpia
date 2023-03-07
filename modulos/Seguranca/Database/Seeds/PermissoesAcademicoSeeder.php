@@ -780,6 +780,48 @@ class PermissoesAcademicoSeeder extends Seeder
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 
+
+
+
+
+        // Permissoes do recurso instituicoes
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.instituicoes.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.instituicoes.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'academico.instituicoes.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.instituicoes.delete'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'turmas',
+            'prm_rota' => 'academico.instituicoes.turmas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'pessoas',
+            'prm_rota' => 'academico.instituicoes.pessoas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
         // Atribuir permissao index ao perfil de Administrador
         $perfil->permissoes()->attach($arrPermissoes);
 

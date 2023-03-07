@@ -67,6 +67,13 @@ class Usuario extends BaseModel implements
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'usr_pes_id', 'pes_id');
     }
 
+    public function isAdmin(): bool
+    {
+        return collect($this->perfis)
+            ->pluck('prf_nome')
+            ->contains('Administrador Acadêmico');
+    }
+
     public function aluno()
     {
         return $this->hasOne('Modulos\Academico\Models\Aluno', 'alu_pes_id', 'usr_pes_id');

@@ -5,17 +5,30 @@ namespace Modulos\Academico\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modulos\Academico\Http\Requests\InstituicaoRequest;
+use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\InstituicaoRepository;
+use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 
 class InstituicoesController extends BaseController
 {
     protected $instituicaoRepository;
-    public function __construct(InstituicaoRepository $instituicaoRepository)
+    protected $cursoRepository;
+    protected $turmaRepository;
+    protected $pessoaRepository;
+
+    public function __construct(InstituicaoRepository $instituicaoRepository,
+                                CursoRepository  $cursoRepository,
+                                TurmaRepository  $turmaRepository,
+                                PessoaRepository  $pessoaRepository)
     {
         $this->instituicaoRepository = $instituicaoRepository;
+        $this->turmaRepository = $turmaRepository;
+        $this->cursoRepository = $cursoRepository;
+        $this->pessoaRepository = $pessoaRepository;
     }
 
     public function getIndex(Request $request)
@@ -58,6 +71,22 @@ class InstituicoesController extends BaseController
                                 'method' => 'get'
                             ],
                             [
+                                'classButton' => '',
+                                'icon' => 'fa fa-book',
+                                'route' => 'academico.instituicoes.turmas',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Turmas',
+                                'method' => 'get'
+                            ],
+                            [
+                                'classButton' => '',
+                                'icon' => 'fa fa-user',
+                                'route' => 'academico.instituicoes.pessoas',
+                                'parameters' => ['id' => $id],
+                                'label' => 'Pessoas',
+                                'method' => 'get'
+                            ],
+                            [
                                 'classButton' => 'btn-delete text-red',
                                 'icon' => 'fa fa-trash',
                                 'route' => 'academico.instituicoes.delete',
@@ -80,7 +109,7 @@ class InstituicoesController extends BaseController
         return view('Academico::instituicoes.create');
     }
 
-    public function postCreate(Request $request)
+    public function postCreate(InstituicaoRequest $request)
     {
         try {
             $instituicao = $this->instituicaoRepository->create($request->all());
@@ -156,6 +185,103 @@ class InstituicoesController extends BaseController
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {
             flash()->error('Erro ao tentar deletar');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function getTurmas($instituicaoId ,Request $request)
+    {
+        try {
+            $instituicao = $this->instituicaoRepository->find($instituicaoId);
+
+            $cursos = $this->cursoRepository->all()->pluck('crs_nome','crs_id' )->toArray();;
+
+            return view('Academico::instituicoes.turmas', compact('instituicao', 'cursos'));
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function postTurmas($instituicaoId ,Request $request)
+    {
+        try {
+            $data = $request->all();
+
+            $this->turmaRepository->update([ 'trm_itt_id' => $instituicaoId ], $data['trm_id']);
+
+            flash()->success('Turma vinculada com sucesso');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function getPessoas($instituicaoId ,Request $request)
+    {
+        try {
+            $instituicao = $this->instituicaoRepository->find($instituicaoId);
+            $pessoasTodas = $this->pessoaRepository->all();
+            $pessoasFiltradas = $pessoasTodas->filter(function ($pessoa) {
+                return $pessoa->pes_itt_id === null;
+            });
+
+            $pessoas = $pessoasFiltradas->pluck('pes_nome','pes_id' )->toArray();
+
+            return view('Academico::instituicoes.pessoas', compact('instituicao', 'pessoas'));
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+
+    public function postPessoas($instituicaoId ,Request $request)
+    {
+        try {
+            $data = $request->all();
+
+            $this->pessoaRepository->update([ 'pes_itt_id' => $instituicaoId ], $data['pes_id']);
+
+            flash()->success('Pessoa vinculada com sucesso');
+
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro');
             return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {

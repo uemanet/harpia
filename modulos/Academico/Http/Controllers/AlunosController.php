@@ -15,6 +15,7 @@ use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use ActionButton;
 use Modulos\Seguranca\Repositories\UsuarioRepository;
+use Auth;
 
 class AlunosController extends BaseController
 {
@@ -170,6 +171,10 @@ class AlunosController extends BaseController
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
                 DB::beginTransaction();
+
+                $user = Auth::user();
+                $dataPessoa['pes_itt_id'] = $user->pessoa->pes_itt_id;
+
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
                 $pes_id = $pessoa->pes_id;
             }

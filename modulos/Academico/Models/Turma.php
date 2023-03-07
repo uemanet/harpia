@@ -13,6 +13,7 @@ class Turma extends BaseModel
     protected $fillable = [
         'trm_ofc_id',
         'trm_per_id',
+        'trm_itt_id',
         'trm_nome',
         'trm_qtd_vagas',
         'trm_integrada',

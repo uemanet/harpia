@@ -5,6 +5,7 @@ namespace Modulos\Academico\Repositories;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\Tutor;
 use DB;
+use Auth;
 
 class TutorRepository extends BaseRepository
 {
@@ -42,6 +43,11 @@ class TutorRepository extends BaseRepository
             $result = $result->orderBy($sort['field'], $sort['sort']);
         }
 
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $result = $result->where('pes_itt_id', $user->pessoa->pes_itt_id);
+        }
+
         $result = $result->paginate(15);
 
         return $result;
@@ -64,9 +70,14 @@ class TutorRepository extends BaseRepository
         $tutores = DB::table('acd_tutores')
            ->join('gra_pessoas', 'tut_pes_id', '=', 'pes_id')
            ->whereNotIn('tut_id', $tutoresvinculadosId)
-           ->orderBy('pes_nome')
-           ->pluck('pes_nome', 'tut_id');
-        return $tutores;
+           ->orderBy('pes_nome');
+
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $tutores = $tutores->where('pes_itt_id', $user->pessoa->pes_itt_id);
+        }
+
+        return $tutores->pluck('pes_nome', 'tut_id');
     }
 
     public function findAllByGrupo($GrupoId)
