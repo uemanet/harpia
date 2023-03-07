@@ -119,8 +119,8 @@ class RelatoriosMatriculasCursoController extends BaseController
 
         $mpdf->mirrorMargins = 1;
         $mpdf->SetTitle('Relatório de alunos do Curso ' . $nomecurso->crs_nome);
-        $mpdf->SetHeader('{PAGENO} / {nb}');
-        $mpdf->SetFooter('Emitido em : ' . $date->format('d/m/Y H:i:s'));
+//        $mpdf->SetHeader('{PAGENO} / {nb}');
+//        $mpdf->SetFooter('Emitido em : ' . $date->format('d/m/Y H:i:s'));
         $mpdf->defaultheaderfontsize = 10;
         $mpdf->defaultheaderfontstyle = 'B';
         $mpdf->defaultheaderline = 0;

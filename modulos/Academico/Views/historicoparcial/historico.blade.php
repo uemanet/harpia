@@ -69,6 +69,16 @@
             color: white;
         }
 
+        #byUemanet {
+            font-family: monospace;
+            position: absolute;
+            font-size: xx-small;
+            right: 10px;
+            bottom: 0;
+            width: 100%;
+            height: 2.5rem;
+        }
+
     </style>
 </head>
 <body>
@@ -76,13 +86,13 @@
     <tbody>
     <tr>
         <td rowspan="2" width="10%" style="padding: 0.3em;">
-            <img height="10%" src="{{public_path('/img/logo_uema.png')}}">
+            <img height="10%" src="{{public_path('/img/logo_capes.png')}}">
         </td>
-        <td width="55%" style="padding-top: 0.8em;">Universidade Estadual do Maranhão - <strong>UEMA</strong></td>
+        <td width="55%" style="padding-top: 0.8em;">Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - <strong>CAPES</strong></td>
         <td width="35%" style="padding-top: 0.8em;padding-left: 0.8em;">Polo: <b>{{mb_strtoupper($matricula->polo->pol_nome, 'UTF-8')}}</b></td>
     </tr>
     <tr>
-        <td style="padding-bottom: 0.8em;">Sistema Acadêmico de Educação à Distância - <b>SAED/UEMA</b></td>
+        <td style="padding-bottom: 0.8em;">Programa <b>Ciência é 10!</b></td>
         <td style="padding-bottom: 0.8em;padding-left: 0.8em;">Período: <b>{{$matricula->turma->periodo->per_nome}}</b></td>
     </tr>
     </tbody>
@@ -254,5 +264,8 @@
     </tr>
     </tbody>
 </table>
+<footer id="byUemanet">
+    <p align="right">DESENVOLVIDO PELO NÚCLEO DE TECNOLOGIAS PARA EDUCAÇÃO – UEMANET/UEMA.</p>
+</footer>
 </body>
 </html>
