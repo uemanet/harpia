@@ -23,10 +23,19 @@
       margin-left:0px;
 
     }
+    #byUemanet {
+        font-family: monospace;
+        position: absolute;
+        font-size: xx-small;
+        right: 10px;
+        bottom: 0;
+        width: 100%;
+        height: 2.5rem;
+    }
 </style>
 
-<h4 style="font-family: Arial; text-align:center;">UNIVERSIDADE ESTADUAL DO MARANHÃO - UEMA</h4>
-<h4 style="font-family: Arial; text-align:center;">NÚCLEO DE TECNOLOGIAS PARA EDUCAÇÃO - UEMANET</h4>
+<h4 style="font-family: Arial; text-align:center;">CAPES</h4>
+{{--<h4 style="font-family: Arial; text-align:center;"></h4>--}}
 <h4 style="font-family: Arial; text-align:center;">EDUCAÇÃO PROFISSIONAL</h4>
 
 <div class="tudo" style="font-family: Arial; font-size:12px">
@@ -112,5 +121,7 @@
             ?>
             São Luís - MA, {{strftime('%d de %B de %Y', strtotime('today'))}}
     </p>
-
+    <footer id="byUemanet">
+        <p align="right">DESENVOLVIDO PELO NÚCLEO DE TECNOLOGIAS PARA EDUCAÇÃO – UEMANET/UEMA.</p>
+    </footer>
 </html>

@@ -44,6 +44,17 @@
         margin-left:350px;
 
     }
+
+    #byUemanet {
+        font-family: monospace;
+        position: absolute;
+        font-size: xx-small;
+        right: 10px;
+        bottom: 0;
+        width: 100%;
+        height: 2.5rem;
+    }
+
 </style>
 @foreach($retorno as $dados)
     <br>
@@ -56,8 +67,8 @@
         </div>
 
         <div class="cabecalhodireita">
-            <h4 style="font-family: Arial; margin-left:150px;font-weight: normal; text-align: justify"> UNIVERSIDADE ESTADUAL DO MARANHÃO
-                Recredenciamento renovado junto ao Conselho Estadual de Educação,  através da Resolução N° 225 de 15 setembro de 2022 – CEE/MA. </h4>
+{{--            <h4 style="font-family: Arial; margin-left:150px;font-weight: normal; text-align: justify"> UNIVERSIDADE ESTADUAL DO MARANHÃO--}}
+{{--                Recredenciamento renovado junto ao Conselho Estadual de Educação,  através da Resolução N° 225 de 15 setembro de 2022 – CEE/MA. </h4>--}}
 
         </div>
     </div>
@@ -65,7 +76,8 @@
     <div class="tudo" style="font-family: Arial; font-size:13px">
 
       <div class="divesquerda">
-                <p style="text-align:center"><b>UNIVERSIDADE ESTADUAL DO MARANHÃO</b><br>
+{{--                <p style="text-align:center"><b>UNIVERSIDADE ESTADUAL DO MARANHÃO</b><br>--}}
+                  <p style="text-align:center"><b>CAPES</b><br>
                   <b>REGISTRO DE DIPLOMAS</b><br><br>
                   Registrado sob o N° <b>{{$dados['REGISTRO']}}</b><br><br>
                   Livro N° <b>{{$dados['LIVRO']}}</b> FLS N° <b>{{$dados['FOLHA']}} </b><br><br>
@@ -104,12 +116,16 @@
 
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p style="font-size:14pt; font-family: Arial;margin-left:0px; margin-right:50px; text-align:justify; line-height:1.5">
-            A UNIVERSIDADE ESTADUAL DO MARANHÃO, por meio do {{$dados['CENTRO']}}, tendo em vista a conclusão do Curso Técnico de Nível Médio em {{$dados['CURSO']}}, em {{$dados['CONCLUSAO']['DIA']}} de {{$dados['CONCLUSAO']['MESEXTENSO']}} de {{$dados['CONCLUSAO']['ANO']}}, confere o título de <b>{{$dados['HABILITAÇÂO']}}</b> a <b>{{$dados['NOME']}}</b>, nascido(a) aos {{$dados['NASCIMENTO']['DIAEXTENSO']}} dias do mês de {{$dados['NASCIMENTO']['MESEXTENSO']}} de {{$dados['NASCIMENTO']['ANO']}}, nacionalidade {{$dados['NACIONALIDADE']}}, natural de {{$dados['NATURALIDADE']}}, carteira de identidade N° {{$dados['IDENTIDADE']}} / {{$dados['ORGAO']}}, outorga-lhe o  presente Diploma a fim de que possa gozar de todos os direitos e prerrogativas legais.
+            A CAPES, por meio do {{$dados['CENTRO']}}, tendo em vista a conclusão do Curso Técnico de Nível Médio em {{$dados['CURSO']}}, em {{$dados['CONCLUSAO']['DIA']}} de {{$dados['CONCLUSAO']['MESEXTENSO']}} de {{$dados['CONCLUSAO']['ANO']}}, confere o título de <b>{{$dados['HABILITAÇÂO']}}</b> a <b>{{$dados['NOME']}}</b>, nascido(a) aos {{$dados['NASCIMENTO']['DIAEXTENSO']}} dias do mês de {{$dados['NASCIMENTO']['MESEXTENSO']}} de {{$dados['NASCIMENTO']['ANO']}}, nacionalidade {{$dados['NACIONALIDADE']}}, natural de {{$dados['NATURALIDADE']}}, carteira de identidade N° {{$dados['IDENTIDADE']}} / {{$dados['ORGAO']}}, outorga-lhe o  presente Diploma a fim de que possa gozar de todos os direitos e prerrogativas legais.
         </p>
 
         <p  style="font-size:18px; font-family: Arial;margin-left:0px; margin-right:50px; text-align:right">
             São Luís (MA), {{$dados['DIAATUAL']['DIA']}} de {{$dados['DIAATUAL']['MESEXTENSO']}} de {{$dados['DIAATUAL']['ANO']}}<br>
         </p>
+
+        <footer id="byUemanet">
+            <p align="right">DESENVOLVIDO PELO NÚCLEO DE TECNOLOGIAS PARA EDUCAÇÃO – UEMANET/UEMA.</p>
+        </footer>
 
     </html>
 
