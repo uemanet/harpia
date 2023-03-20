@@ -52,6 +52,7 @@ class AlunosController extends BaseController
                 'alu_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'itt_nome' => 'Instituição',
                 'alu_action' => 'Ações'
             ))
                 ->modifyCell('alu_action', function () {
@@ -85,7 +86,7 @@ class AlunosController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('alu_id', 'pes_nome'));
+                ->sortable(array('alu_id', 'pes_nome', 'itt_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
