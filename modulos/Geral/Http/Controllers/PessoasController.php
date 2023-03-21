@@ -4,6 +4,7 @@ namespace Modulos\Geral\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Modulos\Academico\Repositories\InstituicaoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -16,11 +17,13 @@ class PessoasController extends BaseController
 {
     protected $pessoaRepository;
     protected $documentoRepository;
+    protected $instituicaoRepository;
 
-    public function __construct(PessoaRepository $pessoa, DocumentoRepository $documento)
+    public function __construct(PessoaRepository $pessoa, DocumentoRepository $documento, InstituicaoRepository $instituicao)
     {
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
+        $this->instituicaoRepository = $instituicao;
     }
 
     public function getIndex(Request $request)
@@ -180,6 +183,7 @@ class PessoasController extends BaseController
     public function getShow($id)
     {
         $pessoa = $this->pessoaRepository->find($id);
+        $instituicao = $this->instituicaoRepository->find($pessoa->pes_itt_id);
 
         if (!$pessoa) {
             flash()->error('Pessoa não existe');
@@ -190,7 +194,7 @@ class PessoasController extends BaseController
 
         session(['last_acad_route' => 'geral.pessoas.show', 'last_id' => $id]);
 
-        return view('Geral::pessoas.show', ['pessoa' => $pessoa]);
+        return view('Geral::pessoas.show', ['pessoa' => $pessoa, 'instituicao' => $instituicao]);
     }
 
     public function getVerificapessoa($rota)

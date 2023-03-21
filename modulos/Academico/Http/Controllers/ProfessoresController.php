@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\ProfessorRequest;
+use Modulos\Academico\Repositories\InstituicaoRepository;
 use Modulos\Academico\Repositories\ProfessorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
@@ -21,12 +22,14 @@ class ProfessoresController extends BaseController
     protected $professorRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
+    protected $instituicaoRepository;
 
-    public function __construct(ProfessorRepository $professor, PessoaRepository $pessoa, DocumentoRepository $documento)
+    public function __construct(ProfessorRepository $professor, PessoaRepository $pessoa, DocumentoRepository $documento, InstituicaoRepository $instituicao)
     {
         $this->professorRepository = $professor;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
+        $this->instituicaoRepository = $instituicao;
     }
 
     public function getIndex(Request $request)
@@ -287,6 +290,7 @@ class ProfessoresController extends BaseController
     public function getShow($professorId)
     {
         $professor = $this->professorRepository->find($professorId);
+        $instituicao = $this->instituicaoRepository->find($professor->pessoa->pes_itt_id);
 
         if (!$professor) {
             flash()->error('Professor não existe.');
@@ -297,7 +301,7 @@ class ProfessoresController extends BaseController
 
         session(['last_acad_route' => 'academico.professores.show', 'last_id' => $professorId]);
 
-        return view('Academico::professores.show', ['pessoa' => $professor->pessoa]);
+        return view('Academico::professores.show', ['pessoa' => $professor->pessoa, 'instituicao' => $instituicao]);
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)
