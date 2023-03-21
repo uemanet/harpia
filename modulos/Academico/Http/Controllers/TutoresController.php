@@ -46,6 +46,7 @@ class TutoresController extends BaseController
                 'tut_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'itt_nome' => 'Instituição',
                 'tut_action' => 'Ações'
             ))
                 ->modifyCell('tut_action', function () {
@@ -79,7 +80,7 @@ class TutoresController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('tut_id', 'pes_nome'));
+                ->sortable(array('tut_id', 'pes_nome', 'itt_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
