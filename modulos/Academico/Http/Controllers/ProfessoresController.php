@@ -46,6 +46,7 @@ class ProfessoresController extends BaseController
                 'prf_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'itt_nome' => 'Instituição',
                 'prf_action' => 'Ações'
             ))
                 ->modifyCell('prf_action', function () {
@@ -79,7 +80,7 @@ class ProfessoresController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('prf_id', 'pes_nome'));
+                ->sortable(array('prf_id', 'pes_nome', 'itt_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
