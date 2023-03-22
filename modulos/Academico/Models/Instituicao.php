@@ -21,4 +21,14 @@ class Instituicao extends BaseModel
         'itt_nome' => 'like',
         'itt_sigla' => 'like'
     ];
+
+    public function turmas()
+    {
+        return $this->hasMany('Modulos\Academico\Models\Turma', 'trm_itt_id', 'itt_id');
+    }
+
+    public function pessoas()
+    {
+        return $this->hasMany('Modulos\Geral\Models\Pessoa', 'pes_itt_id', 'itt_id');
+    }
 }

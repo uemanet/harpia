@@ -7,6 +7,7 @@ use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\Academico\Models\LancamentoTcc;
 use DB;
+use Auth;
 use Carbon\Carbon;
 use Modulos\Geral\Models\Anexo;
 use Modulos\Geral\Repositories\AnexoRepository;
@@ -84,6 +85,11 @@ class LancamentoTccRepository extends BaseRepository
 
         if (!empty($sort)) {
             $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $result = $result->where('trm_itt_id', $user->pessoa->pes_itt_id);
         }
 
         $result = $result->paginate(15);

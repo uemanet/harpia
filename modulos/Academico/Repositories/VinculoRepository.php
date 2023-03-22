@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modulos\Academico\Repositories;
 
 use DB;
+use Auth;
 use Modulos\Academico\Models\Vinculo;
 use Modulos\Core\Repository\BaseRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -68,6 +69,26 @@ class VinculoRepository extends BaseRepository
 
         return !$result->isEmpty();
     }
+
+    /**
+     * Verifica se o usuario tem vinculo com a turma
+     * @param $usuarioId
+     * @param $cursoId
+     * @return bool
+     */
+    public function usuarioTemVinculoComTurma($turmaId): bool
+    {
+        $user = Auth::user();
+
+        $result = DB::table('acd_turmas')
+            ->where([
+                ['trm_id', '=', $turmaId],
+                ['trm_itt_id', '=', $user->pessoa->pes_itt_id]
+            ])->get();
+
+        return !$result->isEmpty();
+    }
+
 
     public function deleteAllVinculosByCurso($cursoId)
     {

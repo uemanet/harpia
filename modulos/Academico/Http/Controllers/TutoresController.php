@@ -14,6 +14,7 @@ use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
+use Auth;
 
 class TutoresController extends BaseController
 {
@@ -166,6 +167,10 @@ class TutoresController extends BaseController
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
                 DB::beginTransaction();
+
+                $user = Auth::user();
+                $dataPessoa['pes_itt_id'] = $user->pessoa->pes_itt_id;
+
                 $pessoa = $this->pessoaRepository->create($dataPessoa);
                 $pes_id = $pessoa->pes_id;
             }

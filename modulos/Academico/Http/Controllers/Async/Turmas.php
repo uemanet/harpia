@@ -61,4 +61,11 @@ class Turmas extends BaseController
 
         return new JsonResponse($turmasSemAmbiente, 200);
     }
+
+    public function buscaTurmasSemInstituicao($idOfertaCurso)
+    {
+        $turmas = $this->turmaRepository->buscaTurmasSemInstituicao($idOfertaCurso);
+
+        return new JsonResponse($turmas, 200);
+    }
 }

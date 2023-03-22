@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modulos\Academico\Repositories;
 
 use DB;
+use Auth;
 use Modulos\Academico\Models\Turma;
 use Modulos\Core\Repository\BaseRepository;
 
@@ -26,10 +27,14 @@ class TurmaRepository extends BaseRepository
     {
         $entries = $this->model
             ->where('trm_ofc_id', $ofertaCursoId)
-            ->select('trm_id', 'trm_nome')
-            ->get();
+            ->select('trm_id', 'trm_nome');
 
-        return $entries;
+        $user = Auth::user();
+        if (!$user->isAdmin()) {
+            $entries = $entries->where('trm_itt_id', $user->pessoa->pes_itt_id);
+        }
+
+        return $entries->get();
     }
 
     public function findAllByOfertaCursoIntegrada($ofertaCursoId)
@@ -53,6 +58,46 @@ class TurmaRepository extends BaseRepository
 
         return $entries;
     }
+
+    public function buscaTurmasSemInstituicao($ofertaCursoId)
+    {
+        $entries = $this->model
+            ->where('trm_itt_id', null)
+            ->where('trm_ofc_id', '=', $ofertaCursoId)
+            ->select('trm_id', 'trm_nome')
+            ->get();
+
+        return $entries;
+    }
+
+    public function paginate($sort = null, $search = null)
+    {
+        $result = $this->model;
+
+        if (!empty($search)) {
+            foreach ($search as $key => $value) {
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        if (!empty($sort)) {
+            $result = $result->orderBy($sort['field'], $sort['sort']);
+        }
+
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $result = $result->where('trm_itt_id', $user->pessoa->pes_itt_id);
+        }
+
+        return $result->paginate(15);
+    }
+
 
     public function findAllWithVagasDisponiveisByOfertaCurso($ofertaCursoId)
     {
@@ -86,17 +131,26 @@ class TurmaRepository extends BaseRepository
      */
     public function paginateRequestByOferta($ofertaid, array $requestParameters = null)
     {
+        $user = Auth::user();
+
+        $query = $this->model;
+
+        if (!$user->isAdmin()){
+            $query = $query->where('trm_itt_id', $user->pessoa->pes_itt_id);
+        }
+
         $sort = array();
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
             $sort = [
                 'field' => $requestParameters['field'],
                 'sort' => $requestParameters['sort']
             ];
-            return $this->model->where('trm_ofc_id', '=', $ofertaid)
+            return $query->where('trm_ofc_id', '=', $ofertaid)
                 ->orderBy($sort['field'], $sort['sort'])
                 ->paginate(15);
         }
-        return $this->model->where('trm_ofc_id', '=', $ofertaid)->paginate(15);
+
+        return $query->where('trm_ofc_id', '=', $ofertaid)->paginate(15);
     }
 
     public function findCursoByTurma($turmaId)

@@ -26,16 +26,25 @@ class CursoRepository extends BaseRepository
      * @param $field
      * @return mixed
      */
-    public function lists($identifier, $field, $all = false)
+    public function lists($identifier, $field, $all = false): array
     {
-        if (!$all) {
-            return $this->model
-                ->join('acd_usuarios_cursos', 'ucr_crs_id', '=', 'crs_id')
-                ->where('ucr_usr_id', '=', Auth::user()->usr_id)
-                ->pluck($field, $identifier)->toArray();
+        $user = Auth::user();
+
+        $query = $this->model;
+
+        if (!$user->isAdmin()) {
+            $cursos = DB::table('acd_turmas')
+                ->join('acd_ofertas_cursos', 'ofc_id', 'trm_ofc_id')
+                ->join('acd_cursos', 'crs_id', 'ofc_crs_id')
+                ->where('trm_itt_id', '=', $user->pessoa->pes_itt_id)
+                ->groupBy('crs_id')->distinct('crs_id')->get();
+
+            $crs_id = $cursos->pluck('crs_id')->toArray();
+            $query = $query->join('acd_turmas', 'trm_id', '=', 'crs_id')
+                ->whereIn('crs_id', $crs_id);
         }
 
-        return $this->model->pluck($field, $identifier)->toArray();
+        return $query->pluck($field, $identifier)->toArray();
     }
 
     public function listsByCursoId($cursoId)

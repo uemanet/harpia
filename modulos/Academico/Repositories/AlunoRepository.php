@@ -187,6 +187,12 @@ class AlunoRepository extends BaseRepository
             $result = $result->orderBy($sort['field'], $sort['sort']);
         }
 
+
+        $user = Auth::user();
+        if (!$user->isAdmin()){
+            $result = $result->where('pes_itt_id', $user->pessoa->pes_itt_id);
+        }
+
         $result = $result->paginate(15);
         return $result;
     }
@@ -217,14 +223,6 @@ class AlunoRepository extends BaseRepository
                     'term' => $value
                 ];
             }
-        }
-
-        if ($vinculo) {
-            return $this->paginateAllWithBonds($sort, $search);
-        }
-
-        if ($onlyBonds) {
-            return $this->paginateOnlyWithBonds($sort, $search);
         }
 
         return $this->paginate($sort, $search);

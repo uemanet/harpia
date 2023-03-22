@@ -149,6 +149,19 @@ class MatriculaCursoRepository extends BaseRepository
             $query = $query->where('crs_nvc_id', '<>', 1);
         }
 
+        $user = Auth::user();
+
+        if (!$user->isAdmin()) {
+            $cursosDaInstituicao = DB::table('acd_turmas')
+                ->join('acd_ofertas_cursos', 'ofc_id', 'trm_ofc_id')
+                ->join('acd_cursos', 'crs_id', 'ofc_crs_id')
+                ->where('trm_itt_id', '=', $user->pessoa->pes_itt_id)
+                ->groupBy('crs_id')->distinct('crs_id')->get();
+
+            $crs_id = $cursosDaInstituicao->pluck('crs_id')->toArray();
+            $query = $query->whereIn('crs_id', $crs_id);
+        }
+
         return $query->pluck('crs_nome', 'crs_id');
     }
 
@@ -217,7 +230,7 @@ class MatriculaCursoRepository extends BaseRepository
                 $join->on('mat_alu_id', '=', 'alu_id');
             })->join('gra_pessoas', function ($join) {
                 $join->on('alu_pes_id', '=', 'pes_id');
-            })->whereIn('ofc_crs_id', $this->vinculoRepository->getCursos(Auth::user()->usr_id));
+            });
 
         if (!empty($options)) {
             foreach ($options as $key => $value) {

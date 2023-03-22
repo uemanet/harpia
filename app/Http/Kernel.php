@@ -54,6 +54,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'vinculo' => \Modulos\Academico\Http\Middleware\Vinculo::class,
+        'vinculo_turmas' => \Modulos\Academico\Http\Middleware\VinculoTurmas::class,
         'verificapessoa' => \Modulos\Geral\Http\Middlewares\VerificaPessoaMiddleware::class,
     ];
 }
