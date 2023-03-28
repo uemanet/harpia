@@ -123,7 +123,7 @@ class AproveitamentoEstudosController extends BaseController
             if ($aproveitamento['type'] == 'error') {
                 flash()->error($aproveitamento['message']);
                 return redirect()->route('academico.aproveitamentoestudos.show', [
-                    'pessoa' => $matricula->mat_alu_id,
+                    'id' => $matricula->mat_alu_id,
                 ]);
             };
 
@@ -131,7 +131,7 @@ class AproveitamentoEstudosController extends BaseController
 
             flash()->success($aproveitamento['message']);
             return redirect()->route('academico.aproveitamentoestudos.show', [
-                'pessoa' => $matricula->mat_alu_id,
+                'id' => $matricula->mat_alu_id,
             ]);
         } catch (\Exception $e) {
             if (config('app.debug')) {
