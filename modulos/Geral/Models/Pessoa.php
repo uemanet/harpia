@@ -3,6 +3,7 @@
 namespace Modulos\Geral\Models;
 
 use Carbon\Carbon;
+use Modulos\Academico\Models\Instituicao;
 use Modulos\Core\Model\BaseModel;
 
 class Pessoa extends BaseModel
@@ -107,6 +108,11 @@ class Pessoa extends BaseModel
         }
     }
 
+    public function getInstituicaoSigla($instituicaoId){
+        $instituicao = Instituicao::find($instituicaoId);
+        return $instituicao->itt_sigla;
+    }
+
     // Mutators
     public function setPesNascimentoAttribute($value)
     {
@@ -114,8 +120,6 @@ class Pessoa extends BaseModel
             $this->attributes['pes_nascimento'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
         }
     }
-
-
 
     public function setPesEmailAttribute($value)
     {
