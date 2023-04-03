@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Modulos\Academico\Http\Requests\InstituicaoRequest;
 use Modulos\Academico\Repositories\CursoRepository;
 use Modulos\Academico\Repositories\InstituicaoRepository;
+use Modulos\Academico\Repositories\MatriculaCursoRepository;
 use Modulos\Academico\Repositories\TurmaRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Repositories\PessoaRepository;
@@ -19,16 +20,20 @@ class InstituicoesController extends BaseController
     protected $cursoRepository;
     protected $turmaRepository;
     protected $pessoaRepository;
+    protected $matriculaCursoRepository;
+
 
     public function __construct(InstituicaoRepository $instituicaoRepository,
                                 CursoRepository  $cursoRepository,
                                 TurmaRepository  $turmaRepository,
-                                PessoaRepository  $pessoaRepository)
+                                PessoaRepository  $pessoaRepository,
+                                MatriculaCursoRepository $matriculaCursoRepository)
     {
         $this->instituicaoRepository = $instituicaoRepository;
         $this->turmaRepository = $turmaRepository;
         $this->cursoRepository = $cursoRepository;
         $this->pessoaRepository = $pessoaRepository;
+        $this->matriculaCursoRepository = $matriculaCursoRepository;
     }
 
     public function getIndex(Request $request)
@@ -289,6 +294,35 @@ class InstituicoesController extends BaseController
             }
 
             flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
+
+    public function postDeleteVinculo(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $pes_id = $data['id'];
+
+            //Verifica se a pessoa possui matrícula
+            if($this->matriculaCursoRepository->verifyIfExistsMatricula($pes_id)){
+                flash()->error('Esta pessoa possui matrícula ativa!');
+                return redirect()->back();
+            }
+
+            $this->pessoaRepository->update([ 'pes_itt_id' => null ], $pes_id);
+
+            flash()->success('Pessoa desvinculada com sucesso');
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir o vínculo. Caso o problema persista, entre em contato com o suporte.');
             return redirect()->back();
         }
     }

@@ -64,20 +64,22 @@
                                     <span class="label label-success">Tutor</span>
                                 @endif
                             </td>
-                            <td>
-{{--                                {!! ActionButton::grid([--}}
-{{--                                    'type' => 'LINE',--}}
-{{--                                    'buttons' => [--}}
-{{--                                        [--}}
-{{--                                            'classButton' => 'btn btn-danger btn-delete',--}}
-{{--                                            'icon' => 'fa fa-trash',--}}
-{{--                                            'route' => 'integracao.ambientesvirtuais.deletarturma',--}}
-{{--                                            'id' => $ambienteturma->atr_id,--}}
-{{--                                            'label' => '',--}}
-{{--                                            'method' => 'post'--}}
-{{--                                        ]--}}
-{{--                                    ]--}}
-{{--                                ]) !!}--}}
+                            <td style="float: right;">
+                                {!!
+                                    ActionButton::grid([
+                                        'type' => 'LINE',
+                                        'buttons' => [
+                                            [
+                                                'classButton' => 'btn btn-danger btn-delete',
+                                                'icon' => '',
+                                                'route' => 'academico.instituicoes.desvincular',
+                                                'id' => $pessoa->pes_id,
+                                                'label' => 'Desvincular',
+                                                'method' => 'post'
+                                            ]
+                                        ]
+                                    ])
+                                !!}
                             </td>
                         </tr>
                     @endforeach
