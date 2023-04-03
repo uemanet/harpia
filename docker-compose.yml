@@ -20,6 +20,8 @@ services:
       - MYSQL_DATABASE=harpia
       - MYSQL_USER=harpia
       - MYSQL_PASSWORD=harpia
+    networks:
+      - moodle-harpia
 
   pgsql:
     image: postgres:11-alpine
@@ -32,6 +34,8 @@ services:
       - POSTGRES_DB=harpia
       - POSTGRES_USER=harpia
       - POSTGRES_PASSWORD=harpia
+    networks:
+      - moodle-harpia
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:4.6
@@ -43,15 +47,24 @@ services:
       - PMA_PORT=3306
     links:
       - mysql
+    networks:
+      - moodle-harpia
 
   web:
-    image: ambientum/php:7.1-apache
+    image: ambientum/php:7.4-nginx
     container_name: harpia-web
     volumes:
       - .:/var/www/app
     ports:
-      - "80:8080"
+      - "85:8080"
     links:
       - mysql
       - pgsql
       - phpmyadmin
+    networks:
+      - moodle-harpia
+
+networks:
+  moodle-harpia:
+    name: moodle-harpia
+    driver: bridge
