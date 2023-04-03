@@ -112,6 +112,17 @@ class MatriculaCursoRepository extends BaseRepository
         return (bool)$result->count();
     }
 
+    public function verifyIfExistsMatricula($alunoId)
+    {
+        $result = $this->model
+            ->where('mat_alu_id', '=', $alunoId)
+            ->whereNotIn('mat_situacao', ['concluido', 'evadido', 'desistente'])
+            ->get();
+
+        return (bool)$result->count();
+    }
+
+
     public function verifyExistsVagasByTurma($turmaId)
     {
         $result = DB::table('acd_turmas')

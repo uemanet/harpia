@@ -16,6 +16,8 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
         Route::get('/{id}/pessoas', '\Modulos\Academico\Http\Controllers\InstituicoesController@getPessoas')->name('academico.instituicoes.pessoas');
         Route::post('/{id}/pessoas', '\Modulos\Academico\Http\Controllers\InstituicoesController@postPessoas')->name('academico.instituicoes.pessoas');
+
+        Route::post('desvincular', '\Modulos\Academico\Http\Controllers\InstituicoesController@postDeleteVinculo')->name('academico.instituicoes.desvincular');
     });
 
     Route::group(['prefix' => 'noticias'], function () {
