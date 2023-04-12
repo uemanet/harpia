@@ -253,6 +253,10 @@ class InstituicoesController extends BaseController
 
             $pessoas = $pessoasFiltradas->pluck('pes_nome','pes_id' )->toArray();
 
+            foreach ($instituicao->pessoas as $pessoa){
+                $pessoa->perfis = $this->pessoaRepository->getPerfisById($pessoa->pes_id);
+            }
+
             return view('Academico::instituicoes.pessoas', compact('instituicao', 'pessoas'));
 
             return redirect()->back();

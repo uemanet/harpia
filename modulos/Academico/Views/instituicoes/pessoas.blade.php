@@ -42,7 +42,6 @@
                     <th style="width: 10px">#</th>
                     <th style="width: 10px">Nome</th>
                     <th style="width: 10px">Papel</th>
-                    <th style="width: 20px"></th>
                 </thead>
                 <tbody>
                     @foreach($instituicao->pessoas as $pessoa)
@@ -50,34 +49,23 @@
                             <td>{{$pessoa->pes_id}}</td>
                             <td>{{$pessoa->pes_nome}}</td>
                             <td>
+                                @foreach($pessoa->perfis as $perfil)
+                                    @php
+                                        $cor_label = 'label-default';
+                                        if($pessoa->aluno){
+                                            $cor_label = 'label-success';
+                                        }
+                                    @endphp
 
-                                @if($pessoa->aluno)
-                                    <span class="label label-success">Aluno</span>
-                                @endif
-                                @if($pessoa->usuario)
-                                    <span class="label label-success">Usuário</span>
-                                @endif
+                                    <span class="label {{ $cor_label }}">{{ $perfil->prf_nome }}</span>
+                                @endforeach
+
                                 @if($pessoa->professor)
-                                    <span class="label label-success">Professor</span>
+                                    <span class="label label-primary">Professor</span>
                                 @endif
                                 @if($pessoa->tutor)
-                                    <span class="label label-success">Tutor</span>
+                                    <span class="label label-danger">Tutor</span>
                                 @endif
-                            </td>
-                            <td>
-{{--                                {!! ActionButton::grid([--}}
-{{--                                    'type' => 'LINE',--}}
-{{--                                    'buttons' => [--}}
-{{--                                        [--}}
-{{--                                            'classButton' => 'btn btn-danger btn-delete',--}}
-{{--                                            'icon' => 'fa fa-trash',--}}
-{{--                                            'route' => 'integracao.ambientesvirtuais.deletarturma',--}}
-{{--                                            'id' => $ambienteturma->atr_id,--}}
-{{--                                            'label' => '',--}}
-{{--                                            'method' => 'post'--}}
-{{--                                        ]--}}
-{{--                                    ]--}}
-{{--                                ]) !!}--}}
                             </td>
                         </tr>
                     @endforeach
