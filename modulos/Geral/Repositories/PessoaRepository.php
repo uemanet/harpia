@@ -75,6 +75,28 @@ class PessoaRepository extends BaseRepository
         return $result;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getPerfisById($id){
+        $result = $this->model
+            ->leftJoin('seg_usuarios', function ($join) {
+                $join->on('usr_pes_id', '=', 'pes_id');
+            })
+            ->leftJoin('seg_perfis_usuarios', function ($join) {
+                $join->on('usr_id', '=', 'pru_usr_id');
+            })
+            ->leftJoin('seg_perfis', function ($join) {
+                $join->on('prf_id', '=', 'pru_prf_id');
+            })
+            ->select('seg_perfis.*')
+            ->where('pes_id', '=', $id)
+            ->get();
+
+        return $result;
+    }
+
 
     /**
      * @param $id
