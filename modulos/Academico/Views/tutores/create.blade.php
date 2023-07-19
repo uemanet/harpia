@@ -1,17 +1,17 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Tutores
+    Mediadores
 @stop
 
 @section('subtitle')
-    Cadastro de tutores
+    Cadastro de mediadores
 @stop
 
 @section('content')
     <div class="box box-warning">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Cadastro de Tutores</h3>
+            <h3 class="box-title">Formulário de Cadastro de mediadores</h3>
             <span class="label label-warning pull-right">Tutor</span>
         </div>
         <div class="box-body">
@@ -24,7 +24,7 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar Tutor', ['class' => 'btn btn-primary pull-right']) !!}
+                    {!! Form::submit('Salvar Mediador', ['class' => 'btn btn-primary pull-right']) !!}
                 </div>
             </div>
             {!! Form::close() !!}

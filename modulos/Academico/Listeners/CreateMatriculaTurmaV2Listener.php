@@ -68,6 +68,7 @@ class CreateMatriculaTurmaV2Listener
                     $param['data']['student']['grp_id'] = $matriculaTurma->mat_grp_id;
                 }
                 $param['data']['student']['pes_id'] = $pessoa->pes_id;
+                $param['data']['student']['itt_id'] = $pessoa->pes_itt_id;
                 $param['data']['student']['firstname'] = $firstName;
                 $param['data']['student']['lastname'] = $lastName;
                 $param['data']['student']['email'] = $pessoa->pes_email;

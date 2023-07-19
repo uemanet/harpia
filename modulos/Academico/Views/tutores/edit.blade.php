@@ -1,17 +1,17 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Tutores
+    Mediadores
 @stop
 
 @section('subtitle')
-    Alterar tutor :: {{$pessoa->pes_nome}}
+    Alterar mediador :: {{$pessoa->pes_nome}}
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Edição de Tutor</h3>
+            <h3 class="box-title">Formulário de Edição de Mediador</h3>
         </div>
         <div class="box-body">
             {!! Form::model($pessoa,['route' => ['academico.tutores.edit', $pessoa->pes_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}

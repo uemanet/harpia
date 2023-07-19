@@ -1,11 +1,11 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Tutores
+    Mediadores
 @stop
 
 @section('subtitle')
-    Gerenciamento de tutores
+    Gerenciamento de mediadores
 @stop
 
 @section('actionButton')

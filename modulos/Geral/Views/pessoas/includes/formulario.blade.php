@@ -7,20 +7,24 @@
     @if(isset($pessoa->pes_id))
         {!! Form::hidden('pes_id', $pessoa->pes_id) !!}
     @endif
-    <div class="form-group col-md-4 @if ($errors->has('pes_nome')) has-error @endif">
+    <div class="form-group col-md-6 @if ($errors->has('pes_nome')) has-error @endif">
         {!! Form::label('pes_nome', 'Nome completo*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_nome', isset($pessoa->pes_nome) ? $pessoa->pes_nome : old('pes_nome'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_nome')) <p class="help-block">{{ $errors->first('pes_nome') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-4 @if ($errors->has('pes_email')) has-error @endif">
+    <div class="form-group col-md-6 @if ($errors->has('pes_email')) has-error @endif">
         {!! Form::label('pes_email', 'Email*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::email('pes_email', isset($pessoa->pes_email) ? $pessoa->pes_email : old('pes_email'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_email')) <p class="help-block">{{ $errors->first('pes_email') }}</p> @endif
         </div>
     </div>
+
+</div>
+
+<div class="row">
     <div class="form-group col-md-4 @if ($errors->has('doc_conteudo')) has-error @endif">
         {!! Form::label('doc_conteudo', 'CPF*', ['class' => 'control-label']) !!}
         <div class="controls">
@@ -28,11 +32,25 @@
             @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
         </div>
     </div>
+    <div class="form-group col-md-4 @if ($errors->has('pes_sexo')) has-error @endif">
+        {!! Form::label('pes_sexo', 'Sexo*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('pes_sexo', ['M' => 'Masculino', 'F' => 'Feminino'], isset($pessoa->pes_sexo) ? $pessoa->pes_sexo : old('pes_sexo'), ['class' => 'form-control', 'placeholder' => 'Selecione o sexo']) !!}
+            @if ($errors->has('pes_sexo')) <p class="help-block">{{ $errors->first('pes_sexo') }}</p> @endif
+        </div>
+    </div>
+    <div class="form-group col-md-4 @if ($errors->has('pes_telefone')) has-error @endif">
+        {!! Form::label('pes_telefone', 'Telefone*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::text('pes_telefone', isset($pessoa->pes_telefone) ? $pessoa->pes_telefone : old('pes_telefone'), ['class' => 'form-control']) !!}
+            @if ($errors->has('pes_telefone')) <p class="help-block">{{ $errors->first('pes_telefone') }}</p> @endif
+        </div>
+    </div>
 </div>
 
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('pes_mae')) has-error @endif">
-        {!! Form::label('pes_mae', 'Nome da mãe*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_mae', 'Nome da mãe', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_mae', isset($pessoa->pes_mae) ? $pessoa->pes_mae : old('pes_mae'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_mae')) <p class="help-block">{{ $errors->first('pes_mae') }}</p> @endif
@@ -48,28 +66,15 @@
 </div>
 
 <div class="row">
-    <div class="form-group col-md-2 @if ($errors->has('pes_sexo')) has-error @endif">
-        {!! Form::label('pes_sexo', 'Sexo*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::select('pes_sexo', ['M' => 'Masculino', 'F' => 'Feminino'], isset($pessoa->pes_sexo) ? $pessoa->pes_sexo : old('pes_sexo'), ['class' => 'form-control', 'placeholder' => 'Selecione o sexo']) !!}
-            @if ($errors->has('pes_sexo')) <p class="help-block">{{ $errors->first('pes_sexo') }}</p> @endif
-        </div>
-    </div>
-    <div class="form-group col-md-3 @if ($errors->has('pes_telefone')) has-error @endif">
-        {!! Form::label('pes_telefone', 'Telefone*', ['class' => 'control-label']) !!}
-        <div class="controls">
-            {!! Form::text('pes_telefone', isset($pessoa->pes_telefone) ? $pessoa->pes_telefone : old('pes_telefone'), ['class' => 'form-control']) !!}
-            @if ($errors->has('pes_telefone')) <p class="help-block">{{ $errors->first('pes_telefone') }}</p> @endif
-        </div>
-    </div>
-    <div class="form-group col-md-2 @if ($errors->has('pes_nascimento')) has-error @endif">
-        {!! Form::label('pes_nascimento', 'Nascimento*', ['class' => 'control-label']) !!}
+
+    <div class="form-group col-md-4 @if ($errors->has('pes_nascimento')) has-error @endif">
+        {!! Form::label('pes_nascimento', 'Nascimento', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_nascimento', isset($pessoa->pes_nascimento) ? $pessoa->pes_nascimento : old('pes_nascimento'), ['class' => 'form-control datepicker']) !!}
             @if ($errors->has('pes_nascimento')) <p class="help-block">{{ $errors->first('pes_nascimento') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-2 @if ($errors->has('pes_estado_civil')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('pes_estado_civil')) has-error @endif">
         {!! Form::label('pes_estado_civil', 'Estado civil', ['class' => 'control-label']) !!}
 
         <div class="controls">
@@ -84,7 +89,7 @@
             @if ($errors->has('pes_estado_civil')) <p class="help-block">{{ $errors->first('pes_estado_civil') }}</p> @endif
         </div>
     </div>
-    <div class="form-group col-md-3 @if ($errors->has('pes_raca')) has-error @endif">
+    <div class="form-group col-md-4 @if ($errors->has('pes_raca')) has-error @endif">
         {!! Form::label('pes_raca', 'Cor/Raça', ['class' => 'control-label']) !!}
 
         <div class="controls">
@@ -104,14 +109,14 @@
 
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('pes_naturalidade')) has-error @endif">
-        {!! Form::label('pes_naturalidade', 'Naturalidade*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_naturalidade', 'Naturalidade', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_naturalidade', isset($pessoa->pes_naturalidade) ? $pessoa->pes_naturalidade : old('pes_naturalidade'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_naturalidade')) <p class="help-block">{{ $errors->first('pes_naturalidade') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_nacionalidade')) has-error @endif">
-        {!! Form::label('pes_nacionalidade', 'Nacionalidade*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_nacionalidade', 'Nacionalidade', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_nacionalidade', isset($pessoa->pes_nacionalidade) ? $pessoa->pes_nacionalidade : old('pes_nacionalidade'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_nacionalidade')) <p class="help-block">{{ $errors->first('pes_nacionalidade') }}</p> @endif
@@ -140,14 +145,14 @@
 
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('pes_cep')) has-error @endif">
-        {!! Form::label('pes_cep', 'CEP*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_cep', 'CEP', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_cep', isset($pessoa->pes_cep) ? $pessoa->pes_cep : old('pes_cep'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_cep')) <p class="help-block">{{ $errors->first('pes_cep') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('pes_endereco')) has-error @endif">
-        {!! Form::label('pes_endereco', 'Endereço*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_endereco', 'Endereço', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_endereco', isset($pessoa->pes_endereco) ? $pessoa->pes_endereco : old('pes_endereco'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_endereco')) <p class="help-block">{{ $errors->first('pes_endereco') }}</p> @endif
@@ -164,21 +169,21 @@
 
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('pes_numero')) has-error @endif">
-        {!! Form::label('pes_numero', 'Número*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_numero', 'Número', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_numero', isset($pessoa->pes_numero) ? $pessoa->pes_numero : old('pes_numero'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_numero')) <p class="help-block">{{ $errors->first('pes_numero') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('pes_bairro')) has-error @endif">
-        {!! Form::label('pes_bairro', 'Bairro*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_bairro', 'Bairro', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_bairro', isset($pessoa->pes_bairro) ? $pessoa->pes_bairro : old('pes_bairro'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_bairro')) <p class="help-block">{{ $errors->first('pes_bairro') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_cidade')) has-error @endif">
-        {!! Form::label('pes_cidade', 'Cidade*', ['class' => 'control-label']) !!}
+        {!! Form::label('pes_cidade', 'Cidade', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('pes_cidade', isset($pessoa->pes_cidade) ? $pessoa->pes_cidade : old('pes_cidade'), ['class' => 'form-control']) !!}
             @if ($errors->has('pes_cidade')) <p class="help-block">{{ $errors->first('pes_cidade') }}</p> @endif

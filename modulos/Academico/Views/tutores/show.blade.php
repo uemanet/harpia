@@ -1,6 +1,6 @@
 @extends('layouts.modulos.academico')
 
-@section('title', 'Informações do Tutor')
+@section('title', 'Informações do Mediador')
 
 @section('content')
     @include('Geral::pessoas.includes.dadospessoais')

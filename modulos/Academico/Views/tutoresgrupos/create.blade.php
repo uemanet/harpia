@@ -6,17 +6,17 @@
 @endsection
 
 @section('title')
-    Tutores do grupo
+    Mediadores do grupo
 @stop
 
 @section('subtitle')
-    Vínculo de tutores
+    Vínculo de mediadores
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de vínculo de tutores</h3>
+            <h3 class="box-title">Formulário de vínculo de mediadores</h3>
         </div>
         <div class="box-body">
             {!! Form::open(["route" => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}

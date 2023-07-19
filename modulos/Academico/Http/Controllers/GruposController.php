@@ -97,7 +97,7 @@ class GruposController extends BaseController
                                 'icon' => 'fa fa-user',
                                 'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.index',
                                 'parameters' => ['id' => $id],
-                                'label' => 'Tutores',
+                                'label' => 'Mediadores',
                                 'method' => 'get'
                             ],
                             [

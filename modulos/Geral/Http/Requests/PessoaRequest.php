@@ -31,22 +31,22 @@ class PessoaRequest extends BaseRequest
                 'pes_sexo' => 'required',
                 'pes_email' => 'required|email|unique:gra_pessoas',
                 'pes_telefone' => 'required|max:20',
-                'pes_nascimento' => 'required|date_format:d/m/Y',
-                'pes_mae' => 'required|max:150',
+                'pes_nascimento' => 'nullable|date_format:d/m/Y',
+                'pes_mae' => 'nullable|max:150',
                 'pes_pai' => 'nullable|max:150',
                 'pes_estado_civil' => 'nullable|max:45',
-                'pes_naturalidade' => 'required|max:45',
-                'pes_nacionalidade' => 'required|max:45',
+                'pes_naturalidade' => 'nullable|max:45',
+                'pes_nacionalidade' => 'nullable|max:45',
                 'pes_raca' => 'nullable|max:45',
                 'pes_necessidade_especial' => 'nullable|max:45',
                 'pes_estrangeiro' => 'nullable|boolean',
                 'doc_conteudo' => 'required|cpf|unique:gra_documentos',
-                'pes_endereco' => 'required',
-                'pes_numero' => 'required|max:45',
-                'pes_cep' => 'required',
-                'pes_bairro' => 'required|min:2',
-                'pes_cidade' => 'required|min:2',
-                'pes_estado' => 'required'
+                'pes_endereco' => 'nullable',
+                'pes_numero' => 'nullable|max:45',
+                'pes_cep' => 'nullable',
+                'pes_bairro' => 'nullable|min:2',
+                'pes_cidade' => 'nullable|min:2',
+                'pes_estado' => 'nullable'
             ];
         }
 

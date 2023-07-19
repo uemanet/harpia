@@ -122,7 +122,7 @@
                 $.harpia.httpget('{{url("/")}}/academico/async/tutores/findallbyturmatipotutoria/' + turmaId + '/' + tipotutoria)
                     .done(function (data) {
                         if (!$.isEmptyObject(data)) {
-                            selectTutores.append('<option>Selecione o tutor</option>');
+                            selectTutores.append('<option>Selecione o mediador</option>');
                             $.each(data, function (key, obj) {
                                 selectTutores.append('<option value="' + obj.pes_id + '">' + obj.pes_nome + '</option>')
                             });

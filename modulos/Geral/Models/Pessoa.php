@@ -81,7 +81,7 @@ class Pessoa extends BaseModel
     public function getPesNascimentoAttribute($value)
     {
         setlocale(LC_ALL, 'pt_BR');
-        return Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+        return $value? Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y'): null;
     }
 
     public function getPesEmailAttribute($value)

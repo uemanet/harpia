@@ -1,7 +1,7 @@
 @extends('layouts.modulos.academico')
 
 @section('title')
-    Vínculo de Tutores
+    Vínculo de Mediadores
 @stop
 
 @section('subtitle')

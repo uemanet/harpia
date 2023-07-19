@@ -57,7 +57,7 @@ class TutoresGruposController extends BaseController
         $tipostutoria = $this->tutorgrupoRepository->getTiposTutoria($grupoId);
 
         if (!empty($tipostutoria)) {
-            $btnNovo->setName('Vincular Tutor')
+            $btnNovo->setName('Vincular Mediador')
                 ->setRoute('academico.ofertascursos.turmas.grupos.tutoresgrupos.create')
                 ->setParameters(['id' => $grupoId])->setIcon('fa fa-paperclip')->setStyle('btn bg-blue');
 
@@ -102,7 +102,7 @@ class TutoresGruposController extends BaseController
                                 'icon' => 'fa fa-user',
                                 'route' => 'academico.ofertascursos.turmas.grupos.tutoresgrupos.alterartutor',
                                 'parameters' => ['id' => $id],
-                                'label' => 'Substituir tutor',
+                                'label' => 'Substituir mediador',
                                 'method' => 'get'
                             ],
                             [

@@ -23,14 +23,14 @@
 </div>
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ttg_tut_id')) has-error @endif">
-        {!! Form::label('ttg_tut_id', 'Novo Tutor*', ['class' => 'control-label']) !!}
+        {!! Form::label('ttg_tut_id', 'Novo Mediador*', ['class' => 'control-label']) !!}
         <div class="controls">
-            {!! Form::select('ttg_tut_id', $tutores, $tutores, ['class' => 'form-control', 'id' => 'ttg_tut_id', 'placeholder' => 'Selecione o novo tutor']) !!}
+            {!! Form::select('ttg_tut_id', $tutores, $tutores, ['class' => 'form-control', 'id' => 'ttg_tut_id', 'placeholder' => 'Selecione o novo mediador']) !!}
             @if ($errors->has('ttg_tut_id')) <p class="help-block">{{ $errors->first('ttg_tut_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ttg_tipo_tutoria')) has-error @endif">
-        {!! Form::label('ttg_tipo_tutoria', 'Tipo de tutoria*', ['class' => 'control-label']) !!}
+        {!! Form::label('ttg_tipo_tutoria', 'Tipo de mediação*', ['class' => 'control-label']) !!}
         <div class="controls">
           @if ($tutorgrupo->getRawOriginal('ttg_tipo_tutoria') === "presencial")
             {!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
@@ -42,7 +42,7 @@
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ttg_data_inicio')) has-error @endif">
-        {!! Form::label('ttg_data_inicio', 'Data de Admissão do tutor*', ['class' => 'control-label']) !!}
+        {!! Form::label('ttg_data_inicio', 'Data de Admissão do mediador*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::text('ttg_data_inicio', old('ttg_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
             @if ($errors->has('ttg_data_inicio')) <p class="help-block">{{ $errors->first('ttg_data_inicio') }}</p> @endif

@@ -6,7 +6,7 @@
 @endsection
 
 @section('title')
-    Alterar tutor
+    Alterar mediador
 @stop
 
 @section('subtitle')
