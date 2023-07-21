@@ -120,6 +120,7 @@ class AlunosController extends BaseController
         $pessoaRequest = new PessoaRequest();
         $alunoRequest = new AlunoRequest();
 
+
         try {
             $dataPessoa = array(
                 'pes_nome' => $request->input('pes_nome'),
@@ -159,6 +160,7 @@ class AlunosController extends BaseController
 
                 $validator = Validator::make($request->all(), $pessoaRequest->rules($pes_id));
                 if ($validator->fails()) {
+                    dd("aqui");
                     return redirect()->back()->with('validado', true)->withInput($request->all())->withErrors($validator);
                 }
 

@@ -89,6 +89,25 @@ class VinculoRepository extends BaseRepository
         return !$result->isEmpty();
     }
 
+    /**
+     * Verifica se o usuario tem vinculo com a turma
+     * @param $usuarioId
+     * @param $cursoId
+     * @return bool
+     */
+    public function usuarioTemVinculoComOfertaDeCurso($ofertaCursoId): bool
+    {
+        $user = Auth::user();
+
+        $result = DB::table('acd_turmas')
+            ->where([
+                ['trm_ofc_id', '=', $ofertaCursoId],
+                ['trm_itt_id', '=', $user->pessoa->pes_itt_id]
+            ])->get();
+
+        return !$result->isEmpty();
+    }
+
 
     public function deleteAllVinculosByCurso($cursoId)
     {

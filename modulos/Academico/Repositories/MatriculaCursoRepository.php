@@ -915,7 +915,6 @@ class MatriculaCursoRepository extends BaseRepository
                 $query = $query->where('mat_pol_id', $requestParameters['pol_id']);
             }
         }
-
         if (!empty($requestParameters['field']) and !empty($requestParameters['sort'])) {
             $sort = [
                 'field' => $requestParameters['field'],
@@ -925,7 +924,9 @@ class MatriculaCursoRepository extends BaseRepository
         }
 
         if (array_key_exists('mat_situacao', $requestParameters)) {
-            $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
+            if ($requestParameters['mat_situacao']) {
+                $query = $query->where('mat_situacao', $requestParameters['mat_situacao']);
+            }
         }
 
         return $query->paginate(15);

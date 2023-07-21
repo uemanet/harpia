@@ -136,11 +136,12 @@ class VinculoTurmas
         if (($action == "index" || $action == "create") && $request->getMethod() == "GET") {
             $oferta = $this->ofertaCursoRepository->find($id);
 
+
             if (!$oferta) {
                 return $next($request);
             }
 
-            if ($this->vinculoRepository->usuarioTemVinculoComTurma($id)) {
+            if ($this->vinculoRepository->usuarioTemVinculoComOfertaDeCurso($id)) {
                 return $next($request);
             }
 

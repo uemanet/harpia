@@ -42,6 +42,7 @@
                     <th style="width: 10px">#</th>
                     <th style="width: 10px">Nome</th>
                     <th style="width: 10px">Papel</th>
+                    <th style="width: 10px">Permissoes</th>
                 </thead>
                 <tbody>
                     @foreach($instituicao->pessoas as $pessoa)
@@ -49,23 +50,20 @@
                             <td>{{$pessoa->pes_id}}</td>
                             <td>{{$pessoa->pes_nome}}</td>
                             <td>
-                                @foreach($pessoa->perfis as $perfil)
-                                    @php
-                                        $cor_label = 'label-default';
-                                        if($pessoa->aluno){
-                                            $cor_label = 'label-success';
-                                        }
-                                    @endphp
-
-                                    <span class="label {{ $cor_label }}">{{ $perfil->prf_nome }}</span>
-                                @endforeach
-
                                 @if($pessoa->professor)
                                     <span class="label label-primary">Professor</span>
+                                @endif
+                                @if($pessoa->aluno)
+                                    <span class="label label-primary">Aluno</span>
                                 @endif
                                 @if($pessoa->tutor)
                                     <span class="label label-danger">Tutor</span>
                                 @endif
+                            </td>
+                            <td>
+                                @foreach($pessoa->perfis as $perfil)
+                                    <span class="label label-default">{{ $perfil->prf_nome }}</span>
+                                @endforeach
                             </td>
                         </tr>
                     @endforeach

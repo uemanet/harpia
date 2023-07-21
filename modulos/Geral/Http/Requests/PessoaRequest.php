@@ -62,22 +62,22 @@ class PessoaRequest extends BaseRequest
             'pes_sexo' => 'required',
             'pes_email' => 'required|email|'.Rule::unique('gra_pessoas')->ignore($idPessoa, 'pes_id'),
             'pes_telefone' => 'required|max:20',
-            'pes_nascimento' => 'required|date_format:d/m/Y',
-            'pes_mae' => 'required|max:150',
+            'pes_nascimento' => 'nullable|date_format:d/m/Y',
+            'pes_mae' => 'nullable|max:150',
             'pes_pai' => 'max:150',
             'pes_estado_civil' => 'max:45',
-            'pes_naturalidade' => 'required|max:45',
-            'pes_nacionalidade' => 'required|max:45',
+            'pes_naturalidade' => 'nullable|max:45',
+            'pes_nacionalidade' => 'nullable|max:45',
             'pes_raca' => 'max:45',
             'pes_necessidade_especial' => 'max:45',
             'pes_estrangeiro' => 'boolean',
             'doc_conteudo' => 'required|cpf',
-            'pes_endereco' => 'required',
-            'pes_numero' => 'required|max:45',
-            'pes_cep' => 'required',
-            'pes_bairro' => 'required|min:2',
-            'pes_cidade' => 'required|min:2',
-            'pes_estado' => 'required'
+            'pes_endereco' => 'nullable',
+            'pes_numero' => 'nullable|max:45',
+            'pes_cep' => 'nullable',
+            'pes_bairro' => 'nullable|min:2',
+            'pes_cidade' => 'nullable|min:2',
+            'pes_estado' => 'nullable'
         ];
     }
 

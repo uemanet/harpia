@@ -38,12 +38,11 @@ class CursoRepository extends BaseRepository
                 ->join('acd_cursos', 'crs_id', 'ofc_crs_id')
                 ->where('trm_itt_id', '=', $user->pessoa->pes_itt_id)
                 ->groupBy('crs_id')->distinct('crs_id')->get();
-
             $crs_id = $cursos->pluck('crs_id')->toArray();
-            $query = $query->join('acd_turmas', 'trm_id', '=', 'crs_id')
-                ->whereIn('crs_id', $crs_id);
-        }
 
+            $query = $query->whereIn('crs_id', $crs_id);
+
+        }
         return $query->pluck($field, $identifier)->toArray();
     }
 
