@@ -29,7 +29,7 @@ class AlterGraPessoasNullableFieldsTable extends Migration
 
         });
 
-        DB::statement("ALTER TABLE gra_pessoas ADD CONSTRAINT check_gra_pessoas_pes_sexo CHECK (nome_do_campo IN ('M', 'F'))");
+        DB::statement("ALTER TABLE gra_pessoas ADD CONSTRAINT check_gra_pessoas_pes_sexo CHECK (pes_sexo IN ('M', 'F'))");
 
     }
 
