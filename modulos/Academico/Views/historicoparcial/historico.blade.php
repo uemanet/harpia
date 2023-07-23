@@ -120,44 +120,13 @@
         <td width="60%">
             <strong>Nome:</strong> {{mb_strtoupper($aluno->pessoa->pes_nome, 'UTF-8')}}
         </td>
-        <td width="40%">
-            <strong>RG:</strong> {{$aluno->rg['conteudo']}} <strong>Órgão:</strong> {{$aluno->rg['orgao']}}
-        </td>
-    </tr>
-    <tr class="padding">
-        <td>
-            <strong>Nascimento:</strong> {{$aluno->pessoa->pes_nascimento}}
-        </td>
-        <td>
-            <strong>Data Expedição:</strong> {{$aluno->rg['data_expedicao']}}
-        </td>
-    </tr>
-    <tr class="padding">
         <td>
             <strong>CPF:</strong> {{Format::mask($aluno->cpf, '###.###.###-##')}}
-        </td>
-        <td>
-            <strong>Nacionalidade:</strong> {{$aluno->pessoa->pes_nacionalidade}}
         </td>
     </tr>
     <tr class="padding">
         <td>
             <strong>Sexo:</strong> @php echo ($aluno->pessoa->pes_sexo == 'M') ? 'MASCULINO' : 'FEMININO'; @endphp
-        </td>
-        <td>
-            <strong>Naturalidade:</strong> {{$aluno->pessoa->pes_naturalidade}}
-        </td>
-    </tr>
-    <tr class="padding">
-        <td>
-            @php
-                $filiacao = mb_strtoupper($aluno->pessoa->pes_mae, 'UTF-8');
-
-                if (!empty($aluno->pessoa->pes_pai)) {
-                    $filiacao .= ' E '.mb_strtoupper($aluno->pessoa->pes_pai, 'UTF-8');
-                }
-            @endphp
-            <strong>Filiação:</strong> {{$filiacao}}
         </td>
     </tr>
     </tbody>

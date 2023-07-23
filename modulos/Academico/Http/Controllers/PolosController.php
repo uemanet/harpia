@@ -9,6 +9,7 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Academico\Http\Requests\PoloRequest;
 use Illuminate\Http\Request;
 use Modulos\Academico\Repositories\PoloRepository;
+use Auth;
 
 class PolosController extends BaseController
 {
@@ -35,10 +36,14 @@ class PolosController extends BaseController
             $tabela = $tableData->columns(array(
                 'pol_id' => '#',
                 'pol_nome' => 'Polo',
+                'pol_itt_id' => 'Instituição',
                 'pol_action' => 'Ações'
             ))
                 ->modifyCell('pol_action', function () {
                     return array('style' => 'width: 140px;');
+                })
+                ->modify('pol_itt_id', function ($polo) {
+                    return $polo->instituicao ?  $polo->instituicao->itt_nome: '';
                 })
                 ->means('pol_action', 'pol_id')
                 ->modify('pol_action', function ($id) {
@@ -83,7 +88,12 @@ class PolosController extends BaseController
     public function postCreate(PoloRequest $request)
     {
         try {
-            $polo = $this->poloRepository->create($request->all());
+            $user = Auth::user();
+
+            $data = $request->all();
+            $data['pol_itt_id'] = $user->pessoa->pes_itt_id;
+
+            $polo = $this->poloRepository->create($data);
 
             if (!$polo) {
                 flash()->error('Erro ao tentar salvar.');

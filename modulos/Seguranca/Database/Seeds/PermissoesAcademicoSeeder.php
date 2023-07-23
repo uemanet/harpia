@@ -781,9 +781,6 @@ class PermissoesAcademicoSeeder extends Seeder
         $arrPermissoes[] = $permissao->prm_id;
 
 
-
-
-
         // Permissoes do recurso instituicoes
         $permissao = Permissao::create([
             'prm_nome' => 'index',
@@ -818,6 +815,32 @@ class PermissoesAcademicoSeeder extends Seeder
         $permissao = Permissao::create([
             'prm_nome' => 'pessoas',
             'prm_rota' => 'academico.instituicoes.pessoas'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+
+        // Permissoes do recurso noticias
+        $permissao = Permissao::create([
+            'prm_nome' => 'index',
+            'prm_rota' => 'academico.noticias.index'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'create',
+            'prm_rota' => 'academico.noticias.create'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'edit',
+            'prm_rota' => 'academico.noticias.edit'
+        ]);
+        $arrPermissoes[] = $permissao->prm_id;
+
+        $permissao = Permissao::create([
+            'prm_nome' => 'delete',
+            'prm_rota' => 'academico.noticias.delete'
         ]);
         $arrPermissoes[] = $permissao->prm_id;
 

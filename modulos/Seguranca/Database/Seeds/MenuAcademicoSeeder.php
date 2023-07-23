@@ -42,6 +42,15 @@ class MenuAcademicoSeeder extends Seeder
             'mit_ordem' => 2
         ]);
 
+        $noticias = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_item_pai' => $cadastro->mit_id,
+            'mit_nome' => 'Notícias',
+            'mit_rota' => 'academico.noticias.index',
+            'mit_icone' => 'fa fa-newspaper-o',
+            'mit_ordem' => 1
+        ]);
+
         // Subcategoria Institucional
         $institucional = MenuItem::create([
             'mit_mod_id' => 3,
@@ -76,6 +85,15 @@ class MenuAcademicoSeeder extends Seeder
             'mit_nome' => 'Departamentos',
             'mit_rota' => 'academico.departamentos.index',
             'mit_icone' => 'fa fa-sitemap',
+            'mit_ordem' => 3
+        ]);
+
+        $departamentos = MenuItem::create([
+            'mit_mod_id' => 3,
+            'mit_item_pai' => $institucional->mit_id,
+            'mit_nome' => 'Instiruições',
+            'mit_rota' => 'academico.instituicoes.index',
+            'mit_icone' => 'fa fa-plus',
             'mit_ordem' => 3
         ]);
 

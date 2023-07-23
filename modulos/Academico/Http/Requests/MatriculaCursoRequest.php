@@ -28,6 +28,7 @@ class MatriculaCursoRequest extends BaseRequest
             'ofc_id' => 'required',
             'mat_trm_id' => 'required',
             'mat_pol_id' => 'required',
+            'mat_grp_id' => 'required',
             'mat_modo_entrada' => 'required'
         ];
         

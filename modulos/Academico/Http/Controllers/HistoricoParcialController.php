@@ -66,9 +66,8 @@ class HistoricoParcialController extends BaseController
             ->sortable(array('alu_id', 'pes_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
-
-            return view('Academico::historicoparcial.index', compact('tabela', 'paginacao'));
         }
+        return view('Academico::historicoparcial.index', compact('tabela', 'paginacao'));
     }
 
     public function getShow($alunoId)

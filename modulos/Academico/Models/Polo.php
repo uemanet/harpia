@@ -11,12 +11,18 @@ class Polo extends BaseModel
     protected $primaryKey = 'pol_id';
 
     protected $fillable = [
-        'pol_nome'
+        'pol_nome',
+        'pol_itt_id'
     ];
 
     protected $searchable = [
         'pol_nome' => 'like'
     ];
+
+    public function instituicao()
+    {
+        return $this->belongsTo('Modulos\Academico\Models\Instituicao', 'pol_itt_id');
+    }
 
     public function ofertas_cursos()
     {

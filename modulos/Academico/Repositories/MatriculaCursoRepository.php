@@ -978,7 +978,7 @@ class MatriculaCursoRepository extends BaseRepository
                 $matricula['cpf'] = null;
             }
 
-            $matricula->pes_nascimento = date("d/m/Y", strtotime($matricula->pes_nascimento));
+            $matricula->pes_nascimento = $matricula->pes_nascimento ? date("d/m/Y", strtotime($matricula->pes_nascimento)): null;
         }
 
         return $matriculas;
