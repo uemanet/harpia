@@ -3,6 +3,11 @@
 Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
     Route::get('/', '\Modulos\Academico\Http\Controllers\indexController@getIndex')->name('academico.index.index');
 
+    Route::group(['prefix' => 'importacoes'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\ImportacoesController@getIndex')->name('academico.importacoes.index');
+        Route::post('/importar', '\Modulos\Academico\Http\Controllers\ImportacoesController@postImportar')->name('academico.importacoes.importar');
+    });
+
     Route::group(['prefix' => 'instituicoes'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\InstituicoesController@getIndex')->name('academico.instituicoes.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\InstituicoesController@getCreate')->name('academico.instituicoes.create');
