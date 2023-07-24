@@ -67,6 +67,11 @@ class AlunoRepository extends BaseRepository
 
     }
 
+    public function buscaAlunoPorIdDePessoa($pesId)
+    {
+        return $this->model->where('alu_pes_id', '=', $pesId)->first();
+    }
+
     public function search(array $options, array $select = null)
     {
         $query = $this->model->select('acd_alunos.*', 'gra_pessoas.*', 'gra_documentos.*')

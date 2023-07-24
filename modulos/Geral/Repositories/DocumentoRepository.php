@@ -31,6 +31,15 @@ class DocumentoRepository extends BaseRepository
         }
     }
 
+    public function buscaPessoaPeloCpf($cpf)
+    {
+        return $this->model
+            ->join('gra_pessoas', 'doc_pes_id', 'pes_id')
+            ->where('doc_conteudo', $cpf)
+            ->where('doc_tpd_id', 2)
+            ->first();
+    }
+
     public function updateDocumento(array $data, array $options)
     {
         $query = $this->model;

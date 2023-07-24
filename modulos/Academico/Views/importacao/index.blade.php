@@ -12,7 +12,7 @@
     @section('content')
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Formulário de cadastro de documentos</h3>
+                <h3 class="box-title">Formulário de importação de Pessoas</h3>
             </div>
             <div class="box-body">
                 {!! Form::open(["route" => ['academico.importacoes.importar'], "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}

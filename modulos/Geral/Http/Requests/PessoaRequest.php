@@ -23,8 +23,34 @@ class PessoaRequest extends BaseRequest
      *
      * @return array
      */
-    public function rules($idPessoa = null)
+    public function rules($idPessoa = null, $importacao = null)
     {
+
+        if ($importacao) {
+            return [
+                'pes_nome' => 'required|min:3|max:150',
+                'pes_sexo' => 'required',
+                'pes_email' => 'required|email',
+                'pes_telefone' => 'required|max:20',
+                'pes_nascimento' => 'nullable|date_format:d/m/Y',
+                'pes_mae' => 'nullable|max:150',
+                'pes_pai' => 'max:150',
+                'pes_estado_civil' => 'max:45',
+                'pes_naturalidade' => 'nullable|max:45',
+                'pes_nacionalidade' => 'nullable|max:45',
+                'pes_raca' => 'max:45',
+                'pes_necessidade_especial' => 'max:45',
+                'pes_estrangeiro' => 'boolean',
+                'doc_conteudo' => 'required|cpf',
+                'pes_endereco' => 'nullable',
+                'pes_numero' => 'nullable|max:45',
+                'pes_cep' => 'nullable',
+                'pes_bairro' => 'nullable|min:2',
+                'pes_cidade' => 'nullable|min:2',
+                'pes_estado' => 'nullable'
+            ];
+        }
+
         if ($this->method() == 'POST') {
             return [
                 'pes_nome' => 'required|min:3|max:150',

@@ -14,6 +14,11 @@ class TutorRepository extends BaseRepository
         $this->model = $tutor;
     }
 
+    public function buscaTutorPorIdDePessoa($pesId)
+    {
+        return $this->model->where('tut_pes_id', '=', $pesId)->first();
+    }
+
     public function paginate($sort = null, $search = null)
     {
         $result = $this->model->join('gra_pessoas', function ($join) {

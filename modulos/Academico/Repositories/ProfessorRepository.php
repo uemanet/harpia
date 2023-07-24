@@ -14,6 +14,11 @@ class ProfessorRepository extends BaseRepository
         $this->model = $professor;
     }
 
+    public function buscaProfessorPorIdDePessoa($pesId)
+    {
+        return $this->model->where('prf_pes_id', '=', $pesId)->first();
+    }
+
     /**
      * Retorna listas de pares com dados de tabelas
      * @param string $identifier
