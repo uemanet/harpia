@@ -77,7 +77,7 @@
             <div class="box-header">
                 <div class="row" style="align-items: right">
                     <div class="col-md-2" style="float: right;">
-                        <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriossisuab.pdf') }}">
+                        <form id="exportPdf" target="_blank" method="post" action="{{ route('academico.relatoriossisuab.csv') }}">
                             {!! ActionButton::grid([
                                     'type' => 'LINE',
                                     'buttons' => [

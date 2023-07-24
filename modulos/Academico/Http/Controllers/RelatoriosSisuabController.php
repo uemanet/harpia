@@ -91,7 +91,7 @@ class RelatoriosSisuabController extends BaseController
         return view('Academico::relatoriossisuab.index', compact('tabela', 'paginacao', 'cursos', 'ofertasCurso', 'turmas', 'polos', 'situacao'));
     }
 
-    public function postPdf(Request $request)
+    public function postCsv(Request $request)
     {
         $rules = [
             'crs_id' => 'required',
@@ -117,6 +117,7 @@ class RelatoriosSisuabController extends BaseController
         if ($matriculas->count()) {
             $filename = $turma->ofertacurso->curso->crs_nome . ' - '. $turma->trm_nome.'.txt';
             $content = '';
+
             foreach ($matriculas as $matricula) {
                 $line = $matricula->pol_nome.";";
                 $line .= $matricula->cpf.";";

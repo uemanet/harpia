@@ -972,7 +972,7 @@ class MatriculaCursoRepository extends BaseRepository
                 ->where('doc_tpd_id', 2)
                 ->first();
 
-            if ($rg) {
+            if ($cpf) {
                 $matricula['cpf'] = $cpf->doc_conteudo;
             } else {
                 $matricula['cpf'] = null;

@@ -271,7 +271,7 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'relatoriossisuab'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\RelatoriosSisuabController@getIndex')->name('academico.relatoriossisuab.index');
-        Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosSisuabController@postPdf')->name('academico.relatoriossisuab.pdf');
+        Route::post('/pdf', '\Modulos\Academico\Http\Controllers\RelatoriosSisuabController@postCsv')->name('academico.relatoriossisuab.csv');
 //        Route::post('/xls', '\Modulos\Academico\Http\Controllers\RelatoriosSisuabController@postXls')->name('academico.relatoriossisuab.xls');
     });
 
