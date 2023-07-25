@@ -282,9 +282,10 @@ class VinculoTurmas
             $aluno= $this->alunoRepository->find($id);
 
             $user = Auth::user();
-            if($user->pessoa->pes_itt_id == $aluno->pessoa->pes_itt_id){
-                return $next($request);
-            }
+//            dd($id);
+//            if($user->pessoa->pes_itt_id == $aluno->pessoa->pes_itt_id){
+//                return $next($request);
+//            }
         }
 
         flash()->error($this->defaultResponse);
