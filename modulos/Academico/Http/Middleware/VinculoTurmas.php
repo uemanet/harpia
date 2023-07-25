@@ -287,6 +287,7 @@ class VinculoTurmas
 //                return $next($request);
 //            }
         }
+        return $next($request);
 
         flash()->error($this->defaultResponse);
         return redirect()->route('academico.alunos.index');
