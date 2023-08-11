@@ -77,6 +77,11 @@ class Pessoa extends BaseModel
         return $this->hasOne('Modulos\RH\Models\Colaborador', 'col_pes_id');
     }
 
+    public function instituicao()
+    {
+        return $this->belongsTo('Modulos\Academico\Models\Instituicao', 'pes_itt_id', 'itt_id');
+    }
+
     // Accessors
     public function getPesNascimentoAttribute($value)
     {
