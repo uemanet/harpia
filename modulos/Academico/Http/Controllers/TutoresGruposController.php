@@ -77,7 +77,7 @@ class TutoresGruposController extends BaseController
             $tabela = $tableData->columns(array(
                 'ttg_id' => '#',
                 'ttg_tut_id' => 'Tutor',
-                'ttg_tipo_tutoria' => 'Tipo de Tutoria',
+                'ttg_tipo_tutoria' => 'Tipo de Mediação',
                 'ttg_data_inicio' => 'Data de admissão',
                 'ttg_action' => 'Ações'
             ))

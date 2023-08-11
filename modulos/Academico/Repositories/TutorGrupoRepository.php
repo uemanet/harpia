@@ -43,12 +43,15 @@ class TutorGrupoRepository extends BaseRepository
         $returnArray = [];
 
         if ($distancia<2) {
-            $returnArray['distancia'] = 'A Distancia';
+            $returnArray['distancia'] = 'Tutor a Distancia';
         }
 
         if ($presencial<2) {
-            $returnArray['presencial'] = 'Presencial';
+            $returnArray['presencial'] = 'Tutor Presencial';
         }
+
+        $returnArray['orientador'] = 'Orientador';
+
 
         return $returnArray;
     }

@@ -57,7 +57,10 @@
                                     <span class="label label-primary">Aluno</span>
                                 @endif
                                 @if($pessoa->tutor)
-                                    <span class="label label-danger">Tutor</span>
+                                    <span class="label label-primary">Tutor</span>
+                                @endif
+                                @if($pessoa->usuario)
+                                    <span class="label label-danger">Usuário</span>
                                 @endif
                             </td>
                             <td>

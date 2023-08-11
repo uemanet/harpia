@@ -69,7 +69,8 @@ class CreateOfertaDisciplinaV2Listener
                 $teacher['email'] = $pessoa->pes_email;
                 $teacher['username'] = $pessoa->pes_email;
                 $teacher['password'] = "changeme";
-                $teacher['city'] = $pessoa->pes_cidade;
+                //TODO:: verificar campo cidade
+                $teacher['city'] = $pessoa->pes_cidade ? $pessoa->pes_cidade: "Não Informado";
 
                 $data['discipline']['category'] = 1;
                 $data['discipline']['shortname'] = $oferta->moduloDisciplina->disciplina->dis_nome.' '.$oferta->ofd_id;
@@ -98,6 +99,7 @@ class CreateOfertaDisciplinaV2Listener
 
                 $response = Moodle::send($param);
 
+//                dd($response, $data);
                 $status = 3;
 
                 if (array_key_exists('status', $response) && $response['status'] == 'success') {
