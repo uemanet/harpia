@@ -274,7 +274,8 @@ class MatriculaOfertaDisciplinaRepository extends BaseRepository
     public function getDisciplinasOfertadasNotCursadasByAluno($alunoId, $turmaId, $periodoId)
     {
 
-        $ofertasDisciplinas = $this->getDisciplinasIntegracao($turmaId, $periodoId);
+        $ofertasDisciplinas = $this->ofertaDisciplinaRepository->findAll([
+            'ofd_trm_id' => $turmaId, 'ofd_per_id' => $periodoId]);
 
         // busca o aluno
         $aluno = $this->alunoRepository->find($alunoId);
