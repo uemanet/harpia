@@ -31,27 +31,11 @@ class TutorGrupoRepository extends BaseRepository
 
     public function getTiposTutoria($grupoId)
     {
-        $distancia = $this->model
-            ->where('ttg_tipo_tutoria', 'distancia')
-            ->where('ttg_data_fim', null)
-            ->where('ttg_grp_id', $grupoId)
-            ->count();
-        $presencial = $this->model
-            ->where('ttg_tipo_tutoria', 'presencial')
-            ->where('ttg_grp_id', $grupoId)
-            ->where('ttg_data_fim', null)->count();
         $returnArray = [];
 
-        if ($distancia<2) {
-            $returnArray['distancia'] = 'Tutor a Distancia';
-        }
-
-        if ($presencial<2) {
-            $returnArray['presencial'] = 'Tutor Presencial';
-        }
-
+        $returnArray['distancia'] = 'Tutor a Distancia';
+        $returnArray['presencial'] = 'Tutor Presencial';
         $returnArray['orientador'] = 'Orientador';
-
 
         return $returnArray;
     }

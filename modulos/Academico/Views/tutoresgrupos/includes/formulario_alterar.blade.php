@@ -33,10 +33,13 @@
         {!! Form::label('ttg_tipo_tutoria', 'Tipo de mediação*', ['class' => 'control-label']) !!}
         <div class="controls">
           @if ($tutorgrupo->getRawOriginal('ttg_tipo_tutoria') === "presencial")
-            {!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
+            {!! Form::select('ttg_tipo_tutoria', array('presencial' => 'Presencial', 'orientador' => 'Orientador'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
           @endif
           @if ($tutorgrupo->getRawOriginal('ttg_tipo_tutoria') === "distancia")
-            {!! Form::select('ttg_tipo_tutoria', array('distancia' => 'A Distância'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
+            {!! Form::select('ttg_tipo_tutoria', array('distancia' => 'A Distância', 'orientador' => 'Orientador'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
+          @endif
+          @if ($tutorgrupo->getRawOriginal('ttg_tipo_tutoria') === "orientador")
+              {!! Form::select('ttg_tipo_tutoria', array('distancia' => 'A Distância', 'presencial' => 'Presencial'), $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria']) !!}
           @endif
             @if ($errors->has('ttg_tipo_tutoria')) <p class="help-block">{{ $errors->first('ttg_tipo_tutoria') }}</p> @endif
         </div>

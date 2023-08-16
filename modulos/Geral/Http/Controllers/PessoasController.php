@@ -2,6 +2,7 @@
 
 namespace Modulos\Geral\Http\Controllers;
 
+use Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Modulos\Core\Http\Controller\BaseController;
@@ -218,6 +219,13 @@ class PessoasController extends BaseController
 
         $pessoa = $this->pessoaRepository->findPessoaByCpf($cpf);
 
+        $user = Auth::user();
+        if ($pessoa and !$user->isAdmin()){
+            if($pessoa->pes_itt_id != $user->pes_itt_id){
+                flash()->error('CPF cadastrado em outra instituição, entre em contato com o administrador do sistema');
+                return redirect()->back();
+            }
+        }
         if ($pessoa) {
             return redirect()->route($route, ['id' => $pessoa->pes_id])->with('validado', 'true');
         }

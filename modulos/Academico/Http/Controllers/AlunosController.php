@@ -197,15 +197,6 @@ class AlunosController extends BaseController
 
             $aluno = $this->alunoRepository->create(['alu_pes_id' => $pes_id]);
 
-            $dataUsuario = array(
-                'usr_usuario' => $cpf,
-                'usr_senha' => $cpf,
-                'usr_ativo' => 1,
-                'usr_pes_id' => $pes_id
-            );
-
-            $this->usuarioRepository->create($dataUsuario);
-
             DB::commit();
 
             flash()->success('Aluno criado com sucesso!');
