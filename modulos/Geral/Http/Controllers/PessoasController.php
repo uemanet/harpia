@@ -221,7 +221,7 @@ class PessoasController extends BaseController
 
         $user = Auth::user();
         if ($pessoa and !$user->isAdmin()){
-            if($pessoa->pes_itt_id != $user->pes_itt_id){
+            if($pessoa->pes_itt_id != $user->pessoa->pes_itt_id){
                 flash()->error('CPF cadastrado em outra instituição, entre em contato com o administrador do sistema');
                 return redirect()->back();
             }
