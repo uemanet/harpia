@@ -50,8 +50,11 @@ class OfertaCursoRepository extends BaseRepository
         $polosVinculados = DB::table('acd_polos_ofertas_cursos')
             ->where('poc_ofc_id', '=', $oferta->ofc_id)
             ->pluck('poc_pol_id')->toArray();
-
         $avisos = null;
+
+        if(!isset($data['polos'])){
+            $data['polos'] = [];
+        }
 
         if (isset($data['polos']) && !is_null($data['polos'])) {
             // Polos que podem ser removidos da oferta

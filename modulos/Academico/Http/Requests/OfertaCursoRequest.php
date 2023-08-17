@@ -38,7 +38,6 @@ class OfertaCursoRequest extends BaseRequest
             case 'PUT':
                 {
                     return [
-                        'polos' => 'required'
                     ];
                 }
             default: return [];
