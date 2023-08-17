@@ -62,7 +62,26 @@ class ImportacoesController extends BaseController
 
         $requestData = $request->all();
 
-        $dataPessoas = $this->validarDadosDoCsv($pessoasParaImportar);
+
+        $dataPessoas = [];
+        foreach ($pessoasParaImportar as $item) {
+            $pessoa = array(
+                'pes_nome' => $item[0],
+                'pes_email' => $item[1],
+                'pes_telefone' => $item[2],
+                'pes_sexo' => $item[3],
+                'doc_conteudo' => (string)$item[4]
+            );
+
+            $pessoaRequest = new PessoaRequest();
+            $validator = Validator::make($pessoa, $pessoaRequest->rules(null, true));
+            if ($validator->fails()) {
+                flash()->error('Arquivo em formato inválido.');
+                return redirect()->back();
+            }
+
+            $dataPessoas[] = $pessoa ;
+        }
 
         $user = Auth::user();
         $instituicaoId = $user->pessoa->pes_itt_id;
