@@ -188,7 +188,7 @@ class TurmasController extends BaseController
 
             $turmaUpdated = $this->turmaRepository->find($id);
             if ($turmaUpdated->trm_integrada) {
-                event(new UpdateTurmaEvent($turmaUpdated));
+                event(new UpdateTurmaEvent($turmaUpdated, null, $turmaUpdated->trm_tipo_integracao));
             }
             return redirect()->route('academico.ofertascursos.turmas.index', $turma->trm_ofc_id);
         } catch (\Exception $e) {
