@@ -115,13 +115,12 @@ class SincronizacaoController extends BaseController
 
                 $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($syncData['turma']->trm_id);
                 $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
-                $url .= $ambiente->integracao()->asr_token . '&wsfunction=local_integracao_get_user&moodlewsrestformat=json';
+                $url .= $ambiente->integracaoV2()->asr_token . '&wsfunction=local_integracao_v2_get_user&moodlewsrestformat=json';
 
                 $client = new Client(['verify' => false ]);
 
                 $response = $client->request('POST', $url, ['form_params' => $syncData['user']]);
-
-                $data = (array)json_decode($response->getBody());
+                $data = (array)json_decode($response->getBody()->getContents());
 
             }
 
@@ -139,7 +138,6 @@ class SincronizacaoController extends BaseController
     public function postSincronizar($id, Request $request)
     {
         $sincronizacao = $this->sincronizacaoRepository->find($id);
-
         if (!$sincronizacao) {
             flash()->error('Registro não encontrado.');
             return redirect()->route('integracao.sincronizacao.index');
@@ -176,13 +174,13 @@ class SincronizacaoController extends BaseController
 
             $ambiente = $this->ambienteVirtualRepository->getAmbienteByTurma($syncData['turma']->trm_id);
             $url = $ambiente->amb_url . 'webservice/rest/server.php?wstoken=';
-            $url .= $ambiente->integracao()->asr_token . '&wsfunction=local_integracao_map_user&moodlewsrestformat=json';
+            $url .= $ambiente->integracaoV2()->asr_token . '&wsfunction=local_integracao_v2_map_user&moodlewsrestformat=json';
 
             $client = new Client(['verify' => false ]);
 
             $response = $client->request('POST', $url, ['form_params' => $syncData['user']]);
 
-            $data = (array)json_decode($response->getBody());
+            $data = (array)json_decode($response->getBody()->getContents());
 
             flash()->success('Usuário mapeado com sucesso');
             return redirect()->back();

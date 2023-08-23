@@ -2,6 +2,7 @@
 
 namespace Modulos\Academico\Listeners;
 
+use DB;
 use Moodle;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -39,16 +40,11 @@ class UpdateGrupoV2Listener
             if ($grupo->turma->trm_tipo_integracao != 'v2') {
                 return;
             }
-
             // Web service de integracao
             $ambServico = $ambiente->integracaoV2();
 
             if ($ambServico) {
                 $param = [];
-
-
-                $professor = DB::table('acd_professores')->inRandomOrder()->first();
-
 
                 $periodo = DB::table('acd_periodos_letivos')
                     ->where('per_inicio', '<=', date('Y-m-d'))
