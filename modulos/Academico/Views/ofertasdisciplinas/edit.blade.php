@@ -49,7 +49,7 @@
                     <div class="col-md-4">
                         <div class="form-group @if($errors->has('ofd_tipo_avaliacao')) has-error @endif">
                             {!! Form::label('ofd_tipo_avaliacao', 'Tipo de Avaliação*') !!}
-                            {!! Form::select('ofd_tipo_avaliacao', ['numerica' => 'Numérica', 'conceitual' => 'Conceitual'], old('ofd_tipo_avaliacao'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção']) !!}
+                            {!! Form::select('ofd_tipo_avaliacao', ['numerica' => 'Numérica', 'conceitual' => 'Conceitual'], old('ofd_tipo_avaliacao'), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
                             @if($errors->has('ofd_tipo_avaliacao')) <p class="help-block">{{ $errors->first('ofd_tipo_avaliacao') }}</p> @endif
                         </div>
                     </div>

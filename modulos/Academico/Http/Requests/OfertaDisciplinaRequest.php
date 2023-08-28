@@ -25,7 +25,7 @@ class OfertaDisciplinaRequest extends BaseRequest
     {
         if ($this->getMethod() == 'PUT') {
             return [
-                'ofd_tipo_avaliacao' => 'required',
+                'ofd_tipo_avaliacao' => 'nullable',
                 'ofd_qtd_vagas' => 'required|numeric|min:1',
                 'ofd_prf_id' => 'required'
             ];
