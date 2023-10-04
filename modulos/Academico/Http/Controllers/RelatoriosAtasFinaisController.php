@@ -178,8 +178,8 @@ class RelatoriosAtasFinaisController extends BaseController
         ])->render();
 
         // Mpdf
-        $configs = ['c', 'A4', '', '', 10, 10, 10, 10, 9, 9];
-        define('_MPDF_TTFONTDATAPATH', sys_get_temp_dir()."/");
+        $configs = ['c', 'A4', '', '', 10, 10, 10, 10, 9, 9, 'tempDir' => sys_get_temp_dir() . '/'];
+
         $mpdf = new Mpdf($configs);
         $mpdf->debug = true;
         $mpdf->allow_charset_conversion = true;
