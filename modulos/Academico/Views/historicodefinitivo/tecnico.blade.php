@@ -159,7 +159,11 @@
 
     @php $cargaHorariaTotal = 0; @endphp
     @foreach($dados['modulos'] as $modulo)
-        <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
+        @if($loop->iteration % 2 == 1 and $loop->iteration >1)
+            <div style="page-break-before: always;">
+            </div>
+        @endif
+        <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: initial;">
             <thead>
                 <tr class="thead-left thead-config thead-background">
                     <th colspan="5">{{mb_strtoupper($modulo['nome'], 'UTF-8')}}</th>
