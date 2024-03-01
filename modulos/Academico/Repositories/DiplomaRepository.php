@@ -134,7 +134,7 @@ class DiplomaRepository extends BaseRepository
                 'ANO' => $diaatual->getAno(strtotime('today')),
             ];
 
-            $formata = str_replace('CURSO TÉCNICO EM ', '', $curso->crs_nome);
+            $formata = str_replace('CURSO TÉCNICO EM ', '', strtoupper($curso->crs_nome));
             $formata = str_replace('CURSO TÉCNICO ', '', $formata);
             $cursonome = $this->ucwords_improved(mb_strtolower($formata, "UTF-8"), array('e', 'em', 'da', 'das', 'do', 'de'));
 
