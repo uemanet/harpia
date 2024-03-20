@@ -9,8 +9,6 @@ class TitulacaoTableSeeder extends Seeder
 {
     public function run()
     {
-        $faker = \Faker\Factory::create();
-
         $tipos = [
             'Graduação' => 2,
             'Mestrado' => 4,
@@ -24,7 +22,7 @@ class TitulacaoTableSeeder extends Seeder
             $titulacao = new Titulacao();
             $titulacao->tit_nome = $tipo;
             $titulacao->tit_peso = $peso;
-            $titulacao->tit_descricao = $faker->text(150);
+            $titulacao->tit_descricao = 'Descrição de ' . $tipo;
 
             $titulacao->save();
         }
