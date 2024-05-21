@@ -1,5 +1,3 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ce02749c9c7e41cdaefd89af3c60c2cb)](https://www.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uemanet/harpia&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/ce02749c9c7e41cdaefd89af3c60c2cb)](https://www.codacy.com/app/willianmanoaraujo/harpia?utm_source=github.com&utm_medium=referral&utm_content=uemanet/harpia&utm_campaign=Badge_Coverage) [![Build Status](https://travis-ci.org/uemanet/harpia.svg?branch=master)](https://travis-ci.org/uemanet/harpia)
-
 Harpia - UemaNet
 =======================
 
@@ -11,8 +9,8 @@ Tecnologias utilizadas:
 -----------------------
 Backend:
 --------
- * PHP 7.2+
- * Laravel Framework 6.0
+ * PHP 8.1
+ * Laravel Framework 8
 
 Frontend:
 ---------
@@ -24,7 +22,7 @@ Frontend:
 
 Requerimentos do sistema
 ------------
- * PHP >= 7.2
+ * PHP >= 8.1
  * OpenSSL PHP Extension
  * PDO PHP Extension
  * Mbstring PHP Extension
@@ -33,7 +31,7 @@ Requerimentos do sistema
 
 Requerimentos do Moodle
 ------------
- * Versão mínima: 3.3
+ * Versão mínima: 4.2
 
 Instalação
 ------------
@@ -90,6 +88,6 @@ Criando um virtual host(opcional)
 Laravel
 ------------
 
-O sistema foi desenvolvido utilizando o framework Laravel 6.0. Caso tenha alguma dúvida na configuração, instalação de dependências, ou para entender o funcionamento do framework, você pode utilizar a documentação no site oficial do Laravel.
+O sistema foi desenvolvido utilizando o framework Laravel 8.0. Caso tenha alguma dúvida na configuração, instalação de dependências, ou para entender o funcionamento do framework, você pode utilizar a documentação no site oficial do Laravel.
 
-[https://laravel.com/docs/6.0](https://laravel.com/docs/6.0)
+[https://laravel.com/docs/8.x](https://laravel.com/docs/8.x/readme)
