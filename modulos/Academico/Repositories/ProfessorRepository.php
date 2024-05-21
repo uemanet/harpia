@@ -57,6 +57,8 @@ class ProfessorRepository extends BaseRepository
             $join->on('prf_pes_id', '=', 'pes_id');
         })->leftJoin('gra_documentos', function ($join) {
             $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+        })->leftjoin('acd_instituicoes', function ($join) {
+            $join->on('pes_itt_id', '=', 'itt_id');
         });
 
         if (!empty($search)) {

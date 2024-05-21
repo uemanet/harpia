@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\TutorRequest;
+use Modulos\Academico\Repositories\InstituicaoRepository;
 use Modulos\Academico\Repositories\TutorRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
@@ -21,12 +22,14 @@ class TutoresController extends BaseController
     protected $tutorRepository;
     protected $pessoaRepository;
     protected $documentoRepository;
+    protected $instituicaoRepository;
 
-    public function __construct(TutorRepository $tutor, PessoaRepository $pessoa, DocumentoRepository $documento)
+    public function __construct(TutorRepository $tutor, PessoaRepository $pessoa, DocumentoRepository $documento, InstituicaoRepository $instituicao)
     {
         $this->tutorRepository = $tutor;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
+        $this->instituicaoRepository = $instituicao;
     }
 
     public function getIndex(Request $request)
@@ -46,6 +49,7 @@ class TutoresController extends BaseController
                 'tut_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'itt_nome' => 'Instituição',
                 'tut_action' => 'Ações'
             ))
                 ->modifyCell('tut_action', function () {
@@ -79,7 +83,7 @@ class TutoresController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('tut_id', 'pes_nome'));
+                ->sortable(array('tut_id', 'pes_nome', 'itt_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -283,6 +287,7 @@ class TutoresController extends BaseController
     public function getShow($tutorId)
     {
         $tutor = $this->tutorRepository->find($tutorId);
+        $instituicao = $this->instituicaoRepository->find($tutor->pessoa->pes_itt_id);
 
         if (!$tutor) {
             flash()->error('Tutor não existe.');
@@ -291,7 +296,7 @@ class TutoresController extends BaseController
 
         session(['last_acad_route' => 'academico.tutores.show', 'last_id' => $tutorId]);
 
-        return view('Academico::tutores.show', ['pessoa' => $tutor->pessoa]);
+        return view('Academico::tutores.show', ['pessoa' => $tutor->pessoa, 'instituicao' => $instituicao]);
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)

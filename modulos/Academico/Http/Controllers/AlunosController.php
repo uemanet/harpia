@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Modulos\Academico\Http\Requests\AlunoRequest;
 use Modulos\Academico\Repositories\AlunoRepository;
+use Modulos\Academico\Repositories\InstituicaoRepository;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Http\Requests\PessoaRequest;
 use Modulos\Geral\Repositories\DocumentoRepository;
@@ -23,16 +24,19 @@ class AlunosController extends BaseController
     protected $pessoaRepository;
     protected $documentoRepository;
     protected $usuarioRepository;
+    protected $instituicaoRepository;
 
     public function __construct(AlunoRepository $aluno,
                                 PessoaRepository $pessoa,
                                 DocumentoRepository $documento,
-                                UsuarioRepository $usuario)
+                                UsuarioRepository $usuario,
+                                InstituicaoRepository $instituicao)
     {
         $this->alunoRepository = $aluno;
         $this->pessoaRepository = $pessoa;
         $this->documentoRepository = $documento;
         $this->usuarioRepository = $usuario;
+        $this->instituicaoRepository = $instituicao;
     }
 
     public function getIndex(Request $request)
@@ -52,6 +56,7 @@ class AlunosController extends BaseController
                 'alu_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'itt_nome' => 'Instituição',
                 'alu_action' => 'Ações'
             ))
                 ->modifyCell('alu_action', function () {
@@ -85,7 +90,7 @@ class AlunosController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('alu_id', 'pes_nome'));
+                ->sortable(array('alu_id', 'pes_nome', 'itt_nome'));
 
             $paginacao = $tableData->appends($request->except('page'));
         }
@@ -284,6 +289,8 @@ class AlunosController extends BaseController
     public function getShow($alunoId)
     {
         $aluno = $this->alunoRepository->find($alunoId);
+        $instituicao = $this->instituicaoRepository->find($aluno->pessoa->pes_itt_id);
+
         session(['last_acad_route' => 'academico.alunos.show', 'last_id' => $alunoId]);
 
         if (!$aluno) {
@@ -299,7 +306,7 @@ class AlunosController extends BaseController
             'desistente' => 'Desistente'
         ];
 
-        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'situacao' => $situacao]);
+        return view('Academico::alunos.show', ['pessoa' => $aluno->pessoa, 'aluno' => $aluno, 'situacao' => $situacao, 'instituicao' => $instituicao]);
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)
