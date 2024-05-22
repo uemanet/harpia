@@ -5,14 +5,14 @@
     "dev": "gulp watch"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "^5.0.0",
     "laravel-elixir": "^5.0.0"
   },
   "dependencies": {
     "admin-lte": "^2.3.3",
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.6.3",
-    "gulp": "^3.9.1",
+    "gulp": "^5.0.0",
     "gulp-install": "^0.6.0",
     "jquery-validation": "^1.19.2",
     "jquery.inputmask": "^3.3.3",
