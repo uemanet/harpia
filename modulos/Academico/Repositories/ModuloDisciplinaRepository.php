@@ -188,7 +188,7 @@ class ModuloDisciplinaRepository extends BaseRepository
                 DB::beginTransaction();
 
                 foreach ($registros as $obj) {
-                    $arrayPreRequisitos = json_decode($obj->mdc_pre_requisitos, true);
+                    $arrayPreRequisitos = json_decode($obj->mdc_pre_requisitos, true) ?? [];
 
                     if (gettype(array_search($moduloDisciplinaId, $arrayPreRequisitos)) != 'boolean') {
                         $key = array_search($moduloDisciplinaId, $arrayPreRequisitos);

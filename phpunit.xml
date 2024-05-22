@@ -1,66 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="bootstrap/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Harpia">
-            <directory suffix="Test.php">./tests</directory>
-        </testsuite>
-        <testsuite name="Geral">
-            <directory suffix="Test.php">./modulos/Geral/tests</directory>
-        </testsuite>
-        <testsuite name="Academico">
-            <directory suffix="Test.php">./modulos/Academico/tests</directory>
-        </testsuite>
-        <testsuite name="Integracao">
-            <directory suffix="Test.php">./modulos/Integracao/tests</directory>
-        </testsuite>
-        <testsuite name="Seguranca">
-            <directory suffix="Test.php">./modulos/Seguranca/tests</directory>
-        </testsuite>
-        <testsuite name="Monitoramento">
-            <directory suffix="Test.php">./modulos/Monitoramento/tests</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./Harpia</directory>
-            <directory suffix=".php">./modulos/Academico/Providers</directory>
-            <directory suffix=".php">./modulos/Academico/Listeners</directory>
-            <directory suffix=".php">./modulos/Academico/Repositories</directory>
-            <directory suffix=".php">./modulos/Geral/Providers</directory>
-            <directory suffix=".php">./modulos/Geral/Listeners</directory>
-            <directory suffix=".php">./modulos/Geral/Repositories</directory>
-            <directory suffix=".php">./modulos/Integracao/Providers</directory>
-            <directory suffix=".php">./modulos/Integracao/Listeners</directory>
-            <directory suffix=".php">./modulos/Integracao/Repositories</directory>
-            <directory suffix=".php">./modulos/Monitoramento/Providers</directory>
-            <directory suffix=".php">./modulos/Monitoramento/Providers</directory>
-            <directory suffix=".php">./modulos/Monitoramento/Listeners</directory>
-            <directory suffix=".php">./modulos/Seguranca/Listeners</directory>
-            <directory suffix=".php">./modulos/Seguranca/Repositories</directory>
-            <directory suffix=".php">./modulos/Seguranca/Repositories</directory>
-        </whitelist>
-    </filter>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_DEBUG" value="false"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="STORAGE_DISK" value="test"/>
-    </php>
-    <logging>
-        <log type="coverage-html"
-             target="build"
-             lowUpperBound="35"
-             highLowerBound="70"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="bootstrap/autoload.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./Harpia</directory>
+      <directory suffix=".php">./modulos/Academico/Providers</directory>
+      <directory suffix=".php">./modulos/Academico/Listeners</directory>
+      <directory suffix=".php">./modulos/Academico/Repositories</directory>
+      <directory suffix=".php">./modulos/Geral/Providers</directory>
+      <directory suffix=".php">./modulos/Geral/Listeners</directory>
+      <directory suffix=".php">./modulos/Geral/Repositories</directory>
+      <directory suffix=".php">./modulos/Integracao/Providers</directory>
+      <directory suffix=".php">./modulos/Integracao/Listeners</directory>
+      <directory suffix=".php">./modulos/Integracao/Repositories</directory>
+      <directory suffix=".php">./modulos/Monitoramento/Providers</directory>
+      <directory suffix=".php">./modulos/Monitoramento/Providers</directory>
+      <directory suffix=".php">./modulos/Monitoramento/Listeners</directory>
+      <directory suffix=".php">./modulos/Seguranca/Listeners</directory>
+      <directory suffix=".php">./modulos/Seguranca/Repositories</directory>
+      <directory suffix=".php">./modulos/Seguranca/Repositories</directory>
+    </include>
+    <report>
+      <clover outputFile="build/logs/clover.xml"/>
+      <html outputDirectory="build" lowUpperBound="35" highLowerBound="70"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Harpia">
+      <directory suffix="Test.php">./tests</directory>
+    </testsuite>
+    <testsuite name="Geral">
+      <directory suffix="Test.php">./modulos/Geral/tests</directory>
+    </testsuite>
+    <testsuite name="Academico">
+      <directory suffix="Test.php">./modulos/Academico/tests</directory>
+    </testsuite>
+    <testsuite name="Integracao">
+      <directory suffix="Test.php">./modulos/Integracao/tests</directory>
+    </testsuite>
+    <testsuite name="Seguranca">
+      <directory suffix="Test.php">./modulos/Seguranca/tests</directory>
+    </testsuite>
+    <testsuite name="Monitoramento">
+      <directory suffix="Test.php">./modulos/Monitoramento/tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="APP_DEBUG" value="false"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="QUEUE_DRIVER" value="sync"/>
+    <env name="STORAGE_DISK" value="test"/>
+  </php>
+  <logging/>
 </phpunit>

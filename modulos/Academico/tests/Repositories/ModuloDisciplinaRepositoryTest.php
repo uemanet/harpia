@@ -442,14 +442,12 @@ class ModuloDisciplinaRepositoryTest extends ModulosTestCase
             'mdc_tipo_disciplina' => 'obrigatoria'
         ]);
 
-        $arraydata = [
+        factory(ModuloDisciplina::class)->create([
             'mdc_dis_id' => $disciplina2->dis_id,
             'mdc_mdo_id' => $moduloMatriz2->mdo_id,
             'mdc_tipo_disciplina' => 'obrigatoria',
             'mdc_pre_requisitos' => '{json, mal, formado}'
-        ];
-
-        factory(ModuloDisciplina::class)->create($arraydata);
+        ]);
 
         $this->repo->delete($moduloDisciplina1->mdc_id);
         $afterDelete = json_decode(ModuloDisciplina::all()->last()->mdc_pre_requisitos, true);

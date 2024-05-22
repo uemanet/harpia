@@ -106,7 +106,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @return \Harpia\Event\SincronizacaoEvent
      * @throws \Exception
      */
-    final private static function makeEvent(Sincronizacao $sincronizacao)
+    private static function makeEvent(Sincronizacao $sincronizacao)
     {
         $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action, $sincronizacao->sym_version);
 
@@ -122,7 +122,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @param $action
      * @return string
      */
-    final private static function getEventEndpoint($table, $action, $version)
+    private static function getEventEndpoint($table, $action, $version)
     {
         if (isset(self::ENDPOINTS[$table][$action])) {
 
@@ -141,7 +141,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @return array
      * @throws \Exception
      */
-    final private static function getDependencies(Sincronizacao $sincronizacao)
+    private static function getDependencies(Sincronizacao $sincronizacao)
     {
         $endpoint = self::getEventEndpoint($sincronizacao->sym_table, $sincronizacao->sym_action, $sincronizacao->sym_version);
         $isDelete = self::isDeleteEvent($sincronizacao);
@@ -158,7 +158,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @param Sincronizacao $sincronizacao
      * @return bool
      */
-    final private static function isDeleteEvent(Sincronizacao $sincronizacao)
+    private static function isDeleteEvent(Sincronizacao $sincronizacao)
     {
         return strtolower($sincronizacao->sym_action) == 'delete';
     }
@@ -214,7 +214,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @param int $id
      * @return mixed
      */
-    final private static function mockDeletedEntry(string $class, string $primaryKey, int $id)
+    private static function mockDeletedEntry(string $class, string $primaryKey, int $id)
     {
         $entry = new $class();
         $entry->$primaryKey = $id;
@@ -227,7 +227,7 @@ abstract class SincronizacaoFactory extends SincronizacaoEvent implements Sincro
      * @return string
      * @throws \Exception
      */
-    final private static function getEventClass($endpoint)
+    private static function getEventClass($endpoint)
     {
         foreach (self::EVENTS as $eventGroup) {
             if (isset($eventGroup[$endpoint])) {
