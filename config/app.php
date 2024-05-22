@@ -169,7 +169,7 @@ return [
         /*
          * Extra providers
          */
-        Collective\Html\HtmlServiceProvider::class,
+        Spatie\Html\HtmlServiceProvider::class,
         Uemanet\EloquentTable\Provider\EloquentTableServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Modulos\Seguranca\Providers\Seguranca\SegurancaServiceProvider::class,
@@ -257,7 +257,7 @@ return [
          * Extra aliases
          */
         'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class,
+        'Html' =>  Spatie\Html\Facades\Html::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'ActionButton' => Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton::class,
         'MasterMenu' => Modulos\Seguranca\Providers\MasterMenu\Facades\MasterMenu::class,
