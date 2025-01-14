@@ -87,6 +87,9 @@ class HorasTrabalhadasController extends BaseController
         foreach ($periodosLaboraisTest as $item) {
             $periodosLaborais[$item->pel_id] = $item->pel_inicio.' a '.$item->pel_termino;
         }
+
+        $periodosLaborais = array_reverse($periodosLaborais, true);
+
         $setores = Setor::all()->sortBy('set_descricao')->pluck('set_descricao', 'set_id');
 
         return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores]);
