@@ -74,7 +74,7 @@ class HorasTrabalhadasController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('htr_id'));
+                ->sortable(array('htr_id','htr_col_id','htr_saldo'));
 
             $paginacao = $tableData->appends($request->except('page'));
 
