@@ -90,7 +90,9 @@ class HorasTrabalhadasController extends BaseController
 
         $periodosLaborais = array_reverse($periodosLaborais, true);
 
-        $setores = Setor::all()->sortBy('set_descricao')->pluck('set_descricao', 'set_id');
+        $setores = Setor::orderBy('set_descricao', 'asc')->pluck('set_descricao', 'set_id');
+
+//        dd($setores);
 
         return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores]);
     }
