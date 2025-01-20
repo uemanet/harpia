@@ -39,6 +39,7 @@ class HorasTrabalhadasController extends BaseController
             $tabela = $tableData->columns(array(
                 'htr_id' => '#',
                 'htr_col_id' => 'Colaborador',
+                'htr_setor' => 'Setor',
                 'htr_horas_previstas' => 'Horas Previstas',
                 'htr_horas_trabalhadas' => 'Horas Trabalhadas',
                 'htr_horas_justificadas' => 'Horas Justificadas',
@@ -47,6 +48,10 @@ class HorasTrabalhadasController extends BaseController
             ))
                 ->modify('htr_col_id', function ($obj) {
                     return $obj->colaborador->pessoa->pes_nome;
+                })
+                ->modify('htr_setor', function ($obj) {
+                    $funcao = $obj->colaborador->funcoes()->first();
+                    return $funcao && $funcao->setor ? $funcao->setor->set_descricao : 'Sem setor';
                 })
                 ->modify('htr_action', function ($id) use ($request) {
                     return ActionButton::grid([

@@ -231,7 +231,20 @@ class HoraTrabalhadaRepository extends BaseRepository
         }
 
         if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
+            if ($sort['field'] === 'htr_col_id') {
+                $result = $result->orderBy('gra_pessoas.pes_nome', $sort['sort']);
+            }elseif ($sort['field'] === 'htr_saldo') {
+                // Converte o formato HH:MM:SS para segundos para ordenação
+                $result = $result->orderByRaw("
+                CASE 
+                    WHEN htr_saldo LIKE '-%' 
+                    THEN -TIME_TO_SEC(SUBSTRING(htr_saldo, 2))
+                    ELSE TIME_TO_SEC(htr_saldo)
+                END " . $sort['sort']);
+
+            } else {
+                $result = $result->orderBy($sort['field'], $sort['sort']);
+            }
         }
 
         return $result->paginate(15);

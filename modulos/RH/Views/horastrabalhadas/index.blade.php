@@ -32,16 +32,16 @@
                         {!! Form::select('htr_pel_id', $periodosLaborais, Request::input('htr_pel_id'), ['id' => 'htr_pel_id', 'class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
                     </div>
 
+                    <div class="form-group col-md-2">
+                        {!! Form::select('cfn_set_id', $setores, Request::input('cfn_set_id'), ['id' => 'cfn_set_id', 'class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                    </div>
+
                     <div class="form-group col-md-3">
                         {!! Form::select('col_pes_id[]', $colaboradores, Request::input('col_pes_id'), [
                             'id' => 'col_pes_id',
                             'class' => 'form-control',
                             'multiple' => true,
                         ]) !!}
-                    </div>
-
-                    <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, Request::input('cfn_set_id'), ['id' => 'cfn_set_id', 'class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
                     </div>
 
                     <div class="col-md-2">
