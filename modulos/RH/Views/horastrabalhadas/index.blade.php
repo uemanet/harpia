@@ -28,12 +28,20 @@
         <div class="box-body">
             <div class="row">
                 <form method="GET" action="{{ route('rh.horastrabalhadas.index') }}">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         {!! Form::select('htr_pel_id', $periodosLaborais, Request::input('htr_pel_id'), ['id' => 'htr_pel_id', 'class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
                     </div>
 
+                    <div class="form-group col-md-3">
+                        {!! Form::select('col_pes_id[]', $colaboradores, Request::input('col_pes_id'), [
+                            'id' => 'col_pes_id',
+                            'class' => 'form-control',
+                            'multiple' => true,
+                        ]) !!}
+                    </div>
+
                     <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, Request::input('cfn_set_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                        {!! Form::select('cfn_set_id', $setores, Request::input('cfn_set_id'), ['id' => 'cfn_set_id', 'class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
                     </div>
 
                     <div class="col-md-2">
@@ -136,6 +144,12 @@
             <div class="box-body">Sem registros para apresentar</div>
         </div>
     @endif
+
+    <style>
+        .select2-container .select2-selection--single {
+            height: 32px !important;
+        }
+    </style>
 @stop
 
 
@@ -146,8 +160,18 @@
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $("select").select2();
+            $("#htr_pel_id, #cfn_set_id").select2({
+            });
         });
+
+        $('#col_pes_id').select2({
+            closeOnSelect: false,
+            allowClear: true,
+            placeholder: 'Selecione os colaboradores',
+        }).on('select2:select', function () {
+            $('.select2-search__field').val('');
+        });
+
     </script>
 
     <script type="text/javascript">

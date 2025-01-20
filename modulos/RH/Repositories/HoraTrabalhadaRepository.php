@@ -202,12 +202,21 @@ class HoraTrabalhadaRepository extends BaseRepository
             $join->on('htr_col_id', '=', 'col_id');
         })->leftJoin('reh_colaboradores_funcoes', function ($join) {
             $join->on('col_id', '=', 'cfn_col_id');
+        })->leftJoin('gra_pessoas', function ($join) {
+            $join->on('reh_colaboradores.col_pes_id', '=', 'gra_pessoas.pes_id');
         })->groupBy('col_id');
 
         if (!empty($search)) {
             foreach ($search as $value) {
                 if ($value['field'] == 'cfn_set_id') {
                     $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    continue;
+                }
+
+                if ($value['field'] == 'col_pes_id') {
+                    if (!empty($value['term']) && is_array($value['term'])) {
+                        $result = $result->whereIn('col_id', $value['term']);
+                    }
                     continue;
                 }
 

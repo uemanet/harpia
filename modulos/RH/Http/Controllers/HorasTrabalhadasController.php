@@ -3,6 +3,7 @@
 namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\PeriodoLaboral;
 use Modulos\RH\Models\Setor;
 use Modulos\RH\Repositories\ColaboradorRepository;
@@ -92,9 +93,12 @@ class HorasTrabalhadasController extends BaseController
 
         $setores = Setor::orderBy('set_descricao', 'asc')->pluck('set_descricao', 'set_id');
 
-//        dd($setores);
+        $colaboradores = Colaborador::with('pessoa')
+            ->get()
+            ->sortBy('pessoa.pes_nome')
+            ->pluck('pessoa.pes_nome', 'col_id');
 
-        return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores]);
+        return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores, 'colaboradores' => $colaboradores]);
     }
 
     public function getColaboradorHorasTrabalhadas(int $colaboradorId, Request $request)

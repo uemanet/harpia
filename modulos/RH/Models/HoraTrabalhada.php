@@ -22,7 +22,8 @@ class HoraTrabalhada extends BaseModel
     protected $searchable = [
         'htr_pel_id' => 'like',
         'htr_col_id' => '=',
-        'cfn_set_id' => '='
+        'cfn_set_id' => '=',
+        'col_pes_id' => '='
     ];
 
     public function justificativas()
