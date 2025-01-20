@@ -26,7 +26,8 @@ class JustificativaRequest extends BaseRequest
         $rules = [
             'jus_horas' => 'required',
             'jus_data' => 'required|date_format:d/m/Y',
-            'jus_descricao' => 'required|min:2|max:256',
+            'jus_data_fim' => 'required|date_format:d/m/Y',
+            'jus_descricao' => 'required|min:2|max:512',
             'jus_file' => 'nullable|mimes:pdf,jpg,bpm,png,jpeg',
         ];
 

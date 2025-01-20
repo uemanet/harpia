@@ -37,7 +37,8 @@
                         <p><strong>Id: </strong> {{$justificativa->jus_id}}</p>
                         <p><strong>Período Laboral: </strong> {{$justificativa->horaTrabalhada->periodo->pel_inicio}} a  {{$justificativa->horaTrabalhada->periodo->pel_termino}} </p>
                         <p><strong>Descrição: </strong> {{$justificativa->jus_descricao}}</p>
-                        <p><strong>Data justificada: </strong> {{$justificativa->jus_data}}</p>
+                        <p><strong>Data Inicial justificada: </strong> {{$justificativa->jus_data}}</p>
+                        <p><strong>Data Final justificada: </strong> {{$justificativa->jus_data_fim}}</p>
                         <p><strong>Quantidade de horas: </strong> {{$justificativa->jus_horas}}</p>
 
                         @if(!is_null($justificativa->jus_anx_id))

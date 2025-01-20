@@ -51,6 +51,7 @@ class JustificativasController extends BaseController
                 'jus_id' => '#',
                 'jus_horas' => 'Horas',
                 'jus_data' => 'Data',
+                'jus_data_fim' => 'Data Fim',
                 'jus_action' => 'Ações'
             ))
                 ->modifyCell('jus_action', function () {
