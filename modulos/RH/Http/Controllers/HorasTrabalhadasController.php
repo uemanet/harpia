@@ -3,6 +3,7 @@
 namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\PeriodoLaboral;
 use Modulos\RH\Models\Setor;
 use Modulos\RH\Repositories\ColaboradorRepository;
@@ -38,6 +39,7 @@ class HorasTrabalhadasController extends BaseController
             $tabela = $tableData->columns(array(
                 'htr_id' => '#',
                 'htr_col_id' => 'Colaborador',
+                'htr_setor' => 'Setor',
                 'htr_horas_previstas' => 'Horas Previstas',
                 'htr_horas_trabalhadas' => 'Horas Trabalhadas',
                 'htr_horas_justificadas' => 'Horas Justificadas',
@@ -46,6 +48,10 @@ class HorasTrabalhadasController extends BaseController
             ))
                 ->modify('htr_col_id', function ($obj) {
                     return $obj->colaborador->pessoa->pes_nome;
+                })
+                ->modify('htr_setor', function ($obj) {
+                    $funcao = $obj->colaborador->funcoes()->first();
+                    return $funcao && $funcao->setor ? $funcao->setor->set_descricao : 'Sem setor';
                 })
                 ->modify('htr_action', function ($id) use ($request) {
                     return ActionButton::grid([
@@ -74,7 +80,7 @@ class HorasTrabalhadasController extends BaseController
                         ]
                     ]);
                 })
-                ->sortable(array('htr_id'));
+                ->sortable(array('htr_id','htr_col_id','htr_saldo'));
 
             $paginacao = $tableData->appends($request->except('page'));
 
@@ -87,9 +93,17 @@ class HorasTrabalhadasController extends BaseController
         foreach ($periodosLaboraisTest as $item) {
             $periodosLaborais[$item->pel_id] = $item->pel_inicio.' a '.$item->pel_termino;
         }
-        $setores = Setor::all()->sortBy('set_descricao')->pluck('set_descricao', 'set_id');
 
-        return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores]);
+        $periodosLaborais = array_reverse($periodosLaborais, true);
+
+        $setores = Setor::orderBy('set_descricao', 'asc')->pluck('set_descricao', 'set_id');
+
+        $colaboradores = Colaborador::with('pessoa')
+            ->get()
+            ->sortBy('pessoa.pes_nome')
+            ->pluck('pessoa.pes_nome', 'col_id');
+
+        return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores, 'colaboradores' => $colaboradores]);
     }
 
     public function getColaboradorHorasTrabalhadas(int $colaboradorId, Request $request)
