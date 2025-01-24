@@ -2,7 +2,7 @@
   <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
 @endsection
 <div class="row">
-    <div class="form-group col-md-3 @if ($errors->has('jus_horas')) has-error @endif">
+    <div class="form-group col-md-2 @if ($errors->has('jus_horas')) has-error @endif">
         {!! Form::label('jus_horas', 'Quantidade de Horas*', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::number('jus_horas', old('jus_horas'), ['class' => 'form-control']) !!}
@@ -38,13 +38,24 @@
 
 <div class="row">
 
-    <div class="form-group col-md-10 @if ($errors->has('jus_descricao')) has-error @endif">
+    <div class="form-group col-md-8 @if ($errors->has('jus_descricao')) has-error @endif">
         {!! Form::label('jus_descricao', 'Descrição', ['class' => 'control-label']) !!}
         <div class="controls">
             {!! Form::textarea('jus_descricao', old('jus_descricao'), ['class' => 'form-control', 'rows' => '4']) !!}
             @if ($errors->has('jus_descricao')) <p class="help-block">{{ $errors->first('jus_descricao') }}</p> @endif
         </div>
     </div>
+
+    <div class="form-group col-md-2 @if ($errors->has('jus_tipo_id')) has-error @endif">
+        {!! Form::label('jus_tipo_id', 'Tipo de Justificativa*', ['class' => 'control-label']) !!}
+        <div class="controls">
+            {!! Form::select('jus_tipo_id', $tipos, null, ['class' => 'form-control select2']) !!}
+            @if ($errors->has('jus_tipo_id')) <p class="help-block">{{ $errors->first('jus_tipo_id') }}</p> @endif
+        </div>
+    </div>
+
+
+
 
 </div>
 {!! Form::input('hidden' , 'jus_htr_id', $horaTrabalhada->htr_id ,  ['class' => 'form-control']) !!}

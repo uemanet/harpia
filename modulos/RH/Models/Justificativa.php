@@ -19,12 +19,19 @@ class Justificativa extends BaseModel
         'jus_data',
         'jus_data_fim',
         'jus_descricao',
+        'jus_tipo_id',
     ];
 
     protected  $searchable = [
         'jus_data' => 'like',
         'jus_data_fim' => 'like'
     ];
+
+    public function tipo()
+    {
+        return $this->belongsTo(TipoJustificativa::class, 'jus_tipo_id', 'tipo_jus_id');
+    }
+
 
     public function anexo()
     {

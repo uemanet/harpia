@@ -40,6 +40,7 @@
                         <p><strong>Data Inicial justificada: </strong> {{$justificativa->jus_data}}</p>
                         <p><strong>Data Final justificada: </strong> {{$justificativa->jus_data_fim}}</p>
                         <p><strong>Quantidade de horas: </strong> {{$justificativa->jus_horas}}</p>
+                        <p><strong>Tipo: </strong> {{$justificativa->tipo->tipo_jus_descricao}}</p>
 
                         @if(!is_null($justificativa->jus_anx_id))
                             <?php $botoes[] =  [
