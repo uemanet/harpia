@@ -1,5 +1,9 @@
 @extends('layouts.modulos.rh')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('rh.horastrabalhadas.justificativas.show', $justificativa->jus_htr_id) }}
+@endsection
+
 @section('stylesheets')
     <style>
         .title-box {

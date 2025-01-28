@@ -133,7 +133,7 @@ class JustificativasController extends BaseController
             }
 
             flash()->success('Justificativa criada com sucesso.');
-            return redirect()->route('rh.horastrabalhadas.justificativas.index', $justificativa->jus_htr_id);
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
