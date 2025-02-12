@@ -21,6 +21,79 @@ class PeriodoAquisitivoRepository extends BaseRepository
      * @param MatriculaColaborador $matricula_colaborador
      * @return array|int
      */
+//    public function periodData(MatriculaColaborador $matricula_colaborador):array
+//    {
+//
+//        $primeiro_periodo_adquirido = $this->getDate('+1 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio'));
+//        if(time() <  strtotime($primeiro_periodo_adquirido)){
+//            return [];
+//        }
+//
+//        if( $matricula_colaborador->mtc_data_fim and
+//            strtotime($primeiro_periodo_adquirido) > strtotime($matricula_colaborador->getRawOriginal('mtc_data_fim')) ){
+//            return [];
+//        }
+//
+//        $returnData = [];
+//
+//        $inicioPeriodo = $this->getDate('+0 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio'));
+//        $inicioPeriodoAdquirido = $inicioPeriodo;
+//        $countYear = 0;
+//        $ano_valido = true;
+//        while ($ano_valido){
+//
+//            $count = $countYear? 1 : 0;
+//            $inicioPeriodoAdquirido = $this->getDate('+'.$count.' year', $inicioPeriodoAdquirido);
+//            $fimPeriodoAdquirido = $this->getDate('1 year', $inicioPeriodoAdquirido);
+//
+//            $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
+//            $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
+//
+//            $feriasPeriodos = $this->model
+//                ->where('paq_data_inicio' , '>', $inicioPeriodo)
+//                ->where('paq_data_inicio' , '<', $finalPeriodo)
+//                ->where('paq_col_id', $matricula_colaborador->mtc_col_id)
+//                ->where('paq_mtc_id', $matricula_colaborador->mtc_id)
+//                ->get();
+//
+//            $between = 0;
+//            foreach ($feriasPeriodos as $feriasPeriodo) {
+//                $date1 = $feriasPeriodo->getRawOriginal('paq_data_inicio');
+//                $date2 = $feriasPeriodo->getRawOriginal('paq_data_fim');
+//                $between += $this->daysBetween($date1, $date2)+1;
+//            }
+//
+//            $data['inicio_adquirido'] = date('d/m/Y',strtotime($inicioPeriodoAdquirido));
+//            $data['fim_adquirido'] = date('d/m/Y',strtotime($fimPeriodoAdquirido));
+//            $data['inicio'] = date('d/m/Y',strtotime($inicioPeriodo));
+//            $data['fim'] = date('d/m/Y',strtotime($finalPeriodo));
+//            $data['dias'] = $between;
+//            $data['periodos'] = $feriasPeriodos;
+//
+//            $countYear++;
+//            $returnData[$countYear] = $data;
+//
+//            if( $matricula_colaborador->mtc_data_fim and
+//                strtotime($finalPeriodo) > strtotime($matricula_colaborador->getRawOriginal('mtc_data_fim')) ){
+//                $returnData[$countYear]['fim'] = $matricula_colaborador->mtc_data_fim;
+//                $ano_valido = false;
+//                break;
+//            }
+//
+//
+//            $final = $this->getDate('+12 months', $inicioPeriodo);
+//
+//            if( strtotime($inicioPeriodo) <  time() and time()  < strtotime($final)){
+//                $ano_valido = false;
+//                break;
+//            }
+//        }
+//
+//        return $returnData;
+//    }
+
+//    TODO Geraldo: Implementar lógica para trabalhar com os dois tipos de dados, os novos e os antigos.
+
     public function periodData(MatriculaColaborador $matricula_colaborador):array
     {
 
@@ -50,8 +123,8 @@ class PeriodoAquisitivoRepository extends BaseRepository
             $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
 
             $feriasPeriodos = $this->model
-                ->where('paq_data_inicio' , '>', $inicioPeriodo)
-                ->where('paq_data_inicio' , '<', $finalPeriodo)
+                ->where('paq_gozo_inicio', $inicioPeriodo)
+                ->where('paq_gozo_fim', $finalPeriodo)
                 ->where('paq_col_id', $matricula_colaborador->mtc_col_id)
                 ->where('paq_mtc_id', $matricula_colaborador->mtc_id)
                 ->get();
