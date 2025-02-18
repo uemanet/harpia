@@ -21,6 +21,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
      * @param MatriculaColaborador $matricula_colaborador
      * @return array|int
      */
+
     public function periodData(MatriculaColaborador $matricula_colaborador):array
     {
 
@@ -50,11 +51,30 @@ class PeriodoAquisitivoRepository extends BaseRepository
             $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
 
             $feriasPeriodos = $this->model
-                ->where('paq_data_inicio' , '>', $inicioPeriodo)
-                ->where('paq_data_inicio' , '<', $finalPeriodo)
                 ->where('paq_col_id', $matricula_colaborador->mtc_col_id)
                 ->where('paq_mtc_id', $matricula_colaborador->mtc_id)
+                ->where(function ($query) use ($inicioPeriodo, $finalPeriodo) {
+                    $query->where(function ($q) use ($inicioPeriodo, $finalPeriodo) {
+                        // Modelo Antigo: não tem paq_gozo_inicio/fim e usa paq_data_inicio
+                        $q->whereNull('paq_gozo_inicio')
+                            ->where('paq_data_inicio', '>', $inicioPeriodo)
+                            ->where('paq_data_inicio', '<', $finalPeriodo);
+                    })->orWhere(function ($q) use ($inicioPeriodo, $finalPeriodo) {
+                        // Modelo Novo: tem paq_gozo_inicio/fim e os mesmos valores do período de gozo
+                        $q->whereNotNull('paq_gozo_inicio')
+                            ->where('paq_gozo_inicio', $inicioPeriodo)
+                            ->where('paq_gozo_fim', $finalPeriodo);
+                    });
+                })
                 ->get();
+
+            foreach ($feriasPeriodos as &$registro) {
+                if (!empty($registro->paq_gozo_inicio) && !empty($registro->paq_gozo_fim)) {
+                    $registro->modelo = 'Modelo Novo';
+                } else {
+                    $registro->modelo = 'Modelo Antigo';
+                }
+            }
 
             $between = 0;
             foreach ($feriasPeriodos as $feriasPeriodo) {
