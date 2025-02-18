@@ -8,11 +8,18 @@
         </div>
     </div>
 
+    @php
+        $selected = old('paq_periodo_aquisitivo', isset($periodo_aquisitivo) && !empty($periodo_aquisitivo->paq_gozo_inicio) && !empty($periodo_aquisitivo->paq_gozo_fim)
+            ? $periodo_aquisitivo->paq_gozo_inicio . '|' . $periodo_aquisitivo->paq_gozo_fim
+            : '');
+    @endphp
+
     <div class="form-group col-md-5">
         {!! Form::label('paq_periodo_aquisitivo', 'Período de Gozo') !!}
         <select name="paq_periodo_aquisitivo" class="form-control">
             @foreach($periodosDisponiveis as $periodo)
-                <option value="{{ $periodo['inicio'] . '|' . $periodo['fim'] }}">
+                @php $value = $periodo['inicio'] . '|' . $periodo['fim']; @endphp
+                <option value="{{ $value }}" {{ $value == $selected ? 'selected' : '' }}>
                     Período de {{ $periodo['inicio'] }} a {{ $periodo['fim'] }}
                 </option>
             @endforeach

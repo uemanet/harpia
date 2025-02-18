@@ -37,8 +37,9 @@
                                                 <th style="width: 20%">Início</th>
                                                 <th style="width: 20%">Fim</th>
                                                 <th style="width: 20%">Observação</th>
-                                                <th style="width: 20%">Férias gozadas</th>
-                                                <th style="width: 20%"></th>
+                                                <th style="width: 10%">Férias gozadas</th>
+                                                <th style="width: 10%">Modelo</th>
+                                                <th style="width: 15%"></th>
                                             </tr>
                                             @foreach($periodo['periodos'] as $periodoAquisitivo)
                                                 <tr>
@@ -50,6 +51,7 @@
                                                         @elseif(!$periodoAquisitivo->paq_ferias_gozadas)
                                                             Não
                                                         @endif</td>
+                                                    <td>{{$periodoAquisitivo->modelo}}</td>
                                                     <td>
                                                         @if(!$periodoAquisitivo->paq_ferias_gozadas)
                                                             {!! ActionButton::grid([
