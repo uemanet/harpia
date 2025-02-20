@@ -58,6 +58,11 @@
                         <input type="submit" class="form-control btn-primary" value="Buscar">
                     </div>
                 </form>
+
+                <a href="{{ route('rh.ferias.export') }}" class="btn btn-success">
+                    Gerar Planilha de Controle de Férias
+                </a>
+
             </div>
         </div>
         <!-- /.box-body -->

@@ -2,14 +2,18 @@
 
 namespace Modulos\RH\Http\Controllers;
 
+use App\Exports\FeriasExport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Excel;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoDeleteRequest;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoRequest;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
 use Modulos\RH\Http\Requests\MatriculaColaboradorRequest;
+use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\ColaboradorFuncao;
 use Modulos\RH\Models\Funcao;
 use Modulos\RH\Models\Setor;
@@ -36,6 +40,8 @@ class ColaboradoresController extends BaseController
     protected $periodosAquisitivosRepository;
     protected $matriculaColaboradorRepository;
 
+    protected $excel;
+
     public function __construct(
         ColaboradorRepository $colaborador,
         PessoaRepository $pessoa,
@@ -44,7 +50,8 @@ class ColaboradoresController extends BaseController
         SetorRepository $setor,
         ColaboradorFuncaoRepository $colaborador_funcao,
         PeriodoAquisitivoRepository $periodo_aquisitivo,
-        MatriculaColaboradorRepository $matricula_colaborador
+        MatriculaColaboradorRepository $matricula_colaborador,
+        Excel $excel
     )
     {
         $this->colaboradorFuncaoRepository = $colaborador_funcao;
@@ -55,6 +62,7 @@ class ColaboradoresController extends BaseController
         $this->setorRepository = $setor;
         $this->periodosAquisitivosRepository = $periodo_aquisitivo;
         $this->matriculaColaboradorRepository = $matricula_colaborador;
+        $this->excel = $excel;
     }
 
     public function getIndex(Request $request)
@@ -688,5 +696,73 @@ class ColaboradoresController extends BaseController
         }
 
         return false;
+    }
+
+    public function exportFerias(Request $request)
+    {
+        // Get all active collaborators
+        $colaboradores = Colaborador::where('col_status', 'ativo')->get();
+
+        $reportData = [
+            // Header row
+            [
+                'Nome do Colaborador',
+                'Função',
+                'Setor',
+                'Data Contratação',
+                'Início Período Aquisitivo',
+                'Fim Período Aquisitivo',
+                'Dias Vencidos'
+            ]
+        ];
+
+        foreach ($colaboradores as $colaborador) {
+            // Get the most recent active function and sector
+            $funcaoAtual = $colaborador->funcoes->first();
+            $funcaoNome = $funcaoAtual ? $funcaoAtual->funcao->fun_descricao : '-';
+            $setorNome = $funcaoAtual ? $funcaoAtual->setor->set_descricao : '-';
+
+            // Get the most recent registration
+            $matricula = $colaborador->matriculas->sortByDesc('mtc_data_inicio')->first();
+            if (!$matricula) {
+                continue;
+            }
+
+            // Get acquisition periods
+            $periodos = $this->periodosAquisitivosRepository->periodData($matricula);
+
+            if (empty($periodos)) {
+                continue;
+            }
+
+            // Get the most recent period
+            $ultimoPeriodo = end($periodos);
+
+            // Calculate days since last period ended
+            $diasVencidos = 0;
+            if (isset($ultimoPeriodo['fim_adquirido'])) {
+                $fimAdquirido = Carbon::createFromFormat('d/m/Y', $ultimoPeriodo['fim_adquirido'])->startOfDay();
+                $hoje = Carbon::now()->startOfDay();
+                $diasVencidos = $fimAdquirido->isPast() ? $fimAdquirido->diffInDays($hoje) : 0;
+            }
+
+            // Convert registration date to desired format
+            $dataContratacao = Carbon::parse($matricula->getRawOriginal('mtc_data_inicio'))->format('d/m/Y');
+
+            $reportData[] = [
+                $colaborador->pessoa->pes_nome,
+                $funcaoNome,
+                $setorNome,
+                $dataContratacao,
+                $ultimoPeriodo['inicio_adquirido'] ?? '-',
+                $ultimoPeriodo['fim_adquirido'] ?? '-',
+                $diasVencidos
+            ];
+        }
+
+        return $this->excel->download(
+            new FeriasExport($reportData),
+            'relatorio_ferias_' . date('Y-m-d') . '.xlsx'
+        );
     }
 }
