@@ -110,7 +110,7 @@
                             'icon' => 'fa fa-plus-square',
                             'route' => 'rh.colaboradores.periodosaquisitivos.create',
                             'parameters' => ['id' => $colaborador->col_id],
-                            'label' => ' Novo período aquisitivo',
+                            'label' => ' Cadastrar Férias',
                             'method' => 'get'
                         ],
                     ]
