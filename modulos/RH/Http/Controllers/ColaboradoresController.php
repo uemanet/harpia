@@ -700,53 +700,80 @@ class ColaboradoresController extends BaseController
 
     public function exportFerias(Request $request)
     {
-        // Get all active collaborators
         $colaboradores = Colaborador::where('col_status', 'ativo')->get();
 
         $reportData = [
-            // Header row
             [
                 'Nome do Colaborador',
                 'Função',
                 'Setor',
                 'Data Contratação',
-                'Início Período Aquisitivo',
-                'Fim Período Aquisitivo',
+                'Início Período Gozo',
+                'Fim Período Gozo',
+                'Limite de Gozo',
+                'Dias já Gozados',
                 'Dias Vencidos'
             ]
         ];
 
         foreach ($colaboradores as $colaborador) {
-            // Get the most recent active function and sector
             $funcaoAtual = $colaborador->funcoes->first();
             $funcaoNome = $funcaoAtual ? $funcaoAtual->funcao->fun_descricao : '-';
             $setorNome = $funcaoAtual ? $funcaoAtual->setor->set_descricao : '-';
 
-            // Get the most recent registration
             $matricula = $colaborador->matriculas->sortByDesc('mtc_data_inicio')->first();
             if (!$matricula) {
                 continue;
             }
 
-            // Get acquisition periods
             $periodos = $this->periodosAquisitivosRepository->periodData($matricula);
-
             if (empty($periodos)) {
                 continue;
             }
 
-            // Get the most recent period
-            $ultimoPeriodo = end($periodos);
+            $periodos = array_values($periodos);
+            $totalPeriodos = count($periodos);
+            $periodoSelecionado = null;
 
-            // Calculate days since last period ended
-            $diasVencidos = 0;
-            if (isset($ultimoPeriodo['fim_adquirido'])) {
-                $fimAdquirido = Carbon::createFromFormat('d/m/Y', $ultimoPeriodo['fim_adquirido'])->startOfDay();
-                $hoje = Carbon::now()->startOfDay();
-                $diasVencidos = $fimAdquirido->isPast() ? $fimAdquirido->diffInDays($hoje) : 0;
+            // Percorre os períodos na ordem (do mais antigo para o mais recente)
+            foreach ($periodos as $index => $periodo) {
+                if ($periodo['dias'] < 30) {
+                    $existePosteriorComDias = false;
+                    // Verifica os períodos posteriores
+                    for ($j = $index + 1; $j < $totalPeriodos; $j++) {
+                        if ($periodos[$j]['dias'] > 0) {
+                            $existePosteriorComDias = true;
+                            break;
+                        }
+                    }
+                    if (!$existePosteriorComDias) {
+                        $periodoSelecionado = $periodo;
+                        break;
+                    }
+                }
             }
 
-            // Convert registration date to desired format
+            // Se nenhum período atender a condição, usa o último período
+            if (!$periodoSelecionado) {
+                $periodoSelecionado = end($periodos);
+            }
+
+            // Cálculo do Limite de Gozo: fim do período menos 30 dias
+            $limiteGozo = '-';
+            if (isset($periodoSelecionado['fim'])) {
+                $limiteGozo = Carbon::createFromFormat('d/m/Y', $periodoSelecionado['fim'])
+                    ->subDays(30)
+                    ->format('d/m/Y');
+            }
+
+            // Cálculo dos Dias Vencidos: diferença entre hoje e o fim do período
+            $diasVencidos = 0;
+            if (isset($periodoSelecionado['fim'])) {
+                $fimPeriodo = Carbon::createFromFormat('d/m/Y', $periodoSelecionado['fim'])->startOfDay();
+                $hoje = Carbon::now()->startOfDay();
+                $diasVencidos = $fimPeriodo->isPast() ? $fimPeriodo->diffInDays($hoje) : 0;
+            }
+
             $dataContratacao = Carbon::parse($matricula->getRawOriginal('mtc_data_inicio'))->format('d/m/Y');
 
             $reportData[] = [
@@ -754,8 +781,10 @@ class ColaboradoresController extends BaseController
                 $funcaoNome,
                 $setorNome,
                 $dataContratacao,
-                $ultimoPeriodo['inicio_adquirido'] ?? '-',
-                $ultimoPeriodo['fim_adquirido'] ?? '-',
+                $periodoSelecionado['inicio'] ?? '-',
+                $periodoSelecionado['fim'] ?? '-',
+                $limiteGozo,
+                $periodoSelecionado['dias'] ?? 0,
                 $diasVencidos
             ];
         }
@@ -765,4 +794,5 @@ class ColaboradoresController extends BaseController
             'relatorio_ferias_' . date('Y-m-d') . '.xlsx'
         );
     }
+
 }
