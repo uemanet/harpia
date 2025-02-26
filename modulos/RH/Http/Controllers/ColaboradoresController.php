@@ -2,14 +2,18 @@
 
 namespace Modulos\RH\Http\Controllers;
 
+use App\Exports\FeriasExport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Excel;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoDeleteRequest;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoRequest;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
 use Modulos\RH\Http\Requests\MatriculaColaboradorRequest;
+use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\ColaboradorFuncao;
 use Modulos\RH\Models\Funcao;
 use Modulos\RH\Models\Setor;
@@ -36,6 +40,8 @@ class ColaboradoresController extends BaseController
     protected $periodosAquisitivosRepository;
     protected $matriculaColaboradorRepository;
 
+    protected $excel;
+
     public function __construct(
         ColaboradorRepository $colaborador,
         PessoaRepository $pessoa,
@@ -44,7 +50,8 @@ class ColaboradoresController extends BaseController
         SetorRepository $setor,
         ColaboradorFuncaoRepository $colaborador_funcao,
         PeriodoAquisitivoRepository $periodo_aquisitivo,
-        MatriculaColaboradorRepository $matricula_colaborador
+        MatriculaColaboradorRepository $matricula_colaborador,
+        Excel $excel
     )
     {
         $this->colaboradorFuncaoRepository = $colaborador_funcao;
@@ -55,6 +62,7 @@ class ColaboradoresController extends BaseController
         $this->setorRepository = $setor;
         $this->periodosAquisitivosRepository = $periodo_aquisitivo;
         $this->matriculaColaboradorRepository = $matricula_colaborador;
+        $this->excel = $excel;
     }
 
     public function getIndex(Request $request)
@@ -689,4 +697,102 @@ class ColaboradoresController extends BaseController
 
         return false;
     }
+
+    public function exportFerias(Request $request)
+    {
+        $colaboradores = Colaborador::where('col_status', 'ativo')->get();
+
+        $reportData = [
+            [
+                'Nome do Colaborador',
+                'Função',
+                'Setor',
+                'Data Contratação',
+                'Início Período Gozo',
+                'Fim Período Gozo',
+                'Limite de Gozo',
+                'Dias já Gozados',
+                'Dias Vencidos'
+            ]
+        ];
+
+        foreach ($colaboradores as $colaborador) {
+            $funcaoAtual = $colaborador->funcoes->first();
+            $funcaoNome = $funcaoAtual ? $funcaoAtual->funcao->fun_descricao : '-';
+            $setorNome = $funcaoAtual ? $funcaoAtual->setor->set_descricao : '-';
+
+            $matricula = $colaborador->matriculas->sortByDesc('mtc_data_inicio')->first();
+            if (!$matricula) {
+                continue;
+            }
+
+            $periodos = $this->periodosAquisitivosRepository->periodData($matricula);
+            if (empty($periodos)) {
+                continue;
+            }
+
+            $periodos = array_values($periodos);
+            $totalPeriodos = count($periodos);
+            $periodoSelecionado = null;
+
+            // Percorre os períodos na ordem (do mais antigo para o mais recente)
+            foreach ($periodos as $index => $periodo) {
+                if ($periodo['dias'] < 30) {
+                    $existePosteriorComDias = false;
+                    // Verifica os períodos posteriores
+                    for ($j = $index + 1; $j < $totalPeriodos; $j++) {
+                        if ($periodos[$j]['dias'] > 0) {
+                            $existePosteriorComDias = true;
+                            break;
+                        }
+                    }
+                    if (!$existePosteriorComDias) {
+                        $periodoSelecionado = $periodo;
+                        break;
+                    }
+                }
+            }
+
+            // Se nenhum período atender a condição, usa o último período
+            if (!$periodoSelecionado) {
+                $periodoSelecionado = end($periodos);
+            }
+
+            // Cálculo do Limite de Gozo: fim do período menos 30 dias
+            $limiteGozo = '-';
+            if (isset($periodoSelecionado['fim'])) {
+                $limiteGozo = Carbon::createFromFormat('d/m/Y', $periodoSelecionado['fim'])
+                    ->subDays(30)
+                    ->format('d/m/Y');
+            }
+
+            // Cálculo dos Dias Vencidos: diferença entre hoje e o fim do período
+            $diasVencidos = 0;
+            if (isset($periodoSelecionado['fim'])) {
+                $fimPeriodo = Carbon::createFromFormat('d/m/Y', $periodoSelecionado['fim'])->startOfDay();
+                $hoje = Carbon::now()->startOfDay();
+                $diasVencidos = $fimPeriodo->isPast() ? $fimPeriodo->diffInDays($hoje) : 0;
+            }
+
+            $dataContratacao = Carbon::parse($matricula->getRawOriginal('mtc_data_inicio'))->format('d/m/Y');
+
+            $reportData[] = [
+                $colaborador->pessoa->pes_nome,
+                $funcaoNome,
+                $setorNome,
+                $dataContratacao,
+                $periodoSelecionado['inicio'] ?? '-',
+                $periodoSelecionado['fim'] ?? '-',
+                $limiteGozo,
+                $periodoSelecionado['dias'] ?? 0,
+                $diasVencidos
+            ];
+        }
+
+        return $this->excel->download(
+            new FeriasExport($reportData),
+            'relatorio_ferias_' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
 }
