@@ -120,7 +120,11 @@ class HorasTrabalhadasDiariasController extends BaseController
             return redirect()->back();
         }
 
-        $horasTrabalhadas = $this->horaTrabalhadaDiariaRepository->buscarDadosParaRelatorioDeHorasTrabalhadas($data['pel_id'], $data['set_id'] ?? null);
+        $setores = isset($data['set_id']) ? explode(',', $data['set_id']) : null;
+
+        $horasTrabalhadas = $this->horaTrabalhadaDiariaRepository
+            ->buscarDadosParaRelatorioDeHorasTrabalhadas($data['pel_id'], $setores);
+
 
         $date = new Carbon();
 

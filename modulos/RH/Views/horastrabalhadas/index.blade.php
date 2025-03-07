@@ -33,7 +33,11 @@
                     </div>
 
                     <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, Request::input('cfn_set_id'), ['id' => 'cfn_set_id', 'class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                        {!! Form::select('cfn_set_id[]', $setores, Request::input('cfn_set_id'), [
+                            'id' => 'cfn_set_id',
+                            'class' => 'form-control',
+                            'multiple' => true,
+                        ]) !!}
                     </div>
 
                     <div class="form-group col-md-3">
@@ -127,7 +131,7 @@
                                     ]
                             ]) !!}
                             <input type="hidden" name="pel_id" id="periodoLaboralId" value="{{ Request::input('htr_pel_id')}}">
-                            <input type="hidden" name="set_id" id="setorId" value="{{ Request::input('cfn_set_id')}}">
+                            <input type="hidden" name="set_id" id="setorId" value="{{ implode(',', (array) Request::input('cfn_set_id')) }}">
                         </form>
                     </div>
                 </div>
@@ -165,9 +169,18 @@
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#htr_pel_id, #cfn_set_id").select2({
+            $("#htr_pel_id").select2({
             });
         });
+
+        $('#cfn_set_id').select2({
+            closeOnSelect: false,
+            allowClear: true,
+            placeholder: 'Selecione os Setores',
+        }).on('select2:select', function () {
+            $('.select2-search__field').val('');
+        });
+
 
         $('#col_pes_id').select2({
             closeOnSelect: false,
