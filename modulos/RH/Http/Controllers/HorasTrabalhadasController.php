@@ -33,6 +33,8 @@ class HorasTrabalhadasController extends BaseController
         $paginacao = null;
         $tabela = null;
 
+        $request->session()->put('filtros_horas_trabalhadas', $request->query());
+
         $setoresSelecionados = (array) $request->input('cfn_set_id', []);
 
         $tableData = $this->horaTrabalhadaRepository->paginateRequest($request->all());
