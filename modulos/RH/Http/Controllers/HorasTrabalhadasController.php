@@ -33,6 +33,10 @@ class HorasTrabalhadasController extends BaseController
         $paginacao = null;
         $tabela = null;
 
+        $request->session()->put('filtros_horas_trabalhadas', $request->query());
+
+        $setoresSelecionados = (array) $request->input('cfn_set_id', []);
+
         $tableData = $this->horaTrabalhadaRepository->paginateRequest($request->all());
 
         if ($tableData->count() and isset($request->all()['htr_pel_id'])) {
@@ -103,7 +107,7 @@ class HorasTrabalhadasController extends BaseController
             ->sortBy('pessoa.pes_nome')
             ->pluck('pessoa.pes_nome', 'col_id');
 
-        return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores, 'colaboradores' => $colaboradores]);
+        return view('RH::horastrabalhadas.index', ['tabela' => $tabela, 'paginacao' => $paginacao, 'periodosLaborais' => $periodosLaborais, 'setores' => $setores, 'colaboradores' => $colaboradores, 'setoresSelecionados' => $setoresSelecionados]);
     }
 
     public function getColaboradorHorasTrabalhadas(int $colaboradorId, Request $request)

@@ -74,8 +74,9 @@ Breadcrumbs::for('rh.periodoslaborais.edit', function (BreadcrumbTrail $trail) {
 
 // COLABORADORES
 Breadcrumbs::for('rh.colaboradores.index', function (BreadcrumbTrail $trail) {
+    $filtros = session('filtros_colaboradores', []);
     $trail->parent('rh.index.index');
-    $trail->push('Colaboradores', route('rh.colaboradores.index'));
+    $trail->push('Colaboradores', route('rh.colaboradores.index', $filtros));
 });
 
 Breadcrumbs::for('rh.colaboradores.create', function (BreadcrumbTrail $trail) {
@@ -173,13 +174,15 @@ Breadcrumbs::for('rh.setores.edit', function (BreadcrumbTrail $trail) {
 
 // HORAS TRABALHADAS
 Breadcrumbs::for('rh.horastrabalhadas.index', function (BreadcrumbTrail $trail) {
+    $filtros = session('filtros_horas_trabalhadas', []);
     $trail->parent('rh.index.index');
-    $trail->push('Horas Trabalhadas', route('rh.horastrabalhadas.index'));
+    $trail->push('Horas Trabalhadas', route('rh.horastrabalhadas.index', $filtros));
 });
 
 Breadcrumbs::for('rh.horastrabalhadas.justificativas.index', function (BreadcrumbTrail $trail, $jus_htr_id) {
+    $filtros = session('filtros_horas_trabalhadas', []);
     $trail->parent('rh.horastrabalhadas.index');
-    $trail->push('Justificativas', route('rh.horastrabalhadas.justificativas.index', ['id' => $jus_htr_id]));
+    $trail->push('Justificativas', route('rh.horastrabalhadas.justificativas.index', array_merge(['id' => $jus_htr_id], $filtros)));
 });
 
 Breadcrumbs::for('rh.horastrabalhadas.justificativas.show', function (BreadcrumbTrail $trail, $jus_htr_id) {
@@ -188,24 +191,15 @@ Breadcrumbs::for('rh.horastrabalhadas.justificativas.show', function (Breadcrumb
 });
 
 Breadcrumbs::for('rh.horastrabalhadas.justificativas.create', function (BreadcrumbTrail $trail, $jus_htr_id) {
+    $filtros = session('filtros_horas_trabalhadas', []);
     $trail->parent('rh.horastrabalhadas.justificativas.index', $jus_htr_id);
-    $trail->push('Criar Justificativa');
+    $trail->push('Criar Justificativa', route('rh.horastrabalhadas.justificativas.create', array_merge(['jus_htr_id' => $jus_htr_id], $filtros)));
 });
 
-Breadcrumbs::for('rh.horastrabalhadas.justificativas.edit', function (BreadcrumbTrail $trail) {
-    $trail->parent('rh.horastrabalhadas.justificativas.index');
-    $trail->push('Editar Justificativa');
-});
-
-// HORAS TRABALHADAS DIÁRIAS
-Breadcrumbs::for('rh.horastrabalhadasdiarias.import', function (BreadcrumbTrail $trail) {
-    $trail->parent('rh.horastrabalhadas.index');
-    $trail->push('Importar Horas Trabalhadas Diárias');
-});
-
-Breadcrumbs::for('rh.horastrabalhadasdiarias.pdf', function (BreadcrumbTrail $trail) {
-    $trail->parent('rh.horastrabalhadas.index');
-    $trail->push('Gerar PDF de Horas Trabalhadas Diárias');
+Breadcrumbs::for('rh.horastrabalhadas.justificativas.edit', function (BreadcrumbTrail $trail, $jus_htr_id, $jus_id) {
+    $filtros = session('filtros_horas_trabalhadas', []);
+    $trail->parent('rh.horastrabalhadas.justificativas.index', $jus_htr_id);
+    $trail->push('Editar Justificativa', route('rh.horastrabalhadas.justificativas.edit', array_merge(['jus_htr_id' => $jus_htr_id, 'jus_id' => $jus_id], $filtros)));
 });
 
 // FONTES PAGADORAS

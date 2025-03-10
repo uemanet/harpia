@@ -50,19 +50,18 @@ class HoraTrabalhadaDiariaRepository extends BaseRepository
         $result = DB::table('reh_horas_trabalhadas')
             ->where('htr_pel_id', $periodoLaboralId)
             ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
-            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id');
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+            ->join('reh_colaboradores_funcoes', 'cfn_col_id', '=', 'htr_col_id')
+            ->where('reh_colaboradores.col_status', 'ativo')
+            ->whereNull('reh_colaboradores_funcoes.cfn_data_fim');
 
-        if($setorId){
-            $result = DB::table('reh_horas_trabalhadas')
-                ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
-                ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
-                ->join('reh_colaboradores_funcoes', 'col_id', '=', 'cfn_col_id')
-                ->where('cfn_set_id', $setorId)
-                ->where('htr_pel_id', $periodoLaboralId);
+        if ($setorId) {
+            $result->whereIn('cfn_set_id', (array) $setorId);
         }
 
         return $result->groupBy('pes_id')->orderBy('pes_nome', 'ASC')->get();
     }
+
 
     public function paginate($sort = null, $search = null)
     {

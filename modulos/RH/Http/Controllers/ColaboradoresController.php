@@ -75,6 +75,7 @@ class ColaboradoresController extends BaseController
         $paginacao = null;
         $tabela = null;
 
+        $request->session()->put('filtros_colaboradores', $request->query());
 
         $tableData = $this->colaboradorRepository->paginateRequest($request->all());
 

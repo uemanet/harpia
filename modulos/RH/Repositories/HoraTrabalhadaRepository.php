@@ -209,7 +209,11 @@ class HoraTrabalhadaRepository extends BaseRepository
         if (!empty($search)) {
             foreach ($search as $value) {
                 if ($value['field'] == 'cfn_set_id') {
-                    $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    if (!empty($value['term']) && is_array($value['term'])) {
+                        $result = $result->whereIn('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    } else {
+                        $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    }
                     continue;
                 }
 
@@ -249,6 +253,4 @@ class HoraTrabalhadaRepository extends BaseRepository
 
         return $result->paginate(15);
     }
-
-
 }
