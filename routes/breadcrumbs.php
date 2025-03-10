@@ -74,8 +74,9 @@ Breadcrumbs::for('rh.periodoslaborais.edit', function (BreadcrumbTrail $trail) {
 
 // COLABORADORES
 Breadcrumbs::for('rh.colaboradores.index', function (BreadcrumbTrail $trail) {
+    $filtros = session('filtros_colaboradores', []);
     $trail->parent('rh.index.index');
-    $trail->push('Colaboradores', route('rh.colaboradores.index'));
+    $trail->push('Colaboradores', route('rh.colaboradores.index', $filtros));
 });
 
 Breadcrumbs::for('rh.colaboradores.create', function (BreadcrumbTrail $trail) {
