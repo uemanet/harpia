@@ -135,6 +135,15 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\RH\Http\Controllers\PeriodosAquisitivosController@postDelete')->name('rh.colaboradores.periodosaquisitivos.delete');
     });
 
+    Route::group(['prefix' => 'periodosgozo'], function () {
+        Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\PeriodosGozoController@getCreate')->name('rh.colaboradores.periodosgozo.create');
+        Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\PeriodosGozoController@postCreate')->name('rh.colaboradores.periodosgozo.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\PeriodosGozoController@getEdit')->name('rh.colaboradores.periodosgozo.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\PeriodosGozoController@putEdit')->name('rh.colaboradores.periodosgozo.edit');
+        Route::post('/confirm/{id}', '\Modulos\RH\Http\Controllers\PeriodosGozoController@putConfirm')->name('rh.colaboradores.periodosgozo.confirm');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\PeriodosGozoController@postDelete')->name('rh.colaboradores.periodosgozo.delete');
+    });
+
     Route::group(['prefix' => 'contascolaboradores'], function () {
         Route::get('/create/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@getCreate')->name('rh.colaboradores.contascolaboradores.create');
         Route::post('/create/{id}', '\Modulos\RH\Http\Controllers\ContasColaboradoresController@postCreate')->name('rh.colaboradores.contascolaboradores.create');

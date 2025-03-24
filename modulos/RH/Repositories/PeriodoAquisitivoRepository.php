@@ -2,17 +2,19 @@
 
 namespace Modulos\RH\Repositories;
 
-use Carbon\Traits\Date;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\MatriculaColaborador;
 use Modulos\RH\Models\PeriodoAquisitivo;
+use Modulos\RH\Models\PeriodoGozo;
+use Carbon\Carbon;
 
 class PeriodoAquisitivoRepository extends BaseRepository
 {
-    public function __construct(PeriodoAquisitivo $periodo_aquisitivo)
+    public function __construct(PeriodoAquisitivo $periodo_aquisitivo, PeriodoGozo $periodo_gozo)
     {
         $this->model = $periodo_aquisitivo;
+        $this->modelPeriodoGozo = $periodo_gozo;
     }
 
     /**
@@ -22,7 +24,7 @@ class PeriodoAquisitivoRepository extends BaseRepository
      * @return array|int
      */
 
-    public function periodData(MatriculaColaborador $matricula_colaborador):array
+    public function generatePeriodData(MatriculaColaborador $matricula_colaborador):array
     {
 
         $primeiro_periodo_adquirido = $this->getDate('+1 year', $matricula_colaborador->getRawOriginal('mtc_data_inicio'));
@@ -50,46 +52,8 @@ class PeriodoAquisitivoRepository extends BaseRepository
             $inicioPeriodo = $this->getDate('+1 year', $inicioPeriodo);
             $finalPeriodo = $this->getDate('+1 year', $inicioPeriodo);
 
-            $feriasPeriodos = $this->model
-                ->where('paq_col_id', $matricula_colaborador->mtc_col_id)
-                ->where('paq_mtc_id', $matricula_colaborador->mtc_id)
-                ->where(function ($query) use ($inicioPeriodo, $finalPeriodo) {
-                    $query->where(function ($q) use ($inicioPeriodo, $finalPeriodo) {
-                        // Modelo Antigo: não tem paq_gozo_inicio/fim e usa paq_data_inicio
-                        $q->whereNull('paq_gozo_inicio')
-                            ->where('paq_data_inicio', '>', $inicioPeriodo)
-                            ->where('paq_data_inicio', '<', $finalPeriodo);
-                    })->orWhere(function ($q) use ($inicioPeriodo, $finalPeriodo) {
-                        // Modelo Novo: tem paq_gozo_inicio/fim e os mesmos valores do período de gozo
-                        $q->whereNotNull('paq_gozo_inicio')
-                            ->where('paq_gozo_inicio', $inicioPeriodo)
-                            ->where('paq_gozo_fim', $finalPeriodo);
-                    });
-                })
-                ->get();
-
-            foreach ($feriasPeriodos as &$registro) {
-                if (!empty($registro->paq_gozo_inicio) && !empty($registro->paq_gozo_fim)) {
-                    $registro->modelo = 'Modelo Novo';
-                } else {
-                    $registro->modelo = 'Modelo Antigo';
-                }
-            }
-
-            $between = 0;
-            foreach ($feriasPeriodos as $feriasPeriodo) {
-                $date1 = $feriasPeriodo->getRawOriginal('paq_data_inicio');
-                $date2 = $feriasPeriodo->getRawOriginal('paq_data_fim');
-                $between += $this->daysBetween($date1, $date2)+1;
-            }
-
             $data['inicio_adquirido'] = date('d/m/Y',strtotime($inicioPeriodoAdquirido));
             $data['fim_adquirido'] = date('d/m/Y',strtotime($fimPeriodoAdquirido));
-            $data['inicio'] = date('d/m/Y',strtotime($inicioPeriodo));
-            $data['fim'] = date('d/m/Y',strtotime($finalPeriodo));
-            $data['dias'] = $between;
-            $data['periodos'] = $feriasPeriodos;
-
             $countYear++;
             $returnData[$countYear] = $data;
 
@@ -100,7 +64,6 @@ class PeriodoAquisitivoRepository extends BaseRepository
                 break;
             }
 
-
             $final = $this->getDate('+12 months', $inicioPeriodo);
 
             if( strtotime($inicioPeriodo) <  time() and time()  < strtotime($final)){
@@ -109,8 +72,93 @@ class PeriodoAquisitivoRepository extends BaseRepository
             }
         }
 
+        foreach ($returnData as $data) {
+            $modelData = $this->model
+                ->where('paq_data_inicio', '=', $this->convertDateFormat($data['inicio_adquirido'] )  )
+                ->where('paq_data_fim', '=',  $this->convertDateFormat($data['fim_adquirido'] )    )
+                ->where('paq_col_id', $matricula_colaborador->colaborador->col_id)
+                ->where('paq_mtc_id', $matricula_colaborador->mtc_id)->first();
+
+            if (!$modelData) {
+                // Criando um novo registro no modelo
+                $insertData = [
+                    'paq_data_inicio' => $data['inicio_adquirido'],
+                    'paq_data_fim' => $data['fim_adquirido'],
+                    'paq_col_id' => $matricula_colaborador->colaborador->col_id,
+                    'paq_mtc_id' => $matricula_colaborador->mtc_id
+                ];
+                $this->model->create($insertData);
+            }
+        }
+
         return $returnData;
     }
+
+
+
+
+
+    public function getPeriodData(MatriculaColaborador $matricula_colaborador):array
+    {
+
+        $periodosAquisitivos = $this->model->where('paq_col_id', $matricula_colaborador->colaborador->col_id)
+            ->where('paq_mtc_id', $matricula_colaborador->mtc_id)->get();
+
+        $returnData = [];
+        foreach ($periodosAquisitivos as $periodoAquisitivo) {
+            $data['inicio_adquirido'] = $periodoAquisitivo->paq_data_inicio;
+            $data['fim_adquirido'] = $periodoAquisitivo->paq_data_fim;
+            $data['saldo_periodo']= 0;
+
+            $limiteGozo = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
+                ->addMonths(11)
+                ->format('d/m/Y');
+
+            $data['limite_gozo'] = $limiteGozo;
+            $data['periodo']=$periodoAquisitivo;
+            $periodosGozo = $periodoAquisitivo->periodos_gozo;
+            foreach ($periodosGozo as $item) {
+                $diasEntreDatas = $this->contarDias($item['pgz_data_inicio'], $item['pgz_data_fim']);
+                $data['saldo_periodo'] = $data['saldo_periodo'] + $diasEntreDatas;
+            }
+            $data['saldo_periodo']=30-$data['saldo_periodo'];;
+            $returnData[] = $data;
+        }
+        return $returnData;
+    }
+
+    public function contarDias($pgz_data_inicio, $pgz_data_fim)
+    {
+        print_r($pgz_data_inicio, $pgz_data_fim);
+
+        try {
+            $dataInicio = Carbon::createFromFormat('d/m/Y', $pgz_data_inicio);
+            $dataFim = Carbon::createFromFormat('d/m/Y', $pgz_data_fim);
+
+            $dias = $dataInicio->diffInDays($dataFim)+1;
+
+            return $dias;
+        }catch (\Exception $e){
+            dd($e->getMessage());
+        }
+
+    }
+
+
+    function convertDateFormat($dateString) {
+        // Cria um objeto DateTime a partir da data no formato d/m/Y
+        $date = \DateTime::createFromFormat('d/m/Y', $dateString);
+
+        // Verifica se a conversão foi bem-sucedida
+        if ($date) {
+            // Converte para o formato Y-m-d
+            return $date->format('Y-m-d');
+        } else {
+            // Retorna uma mensagem de erro caso o formato seja inválido
+            return 'Formato de data inválido';
+        }
+    }
+
 
     /**
      * Return data about Acquirer Periods.

@@ -673,9 +673,12 @@ class ColaboradoresController extends BaseController
         $matriculas_colaborador = $colaborador->matriculas;
         foreach ($matriculas_colaborador as $matricula){
 
-            $data['data'] = $this->periodosAquisitivosRepository->periodData($matricula);
+            $this->periodosAquisitivosRepository->generatePeriodData($matricula);
+            $data['data'] = $this->periodosAquisitivosRepository->getPeriodData($matricula);
             $data['matricula'] = $matricula;
             $periodos_matriculas[] = $data;
+
+
         }
 
         $situacao = [
