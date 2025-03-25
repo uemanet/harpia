@@ -95,9 +95,6 @@ class PeriodoAquisitivoRepository extends BaseRepository
     }
 
 
-
-
-
     public function getPeriodData(MatriculaColaborador $matricula_colaborador):array
     {
 
@@ -125,6 +122,33 @@ class PeriodoAquisitivoRepository extends BaseRepository
             $returnData[] = $data;
         }
         return $returnData;
+    }
+
+    public function getPeriodDataReport($colaborador_id):array
+    {
+        $periodoAquisitivo = $this->model->where('paq_col_id', $colaborador_id)
+            ->sort('paq_data_inicio', 'desc')->first();
+        $data['inicio_gozo'] = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
+            ->addMonths(12)
+            ->format('d/m/Y');
+        $data['fim_gozo'] = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
+            ->addMonths(12)
+            ->format('d/m/Y');;
+        $data['saldo_periodo']= 0;
+        $data['dias_vencidos'] = -Carbon::now()->diffInDays(Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim), false);
+        $limiteGozo = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
+            ->addMonths(11)
+            ->format('d/m/Y');
+
+        $data['limite_gozo'] = $limiteGozo;
+        $data['periodo']=$periodoAquisitivo;
+        $periodosGozo = $periodoAquisitivo->periodos_gozo;
+        foreach ($periodosGozo as $item) {
+            $diasEntreDatas = $this->contarDias($item['pgz_data_inicio'], $item['pgz_data_fim']);
+            $data['saldo_periodo'] = $data['saldo_periodo'] + $diasEntreDatas;
+        }
+        $data['saldo_periodo']=30-$data['saldo_periodo'];;
+        return $data;
     }
 
     public function contarDias($pgz_data_inicio, $pgz_data_fim)

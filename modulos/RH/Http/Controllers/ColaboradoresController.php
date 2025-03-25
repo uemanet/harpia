@@ -16,6 +16,7 @@ use Modulos\RH\Http\Requests\MatriculaColaboradorRequest;
 use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\ColaboradorFuncao;
 use Modulos\RH\Models\Funcao;
+use Modulos\RH\Models\PeriodoAquisitivo;
 use Modulos\RH\Models\Setor;
 use Modulos\RH\Repositories\ColaboradorFuncaoRepository;
 use Modulos\RH\Repositories\ColaboradorRepository;
@@ -730,67 +731,27 @@ class ColaboradoresController extends BaseController
                 continue;
             }
 
-            $periodos = $this->periodosAquisitivosRepository->periodData($matricula);
-            if (empty($periodos)) {
+            $periodos_atual = PeriodoAquisitivo::where('paq_col_id', '=', $colaborador->col_id)->first();
+            if (empty($periodos_atual)) {
                 continue;
             }
 
-            $periodos = array_values($periodos);
-            $totalPeriodos = count($periodos);
-            $periodoSelecionado = null;
-
-            // Percorre os períodos na ordem (do mais antigo para o mais recente)
-            foreach ($periodos as $index => $periodo) {
-                if ($periodo['dias'] < 30) {
-                    $existePosteriorComDias = false;
-                    // Verifica os períodos posteriores
-                    for ($j = $index + 1; $j < $totalPeriodos; $j++) {
-                        if ($periodos[$j]['dias'] > 0) {
-                            $existePosteriorComDias = true;
-                            break;
-                        }
-                    }
-                    if (!$existePosteriorComDias) {
-                        $periodoSelecionado = $periodo;
-                        break;
-                    }
-                }
-            }
-
-            // Se nenhum período atender a condição, usa o último período
-            if (!$periodoSelecionado) {
-                $periodoSelecionado = end($periodos);
-            }
-
-            // Cálculo do Limite de Gozo: fim do período menos 30 dias
-            $limiteGozo = '-';
-            if (isset($periodoSelecionado['fim'])) {
-                $limiteGozo = Carbon::createFromFormat('d/m/Y', $periodoSelecionado['fim'])
-                    ->subDays(30)
-                    ->format('d/m/Y');
-            }
-
-            // Cálculo dos Dias Vencidos: diferença entre hoje e o fim do período
-            $diasVencidos = 0;
-            if (isset($periodoSelecionado['fim'])) {
-                $fimPeriodo = Carbon::createFromFormat('d/m/Y', $periodoSelecionado['fim'])->startOfDay();
-                $hoje = Carbon::now()->startOfDay();
-                $diasVencidos = $fimPeriodo->isPast() ? $fimPeriodo->diffInDays($hoje) : 0;
-            }
-
             $dataContratacao = Carbon::parse($matricula->getRawOriginal('mtc_data_inicio'))->format('d/m/Y');
+
+            $dataReport = $this->periodosAquisitivosRepository->getPeriodDataReport($colaborador->col_id);
 
             $reportData[] = [
                 $colaborador->pessoa->pes_nome,
                 $funcaoNome,
                 $setorNome,
                 $dataContratacao,
-                $periodoSelecionado['inicio'] ?? '-',
-                $periodoSelecionado['fim'] ?? '-',
-                $limiteGozo,
-                $periodoSelecionado['dias'] ?? 0,
-                $diasVencidos
+                $dataReport['inicio_gozo'] ?? '-',
+                $dataReport['fim_gozo'] ?? '-',
+                $dataReport['limite_gozo'],
+                $dataReport['saldo_periodo'],
+                $dataReport['dias_vencidos']
             ];
+
         }
 
         return $this->excel->download(
