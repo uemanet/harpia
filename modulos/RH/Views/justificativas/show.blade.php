@@ -18,6 +18,10 @@
 
 @section('title', 'Informações da Pessoa')
 
+@section('details')
+    Gerenciamento de Justificativas : {{$justificativa->horaTrabalhada->colaborador->pessoa->pes_nome}}
+@stop
+
 @section('content')
 
 <!--  Dados Pessoais  -->

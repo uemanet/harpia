@@ -18,6 +18,10 @@
     Cadastro de Justificativa
 @stop
 
+@section('details')
+    Gerenciamento de Justificativas : {{$horaTrabalhada->colaborador->pessoa->pes_nome}}
+@stop
+
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">

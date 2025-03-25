@@ -8,8 +8,8 @@
     Justificativas
 @stop
 
-@section('subtitle')
-    Gerenciamento de Justificativas :: {{$horaTrabalhada->colaborador->pessoa->pes_nome}}
+@section('details')
+    Gerenciamento de Justificativas : {{$horaTrabalhada->colaborador->pessoa->pes_nome}}
 @stop
 
 @section('actionButton')
