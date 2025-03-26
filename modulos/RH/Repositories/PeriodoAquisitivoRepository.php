@@ -126,16 +126,32 @@ class PeriodoAquisitivoRepository extends BaseRepository
 
     public function getPeriodDataReport($colaborador_id):array
     {
-        $periodoAquisitivo = $this->model->where('paq_col_id', $colaborador_id)
-            ->sort('paq_data_inicio', 'desc')->first();
+
+        $periodoGozo = $this->modelPeriodoGozo
+            ->join('reh_periodos_aquisitivos', function ($join) {
+                $join->on('pgz_paq_id', '=', 'paq_id');
+            })
+            ->where('paq_col_id', $colaborador_id)
+            ->orderBy('paq_data_inicio', 'desc')
+            ->select(['pgz_paq_id', 'reh_periodos_aquisitivos.created_at', 'paq_id', 'paq_data_inicio'])
+            ->first();
+
+        if($periodoGozo){
+
+            $periodoAquisitivo = $this->model->where('paq_id', $periodoGozo->pgz_paq_id)
+                ->orderBy('paq_data_inicio', 'desc') ->first();
+        } else{
+            $periodoAquisitivo = $this->model->where('paq_col_id', $colaborador_id)
+                ->orderBy('paq_data_inicio', 'desc') ->first();
+        }
+
         $data['inicio_gozo'] = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
-            ->addMonths(12)
             ->format('d/m/Y');
         $data['fim_gozo'] = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
             ->addMonths(12)
             ->format('d/m/Y');;
-        $data['saldo_periodo']= 0;
-        $data['dias_vencidos'] = -Carbon::now()->diffInDays(Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim), false);
+        $data['gozados']= 0;
+        $data['dias_vencidos'] = -Carbon::now()->diffInDays(Carbon::createFromFormat('d/m/Y', $data['fim_gozo']), false);
         $limiteGozo = Carbon::createFromFormat('d/m/Y', $periodoAquisitivo->paq_data_fim)
             ->addMonths(11)
             ->format('d/m/Y');
@@ -145,10 +161,34 @@ class PeriodoAquisitivoRepository extends BaseRepository
         $periodosGozo = $periodoAquisitivo->periodos_gozo;
         foreach ($periodosGozo as $item) {
             $diasEntreDatas = $this->contarDias($item['pgz_data_inicio'], $item['pgz_data_fim']);
-            $data['saldo_periodo'] = $data['saldo_periodo'] + $diasEntreDatas;
+            $data['gozados'] = $data['gozados'] + $diasEntreDatas;
         }
-        $data['saldo_periodo']=30-$data['saldo_periodo'];;
+        $data['gozados']=$data['gozados'];
         return $data;
+    }
+
+    public function verificaSaldoDeDias($periodoAquisitivoId, $dataInicio, $dataFim, $periodoGozoId = null ):bool
+    {
+
+        $periodoAquisitivo = $this->model->find($periodoAquisitivoId);
+        $periodosGozo = $periodoAquisitivo->periodos_gozo;
+
+        $gozados = 0;
+        foreach ($periodosGozo as $item) {
+            if($item->pgz_id== $periodoGozoId){
+                break;
+            }
+            $diasEntreDatas = $this->contarDias($item['pgz_data_inicio'], $item['pgz_data_fim']);
+            $gozados = $gozados + $diasEntreDatas;
+        }
+
+        $diasEntreDatasAdicionadas = $this->contarDias($dataInicio, $dataFim);
+
+        if($diasEntreDatasAdicionadas+ $gozados > 30){
+            return false;
+        }
+
+        return true;
     }
 
     public function contarDias($pgz_data_inicio, $pgz_data_fim)

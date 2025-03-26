@@ -7,7 +7,7 @@ use Modulos\Core\Model\BaseModel;
 
 class PeriodoGozo extends BaseModel
 {
-    protected $table = 'reh_horas_periodos_gozo';
+    protected $table = 'reh_periodos_gozo';
 
     protected $primaryKey = 'pgz_id';
 

@@ -731,7 +731,9 @@ class ColaboradoresController extends BaseController
                 continue;
             }
 
-            $periodos_atual = PeriodoAquisitivo::where('paq_col_id', '=', $colaborador->col_id)->first();
+            $periodos_atual = PeriodoAquisitivo::where('paq_col_id', '=', $colaborador->col_id)
+                ->orderBy('paq_data_inicio', 'desc')
+                ->first();
             if (empty($periodos_atual)) {
                 continue;
             }
@@ -748,7 +750,7 @@ class ColaboradoresController extends BaseController
                 $dataReport['inicio_gozo'] ?? '-',
                 $dataReport['fim_gozo'] ?? '-',
                 $dataReport['limite_gozo'],
-                $dataReport['saldo_periodo'],
+                $dataReport['gozados'],
                 $dataReport['dias_vencidos']
             ];
 

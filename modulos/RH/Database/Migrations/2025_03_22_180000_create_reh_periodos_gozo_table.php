@@ -13,7 +13,7 @@ class CreateRehPeriodosGozoTable extends Migration
      */
     public function up()
     {
-        Schema::create('reh_horas_periodos_gozo', function (Blueprint $table) {
+        Schema::create('reh_periodos_gozo', function (Blueprint $table) {
             $table->increments('pgz_id');
             $table->integer('pgz_paq_id')->unsigned();
             $table->date('pgz_data_inicio');
@@ -34,8 +34,7 @@ class CreateRehPeriodosGozoTable extends Migration
      */
     public function down()
     {
-        Schema::table('reh_periodos_aquisitivos', function (Blueprint $table) {
-            $table->dropColumn(['paq_gozo_inicio', 'paq_gozo_fim']);
-        });
+        Schema::dropIfExists('reh_periodos_gozo');
+
     }
 }

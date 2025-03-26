@@ -52,7 +52,6 @@
                                                             Não
                                                         @endif</td>
                                                     <td>
-                                                        @if(!$periodoGozo->pgz_ferias_gozadas)
                                                             {!! ActionButton::grid([
                                                             'type' => 'LINE',
                                                             'buttons' => [
@@ -83,7 +82,6 @@
                                                                ]
                                                            ]
                                                    ]) !!}
-                                                        @endif
 
                                                     </td>
                                                 </tr>

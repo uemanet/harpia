@@ -77,6 +77,11 @@ class PeriodosGozoController extends BaseController
             return redirect()->back()->withInput($request->all());
         }
 
+        if (!$this->periodoAquisitivoRepository->verificaSaldoDeDias($data['pgz_paq_id'], $request->pgz_data_inicio, $request->pgz_data_fim)) {
+            flash()->error('Operíodo aquisitivo não deve possuir mais do que 30 dias');
+            return redirect()->back()->withInput($request->all());
+        }
+
         try {
             $periodo_aquisitivo = $this->periodoGozoRepository->create($data);
 
@@ -138,6 +143,11 @@ class PeriodosGozoController extends BaseController
             return redirect()->back()->withInput($request->all());
         }
 
+        if (!$this->periodoAquisitivoRepository->verificaSaldoDeDias($request->pgz_paq_id, $request->pgz_data_inicio, $request->pgz_data_fim, $idPeriodoGozo)) {
+            flash()->error('Operíodo aquisitivo não deve possuir mais do que 30 dias');
+            return redirect()->back()->withInput($request->all());
+        }
+
         try {
             $periodo_gozo = $this->periodoGozoRepository->update($data, $idPeriodoGozo);
 
@@ -191,9 +201,9 @@ class PeriodosGozoController extends BaseController
     public function postDelete(Request $request)
     {
         try {
-            $periodo_aquisitivoId = $request->get('id');
+            $periodo_gozoId = $request->get('id');
 
-            $this->periodoAquisitivoRepository->delete($periodo_aquisitivoId);
+            $this->periodoGozoRepository->delete($periodo_gozoId);
 
             flash()->success('Periodo Aquisitivo excluída com sucesso.');
 

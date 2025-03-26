@@ -1,5 +1,11 @@
 <?php
 
+Route::group(['prefix' => 'api/rh'], function () {
+    Route::group(['prefix' => 'colaboradores'], function () {
+        Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getShow')->name('rh.colaboradores.show');
+    });
+});
+
 Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
     Route::get('/', '\Modulos\RH\Http\Controllers\IndexController@getIndex')->name('rh.index.index');
 
