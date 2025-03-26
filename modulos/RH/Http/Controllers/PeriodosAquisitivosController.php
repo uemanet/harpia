@@ -49,8 +49,6 @@ class PeriodosAquisitivosController extends BaseController
         $colaborador = $this->colaboradorRepository->find($idColaborador);
 
 
-        dd($data);
-
         $inicio_request = strtotime(str_replace('/', '-', $request->paq_data_inicio));
         $fim_request = strtotime(str_replace('/', '-', $request->paq_data_fim));
         $now = time();

@@ -203,7 +203,6 @@ class PeriodoAquisitivoRepository extends BaseRepository
 
             return $dias;
         }catch (\Exception $e){
-            dd($e->getMessage());
         }
 
     }

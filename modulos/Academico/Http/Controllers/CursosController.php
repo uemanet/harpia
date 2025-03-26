@@ -116,7 +116,6 @@ class CursosController extends BaseController
         $niveiscursos = $this->nivelcursoRepository->lists('nvc_id', 'nvc_nome');
         $professores = $this->professorRepository->lists('prf_id', 'pes_nome', true);
 
-        dd($centros);
         return view('Academico::cursos.create', compact('centros', 'niveiscursos', 'professores'));
     }
 
