@@ -210,15 +210,11 @@ class PeriodoAquisitivoRepository extends BaseRepository
 
 
     function convertDateFormat($dateString) {
-        // Cria um objeto DateTime a partir da data no formato d/m/Y
         $date = \DateTime::createFromFormat('d/m/Y', $dateString);
 
-        // Verifica se a conversão foi bem-sucedida
         if ($date) {
-            // Converte para o formato Y-m-d
             return $date->format('Y-m-d');
         } else {
-            // Retorna uma mensagem de erro caso o formato seja inválido
             return 'Formato de data inválido';
         }
     }
