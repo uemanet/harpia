@@ -29,8 +29,9 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="box box">
-                                        <span data-toggle="tooltip" class="badge bg-gray"> Período adquirido: {{$periodo['inicio_adquirido']}} a {{$periodo['fim_adquirido']}}</span>
-                                        <span data-toggle="tooltip" class="badge bg-gray"> Período de gozo: {{$periodo['inicio']}} a {{$periodo['fim']}} - {{$periodo['dias']}} dias Programados</span>
+                                        <span data-toggle="tooltip" class="badge bg-gray">Período adquirido: {{$periodo['inicio_adquirido']}} a {{$periodo['fim_adquirido']}}</span>
+                                        <span data-toggle="tooltip" class="badge bg-gray"> Limite para gozo: {{$periodo['limite_gozo']}} </span>
+                                        <span data-toggle="tooltip" class="badge bg-gray"> Saldo para gozo: {{$periodo['saldo_periodo']}} </span>
                                         <p><b> </b></p>
                                         <table class="table table-bordered">
                                             <tr>
@@ -38,53 +39,49 @@
                                                 <th style="width: 20%">Fim</th>
                                                 <th style="width: 20%">Observação</th>
                                                 <th style="width: 10%">Férias gozadas</th>
-                                                <th style="width: 10%">Modelo</th>
                                                 <th style="width: 15%"></th>
                                             </tr>
-                                            @foreach($periodo['periodos'] as $periodoAquisitivo)
+                                            @foreach($periodo['periodo']->periodos_gozo as $periodoGozo)
                                                 <tr>
-                                                    <td>{{$periodoAquisitivo->paq_data_inicio}}</td>
-                                                    <td>{{$periodoAquisitivo->paq_data_fim}}</td>
-                                                    <td>{{$periodoAquisitivo->paq_observacao}}</td>
-                                                    <td>@if($periodoAquisitivo->paq_ferias_gozadas)
+                                                    <td>{{$periodoGozo->pgz_data_inicio}}</td>
+                                                    <td>{{$periodoGozo->pgz_data_fim}}</td>
+                                                    <td>{{$periodoGozo->pgz_observacao}}</td>
+                                                    <td>@if($periodoGozo->pgz_ferias_gozadas)
                                                             Sim
-                                                        @elseif(!$periodoAquisitivo->paq_ferias_gozadas)
+                                                        @elseif(!$periodoGozo->pgz_ferias_gozadas)
                                                             Não
                                                         @endif</td>
-                                                    <td>{{$periodoAquisitivo->modelo}}</td>
                                                     <td>
-                                                        @if(!$periodoAquisitivo->paq_ferias_gozadas)
                                                             {!! ActionButton::grid([
                                                             'type' => 'LINE',
                                                             'buttons' => [
                                                                [
                                                                    'classButton' => 'btn btn-primary btn-sm',
                                                                    'icon' => 'fa fa-pencil',
-                                                                   'route' => 'rh.colaboradores.periodosaquisitivos.edit',
-                                                                   'parameters' => ['id' => $periodoAquisitivo->paq_id],
+                                                                   'route' => 'rh.colaboradores.periodosgozo.edit',
+                                                                   'parameters' => ['id' => $periodoGozo->pgz_id],
                                                                    'label' => '',
                                                                    'method' => 'get'
                                                                ],
                                                                [
                                                                    'classButton' => 'btn-delete btn btn-danger btn-sm',
                                                                    'icon' => 'fa fa-trash',
-                                                                   'route' => 'rh.colaboradores.periodosaquisitivos.delete',
-                                                                   'id' => $periodoAquisitivo->paq_id,
+                                                                   'route' => 'rh.colaboradores.periodosgozo.delete',
+                                                                   'id' => $periodoGozo->pgz_id,
                                                                    'label' => '',
                                                                    'method' => 'post'
                                                                ],
                                                                [
                                                                    'classButton' => 'btn btn-success btn-sm',
                                                                    'icon' => 'fa fa-check',
-                                                                   'route' => 'rh.colaboradores.periodosaquisitivos.confirm',
-                                                                   'parameters' => ['id' => $periodoAquisitivo->paq_id],
-                                                                   'id' => $periodoAquisitivo->paq_id,
+                                                                   'route' => 'rh.colaboradores.periodosgozo.confirm',
+                                                                   'parameters' => ['id' => $periodoGozo->pgz_id],
+                                                                   'id' => $periodoGozo->pgz_id,
                                                                    'label' => '',
                                                                    'method' => 'post'
                                                                ]
                                                            ]
                                                    ]) !!}
-                                                        @endif
 
                                                     </td>
                                                 </tr>
@@ -108,7 +105,7 @@
                         [
                             'classButton' => 'btn btn-primary',
                             'icon' => 'fa fa-plus-square',
-                            'route' => 'rh.colaboradores.periodosaquisitivos.create',
+                            'route' => 'rh.colaboradores.periodosgozo.create',
                             'parameters' => ['id' => $colaborador->col_id],
                             'label' => ' Cadastrar Férias',
                             'method' => 'get'

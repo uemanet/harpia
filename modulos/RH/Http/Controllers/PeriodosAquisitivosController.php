@@ -4,6 +4,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\PeriodoAquisitivoRequest;
+use Modulos\RH\Http\Requests\PeriodoGozoRequest;
 use Modulos\RH\Models\MatriculaColaborador;
 use Modulos\RH\Repositories\MatriculaColaboradorRepository;
 use Modulos\RH\Repositories\PeriodoAquisitivoRepository;
@@ -42,14 +43,13 @@ class PeriodosAquisitivosController extends BaseController
         return view('RH::periodosaquisitivos.create', compact('colaborador', 'matriculas', 'periodosDisponiveis'));
     }
 
-    public function postCreate( $idColaborador, PeriodoAquisitivoRequest $request)
+    public function postCreate( $idColaborador, PeriodoGozoRequest $request)
     {
         $data = $request->all();
         $colaborador = $this->colaboradorRepository->find($idColaborador);
 
-        $matricula_colaborador = $this->matriculaColaboradorRepository->find($data['paq_mtc_id']);
 
-        $data['paq_col_id'] = $idColaborador;
+        dd($data);
 
         $inicio_request = strtotime(str_replace('/', '-', $request->paq_data_inicio));
         $fim_request = strtotime(str_replace('/', '-', $request->paq_data_fim));

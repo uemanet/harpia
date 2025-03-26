@@ -14,7 +14,7 @@ class AddTipoJusIdToJustificativasTable extends Migration
     public function up()
     {
         Schema::table('reh_justificativas', function (Blueprint $table) {
-            $table->integer('jus_tipo_id')->unsigned()->after('jus_htr_id');
+            $table->integer('jus_tipo_id')->unsigned()->nullable()->after('jus_htr_id');
             $table->foreign('jus_tipo_id')->references('tipo_jus_id')->on('reh_tipo_justificativas');
         });
     }

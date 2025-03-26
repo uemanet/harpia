@@ -28,6 +28,11 @@ class PeriodoAquisitivo extends BaseModel
         return $this->belongsTo('Modulos\RH\Models\Colaborador', 'paq_col_id', 'col_id');
     }
 
+    public function periodos_gozo()
+    {
+        return $this->hasMany('Modulos\RH\Models\PeriodoGozo', 'pgz_paq_id', 'paq_id');
+    }
+
     // Accessors
     public function getPaqDataInicioAttribute($value)
     {
@@ -39,7 +44,7 @@ class PeriodoAquisitivo extends BaseModel
 
     // Mutators
     public function setPaqDataInicioAttribute($value)
-    {
+    {;
         $this->attributes['paq_data_inicio'] = Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 
