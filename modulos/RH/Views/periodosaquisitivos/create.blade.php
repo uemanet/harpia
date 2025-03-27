@@ -1,26 +1,30 @@
 @extends('layouts.modulos.rh')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('rh.colaboradores.periodosgozo.create', $colaborador->col_id) }}
+@endsection
+
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
     <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
 @endsection
 
 @section('title')
-    Períodos Aquisitivos
+    Férias
 @stop
 
 @section('subtitle')
-    Cadastro Períodos Aquisitivos
+    Cadastro de Férias
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de Período Aquisitivo</h3>
+            <h3 class="box-title">Formulário de cadastro de Férias</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => ['rh.colaboradores.periodosaquisitivos.create',  $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('RH::periodosaquisitivos.includes.formulario')
+            {!! Form::open(['route' => ['rh.colaboradores.periodosgozo.create',  $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            @include('RH::periodosgozo.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>

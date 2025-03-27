@@ -5,6 +5,7 @@ namespace Modulos\RH\Http\Controllers;
 use Illuminate\Http\Request;
 use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\RH\Http\Requests\JustificativaRequest;
+use Modulos\RH\Models\TipoJustificativa;
 use Modulos\RH\Repositories\HoraTrabalhadaRepository;
 use Modulos\RH\Repositories\JustificativaRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -51,6 +52,7 @@ class JustificativasController extends BaseController
                 'jus_id' => '#',
                 'jus_horas' => 'Horas',
                 'jus_data' => 'Data',
+                'jus_data_fim' => 'Data Fim',
                 'jus_action' => 'Ações'
             ))
                 ->modifyCell('jus_action', function () {
@@ -105,7 +107,9 @@ class JustificativasController extends BaseController
             return redirect()->back();
         }
 
-        return view('RH::justificativas.create', compact('horaTrabalhada'));
+        $tipos = TipoJustificativa::all()->pluck('tipo_jus_descricao', 'tipo_jus_id');
+
+        return view('RH::justificativas.create', compact('horaTrabalhada', 'tipos'));
     }
 
     public function postCreate(JustificativaRequest $request)
@@ -129,7 +133,7 @@ class JustificativasController extends BaseController
             }
 
             flash()->success('Justificativa criada com sucesso.');
-            return redirect()->route('rh.horastrabalhadas.justificativas.index', $justificativa->jus_htr_id);
+            return redirect()->back();
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

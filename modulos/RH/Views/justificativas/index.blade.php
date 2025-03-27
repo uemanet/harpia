@@ -1,5 +1,9 @@
 @extends('layouts.modulos.rh')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('rh.horastrabalhadas.justificativas.index', $horaTrabalhada->htr_id) }}
+@endsection
+
 @section('title')
     Justificativas
 @stop

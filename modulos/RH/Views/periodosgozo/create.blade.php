@@ -1,7 +1,7 @@
 @extends('layouts.modulos.rh')
 
 @section('breadcrumbs')
-    {{ Breadcrumbs::render('rh.colaboradores.contascolaboradores.create', $colaborador->col_id) }}
+    {{ Breadcrumbs::render('rh.colaboradores.periodosaquisitivos.create', $colaborador->col_id) }}
 @endsection
 
 @section('stylesheets')
@@ -10,21 +10,21 @@
 @endsection
 
 @section('title')
-    Atividades Extras
+    Períodos Aquisitivos
 @stop
 
 @section('subtitle')
-    Cadastro Contas de Colavorador
+    Cadastro Períodos Aquisitivos
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de Atividade Extra</h3>
+            <h3 class="box-title">Formulário de cadastro de Período Aquisitivo</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => ['rh.colaboradores.contascolaboradores.create',  $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('RH::contascolaboradores.includes.formulario')
+            {!! Form::open(['route' => ['rh.colaboradores.periodosgozo.create',  $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            @include('RH::periodosgozo.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>

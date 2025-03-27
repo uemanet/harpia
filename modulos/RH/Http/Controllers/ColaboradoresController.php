@@ -2,16 +2,21 @@
 
 namespace Modulos\RH\Http\Controllers;
 
+use App\Exports\FeriasExport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Excel;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoDeleteRequest;
 use Modulos\RH\Http\Requests\ColaboradorFuncaoRequest;
 use Modulos\RH\Http\Requests\ColaboradorRequest;
 use Modulos\RH\Http\Requests\MatriculaColaboradorRequest;
+use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\ColaboradorFuncao;
 use Modulos\RH\Models\Funcao;
+use Modulos\RH\Models\PeriodoAquisitivo;
 use Modulos\RH\Models\Setor;
 use Modulos\RH\Repositories\ColaboradorFuncaoRepository;
 use Modulos\RH\Repositories\ColaboradorRepository;
@@ -36,6 +41,8 @@ class ColaboradoresController extends BaseController
     protected $periodosAquisitivosRepository;
     protected $matriculaColaboradorRepository;
 
+    protected $excel;
+
     public function __construct(
         ColaboradorRepository $colaborador,
         PessoaRepository $pessoa,
@@ -44,7 +51,8 @@ class ColaboradoresController extends BaseController
         SetorRepository $setor,
         ColaboradorFuncaoRepository $colaborador_funcao,
         PeriodoAquisitivoRepository $periodo_aquisitivo,
-        MatriculaColaboradorRepository $matricula_colaborador
+        MatriculaColaboradorRepository $matricula_colaborador,
+        Excel $excel
     )
     {
         $this->colaboradorFuncaoRepository = $colaborador_funcao;
@@ -55,6 +63,7 @@ class ColaboradoresController extends BaseController
         $this->setorRepository = $setor;
         $this->periodosAquisitivosRepository = $periodo_aquisitivo;
         $this->matriculaColaboradorRepository = $matricula_colaborador;
+        $this->excel = $excel;
     }
 
     public function getIndex(Request $request)
@@ -67,6 +76,7 @@ class ColaboradoresController extends BaseController
         $paginacao = null;
         $tabela = null;
 
+        $request->session()->put('filtros_colaboradores', $request->query());
 
         $tableData = $this->colaboradorRepository->paginateRequest($request->all());
 
@@ -664,9 +674,12 @@ class ColaboradoresController extends BaseController
         $matriculas_colaborador = $colaborador->matriculas;
         foreach ($matriculas_colaborador as $matricula){
 
-            $data['data'] = $this->periodosAquisitivosRepository->periodData($matricula);
+            $this->periodosAquisitivosRepository->generatePeriodData($matricula);
+            $data['data'] = $this->periodosAquisitivosRepository->getPeriodData($matricula);
             $data['matricula'] = $matricula;
             $periodos_matriculas[] = $data;
+
+
         }
 
         $situacao = [
@@ -689,4 +702,64 @@ class ColaboradoresController extends BaseController
 
         return false;
     }
+
+    public function exportFerias(Request $request)
+    {
+        $colaboradores = Colaborador::where('col_status', 'ativo')->get();
+
+        $reportData = [
+            [
+                'Nome do Colaborador',
+                'Função',
+                'Setor',
+                'Data Contratação',
+                'Início Período Gozo',
+                'Fim Período Gozo',
+                'Limite de Gozo',
+                'Dias já Gozados',
+                'Dias Vencidos'
+            ]
+        ];
+
+        foreach ($colaboradores as $colaborador) {
+            $funcaoAtual = $colaborador->funcoes->first();
+            $funcaoNome = $funcaoAtual ? $funcaoAtual->funcao->fun_descricao : '-';
+            $setorNome = $funcaoAtual ? $funcaoAtual->setor->set_descricao : '-';
+
+            $matricula = $colaborador->matriculas->sortByDesc('mtc_data_inicio')->first();
+            if (!$matricula) {
+                continue;
+            }
+
+            $periodos_atual = PeriodoAquisitivo::where('paq_col_id', '=', $colaborador->col_id)
+                ->orderBy('paq_data_inicio', 'desc')
+                ->first();
+            if (empty($periodos_atual)) {
+                continue;
+            }
+
+            $dataContratacao = Carbon::parse($matricula->getRawOriginal('mtc_data_inicio'))->format('d/m/Y');
+
+            $dataReport = $this->periodosAquisitivosRepository->getPeriodDataReport($colaborador->col_id);
+
+            $reportData[] = [
+                $colaborador->pessoa->pes_nome,
+                $funcaoNome,
+                $setorNome,
+                $dataContratacao,
+                $dataReport['inicio_gozo'] ?? '-',
+                $dataReport['fim_gozo'] ?? '-',
+                $dataReport['limite_gozo'],
+                $dataReport['gozados'],
+                $dataReport['dias_vencidos']
+            ];
+
+        }
+
+        return $this->excel->download(
+            new FeriasExport($reportData),
+            'relatorio_ferias_' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
 }

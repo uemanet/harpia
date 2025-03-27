@@ -28,7 +28,8 @@ class PeriodoAquisitivoRequest extends BaseRequest
             'paq_mtc_id' => 'required',
             'paq_data_inicio' => 'required|date_format:d/m/Y',
             'paq_data_fim' => 'required|date_format:d/m/Y',
-            'paq_observacao' => 'required|min:3|max:255'
+            'paq_observacao' => 'required|min:3|max:255',
+            'paq_periodo_aquisitivo' => 'required',
         ];
     }
 }

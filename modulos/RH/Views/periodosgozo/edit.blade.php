@@ -1,35 +1,30 @@
 @extends('layouts.modulos.rh')
 
-@section('breadcrumbs')
-    {{ Breadcrumbs::render('rh.colaboradores.contascolaboradores.create', $colaborador->col_id) }}
-@endsection
+@section('title')
+    Período Aquisitivo
+@stop
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
     <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
 @endsection
 
-@section('title')
-    Atividades Extras
-@stop
-
 @section('subtitle')
-    Cadastro Contas de Colavorador
+    Alterar titulação :: {{""}}
 @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de Atividade Extra</h3>
+            <h3 class="box-title">Formulário de Edição de Férias</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => ['rh.colaboradores.contascolaboradores.create',  $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('RH::contascolaboradores.includes.formulario')
+            {!! Form::model($periodoGozo,["route" => ['rh.colaboradores.periodosgozo.edit',$periodoGozo->pgz_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            @include('RH::periodosgozo.includes.formulario')
             {!! Form::close() !!}
         </div>
     </div>
 @stop
-
 
 @section('scripts')
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>

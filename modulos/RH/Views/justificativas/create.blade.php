@@ -1,5 +1,9 @@
 @extends('layouts.modulos.rh')
 
+@section('breadcrumbs')
+    {{ Breadcrumbs::render('rh.horastrabalhadas.justificativas.create', $horaTrabalhada->htr_id) }}
+@endsection
+
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
     <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">

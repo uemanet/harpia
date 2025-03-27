@@ -38,18 +38,33 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <section class="content-header">
+        <section class="content-header" >
             <h1>
                 @yield('title')
-                <small>@yield('subtitle')</small>
+                <small>@yield('details')</small>
             </h1>
+
             <div class="actionbutton">
                 @yield('actionButton')
+            </div>
+
+            <div style="display: flex;">
+                @if (Breadcrumbs::exists() && !view()->hasSection('breadcrumbs'))
+                    <ol class="breadcrumb" style="float: left; background-color: #ecf0f5">
+                        {{-- Renderiza os breadcrumbs padrão --}}
+                        {{ Breadcrumbs::render() }}
+                    </ol>
+                @elseif (view()->hasSection('breadcrumbs'))
+                    <ol class="breadcrumb" style="float: left; background-color: #ecf0f5">
+                        {{-- Renderiza os breadcrumbs personalizados definidos na view --}}
+                        @yield('breadcrumbs')
+                    </ol>
+                @endif
             </div>
         </section>
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content; margin">
             @yield('content')
         </section>
     </div><!-- /.content-wrapper -->
