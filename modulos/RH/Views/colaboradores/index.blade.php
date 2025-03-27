@@ -62,6 +62,13 @@
         </div>
         <!-- /.box-body -->
     </div>
+
+    <div class="text-right mb-3">
+        <a href="{{ route('rh.ferias.export') }}" class="btn btn-success">
+            Gerar Planilha de Controle de Férias
+        </a>
+    </div>
+
     @if(!is_null($tabela))
         <div class="box box-primary">
             <div class="box-header">
@@ -75,6 +82,20 @@
             <div class="box-body">Sem registros para apresentar</div>
         </div>
     @endif
+
+    <style>
+        .select2-container .select2-selection--single {
+            height: 34px;
+        }
+
+        .select2-container .select2-selection--multiple {
+            min-height: 34px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #3c8dbc;
+        }
+    </style>
 @stop
 
 

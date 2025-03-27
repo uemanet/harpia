@@ -2,6 +2,7 @@
 
 namespace Modulos\RH\Repositories;
 
+use Carbon\Carbon;
 use Modulos\Core\Repository\BaseRepository;
 use Modulos\RH\Models\HoraTrabalhadaDiaria;
 use DB;
@@ -50,19 +51,21 @@ class HoraTrabalhadaDiariaRepository extends BaseRepository
         $result = DB::table('reh_horas_trabalhadas')
             ->where('htr_pel_id', $periodoLaboralId)
             ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
-            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id');
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+            ->join('reh_colaboradores_funcoes', 'cfn_col_id', '=', 'htr_col_id')
+            ->where('reh_colaboradores.col_status', 'ativo')
+            ->where(function ($query) {
+                $query->whereNull('reh_colaboradores_funcoes.cfn_data_fim')
+                    ->orWhere('reh_colaboradores_funcoes.cfn_data_fim', '>', Carbon::now());
+            });
 
-        if($setorId){
-            $result = DB::table('reh_horas_trabalhadas')
-                ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
-                ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
-                ->join('reh_colaboradores_funcoes', 'col_id', '=', 'cfn_col_id')
-                ->where('cfn_set_id', $setorId)
-                ->where('htr_pel_id', $periodoLaboralId);
+        if ($setorId) {
+            $result->whereIn('cfn_set_id', (array) $setorId);
         }
 
         return $result->groupBy('pes_id')->orderBy('pes_nome', 'ASC')->get();
     }
+
 
     public function paginate($sort = null, $search = null)
     {

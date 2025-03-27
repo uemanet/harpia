@@ -9,8 +9,8 @@
     Colaboradores
 @stop
 
-@section('subtitle')
-    Gerenciamento de Horas Trabalhadas de Colaborador :: <b>{{$colaborador->pessoa->pes_nome}}</b>
+@section('details')
+    Gerenciamento de Horas Trabalhadas de Colaborador : <b>{{$colaborador->pessoa->pes_nome}}</b>
 @stop
 
 @section('content')

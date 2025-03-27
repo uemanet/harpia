@@ -2,9 +2,10 @@
 
 namespace Modulos\RH\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Modulos\Core\Http\Request\BaseRequest;
 
-class JustificativaRequest extends BaseRequest
+class PeriodoGozoRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +24,8 @@ class JustificativaRequest extends BaseRequest
      */
     public function rules()
     {
-        $rules = [
-            'jus_horas' => 'required',
-            'jus_data' => 'required|date_format:d/m/Y',
-            'jus_data_fim' => 'required|date_format:d/m/Y',
-            'jus_descricao' => 'required|min:2|max:512',
-            'jus_file' => 'nullable|mimes:pdf,jpg,bpm,png,jpeg',
+        return [
+
         ];
-
-
-        return $rules;
     }
 }

@@ -202,12 +202,25 @@ class HoraTrabalhadaRepository extends BaseRepository
             $join->on('htr_col_id', '=', 'col_id');
         })->leftJoin('reh_colaboradores_funcoes', function ($join) {
             $join->on('col_id', '=', 'cfn_col_id');
+        })->leftJoin('gra_pessoas', function ($join) {
+            $join->on('reh_colaboradores.col_pes_id', '=', 'gra_pessoas.pes_id');
         })->groupBy('col_id');
 
         if (!empty($search)) {
             foreach ($search as $value) {
                 if ($value['field'] == 'cfn_set_id') {
-                    $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    if (!empty($value['term']) && is_array($value['term'])) {
+                        $result = $result->whereIn('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    } else {
+                        $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    }
+                    continue;
+                }
+
+                if ($value['field'] == 'col_pes_id') {
+                    if (!empty($value['term']) && is_array($value['term'])) {
+                        $result = $result->whereIn('col_id', $value['term']);
+                    }
                     continue;
                 }
 
@@ -222,11 +235,22 @@ class HoraTrabalhadaRepository extends BaseRepository
         }
 
         if (!empty($sort)) {
-            $result = $result->orderBy($sort['field'], $sort['sort']);
+            if ($sort['field'] === 'htr_col_id') {
+                $result = $result->orderBy('gra_pessoas.pes_nome', $sort['sort']);
+            }elseif ($sort['field'] === 'htr_saldo') {
+                // Converte o formato HH:MM:SS para segundos para ordenação
+                $result = $result->orderByRaw("
+                CASE 
+                    WHEN htr_saldo LIKE '-%' 
+                    THEN -TIME_TO_SEC(SUBSTRING(htr_saldo, 2))
+                    ELSE TIME_TO_SEC(htr_saldo)
+                END " . $sort['sort']);
+
+            } else {
+                $result = $result->orderBy($sort['field'], $sort['sort']);
+            }
         }
 
         return $result->paginate(15);
     }
-
-
 }

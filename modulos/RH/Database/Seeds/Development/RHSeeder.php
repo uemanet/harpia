@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Modulos\RH\Database\Seeds\Development\BancoTableSeeder;
 use Modulos\RH\Database\Seeds\Development\FontePagadoraTableSeeder;
 use Modulos\RH\Database\Seeds\Development\FuncaoTableSeeder;
+use Modulos\RH\Database\Seeds\Production\TipoJustificativaSeeder;
 use Modulos\RH\Models\Colaborador;
 
 class RHSeeder extends Seeder
@@ -55,6 +56,9 @@ class RHSeeder extends Seeder
 
         $this->call(HorasTrabalhadasTableSeeder::class);
         $this->command->info('Horas Trabalhadas Table seeded!');
+
+        $this->call(TipoJustificativaSeeder::class);
+        $this->command->info('Tipos Justificativas Table seeded!');
 
     }
 }
