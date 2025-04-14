@@ -151,14 +151,34 @@ class OfertaCursoRepository extends BaseRepository
 
             return $this->model
                 ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+                ->leftJoin(DB::raw('(
+                    SELECT trm_ofc_id, i.itt_sigla
+                    FROM acd_turmas t
+                    JOIN acd_instituicoes i ON i.itt_id = t.trm_itt_id
+                    WHERE t.trm_id IN (
+                        SELECT MIN(trm_id)
+                        FROM acd_turmas
+                        GROUP BY trm_ofc_id
+                    )
+                ) as primeira_turma'), 'ofc_id', '=', 'primeira_turma.trm_ofc_id')
                 ->whereIn('ofc_id', $ofc_ids)
-                ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+                ->get(['ofc_id', 'ofc_ano', 'mdl_nome', 'primeira_turma.itt_sigla']);
         }
 
         return $this->model
             ->join('acd_modalidades', 'ofc_mdl_id', '=', 'mdl_id')
+            ->leftJoin(DB::raw('(
+                    SELECT trm_ofc_id, i.itt_sigla
+                    FROM acd_turmas t
+                    JOIN acd_instituicoes i ON i.itt_id = t.trm_itt_id
+                    WHERE t.trm_id IN (
+                        SELECT MIN(trm_id)
+                        FROM acd_turmas
+                        GROUP BY trm_ofc_id
+                    )
+                ) as primeira_turma'), 'ofc_id', '=', 'primeira_turma.trm_ofc_id')
             ->where('ofc_crs_id', $cursoid)
-            ->get(['ofc_id', 'ofc_ano', 'mdl_nome']);
+            ->get(['ofc_id', 'ofc_ano', 'mdl_nome', 'primeira_turma.itt_sigla']);
     }
 
     /**

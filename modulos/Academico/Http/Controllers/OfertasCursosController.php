@@ -51,6 +51,7 @@ class OfertasCursosController extends BaseController
             $tabela = $tableData->columns(array(
                 'ofc_id' => '#',
                 'ofc_ano' => 'Ano',
+                'itt_sigla' => 'Instituicao',
                 'crs_nome' => 'Curso',
                 'ofc_mdl_id' => 'Modalidade',
                 'ofc_action' => 'Ações'
@@ -62,6 +63,9 @@ class OfertasCursosController extends BaseController
                 ->means('crs_nome', 'curso')
                 ->modify('crs_nome', function ($curso) {
                     return $curso->crs_nome;
+                })
+                ->modify('itt_sigla', function ($oferta) {
+                    return $oferta->turmas[0]->instituicao->itt_sigla;;
                 })
                 ->means('ofc_mdl_id', 'modalidade')
                 ->modify('ofc_mdl_id', function ($modalidade) {

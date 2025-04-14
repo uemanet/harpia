@@ -85,7 +85,7 @@
                         if (!$.isEmptyObject(data)) {
                             selectOfertas.append('<option value="">Selecione uma oferta</option>');
                             $.each(data, function (key, obj) {
-                                selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ")</option>");
+                                selectOfertas.append("<option value='" + obj.ofc_id + "'>" + obj.ofc_ano + " (" + obj.mdl_nome + ") " + obj.itt_sigla + " </option>");
                             });
                         } else {
                             selectOfertas.append('<option value="">Sem ofertas cadastradas</option>');
