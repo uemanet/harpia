@@ -54,24 +54,13 @@
 
                 </form>
                 <div class="col-md-3">
-                    {!! ActionButton::grid([
-                        'type' => 'LINE',
-                        'buttons' => [
-                                [
-                                    'classButton' => 'btn btn-success modal-update-polo',
-                                    'icon' => 'fa fa-plus',
-                                    'route' => 'academico.matricularalunocurso.edit',
-                                    'parameters' => 1,
-                                    'label' => ' Importar dados',
-                                    'method' => 'get',
-                                ],
-                            ]
-                        ])
-                    !!}
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".modalImportacaoHoras">
+                        <i class="fa fa-upload"></i> Importar Horas
+                    </button>
                 </div>
 
-                <!-- Modal Mudança Polo/Grupo -->
-                <div class="modal fade modalUpdatePolo">
+                <!-- Modal Importação Horas Trabalhadas -->
+                <div class="modal fade modalImportacaoHoras">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -167,29 +156,29 @@
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             $("#htr_pel_id").select2({
             });
+
+            $('#cfn_set_id').select2({
+                closeOnSelect: false,
+                allowClear: true,
+                placeholder: 'Selecione os Setores',
+            }).on('select2:select', function () {
+                $('.select2-search__field').val('');
+            });
+
+
+            $('#col_pes_id').select2({
+                closeOnSelect: false,
+                allowClear: true,
+                placeholder: 'Selecione os colaboradores',
+            }).on('select2:select', function () {
+                $('.select2-search__field').val('');
+            });
         });
-
-        $('#cfn_set_id').select2({
-            closeOnSelect: false,
-            allowClear: true,
-            placeholder: 'Selecione os Setores',
-        }).on('select2:select', function () {
-            $('.select2-search__field').val('');
-        });
-
-
-        $('#col_pes_id').select2({
-            closeOnSelect: false,
-            allowClear: true,
-            placeholder: 'Selecione os colaboradores',
-        }).on('select2:select', function () {
-            $('.select2-search__field').val('');
-        });
-
     </script>
 
     <script type="text/javascript">
@@ -198,5 +187,4 @@
             language: 'pt-BR'
         });
     </script>
-
 @endsection
