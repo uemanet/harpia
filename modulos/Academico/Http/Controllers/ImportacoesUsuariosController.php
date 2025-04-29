@@ -132,31 +132,6 @@ class ImportacoesUsuariosController extends BaseController
         return redirect()->back();
     }
 
-    public function validarDadosDoCsv($pessoasParaImportar){
-        $dataPessoas = [];
-        foreach ($pessoasParaImportar as $item) {
-            $pessoa = array(
-                'pes_nome' => $item[0],
-                'pes_email' => $item[1],
-                'pes_telefone' => $item[2],
-                'pes_sexo' => $item[3],
-                'doc_conteudo' => (string)$item[4]
-            );
-            $cpf = $item[4];
-
-            $pessoaRequest = new PessoaRequest();
-            $validator = Validator::make($pessoa, $pessoaRequest->rules(null, true));
-            if ($validator->fails()) {
-                flash()->error('Dados inválidos para a pessoa com cpf: '.$cpf);
-                return redirect()->back();
-            }
-
-            $dataPessoas[] = $pessoa ;
-        }
-
-        return $dataPessoas;
-    }
-
     public function buscaOuCriaPessoa($dataPessoa,  $instituicaoId){
         $pessoa = $this->documentoRepository->buscaPessoaPeloCpf($dataPessoa['doc_conteudo']);
 
