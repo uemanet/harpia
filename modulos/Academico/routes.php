@@ -8,6 +8,11 @@ Route::group(['prefix' => 'academico', 'middleware' => ['auth']], function () {
         Route::post('/importar', '\Modulos\Academico\Http\Controllers\ImportacoesController@postImportar')->name('academico.importacoes.importar');
     });
 
+    Route::group(['prefix' => 'importacoesusuarios'], function () {
+        Route::get('/', '\Modulos\Academico\Http\Controllers\ImportacoesUsuariosController@getIndex')->name('academico.importacoesusuarios.index');
+        Route::post('/importar', '\Modulos\Academico\Http\Controllers\ImportacoesUsuariosController@postImportar')->name('academico.importacoesusuarios.importar');
+    });
+
     Route::group(['prefix' => 'instituicoes'], function () {
         Route::get('/', '\Modulos\Academico\Http\Controllers\InstituicoesController@getIndex')->name('academico.instituicoes.index');
         Route::get('/create', '\Modulos\Academico\Http\Controllers\InstituicoesController@getCreate')->name('academico.instituicoes.create');
