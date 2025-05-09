@@ -32,7 +32,7 @@
                         {!! Form::select('htr_pel_id', $periodosLaborais, Request::input('htr_pel_id'), ['id' => 'htr_pel_id', 'class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-4">
                         {!! Form::select('cfn_set_id[]', $setores, Request::input('cfn_set_id'), [
                             'id' => 'cfn_set_id',
                             'class' => 'form-control',

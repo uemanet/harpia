@@ -53,6 +53,8 @@ class HoraTrabalhadaDiariaRepository extends BaseRepository
             ->join('reh_colaboradores', 'col_id', '=', 'htr_col_id')
             ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
             ->join('reh_colaboradores_funcoes', 'cfn_col_id', '=', 'htr_col_id')
+            ->leftJoin('reh_setores', 'reh_colaboradores_funcoes.cfn_set_id', '=', 'reh_setores.set_id')
+            ->select('*', 'reh_setores.set_descricao')
             ->where('reh_colaboradores.col_status', 'ativo')
             ->where(function ($query) {
                 $query->whereNull('reh_colaboradores_funcoes.cfn_data_fim')
@@ -63,7 +65,10 @@ class HoraTrabalhadaDiariaRepository extends BaseRepository
             $result->whereIn('cfn_set_id', (array) $setorId);
         }
 
-        return $result->groupBy('pes_id')->orderBy('pes_nome', 'ASC')->get();
+        return $result->groupBy('pes_id')
+            ->orderBy('reh_setores.set_descricao', 'ASC')
+            ->orderBy('pes_nome', 'ASC')
+            ->get();
     }
 
 
