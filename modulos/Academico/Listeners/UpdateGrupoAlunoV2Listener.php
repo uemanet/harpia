@@ -48,9 +48,7 @@ class UpdateGrupoAlunoV2Listener
 
                 $param['data']['student']['mat_id'] = $matricula->mat_id;
                 $param['data']['student']['pes_id'] = $matricula->aluno->alu_pes_id;
-                if ($event->getExtra()) {
-                    $param['data']['student']['old_grp_id'] = $event->getExtra();
-                }
+                $param['data']['student']['trm_id'] = $matricula->mat_trm_id;
                 $param['data']['student']['new_grp_id'] = $matricula->mat_grp_id;
 
                 $response = Moodle::send($param);

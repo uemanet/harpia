@@ -35,6 +35,7 @@ class SincronizacaoRepository extends BaseRepository
 
         $query = $this->model;
 
+        $query = $query->where('sym_status', '<>', 2);
         foreach ($keysSearch as $key) {
             if (array_key_exists($key, $data)) {
                 $query = $query->where($key, '=', $data[$key]);
