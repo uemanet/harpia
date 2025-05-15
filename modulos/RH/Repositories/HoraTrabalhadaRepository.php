@@ -197,14 +197,15 @@ class HoraTrabalhadaRepository extends BaseRepository
 
     public function paginate($sort = null, $search = null)
     {
-
         $result = $this->model->join('reh_colaboradores', function ($join) {
             $join->on('htr_col_id', '=', 'col_id');
         })->leftJoin('reh_colaboradores_funcoes', function ($join) {
             $join->on('col_id', '=', 'cfn_col_id');
         })->leftJoin('gra_pessoas', function ($join) {
             $join->on('reh_colaboradores.col_pes_id', '=', 'gra_pessoas.pes_id');
-        })->groupBy('col_id');
+        })->leftJoin('reh_setores', function ($join) {
+            $join->on('reh_colaboradores_funcoes.cfn_set_id', '=', 'reh_setores.set_id');
+        })->where('cfn_data_fim', null)->groupBy('col_id');
 
         if (!empty($search)) {
             foreach ($search as $value) {
@@ -237,15 +238,17 @@ class HoraTrabalhadaRepository extends BaseRepository
         if (!empty($sort)) {
             if ($sort['field'] === 'htr_col_id') {
                 $result = $result->orderBy('gra_pessoas.pes_nome', $sort['sort']);
-            }elseif ($sort['field'] === 'htr_saldo') {
+            } elseif ($sort['field'] === 'htr_saldo') {
                 // Converte o formato HH:MM:SS para segundos para ordenação
                 $result = $result->orderByRaw("
-                CASE 
-                    WHEN htr_saldo LIKE '-%' 
-                    THEN -TIME_TO_SEC(SUBSTRING(htr_saldo, 2))
-                    ELSE TIME_TO_SEC(htr_saldo)
-                END " . $sort['sort']);
-
+            CASE 
+                WHEN htr_saldo LIKE '-%' 
+                THEN -TIME_TO_SEC(SUBSTRING(htr_saldo, 2))
+                ELSE TIME_TO_SEC(htr_saldo)
+            END " . $sort['sort']);
+            } elseif ($sort['field'] === 'htr_setor') {
+                // Ordena pelo nome do setor
+                $result = $result->orderBy('reh_setores.set_descricao', $sort['sort']);
             } else {
                 $result = $result->orderBy($sort['field'], $sort['sort']);
             }
