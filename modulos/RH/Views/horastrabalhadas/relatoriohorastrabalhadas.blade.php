@@ -32,6 +32,7 @@
     <thead>
     <tr>
         <th>Colaborador</th>
+        <th>Setor</th>
         <th>Horas Previstas</th>
         <th>Horas Trabalhadas</th>
         <th>Horas Justificadas</th>
@@ -41,11 +42,12 @@
     <tbody>
     @foreach ($horasTrabalhadas as $horaTrabalhada)
         <tr>
-            <td >{{$horaTrabalhada->pes_nome}}</td>
-            <td >{{$horaTrabalhada->htr_horas_previstas}}</td>
-            <td >{{$horaTrabalhada->htr_horas_trabalhadas}}</td>
-            <td >{{$horaTrabalhada->htr_horas_justificadas}}</td>
-            <td >{{$horaTrabalhada->htr_saldo}}</td>
+            <td>{{$horaTrabalhada->pes_nome}}</td>
+            <td>{{$horaTrabalhada->set_descricao ?? 'Sem setor'}}</td>
+            <td>{{$horaTrabalhada->htr_horas_previstas}}</td>
+            <td>{{$horaTrabalhada->htr_horas_trabalhadas}}</td>
+            <td>{{$horaTrabalhada->htr_horas_justificadas}}</td>
+            <td>{{$horaTrabalhada->htr_saldo}}</td>
         </tr>
     @endforeach
 
