@@ -2,9 +2,12 @@
 
 namespace Modulos\Academico\Repositories;
 
+use Carbon\Carbon;
 use Modulos\Academico\Models\Matricula;
 use Modulos\Geral\Repositories\TitulacaoInformacaoRepository;
 use DB;
+setlocale(LC_TIME, 'pt_BR.UTF-8');
+Carbon::setLocale('pt_BR');
 
 class HistoricoDefinitivoRepository
 {
@@ -68,7 +71,7 @@ class HistoricoDefinitivoRepository
         setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         date_default_timezone_set('America/Sao_Paulo');
 
-        $returndata['data'] = 'São Luís, ' . utf8_encode(strftime('%d de %B de %Y', strtotime('today')));
+        $returndata['data'] = 'São Luís, ' . mb_strtoupper(Carbon::now()->translatedFormat('d \d\e F \d\e Y'), 'UTF-8');
 
         if ($curso->crs_nvc_id == 2) {
             $returndata['modulos'] = $this->getDisciplinasTecnico($matricula->mat_id);

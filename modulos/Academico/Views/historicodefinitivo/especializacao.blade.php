@@ -210,7 +210,7 @@
         <td class="center"><strong>REGULAMENTAÇÃO</strong></td>
     </tr>
     <tr>
-        <td style="text-align: justify;">“O Curso está em conformidade com a Resolução nº 01 do CNE/CES, de 06 de abril de 2018 e Normas dos Cursos de Pós-Graduação Lato Sensu da Universidade Estadual do Maranhão aprovada pela Resolução 1687/2023-CEPE/UEMA de qqq26 de setembro de 2023.”</td>
+        <td style="text-align: justify;">“O Curso está em conformidade com a Resolução nº 01 do CNE/CES, de 06 de abril de 2018 e Normas dos Cursos de Pós-Graduação Lato Sensu da Universidade Estadual do Maranhão aprovada pela Resolução 1687/2023-CEPE/UEMA de 26 de setembro de 2023.”</td>
     </tr>
     </tbody>
 </table>
