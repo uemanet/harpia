@@ -65,7 +65,7 @@ class OfertasCursosController extends BaseController
                     return $curso->crs_nome;
                 })
                 ->modify('itt_sigla', function ($oferta) {
-                    return $oferta->turmas[0]->instituicao->itt_sigla;;
+                    return data_get($oferta, 'turmas.0.instituicao.itt_sigla');
                 })
                 ->means('ofc_mdl_id', 'modalidade')
                 ->modify('ofc_mdl_id', function ($modalidade) {
