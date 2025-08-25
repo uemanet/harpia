@@ -22,7 +22,8 @@ class Curso extends BaseModel
         'crs_autorizacao',
         'crs_data_autorizacao',
         'crs_eixo',
-        'crs_habilitacao'
+        'crs_habilitacao',
+        'crs_regulamentacao'
     ];
 
     protected $searchable = [

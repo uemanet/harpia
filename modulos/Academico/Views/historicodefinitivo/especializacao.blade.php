@@ -202,9 +202,12 @@
         <td class="center"><strong>REGULAMENTAÇÃO</strong></td>
     </tr>
     <tr>
-        <td style="text-align: justify;">“O Curso está em conformidade com a Resolução n ° 01 CNE/CES de 08 de junho de 2007 e Normas dos cursos de Pós-Graduação “Lato Sensu” da Universidade Estadual do Maranhão aprovada pela Resolução N° 1244/2017-CEPE/UEMA de 04 de
-            abril de 2017”.</td>
+    <tr>
+        <td style="text-align: justify;">
+            {{ $dados['curso']->crs_regulamentacao ?? '“O Curso está em conformidade com a Resolução n° 01 CNE/CES de 08 de junho de 2007 e Normas dos cursos de Pós-Graduação \'Lato Sensu\' da Universidade Estadual do Maranhão aprovada pela Resolução N° 1244/2017-CEPE/UEMA de 04 de abril de 2017.”' }}
+        </td>
     </tr>
+
     </tbody>
 </table>
 <table>
