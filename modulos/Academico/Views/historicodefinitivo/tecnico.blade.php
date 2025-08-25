@@ -18,7 +18,7 @@
 
         table {
             width: 100%;
-            table-layout: fixed;
+            table-layout: auto;
             border-spacing: 0;
             border-radius: 0.5em;
         }
@@ -69,6 +69,15 @@
             color: white;
 
         }
+
+        td, th {
+            padding: 0.4em;
+            line-height: 1.4em;
+            page-break-inside: avoid;
+        }
+        table {
+            table-layout: auto;
+        }
     </style>
 </head>
 <body>
@@ -103,7 +112,7 @@
         </tbody>
     </table>
 
-    <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
+    <table class="table-bordered" style="margin-top: 0.8em;">
         <thead>
             <tr class="thead-left thead-config thead-background">
                 <th colspan="2" style="border-bottom: 0.1mm solid #000000;">DADOS PESSOAIS</th>
@@ -159,7 +168,7 @@
 
     @php $cargaHorariaTotal = 0; @endphp
     @foreach($dados['modulos'] as $modulo)
-        <table class="table-bordered" style="margin-top: 0.8em;page-break-inside: avoid;">
+        <table class="table-bordered" style="margin-top: 0.8em;">
             <thead>
                 <tr class="thead-left thead-config thead-background">
                     <th colspan="5">{{mb_strtoupper($modulo['nome'], 'UTF-8')}}</th>
@@ -230,7 +239,7 @@
         </table>
     @endforeach
 
-    <table class="table-bordered margin-top" style="page-break-inside: avoid;">
+    <table class="table-bordered margin-top" >
         <tbody>
             <tr>
                 <td class="right" style="font-size: 10pt;">
