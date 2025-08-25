@@ -30,6 +30,7 @@ class CursoRequest extends BaseRequest
             'crs_nome' => 'required|min:3|max:255',
             'crs_sigla'=>'required|max:10',
             'crs_descricao' => 'nullable|max:255',
+            'crs_regulamentacao' => 'nullable|max:255',
             'crs_resolucao' => 'nullable|max:255',
             'crs_autorizacao' => 'nullable|max:255',
             'crs_data_autorizacao' => 'required|date_format:d/m/Y',
