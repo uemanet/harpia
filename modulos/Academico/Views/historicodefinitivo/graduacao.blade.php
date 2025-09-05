@@ -145,14 +145,6 @@
                     $creditosTotal += $disciplina->dis_creditos;
                 @endphp
             @endforeach
-            <tr class="heightMin">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
         </tbody>
     </table>
     <table>

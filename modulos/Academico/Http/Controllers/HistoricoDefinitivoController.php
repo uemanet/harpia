@@ -39,11 +39,19 @@ class HistoricoDefinitivoController extends BaseController
         if (!empty($matriculas)) {
             $matr = $this->matriculaCursoRepository->find($matriculas['matriculas'][0])->first();
 
-            $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir() . '/']);
+//            $mpdf = new Mpdf(['tempDir' => sys_get_temp_dir() . '/']);
+
+            $mpdf = new Mpdf([
+                'tempDir' => sys_get_temp_dir() . '/',
+                'margin_left' => 5,
+                'margin_right' => 5,
+                'margin_top' => 5,
+                'margin_bottom' => 5 // <-- Defina a margem inferior aqui (ex: 5mm)
+            ]);
 
             $cursoNome = $matr->turma->ofertacurso->curso->crs_nome;
             $mpdf->SetTitle('Histórico(s) Definitivo(s) - '. $cursoNome);
-            $mpdf->SetMargins(2, 2, 5);
+//            $mpdf->SetMargins(2, 2, 5);
 
             foreach ($matriculas['matriculas'] as $id) {
                 $matricula = $this->matriculaCursoRepository->find($id);
