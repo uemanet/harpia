@@ -116,6 +116,43 @@ class PessoaRepository extends BaseRepository
         return $result;
     }
 
+    public function verificaSePessoaEstaComoTutor($pessoaId)
+    {
+        $tutorGrupos = $this->model
+            ->join('acd_tutores', 'tut_pes_id', '=', 'pes_id')
+            ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
+            ->where('pes_id', '=', $pessoaId)
+            ->groupBy('ttg_grp_id')->distinct()
+            ->get();
+
+        return $tutorGrupos->isNotEmpty();
+    }
+
+    public function verificaSePessoaEstaComoProfessor($pessoaId)
+    {
+        $professorTurmas = $this->model
+            ->join('acd_professores', 'prf_pes_id', '=', 'pes_id')
+            ->join('acd_ofertas_disciplinas', 'ofd_prf_id', '=', 'prf_id')
+            ->where('pes_id', '=', $pessoaId)
+            ->groupBy('ofd_trm_id')->distinct()
+            ->get();
+
+        return $professorTurmas->isNotEmpty();
+    }
+
+    public function verificaSePessoaEstaComoAluno($pessoaId)
+    {
+        $alunoTurmas = $this->model
+            ->join('acd_alunos', 'alu_pes_id', '=', 'pes_id')
+            ->join('acd_matriculas', 'mat_alu_id', '=', 'alu_id')
+            ->where('pes_id', '=', $pessoaId)
+            ->where('mat_situacao', '=', 'cursando')
+            ->groupBy('mat_trm_id')->distinct()
+            ->get();
+
+        return $alunoTurmas->isNotEmpty();
+    }
+
     public function updatePessoaAmbientes($pessoaAtt)
     {
         //verifica em quais turmas a pessoa está vinculada como professor

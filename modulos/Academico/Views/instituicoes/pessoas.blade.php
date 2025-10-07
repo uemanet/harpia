@@ -43,6 +43,7 @@
                     <th style="width: 10px">Nome</th>
                     <th style="width: 10px">Papel</th>
                     <th style="width: 10px">Permissoes</th>
+                    <th style="width: 10px">Ações</th>
                 </thead>
                 <tbody>
                     @foreach($instituicao->pessoas as $pessoa)
@@ -67,6 +68,22 @@
                                 @foreach($pessoa->perfis as $perfil)
                                     <span class="label label-default">{{ $perfil->prf_nome }}</span>
                                 @endforeach
+                            </td>
+                            <td>
+                                                                {!! ActionButton::grid([
+                                                                    'type' => 'LINE',
+                                                                    'buttons' => [
+                                                                        [
+                                                                            'classButton' => 'btn btn-danger btn-delete',
+                                                                            'icon' => 'fa fa-trash',
+                                                                            'route' => 'academico.instituicoes.desvinculapessoa',
+                                                                            'id' => $pessoa->pes_id,
+                                                                            'parameters' => ['id' => $pessoa->pes_id],
+                                                                            'label' => '',
+                                                                            'method' => 'post'
+                                                                        ]
+                                                                    ]
+                                                                ]) !!}
                             </td>
                         </tr>
                     @endforeach
