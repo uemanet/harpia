@@ -296,4 +296,39 @@ class InstituicoesController extends BaseController
             return redirect()->back();
         }
     }
+
+    public function desvinculaPessoa($pessoaId ,Request $request)
+    {
+        try {
+            if ($this->pessoaRepository->verificaSePessoaEstaComoProfessor($pessoaId)) {
+                flash()->error('Esta pessoa ainda está vinculada como professor em alguma turma. Remova o vínculo antes de continuar.');
+                return redirect()->back();
+            }
+
+            if ($this->pessoaRepository->verificaSePessoaEstaComoTutor($pessoaId)) {
+                flash()->error('Esta pessoa ainda está vinculada como tutor em um ou mais grupos. Remova o vínculo antes de continuar.');
+                return redirect()->back();
+            }
+
+            if ($this->pessoaRepository->verificaSePessoaEstaComoAluno($pessoaId)) {
+                flash()->error('Esta pessoa ainda está matriculada como aluno em uma ou mais turmas. Cancele as matrículas antes de continuar.');
+                return redirect()->back();
+            }
+
+            // desvincular da instituição
+            $this->pessoaRepository->update(['pes_itt_id' => null], $pessoaId);
+            flash()->success('Pessoa desvinculada da instituição com sucesso.');
+            return redirect()->back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            flash()->error('Erro');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                throw $e;
+            }
+
+            flash()->error('Erro ao tentar excluir. Caso o problema persista, entre em contato com o suporte.');
+            return redirect()->back();
+        }
+    }
 }
