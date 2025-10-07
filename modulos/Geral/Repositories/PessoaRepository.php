@@ -122,6 +122,7 @@ class PessoaRepository extends BaseRepository
             ->join('acd_tutores', 'tut_pes_id', '=', 'pes_id')
             ->join('acd_tutores_grupos', 'ttg_tut_id', '=', 'tut_id')
             ->where('pes_id', '=', $pessoaId)
+            ->where('ttg_data_fim', '=', null)
             ->groupBy('ttg_grp_id')->distinct()
             ->get();
 
