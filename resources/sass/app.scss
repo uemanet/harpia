@@ -1,0 +1,23 @@
+// Variáveis
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Tema Admin-LTE
+@import 'theme/admin-lte';
+
+// Personalização do tema
+@import 'theme/custom-theme';
+
+// Bibliotecas de plugins
+@import '~select2/dist/css/select2.min.css';
+@import '~toastr/build/toastr.min.css';
+@import '~sweetalert2/dist/sweetalert2.min.css';
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~icheck-bootstrap/icheck-bootstrap.min.css";
+@import "jquery-datetimepicker/build/jquery.datetimepicker.min.css";
+
+// Aqui você pode adicionar outros imports conforme necessário
+@import "custom/sidebar";
+@import "custom/navbar";
