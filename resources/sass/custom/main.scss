@@ -1,0 +1,9 @@
+///* Força o comportamento correto do layout-fixed da v4 */
+//body.layout-fixed {
+//  overflow: hidden !important; /* Mata o scroll da página inteira */
+//
+//  .app-main {
+//    overflow-y: auto; /* Garante que só o conteúdo role */
+//    overflow-x: hidden;
+//  }
+//}

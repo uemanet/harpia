@@ -25,7 +25,7 @@ class MenuItensController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('seguranca.menuitens.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('seguranca.menuitens.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -55,7 +55,7 @@ class MenuItensController extends BaseController
                 return ActionButton::grid([
                     'type' => 'SELECT',
                     'config' => [
-                        'classButton' => 'btn-default',
+                        'classButton' => 'btn-secondary',
                         'label' => 'Selecione'
                     ],
                     'buttons' => [

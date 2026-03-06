@@ -12,6 +12,7 @@
 
 // Bibliotecas de plugins
 @import '~select2/dist/css/select2.min.css';
+@import '~select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 @import '~toastr/build/toastr.min.css';
 @import '~sweetalert2/dist/sweetalert2.min.css';
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
@@ -20,5 +21,6 @@
 @import "~bootstrap-icons/font/bootstrap-icons.min.css";
 
 // Aqui você pode adicionar outros imports conforme necessário
+@import "custom/main";
 @import "custom/sidebar";
 @import "custom/navbar";
