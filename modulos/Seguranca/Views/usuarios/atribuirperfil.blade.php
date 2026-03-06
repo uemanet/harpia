@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Atribuir Perfis
@@ -74,7 +74,7 @@
                 @else
                     <p>Sem perfis associados ao usuario</p>
                 @endif
-                </div>    
+                </div>
             </div>
         </div>
     </div>

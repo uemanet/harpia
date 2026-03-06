@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Permissoes

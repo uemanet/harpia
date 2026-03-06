@@ -1,4 +1,4 @@
-@extends('layouts.modulos.rh')
+@extends('layouts.modulos.default')
 
 @section('title')
     Períodos Laborais

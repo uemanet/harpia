@@ -1,4 +1,4 @@
-@extends('layouts.modulos.geral')
+@extends('layouts.modulos.default')
 
 @section('title', 'Informações da Pessoa')
 

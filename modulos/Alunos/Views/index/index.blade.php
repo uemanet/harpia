@@ -1,4 +1,4 @@
-@extends('layouts.modulos.alunos')
+@extends('layouts.modulos.default')
 
 @section('title')
     Portal do Aluno

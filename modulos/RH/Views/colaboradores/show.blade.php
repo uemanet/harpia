@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('title', 'Informações do Colaborador')
 
