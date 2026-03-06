@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
     <title>Módulo Admin - @yield('title')</title>
     <link rel="shortcut icon" href="{{ asset('img/logo-mini.png') }}" type="image/x-icon">
@@ -19,7 +18,7 @@
         <!-- Left side column. contains the main navigation menu-->
         @include('layouts.includes.sidebar.left')
 
-        <main class="app-main">
+        <main class="app-main bg-white" >
             @yield('modulo-content')
         </main>
 
@@ -30,7 +29,7 @@
     <!-- ./wrapper -->
 
     <script src="{{ asset('/js/app.js') }}"></script>
-    {!! Flash::render() !!}
+{{--    {!! Flash::render() !!}--}}
     @yield('scripts')
 </body>
 </html>
