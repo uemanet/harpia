@@ -2,7 +2,7 @@
 @import 'variables';
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+//@import '~bootstrap/scss/bootstrap';
 
 // Tema Admin-LTE
 @import 'theme/admin-lte';
@@ -17,6 +17,7 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
 @import "~icheck-bootstrap/icheck-bootstrap.min.css";
 @import "jquery-datetimepicker/build/jquery.datetimepicker.min.css";
+@import "~bootstrap-icons/font/bootstrap-icons.min.css";
 
 // Aqui você pode adicionar outros imports conforme necessário
 @import "custom/sidebar";

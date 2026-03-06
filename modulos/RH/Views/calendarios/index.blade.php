@@ -1,4 +1,4 @@
-@extends('layouts.modulos.rh')
+@extends('layouts.modulos.default')
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/fullcalendar.min.css')}}">
@@ -167,7 +167,7 @@
                     });
 
                 });
-                
+
 
                 getEventsData()
 

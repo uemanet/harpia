@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('stylesheets')
   <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">

@@ -12,14 +12,16 @@
 
     @yield('stylesheets')
 </head>
-<body class="hold-transition sidebar-mini">
-    <div class="wrapper">
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <div class="app-wrapper">
         @include('layouts.includes.navbar.main', [ 'noaside' => false ])
 
         <!-- Left side column. contains the main navigation menu-->
         @include('layouts.includes.sidebar.left')
 
-        @yield('modulo-content')
+        <main class="app-main">
+            @yield('modulo-content')
+        </main>
 
         <!-- Footer bar. -->
         @include('layouts.includes.footer.main')
