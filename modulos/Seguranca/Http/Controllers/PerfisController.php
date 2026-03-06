@@ -25,7 +25,7 @@ class PerfisController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('seguranca.perfis.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('seguranca.perfis.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 

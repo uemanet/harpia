@@ -8938,7 +8938,7 @@ button.close {
 
 /*!
  * AdminLTE v2.4.18
- * 
+ *
  *   Author:  Colorlib
  *   Support: <https://github.com/ColorlibHQ/AdminLTE/issues>
  *   Repository: git://github.com/ColorlibHQ/AdminLTE.git
@@ -13777,7 +13777,7 @@ fieldset[disabled] .btn-yahoo.focus {
 .bg-green,
 .bg-navy,
 .bg-teal,
-.bg-olive,
+.btn-success,
 .bg-lime,
 .bg-orange,
 .bg-fuchsia,
@@ -13792,7 +13792,7 @@ fieldset[disabled] .btn-yahoo.focus {
 .bg-green-active,
 .bg-navy-active,
 .bg-teal-active,
-.bg-olive-active,
+.btn-success-active,
 .bg-lime-active,
 .bg-orange-active,
 .bg-fuchsia-active,
@@ -13883,7 +13883,7 @@ fieldset[disabled] .btn-yahoo.focus {
 .bg-teal {
   background-color: #39CCCC !important;
 }
-.bg-olive {
+.btn-success {
   background-color: #3D9970 !important;
 }
 .bg-lime {
@@ -13942,7 +13942,7 @@ fieldset[disabled] .btn-yahoo.focus {
 .bg-teal-active {
   background-color: #30bbbb !important;
 }
-.bg-olive-active {
+.btn-success-active {
   background-color: #368763 !important;
 }
 .bg-lime-active {
