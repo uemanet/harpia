@@ -101,7 +101,7 @@
                                                     </div>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <button class="btn bg-olive btnSalvar" data-id="{{ $value->ofd_id }}">
+                                                    <button class="btn btn-success btnSalvar" data-id="{{ $value->ofd_id }}">
                                                         <i class="fa fa-save"></i>
                                                     </button>
                                                 </td>

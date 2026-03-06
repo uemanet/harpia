@@ -82,7 +82,7 @@ class VinculosController extends BaseController
         $data = $this->vinculoRepository->paginateCursosVinculados($usuarioId);
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Adicionar vínculo')->setRoute('academico.vinculos.create')->setParameters(['id' =>$usuarioId])->setIcon('fa fa-link')->setStyle('btn bg-olive');
+        $btnNovo->setName('Adicionar vínculo')->setRoute('academico.vinculos.create')->setParameters(['id' =>$usuarioId])->setIcon('fa fa-link')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
         $tabela = null;
