@@ -19,9 +19,10 @@
             <h3 class="box-title">Formulário de cadastro de matrizes curriculares</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/matrizescurriculares/create", "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="url(" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
                  @include('Academico::matrizescurriculares.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

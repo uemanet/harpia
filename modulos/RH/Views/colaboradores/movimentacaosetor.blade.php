@@ -22,27 +22,38 @@
         <div class="box-body">
             <h4>Funções do Colaborador</h4>
             <div class="row">
-                {!! Form::open(array('route' => ['rh.colaboradores.movimentacaosetor.funcao.create', $colaborador->col_id], 'method' => 'POST', 'id' => 'form')) !!}
+                <form action="{{ route('rh.colaboradores.movimentacaosetor.funcao.create', [$colaborador->col_id]) }}" method="POST" id="form">
+    @csrf
 
                 <div class="form-group col-md-3">
-                    {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                    <select name="cfn_set_id" class="form-control">
+    <option value="">Selecione o setor</option>
+    @foreach($setores as $key => $value)
+        <option value="{{ $key }}" {{ [] == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     @if ($errors->has('cfn_set_id')) <p style="color: red" class="help-block">{{ $errors->first('cfn_set_id') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
-                    {!! Form::select('cfn_fun_id', $funcoes,[] , ['class' => 'form-control', 'placeholder' => 'Selecione a função']) !!}
+                    <select name="cfn_fun_id" class="form-control">
+    <option value="">Selecione a função</option>
+    @foreach($funcoes as $key => $value)
+        <option value="{{ $key }}" {{ [] == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     @if ($errors->has('cfn_fun_id')) <p style="color: red"  class="help-block">{{ $errors->first('cfn_fun_id') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
-                    {!! Form::text('cfn_data_inicio', old('cfn_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Início']) !!}
+                    <input type="text" name="cfn_data_inicio" value="{{ old('cfn_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" placeholder="Data de Início" >
                     @if ($errors->has('cfn_data_inicio')) <p style="color: red" class="help-block">{{ $errors->first('cfn_data_inicio') }}</p> @endif
                 </div>
 
                 <div class="form-group col-md-3">
-                    {!! Form::submit('Adicionar Função', ['class' => 'btn btn-primary', 'id' => 'btnAtribuir']) !!}
+                    <button type="submit" class="btn btn-primary" id="btnAtribuir">Adicionar Função</button>
                 </div>
-                {!! Form::close() !!}
+                </form>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -64,9 +75,9 @@
                                     @haspermission('rh.colaboradores.movimentacaosetor.funcao.delete')
                                     <div class="row">
                                         <form method="POST" class="delete"
-                                              action="{{ route('rh.colaboradores.movimentacaosetor.funcao.delete', [$colaborador->col_id,$funcao->cfn_id] ) }}">
+                                              action="{{{ route('rh.colaboradores.movimentacaosetor.funcao.delete', [$colaborador->col_id,$funcao->cfn_id] ) }}}">
                                             <?php echo e(csrf_field()); ?>
-                                            <td>{!! Form::text('cfn_data_fim', old('cfn_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Fim']) !!}</td>
+                                            <td><input type="text" name="cfn_data_fim" value="{{ old('cfn_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" placeholder="Data de Fim" ></td>
                                             <td>
                                                 <button class="btn btn-danger"><i class="fa fa-trash"></i> Desvincular
                                                 </button>

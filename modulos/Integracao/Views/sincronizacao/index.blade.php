@@ -22,7 +22,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('integracao.sincronizacao.index') }}">
+                <form method="GET" action="{{{ route('integracao.sincronizacao.index') }}}">
                     <div class="col-md-6">
                         <input type="text" class="form-control" name="sym_table" id="sym_table" value="{{Request::input('sym_table')}}" placeholder="Nome da tabela">
                     </div>

@@ -20,17 +20,17 @@
                         <input type="hidden" name="token" value="{{ request()->token }}">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group has-feedback @if ($errors->has('email')) has-error @endif">
-                            {!! Form::text('email', old('email'), array('placeholder' => 'Confirme seu email', 'class'=>'form-control')) !!}
+                            <input type="text" name="email" value="{{ old('email') }}" placeholder="Confirme seu email" class="form-control" >
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                             @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
                         </div>
                         <div class="form-group has-feedback @if ($errors->has('password')) has-error @endif">
-                            {!! Form::password('password', array('placeholder' => 'Nova Senha', 'class'=>'form-control')) !!}
+                            <input type="password" name="password" >
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             @if ($errors->has('password')) <p class="help-block">{{ $errors->first('password') }}</p> @endif
                         </div>
                         <div class="form-group has-feedback @if ($errors->has('password_confirmation')) has-error @endif">
-                            {!! Form::password('password_confirmation', array('placeholder' => 'Confirme sua nova senha', 'class'=>'form-control')) !!}
+                            <input type="password" name="password_confirmation" >
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             @if ($errors->has('password_confirmation')) <p class="help-block">{{ $errors->first('password_confirmation') }}</p> @endif
                         </div>

@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de fonte pagadora</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'rh.fontespagadoras.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.fontespagadoras.create') }}" method="POST" id="form" role="form">
+    @csrf
             @include('RH::fontespagadoras.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -14,9 +14,11 @@
             <h3 class="box-title">Formulário de Edição de Lista de Carteiras de Estudante</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($lista, ['route' => ['academico.carteirasestudantis.edit', $lista->lst_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.carteirasestudantis.edit', [$lista->lst_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    {{-- Form model: $lista - inputs devem usar old('campo', $lista->campo) --}}
                 @include('Academico::carteirasestudantis.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

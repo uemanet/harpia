@@ -14,9 +14,12 @@
             <h3 class="box-title">Editar Permissão</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($permissao, ["route" => ['seguranca.permissoes.edit', $permissao->prm_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.permissoes.edit', [$permissao->prm_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $permissao - inputs devem usar old('campo', $permissao->campo) --}}
                 @include('Seguranca::permissoes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

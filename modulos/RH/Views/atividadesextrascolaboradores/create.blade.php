@@ -23,9 +23,10 @@
             <h3 class="box-title">Formulário de cadastro de Atividade Extra</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => ['rh.colaboradores.atividadesextrascolaboradores.create',  $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.colaboradores.atividadesextrascolaboradores.create', [$colaborador->col_id]) }}" method="POST" id="form" role="form">
+    @csrf
             @include('RH::atividadesextrascolaboradores.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -27,30 +27,40 @@
         <div class="box-body">
             <div class="row">
                 <div class="form-group col-md-3">
-                    {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
-                    {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha um curso']) !!}
+                    <label for="crs_id" class="control-label">Curso*</label>
+                    <select name="crs_id" class="form-control">
+    <option value="">Escolha um curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
                 </div>
                 <div class="form-group col-md-3">
-                    {!! Form::label('ofc_id', 'Oferta do Curso*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofc_id', [], null, ['class' => 'form-control']) !!}
+                    <label for="ofc_id" class="control-label">Oferta do Curso*</label>
+                    <select name="ofc_id" class="form-control">
+</select>
                 </div>
                 <div class="form-group col-md-3">
-                    {!! Form::label('mtc_id', 'Matriz Curricular*', ['class' => 'control-label']) !!}
-                    {!! Form::select('mtc_id', [], null, ['disabled', 'class' => 'form-control']) !!}
+                    <label for="mtc_id" class="control-label">Matriz Curricular*</label>
+                    <select name="mtc_id" class="form-control">
+</select>
                 </div>
                 <div class="form-group col-md-3">
-                    {!! Form::label('ofd_mdo_id', 'Módulos da Matriz Curricular*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_mdo_id', [], null, ['class' => 'form-control']) !!}
+                    <label for="ofd_mdo_id" class="control-label">Módulos da Matriz Curricular*</label>
+                    <select name="ofd_mdo_id" class="form-control">
+</select>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-3">
-                    {!! Form::label('ofd_trm_id', 'Turma*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_trm_id', [], null, ['class' => 'form-control']) !!}
+                    <label for="ofd_trm_id" class="control-label">Turma*</label>
+                    <select name="ofd_trm_id" class="form-control">
+</select>
                 </div>
                 <div class="form-group col-md-3">
-                    {!! Form::label('ofd_per_id', 'Período Letivo*', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
+                    <label for="ofd_per_id" class="control-label">Período Letivo*</label>
+                    <select name="ofd_per_id" class="form-control">
+</select>
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>

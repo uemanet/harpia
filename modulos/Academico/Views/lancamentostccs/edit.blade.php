@@ -19,9 +19,12 @@
             <h3 class="box-title"><b>Aluno</b>: {{$lancamentoTcc->matriculaOferta->matriculaCurso->aluno->pessoa->pes_nome}} <b>Disciplina</b>: {{$disciplina->dis_nome}}</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($lancamentoTcc,["route" => ['academico.lancamentostccs.edit',$lancamentoTcc->ltc_id], "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="{{ route('academico.lancamentostccs.edit', [$lancamentoTcc->ltc_id]) }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $lancamentoTcc - inputs devem usar old('campo', $lancamentoTcc->campo) --}}
                  @include('Academico::lancamentostccs.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

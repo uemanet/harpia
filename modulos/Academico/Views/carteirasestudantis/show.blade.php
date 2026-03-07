@@ -31,9 +31,14 @@
         <div class="box-body">
             <div class="row">
                 @if($turmas->count())
-                    {!! Form::hidden('lst_id', $lista->lst_id, ['id' => 'lst_id']) !!}
+                    <input type="hidden" name="lst_id" value="{{ $lista->lst_id }}" id="lst_id" >
                     <div class="col-md-4">
-                        {!! Form::select('trm_id', $turmas, old('trm_id'), ['id' => 'trm_id', 'class' => 'form-control', 'placeholder' => 'Selecione uma Turma']) !!}
+                        <select name="trm_id" id="trm_id" class="form-control">
+    <option value="">Selecione uma Turma</option>
+    @foreach($turmas as $key => $value)
+        <option value="{{ $key }}" {{ old('trm_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
                     <div class="col-md-2">
                         <button class="form-control btn-primary btnBuscar">Buscar</button>

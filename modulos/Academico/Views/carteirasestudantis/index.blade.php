@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('academico.carteirasestudantis.index') }}">
+                <form method="GET" action="{{{ route('academico.carteirasestudantis.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="lst_nome" id="crs_nome" value="{{Request::input('lst_nome')}}" placeholder="Nome da Lista">
                     </div>

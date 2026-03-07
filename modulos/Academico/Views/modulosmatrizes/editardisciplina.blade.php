@@ -27,49 +27,57 @@
         <div class="box-body">
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::label('dis_nome', 'Nome da disciplina', ['class' => 'control-label']) !!}
+                    <label for="dis_nome" class="control-label">Nome da disciplina</label>
                     <div class="controls">
-                        {!! Form::text('dis_nome', $disciplina->disciplina->dis_nome, ['class' => 'form-control', 'disabled']) !!}
+                        <input type="text" name="dis_nome" value="{{ $disciplina->disciplina->dis_nome }}" class="form-control" >
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    {!! Form::label('dis_carga_horaria', 'Carga-Horária', ['class' => 'control-label']) !!}
+                    <label for="dis_carga_horaria" class="control-label">Carga-Horária</label>
                     <div class="controls">
-                        {!! Form::number('dis_carga_horaria', $disciplina->disciplina->dis_carga_horaria, ['class' => 'form-control', 'disabled']) !!}
+                        <input type="number" name="dis_carga_horaria" value="{{ $disciplina->disciplina->dis_carga_horaria }}" class="form-control" >
                     </div>
                 </div>
                 <div class="form-group col-md-4">
-                    {!! Form::label('dis_creditos', 'Créditos', ['class' => 'control-label']) !!}
+                    <label for="dis_creditos" class="control-label">Créditos</label>
                     <div class="controls">
-                        {!! Form::number('dis_creditos', $disciplina->disciplina->dis_creditos, ['class' => 'form-control', 'disabled']) !!}
+                        <input type="number" name="dis_creditos" value="{{ $disciplina->disciplina->dis_creditos }}" class="form-control" >
                     </div>
                 </div>
                 <div class="form-group col-md-4">
-                    {!! Form::label('dis_nvc_id', 'Nível', ['class' => 'control-label']) !!}
+                    <label for="dis_nvc_id" class="control-label">Nível</label>
                     <div class="controls">
-                        {!! Form::text('dis_nvc_id', $disciplina->disciplina->nivel->nvc_nome, ['class' => 'form-control', 'disabled', 'placeholder' => 'Selecione o nível']) !!}
+                        <input type="text" name="dis_nvc_id" value="{{ $disciplina->disciplina->nivel->nvc_nome }}" class="form-control" placeholder="Selecione o nível" >
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
-                    {!! Form::label('tipo_disciplina', 'Tipo da Disciplina', ['class' => 'control-label']) !!}
+                    <label for="tipo_disciplina" class="control-label">Tipo da Disciplina</label>
                     <div class="controls">
-                        {!! Form::select('tipo_disciplina', $tipos, $disciplina->getRawOriginal('mdc_tipo_disciplina'), ['class' => 'form-control']) !!}
+                        <select name="tipo_disciplina" class="form-control">
+    @foreach($tipos as $key => $value)
+        <option value="{{ $key }}" {{ $disciplina->getRawOriginal('mdc_tipo_disciplina') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
                 </div>
                 <div class="form-group col-md-6">
-                    {!! Form::label('pre_requisitos', 'Pré-requisitos', ['class' => 'control-label']) !!}
+                    <label for="pre_requisitos" class="control-label">Pré-requisitos</label>
                     <div class="controls">
-                        {!! Form::select('pre_requisitos', $prerequisitosdisponiveis, $prerequisitos, ['class' => 'form-control', 'multiple']) !!}
+                        <select name="pre_requisitos" class="form-control">
+    @foreach($prerequisitosdisponiveis as $key => $value)
+        <option value="{{ $key }}" {{ $prerequisitos == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Atualizar dados', ['class' => 'btn btn-primary pull-right', 'id' => 'btnSubmit']) !!}
+                    <button type="submit" class="btn btn-primary pull-right" id="btnSubmit">Atualizar dados</button>
                 </div>
             </div>
         </div>
@@ -99,7 +107,7 @@
                 };
 
                 // Ajax request
-                url = "{{ route('academico.async.modulosdisciplinas.editardisciplina') }}";
+                url = "{{{ route('academico.async.modulosdisciplinas.editardisciplina') }}}";
 
                 $.ajax({
                     type: "POST",
@@ -107,7 +115,7 @@
                     data: data,
                     success: function (response) {
                         $.harpia.hideloading();
-                        document.location.href = "{{ route('academico.cursos.matrizescurriculares.modulosmatrizes.gerenciardisciplinas', ['id' => $modulo->mdo_id]) }}";
+                        document.location.href = "{{{ route('academico.cursos.matrizescurriculares.modulosmatrizes.gerenciardisciplinas', ['id' => $modulo->mdo_id]) }}}";
                     },
                     error: function (err) {
                         $.harpia.hideloading();

@@ -19,10 +19,11 @@
             <h3 class="box-title">Formulário de cadastro de Salário Base</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => ['rh.fontespagadoras.vinculosfontespagadoras.create',  $fonte_pagadora->fpg_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('vfp_fpg_id', $fonte_pagadora->fpg_id) }}
+            <form action="{{ route('rh.fontespagadoras.vinculosfontespagadoras.create', [$fonte_pagadora->fpg_id]) }}" method="POST" id="form" role="form">
+    @csrf
+            <input type="hidden" name="vfp_fpg_id" value="{{ $fonte_pagadora->fpg_id }}" >
             @include('RH::vinculosfontespagadoras.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

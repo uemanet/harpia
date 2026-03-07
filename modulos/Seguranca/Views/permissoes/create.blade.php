@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de permissoes</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'seguranca.permissoes.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.permissoes.create') }}" method="POST" id="form" role="form">
+    @csrf
                 @include('Seguranca::permissoes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

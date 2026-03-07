@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de ambientes virtuais</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'integracao.ambientesvirtuais.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('integracao.ambientesvirtuais.create') }}" method="POST" id="form" role="form">
+    @csrf
             @include('Integracao::ambientesvirtuais.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

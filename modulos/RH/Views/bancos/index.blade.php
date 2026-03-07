@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.bancos.index') }}">
+                <form method="GET" action="{{{ route('rh.bancos.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="ban_descricao" id="ban_descricao" value="{{Request::input('ban_descricao')}}" placeholder="Nome, sigla ou código do banco">
                     </div>

@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de turma</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($turma,["route" => ['academico.ofertascursos.turmas.edit',$turma->trm_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.ofertascursos.turmas.edit', [$turma->trm_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $turma - inputs devem usar old('campo', $turma->campo) --}}
                  @include('Academico::turmas.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

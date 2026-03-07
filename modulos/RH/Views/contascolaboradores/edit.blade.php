@@ -19,10 +19,13 @@
             <h3 class="box-title">Formulário de Edição de Conta de Colaborador</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($conta_colaborador,["route" => ['rh.colaboradores.contascolaboradores.edit',$conta_colaborador->ccb_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('ccb_col_id', $conta_colaborador->colaborador->col_id) }}
+            <form action="{{ route('rh.colaboradores.contascolaboradores.edit', [$conta_colaborador->ccb_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $conta_colaborador - inputs devem usar old('campo', $conta_colaborador->campo) --}}
+            <input type="hidden" name="ccb_col_id" value="{{ $conta_colaborador->colaborador->col_id }}" >
             @include('RH::contascolaboradores.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

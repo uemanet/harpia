@@ -41,15 +41,16 @@
                 </ul>
             </div>
 
-            {!! Form::open(["url" => "/seguranca/perfis/atribuirpermissoes/". $perfil->prf_id, "method" => "POST", "role" => "form"]) !!}
-                {!! Form::hidden('permissao','' , ['id'=>'permissao']) !!}
-                {!! Form::hidden('prf_id', $perfil->prf_id) !!}
+            <form action="/seguranca/perfis/atribuirpermissoes/" method="POST" role="form">
+    @csrf
+                <input type="hidden" name="permissao" id="permissao" >
+                <input type="hidden" name="prf_id" value="{{ $perfil->prf_id }}" >
                 <div class="row">
                     <div class="form-group col-md-12">
-                        {!! Form::submit('Atribuir permissões ao perfil', ['class' => 'btn btn-primary pull-right', 'id' => 'btn-enviar']) !!}
+                        <button type="submit" class="btn btn-primary pull-right" id="btn-enviar">Atribuir permissões ao perfil</button>
                     </div>
                 </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

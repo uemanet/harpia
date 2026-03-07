@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('seguranca.permissoes.index') }}">
+                <form method="GET" action="{{{ route('seguranca.permissoes.index') }}}">
                     <div class="col-md-5">
                         <input type="text" class="form-control" name="prm_nome" id="prm_nome" value="{{Request::input('prm_nome')}}" placeholder="Nome da permissão">
                     </div>

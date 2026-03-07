@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de Edição de Salário</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($salario,["route" => ['rh.colaboradores.salarioscolaboradores.edit',$salario->scb_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.colaboradores.salarioscolaboradores.edit', [$salario->scb_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $salario - inputs devem usar old('campo', $salario->campo) --}}
             @include('RH::salarioscolaboradores.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

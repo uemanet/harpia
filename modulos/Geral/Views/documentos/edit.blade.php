@@ -19,9 +19,12 @@
             <h3 class="box-title">Formulário de edição de documento</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($documento,["route" => ['geral.pessoas.documentos.edit',$documento->doc_id], "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="{{ route('geral.pessoas.documentos.edit', [$documento->doc_id]) }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $documento - inputs devem usar old('campo', $documento->campo) --}}
                  @include('Geral::documentos.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

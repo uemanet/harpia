@@ -106,7 +106,7 @@
                                                     </button>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <a href="{{ route('integracao.mapeamentonotas.showalunos', $value->ofd_id) }}" class="btn btn-primary">
+                                                    <a href="{{{ route('integracao.mapeamentonotas.showalunos', $value->ofd_id) }}}" class="btn btn-primary">
                                                         <i class="fa fa-exchange"></i> Migrar Notas
                                                     </a>
                                                 </td>

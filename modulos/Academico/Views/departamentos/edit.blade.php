@@ -18,9 +18,12 @@
             <h3 class="box-title">Formulário de edição de departamento</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($departamento,["route" => ['academico.departamentos.edit',$departamento->dep_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.departamentos.edit', [$departamento->dep_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $departamento - inputs devem usar old('campo', $departamento->campo) --}}
                  @include('Academico::departamentos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

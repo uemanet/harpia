@@ -16,27 +16,33 @@
 
     <div class="box-body">
         <div class="row">
-          {!! Form::open(array('route' => ['integracao.ambientesvirtuais.adicionarservico', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+          <form action="{{ route('integracao.ambientesvirtuais.adicionarservico', [$ambiente->amb_id]) }}" method="POST" id="formAtribuirPerfil">
+    @csrf
               <div class="form-group col-md-3">
-                  {!! Form::label('asr_ser_id', 'Serviço*', ['class' => 'control-label']) !!}
+                  <label for="asr_ser_id" class="control-label">Serviço*</label>
                   <div class="controls">
-                      {!! Form::select('asr_ser_id', $servicos, old('asr_ser_id'), ['class' => 'form-control', 'id' => 'asr_ser_id', 'placeholder' => 'Selecione o serviço']) !!}
+                      <select name="asr_ser_id" class="form-control" id="asr_ser_id">
+    <option value="">Selecione o serviço</option>
+    @foreach($servicos as $key => $value)
+        <option value="{{ $key }}" {{ old('asr_ser_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                       @if ($errors->has('asr_ser_id')) <p class="help-block">{{ $errors->first('asr_ser_id') }}</p> @endif
                   </div>
               </div>
               <div class="form-group col-md-3">
-                  {!! Form::label('asr_token', 'Token*', ['class' => 'control-label']) !!}
+                  <label for="asr_token" class="control-label">Token*</label>
                   <div class="controls">
-                      {!! Form::text('asr_token', old('asr_token'), ['id' => 'asr_token','class' => 'form-control select-control', 'placeholder' => 'Digite o token']) !!}
+                      <input type="text" name="asr_token" value="{{ old('asr_token') }}" id="asr_token" class="form-control select-control" placeholder="Digite o token" >
                       @if ($errors->has('asr_token')) <p class="help-block">{{ $errors->first('asr_token') }}</p> @endif
                   </div>
               </div>
               <div class="form-group col-md-3" style="margin-top: 1.8em">
                   <div class="controls">
-                      {!! Form::submit('Adicionar', ['class' => 'btn btn-primary', 'id' => 'btnAtribuir']) !!}
+                      <button type="submit" class="btn btn-primary" id="btnAtribuir">Adicionar</button>
                   </div>
               </div>
-          {!! Form::close() !!}
+          </form>
         </div>
         <div class="row">
             <div class="col-md-12">

@@ -19,10 +19,13 @@
             <h3 class="box-title">Formulário de Edição de Período Aquisitivo</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($periodo_aquisitivo,["route" => ['rh.colaboradores.periodosaquisitivos.edit',$periodo_aquisitivo->paq_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('atc_col_id', $periodo_aquisitivo->colaborador->col_id) }}
+            <form action="{{ route('rh.colaboradores.periodosaquisitivos.edit', [$periodo_aquisitivo->paq_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $periodo_aquisitivo - inputs devem usar old('campo', $periodo_aquisitivo->campo) --}}
+            <input type="hidden" name="atc_col_id" value="{{ $periodo_aquisitivo->colaborador->col_id }}" >
             @include('RH::periodosaquisitivos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

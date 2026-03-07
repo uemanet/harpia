@@ -19,9 +19,10 @@
             <h3 class="box-title">Formulário de cadastro de matrícula</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => ['rh.colaboradores.matricula.create', 'id' => $colaborador->col_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.colaboradores.matricula.create', ['id' => $colaborador->col_id]) }}" method="POST" id="form" role="form">
+    @csrf
             @include('RH::colaboradores.includes.formulario_matricula')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

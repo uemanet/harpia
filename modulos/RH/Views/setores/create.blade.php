@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de setores</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'rh.setores.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.setores.create') }}" method="POST" id="form" role="form">
+    @csrf
             @include('RH::setores.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -19,9 +19,10 @@
             <h3 class="box-title">Formulário de cadastro de período laboral</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'rh.periodoslaborais.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.periodoslaborais.create') }}" method="POST" id="form" role="form">
+    @csrf
             @include('RH::periodoslaborais.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de Edição de Item de Menu</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($itemMenu, ["route" => ['seguranca.menuitens.edit', $itemMenu->mit_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.menuitens.edit', [$itemMenu->mit_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $itemMenu - inputs devem usar old('campo', $itemMenu->campo) --}}
                 @include('Seguranca::menuitens.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

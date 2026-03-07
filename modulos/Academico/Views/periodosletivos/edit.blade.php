@@ -18,9 +18,12 @@
             <h3 class="box-title">Formulário de edição de períodos letivos</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($periodoLetivo, ["route" => ['academico.periodosletivos.edit',$periodoLetivo->per_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.periodosletivos.edit', [$periodoLetivo->per_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $periodoLetivo - inputs devem usar old('campo', $periodoLetivo->campo) --}}
                 @include('Academico::periodosletivos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

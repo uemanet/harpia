@@ -28,29 +28,35 @@
                 <form method="POST" action="">
                     {{ csrf_field() }}
                     <div class="col-md-3 form-group @if($errors->has('crs_id'))has-error @endif">
-                        {!! Form::label('crs_id', 'Curso*') !!}
+                        <label for="crs_id">Curso*</label>
                         <div class="controls">
-                            {!! Form::select('crs_id', $cursos, '', ['class' => 'form-control',
-                            'placeholder' => 'Escolha o curso']) !!}
+                            <select name="crs_id" class="form-control">
+    <option value="">Escolha o curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}" {{ '' == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                             @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-3 form-group @if($errors->has('ofc_id'))has-error @endif">
-                        {!! Form::label('ofc_id', 'Oferta de Curso*') !!}
+                        <label for="ofc_id">Oferta de Curso*</label>
                         <div class="controls">
-                            {!! Form::select('ofc_id', [], '', ['class' => 'form-control']) !!}
+                            <select name="ofc_id" class="form-control">
+</select>
                             @if ($errors->has('ofc_id')) <p class="help-block">{{ $errors->first('ofc_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-3 form-group @if($errors->has('trm_id'))has-error @endif">
-                        {!! Form::label('trm_id', 'Turma*') !!}
+                        <label for="trm_id">Turma*</label>
                         <div class="controls">
-                            {!! Form::select('trm_id', [], '', ['class' => 'form-control']) !!}
+                            <select name="trm_id" class="form-control">
+</select>
                             @if ($errors->has('trm_id')) <p class="help-block">{{ $errors->first('trm_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-3">
-                        {!! Form::label('btn', '&nbsp;') !!}
+                        <label for="btn">&nbsp;</label>
                         <div class="form-group">
                             <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
                         </div>
@@ -151,7 +157,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('integracao.mapeamentonotas.index') }}",
+                    url: "{{{ route('integracao.mapeamentonotas.index') }}}",
                     data: dados,
                     success: function (response) {
                         $('#disciplinas').empty();

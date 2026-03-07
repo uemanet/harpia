@@ -1,41 +1,51 @@
 <div class="row">
-    {!! Form::hidden('trm_id', $turma->trm_id) !!}
+    <input type="hidden" name="trm_id" value="{{ $turma->trm_id }}" >
     <div class="form-group col-md-12 @if ($errors->has('ltc_titulo')) has-error @endif">
-        {!! Form::label('ltc_titulo', 'Título do TCC*', ['class' => 'control-label']) !!}
+        <label for="ltc_titulo" class="control-label">Título do TCC*</label>
         <div class="controls">
-            {!! Form::text('ltc_titulo', old('ltc_titulo'), ['class' => 'form-control']) !!}
+            <input type="text" name="ltc_titulo" value="{{ old('ltc_titulo') }}" class="form-control" >
             @if ($errors->has('ltc_titulo')) <p class="help-block">{{ $errors->first('ltc_titulo') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('ltc_prf_id')) has-error @endif">
-        {!! Form::label('ltc_prf_id', 'Professor*', ['class' => 'control-label']) !!}
+        <label for="ltc_prf_id" class="control-label">Professor*</label>
         <div class="controls">
-            {!! Form::select('ltc_prf_id', $professores, old('ltc_prf_id'), ['placeholder' => 'Selecione um professor','class' => 'form-control']) !!}
+            <select name="ltc_prf_id" class="form-control">
+    <option value="">Selecione um professor</option>
+    @foreach($professores as $key => $value)
+        <option value="{{ $key }}" {{ old('ltc_prf_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ltc_prf_id')) <p class="help-block">{{ $errors->first('ltc_prf_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('ltc_tipo')) has-error @endif">
-        {!! Form::label('ltc_tipo', 'Tipo de TCC*', ['class' => 'control-label']) !!}
+        <label for="ltc_tipo" class="control-label">Tipo de TCC*</label>
         <div class="controls">
-            {!! Form::select('ltc_tipo', $tiposdetcc, old('ltc_tipo'), ['placeholder' => 'Selecione um tipo','class' => 'form-control']) !!}
+            <select name="ltc_tipo" class="form-control">
+    <option value="">Selecione um tipo</option>
+    @foreach($tiposdetcc as $key => $value)
+        <option value="{{ $key }}" {{ old('ltc_tipo') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ltc_tipo')) <p class="help-block">{{ $errors->first('ltc_tipo') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('ltc_file')) has-error @endif">
-        {!! Form::label('ltc_file', 'Documento', ['class' => 'control-label']) !!}
+        <label for="ltc_file" class="control-label">Documento</label>
         <div class="controls">
-            {!! Form::file('ltc_file', ['class' => 'form-control file']) !!}
+            <input type="file" name="ltc_file" class="form-control file" >
             @if ($errors->has('ltc_file')) <p class="help-block">{{ $errors->first('ltc_file') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('ltc_data_apresentacao')) has-error @endif">
-        {!! Form::label('ltc_data_apresentacao', 'Data de apresentação*', ['class' => 'control-label']) !!}
+        <label for="ltc_data_apresentacao" class="control-label">Data de apresentação*</label>
         <div class="controls">
-            {!! Form::text('ltc_data_apresentacao', old('ltc_data_apresentacao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="ltc_data_apresentacao" value="{{ old('ltc_data_apresentacao') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('ltc_data_apresentacao')) <p
                     class="help-block">{{ $errors->first('ltc_data_apresentacao') }}</p> @endif
         </div>
@@ -43,16 +53,16 @@
 </div>
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('ltc_observacao')) has-error @endif">
-        {!! Form::label('ltc_observacao', 'Observação', ['class' => 'control-label']) !!}
+        <label for="ltc_observacao" class="control-label">Observação</label>
         <div class="controls">
-            {!! Form::textarea('ltc_observacao', old('ltc_observacao'), ['class' => 'form-control', 'rows' => '4']) !!}
+            <textarea name="ltc_observacao" class="form-control" rows="4">{{ old('ltc_observacao') }}</textarea>
             @if ($errors->has('ltc_observacao')) <p class="help-block">{{ $errors->first('ltc_observacao') }}</p> @endif
         </div>
     </div>
 </div>
-{!! Form::input('hidden' , 'ltc_mof_id', $matriculaoferta ,  ['class' => 'form-control']) !!}
+<input type="hidden" name="ltc_mof_id" value="{{ $matriculaoferta }}" class="form-control" >
 <div class="row">
     <div class="form-group col-md-offset-8 col-md-4">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
     </div>
 </div>

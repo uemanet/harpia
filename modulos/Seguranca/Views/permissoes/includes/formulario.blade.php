@@ -5,30 +5,30 @@
 
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('prm_nome')) has-error @endif">
-        {!! Form::label('prm_nome', 'Nome*', ['class' => 'control-label']) !!}
+        <label for="prm_nome" class="control-label">Nome*</label>
         <div class="controls">
-            {!! Form::text('prm_nome', old('prm_nome'), ['class' => 'form-control']) !!}
+            <input type="text" name="prm_nome" value="{{ old('prm_nome') }}" class="form-control" >
             @if ($errors->has('prm_nome')) <p class="help-block">{{ $errors->first('prm_nome') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('prm_rota')) has-error @endif">
-        {!! Form::label('prm_rota', 'Rota*', ['class' => 'control-label']) !!}
+        <label for="prm_rota" class="control-label">Rota*</label>
         <div class="controls">
-            {!! Form::text('prm_rota', old('prm_rota'), ['class' => 'form-control']) !!}
+            <input type="text" name="prm_rota" value="{{ old('prm_rota') }}" class="form-control" >
             @if ($errors->has('prm_rota')) <p class="help-block">{{ $errors->first('prm_rota') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('prm_descricao')) has-error @endif">
-        {!! Form::label('prm_descricao', 'Descrição', ['class' => 'control-label']) !!}
+        <label for="prm_descricao" class="control-label">Descrição</label>
         <div class="controls">
-            {!! Form::text('prm_descricao', old('prm_descricao'), ['class' => 'form-control']) !!}
+            <input type="text" name="prm_descricao" value="{{ old('prm_descricao') }}" class="form-control" >
             @if ($errors->has('prm_descricao')) <p class="help-block">{{ $errors->first('prm_descricao') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
     </div>
 </div>
 

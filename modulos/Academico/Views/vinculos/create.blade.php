@@ -18,9 +18,10 @@
             <h3 class="box-title">Formulário de cadastro de vínculos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => ['academico.vinculos.create',$usuario], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.vinculos.create', [$usuario]) }}" method="POST" id="form" role="form">
+    @csrf
             @include('Academico::vinculos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

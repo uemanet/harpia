@@ -19,9 +19,10 @@
             <h3 class="box-title">Visualização de dados do ambiente virtual</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/monitoramento/ambientesvirtuais/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="url(" method="POST" id="form" role="form">
+    @csrf
             @include('Monitoramento::tempoonline.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
         <div class="text-center margin" id="grafico"></div>
     </div>

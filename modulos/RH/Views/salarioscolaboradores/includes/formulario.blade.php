@@ -1,24 +1,36 @@
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('scb_ccb_id')) has-error @endif">
-        {!! Form::label('scb_ccb_id', 'Conta Colaborador*', ['class' => 'control-label']) !!}
+        <label for="scb_ccb_id" class="control-label">Conta Colaborador*</label>
         <div class="controls">
-            {!! Form::select('scb_ccb_id', $contas_colaborador, old('scb_ccb_id'), ['class' => 'form-control', 'placeholder' => 'Selecione a conta do colaborador']) !!}
+            <select name="scb_ccb_id" class="form-control">
+    <option value="">Selecione a conta do colaborador</option>
+    @foreach($contas_colaborador as $key => $value)
+        <option value="{{ $key }}" {{ old('scb_ccb_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('scb_ccb_id')) <p class="help-block">{{ $errors->first('scb_ccb_id') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-4 @if ($errors->has('fpg_id')) has-error @endif">
-        {!! Form::label('fpg_id', 'Fonte Pagadora*', ['class' => 'control-label']) !!}
+        <label for="fpg_id" class="control-label">Fonte Pagadora*</label>
         <div class="controls">
-            {!! Form::select('fpg_id', $fontes_pagadoras, old('fpg_id'), ['class' => 'form-control', 'placeholder' => 'Selecione a fonte pagadora']) !!}
+            <select name="fpg_id" class="form-control">
+    <option value="">Selecione a fonte pagadora</option>
+    @foreach($fontes_pagadoras as $key => $value)
+        <option value="{{ $key }}" {{ old('fpg_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('fpg_id')) <p class="help-block">{{ $errors->first('fpg_id') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-4 @if ($errors->has('scb_vfp_id')) has-error @endif">
-        {!! Form::label('scb_vfp_id', 'Forma de pagamento*', ['class' => 'control-label']) !!}
+        <label for="scb_vfp_id" class="control-label">Forma de pagamento*</label>
         <div class="controls">
-            {!! Form::select('scb_vfp_id', [], old('scb_vfp_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o tipo de vínculo']) !!}
+            <select name="scb_vfp_id" class="form-control">
+    <option value="">Selecione o tipo de vínculo</option>
+</select>
             @if ($errors->has('scb_vfp_id')) <p class="help-block">{{ $errors->first('scb_vfp_id') }}</p> @endif
         </div>
     </div>
@@ -27,32 +39,32 @@
 
 <div class="row">
     <div class=" form-group col-md-3 @if ($errors->has('scb_qtd_pagamento')) has-error @endif"  id= "unidade" >
-        {!! Form::label('scb_qtd_pagamento', 'Qtd. Pagamento', ['class' => 'control-label']) !!}
+        <label for="scb_qtd_pagamento" class="control-label">Qtd. Pagamento</label>
         <div class="controls">
-            {!! Form::number('scb_qtd_pagamento', old('scb_qtd_pagamento'), ['class' => 'form-control']) !!}
+            <input type="number" name="scb_qtd_pagamento" value="{{ old('scb_qtd_pagamento') }}" class="form-control" >
             @if ($errors->has('scb_qtd_pagamento')) <p class="help-block">{{ $errors->first('scb_qtd_pagamento') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3  @if ($errors->has('scb_valor')) has-error @endif">
-        {!! Form::label('scb_valor', 'Valor Bruto (R$)*', ['class' => 'control-label']) !!}
+        <label for="scb_valor" class="control-label">Valor Bruto (R$)*</label>
         <div class="controls">
-            {!! Form::text('scb_valor', old('scb_valor'), ['class' => 'form-control', "onkeyup" =>"k(this);"]) !!}
+            <input type="text" name="scb_valor" value="{{ old('scb_valor') }}" class="form-control" onkeyup="k(this);" >
             @if ($errors->has('scb_valor')) <p class="help-block">{{ $errors->first('scb_valor') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-3 @if ($errors->has('scb_data_inicio')) has-error @endif">
-        {!! Form::label('scb_data_inicio', 'Data Inicio Pag.*', ['class' => 'control-label']) !!}
+        <label for="scb_data_inicio" class="control-label">Data Inicio Pag.*</label>
         <div class="controls">
-            {!! Form::text('scb_data_inicio',old('scb_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="scb_data_inicio" value="{{ old('scb_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('scb_data_inicio')) <p
                     class="help-block">{{ $errors->first('scb_data_inicio') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('scb_data_fim')) has-error @endif">
-        {!! Form::label('scb_data_fim', 'Data Fim Pag.', ['class' => 'control-label']) !!}
+        <label for="scb_data_fim" class="control-label">Data Fim Pag.</label>
         <div class="controls">
-            {!! Form::text('scb_data_fim',old('scb_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="scb_data_fim" value="{{ old('scb_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('scb_data_fim')) <p
                     class="help-block">{{ $errors->first('scb_data_fim') }}</p> @endif
         </div>
@@ -62,7 +74,7 @@
     <div class="form-group col-md-12">
         <label class="control-label" style="visibility: hidden">Botão</label>
         <div class="controls">
-            {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+            <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
         </div>
     </div>
 </div>

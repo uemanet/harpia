@@ -18,9 +18,12 @@
             <h3 class="box-title">Formulário de Edição de Centro</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($centro,["route" => ['academico.centros.edit',$centro->cen_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.centros.edit', [$centro->cen_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $centro - inputs devem usar old('campo', $centro->campo) --}}
             @include('Academico::centros.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -21,43 +21,65 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <form id="form" method="POST" action="{{ route('academico.relatoriosatasfinais.pdf') }}">
+            <form id="form" method="POST" action="{{{ route('academico.relatoriosatasfinais.pdf') }}}">
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-md-4 @if ($errors->has('crs_id')) has-error @endif">
-                        {!! Form::label('crs_id', 'Curso*') !!}
+                        <label for="crs_id">Curso*</label>
                         <div class="form-group">
-                            {!! Form::select('crs_id', $cursos, Request::input('crs_id'), ['class' => 'form-control', 'placeholder' => 'Escolha o Curso']) !!}
+                            <select name="crs_id" class="form-control">
+    <option value="">Escolha o Curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('crs_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                             @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-4 @if ($errors->has('ofc_id')) has-error @endif">
-                        {!! Form::label('ofc_id', 'Oferta de Curso*') !!}
+                        <label for="ofc_id">Oferta de Curso*</label>
                         <div class="form-group">
-                            {!! Form::select('ofc_id', $ofertasCurso, Request::input('ofc_id'), ['class' => 'form-control']) !!}
+                            <select name="ofc_id" class="form-control">
+    @foreach($ofertasCurso as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('ofc_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                             @if ($errors->has('ofc_id')) <p class="help-block">{{ $errors->first('ofc_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-4 @if ($errors->has('trm_id')) has-error @endif">
-                        {!! Form::label('trm_id', 'Turma*') !!}
+                        <label for="trm_id">Turma*</label>
                         <div class="form-group">
-                            {!! Form::select('trm_id', $turmas, Request::input('trm_id'), ['class' => 'form-control']) !!}
+                            <select name="trm_id" class="form-control">
+    @foreach($turmas as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('trm_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                             @if ($errors->has('trm_id')) <p class="help-block">{{ $errors->first('trm_id') }}</p> @endif
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-5 @if ($errors->has('pol_id')) has-error @endif">
-                        {!! Form::label('pol_id', 'Polo') !!}
+                        <label for="pol_id">Polo</label>
                         <div class="form-group">
-                            {!! Form::select('pol_id', $polos, Request::input('pol_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o polo']) !!}
+                            <select name="pol_id" class="form-control">
+    <option value="">Selecione o polo</option>
+    @foreach($polos as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('pol_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                             @if ($errors->has('pol_id')) <p class="help-block">{{ $errors->first('pol_id') }}</p> @endif
                         </div>
                     </div>
                     <div class="col-md-4 @if ($errors->has('mat_situacao')) has-error @endif">
-                        {!! Form::label('mat_situacao', 'Situação') !!}
+                        <label for="mat_situacao">Situação</label>
                         <div class="form-group">
-                            {!! Form::select('mat_situacao', $situacao, Request::input('mat_situacao'), ['class' => 'form-control']) !!}
+                            <select name="mat_situacao" class="form-control">
+    @foreach($situacao as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('mat_situacao') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                             @if ($errors->has('mat_situacao')) <p class="help-block">{{ $errors->first('mat_situacao') }}</p> @endif
                         </div>
                     </div>
@@ -98,8 +120,8 @@
             var ofertasCursoSelect = $('#ofc_id');
             var turmaSelect = $('#trm_id');
             var polosSelect = $('#pol_id');
-            var routePdf = "{{ route('academico.relatoriosatasfinais.pdf') }}";
-            var routeIndex = "{{ route('academico.relatoriosatasfinais.index') }}";
+            var routePdf = "{{{ route('academico.relatoriosatasfinais.pdf') }}}";
+            var routeIndex = "{{{ route('academico.relatoriosatasfinais.index') }}}";
             var cursoSelect = $('#crs_id');
             var situacaoSelect = $('#mat_situacao');
 

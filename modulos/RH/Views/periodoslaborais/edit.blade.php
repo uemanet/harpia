@@ -19,9 +19,12 @@
             <h3 class="box-title">Formulário de edição de períodos laborais</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($periodolaboral, ["route" => ['rh.periodoslaborais.edit',$periodolaboral->pel_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.periodoslaborais.edit', [$periodolaboral->pel_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $periodolaboral - inputs devem usar old('campo', $periodolaboral->campo) --}}
                 @include('RH::periodoslaborais.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

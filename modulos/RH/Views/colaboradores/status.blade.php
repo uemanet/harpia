@@ -40,9 +40,9 @@
                             @else
                                 <div class="row">
                                     <form method="POST" class="delete"
-                                          action="{{ route('rh.colaboradores.matricula', $matricula->mtc_id ) }}">
+                                          action="{{{ route('rh.colaboradores.matricula', $matricula->mtc_id ) }}}">
                                         <?php echo e(csrf_field()); ?>
-                                        <td>{!! Form::text('mtc_data_fim', old('mtc_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Fim']) !!}</td>
+                                        <td><input type="text" name="mtc_data_fim" value="{{ old('mtc_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" placeholder="Data de Fim" ></td>
                                         <td>
                                             <button class="btn btn-danger"><i class="fa fa-trash"></i> Desvincular Colaborador
                                             </button>

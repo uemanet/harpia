@@ -19,7 +19,7 @@
                     <form action="{{url('/forget-password')}}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group has-feedback @if ($errors->has('email')) has-error @endif">
-                            {!! Form::text('email', old('email'), array('placeholder' => 'E-mail', 'class'=>'form-control')) !!}
+                            <input type="text" name="email" value="{{ old('email') }}" placeholder="E-mail" class="form-control" >
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                             @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
                         </div>

@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.setores.index') }}">
+                <form method="GET" action="{{{ route('rh.setores.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="set_descricao" id="set_id" value="{{Request::input('set_descricao')}}" placeholder="Descrição do setor">
                     </div>

@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de perfil</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($perfil,["route" => ['seguranca.perfis.edit', $perfil->prf_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.perfis.edit', [$perfil->prf_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $perfil - inputs devem usar old('campo', $perfil->campo) --}}
                 @include('Seguranca::perfis.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

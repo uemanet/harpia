@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de áreas de conhecimento</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($areaConhecimento, ["route" => ['rh.areasconhecimentos.edit',$areaConhecimento->arc_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.areasconhecimentos.edit', [$areaConhecimento->arc_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $areaConhecimento - inputs devem usar old('campo', $areaConhecimento->campo) --}}
                 @include('RH::areasconhecimentos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

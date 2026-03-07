@@ -18,9 +18,10 @@
             <h3 class="box-title">Formulário de cadastro de grupos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/grupos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="url(" method="POST" id="form" role="form">
+    @csrf
             @include('Academico::grupos.includes.formulario_create')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

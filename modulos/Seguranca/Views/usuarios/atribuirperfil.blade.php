@@ -15,23 +15,32 @@
         </div>
         <div class="box-body">
             <div class="row">
-                {!! Form::open(array('route' => ['seguranca.usuarios.atribuirperfil', $usuario->usr_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+                <form action="{{ route('seguranca.usuarios.atribuirperfil', [$usuario->usr_id]) }}" method="POST" id="formAtribuirPerfil">
+    @csrf
                     <div class="form-group col-md-3">
                         @if(!empty($modulos))
-                            {!! Form::select('mod_id', $modulos, old('mod_id'), ['class' => 'form-control', 'id' => 'mod_id', 'placeholder' => 'Selecione o módulo']) !!}
+                            <select name="mod_id" class="form-control" id="mod_id">
+    <option value="">Selecione o módulo</option>
+    @foreach($modulos as $key => $value)
+        <option value="{{ $key }}" {{ old('mod_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                         @else
-                            {!! Form::select('mod_id', [], null, ['class' => 'form-control', 'id' => 'mod_id', 'placeholder' => 'Sem módulos']) !!}
+                            <select name="mod_id" class="form-control" id="mod_id">
+    <option value="">Sem módulos</option>
+</select>
                         @endif
                     </div>
                     <div class="form-group col-md-3">
                         <div class="controls">
-                            {!! Form::select('prf_id', [], null, ['class' => 'form-control','id' => 'prf_id']) !!}
+                            <select name="prf_id" class="form-control" id="prf_id">
+</select>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        {!! Form::submit('Atribuir', ['class' => 'btn btn-primary', 'id' => 'btnAtribuir']) !!}
+                        <button type="submit" class="btn btn-primary" id="btnAtribuir">Atribuir</button>
                     </div>
-                {!! Form::close() !!}
+                </form>
             </div>
             <div class="row">
                 <div class="col-md-12">

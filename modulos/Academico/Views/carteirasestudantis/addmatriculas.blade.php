@@ -29,27 +29,35 @@
                 <div class="row">
                     <input type="hidden" name="lst_id" id="lst_id" value="{{$lista->lst_id}}">
                     <div class="col-md-3">
-                        {!! Form::label('crs_id', 'Curso*') !!}
+                        <label for="crs_id">Curso*</label>
                         <div class="form-group">
-                            {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha o Curso']) !!}
+                            <select name="crs_id" class="form-control">
+                                <option value="">Escolha o Curso</option>
+                                @foreach($cursos as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        {!! Form::label('ofc_id', 'Oferta de Curso*') !!}
+                        <label for="ofc_id">Oferta de Curso*</label>
                         <div class="form-group">
-                            {!! Form::select('ofc_id', [], null, ['class' => 'form-control']) !!}
+                            <select name="ofc_id" class="form-control">
+</select>
                         </div>
                     </div>
                     <div class="col-md-2">
-                        {!! Form::label('trm_id', 'Turma*') !!}
+                        <label for="trm_id">Turma*</label>
                         <div class="form-group">
-                            {!! Form::select('trm_id', [], null, ['class' => 'form-control']) !!}
+                            <select name="trm_id" class="form-control">
+</select>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        {!! Form::label('pol_id', 'Polo*') !!}
+                        <label for="pol_id">Polo*</label>
                         <div class="form-group">
-                            {!! Form::select('pol_id', [], null, ['class' => 'form-control']) !!}
+                            <select name="pol_id" class="form-control">
+</select>
                         </div>
                     </div>
                     <div class="col-md-1">

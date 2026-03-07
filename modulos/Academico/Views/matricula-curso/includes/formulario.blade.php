@@ -4,53 +4,67 @@
 
 <div class="row">
     <div class="form-group col-md-3 @if($errors->has('crs_id')) has-error @endif">
-        {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
+        <label for="crs_id" class="control-label">Curso*</label>
         <div class="controls">
-            {!! Form::select('crs_id', $cursos, null , ['class' => 'form-control', 'placeholder' => 'Selecione o curso']) !!}
+            <select name="crs_id" class="form-control">
+    <option value="">Selecione o curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if($errors->has('ofc_id')) has-error @endif">
-        {!! Form::label('ofc_id', 'Oferta do Curso*', ['class' => 'control-label']) !!}
+        <label for="ofc_id" class="control-label">Oferta do Curso*</label>
         <div class="controls">
-            {!! Form::select('ofc_id', [], null , ['class' => 'form-control']) !!}
+            <select name="ofc_id" class="form-control">
+</select>
             @if ($errors->has('ofc_id')) <p class="help-block">{{ $errors->first('ofc_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if($errors->has('mat_trm_id')) has-error @endif">
-        {!! Form::label('mat_trm_id', 'Turma*', ['class' => 'control-label']) !!}
+        <label for="mat_trm_id" class="control-label">Turma*</label>
         <div class="controls">
-            {!! Form::select('mat_trm_id', [], null , ['class' => 'form-control grp']) !!}
+            <select name="mat_trm_id" class="form-control grp">
+</select>
             @if ($errors->has('mat_trm_id')) <p class="help-block">{{ $errors->first('mat_trm_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if($errors->has('mat_pol_id')) has-error @endif">
-        {!! Form::label('mat_pol_id', 'Polo*', ['class' => 'control-label']) !!}
+        <label for="mat_pol_id" class="control-label">Polo*</label>
         <div class="controls">
-            {!! Form::select('mat_pol_id', [], null , ['class' => 'form-control grp']) !!}
+            <select name="mat_pol_id" class="form-control grp">
+</select>
             @if ($errors->has('mat_pol_id')) <p class="help-block">{{ $errors->first('mat_pol_id') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-3 @if($errors->has('mat_modo_entrada')) has-error @endif">
-        {!! Form::label('mat_modo_entrada', 'Modo de Entrada*', ['class' => 'control-label']) !!}
+        <label for="mat_modo_entrada" class="control-label">Modo de Entrada*</label>
         <div class="controls">
-            {!! Form::select('mat_modo_entrada', $modosEntrada, null , ['class' => 'form-control', 'placeholder' => 'Selecione o modo']) !!}
+            <select name="mat_modo_entrada" class="form-control">
+    <option value="">Selecione o modo</option>
+    @foreach($modosEntrada as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('mat_modo_entrada')) <p class="help-block">{{ $errors->first('mat_modo_entrada') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if($errors->has('mat_grp_id')) has-error @endif">
-        {!! Form::label('mat_grp_id', 'Grupo', ['class' => 'control-label']) !!}
+        <label for="mat_grp_id" class="control-label">Grupo</label>
         <div class="controls">
-            {!! Form::select('mat_grp_id', [], null , ['class' => 'form-control']) !!}
+            <select name="mat_grp_id" class="form-control">
+</select>
             @if ($errors->has('mat_grp_id')) <p class="help-block">{{ $errors->first('mat_grp_id') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados',['class' => 'btn btn-primary pull-right']) !!}
+        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
     </div>
 </div>
 

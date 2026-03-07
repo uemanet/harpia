@@ -1,45 +1,67 @@
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ofc_id')) has-error @endif">
-        {!! Form::label('ofc_id', 'Ano da Oferta', ['class' => 'control-label']) !!}
+        <label for="ofc_id" class="control-label">Ano da Oferta</label>
         <div class="controls">
-            {!! Form::select('ofc_id', $oferta, null, ['disabled', 'class' => 'form-control', 'id' => 'ofc_id']) !!}
+            <select name="ofc_id" class="form-control" id="ofc_id">
+    @foreach($oferta as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ofc_id')) <p class="help-block">{{ $errors->first('ofc_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('trm_id')) has-error @endif">
-        {!! Form::label('trm_id', 'Turma', ['class' => 'control-label']) !!}
+        <label for="trm_id" class="control-label">Turma</label>
         <div class="controls">
-            {!! Form::select('trm_id', $turma, null, ['disabled', 'class' => 'form-control', 'id' => 'trm_id']) !!}
+            <select name="trm_id" class="form-control" id="trm_id">
+    @foreach($turma as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('trm_id')) <p class="help-block">{{ $errors->first('trm_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ttg_grp_id')) has-error @endif">
-        {!! Form::label('ttg_grp_id', 'Grupo*', ['class' => 'control-label']) !!}
+        <label for="ttg_grp_id" class="control-label">Grupo*</label>
         <div class="controls">
-            {!! Form::select('ttg_grp_id', $grupo, $grupo, ['class' => 'form-control', 'id' => 'ttg_grp_id']) !!}
+            <select name="ttg_grp_id" class="form-control" id="ttg_grp_id">
+    @foreach($grupo as $key => $value)
+        <option value="{{ $key }}" {{ $grupo == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ttg_grp_id')) <p class="help-block">{{ $errors->first('ttg_grp_id') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ttg_tut_id')) has-error @endif">
-        {!! Form::label('ttg_tut_id', 'Tutor*', ['class' => 'control-label']) !!}
+        <label for="ttg_tut_id" class="control-label">Tutor*</label>
         <div class="controls">
-            {!! Form::select('ttg_tut_id', $tutores, $tutores, ['class' => 'form-control', 'id' => 'ttg_tut_id', 'placeholder' => 'Selecione o tutor']) !!}
+            <select name="ttg_tut_id" class="form-control" id="ttg_tut_id">
+    <option value="">Selecione o tutor</option>
+    @foreach($tutores as $key => $value)
+        <option value="{{ $key }}" {{ $tutores == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ttg_tut_id')) <p class="help-block">{{ $errors->first('ttg_tut_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ttg_tipo_tutoria')) has-error @endif">
-        {!! Form::label('ttg_tipo_tutoria', 'Tipo de tutoria*', ['class' => 'control-label']) !!}
+        <label for="ttg_tipo_tutoria" class="control-label">Tipo de tutoria*</label>
         <div class="controls">
-            {!! Form::select('ttg_tipo_tutoria', $tipostutoria, $tutores, ['class' => 'form-control', 'id' => 'ttg_tipo_tutoria', 'placeholder' => 'Selecione o tipo de tutoria']) !!}
+            <select name="ttg_tipo_tutoria" class="form-control" id="ttg_tipo_tutoria">
+    <option value="">Selecione o tipo de tutoria</option>
+    @foreach($tipostutoria as $key => $value)
+        <option value="{{ $key }}" {{ $tutores == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ttg_tipo_tutoria')) <p class="help-block">{{ $errors->first('ttg_tipo_tutoria') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ttg_data_inicio')) has-error @endif">
-        {!! Form::label('ttg_data_inicio', 'Data de Admissão do tutor*', ['class' => 'control-label']) !!}
+        <label for="ttg_data_inicio" class="control-label">Data de Admissão do tutor*</label>
         <div class="controls">
-            {!! Form::text('ttg_data_inicio', old('ttg_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="ttg_data_inicio" value="{{ old('ttg_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('ttg_data_inicio')) <p class="help-block">{{ $errors->first('ttg_data_inicio') }}</p> @endif
         </div>
     </div>
@@ -47,6 +69,6 @@
 
 <div class="row">
     <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
     </div>
 </div>

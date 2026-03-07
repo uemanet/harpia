@@ -18,9 +18,10 @@
             <h3 class="box-title">Formulário de Matrícula</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => ['academico.matricularalunocurso.create', $aluno->alu_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.matricularalunocurso.create', [$aluno->alu_id]) }}" method="POST" id="form" role="form">
+    @csrf
                 @include('Academico::matricula-curso.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

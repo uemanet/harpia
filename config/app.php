@@ -256,7 +256,6 @@ return [
         /*
          * Extra aliases
          */
-        'Form' => Collective\Html\FormFacade::class,
         'Html' =>  Spatie\Html\Facades\Html::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'ActionButton' => Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton::class,
