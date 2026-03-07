@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('seguranca.menuitens.index') }}">
+                <form method="GET" action="{{{ route('seguranca.menuitens.index') }}}">
                     <div class="col-md-6">
                         <input type="text" class="form-control" name="mit_nome" id="mit_nome" value="{{Request::input('mit_nome')}}" placeholder="Nome">
                     </div>

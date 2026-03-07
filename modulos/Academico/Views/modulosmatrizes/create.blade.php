@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de módulos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'academico.cursos.matrizescurriculares.modulosmatrizes.create', "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="{{ route('academico.cursos.matrizescurriculares.modulosmatrizes.create') }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
                  @include('Academico::modulosmatrizes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

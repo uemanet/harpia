@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de fonte pagadora</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($fontepagadora, ["route" => ['rh.fontespagadoras.edit',$fontepagadora->fpg_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.fontespagadoras.edit', [$fontepagadora->fpg_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $fontepagadora - inputs devem usar old('campo', $fontepagadora->campo) --}}
                 @include('RH::fontespagadoras.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

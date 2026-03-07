@@ -18,12 +18,12 @@
                     <form action="{{url('/login')}}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="form-group has-feedback @if ($errors->has('usr_usuario')) has-error @endif">
-                            {!! Form::text('usr_usuario', old('usr_usuario'), array('placeholder' => 'Usuario', 'class'=>'form-control')) !!}
+                            <input type="text" name="usr_usuario" value="{{ old('usr_usuario') }}" placeholder="Usuario" class="form-control" >
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                             @if ($errors->has('usr_usuario')) <p class="help-block">{{ $errors->first('usr_usuario') }}</p> @endif
                         </div>
                         <div class="form-group has-feedback @if ($errors->has('usr_senha')) has-error @endif">
-                            {!! Form::password('usr_senha', array('placeholder' => 'Senha', 'class'=>'form-control')) !!}
+                            <input type="password" name="usr_senha" >
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             @if ($errors->has('usr_senha')) <p class="help-block">{{ $errors->first('usr_senha') }}</p> @endif
                         </div>

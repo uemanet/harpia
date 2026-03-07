@@ -21,25 +21,35 @@
 
 <div class="box-body">
     <div class="row">
-      {!! Form::open(array('route' => ['integracao.ambientesvirtuais.adicionarturma', $ambiente->amb_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
+      <form action="{{ route('integracao.ambientesvirtuais.adicionarturma', [$ambiente->amb_id]) }}" method="POST" id="formAtribuirPerfil">
+    @csrf
 
           <div class="form-group col-md-3">
-                  {!! Form::select('crs_id', $cursos, old('crs_id'), ['class' => 'form-control', 'id' => 'crs_id', 'placeholder' => 'Selecione o curso']) !!}
+                  <select name="crs_id" class="form-control" id="crs_id">
+    <option value="">Selecione o curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}" {{ old('crs_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                   @if ($errors->has('crs_id')) <p class="help-block">{{ $errors->first('crs_id') }}</p> @endif
           </div>
           <div class="form-group col-md-3">
-                  {!! Form::select('ofc_id', [], old('ofc_id'), ['class' => 'form-control', 'id' => 'ofc_id', 'placeholder' => 'Selecione a oferta']) !!}
+                  <select name="ofc_id" class="form-control" id="ofc_id">
+    <option value="">Selecione a oferta</option>
+</select>
                   @if ($errors->has('ofc_id')) <p class="help-block">{{ $errors->first('ofc_id') }}</p> @endif
           </div>
           <div class="form-group col-md-3">
-                  {!! Form::select('atr_trm_id', [], old('atr_trm_id'), ['class' => 'form-control', 'id' => 'atr_trm_id', 'placeholder' => 'Selecione a turma']) !!}
+                  <select name="atr_trm_id" class="form-control" id="atr_trm_id">
+    <option value="">Selecione a turma</option>
+</select>
                   @if ($errors->has('atr_trm_id')) <p class="help-block">{{ $errors->first('atr_trm_id') }}</p> @endif
           </div>
 
           <div class="form-group col-md-3">
-              {!! Form::submit('Vincular', ['class' => 'btn btn-primary', 'id' => 'btnAtribuir']) !!}
+              <button type="submit" class="btn btn-primary" id="btnAtribuir">Vincular</button>
           </div>
-      {!! Form::close() !!}
+      </form>
     </div>
 
     <div class="row">

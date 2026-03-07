@@ -14,7 +14,8 @@
             <h3 class="box-title">Formulário de Cadastro de Usuários</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'seguranca.usuarios.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.usuarios.create') }}" method="POST" id="form" role="form">
+    @csrf
             <h4 class="box-title">
                 Dados de Usuário
             </h4>
@@ -28,10 +29,10 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+                    <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
                 </div>
             </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de vínculo</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($vinculo, ["route" => ['rh.vinculos.edit',$vinculo->vin_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.vinculos.edit', [$vinculo->vin_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $vinculo - inputs devem usar old('campo', $vinculo->campo) --}}
                 @include('RH::vinculos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

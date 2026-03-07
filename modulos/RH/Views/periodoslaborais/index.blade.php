@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.periodoslaborais.index') }}">
+                <form method="GET" action="{{{ route('rh.periodoslaborais.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="pel_inicio" id="pel_inicio" value="{{Request::input('pel_inicio')}}" placeholder="Data de início">
                     </div>

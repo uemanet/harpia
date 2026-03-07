@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('academico.polos.index') }}">
+                <form method="GET" action="{{{ route('academico.polos.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="pol_nome" id="pol_nome" value="{{Request::input('pol_nome')}}" placeholder="Nome do polo">
                     </div>

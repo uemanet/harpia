@@ -19,10 +19,13 @@
             <h3 class="box-title">Formulário de Edição de Salário Base</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($vinculo_fpg,["route" => ['rh.fontespagadoras.vinculosfontespagadoras.edit',$vinculo_fpg->vfp_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('vfp_fpg_id', $vinculo_fpg->vfp_fpg_id) }}
+            <form action="{{ route('rh.fontespagadoras.vinculosfontespagadoras.edit', [$vinculo_fpg->vfp_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $vinculo_fpg - inputs devem usar old('campo', $vinculo_fpg->campo) --}}
+            <input type="hidden" name="vfp_fpg_id" value="{{ $vinculo_fpg->vfp_fpg_id }}" >
             @include('RH::vinculosfontespagadoras.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

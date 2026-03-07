@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de disciplinas</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($disciplina,["route" => ['academico.disciplinas.edit',$disciplina->dis_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.disciplinas.edit', [$disciplina->dis_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $disciplina - inputs devem usar old('campo', $disciplina->campo) --}}
             @include('Academico::disciplinas.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

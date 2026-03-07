@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.fontespagadoras.index') }}">
+                <form method="GET" action="{{{ route('rh.fontespagadoras.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="fpg_razao_social" id="fpg_razao_social" value="{{Request::input('fpg_razao_social')}}" placeholder="Razão social">
                     </div>

@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.areasconhecimentos.index') }}">
+                <form method="GET" action="{{{ route('rh.areasconhecimentos.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="arc_descricao" id="arc_descricao" value="{{Request::input('arc_descricao')}}" placeholder="Nome da área de conhecimento">
                     </div>

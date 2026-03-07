@@ -128,7 +128,7 @@
 
             // Cursos por nivel
             $.ajax({
-                url: "{{ route("academico.async.dashboard.cursopornivel") }}",
+                url: "{{{ route("academico.async.dashboard.cursopornivel") }}}",
                 type: "GET",
                 success: function (data) {
                     var dataSet = [];
@@ -173,7 +173,7 @@
 
             // Matriculas
             $.ajax({
-                url: "{{ route("academico.async.dashboard.matriculasstatus") }}",
+                url: "{{{ route("academico.async.dashboard.matriculasstatus") }}}",
                 type: "GET",
                 success: function (data) {
                     var dataSet = [];
@@ -218,7 +218,7 @@
 
             // Matriculas mes
             $.ajax({
-                url: "{{ route("academico.async.dashboard.matriculasmes") }}",
+                url: "{{{ route("academico.async.dashboard.matriculasmes") }}}",
                 type: "GET",
                 success: function (data) {
                     var dataSet = [];

@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de Cadastro de Itens de Menu</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'seguranca.menuitens.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.menuitens.create') }}" method="POST" id="form" role="form">
+    @csrf
                 @include('Seguranca::menuitens.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

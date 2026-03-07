@@ -142,7 +142,7 @@
                             };
 
                             // Ajax request
-                            url = "{{ route('rh.async.calendarios.create') }}";
+                            url = "{{{ route('rh.async.calendarios.create') }}}";
 
                             $.harpia.showloading();
                             $.ajax({
@@ -175,7 +175,7 @@
 
                     // Dados do calendário
                     $.ajax({
-                        url: "{{ route("rh.async.calendarios.index") }}",
+                        url: "{{{ route("rh.async.calendarios.index") }}}",
                         type: "GET",
                         success: function (data) {
 
@@ -286,7 +286,7 @@
                     };
 
                     // Ajax request
-                    url = "{{ route('rh.async.calendarios.delete') }}";
+                    url = "{{{ route('rh.async.calendarios.delete') }}}";
 
                     $.harpia.showloading();
                     $.ajax({

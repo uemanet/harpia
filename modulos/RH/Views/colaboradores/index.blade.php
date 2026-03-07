@@ -31,7 +31,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.colaboradores.index') }}">
+                <form method="GET" action="{{{ route('rh.colaboradores.index') }}}">
                     <div class="col-md-2">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf"
                                value="{{Request::input('pes_cpf')}}" placeholder="CPF">
@@ -46,11 +46,20 @@
                     </div>
 
                     <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                        <select name="cfn_set_id" class="form-control">
+    <option value="">Selecione o setor</option>
+    @foreach($setores as $key => $value)
+        <option value="{{ $key }}" {{ [] == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
 
                     <div class="form-group col-md-2">
-                        {!! Form::select('funcoes[]', $funcoes, old('funcoes[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+                        <select name="funcoes[]" class="form-control" multiple="multiple">
+    @foreach($funcoes as $key => $value)
+        <option value="{{ $key }}" {{ old('funcoes[]') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                         @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
                     </div>
 
@@ -64,7 +73,7 @@
     </div>
 
     <div class="text-right mb-3">
-        <a href="{{ route('rh.ferias.export') }}" class="btn btn-success">
+        <a href="{{{ route('rh.ferias.export') }}}" class="btn btn-success">
             Gerar Planilha de Controle de Férias
         </a>
     </div>

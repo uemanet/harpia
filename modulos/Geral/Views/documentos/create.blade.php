@@ -19,9 +19,10 @@
             <h3 class="box-title">Formulário de cadastro de documentos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => ['geral.pessoas.documentos.create',$pessoa->pes_id], "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="{{ route('geral.pessoas.documentos.create', [$pessoa->pes_id]) }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
                 @include('Geral::documentos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

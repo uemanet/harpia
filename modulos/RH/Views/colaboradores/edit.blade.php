@@ -14,7 +14,10 @@
             <h3 class="box-title">Formulário de Edição de Colaborador</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($pessoa,['route' => ['rh.colaboradores.edit', $colaborador->col_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.colaboradores.edit', [$colaborador->col_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $pessoa - inputs devem usar old('campo', $pessoa->campo) --}}
 
             <h4 class="box-title">
                 Dados de Pessoa
@@ -28,10 +31,10 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+                    <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
                 </div>
             </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

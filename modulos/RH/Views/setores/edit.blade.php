@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de setor</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($setor, ["route" => ['rh.setores.edit',$setor->set_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.setores.edit', [$setor->set_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $setor - inputs devem usar old('campo', $setor->campo) --}}
                 @include('RH::setores.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

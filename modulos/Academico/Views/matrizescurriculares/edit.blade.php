@@ -19,9 +19,12 @@
             <h3 class="box-title">Formulário de edição de departamento</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($matrizCurricular,["url" => url('/') . "/academico/matrizescurriculares/edit/$matrizCurricular->mtc_id", "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="url(" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $matrizCurricular - inputs devem usar old('campo', $matrizCurricular->campo) --}}
                 @include('Academico::matrizescurriculares.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

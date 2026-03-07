@@ -27,25 +27,30 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.horastrabalhadas.index') }}">
+                <form method="GET" action="{{{ route('rh.horastrabalhadas.index') }}}">
                     <div class="form-group col-md-2">
-                        {!! Form::select('htr_pel_id', $periodosLaborais, Request::input('htr_pel_id'), ['id' => 'htr_pel_id', 'class' => 'form-control', 'placeholder' => 'Selecione o período laboral']) !!}
+                        <select name="htr_pel_id" id="htr_pel_id" class="form-control">
+    <option value="">Selecione o período laboral</option>
+    @foreach($periodosLaborais as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('htr_pel_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
 
                     <div class="form-group col-md-4">
-                        {!! Form::select('cfn_set_id[]', $setores, Request::input('cfn_set_id'), [
-                            'id' => 'cfn_set_id',
-                            'class' => 'form-control',
-                            'multiple' => true,
-                        ]) !!}
+                        <select name="cfn_set_id[]" id="cfn_set_id" class="form-control" multiple="true">
+    @foreach($setores as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('cfn_set_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
 
                     <div class="form-group col-md-3">
-                        {!! Form::select('col_pes_id[]', $colaboradores, Request::input('col_pes_id'), [
-                            'id' => 'col_pes_id',
-                            'class' => 'form-control',
-                            'multiple' => true,
-                        ]) !!}
+                        <select name="col_pes_id[]" id="col_pes_id" class="form-control" multiple="true">
+    @foreach($colaboradores as $key => $value)
+        <option value="{{ $key }}" {{ Request::input('col_pes_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                     </div>
 
                     <div class="col-md-2">
@@ -73,11 +78,13 @@
                             </div>
                             <div class="modal-body">
 
-                                {!! Form::model([],["route" => "rh.horastrabalhadasdiarias.import", "method" => "POST", "id" => "form", "role" => "form", "class" => "form-horizontal", "enctype" => "multipart/form-data"]) !!}
+                                <form action="{{ route('rh.horastrabalhadasdiarias.import') }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
+    {{-- Form model: [] - inputs devem usar old('campo', []->campo) --}}
 
                                 <div class="form-group @if ($errors->has('csv_file')) has-error @endif">
                                     <div class="col-sm-9">
-                                        {!! Form::file('csv_file', ['class' => 'form-control file']) !!}
+                                        <input type="file" name="csv_file" class="form-control file" >
                                         @if ($errors->has('csv_file')) <p class="help-block">{{ $errors->first('csv_file') }}</p> @endif
                                     </div>
                                 </div>
@@ -87,7 +94,7 @@
                                         <button type="submit" class="btn btn-danger">Importar dados</button>
                                     </div>
                                 </div>
-                                {!! Form::close() !!}
+                                </form>
 
 
                             </div>
@@ -104,7 +111,7 @@
             <div class="box-header">
                 <div class="row" style="align-items: right">
                     <div class="col-md-2" style="float: right;">
-                        <form id="exportPdf" target="_blank" method="post" action="{{ route('rh.horastrabalhadasdiarias.pdf') }}">
+                        <form id="exportPdf" target="_blank" method="post" action="{{{ route('rh.horastrabalhadasdiarias.pdf') }}}">
                             {!! ActionButton::grid([
                                     'type' => 'LINE',
                                     'buttons' => [

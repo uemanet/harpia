@@ -19,9 +19,10 @@
             <h3 class="box-title"><b>Aluno</b>: {{$aluno->pessoa->pes_nome}} <b>Disciplina</b>: {{$disciplina->dis_nome}}</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => ['academico.lancamentostccs.create'], "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="{{ route('academico.lancamentostccs.create') }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
                 @include('Academico::lancamentostccs.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -1,45 +1,60 @@
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ofc_crs_id')) has-error @endif">
-        {!! Form::label('ofc_crs_id', 'Curso*', ['class' => 'control-label']) !!}
+        <label for="ofc_crs_id" class="control-label">Curso*</label>
         <div class="controls">
-            {!! Form::select('ofc_crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Selecione um curso', 'id' => 'ofc_crs_id']) !!}
+            <select name="ofc_crs_id" class="form-control" id="ofc_crs_id">
+    <option value="">Selecione um curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ofc_crs_id')) <p class="help-block">{{ $errors->first('ofc_crs_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ofc_mtc_id')) has-error @endif">
-        {!! Form::label('ofc_mtc_id', 'Matriz Curricular*', ['class' => 'control-label']) !!}
+        <label for="ofc_mtc_id" class="control-label">Matriz Curricular*</label>
         <div class="controls">
-            {!! Form::select('ofc_mtc_id', [], null, ['class' => 'form-control', 'id' => 'ofc_mtc_id']) !!}
+            <select name="ofc_mtc_id" class="form-control" id="ofc_mtc_id">
+</select>
             @if ($errors->has('ofc_mtc_id')) <p class="help-block">{{ $errors->first('ofc_mtc_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ofc_mdl_id')) has-error @endif">
-        {!! Form::label('ofc_mdl_id', 'Modalidade*', ['class' => 'control-label']) !!}
+        <label for="ofc_mdl_id" class="control-label">Modalidade*</label>
         <div class="controls">
-            {!! Form::select('ofc_mdl_id', $modalidades, old('ofc_mdl_id'), ['class' => 'form-control', 'placeholder' => 'Selecione a modalidade']) !!}
+            <select name="ofc_mdl_id" class="form-control">
+    <option value="">Selecione a modalidade</option>
+    @foreach($modalidades as $key => $value)
+        <option value="{{ $key }}" {{ old('ofc_mdl_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('ofc_mdl_id')) <p class="help-block">{{ $errors->first('ofc_mdl_id') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
         <div class="form-group col-md-9 @if ($errors->has('polos')) has-error @endif">
-            {!! Form::label('polos', 'Polos*', ['class' => 'control-label']) !!}
+            <label for="polos" class="control-label">Polos*</label>
             <div class="controls">
-                {!! Form::select('polos[]', $polos, old('polos[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+                <select name="polos[]" class="form-control" multiple="multiple">
+    @foreach($polos as $key => $value)
+        <option value="{{ $key }}" {{ old('polos[]') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                 @if ($errors->has('polos')) <p class="help-block">{{ $errors->first('polos') }}</p> @endif
             </div>
         </div>
         <div class="form-group col-md-3 @if ($errors->has('ofc_ano')) has-error @endif">
-            {!! Form::label('ofc_ano', 'Ano*', ['class' => 'control-label']) !!}
+            <label for="ofc_ano" class="control-label">Ano*</label>
             <div class="controls">
-                {!! Form::number('ofc_ano', old('ofc_ano'), ['class' => 'form-control']) !!}
+                <input type="number" name="ofc_ano" value="{{ old('ofc_ano') }}" class="form-control" >
                 @if ($errors->has('ofc_ano')) <p class="help-block">{{ $errors->first('ofc_ano') }}</p> @endif
             </div>
         </div>
 </div>
 <div class="row">
     <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
     </div>
 </div>
 

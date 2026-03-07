@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de perfis</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'seguranca.perfis.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.perfis.create') }}" method="POST" id="form" role="form">
+    @csrf
                 @include('Seguranca::perfis.includes.formulario_create')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

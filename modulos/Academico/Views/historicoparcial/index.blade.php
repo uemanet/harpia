@@ -18,7 +18,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('academico.historicoparcial.index') }}">
+                <form method="GET" action="{{{ route('academico.historicoparcial.index') }}}">
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}" placeholder="CPF">
                     </div>

@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de ambientes virtuais</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($ambientevirtual, ["route" => ['integracao.ambientesvirtuais.edit',$ambientevirtual->amb_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('integracao.ambientesvirtuais.edit', [$ambientevirtual->amb_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $ambientevirtual - inputs devem usar old('campo', $ambientevirtual->campo) --}}
                 @include('Integracao::ambientesvirtuais.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

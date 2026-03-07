@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de áreas de conhecimento</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'rh.areasconhecimentos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.areasconhecimentos.create') }}" method="POST" id="form" role="form">
+    @csrf
             @include('RH::areasconhecimentos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

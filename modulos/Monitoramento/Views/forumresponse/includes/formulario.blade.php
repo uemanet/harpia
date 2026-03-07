@@ -1,25 +1,34 @@
 <div class="row">
     <div class="form-group col-md-3">
-        {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
-        {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha um curso']) !!}
+        <label for="crs_id" class="control-label">Curso*</label>
+        <select name="crs_id" class="form-control">
+    <option value="">Escolha um curso</option>
+    @foreach($cursos as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
     </div>
     <div class="form-group col-md-3">
-        {!! Form::label('ofc_id', 'Oferta do Curso*', ['class' => 'control-label']) !!}
-        {!! Form::select('ofc_id', [], null, ['class' => 'form-control']) !!}
+        <label for="ofc_id" class="control-label">Oferta do Curso*</label>
+        <select name="ofc_id" class="form-control">
+</select>
     </div>
     <div class="form-group col-md-3">
-        {!! Form::label('trm_id', 'Turma*', ['class' => 'control-label']) !!}
-        {!! Form::select('trm_id', [], null, ['class' => 'form-control']) !!}
+        <label for="trm_id" class="control-label">Turma*</label>
+        <select name="trm_id" class="form-control">
+</select>
     </div>
     <div class="form-group col-md-3">
-        {!! Form::label('grp_id', 'Tipo de Tutoria*', ['class' => 'control-label']) !!}
-        {!! Form::select('grp_id', [], null, ['class' => 'form-control']) !!}
+        <label for="grp_id" class="control-label">Tipo de Tutoria*</label>
+        <select name="grp_id" class="form-control">
+</select>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-3">
-        {!! Form::label('tut_id', 'Tutor*', ['class' => 'control-label']) !!}
-        {!! Form::select('tut_id', [], null, ['class' => 'form-control']) !!}
+        <label for="tut_id" class="control-label">Tutor*</label>
+        <select name="tut_id" class="form-control">
+</select>
     </div>
     <div class="form-group col-md-1">
         <label for="" class="control-label"></label>

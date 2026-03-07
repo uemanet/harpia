@@ -14,10 +14,13 @@
             <h3 class="box-title">Formulário de Edição de Titulação</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($titulacaoInfo,["route" => ['geral.pessoas.titulacoesinformacoes.edit',$titulacaoInfo->tin_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('tin_pes_id', $pessoa) }}
+            <form action="{{ route('geral.pessoas.titulacoesinformacoes.edit', [$titulacaoInfo->tin_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $titulacaoInfo - inputs devem usar old('campo', $titulacaoInfo->campo) --}}
+            <input type="hidden" name="tin_pes_id" value="{{ $pessoa }}" >
             @include('Geral::titulacoesinformacoes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

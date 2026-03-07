@@ -18,9 +18,10 @@
             <h3 class="box-title">Formulário de cadastro de ofertas de cursos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'academico.ofertascursos.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.ofertascursos.create') }}" method="POST" id="form" role="form">
+    @csrf
                 @include('Academico::ofertascursos.includes.formulario_create')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

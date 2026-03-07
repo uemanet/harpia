@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de banco</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($banco, ["route" => ['rh.bancos.edit',$banco->ban_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.bancos.edit', [$banco->ban_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $banco - inputs devem usar old('campo', $banco->campo) --}}
                 @include('RH::bancos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

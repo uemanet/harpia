@@ -15,7 +15,8 @@
                 <span class="label label-success pull-right">Colaborador</span>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/rh/colaboradores/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="url(" method="POST" id="form" role="form">
+    @csrf
 
             <h4 class="box-title">
                 Dados de Pessoa
@@ -28,10 +29,10 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar Colaborador', ['class' => 'btn btn-primary pull-right']) !!}
+                    <button type="submit" class="btn btn-primary pull-right">Salvar Colaborador</button>
                 </div>
             </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

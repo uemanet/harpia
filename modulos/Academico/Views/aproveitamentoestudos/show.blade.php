@@ -24,7 +24,7 @@
         <div class="box-body">
             <div class="row">
                 <div class="form-group col-md-4">
-                    {!! Form::label('crs_id', 'Curso*', ['class' => 'control-label']) !!}
+                    <label for="crs_id" class="control-label">Curso*</label>
                     <select id="crs_id" class="form-control">
                         @if($matriculas->count())
                             <option>Selecione o curso</option>
@@ -37,8 +37,9 @@
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    {!! Form::label('ofd_per_id', 'Período Letivo', ['class' => 'control-label']) !!}
-                    {!! Form::select('ofd_per_id', [], null, ['class' => 'form-control']) !!}
+                    <label for="ofd_per_id" class="control-label">Período Letivo</label>
+                    <select name="ofd_per_id" class="form-control">
+</select>
                 </div>
                 <div class="form-group col-md-1">
                     <label for="" class="control-label"></label>

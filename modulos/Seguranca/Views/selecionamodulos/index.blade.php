@@ -21,7 +21,7 @@
                                       <div class="icon">
                                           <i class="{{$modulo->mod_icone}}"></i>
                                       </div>
-                                      <a href="{{ route($modulo->mod_slug.'.index.index') }}" style="padding-top:15px;padding-bottom:15px" class="small-box-footer">
+                                      <a href="{{{ route($modulo->mod_slug.'.index.index') }}}" style="padding-top:15px;padding-bottom:15px" class="small-box-footer">
                                           Acessar <i class="fa fa-arrow-circle-right"></i>
                                       </a>
                                   </div>
@@ -43,7 +43,7 @@
                           <i class="fa fa-arrow-right bg-blue"></i>
 
                           <div class="timeline-item">
-                            <h3 class="timeline-header">Bem-Vindo ao <a href="{{ route('index') }}">Harpia</a></h3>
+                            <h3 class="timeline-header">Bem-Vindo ao <a href="{{{ route('index') }}}">Harpia</a></h3>
 
                             <div class="timeline-body">
                               Escolha um dos módulos para começar!

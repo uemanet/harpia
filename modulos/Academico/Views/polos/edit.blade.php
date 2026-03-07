@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de polos</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($polo, ["route" => ['academico.polos.edit',$polo->pol_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.polos.edit', [$polo->pol_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $polo - inputs devem usar old('campo', $polo->campo) --}}
                 @include('Academico::polos.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

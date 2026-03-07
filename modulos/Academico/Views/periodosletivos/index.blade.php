@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('academico.periodosletivos.index') }}">
+                <form method="GET" action="{{{ route('academico.periodosletivos.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="per_nome" id="per_nome" value="{{Request::input('per_nome')}}" placeholder="Nome do período">
                     </div>

@@ -14,11 +14,12 @@
             <h3 class="box-title">Formulário de edição de módulo</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($modulo, ["route" =>
-                            ['academico.cursos.matrizescurriculares.modulosmatrizes.edit',$modulo->mdo_id],
-                            "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.cursos.matrizescurriculares.modulosmatrizes.edit', [$modulo->mdo_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $modulo - inputs devem usar old('campo', $modulo->campo) --}}
             @include('Academico::modulosmatrizes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

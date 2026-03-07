@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de função</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($funcao, ["route" => ['rh.funcoes.edit',$funcao->fun_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.funcoes.edit', [$funcao->fun_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $funcao - inputs devem usar old('campo', $funcao->campo) --}}
                 @include('RH::funcoes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

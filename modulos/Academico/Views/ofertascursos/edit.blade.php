@@ -18,9 +18,11 @@
             <h3 class="box-title">Formulário de edição de ofertas de cursos</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => ['academico.ofertascursos.edit', 'id' => $ofertaCurso->ofc_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.ofertascursos.edit', ['id' => $ofertaCurso->ofc_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
                 @include('Academico::ofertascursos.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

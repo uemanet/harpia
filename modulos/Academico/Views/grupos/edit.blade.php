@@ -18,9 +18,12 @@
             <h3 class="box-title">Formulário de edição de grupo</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($grupo,["url" => url('/') . "/academico/grupos/edit/$grupo->grp_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="url(" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $grupo - inputs devem usar old('campo', $grupo->campo) --}}
             @include('Academico::grupos.includes.formulario_edit')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

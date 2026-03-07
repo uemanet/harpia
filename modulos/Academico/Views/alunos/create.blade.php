@@ -15,7 +15,8 @@
                 <span class="label label-success pull-right">Aluno</span>
         </div>
         <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/alunos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="url(" method="POST" id="form" role="form">
+    @csrf
 
             <h4 class="box-title">
                 Dados de Pessoa
@@ -24,10 +25,10 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar Aluno', ['class' => 'btn btn-primary pull-right']) !!}
+                    <button type="submit" class="btn btn-primary pull-right">Salvar Aluno</button>
                 </div>
             </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

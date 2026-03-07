@@ -14,9 +14,12 @@
             <h3 class="box-title">Formulário de edição de titulações</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($titulacao, ["route" => ['geral.titulacoes.edit',$titulacao->tit_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('geral.titulacoes.edit', [$titulacao->tit_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $titulacao - inputs devem usar old('campo', $titulacao->campo) --}}
                 @include('Geral::titulacoes.includes.formulario')
-            {!! Form::close() !!}
+            </form>
 
         </div>
     </div>

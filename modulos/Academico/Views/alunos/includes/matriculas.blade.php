@@ -183,17 +183,22 @@
                                         <div class="modal-body">
                                             <div class="row">
                                                 <div class="form-group col-md-12">
-                                                    {!! Form::label('situacao', 'Situação*', ['class' => 'control-label']) !!}
+                                                    <label for="situacao" class="control-label">Situação*</label>
                                                     <div class="controls">
-                                                        {!! Form::select('situacao', $situacaoArray, array_shift($situacaoArray), ['placeholder' => 'Selecione uma opção', 'class' => 'form-control', 'id' => 'situacao-select'.$loop->index ]) !!}
+                                                        <select name="situacao" class="form-control" id="situacao-select">
+    <option value="">Selecione uma opção</option>
+    @foreach($situacaoArray as $key => $value)
+        <option value="{{ $key }}" {{ array_shift($situacaoArray) == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-md-12">
-                                                    {!! Form::label('observacao_situacao', 'Observação', ['class' => 'control-label']) !!}
+                                                    <label for="observacao_situacao" class="control-label">Observação</label>
                                                     <div class="controls">
-                                                        {!! Form::text('observacao_situacao', null, ['class' => 'form-control', 'id' => 'observacao_situacao'.$loop->index ]) !!}
+                                                        <input type="text" name="observacao_situacao" class="form-control" id="observacao_situacao" >
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,26 +235,28 @@
                                             <form class="formUpdate" action="" method="POST">
                                                 <input name="_method" type="hidden" value="PUT">
                                                 {{csrf_field()}}
-                                                {!! Form::hidden('trm_id' . $loop->index, '') !!}
+                                                <input type="hidden" name="'trm_id' . $loop->index" >
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            {!! Form::label('mat_pol_id' . $loop->index, 'Polo*') !!}
-                                                            {!! Form::select('mat_pol_id' . $loop->index, [], null, ['class' => 'form-control poloSelect']) !!}
+                                                            <label for="'mat_pol_id' . $loop->index">Polo*</label>
+                                                            <select name="'mat_pol_id' . $loop->index" class="form-control poloSelect">
+</select>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            {!! Form::label('mat_grp_id' . $loop->index, 'Grupo') !!}
-                                                            {!! Form::select('mat_grp_id' . $loop->index, [], null, ['class' => 'form-control']) !!}
+                                                            <label for="'mat_grp_id' . $loop->index">Grupo</label>
+                                                            <select name="'mat_grp_id' . $loop->index" class="form-control">
+</select>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-md-12">
-                                                        {!! Form::label('observacao_pologrupo', 'Observação', ['class' => 'control-label']) !!}
+                                                        <label for="observacao_pologrupo" class="control-label">Observação</label>
                                                         <div class="controls">
-                                                            {!! Form::text('observacao_pologrupo', null, ['class' => 'form-control', 'id' => 'observacao_pologrupo'.$loop->index ]) !!}
+                                                            <input type="text" name="observacao_pologrupo" class="form-control" id="observacao_pologrupo" >
                                                         </div>
                                                     </div>
                                                 </div>

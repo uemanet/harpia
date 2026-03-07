@@ -1,9 +1,14 @@
 <div class="row">
 
     <div class="form-group col-md-4 @if ($errors->has('paq_mtc_id')) has-error @endif">
-        {!! Form::label('paq_mtc_id', 'Matrícula*', ['class' => 'control-label']) !!}
+        <label for="paq_mtc_id" class="control-label">Matrícula*</label>
         <div class="controls">
-            {!! Form::select('paq_mtc_id', $matriculas, old('paq_mtc_id'), ['class' => 'form-control', 'placeholder' => 'Selecione a matrícula']) !!}
+            <select name="paq_mtc_id" class="form-control">
+    <option value="">Selecione a matrícula</option>
+    @foreach($matriculas as $key => $value)
+        <option value="{{ $key }}" {{ old('paq_mtc_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('paq_mtc_id')) <p class="help-block">{{ $errors->first('paq_mtc_id') }}</p> @endif
         </div>
     </div>
@@ -15,7 +20,7 @@
     @endphp
 
     <div class="form-group col-md-5">
-        {!! Form::label('paq_periodo_aquisitivo', 'Período de Gozo') !!}
+        <label for="paq_periodo_aquisitivo">Período de Gozo</label>
         <select name="paq_periodo_aquisitivo" class="form-control">
             @foreach($periodosDisponiveis as $periodo)
                 @php $value = $periodo['inicio'] . '|' . $periodo['fim']; @endphp
@@ -27,17 +32,17 @@
     </div>
 
     <div class="form-group col-md-4 @if ($errors->has('paq_data_inicio')) has-error @endif">
-        {!! Form::label('paq_data_inicio', 'Data de Início', ['class' => 'control-label']) !!}
+        <label for="paq_data_inicio" class="control-label">Data de Início</label>
         <div class="controls">
-            {!! Form::text('paq_data_inicio',old('paq_data_inicio'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="paq_data_inicio" value="{{ old('paq_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('paq_data_inicio')) <p
                     class="help-block">{{ $errors->first('paq_data_inicio') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('paq_data_fim')) has-error @endif">
-        {!! Form::label('paq_data_fim', 'Data de Fim', ['class' => 'control-label']) !!}
+        <label for="paq_data_fim" class="control-label">Data de Fim</label>
         <div class="controls">
-            {!! Form::text('paq_data_fim',old('paq_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="paq_data_fim" value="{{ old('paq_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('paq_data_fim')) <p
                     class="help-block">{{ $errors->first('paq_data_fim') }}</p> @endif
         </div>
@@ -45,9 +50,9 @@
 </div>
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('paq_observacao')) has-error @endif">
-        {!! Form::label('paq_observacao', 'Observação', ['class' => 'control-label']) !!}
+        <label for="paq_observacao" class="control-label">Observação</label>
         <div class="controls">
-            {!! Form::text('paq_observacao', old('paq_observacao'), ['class' => 'form-control']) !!}
+            <input type="text" name="paq_observacao" value="{{ old('paq_observacao') }}" class="form-control" >
             @if ($errors->has('paq_observacao')) <p class="help-block">{{ $errors->first('paq_observacao') }}</p> @endif
         </div>
     </div>
@@ -56,7 +61,7 @@
     <div class="form-group col-md-12">
         <label class="control-label" style="visibility: hidden">Botão</label>
         <div class="controls">
-            {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+            <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
         </div>
     </div>
 </div>

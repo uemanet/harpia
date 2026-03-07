@@ -24,9 +24,10 @@
             <h3 class="box-title">Formulário de cadastro de justificativas</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'rh.horastrabalhadas.justificativas.create', "method" => "POST", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
+            <form action="{{ route('rh.horastrabalhadas.justificativas.create') }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+    @csrf
                 @include('RH::justificativas.includes.formulario_create')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

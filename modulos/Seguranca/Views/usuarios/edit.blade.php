@@ -14,7 +14,10 @@
             <h3 class="box-title">Formulário de edição de usuário</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($usuario,['route' => ['seguranca.usuarios.edit', $usuario->usr_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('seguranca.usuarios.edit', [$usuario->usr_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $usuario - inputs devem usar old('campo', $usuario->campo) --}}
             <h4 class="box-title">
                 Dados de Usuário
             </h4>
@@ -28,10 +31,10 @@
 
             <div class="row">
                 <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+                    <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
                 </div>
             </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

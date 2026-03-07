@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de Cadastro de Lista de Carteiras de Estudante</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(['route' => 'academico.carteirasestudantis.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.carteirasestudantis.create') }}" method="POST" id="form" role="form">
+    @csrf
                 @include('Academico::carteirasestudantis.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

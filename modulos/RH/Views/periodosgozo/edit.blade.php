@@ -19,9 +19,12 @@
             <h3 class="box-title">Formulário de Edição de Férias</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($periodoGozo,["route" => ['rh.colaboradores.periodosgozo.edit',$periodoGozo->pgz_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('rh.colaboradores.periodosgozo.edit', [$periodoGozo->pgz_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $periodoGozo - inputs devem usar old('campo', $periodoGozo->campo) --}}
             @include('RH::periodosgozo.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

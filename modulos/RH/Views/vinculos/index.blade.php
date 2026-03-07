@@ -26,7 +26,7 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <form method="GET" action="{{ route('rh.vinculos.index') }}">
+                <form method="GET" action="{{{ route('rh.vinculos.index') }}}">
                     <div class="col-md-9">
                         <input type="text" class="form-control" name="vin_descricao" id="vin_id" value="{{Request::input('vin_descricao')}}" placeholder="Descrição do vínculo">
                     </div>

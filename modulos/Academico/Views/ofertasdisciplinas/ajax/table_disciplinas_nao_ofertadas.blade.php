@@ -35,25 +35,25 @@
                                     <td>{{ $disciplina->mdc_tipo_disciplina }}</td>
                                     <td>
                                         <div class="form-group">
-                                            {!! Form::select('ofd_tipo_avaliacao',
-                                                ['numerica' => 'Numérica', 'conceitual' => 'Conceitual'], null,
-                                                ['class' => 'form-control tipo-avaliacao']
-                                                )
-                                            !!}
+                                            <select name="ofd_tipo_avaliacao" class="form-control tipo-avaliacao">
+    <option value="numerica">Numérica</option>
+    <option value="conceitual">Conceitual</option>
+</select>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            {!! Form::number('ofd_qtd_vagas',0, ['class' => 'form-control qtd-vagas']) !!}
+                                            <input type="number" name="ofd_qtd_vagas" value="0" class="form-control qtd-vagas" >
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            {!! Form::select('ofd_prf_id',
-                                                $professores, null,
-                                                ['class' => 'form-control professor', 'placeholder' => 'Selecione um professor']
-                                                )
-                                            !!}
+                                            <select name="ofd_prf_id" class="form-control professor">
+    <option value="">Selecione um professor</option>
+    @foreach($professores as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
                                         </div>
                                     </td>
                                     <td>

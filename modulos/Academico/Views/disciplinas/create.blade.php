@@ -14,9 +14,10 @@
             <h3 class="box-title">Formulário de cadastro de disciplinas</h3>
         </div>
         <div class="box-body">
-            {!! Form::open(["route" => 'academico.disciplinas.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
+            <form action="{{ route('academico.disciplinas.create') }}" method="POST" id="form" role="form">
+    @csrf
             @include('Academico::disciplinas.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop

@@ -21,17 +21,18 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                {!! Form::open(["url" => url('/') . "/academico/controlederegistro/index", "method" => "GET", "id" => "form", "role" => "form"]) !!}
+                <form action="url(" method="GET" id="form" role="form">
+    @csrf
                 <div class="col-md-5">
-                    {{ Form::text('pes_nome', null, ['class' => 'form-control', 'id' => 'pes_nome', 'value' => Request::input('pes_nome'), 'placeholder' => 'Nome']) }}
+                    <input type="text" name="pes_nome" class="form-control" id="pes_nome" value="Request" placeholder="Nome" >
                 </div>
                 <div class="col-md-5">
-                    {{ Form::text('pes_email', null, ['class' => 'form-control', 'id' => 'pes_email', 'value' => Request::input('pes_email'), 'placeholder' => 'Email']) }}
+                    <input type="text" name="pes_email" class="form-control" id="pes_email" value="Request" placeholder="Email" >
                 </div>
                 <div class="col-md-2">
-                    {{ Form::submit('Buscar', ['class' => 'form-control btn-primary']) }}
+                    <button type="submit" class="form-control btn-primary">Buscar</button>
                 </div>
-                {!! Form::close() !!}
+                </form>
             </div>
         </div>
         <!-- /.box-body -->

@@ -14,10 +14,13 @@
             <h3 class="box-title">Formulário de Edição de Atividade Extra</h3>
         </div>
         <div class="box-body">
-            {!! Form::model($atividade_extra,["route" => ['rh.colaboradores.atividadesextrascolaboradores.edit',$atividade_extra->atc_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('atc_col_id', $atividade_extra->colaborador->col_id) }}
+            <form action="{{ route('rh.colaboradores.atividadesextrascolaboradores.edit', [$atividade_extra->atc_id]) }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $atividade_extra - inputs devem usar old('campo', $atividade_extra->campo) --}}
+            <input type="hidden" name="atc_col_id" value="{{ $atividade_extra->colaborador->col_id }}" >
             @include('RH::atividadesextrascolaboradores.includes.formulario')
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop
