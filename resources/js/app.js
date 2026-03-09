@@ -1,6 +1,8 @@
 // Import jQuery primeiro (para manter compatibilidade com seus plugins antigos)
 window.$ = window.jQuery = require('jquery');
-
+window.toastr = require('toastr');
+window.Swal = require('sweetalert2');
+window.swal = window.Swal;
 // Importa o Bootstrap 5 (versão bundle já inclui o Popper para os dropdowns funcionarem)
 require('bootstrap/dist/js/bootstrap.bundle.min');
 
@@ -37,6 +39,7 @@ require('./Chart.js'); // TODO: verificar caminho
 require('./cpfcnpj.min.js'); // TODO: verificar caminho
 require('fullcalendar');
 require('./harpia.js'); // TODO: verificar caminho
+
 $(document).ready(function() {
 
     $("select").select2({

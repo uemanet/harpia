@@ -29,7 +29,7 @@
     <!-- ./wrapper -->
 
     <script src="{{ asset('/js/app.js') }}"></script>
-{{--    {!! Flash::render() !!}--}}
+    {!! Flash::render() !!}
     @yield('scripts')
 </body>
 </html>

@@ -12,7 +12,8 @@
 
     @yield('stylesheets')
 </head>
-<body class="hold-transition login-page">
+{{--<body class="hold-transition login-page">--}}
+<body class="login-page bg-body-secondary">
     @yield('content')
 
     @include('layouts.includes.footer.clean')
