@@ -6,17 +6,19 @@
 
         var button = $(this);
 
-        swal({
+        Swal.fire({
             title: "Tem certeza que deseja excluir?",
             text: "Você não poderá recuperar essa informação!",
-            type: "warning",
+            icon: "warning", // 'type' foi alterado para 'icon' no SweetAlert2
             showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
+            confirmButtonColor: "#dc3545", // Cor vermelha atualizada para o padrão danger do BS5
+            cancelButtonColor: "#6c757d",  // Cor secundária do BS5 para o botão cancelar
             confirmButtonText: "Sim, pode excluir!",
-            cancelButtonText: "Não, quero cancelar!",
-            closeOnConfirm: true
-        }, function(isConfirm){
-            if (isConfirm) {
+            cancelButtonText: "Não, quero cancelar!"
+            // 'closeOnConfirm' já não é necessário no SweetAlert2
+        }).then((result) => {
+            // Nova sintaxe com Promises substitui a antiga function(isConfirm)
+            if (result.isConfirmed) {
                 button.closest("form").submit();
             }
         });
@@ -31,10 +33,10 @@ $.harpia = {};
 
     $.harpia.showloading = function() {
         var html = "<div id='loading-overlay' class='loading-lockscreen'></div>"+
-                   "<div id='loading-message' class='loading-lockscreen'>"+
-                     "<p>Carregando...</p>"+
-                     "<div class='three-quarters'></div>"+
-                   "</div>";
+            "<div id='loading-message' class='loading-lockscreen'>"+
+            "<p>Carregando...</p>"+
+            "<div class='three-quarters'></div>"+
+            "</div>";
 
         $("html").append(html);
     };
@@ -61,7 +63,8 @@ $.harpia = {};
             error: function(e) {
                 $.harpia.hideloading();
 
-                sweetAlert("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
+                // sweetAlert substituído por Swal.fire
+                Swal.fire("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
 
                 result = false;
             }
@@ -91,7 +94,8 @@ $.harpia = {};
             error: function(e) {
                 $.harpia.hideloading();
 
-                sweetAlert("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
+                // sweetAlert substituído por Swal.fire
+                Swal.fire("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
 
                 result = false;
             }

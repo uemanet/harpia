@@ -25,7 +25,7 @@
                             <input type="text" class="form-control" name="mit_nome" id="mit_nome" value="{{Request::input('mit_nome')}}" placeholder="Nome">
                         </div>
                         <div class="col-md-4 px-1">
-                            <select name="mit_mod_id" id="mit_mod_id" class="form-control" style="min-height: 38px !important;">
+                            <select name="mit_mod_id" id="mit_mod_id" class="form-control">
                                 <option value="">Selecione um módulo</option>
                                 @foreach($modulos as $key => $value)
                                     <option value="{{$key}}" @if($key == Request::input('mit_mod_id')) selected @endif>{{$value}}</option>
