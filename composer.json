@@ -19,14 +19,13 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "laravel/framework": "^10.0",
+        "php": "^8.2",
+        "laravel/framework": "^11.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "mpdf/mpdf": "^8.0",
         "ramsey/uuid": "^4.2",
-        "doctrine/dbal": "^3.0",
         "maatwebsite/excel": "^3.1",
-        "laravel/tinker": "^2.7",
+        "laravel/tinker": "^2.9",
         "uemanet/eloquent-table": "dev-laravel10",
         "laravel/helpers": "^1.1",
         "laravel/ui": "^4.0",
@@ -38,15 +37,15 @@
         "fakerphp/faker": "^1.23",
         "filp/whoops": "^2.0",
         "mockery/mockery": "^1.6",
-        "symfony/css-selector": "^6.0",
-        "symfony/dom-crawler": "^6.0",
+        "symfony/css-selector": "^7.0",
+        "symfony/dom-crawler": "^7.0",
         "phpunit/phpunit": "^10.0",
         "squizlabs/php_codesniffer": "^3.7",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "symfony/console": "^6.0",
+        "symfony/console": "^7.0",
         "brianium/paratest": "^7.0",
-        "barryvdh/laravel-debugbar": "^3.8",
-        "laravel/boost": "^1.8"
+        "barryvdh/laravel-debugbar": "^3.16",
+        "laravel/boost": "^2.1"
     },
     "autoload": {
         "classmap": [

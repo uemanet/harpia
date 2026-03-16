@@ -31,7 +31,7 @@ class ModulosTestCase extends \TestCase
      * @param null $connection
      * @return \TestCase
      */
-    protected function assertDatabaseHas($table, array $data, $connection = null)
+    protected function assertDatabaseHas($table, array $data = [], $connection = null)
     {
         /*
          * Previne erros causados pela diferenca de tempo
@@ -42,7 +42,7 @@ class ModulosTestCase extends \TestCase
             unset($data['updated_at']);
         }
 
-        return parent::assertDatabaseHas($table, $data);
+        return parent::assertDatabaseHas($table, $data, $connection);
     }
 
     public function setUp(): void
