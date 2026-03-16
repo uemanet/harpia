@@ -9,13 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de perfis</h3>
-        </div>
-        <div class="box-body">
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Formulário de cadastro de perfis</h3>
+            </div>
             {!! Form::open(["route" => 'seguranca.perfis.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                @include('Seguranca::perfis.includes.formulario_create')
+            <div class="card-body">
+                <div class="row">
+                    @include('Seguranca::perfis.includes.formulario_create')
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
             {!! Form::close() !!}
         </div>
     </div>

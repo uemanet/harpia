@@ -1,81 +1,11 @@
-///* CSS HEX */
-//--blue-ncs: #3C8DBCff;
-//--persian-blue: #0029C4ff;
-//--alice-blue: #E9F1F5ff;
-//--vermilion: #DD4B39ff;
-//--french-blue: #0073B7ff;
-//--pigment-green: #00A65Aff;
-//--aero: #00C0EFff;
-//--antiflash-white: #ECF0F5ff;
-//
-///* CSS HSL */
-//--blue-ncs: hsla(202, 52%, 49%, 1);
-//--persian-blue: hsla(227, 100%, 38%, 1);
-//--alice-blue: hsla(200, 38%, 94%, 1);
-//--vermilion: hsla(7, 71%, 55%, 1);
-//--french-blue: hsla(202, 100%, 36%, 1);
-//--pigment-green: hsla(153, 100%, 33%, 1);
-//--aero: hsla(192, 100%, 47%, 1);
-//--antiflash-white: hsla(213, 31%, 94%, 1);
-
 /* SCSS HEX */
 $blue-ncs: #3C8DBCff;
-$persian-blue: #0029C4ff;
-$alice-blue: #E9F1F5ff;
-$vermilion: #DD4B39ff;
-$french-blue: #0073B7ff;
-$pigment-green: #00A65Aff;
-$aero: #00C0EFff;
-$antiflash-white: #ECF0F5ff;
 
 /* SCSS HSL */
 $blue-ncs: hsla(202, 52%, 49%, 1);
-$persian-blue: hsla(227, 100%, 38%, 1);
-$alice-blue: hsla(200, 38%, 94%, 1);
-$vermilion: hsla(7, 71%, 55%, 1);
-$french-blue: hsla(202, 100%, 36%, 1);
-$pigment-green: hsla(153, 100%, 33%, 1);
-$aero: hsla(192, 100%, 47%, 1);
-$antiflash-white: hsla(213, 31%, 94%, 1);
 
 /* SCSS RGB */
 $blue-ncs: rgba(60, 141, 188, 1);
-$persian-blue: rgba(0, 41, 196, 1);
-$alice-blue: rgba(233, 241, 245, 1);
-$vermilion: rgba(221, 75, 57, 1);
-$french-blue: rgba(0, 115, 183, 1);
-$pigment-green: rgba(0, 166, 90, 1);
-$aero: rgba(0, 192, 239, 1);
-$antiflash-white: rgba(236, 240, 245, 1);
-
-/* SCSS Gradient */
-$gradient-top: linear-gradient(0deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-right: linear-gradient(90deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-bottom: linear-gradient(180deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-left: linear-gradient(270deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-top-right: linear-gradient(45deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-bottom-right: linear-gradient(135deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-top-left: linear-gradient(225deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-bottom-left: linear-gradient(315deg, #3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-$gradient-radial: radial-gradient(#3C8DBCff, #0029C4ff, #E9F1F5ff, #DD4B39ff, #0073B7ff, #00A65Aff, #00C0EFff, #ECF0F5ff);
-
 
 // Cores do Tema
-$primary: $blue-ncs;    // Você pode alterar para a cor primária do seu tema
-$secondary: $alice-blue;  // Cor secundária do seu tema
-$success: $pigment-green;    // Cor de sucesso
-$info: $french-blue;       // Cor de informação
-$warning: #ffc107;    // Cor de aviso
-$danger: $vermilion;     // Cor de perigo/erro
-$light: #f8f9fa;      // Cor clara
-$dark: #343a40;       // Cor escura
-
-// Variáveis de fontes
-$font-family-sans-serif: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$font-size-base: 1rem;
-
-// Variáveis de espaçamento
-$spacer: 1rem;
-
-// Outras variáveis personalizadas do seu tema
-// ...
+$primary: $blue-ncs;

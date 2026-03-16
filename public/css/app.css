@@ -15613,7 +15613,6 @@ fieldset legend {
 /* SCSS HEX */
 /* SCSS HSL */
 /* SCSS RGB */
-/* SCSS Gradient */
 .login-page,
 .register-page {
   background-color: #d2d6de;
@@ -15624,7 +15623,7 @@ fieldset legend {
 }
 
 .bg-harpia-secondary {
-  background-color: rgb(236, 240, 245);
+  background-color: white;
 }
 
 .text-harpia-primary {
@@ -15632,7 +15631,26 @@ fieldset legend {
 }
 
 .text-harpia-secondary {
-  color: rgb(236, 240, 245);
+  color: white;
+}
+
+.btn-primary {
+  color: white;
+}
+
+.btn-primary:hover {
+  color: white;
+}
+
+.btn-success {
+  color: white;
+}
+
+.vp-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .navbar-harpia {
