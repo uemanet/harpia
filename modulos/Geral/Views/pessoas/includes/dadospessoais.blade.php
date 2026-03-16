@@ -1,6 +1,6 @@
 @section('stylesheets')
     <style>
-        .title-box {
+        .title-card {
             display: inline-block;
             font-size: 18px;
             margin: 0;
@@ -13,18 +13,18 @@
 <div class="row">
     <div class="col-md-12">
         <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Dados Pessoais</h3>
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">Dados Pessoais</h3>
 
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                <div class="card-tools pull-right">
+                    <button type="button" class="btn btn-card-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
+            <!-- /.card-header -->
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         <p><strong>Nome Completo: </strong> {{$pessoa->pes_nome}}</p>
@@ -46,36 +46,26 @@
                         <p><strong>Estrangeiro: </strong> {{($pessoa->pes_estrangeiro) ? 'Sim' : 'Não'}}</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Endereço</h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <p><strong>Endereço: </strong> {{$pessoa->pes_endereco}}</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p><strong>Complemento: </strong> {{$pessoa->pes_complemento}}</p>
-                                        <p><strong>Número: </strong> {{$pessoa->pes_numero}}</p>
-                                        <p><strong>Bairro: </strong> {{$pessoa->pes_bairro}}</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p><strong>CEP: </strong> {{$pessoa->pes_cep}}</p>
-                                        <p><strong>Cidade: </strong> {{$pessoa->pes_cidade}}</p>
-                                        <p><strong>Estado: </strong> {{$pessoa->pes_estado}}</p>
-                                    </div>
-                                </div>
+                <hr>
 
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>Endereço: </strong> {{$pessoa->pes_endereco}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Complemento: </strong> {{$pessoa->pes_complemento}}</p>
+                        <p><strong>Número: </strong> {{$pessoa->pes_numero}}</p>
+                        <p><strong>Bairro: </strong> {{$pessoa->pes_bairro}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>CEP: </strong> {{$pessoa->pes_cep}}</p>
+                        <p><strong>Cidade: </strong> {{$pessoa->pes_cidade}}</p>
+                        <p><strong>Estado: </strong> {{$pessoa->pes_estado}}</p>
                     </div>
                 </div>
             </div>
-            <!-- /.box-body -->
+            <!-- /.card-body -->
         </div>
-        <!-- /.box -->
+        <!-- /.card -->
     </div>
 </div>

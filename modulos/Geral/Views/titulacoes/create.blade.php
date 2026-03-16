@@ -9,13 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de titulações</h3>
-        </div>
-        <div class="box-body">
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Formulário de cadastro de titulações</h3>
+            </div>
             {!! Form::open(["route" => "geral.titulacoes.create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('Geral::titulacoes.includes.formulario')
+            <div class="card-body">
+                <div class="row">
+                    @include('Geral::titulacoes.includes.formulario')
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
             {!! Form::close() !!}
         </div>
     </div>

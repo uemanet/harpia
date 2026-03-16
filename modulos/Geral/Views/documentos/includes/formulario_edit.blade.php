@@ -64,15 +64,7 @@
 </div>
 {!! Form::input('hidden' , 'doc_pes_id', $pessoa->pes_id ,  ['class' => 'form-control']) !!}
 
-<div class="row">
-    <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
-    </div>
-</div>
-
 @section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
     <script type="text/javascript">
         $(function () {
 
