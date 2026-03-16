@@ -1,9 +1,19 @@
-///* Força o comportamento correto do layout-fixed da v4 */
-//body.layout-fixed {
-//  overflow: hidden !important; /* Mata o scroll da página inteira */
-//
-//  .app-main {
-//    overflow-y: auto; /* Garante que só o conteúdo role */
-//    overflow-x: hidden;
-//  }
-//}
+.btn-primary {
+  color: white;
+}
+
+.btn-primary:hover {
+  color: white
+}
+
+.btn-success {
+  color: white;
+}
+
+// Box para Verificação Pessoa por CPF
+.vp-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
