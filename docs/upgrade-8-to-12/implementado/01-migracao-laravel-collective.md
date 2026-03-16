@@ -198,19 +198,19 @@ Com o LaravelCollective removido, a FASE 1 pode prosseguir. Ver `Planejamento Up
 
 - [x] ~~Remover `laravelcollective/html` do `composer.json`~~ **FEITO**
 - [x] ~~Remover alias `Form` (`Collective\Html\FormFacade`) do `config/app.php`~~ **FEITO**
-- [ ] Executar `composer remove laravelcollective/html` (remover do vendor/)
-- [ ] Executar `php artisan view:clear && php artisan config:clear && php artisan cache:clear`
+- [x] ~~Executar `composer remove laravelcollective/html` (remover do vendor/)~~ **FEITO**
+- [x] ~~Executar `php artisan view:clear && php artisan config:clear && php artisan cache:clear`~~ **FEITO**
 - [ ] Revisar valores dos inputs nos 45 formulários de edição (Form::model hint)
 
 ### Upgrade Laravel (próximas fases):
 
-- [ ] **FASE 1**: Laravel 8 → 9
-  - [ ] Atualizar `composer.json` (framework, laravel/ui, doctrine/dbal)
-  - [ ] Corrigir `bootstrap/app.php` (bug do 3º argumento no singleton)
-  - [ ] Corrigir namespace `HttpResponseException` em `WhoopsHandler`
-  - [ ] Atualizar `config/mail.php` (SwiftMailer → Symfony Mailer)
-  - [ ] Remover `'fetch' => PDO::FETCH_CLASS` do `config/database.php`
-  - [ ] Remover alias `Input` do `config/app.php`
+- [x] **FASE 1**: Laravel 8 → 9
+  - [x] Atualizar `composer.json` (framework, laravel/ui, doctrine/dbal)
+  - [x] Corrigir `bootstrap/app.php` (bug do 3º argumento no singleton)
+  - [x] Corrigir namespace `HttpResponseException` em `WhoopsHandler`
+  - [x] Atualizar `config/mail.php` (SwiftMailer → Symfony Mailer)
+  - [x] Remover `'fetch' => PDO::FETCH_CLASS` do `config/database.php`
+  - [x] Remover alias `Input` do `config/app.php`
 - [ ] **FASE 2**: Laravel 9 → 10
   - [ ] Renomear `$routeMiddleware` → `$middlewareAliases` no Kernel
   - [ ] Atualizar PHPUnit para `^10.0`

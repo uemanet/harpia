@@ -2,11 +2,9 @@
 
 namespace Modulos\Geral\Repositories;
 
-use Storage;
 use Modulos\Geral\Models\Anexo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Response;
-use League\Flysystem\FileExistsException;
 use Modulos\Core\Repository\BaseRepository;
 
 class AnexoRepository extends BaseRepository
@@ -17,11 +15,10 @@ class AnexoRepository extends BaseRepository
     {
         parent::__construct($anexo);
 
-        // Usa o driver default para armazenamento
-        $driver = Storage::disk()->getDriver();
-        $prefix = $driver->getAdapter()->getPathPrefix();
-
-        $this->basePath = $prefix . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+        // Flysystem 3 remove getAdapter(); para disco local, usa-se a raiz configurada.
+        $defaultDisk = config('filesystems.default');
+        $diskRoot = config('filesystems.disks.' . $defaultDisk . '.root', storage_path('app'));
+        $this->basePath = rtrim($diskRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -39,7 +36,7 @@ class AnexoRepository extends BaseRepository
      * base de dados
      * @param UploadedFile $uploadedFile
      * @return \Illuminate\Http\RedirectResponse|static
-     * @throws FileExistsException
+        * @throws \RuntimeException
      * @throws \Exception
      */
     public function salvarAnexo(UploadedFile $uploadedFile)
@@ -51,7 +48,7 @@ class AnexoRepository extends BaseRepository
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
-                throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
+                throw new \RuntimeException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
 
             return array(
@@ -122,7 +119,7 @@ class AnexoRepository extends BaseRepository
      * @param $anexoId
      * @param UploadedFile $uploadedFile
      * @return \Illuminate\Http\RedirectResponse|string
-     * @throws FileExistsException
+        * @throws \RuntimeException
      * @throws \Exception
      */
     public function atualizarAnexo($anexoId, UploadedFile $uploadedFile)
@@ -143,7 +140,7 @@ class AnexoRepository extends BaseRepository
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
             if (config('app.debug')) {
-                throw new FileExistsException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
+                throw new \RuntimeException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
             }
 
             return array(

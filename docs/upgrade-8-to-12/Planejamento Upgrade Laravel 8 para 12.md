@@ -64,7 +64,7 @@ O Harpia é um sistema de gestão acadêmica modular construído com Laravel 8\.
 - `doctrine/dbal: ^2.5` — Removido no Laravel 11  
 - `diglactic/laravel-breadcrumbs: ^9.0` — Breadcrumbs  
 - `spatie/laravel-html: ^3.5` — HTML builder  
-- `uemanet/eloquent-table: dev-master` — Tabelas Eloquent (pacote custom)  
+- `uemanet/eloquent-table: dev-feat/increase-laravel-version` — Tabelas Eloquent (pacote custom)  
 - `filp/whoops: ^2.0` — Manipulação de erros
 
 ---
@@ -154,6 +154,18 @@ Laravel 8 → 9 → 10 → 11 → 12
   }
 
 }
+
+**Nota operacional (mar/2026):** Composer 2.8+ pode bloquear versões intermediárias do Laravel por advisories durante o caminho 8→9. Para viabilizar a fase incremental, usar temporariamente:
+
+```json
+"config": {
+  "audit": {
+    "block-insecure": false
+  }
+}
+```
+
+Remover esse relaxamento ao finalizar o upgrade para Laravel 12 e tratar advisories no estado final.
 
 ### 4.2. Alterações Obrigatórias
 
@@ -882,13 +894,15 @@ Fornece helpers globais como `str_*`, `array_*`, `camel_case()`, etc.
 - Laravel 11: `^3.1` (verificar)  
 - Laravel 12: Verificar releases mais recentes
 
-### 9.6. `uemanet/eloquent-table: dev-master`
+### 9.6. `uemanet/eloquent-table`
 
 **Status:** Pacote customizado do repositório da UEMANET.
 
 **Risco:** Pode não ser compatível com versões mais recentes do Laravel. Verificar o repositório e testar.
 
-**Ação:** Se não for compatível, considerar um fork e atualização.
+**Ação validada na FASE 1:** usar a branch `dev-feat/increase-laravel-version` (suporta `illuminate/* ^9.0`).
+
+**Próxima ação:** para as próximas fases, validar branch/tag com suporte a Laravel 10/11/12; se necessário, manter fork interno.
 
 ### 9.7. `diglactic/laravel-breadcrumbs: ^9.0`
 
@@ -1043,7 +1057,7 @@ Substituir qualquer uso de `Input::` por `Request::input()` ou `request()`.
 
         "laravel/tinker": "^2.9",
 
-        "uemanet/eloquent-table": "dev-master",
+        "uemanet/eloquent-table": "dev-feat/increase-laravel-version",
 
         "laravel/helpers": "^1.6",
 
