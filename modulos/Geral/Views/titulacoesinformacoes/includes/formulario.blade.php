@@ -51,11 +51,3 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="form-group col-md-12">
-        <label class="control-label" style="visibility: hidden">Botão</label>
-        <div class="controls">
-            {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
-        </div>
-    </div>
-</div>

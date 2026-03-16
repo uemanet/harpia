@@ -1,7 +1,3 @@
-@section('stylesheets')
-    <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
-@stop
-
 <div class="row">
     @if(isset($pessoa->pes_id))
         {!! Form::hidden('pes_id', $pessoa->pes_id) !!}
@@ -133,9 +129,10 @@
     </div>
 </div>
 
-<h4 class="box-title">
-    Endereço
-</h4>
+<hr class="my-3">
+<h3 class="card-title">
+    <span style="font-weight: bold;">Endereço</span>
+</h3>
 
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('pes_cep')) has-error @endif">
@@ -183,109 +180,37 @@
             @if ($errors->has('pes_cidade')) <p class="help-block">{{ $errors->first('pes_cidade') }}</p> @endif
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
-            {!! Form::label('pes_estado', 'Estado*') !!}
-            {!! Form::select('pes_estado', [
-                    'AC' => 'Acre',
-                    'AL' => 'Alagoas',
-                    'AP' => 'Amapá',
-                    'AM' => 'Amazonas',
-                    'BA' => 'Bahia',
-                    'CE' => 'Ceará',
-                    'DF' => 'Distrito Federal',
-                    'ES' => 'Espirito Santo',
-                    'GO' => 'Goiás',
-                    'MA' => 'Maranhão',
-                    'MT' => 'Mato Grosso',
-                    'MS' => 'Mato Grosso do Sul',
-                    'MG' => 'Minas Gerais',
-                    'PA' => 'Pará',
-                    'PB' => 'Paraiba',
-                    'PR' => 'Paraná',
-                    'PE' => 'Pernambuco',
-                    'PI' => 'Piauí',
-                    'RJ' => 'Rio de Janeiro',
-                    'RN' => 'Rio Grande do Norte',
-                    'RS' => 'Rio Grande do Sul',
-                    'RO' => 'Rondônia',
-                    'RR' => 'Roraima',
-                    'SC' => 'Santa Catarina',
-                    'SP' => 'São Paulo',
-                    'SE' => 'Sergipe',
-                    'TO' => 'Tocantis',
-                ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...']) !!}
-            @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
-        </div>
+    <div class="form-group col-md-3 @if ($errors->has('pes_estado')) has-error @endif">
+        {!! Form::label('pes_estado', 'Estado*', ['class' => 'form-label']) !!}
+        {!! Form::select('pes_estado', [
+                'AC' => 'Acre',
+                'AL' => 'Alagoas',
+                'AP' => 'Amapá',
+                'AM' => 'Amazonas',
+                'BA' => 'Bahia',
+                'CE' => 'Ceará',
+                'DF' => 'Distrito Federal',
+                'ES' => 'Espirito Santo',
+                'GO' => 'Goiás',
+                'MA' => 'Maranhão',
+                'MT' => 'Mato Grosso',
+                'MS' => 'Mato Grosso do Sul',
+                'MG' => 'Minas Gerais',
+                'PA' => 'Pará',
+                'PB' => 'Paraiba',
+                'PR' => 'Paraná',
+                'PE' => 'Pernambuco',
+                'PI' => 'Piauí',
+                'RJ' => 'Rio de Janeiro',
+                'RN' => 'Rio Grande do Norte',
+                'RS' => 'Rio Grande do Sul',
+                'RO' => 'Rondônia',
+                'RR' => 'Roraima',
+                'SC' => 'Santa Catarina',
+                'SP' => 'São Paulo',
+                'SE' => 'Sergipe',
+                'TO' => 'Tocantis',
+            ], isset($pessoa->pes_estado) ? $pessoa->pes_estado  : old('pes_estado'), ['class' => 'form-control', 'placeholder' => 'Selecione uma opção...']) !!}
+        @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
     </div>
 </div>
-
-@section('scripts')
-    {{-- TODO: FIX IMPORTS NO APP.JS --}}
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.date.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
-    <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
-
-    <script>
-        $(function (){
-
-            $('.datepicker').datepicker({
-                format: "dd/mm/yyyy",
-                language: 'pt-BR',
-                autoclose: true
-            });
-
-            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
-            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
-            $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
-
-            $("#pes_cep").focusout(function(e){
-
-                function limpaFormCep() {
-
-                    $("#pes_cidade").val("");
-                    $("#pes_estado").val("");
-                    $("#pes_bairro").val("");
-                    $("#pes_endereco").val("");
-                }
-
-                var str = e.target.value;
-
-                var cep = str.replace(/\D/g, '');
-
-                if (str != "") {
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
-
-                    if(validacep.test(cep)) {
-
-                        $("#pes_cidade").val("Buscando...");
-                        $("#pes_estado").val("Buscando...");
-                        $("#pes_bairro").val("Buscando...");
-                        $("#pes_endereco").val("Buscando...");
-
-                        $.harpia.httpget('https://viacep.com.br/ws/' + cep + '/json/').done(function (data) {
-                            if (!data.erro) {
-                                $("#pes_cidade").val(data.localidade);
-                                $("#pes_estado").val(data.uf).change();
-                                $("#pes_bairro").val(data.bairro);
-                                $("#pes_endereco").val(data.logradouro);
-                            } else {
-                                limpaFormCep();
-                                toastr.error("CEP não encontrado", null, {progressBar: true});
-                            }
-                        });
-                    } else {
-                        limpaFormCep();
-                        toastr.warning("Formato do CEP inválido", null, {progressBar: true});
-                    }
-                } else {
-                    limpaFormCep();
-                }
-            });
-        });
-    </script>
-@endsection
