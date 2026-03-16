@@ -45,31 +45,6 @@ class ModulosTestCase extends \TestCase
         return parent::assertDatabaseHas($table, $data);
     }
 
-    /**
-     * @see TestCase::assertEquals()
-     * @param $expected
-     * @param $actual
-     * @param string $message
-     * @param float $delta
-     * @param int $maxDepth
-     * @param bool $canonicalize
-     * @param bool $ignoreCase
-     */
-    public static function assertEquals($expected, $actual, string $message = '', float $delta = 0.0, int $maxDepth = 10, bool $canonicalize = false, bool $ignoreCase = false): void
-    {
-        /*
-         * Previne erros causados pela diferenca de tempo
-         * entre a criacao do registro, sua edicao
-         * e atualizacao no banco durante os testes
-         */
-        if (is_array($expected) && is_array($actual)) {
-            unset($actual['updated_at']);
-            unset($expected['updated_at']);
-        }
-
-        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
-    }
-
     public function setUp(): void
     {
         parent::setUp();
