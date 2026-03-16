@@ -2,26 +2,16 @@
 
 namespace App\Exceptions;
 
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Exception\HttpResponseException;
-use Illuminate\Http\Response;
 use App\Exceptions\Handler as BaseExceptionHandler;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class WhoopsHandler extends BaseExceptionHandler
 {
 
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param Exception $e
-     * @return Response|\Symfony\Component\HttpFoundation\Response
-     * @throws Exception
-     */
     public function render($request, \Throwable $e)
     {
-        if ($this->isHttpException($e)) {
+        if ($e instanceof HttpExceptionInterface) {
             return $this->renderHttpException($e);
         }
 
@@ -37,21 +27,22 @@ class WhoopsHandler extends BaseExceptionHandler
         return parent::render($request, $e);
     }
 
-    /**
-     * Render an exception using Whoops.
-     *
-     * @param  \Exception $e
-     * @return \Illuminate\Http\Response
-     */
     protected function renderExceptionWithWhoops(\Throwable $e)
     {
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
 
+        $statusCode = 500;
+        $headers = [];
+        if ($e instanceof HttpExceptionInterface) {
+            $statusCode = $e->getStatusCode();
+            $headers = $e->getHeaders();
+        }
+
         return new \Illuminate\Http\Response(
             $whoops->handleException($e),
-            $e->getStatusCode(),
-            $e->getHeaders()
+            $statusCode,
+            $headers
         );
     }
 }
