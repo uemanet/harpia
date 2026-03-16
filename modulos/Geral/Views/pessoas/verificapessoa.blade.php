@@ -7,7 +7,7 @@
                 <div class="login-box-body">
                     <p class="login-box-msg"><b>Verificação Pessoa por CPF</b></p>
                     <div class="row">
-                        <form id="dvCpf" method="POST" action="{{route('geral.pessoas.verificapessoa')}}">
+                        <form id="dvCpf" method="POST" action="{{ url('geral/pessoas/verificapessoa') }}">
                             <div class="col-md-12">
                                 {{ csrf_field() }}
                                 <div class="form-group has-feedback @if ($errors->has('doc_conteudo')) has-error @endif">
