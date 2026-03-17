@@ -15653,6 +15653,10 @@ fieldset legend {
   justify-content: center;
 }
 
+.help-block {
+  color: red;
+}
+
 .navbar-harpia {
   background-color: #3c8dbc;
 }

@@ -6,11 +6,11 @@
             <div class="card-header with-border">
                 <h3 class="card-title">Documentos</h3>
 
-                <div class="card-tools pull-right">
-                    <button type="button" class="btn btn-card-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.card-tools -->
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -79,20 +79,22 @@
                     <p>Sem documentos para apresentar</p>
                 @endif
             <!-- /.card-body -->
-            {!! ActionButton::grid([
-                'type' => 'LINE',
-                'buttons' => [
-                  [
-                    'classButton' => 'btn btn-primary',
-                    'icon' => 'fa fa-plus-square',
-                    'route' => 'geral.pessoas.documentos.create',
-                    'parameters' => ['id' => $pessoa->pes_id],
-                    'label' => ' Novo Documento',
-                    'method' => 'get'
-                  ],
-                ]
-            ]) !!}
           </div>
+            <div class="card-footer">
+                {!! ActionButton::grid([
+                    'type' => 'LINE',
+                    'buttons' => [
+                      [
+                        'classButton' => 'btn btn-primary',
+                        'icon' => 'fa fa-plus-square',
+                        'route' => 'geral.pessoas.documentos.create',
+                        'parameters' => ['id' => $pessoa->pes_id],
+                        'label' => ' Novo Documento',
+                        'method' => 'get'
+                      ],
+                    ]
+                ]) !!}
+            </div>
         </div>
         <!-- /.card -->
     </div>
