@@ -7,7 +7,7 @@
                 <div class="card-body login-card-body">
                     <p class="login-box-msg"><b>Verificação Pessoa por CPF</b></p>
 
-                    <form id="dvCpf" method="POST" action="{{route('geral.pessoas.verificapessoa')}}">
+                    <form id="dvCpf" method="POST" action="{{ url('geral/pessoas/verificapessoa') }}">
                         @csrf
                         <div class="col-12">
                             {{ csrf_field() }}
@@ -16,7 +16,7 @@
                                 <span class="glyphicon glyphicon-credit-card form-control-feedback"></span>
                                 @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
                             </div>
-                            <input type="hidden" value="{{isset($rota) ? $rota : old('rota')}}" name="rota">
+                            <input type="hidden" value="{{ old('rota', isset($rota) ? $rota : null) }}" name="rota">
                         </div>
                         <div class="col-12 text-center py-2">
                             <div class="d-grid gap-2">
