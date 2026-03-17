@@ -16,7 +16,7 @@
                         <p style = "line-height:21px;font-size:20px;margin-top:20px;margin-bottom:0px">
                             Você pode resetar sua senha clicando no link abaixo:
                         </p>
-                        <a href="{{ route('auth.reset-password')}}/{{$token}}">Resetar Senha</a><br><br>
+                        <a href="{{ route('auth.reset-password', ['token' => $token]) }}">Resetar Senha</a><br><br>
 
                         <b>Obs: Esse é apenas um e-mail informativo. Não responda este e-mail. <br><br> Este link é válido durante 30 minutos</br><br>
                     </td>
