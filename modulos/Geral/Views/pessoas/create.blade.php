@@ -1,4 +1,4 @@
-@extends('layouts.modulos.geral')
+@extends('layouts.modulos.default')
 
 @section('title')
     Pessoas
@@ -9,19 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de pessoas</h3>
-        </div>
-        <div class="box-body">
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Formulário de cadastro de pessoas</h3>
+            </div>
             <form action="{{ route('geral.pessoas.create') }}" method="POST" id="form" role="form">
-    @csrf
-                @include('Geral::pessoas.includes.formulario')
-
-                <div class="row">
-                    <div class="form-group col-md-12">
-                        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
+                @csrf
+                <div class="card-body">
+                    <div class="row">
+                        @include('Geral::pessoas.includes.formulario')
                     </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
                 </div>
             </form>
         </div>

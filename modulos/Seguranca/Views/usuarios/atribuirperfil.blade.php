@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Atribuir Perfis
@@ -9,32 +9,33 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header">
-            <h3 class="box-title">Atribuir Novo Perfil</h3>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <form action="{{ route('seguranca.usuarios.atribuirperfil', [$usuario->usr_id]) }}" method="POST" id="formAtribuirPerfil">
-    @csrf
-                    <div class="form-group col-md-3">
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Atribuir Novo Perfil</h3>
+            </div>
+            <div class="card-body">
+                <div class="row py-2">
+                    <form action="{{ route('seguranca.usuarios.atribuirperfil', [$usuario->usr_id]) }}" method="POST" id="formAtribuirPerfil">
+                        @csrf
+                        <div class="form-group col-md-5 px-1">
                         @if(!empty($modulos))
                             <select name="mod_id" class="form-control" id="mod_id">
-    <option value="">Selecione o módulo</option>
-    @foreach($modulos as $key => $value)
-        <option value="{{ $key }}" {{ old('mod_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
-    @endforeach
-</select>
+                                <option value="">Selecione o módulo</option>
+                                @foreach($modulos as $key => $value)
+                                    <option value="{{ $key }}" {{ old('mod_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
                         @else
                             <select name="mod_id" class="form-control" id="mod_id">
-    <option value="">Sem módulos</option>
-</select>
+                                <option value="">Sem módulos</option>
+                            </select>
                         @endif
                     </div>
                     <div class="form-group col-md-3">
                         <div class="controls">
                             <select name="prf_id" class="form-control" id="prf_id">
-</select>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
@@ -83,7 +84,7 @@
                 @else
                     <p>Sem perfis associados ao usuario</p>
                 @endif
-                </div>    
+                </div>
             </div>
         </div>
     </div>

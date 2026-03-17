@@ -3,11 +3,11 @@
         <label for="doc_tpd_id" class="control-label">Tipo de Documento*</label>
         <div class="controls">
             <select name="doc_tpd_id" class="form-control">
-    <option value="">Selecione um documento</option>
-    @foreach($tiposdocumentos as $key => $value)
-        <option value="{{ $key }}" {{ old('doc_tpd_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
-    @endforeach
-</select>
+                <option value="">Selecione um documento</option>
+                @foreach($tiposdocumentos as $key => $value)
+                    <option value="{{ $key }}" {{ old('doc_tpd_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+            </select>
             @if ($errors->has('doc_tpd_id')) <p class="help-block">{{ $errors->first('doc_tpd_id') }}</p> @endif
         </div>
     </div>
@@ -52,9 +52,3 @@
     </div>
 </div>
 <input type="hidden" name="doc_pes_id" value="{{ $pessoa->pes_id }}" class="form-control" >
-
-<div class="row">
-    <div class="form-group col-md-12">
-        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
-    </div>
-</div>

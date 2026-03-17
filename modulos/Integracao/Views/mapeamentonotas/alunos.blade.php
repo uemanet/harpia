@@ -1,4 +1,4 @@
-@extends('layouts.modulos.integracao')
+@extends('layouts.modulos.default')
 
 @section('title')
     Lista de Alunos

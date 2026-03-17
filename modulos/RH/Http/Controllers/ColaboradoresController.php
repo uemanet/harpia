@@ -69,7 +69,7 @@ class ColaboradoresController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.colaboradores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.colaboradores.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -352,7 +352,7 @@ class ColaboradoresController extends BaseController
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
         if($colaborador->col_status === 'desligado'){
             $btnNovo = new TButton();
-            $btnNovo->setName('Nova Matrícula')->setRoute('rh.colaboradores.matricula.create')->setParameters(['id' => $colaboradorId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+            $btnNovo->setName('Nova Matrícula')->setRoute('rh.colaboradores.matricula.create')->setParameters(['id' => $colaboradorId])->setIcon('fa fa-plus')->setStyle('btn btn-success');
             $actionButtons[] = $btnNovo;
         }
 

@@ -1,9 +1,6 @@
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@stop
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('prf_mod_id')) has-error @endif">
-        <label for="prf_mod_id" class="control-label">Módulo*</label>
+        <label for="prf_mod_id" class="form-label">Módulo*</label>
         <div class="controls">
             <select name="prf_mod_id" class="form-control" id="mod_id">
     <option value="">Selecione um módulo</option>
@@ -15,7 +12,7 @@
         </div>
     </div>
     <div class="form-group col-md-9 @if ($errors->has('prf_nome')) has-error @endif">
-        <label for="prf_nome" class="control-label">Nome do perfil*</label>
+        <label for="prf_nome" class="form-label">Nome do perfil*</label>
         <div class="controls">
             <input type="text" name="prf_nome" value="{{ old('prf_nome') }}" class="form-control" >
             @if ($errors->has('prf_nome')) <p class="help-block">{{ $errors->first('prf_nome') }}</p> @endif
@@ -23,24 +20,9 @@
     </div>
 </div>
 <div class="form-group @if ($errors->has('prf_descricao')) has-error @endif">
-    <label for="prf_descricao" class="control-label">Descrição do perfil</label>
+    <label for="prf_descricao" class="form-label">Descrição do perfil</label>
     <div class="controls">
         <input type="text" name="prf_descricao" value="{{ old('prf_descricao') }}" class="form-control" >
         @if ($errors->has('prf_descricao')) <p class="help-block">{{ $errors->first('prf_descricao') }}</p> @endif
     </div>
 </div>
-<div class="row">
-    <div class="form-group col-md-12">
-        <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
-    </div>
-</div>
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-    </script>
-@stop

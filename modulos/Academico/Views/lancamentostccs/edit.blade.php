@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('stylesheets')
   <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
