@@ -22,7 +22,7 @@ class PeriodosLaboraisController extends BaseController
     {
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.periodoslaborais.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.periodoslaborais.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 

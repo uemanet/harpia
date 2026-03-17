@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Usuários
@@ -9,31 +9,29 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de usuário</h3>
-        </div>
-        <div class="box-body">
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Formulário de edição de usuário</h3>
+            </div>
             <form action="{{ route('seguranca.usuarios.edit', [$usuario->usr_id]) }}" method="POST" id="form" role="form">
-    @csrf
-    @method('PUT')
-    {{-- Form model: $usuario - inputs devem usar old('campo', $usuario->campo) --}}
-            <h4 class="box-title">
-                Dados de Usuário
-            </h4>
-            @include('Seguranca::usuarios.includes.formulario')
+                @csrf
+                @method('PUT')
+                <div class="card-body">
+                    <h4 class="box-title">
+                        Dados de Usuário
+                    </h4>
+                    @include('Seguranca::usuarios.includes.formulario')
 
-            <hr>
-            <h4 class="box-title">
-                Dados de Pessoa
-            </h4>
-            @include('Geral::pessoas.includes.formulario', ['pessoa' => $pessoa])
-
-            <div class="row">
-                <div class="form-group col-md-12">
+                    <hr>
+                    <h4 class="box-title">
+                        Dados de Pessoa
+                    </h4>
+                    @include('Geral::pessoas.includes.formulario', ['pessoa' => $pessoa])
+                </div>
+                <div class="card-footer">
                     <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
                 </div>
-            </div>
             </form>
         </div>
     </div>

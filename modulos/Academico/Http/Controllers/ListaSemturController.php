@@ -34,7 +34,7 @@ class ListaSemturController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.carteirasestudantis.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.carteirasestudantis.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButton[] = $btnNovo;
 
@@ -199,7 +199,7 @@ class ListaSemturController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Adicionar Matrículas')->setRoute('academico.carteirasestudantis.addmatriculas')->setParameters(['id' => $lista->lst_id])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Adicionar Matrículas')->setRoute('academico.carteirasestudantis.addmatriculas')->setParameters(['id' => $lista->lst_id])->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButton[] = $btnNovo;
 

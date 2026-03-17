@@ -39,7 +39,7 @@ class TurmasController extends BaseController
         }
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('academico.ofertascursos.turmas.create')->setParameters(['id' => $ofertaId])->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
 
         $actionButtons[] = $btnNovo;
