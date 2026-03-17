@@ -23,14 +23,14 @@
                 <form action="{{ url('/login') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
-                        {!! Form::text('usr_usuario', old('usr_usuario'), array('placeholder' => 'Usuario', 'class'=>'form-control')) !!}
+                        <input type="text" name="usr_usuario" value="{{ old('usr_usuario') }}" placeholder="Usuario" class="form-control" >
                         <div class="input-group-text">
                             <span class="bi bi-envelope"></span>
                         </div>
                         @if ($errors->has('usr_usuario')) <small class="help-block">{{ $errors->first('usr_usuario') }}</small> @endif
                     </div>
                     <div class="input-group mb-3">
-                        {!! Form::password('usr_senha', array('placeholder' => 'Senha', 'class'=>'form-control')) !!}
+                        <input type="password" name="usr_senha" value="{{ old('usr_senha') }}" placeholder="Senha" class="form-control" >
                         <div class="input-group-text">
                             <span class="bi bi-lock-fill"></span>
                         </div>
