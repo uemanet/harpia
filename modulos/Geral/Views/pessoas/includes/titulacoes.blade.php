@@ -6,11 +6,11 @@
             <div class="card-header with-border">
                 <h3 class="card-title">Titulações</h3>
 
-                <div class="card-tools pull-right">
-                    <button type="button" class="btn btn-card-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.card-tools -->
             </div>
             <!-- /.card-header -->
             <div class="card-body">
