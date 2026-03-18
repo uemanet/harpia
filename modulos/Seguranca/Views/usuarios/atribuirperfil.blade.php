@@ -16,9 +16,9 @@
             </div>
             <div class="card-body">
                 <div class="row py-2">
-                    <form action="{{ route('seguranca.usuarios.atribuirperfil', [$usuario->usr_id]) }}" method="POST" id="formAtribuirPerfil">
+                    <form action="{{ route('seguranca.usuarios.atribuirperfil', [$usuario->usr_id]) }}" method="POST" id="formAtribuirPerfil" class="w-100 d-flex">
                         @csrf
-                        <div class="form-group col-md-5 px-1">
+                        <div class="form-group col-md-6 px-1">
                         @if(!empty($modulos))
                             <select name="mod_id" class="form-control" id="mod_id">
                                 <option value="">Selecione o módulo</option>
@@ -32,14 +32,14 @@
                             </select>
                         @endif
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-3 px-1">
                         <div class="controls">
                             <select name="prf_id" class="form-control" id="prf_id">
                             </select>
                         </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        <button type="submit" class="btn btn-primary" id="btnAtribuir">Atribuir</button>
+                    <div class="form-group col-md-3 px-1">
+                        <button type="submit" class="btn btn-primary w-100" id="btnAtribuir">Atribuir</button>
                     </div>
                 </form>
             </div>

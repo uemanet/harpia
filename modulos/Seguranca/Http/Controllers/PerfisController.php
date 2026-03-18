@@ -59,7 +59,7 @@ class PerfisController extends BaseController
                     'buttons' => [
                         [
                             'classButton' => 'text-blue',
-                            'icon' => 'fa fa-check-square-o',
+                            'icon' => 'fa-regular fa-square-check',
                             'route' => 'seguranca.perfis.atribuirpermissoes',
                             'parameters' => ['id' => $id],
                             'label' => 'Permissões',
