@@ -1,42 +1,38 @@
 <div class="row">
     <div class="form-group col-md-3">
         <label for="crs_id" class="control-label">Curso*</label>
-        <select name="crs_id" class="form-control">
-    <option value="">Escolha um curso</option>
-    @foreach($cursos as $key => $value)
-        <option value="{{ $key }}">{{ $value }}</option>
-    @endforeach
-</select>
+        <select name="crs_id" id="crs_id" class="form-control">
+            <option value="">Escolha um curso</option>
+            @foreach($cursos as $key => $value)
+                <option value="{{ $key }}">{{ $value }}</option>
+            @endforeach
+        </select>
     </div>
     <div class="form-group col-md-3">
         <label for="ofc_id" class="control-label">Oferta do Curso*</label>
-        <select name="ofc_id" class="form-control">
-</select>
+        <select name="ofc_id" id="ofc_id" class="form-control"></select>
     </div>
     <div class="form-group col-md-3">
         <label for="trm_id" class="control-label">Turma*</label>
-        <select name="trm_id" class="form-control">
-</select>
+        <select name="trm_id" id="trm_id" class="form-control"></select>
     </div>
     <div class="form-group col-md-3">
         <label for="grp_id" class="control-label">Tipo de Tutoria*</label>
-        <select name="grp_id" class="form-control">
-</select>
+        <select name="grp_id" id="grp_id" class="form-control"></select>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-3">
         <label for="tut_id" class="control-label">Tutor*</label>
-        <select name="tut_id" class="form-control" multiple="multiple">
-</select>
+        <select name="tut_id" id="tut_id" class="form-control" multiple="multiple"></select>
     </div>
     <div class="form-group col-md-3">
         <label for="date_ini" class="control-label">Data de início*</label>
-        <input type="text" name="date_ini" value="{{ old('date_ini') }}" class="form-control datepicker2" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
+        <input type="text" name="date_ini" id="date_ini" value="{{ old('date_ini') }}" class="form-control datepicker2" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
     </div>
     <div class="form-group col-md-3">
         <label for="date_fim" class="control-label">Data de fim*</label>
-        <input type="text" name="date_fim" value="{{ old('date_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
+        <input type="text" name="date_fim" id="date_fim" value="{{ old('date_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
     </div>
     <div class="form-group col-md-3">
         <label class="control-label" style="visibility: hidden">Botão</label>
@@ -44,19 +40,16 @@
             <button type="submit" class="btn btn-primary">Visualizar informações</button>
         </div>
     </div>
-
 </div>
 
 @section('scripts')
     @parent
-
     <script type="application/javascript">
         $(document).ready(function () {
             $('#crs_id').prop('selectedIndex', 0);
         });
     </script>
     <script type="application/javascript">
-
         $('#crs_id').change(function (e) {
             var crsId = $(this).val();
 
@@ -142,15 +135,9 @@
             }
 
         })
-
     </script>
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-
         $(document).on('click', '.btn-primary', function (event) {
             event.preventDefault();
 
