@@ -1,9 +1,5 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
-
 @section('title')
     Adicionar Matriculas
 @endsection
@@ -13,78 +9,73 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row py-2">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <form method="GET" action="">
-                <div class="row">
-                    <input type="hidden" name="lst_id" id="lst_id" value="{{$lista->lst_id}}">
-                    <div class="col-md-3">
-                        <label for="crs_id">Curso*</label>
-                        <div class="form-group">
-                            <select name="crs_id" class="form-control">
-                                <option value="">Escolha o Curso</option>
-                                @foreach($cursos as $key => $value)
-                                    <option value="{{ $key }}">{{ $value }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="ofc_id">Oferta de Curso*</label>
-                        <div class="form-group">
-                            <select name="ofc_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="trm_id">Turma*</label>
-                        <div class="form-group">
-                            <select name="trm_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="pol_id">Polo*</label>
-                        <div class="form-group">
-                            <select name="pol_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <label for="">&nbsp;</label>
-                        <div class="form-group">
-                            <button type="submit" id="btnBuscar" class="btn btn-primary form-control">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
                 </div>
-            </form>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <form method="GET" action="#">
+                    <div class="row">
+                        <input type="hidden" name="lst_id" id="lst_id" value="{{$lista->lst_id}}">
+                        <div class="col-md-3">
+                            <label for="crs_id">Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="crs_id" id="crs_id" class="form-control">
+                                    <option value="">Escolha o Curso</option>
+                                    @foreach($cursos as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="ofc_id">Oferta de Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="ofc_id" id="ofc_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="trm_id">Turma <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="trm_id" id="trm_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pol_id">Polo <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="pol_id" id="pol_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <label for="">&nbsp;</label>
+                            <div class="form-group">
+                                <button type="submit" id="btnBuscar" class="btn btn-primary w-100">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-body -->
     </div>
 
-    <div class="listas"></div>
+    <div class="row py-2" id="listas"></div>
 @endsection
 
 @section('scripts')
-    <script src="{{url('/')}}/js/plugins/select2.js"></script>
-
     <script type="text/javascript">
         $(function() {
-            // select2
-            $('select').select2();
-
             var cursoSelect = $('#crs_id');
             var ofertasCursoSelect = $('#ofc_id');
             var turmaSelect = $('#trm_id');
@@ -184,21 +175,21 @@
             });
 
             var renderTable = function(parameters) {
-                $('.listas').empty();
+                $('#listas').empty();
 
                 var url = "{{url('/')}}/academico/async/carteirasestudantis/gettableaddmatriculas?" + $.param(parameters);
 
                 $.harpia.httpget(url).done(function (response) {
                     if(!$.isEmptyObject(response)) {
-                        $('.listas').append(response);
+                        $('#listas').append(response);
                     } else {
-                        $('.listas').append("<p>Não há alunos matriculados na turma/polo</p>");
+                        $('#listas').append("<p>Não há alunos matriculados na turma/polo</p>");
                     }
                 });
             };
 
             // evento para selecionar todos os checkboxes
-            $('.listas').on('click', '#select_all',function(event) {
+            $('#listas').on('click', '#select_all',function(event) {
                 if(this.checked) {
                     $(':checkbox').each(function() {
                         this.checked = true;
@@ -212,7 +203,7 @@
             });
 
             var hiddenButton = function () {
-                var checkboxes = $('.listas table td input[type="checkbox"]');
+                var checkboxes = $('#listas table td input[type="checkbox"]');
 
                 if(checkboxes.is(':checked')){
                     $(document).find('.btnIncluir').removeClass('hidden');
@@ -221,9 +212,9 @@
                 }
             };
 
-            $(document).on('click', '.listas table input[type="checkbox"]', hiddenButton);
+            $(document).on('click', '#listas table input[type="checkbox"]', hiddenButton);
 
-            $('.listas').on('click', '.btnIncluir', function () {
+            $('#listas').on('click', '.btnIncluir', function () {
                 var quant = $('.matriculas:checked').length;
 
                 var listaId = $('#lst_id').val();

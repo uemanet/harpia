@@ -1,9 +1,5 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-  <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
-
 @section('title')
     Ofertas de Disciplinas
 @stop
@@ -13,77 +9,72 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row py-2">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="form-group col-md-3">
-                    <label for="crs_id" class="control-label">Curso*</label>
-                    <select name="crs_id" class="form-control">
-    <option value="">Escolha um curso</option>
-    @foreach($cursos as $key => $value)
-        <option value="{{ $key }}">{{ $value }}</option>
-    @endforeach
-</select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="ofc_id" class="control-label">Oferta do Curso*</label>
-                    <select name="ofc_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="mtc_id" class="control-label">Matriz Curricular*</label>
-                    <select name="mtc_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="ofd_mdo_id" class="control-label">Módulos da Matriz Curricular*</label>
-                    <select name="ofd_mdo_id" class="form-control">
-</select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-3">
-                    <label for="ofd_trm_id" class="control-label">Turma*</label>
-                    <select name="ofd_trm_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="ofd_per_id" class="control-label">Período Letivo*</label>
-                    <select name="ofd_per_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-1">
-                    <label for="" class="control-label"></label>
-                    <button class="btn btn-primary form-control" id="btnLocalizar">
-                        <i class="fa fa-search"></i>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
                     </button>
                 </div>
+                <!-- /.card-tools -->
             </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="crs_id" class="form-label">Curso <small class="obrigatorio-dot">*</small></label>
+                        <select name="crs_id" id="crs_id" class="form-control select2">
+                            <option value="">Escolha um curso</option>
+                            @foreach($cursos as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ofc_id" class="form-label">Oferta do Curso <small class="obrigatorio-dot">*</small></label>
+                        <select name="ofc_id" id="ofc_id" class="form-control select2"></select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="mtc_id" class="form-label">Matriz Curricular <small class="obrigatorio-dot">*</small></label>
+                        <select name="mtc_id" id="mtc_id" class="form-control select2"></select>
+                    </div>
+                </div>
+                <div class="row py-1">
+                    <div class="form-group col-md-4">
+                        <label for="ofd_mdo_id" class="form-label">Módulos da Matriz Curricular <small class="obrigatorio-dot">*</small></label>
+                        <select name="ofd_mdo_id" id="ofd_mdo_id" class="form-control select2"></select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ofd_trm_id" class="form-label">Turma <small class="obrigatorio-dot">*</small></label>
+                        <select name="ofd_trm_id" id="ofd_trm_id" class="form-control select2"></select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ofd_per_id" class="form-label">Período Letivo <small class="obrigatorio-dot">*</small></label>
+                        <select name="ofd_per_id" id="ofd_per_id" class="form-control select2"></select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="" class="form-label">&nbsp;</label>
+                        <button class="btn btn-primary w-100" id="btnLocalizar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-body -->
     </div>
 
-    <div class="table-disciplinas"></div>
+    <div class="row py-2" id="table-disciplinas"></div>
 
-    <div class="table-ofertas"></div>
+    <div class="row py-2" id="table-ofertas"></div>
 @stop
 
 @section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
-            $("select").select2();
 
             var token = "{{csrf_token()}}";
 
@@ -269,8 +260,8 @@
                     url: url,
                     success: function(response) {
                         $.harpia.hideloading();
-                        $('.table-ofertas').empty();
-                        $('.table-ofertas').append(response.html);
+                        $('#table-ofertas').empty();
+                        $('#table-ofertas').append(response.html);
                         $('select').select2();
                     },
                     error: function(response) {
@@ -290,9 +281,9 @@
                     url: url,
                     success: function(response) {
                         $.harpia.hideloading();
-                        $('.table-disciplinas').empty();
-                        $('.table-disciplinas').append(response.html);
-                        $('.table-disciplinas select').select2();
+                        $('#table-disciplinas').empty();
+                        $('#table-disciplinas').append(response.html);
+                        $('#table-disciplinas select').select2();
                     },
                     error: function(response) {
                         $.harpia.hideloading();

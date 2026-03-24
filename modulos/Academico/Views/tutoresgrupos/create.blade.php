@@ -2,7 +2,7 @@
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+
 @endsection
 
 @section('title')
@@ -14,11 +14,12 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de vínculo de tutores</h3>
+    <div class="row">
+        <div class="card card-primary card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de vínculo de tutores</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <form action="{{ route('academico.ofertascursos.turmas.grupos.tutoresgrupos.create') }}" method="POST" id="form" role="form">
     @csrf
                 @include('Academico::tutoresgrupos.includes.formulario')
@@ -29,8 +30,8 @@
 
 @section('scripts')
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
+
+
 
 
     <script type="text/javascript">
@@ -39,12 +40,7 @@
             });
     </script>
 
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-           format: 'dd/mm/yyyy',
-           language: 'pt-BR'
-        });
-    </script>
+
 @endsection
 
 

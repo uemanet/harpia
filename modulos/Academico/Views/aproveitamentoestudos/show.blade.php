@@ -2,73 +2,63 @@
 
 @section('title', 'Aproveitamento de Disciplinas')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
-
 @section('content')
+    <section class="py-2">
+        @include('Geral::pessoas.includes.dadospessoais')
+    </section>
 
-    @include('Geral::pessoas.includes.dadospessoais')
+    <section class="py-2">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
-
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label for="crs_id" class="control-label">Curso*</label>
-                    <select id="crs_id" class="form-control">
-                        @if($matriculas->count())
-                            <option>Selecione o curso</option>
-                            @foreach($matriculas as $matricula)
-                                <option value="{{$matricula->crs_id}}" data-trm-id={{$matricula->trm_id}} data-mat-id={{$matricula->mat_id}}>{{$matricula->crs_nome}}</option>
-                            @endforeach
-                        @else
-                            <option value="">Nenhuma matrícula disponível</option>
-                        @endif
-                    </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="ofd_per_id" class="control-label">Período Letivo</label>
-                    <select name="ofd_per_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-1">
-                    <label for="" class="control-label"></label>
-                    <button class="btn btn-primary form-control" id="btnLocalizar"><i class="fa fa-search"></i></button>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="crs_id" class="form-label">Curso <small class="obrigatorio-dot">*</small></label>
+                        <select id="crs_id" name="crs_id" class="form-control">
+                            @if($matriculas->count())
+                                <option>Selecione o curso</option>
+                                @foreach($matriculas as $matricula)
+                                    <option value="{{$matricula->crs_id}}" data-trm-id={{$matricula->trm_id}} data-mat-id={{$matricula->mat_id}}>{{$matricula->crs_nome}}</option>
+                                @endforeach
+                            @else
+                                <option value="">Nenhuma matrícula disponível</option>
+                            @endif
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="ofd_per_id" class="form-label">Período Letivo</label>
+                        <select name="ofd_per_id" id="ofd_per_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="" class="form-label">&nbsp;</label>
+                        <button class="btn btn-primary w-100" id="btnLocalizar"><i class="fa fa-search"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- /.box-body -->
+            <!-- /.card-body -->
 
-
-        <!-- Modal Alterar Situacao Matricula  -->
-        <div class="modal fade" id="matricula-modal">
+            <!-- Modal Alterar Situacao Matricula  -->
+            <div class="modal fade" id="matricula-modal"></div>
 
         </div>
+    </section>
 
-
-    </div>
-
-    <div class="tabela-ofertas"></div>
-
+    <div class="py-2" id="tabela-ofertas"></div>
 @stop
 
 @section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
-            $("select").select2();
-
             var token = "{{csrf_token()}}";
             var alunoId = "{{$aluno->alu_id}}";
 
@@ -129,7 +119,7 @@
                 }
 
                 if (periodo == '') {
-                  periodo = null;
+                    periodo = null;
                 }
 
                 renderTable(turma, periodo, alunoId);
@@ -137,19 +127,19 @@
 
             var renderTable = function(turmaId, periodoId, alunoId) {
 
-              if (periodoId) {
-                $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId)
-                .done(function(response) {
-                  $('.tabela-ofertas').empty();
-                  $('.tabela-ofertas').append(response);
-                });
-              }else {
-                $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId)
-                .done(function(response) {
-                  $('.tabela-ofertas').empty();
-                  $('.tabela-ofertas').append(response);
-                });
-              }
+                if (periodoId) {
+                    $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId)
+                        .done(function(response) {
+                            $('#tabela-ofertas').empty();
+                            $('#tabela-ofertas').append(response);
+                        });
+                }else {
+                    $.harpia.httpget("{{ url('/')}}/academico/async/aproveitamentoestudos/gettableofertasdisciplinas/"+alunoId+"/"+turmaId)
+                        .done(function(response) {
+                            $('#tabela-ofertas').empty();
+                            $('#tabela-ofertas').append(response);
+                        });
+                }
             };
         });
     </script>

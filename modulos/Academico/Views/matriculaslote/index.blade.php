@@ -1,99 +1,89 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
-
 @section('title')
     Matriculas em Lote
 @endsection
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row py-2">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
+            <!-- /.card-header -->
+            <div class="card-body">
+                <form method="GET" action="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="crs_id">Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="crs_id" id="crs_id" class="form-control">
+                                    <option value="">Escolha o Curso</option>
+                                    @foreach($cursos as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="ofc_id">Oferta de Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="ofc_id" id="ofc_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="trm_id">Turma <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="trm_id" id="trm_id" class="form-control"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-md-3">
+                            <label for="per_id">Período Letivo <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="per_id" id="per_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ofd_id">Disciplinas Ofertadas <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="ofd_id" id="ofd_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pol_id">Polo</label>
+                            <div class="form-group">
+                                <select name="pol_id" id="pol_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">&nbsp</label>
+                            <div class="form-group">
+                                <input type="submit" id="btnBuscar" class="btn btn-primary w-100" value="Buscar">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <form method="GET" action="">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label for="crs_id">Curso*</label>
-                        <div class="form-group">
-                            <select name="crs_id" class="form-control">
-    <option value="">Escolha o Curso</option>
-    @foreach($cursos as $key => $value)
-        <option value="{{ $key }}">{{ $value }}</option>
-    @endforeach
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="ofc_id">Oferta de Curso*</label>
-                        <div class="form-group">
-                            <select name="ofc_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="trm_id">Turma*</label>
-                        <div class="form-group">
-                            <select name="trm_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="per_id">Período Letivo*</label>
-                        <div class="form-group">
-                            <select name="per_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label for="ofd_id">Disciplinas Ofertadas*</label>
-                        <div class="form-group">
-                            <select name="ofd_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="pol_id">Polo</label>
-                        <div class="form-group">
-                            <select name="pol_id" class="form-control">
-</select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="">&nbsp;</label>
-                        <div class="form-group">
-                            <input type="submit" id="btnBuscar" class="form-control btn btn-primary" value="Buscar">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!-- /.box-body -->
     </div>
 
-    <div class="alunos"></div>
+    <div class="row py-2" id="alunos">
+    </div>
 @endsection
 
 @section('scripts')
-    <script src="{{url('/')}}/js/plugins/select2.js"></script>
-
     <script type="text/javascript">
         $(function() {
-            // select2
-            $('select').select2();
-
             var cursoSelect = $('#crs_id');
             var ofertasCursoSelect = $('#ofc_id');
             var turmaSelect = $('#trm_id');
@@ -255,21 +245,21 @@
             });
 
             var renderTable = function(parameters) {
-                $('.alunos').empty();
+                $('#alunos').empty();
 
                 var url = "{{url('/')}}/academico/async/matriculasofertasdisciplinas/getalunosmatriculaslote?" + $.param(parameters);
 
                 $.harpia.httpget(url).done(function (response) {
                     if(!$.isEmptyObject(response)) {
-                        $('.alunos').append(response);
+                        $('#alunos').append(response);
                     } else {
-                        $('.alunos').append("<p>Não há alunos matriculados na turma/polo</p>");
+                        $('#alunos').append("<p>Não há alunos matriculados na turma/polo</p>");
                     }
                 });
             };
 
             // evento para selecionar todos os checkboxes
-            $('.alunos').on('click', '#select_all',function(event) {
+            $('#alunos').on('click', '#select_all',function(event) {
                 if(this.checked) {
                     $('.matriculas').each(function() {
                         this.checked = true;
@@ -283,7 +273,7 @@
             });
 
             // evento para selecionar todos os checkboxes
-            $('.alunos').on('click', '#select_all_matriculados',function(event) {
+            $('#alunos').on('click', '#select_all_matriculados',function(event) {
                 if(this.checked) {
                     $('.matriculados').each(function() {
                         this.checked = true;
@@ -297,7 +287,7 @@
             });
 
             var hiddenButtonDesmatricular = function () {
-                var checkboxes = $('.alunos table td input[type="checkbox"]');
+                var checkboxes = $('#alunos table td input[type="checkbox"]');
 
                 if(checkboxes.is(':checked')){
                     $(document).find('.btnDesmatricular').removeClass('hidden');
@@ -307,7 +297,7 @@
             };
 
             var hiddenButton = function () {
-                var checkboxes = $('.alunos table td input[type="checkbox"]');
+                var checkboxes = $('#alunos table td input[type="checkbox"]');
 
                 if(checkboxes.is(':checked')){
                     $(document).find('.btnMatricular').removeClass('hidden');
@@ -321,7 +311,7 @@
             $(document).on('click', '.table-desmatricular input[type="checkbox"]', hiddenButtonDesmatricular);
 
 
-            $('.alunos').on('click', '.btnMatricular', function () {
+            $('#alunos').on('click', '.btnMatricular', function () {
                 var quant = $('.matriculas:checked').length;
 
                 var ofertaId = $('#ofd_id').val();
@@ -339,7 +329,7 @@
                 sendMatriculas(matriculasIds, ofertaId);
             });
 
-            $('.alunos').on('click', '.btnDesmatricular', function () {
+            $('#alunos').on('click', '.btnDesmatricular', function () {
                 var quant = $('.matriculados:checked').length;
 
                 var ofertaId = $('#ofd_id').val();

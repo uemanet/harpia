@@ -13,11 +13,12 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de grupos</h3>
+    <div class="row">
+        <div class="card card-primary card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de cadastro de grupos</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <form action="url(" method="POST" id="form" role="form">
     @csrf
             @include('Academico::grupos.includes.formulario_create')

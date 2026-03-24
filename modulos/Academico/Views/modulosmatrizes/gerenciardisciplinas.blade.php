@@ -1,9 +1,5 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
-
 @section('title')
     Gerenciamento de Disciplinas
 @stop
@@ -13,138 +9,141 @@
 @stop
 
 @section('content')
-    <!-- Box Buscar Disciplinas -->
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">
-                Buscar Disciplinas
-            </h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+    <div class="row py-2">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">
+                    Buscar Disciplinas
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <form action="#" id="formLocalizar">
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="disciplina" placeholder="Nome da Disciplina">
+            <div class="card-body">
+                <div class="row">
+                    <form action="#" id="formLocalizar" class="d-flex w-100">
+                        <div class="col-md-10 px-1">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="disciplina" placeholder="Nome da Disciplina">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="form-control btn btn-primary" id="btnLocalizar">Buscar</button>
-                    </div>
-                </form>
+                        <div class="col-md-2 px-1">
+                            <button type="submit" class="btn btn-primary w-100" id="btnLocalizar">Buscar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Box Disciplinas Localizadas -->
-    <div id="boxDisciplinasLocalizadas" class="box box-primary hidden">
-        <div class="box-header with-border">
-            <h3 class="box-title">
-                Disciplinas Localizadas
-            </h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+    <div class="row py-2">
+        <div id="cardDisciplinasLocalizadas" class="card card-primary card-outline hidden">
+            <div class="card-header with-border">
+                <h3 class="card-title">
+                    Disciplinas Localizadas
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="box-body">
+            <div class="card-body">
+            </div>
         </div>
     </div>
 
-    <!-- Box Disciplinas Cadastradas no Módulo -->
-    <div id="boxDisciplinasCadastradas" class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">
-                Disciplinas do módulo
-            </h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+    <div class="row py-2">
+        <div id="cardDisciplinasCadastradas" class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">
+                    Disciplinas do módulo
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="box-body">
-            @if($disciplinas->count())
-                <table class="table table-bordered table-hover" id="tableDisciplinasModulo">
-                    <thead>
-                    <th>#</th>
-                    <th>Nome</th>
-                    <th>Nível</th>
-                    <th>Carga Horária</th>
-                    <th>Créditos</th>
-                    <th>Tipo da Disciplina</th>
-                    <th>Pré-Requisitos</th>
-                    <th>Ações</th>
-                    </thead>
-                    <tbody>
-                    @foreach($disciplinas as $disciplina)
-                        <tr>
-                            <td>{{$disciplina->mdc_id}}</td>
-                            <td>{{$disciplina->dis_nome}}</td>
-                            <td>{{$disciplina->nvc_nome}}</td>
-                            <td>{{$disciplina->dis_carga_horaria}} horas</td>
-                            <td>{{$disciplina->dis_creditos}}</td>
-                            <td>{{$disciplina->mdc_tipo_disciplina}}</td>
-                            @if(!empty($disciplina->pre_requisitos))
+            <div class="card-body">
+                @if($disciplinas->count())
+                    <table class="table table-bordered table-hover" id="tableDisciplinasModulo">
+                        <thead>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Nível</th>
+                        <th>Carga Horária</th>
+                        <th>Créditos</th>
+                        <th>Tipo da Disciplina</th>
+                        <th>Pré-Requisitos</th>
+                        <th>Ações</th>
+                        </thead>
+                        <tbody>
+                        @foreach($disciplinas as $disciplina)
+                            <tr>
+                                <td>{{$disciplina->mdc_id}}</td>
+                                <td>{{$disciplina->dis_nome}}</td>
+                                <td>{{$disciplina->nvc_nome}}</td>
+                                <td>{{$disciplina->dis_carga_horaria}} horas</td>
+                                <td>{{$disciplina->dis_creditos}}</td>
+                                <td>{{$disciplina->mdc_tipo_disciplina}}</td>
+                                @if(!empty($disciplina->pre_requisitos))
+                                    <td>
+                                        @foreach($disciplina->pre_requisitos as $disc)
+                                            <p>{{ $disc->dis_nome }}</p>
+                                        @endforeach
+                                    </td>
+                                @else
+                                    <td>Sem pré-requisitos</td>
+                                @endif
                                 <td>
-                                    @foreach($disciplina->pre_requisitos as $disc)
-                                        <p>{{ $disc->dis_nome }}</p>
-                                    @endforeach
-                                </td>
-                            @else
-                                <td>Sem pré-requisitos</td>
-                            @endif
-                            <td>
-                                {!!
-                                    ActionButton::grid([
-                                        'type' => 'SELECT',
-                                        'config' => [
-                                            'classButton' => 'btn-default',
-                                            'label' => 'Selecione'
-                                        ],
-                                        'buttons' => [
-                                            [
-                                                'classButton' => 'btnEdit',
-                                                'icon' => 'fa fa-pencil',
-                                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.editardisciplinas',
-                                                'parameters' => ['id' => $disciplina->mdc_id],
-                                                'label' => 'Editar',
-                                                'id' => $disciplina->mdc_id,
-                                                'method' => 'get'
+                                    {!!
+                                        ActionButton::grid([
+                                            'type' => 'SELECT',
+                                            'config' => [
+                                                'classButton' => 'btn-default',
+                                                'label' => 'Selecione'
                                             ],
-                                            [
-                                                'classButton' => 'btn btn-delete',
-                                                'icon' => 'fa fa-trash',
-                                                'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.delete',
-                                                'id' => $disciplina->mdc_id,
-                                                'label' => 'Excluir',
-                                                'method' => 'post'
+                                            'buttons' => [
+                                                [
+                                                    'classButton' => 'btnEdit',
+                                                    'icon' => 'fa fa-pencil',
+                                                    'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.editardisciplinas',
+                                                    'parameters' => ['id' => $disciplina->mdc_id],
+                                                    'label' => 'Editar',
+                                                    'id' => $disciplina->mdc_id,
+                                                    'method' => 'get'
+                                                ],
+                                                [
+                                                    'classButton' => 'btn btn-delete',
+                                                    'icon' => 'fa fa-trash',
+                                                    'route' => 'academico.cursos.matrizescurriculares.modulosmatrizes.delete',
+                                                    'id' => $disciplina->mdc_id,
+                                                    'label' => 'Excluir',
+                                                    'method' => 'post'
+                                                ]
                                             ]
-                                        ]
-                                    ])
-                                !!}
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @else
-                <p>Sem disciplinas cadastradas</p>
-            @endif
+                                        ])
+                                    !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p>Sem disciplinas cadastradas</p>
+                @endif
+            </div>
         </div>
     </div>
+
 @stop
 
 @section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
     <script type="text/javascript">
-
         $(function () {
-
             var matriz = "{{$matriz->mtc_id}}";
             var modulo = "{{$modulo->mdo_id}}";
             var csrf_token = "{{csrf_token()}}";
@@ -238,13 +237,13 @@
 
             var renderTableLocalizadas = function (disciplinaNome, matrizId, moduloId) {
 
-                $('#boxDisciplinasLocalizadas').removeClass('hidden');
+                $('#cardDisciplinasLocalizadas').removeClass('hidden');
 
-                var boxBody = $('#boxDisciplinasLocalizadas .box-body');
+                var cardBody = $('#cardDisciplinasLocalizadas .card-body');
 
                 $.harpia.httpget('{{url('/')}}/academico/async/disciplinas/findbynome/' + matrizId + '/' + disciplinaNome + '/' + moduloId).done(function (data) {
 
-                    boxBody.empty();
+                    cardBody.empty();
 
                     if (!$.isEmptyObject(data.disciplinas)) {
 
@@ -309,11 +308,11 @@
                         table += '</tbody>';
                         table += '</table>';
 
-                        boxBody.append(table);
+                        cardBody.append(table);
 
                         $(document).find('select').select2();
                     } else {
-                        boxBody.append('<p>Sem registros</p>');
+                        cardBody.append('<p>Sem registros</p>');
                     }
                 });
             };
@@ -365,10 +364,10 @@
             };
 
             var renderTableDisciplinasModulo = function (moduloId) {
-                var boxBody = $('#boxDisciplinasCadastradas .box-body');
+                var cardBody = $('#cardDisciplinasCadastradas .card-body');
 
                 $.harpia.httpget('{{url("/")}}/academico/async/modulosdisciplinas/getalldisciplinasbymodulo/' + moduloId).done(function (response) {
-                    boxBody.empty();
+                    cardBody.empty();
 
                     if (!$.isEmptyObject(response)) {
                         var table = '<table class="table table-bordered table-hover" id="tableDisciplinasCadastradas">';
@@ -428,9 +427,9 @@
                         });
                         table += '</tbody>';
 
-                        boxBody.append(table);
+                        cardBody.append(table);
                     } else {
-                        boxBody.append('<p>Sem disciplinas cadastradas</p>');
+                        cardBody.append('<p>Sem disciplinas cadastradas</p>');
                     }
                 });
             };
@@ -440,8 +439,8 @@
                 var linhas = $('#tableDisciplinasLocalizadas tbody tr').length;
 
                 if (!((linhas - 1) > 0)) {
-                    $('#boxDisciplinasLocalizadas .box-body').empty();
-                    $('#boxDisciplinasLocalizadas .box-body').append('<p>Sem registros</p>');
+                    $('#cardDisciplinasLocalizadas .card-body').empty();
+                    $('#cardDisciplinasLocalizadas .card-body').append('<p>Sem registros</p>');
                 }
             };
         });

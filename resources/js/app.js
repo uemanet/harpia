@@ -34,7 +34,10 @@ require('select2');
 
 require('icheck');
 require('jstree');
-require('jquery-datetimepicker');
+
+const flatpickr = require("flatpickr");
+const { Portuguese } = require("flatpickr/dist/l10n/pt");
+
 require('./Chart.js'); // TODO: verificar caminho
 require('./cpfcnpj.min.js'); // TODO: verificar caminho
 require('fullcalendar');
@@ -45,7 +48,6 @@ $(document).ready(function() {
     $("select").select2({
         theme: 'bootstrap-5'
     });
-    // $(".select2").select2();
 
     // Inicializa todos os dropdowns bootstrap
     // $('.dropdown-toggle').dropdown();
@@ -55,16 +57,40 @@ $(document).ready(function() {
     //     $(this).siblings('.dropdown-menu').toggle();
     // });
 
-    //Date picker
-    $('.only-date').datetimepicker({
-        timepicker:false,
-        format:'d/m/Y'
+    // Inicialização do Flatpickr (Substitui o bootstrap-datepicker e o jquery-datetimepicker)
+    // Aplica simultaneamente para as classes .datepicker e .only-date
+    $(".datepicker").flatpickr({
+        locale: Portuguese,
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+
+    $(".only-date").flatpickr({
+        locale: Portuguese,
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+
+    $(".only-time").flatpickr({
+        locale: Portuguese,
+        enableTime: true,
+        time_24hr: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        allowInput: true,
+    });
+
+    $(".datetime").flatpickr({
+        locale: Portuguese,
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d/m/Y H:i",
+        allowInput: true,
     });
 
     $('.cpf-mask').inputmask({
         mask: "999.999.999-99",
-        removeMaskOnSubmit: true
+        removeMaskOnSubmit: true,
     });
 
-    $('.datetime').datetimepicker();
 });
