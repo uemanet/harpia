@@ -9,15 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Edição de Lista de Carteiras de Estudante</h3>
+    <div class="row">
+        <div class="card card-primary card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de Edição de Lista de Carteiras de Estudante</h3>
         </div>
-        <div class="box-body">
             <form action="{{ route('academico.carteirasestudantis.edit', [$lista->lst_id]) }}" method="POST" id="form" role="form">
-    @csrf
-    {{-- Form model: $lista - inputs devem usar old('campo', $lista->campo) --}}
-                @include('Academico::carteirasestudantis.includes.formulario')
+                @csrf
+                @method('PUT')
+                <div class="card-body">
+                    @include('Academico::carteirasestudantis.includes.formulario')
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+                </div>
             </form>
         </div>
     </div>

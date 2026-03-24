@@ -9,15 +9,19 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de polos</h3>
+    <div class="row">
+        <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title">Formulário de cadastro de polos</h3>
         </div>
-        <div class="box-body">
-            <form action="{{ route('academico.polos.create') }}" method="POST" id="form" role="form">
-    @csrf
-            @include('Academico::polos.includes.formulario')
-            </form>
-        </div>
+        <form action="{{ route('academico.polos.create') }}" method="POST" id="form" role="form">
+            @csrf
+            <div class="card-body">
+                @include('Academico::polos.includes.formulario')
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop

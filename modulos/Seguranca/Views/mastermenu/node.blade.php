@@ -1,5 +1,5 @@
 @if($node->hasChildren())
-    <li class="nav-item menu-open">
+    <li class="nav-item @if(MasterMenu::checkLeafIsActive($node)) menu-open @endif"> {{--  --}}
         <a href="#" class="nav-link @if(MasterMenu::checkLeafIsActive($node)) active @endif">
             <i class="nav-icon {{$node->getData()->mit_icone}}"></i>
             <p>

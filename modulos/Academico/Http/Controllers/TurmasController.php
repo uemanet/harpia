@@ -187,6 +187,7 @@ class TurmasController extends BaseController
             flash()->success('Turma atualizada com sucesso.');
 
             $turmaUpdated = $this->turmaRepository->find($id);
+            dd($request->all(), $turma, $turmaUpdated); exit();
             if ($turmaUpdated->trm_integrada) {
                 event(new UpdateTurmaEvent($turmaUpdated));
             }

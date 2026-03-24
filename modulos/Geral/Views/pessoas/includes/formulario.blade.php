@@ -2,6 +2,11 @@
     @if(isset($pessoa->pes_id))
         <input type="hidden" name="pes_id" value="{{ $pessoa->pes_id }}" >
     @endif
+
+    <h3 class="card-title w-100 pb-3">
+        <span style="font-weight: bold;"><i class="fa-solid fa-caret-right"></i> Dados Pessoais</span>
+    </h3>
+
     <div class="form-group col-md-4 @if ($errors->has('pes_nome')) has-error @endif">
         <label for="pes_nome" class="form-label">Nome completo*</label>
         <div class="controls">
@@ -136,8 +141,8 @@
 </div>
 
 <hr class="my-3">
-<h3 class="card-title">
-    <span style="font-weight: bold;">Endereço</span>
+<h3 class="card-title w-100 pb-3">
+    <span style="font-weight: bold;"><i class="fa-solid fa-caret-right"></i> Endereço</span>
 </h3>
 
 <div class="row">

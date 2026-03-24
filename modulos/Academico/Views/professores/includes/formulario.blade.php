@@ -1,35 +1,39 @@
 @section('stylesheets')
     <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
 @stop
 
 <div class="row">
     @if(isset($pessoa->pes_id))
         <input type="hidden" name="pes_id" value="{{ $pessoa->pes_id }}" >
     @endif
+
+    <h3 class="card-title w-100 pb-3">
+        <span style="font-weight: bold;"><i class="fa-solid fa-caret-right"></i> Dados Pessoais</span>
+    </h3>
+
     <div class="form-group col-md-3 @if ($errors->has('pes_nome')) has-error @endif">
-        <label for="pes_nome" class="control-label">Nome completo*</label>
+        <label for="pes_nome" class="form-label">Nome completo <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_nome" value="{{ old('pes_nome', isset($pessoa->pes_nome) ? $pessoa->pes_nome : null) }}" class="form-control" >
             @if ($errors->has('pes_nome')) <p class="help-block">{{ $errors->first('pes_nome') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_email')) has-error @endif">
-        <label for="pes_email" class="control-label">Email*</label>
+        <label for="pes_email" class="form-label">Email <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="email" name="pes_email" value="{{ old('pes_email', isset($pessoa->pes_email) ? $pessoa->pes_email : null) }}" class="form-control" >
             @if ($errors->has('pes_email')) <p class="help-block">{{ $errors->first('pes_email') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('doc_conteudo')) has-error @endif">
-        <label for="doc_conteudo" class="control-label">CPF*</label>
+        <label for="doc_conteudo" class="form-label">CPF <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="doc_conteudo" value="{{ old('doc_conteudo', isset($pessoa->doc_conteudo) ? $pessoa->doc_conteudo : null) }}" class="form-control" >
             @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('prf_codigo')) has-error @endif">
-        <label for="prf_codigo" class="control-label">Código/Matrícula</label>
+        <label for="prf_codigo" class="form-label">Código/Matrícula</label>
         <div class="controls">
             <input type="text" name="prf_codigo" value="{{ old('prf_codigo', isset($pessoa->prf_codigo) ? $pessoa->prf_codigo : null) }}" class="form-control" >
             @if ($errors->has('prf_codigo')) <p class="help-block">{{ $errors->first('prf_codigo') }}</p> @endif
@@ -39,14 +43,14 @@
 
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('pes_mae')) has-error @endif">
-        <label for="pes_mae" class="control-label">Nome da mãe*</label>
+        <label for="pes_mae" class="form-label">Nome da mãe <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_mae" value="{{ old('pes_mae', isset($pessoa->pes_mae) ? $pessoa->pes_mae : null) }}" class="form-control" >
             @if ($errors->has('pes_mae')) <p class="help-block">{{ $errors->first('pes_mae') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('pes_pai')) has-error @endif">
-        <label for="pes_pai" class="control-label">Nome do pai</label>
+        <label for="pes_pai" class="form-label">Nome do pai</label>
         <div class="controls">
             <input type="text" name="pes_pai" value="{{ old('pes_pai', isset($pessoa->pes_pai) ? $pessoa->pes_pai : null) }}" class="form-control" >
             @if ($errors->has('pes_pai')) <p class="help-block">{{ $errors->first('pes_pai') }}</p> @endif
@@ -56,7 +60,7 @@
 
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('pes_sexo')) has-error @endif">
-        <label for="pes_sexo" class="control-label">Sexo*</label>
+        <label for="pes_sexo" class="form-label">Sexo <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <select name="pes_sexo" class="form-control">
     <option value="">Selecione o sexo</option>
@@ -67,21 +71,21 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_telefone')) has-error @endif">
-        <label for="pes_telefone" class="control-label">Telefone*</label>
+        <label for="pes_telefone" class="form-label">Telefone <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_telefone" value="{{ old('pes_telefone', isset($pessoa->pes_telefone) ? $pessoa->pes_telefone : null) }}" class="form-control" >
             @if ($errors->has('pes_telefone')) <p class="help-block">{{ $errors->first('pes_telefone') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-2 @if ($errors->has('pes_nascimento')) has-error @endif">
-        <label for="pes_nascimento" class="control-label">Nascimento*</label>
+        <label for="pes_nascimento" class="form-label">Nascimento <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_nascimento" value="{{ old('pes_nascimento', isset($pessoa->pes_nascimento) ? $pessoa->pes_nascimento : null) }}" class="form-control datepicker" >
             @if ($errors->has('pes_nascimento')) <p class="help-block">{{ $errors->first('pes_nascimento') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-2 @if ($errors->has('pes_estado_civil')) has-error @endif">
-        <label for="pes_estado_civil" class="control-label">Estado civil</label>
+        <label for="pes_estado_civil" class="form-label">Estado civil</label>
 
         <div class="controls">
             <select name="pes_estado_civil" class="form-control">
@@ -92,7 +96,7 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_raca')) has-error @endif">
-        <label for="pes_raca" class="control-label">Cor/Raça</label>
+        <label for="pes_raca" class="form-label">Cor/Raça</label>
 
         <div class="controls">
             <select name="pes_raca" class="form-control">
@@ -111,21 +115,21 @@
 
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('pes_naturalidade')) has-error @endif">
-        <label for="pes_naturalidade" class="control-label">Naturalidade*</label>
+        <label for="pes_naturalidade" class="form-label">Naturalidade <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_naturalidade" value="{{ old('pes_naturalidade', isset($pessoa->pes_naturalidade) ? $pessoa->pes_naturalidade : null) }}" class="form-control" >
             @if ($errors->has('pes_naturalidade')) <p class="help-block">{{ $errors->first('pes_naturalidade') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_nacionalidade')) has-error @endif">
-        <label for="pes_nacionalidade" class="control-label">Nacionalidade*</label>
+        <label for="pes_nacionalidade" class="form-label">Nacionalidade <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_nacionalidade" value="{{ old('pes_nacionalidade', isset($pessoa->pes_nacionalidade) ? $pessoa->pes_nacionalidade : null) }}" class="form-control" >
             @if ($errors->has('pes_nacionalidade')) <p class="help-block">{{ $errors->first('pes_nacionalidade') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_necessidade_especial')) has-error @endif">
-        <label for="pes_necessidade_especial" class="control-label">Necessidade especial?</label>
+        <label for="pes_necessidade_especial" class="form-label">Necessidade especial?</label>
 
         <div class="controls">
             <select name="pes_necessidade_especial" class="form-control">
@@ -136,7 +140,7 @@
         </div>
     </div>
     <div class="form-group col-md-3" @if ($errors->has('pes_estrangeiro')) has-error @endif>
-        <label for="pes_estrangeiro" class="control-label">Estrangeiro?</label>
+        <label for="pes_estrangeiro" class="form-label">Estrangeiro?</label>
         <div class="controls">
             <select name="pes_estrangeiro" class="form-control">
     <option value="0" {{ old('pes_estrangeiro', isset($pessoa->pes_estrangeiro) ? $pessoa->pes_estrangeiro : null) == '0' ? 'selected' : '' }}>Não</option>
@@ -147,27 +151,28 @@
     </div>
 </div>
 
-<h4 class="box-title">
-    Endereço
-</h4>
+<hr class="my-3">
+<h3 class="card-title w-100 pb-3">
+    <span style="font-weight: bold;"><i class="fa-solid fa-caret-right"></i> Endereço</span>
+</h3>
 
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('pes_cep')) has-error @endif">
-        <label for="pes_cep" class="control-label">CEP*</label>
+        <label for="pes_cep" class="form-label">CEP <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_cep" value="{{ old('pes_cep', isset($pessoa->pes_cep) ? $pessoa->pes_cep : null) }}" class="form-control" >
             @if ($errors->has('pes_cep')) <p class="help-block">{{ $errors->first('pes_cep') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('pes_endereco')) has-error @endif">
-        <label for="pes_endereco" class="control-label">Endereço*</label>
+        <label for="pes_endereco" class="form-label">Endereço <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_endereco" value="{{ old('pes_endereco', isset($pessoa->pes_endereco) ? $pessoa->pes_endereco : null) }}" class="form-control" >
             @if ($errors->has('pes_endereco')) <p class="help-block">{{ $errors->first('pes_endereco') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('pes_complemento')) has-error @endif">
-        <label for="pes_complemento" class="control-label">Complemento</label>
+        <label for="pes_complemento" class="form-label">Complemento</label>
         <div class="controls">
             <input type="text" name="pes_complemento" value="{{ old('pes_complemento', isset($pessoa->pes_complemento) ? $pessoa->pes_complemento : null) }}" class="form-control" >
             @if ($errors->has('pes_complemento')) <p class="help-block">{{ $errors->first('pes_complemento') }}</p> @endif
@@ -177,21 +182,21 @@
 
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('pes_numero')) has-error @endif">
-        <label for="pes_numero" class="control-label">Número*</label>
+        <label for="pes_numero" class="form-label">Número <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_numero" value="{{ old('pes_numero', isset($pessoa->pes_numero) ? $pessoa->pes_numero : null) }}" class="form-control" >
             @if ($errors->has('pes_numero')) <p class="help-block">{{ $errors->first('pes_numero') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('pes_bairro')) has-error @endif">
-        <label for="pes_bairro" class="control-label">Bairro*</label>
+        <label for="pes_bairro" class="form-label">Bairro <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_bairro" value="{{ old('pes_bairro', isset($pessoa->pes_bairro) ? $pessoa->pes_bairro : null) }}" class="form-control" >
             @if ($errors->has('pes_bairro')) <p class="help-block">{{ $errors->first('pes_bairro') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('pes_cidade')) has-error @endif">
-        <label for="pes_cidade" class="control-label">Cidade*</label>
+        <label for="pes_cidade" class="form-label">Cidade <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
             <input type="text" name="pes_cidade" value="{{ old('pes_cidade', isset($pessoa->pes_cidade) ? $pessoa->pes_cidade : null) }}" class="form-control" >
             @if ($errors->has('pes_cidade')) <p class="help-block">{{ $errors->first('pes_cidade') }}</p> @endif
@@ -199,7 +204,7 @@
     </div>
     <div class="col-md-3">
         <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
-            <label for="pes_estado">Estado*</label>
+            <label for="pes_estado">Estado <small class="obrigatorio-dot">*</small></label>
             <select name="pes_estado" class="form-control">
     <option value="">Selecione uma opção...</option>
     <option value="AC" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AC' ? 'selected' : '' }}>Acre</option>
@@ -242,13 +247,10 @@
     <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
     <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
     <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
 
     <script>
 
         $(function (){
-
-            $("select").select2();
 
             $('.datepicker').datepicker({
                 format: "dd/mm/yyyy",

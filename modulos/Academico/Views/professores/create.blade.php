@@ -9,26 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Cadastro de Professores</h3>
+    <div class="row">
+        <div class="card card-primary card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de Cadastro de Professores</h3>
             <span class="label label-primary pull-right">Professor</span>
         </div>
-        <div class="box-body">
-            <form action="{{ route('academico.professores.create') }}" method="POST" id="form" role="form">
-    @csrf
-
-            <h4 class="box-title">
-                Dados de Pessoa
-            </h4>
-            @include('Academico::professores.includes.formulario', ['pessoa' => $pessoa])
-
-            <div class="row">
-                <div class="form-group col-md-12">
-                    <button type="submit" class="btn btn-primary pull-right">Salvar Professor</button>
-                </div>
+        <form action="{{ route('academico.professores.create') }}" method="POST" id="form" role="form">
+            @csrf
+            <div class="card-body">
+                @include('Academico::professores.includes.formulario', ['pessoa' => $pessoa])
             </div>
-            </form>
-        </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop

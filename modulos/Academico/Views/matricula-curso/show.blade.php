@@ -3,6 +3,10 @@
 @section('title', 'Informações do Aluno')
 
 @section('content')
-    @include('Geral::pessoas.includes.dadospessoais')
-    @include('Academico::alunos.includes.matriculas')
+    <section class="py-2">
+        @include('Geral::pessoas.includes.dadospessoais')
+    </section>
+    <section class="py-2">
+        @include('Academico::alunos.includes.matriculas')
+    </section>
 @endsection

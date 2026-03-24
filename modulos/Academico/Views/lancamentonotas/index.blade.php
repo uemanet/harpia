@@ -13,69 +13,64 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-search"></i> Buscar Ofertas de Disciplinas</h3>
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-search"></i> Buscar Ofertas de Disciplinas</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="form-group col-md-3">
-                    <label for="crs_id" class="control-label">Curso*</label>
-                    <select name="crs_id" class="form-control">
-    <option value="">Escolha um curso</option>
-    @foreach($cursos as $key => $value)
-        <option value="{{ $key }}">{{ $value }}</option>
-    @endforeach
-</select>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="ofc_id" class="control-label">Oferta do Curso*</label>
-                    <select name="ofc_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="trm_id" class="control-label">Turma*</label>
-                    <select name="trm_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="per_id" class="control-label">Período Letivo*</label>
-                    <select name="per_id" class="form-control">
-</select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="ofd_id" class="control-label">Oferta de Disciplina*</label>
-                    <select name="ofd_id" class="form-control">
-</select>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="crs_id" class="form-label">Curso <small class="obrigatorio-dot">*</small></label>
+                        <select name="crs_id" id="crs_id" class="form-control">
+                            <option value="">Escolha um curso</option>
+                            @foreach($cursos as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="ofc_id" class="form-label">Oferta do Curso <small class="obrigatorio-dot">*</small></label>
+                        <select name="ofc_id" id="ofc_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="trm_id" class="form-label">Turma <small class="obrigatorio-dot">*</small></label>
+                        <select name="trm_id" id="trm_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="per_id" class="form-label">Período Letivo <small class="obrigatorio-dot">*</small></label>
+                        <select name="per_id" id="per_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ofd_id" class="form-label">Oferta de Disciplina <small class="obrigatorio-dot">*</small></label>
+                        <select name="ofd_id" id="ofd_id" class="form-control"></select>
+                    </div>
                 </div>
             </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-body -->
     </div>
 
-    <div class="table-notas"></div>
+    <div class="row py-2" id="table-notas"></div>
 @stop
 
 @section('scripts')
-    <script src="{{url('/')}}/js/plugins/select2.js"></script>
-
     <script>
         $(function () {
-            $('select').select2();
-
             var selectOfertas = $('#ofc_id');
             var selectTurmas = $('#trm_id');
             var selectPeriodos = $("#per_id");
             var selectOfertasDisciplinas = $("#ofd_id");
 
-            var boxDisciplinas = $('#boxDisciplinas');
+            var cardDisciplinas = $('#cardDisciplinas');
 
             // populando o select de ofertas de curso
             $('#crs_id').change(function () {
@@ -178,8 +173,8 @@
                     .done(function (response) {
                         if(!$.isEmptyObject(response)){
                             console.log(response);
-                            $(".table-notas").empty();
-                            $(".table-notas").append(response);
+                            $("#table-notas").empty();
+                            $("#table-notas").append(response);
                         } else {
                             $.harpia.hideloading();
                             toastr.error('Erro ao processar requisição. Entrar em contato com o suporte.', null, {progressBar: true});

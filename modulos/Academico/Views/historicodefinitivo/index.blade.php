@@ -1,101 +1,96 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
-@stop
-
 @section('title')
     Histórico Definitivo
 @stop
 
+{{--TODO: Erro no buscar--}}
+
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">
-                <i class="fa fa-filter"></i> Filtrar Dados
-            </h3>
-            <!-- /.box-title -->
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-minus"></i>
-                </button>
+    <div class="row py-2">
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">
+                    <i class="fa fa-filter"></i> Filtrar Dados
+                </h3>
+                <!-- /.card-title -->
+                <div class="card-tools pull-right">
+                    <button type="button" class="btn btn-card-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <form method="GET" action="#">
-                    <div class="col-md-3">
-                        <label for="crs_id">Curso*</label>
-                        <div class="form-group">
-                            <select name="crs_id" class="form-control">
-    <option value="">Escolha o curso</option>
-    @foreach($cursos as $key => $value)
-        <option value="{{ $key }}" {{ '' == $key ? 'selected' : '' }}>{{ $value }}</option>
-    @endforeach
-</select>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <form method="GET" action="#" class="d-flex w-100">
+                        <div class="col-md-4 px-1">
+                            <label for="crs_id">Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="crs_id" id="crs_id" class="form-control">
+                                    <option value="">Escolha o curso</option>
+                                    @foreach($cursos as $key => $value)
+                                        <option value="{{ $key }}" {{ '' == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="ofc_id">Oferta de Curso*</label>
-                        <div class="form-group">
-                            <select name="ofc_id" class="form-control">
-</select>
+                        <div class="col-md-2 px-1">
+                            <label for="ofc_id">Oferta de Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="ofc_id" id="ofc_id" class="form-control"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="trm_id">Turma*</label>
-                        <div class="form-group">
-                            <select name="trm_id" class="form-control">
-</select>
+                        <div class="col-md-2 px-1">
+                            <label for="trm_id">Turma <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="trm_id" id="trm_id" class="form-control"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="pol_id">Polo*</label>
-                        <div class="form-group">
-                            <select name="pol_id" class="form-control">
-</select>
+                        <div class="col-md-2 px-1">
+                            <label for="pol_id">Polo <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="pol_id" id="pol_id" class="form-control"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="btn">&nbsp;</label>
-                        <div class="form-group">
-                            <input type="submit" id="btnBuscar" class="form-control btn-primary" value="Buscar">
+                        <div class="col-md-2 px-1">
+                            <label for="btn">&nbsp;</label>
+                            <div class="form-group">
+                                <input type="submit" id="btnBuscar" class="btn btn-primary w-100" value="Buscar">
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-body -->
     </div>
-    <!-- /.box-primary -->
-    <div class="box box-primary hidden" id="boxAlunos">
-        <div class="box-header with-border">
-            <h3 class="box-title">
-                <i class="fa fa-filter"></i> Lista de Alunos
-            </h3>
-            <!-- /.box-title -->
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-minus"></i>
-                </button>
+    <div class="row py-2">
+        <!-- /.card-primary -->
+        <div class="card card-primary card-outline hidden" id="cardAlunos">
+            <div class="card-header with-border">
+                <h3 class="card-title">
+                    <i class="fa fa-filter"></i> Lista de Alunos
+                </h3>
+                <!-- /.card-title -->
+                <div class="card-tools pull-right">
+                    <button type="button" class="btn btn-card-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
+            <!-- /.card-header -->
+            <div class="card-body"></div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-header -->
-        <div class="box-body"></div>
-        <!-- /.box-body -->
     </div>
 @stop
 
 @section('scripts')
-    <script src="{{url('/')}}/js/plugins/select2.js"></script>
-
     <script>
         $(function () {
-            $('select').select2();
-
             var token = "{{csrf_token()}}";
 
             var cursosSelect = $('#crs_id');
@@ -205,10 +200,10 @@
 
                 $.harpia.httpget("{{url('/')}}/academico/async/matricula/getmatriculasconcluidas?" + data).done(function (response) {
 
-                    $('#boxAlunos').removeClass('hidden');
+                    $('#cardAlunos').removeClass('hidden');
 
-                    var boxAlunos = $('#boxAlunos .box-body');
-                    boxAlunos.empty();
+                    var cardAlunos = $('#cardAlunos .card-body');
+                    cardAlunos.empty();
 
                     if(!$.isEmptyObject(response)) {
                         var table = '';
@@ -245,16 +240,16 @@
                         table += "</form>";
                         table += "</div>";
 
-                        boxAlunos.append(table);
+                        cardAlunos.append(table);
                         hiddenButton();
                     } else {
-                        boxAlunos.append('<p>Sem registros para apresentar</p>');
+                        cardAlunos.append('<p>Sem registros para apresentar</p>');
                     }
                 });
             };
 
             var hiddenButton = function() {
-                var checkboxes = $('#boxAlunos table td input[type="checkbox"]');
+                var checkboxes = $('#cardAlunos table td input[type="checkbox"]');
 
                 if(checkboxes.is(':checked')){
                     $(document).find('.impHistoricos').removeClass('hidden');
@@ -263,7 +258,7 @@
                 }
             };
 
-            $(document).on('click', '#boxAlunos table input[type="checkbox"]', hiddenButton);
+            $(document).on('click', '#cardAlunos table input[type="checkbox"]', hiddenButton);
         });
     </script>
 @stop
