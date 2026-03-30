@@ -1,16 +1,19 @@
-// Import jQuery primeiro (para manter compatibilidade com seus plugins antigos)
-window.$ = window.jQuery = require('jquery');
-window.toastr = require('toastr');
-window.Swal = require('sweetalert2');
-window.swal = window.Swal;
-// Importa o Bootstrap 5 (versão bundle já inclui o Popper para os dropdowns funcionarem)
-require('bootstrap/dist/js/bootstrap.bundle.min');
+import jQuery from 'jquery';
+import toastr from 'toastr';
+import Swal from 'sweetalert2';
+
+window.$ = window.jQuery = jQuery;
+window.toastr = toastr;
+window.Swal = window.swal = Swal;
+
+// Importa o Bootstrap 5
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 // Importa o core do AdminLTE v4
-require('admin-lte');
+import 'admin-lte';
 
-// Importa o OverlayScrollbars (Fundamental para o layout-fixed da v4 não quebrar)
-const { OverlayScrollbars } = require('overlayscrollbars');
+// Importa o OverlayScrollbars
+import { OverlayScrollbars } from 'overlayscrollbars';
 
 // Inicialização obrigatória do OverlayScrollbars no Sidebar (padrão v4)
 document.addEventListener('DOMContentLoaded', function () {
@@ -26,52 +29,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-require('moment');
-require('inputmask/dist/jquery.inputmask.js');
+import 'moment';
+import 'inputmask/dist/jquery.inputmask.js';
+import 'jquery-validation';
 
-require('jquery-validation');
-require('select2');
+import select2 from 'select2';
+select2(window.$);
 
-require('icheck');
-require('jstree');
+import 'jstree';
 
-const flatpickr = require("flatpickr");
-const { Portuguese } = require("flatpickr/dist/l10n/pt");
+import Chart from 'chart.js/auto';
+window.Chart = Chart;
 
-require('./Chart.js'); // TODO: verificar caminho
-require('./cpfcnpj.min.js'); // TODO: verificar caminho
-require('fullcalendar');
-require('./harpia.js'); // TODO: verificar caminho
+// Flatpickr
+import flatpickr from "flatpickr";
+import { Portuguese } from "flatpickr/dist/l10n/pt.js";
 
-$(document).ready(function() {
+// Importando arquivos locais
+// import './cpfcnpj.min.js';
+import 'fullcalendar';
+import './harpia.js';
 
+document.addEventListener('DOMContentLoaded', function () {
+// $(document).ready(function() {
     $("select").select2({
         theme: 'bootstrap-5'
     });
 
-    // Inicializa todos os dropdowns bootstrap
-    // $('.dropdown-toggle').dropdown();
-
-    // Inicializa os dropdowns de ação na tabela
-    // $(document).on('click', '.btn-group .dropdown-toggle', function() {
-    //     $(this).siblings('.dropdown-menu').toggle();
-    // });
-
-    // Inicialização do Flatpickr (Substitui o bootstrap-datepicker e o jquery-datetimepicker)
-    // Aplica simultaneamente para as classes .datepicker e .only-date
-    $(".datepicker").flatpickr({
+    // Inicialização do Flatpickr
+    flatpickr(".datepicker, .only-date", {
         locale: Portuguese,
         dateFormat: "d/m/Y",
         allowInput: true,
     });
 
-    $(".only-date").flatpickr({
-        locale: Portuguese,
-        dateFormat: "d/m/Y",
-        allowInput: true,
-    });
-
-    $(".only-time").flatpickr({
+    flatpickr(".only-time", {
         locale: Portuguese,
         enableTime: true,
         time_24hr: true,
@@ -80,7 +72,7 @@ $(document).ready(function() {
         allowInput: true,
     });
 
-    $(".datetime").flatpickr({
+    flatpickr(".datetime", {
         locale: Portuguese,
         enableTime: true,
         time_24hr: true,
@@ -89,8 +81,6 @@ $(document).ready(function() {
     });
 
     $('.cpf-mask').inputmask({
-        mask: "999.999.999-99",
-        removeMaskOnSubmit: true,
+        mask: "999.999.999-99"
     });
-
 });

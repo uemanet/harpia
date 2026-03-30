@@ -24,7 +24,7 @@
     <div class="form-group col-md-4 @if ($errors->has('doc_conteudo')) has-error @endif">
         <label for="doc_conteudo" class="form-label">CPF*</label>
         <div class="controls">
-            <input type="text" name="doc_conteudo" value="{{ isset($pessoa->doc_conteudo) ? $pessoa->doc_conteudo : old('doc_conteudo') }}" class="form-control" >
+            <input type="text" name="doc_conteudo" value="{{ isset($pessoa->doc_conteudo) ? $pessoa->doc_conteudo : old('doc_conteudo') }}" class="form-control cpf-mask" >
             @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
         </div>
     </div>
