@@ -88,3 +88,23 @@ $.harpia.httppost = function(url, data) {
         }).promise();
     });
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Verifica se há alguma mensagem enviada pela sessão do PHP
+    if (window.HarpiaFlashMessages && window.HarpiaFlashMessages.notifications) {
+
+        let defaultConfig = window.HarpiaFlashMessages.defaultConfig || {};
+
+        window.HarpiaFlashMessages.notifications.forEach(function(notification) {
+
+            // Mescla as configurações padrão com as opções específicas da notificação
+            let finalConfig = Object.assign({}, defaultConfig, notification.options || {});
+
+            // Usa a instância global do toastr que você declarou no app.js
+            window.toastr.options = finalConfig;
+
+            // Dispara o alerta (success, error, warning, info)
+            window.toastr[notification.type](notification.message, notification.title);
+        });
+    }
+});

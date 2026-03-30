@@ -23,36 +23,32 @@ class FlashToastrAlert
     {
         $notifications = $this->session->get('flashtoastralert_notifications');
 
-        if (!$notifications) {
-            $notifications = [];
+        if (!$notifications || empty($notifications)) {
+            return '';
         }
 
-        $output = '<script type="text/javascript">';
+        $defaultConfig = $this->config->get('flashtoastralert.options', []);
 
-        $lastConfig = [];
+        // Sanitiza os dados da mesma forma que o pacote original fazia
+        $safeNotifications = array_map(function($notif) {
+            return [
+                'type' => $notif['type'],
+                'title' => isset($notif['title']) ? htmlentities($notif['title']) : null,
+                'message' => str_replace(['&lt;', '&gt;'], ['<', '>'], e($notif['message'])),
+                'options' => $notif['options']
+            ];
+        }, $notifications);
 
-        foreach ($notifications as $notification) {
-            $config = $this->config->get('flashtoastralert.options');
+        $payload = [
+            'defaultConfig' => $defaultConfig,
+            'notifications' => $safeNotifications
+        ];
 
-            if (count($notification['options']) > 0) {
-                // Merge user supplied options with default options
-                $config = array_merge($config, $notification['options']);
-            }
-
-            // Config persists between toasts
-            if ($config != $lastConfig) {
-                $output .= 'toastr.options = ' . json_encode($config) . ';';
-
-                $lastConfig = $config;
-            }
-
-            // Toastr output
-            $output .= 'toastr.' . $notification['type'] . "('" . str_replace("'", "\\'", str_replace(['&lt;', '&gt;'], ['<', '>'], e($notification['message']))) . "'" . (isset($notification['title']) ? ", '" . str_replace("'", "\\'", htmlentities($notification['title'])) . "'" : null) . ');';
-        }
-
-        $output .= '</script>';
-
-        return $output;
+        // Retorna apenas um objeto de DADOS, e não funções executáveis.
+        // O JS vai pegar isso e processar no momento certo!
+        return "<script>\n" .
+            "    window.HarpiaFlashMessages = " . json_encode($payload) . ";\n" .
+            "</script>";
     }
 
     public function add($type, $message, $title = null, $options = [])
