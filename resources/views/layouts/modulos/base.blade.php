@@ -3,11 +3,13 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="base-url" content="{{ url('/') }}">
 
     <title>Módulo Admin - @yield('title')</title>
     <link rel="shortcut icon" href="{{ asset('img/logo-mini.png') }}" type="image/x-icon">
 
-    <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
+{{--    <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />--}}
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     @yield('stylesheets')
 </head>
@@ -28,7 +30,7 @@
     </div>
     <!-- ./wrapper -->
 
-    <script src="{{ asset('/js/app.js') }}"></script>
+{{--    <script src="{{ asset('/js/app.js') }}"></script>--}}
     {!! Flash::render() !!}
     @yield('scripts')
 </body>

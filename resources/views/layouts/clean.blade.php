@@ -8,7 +8,8 @@
     <title>@yield('title')</title>
     <link rel="shortcut icon" href="{{ asset('img/logo-mini.png') }}" type="image/x-icon">
 
-    <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />
+{{--    <link rel="stylesheet" href="{{ asset('/css/app.css') }}" />--}}
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     @yield('scripts')
 </head>
@@ -25,7 +26,7 @@
 
 @include('layouts.includes.footer.clean')
 
-<script src="{{ asset('js/app.js') }}"></script>
+{{--<script src="{{ asset('js/app.js') }}"></script>--}}
 {!! Flash::render() !!}
 
 @yield('scripts')

@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class WhoopsHandler extends BaseExceptionHandler
 {
-
+// TODO: verificar se pode remover essa classe
 
     public function render($request, \Throwable $e)
     {

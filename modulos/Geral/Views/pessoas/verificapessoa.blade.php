@@ -12,7 +12,7 @@
                         <div class="col-12">
                             {{ csrf_field() }}
                             <div class="form-group has-feedback @if ($errors->has('doc_conteudo')) has-error @endif">
-                                <input placeholder="Digite o CPF" class="form-control" name="doc_conteudo" id="doc_conteudo" type="text" value="{{old('doc_conteudo')}}">
+                                <input placeholder="Digite o CPF" class="form-control cpf-mask" name="doc_conteudo" id="doc_conteudo" type="text" value="{{old('doc_conteudo')}}">
                                 <span class="glyphicon glyphicon-credit-card form-control-feedback"></span>
                                 @if ($errors->has('doc_conteudo')) <p class="help-block">{{ $errors->first('doc_conteudo') }}</p> @endif
                             </div>
@@ -29,14 +29,4 @@
             </div>
         </div>
     </div>
-@stop
-
-@section('scripts')
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/date.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.extensions.js') }}"></script>
-
-    <script type="text/javascript">
-        Inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true}).mask('#doc_conteudo');
-    </script>
 @stop
