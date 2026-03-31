@@ -18,7 +18,7 @@
                         </p>
                         <a href="{{ route('auth.reset-password', ['token' => $token]) }}">Resetar Senha</a><br><br>
 
-                        <b>Obs: Esse é apenas um e-mail informativo. Não responda este e-mail. <br><br> Este link é válido durante 30 minutos</br><br>
+                        <b>Obs: Esse é apenas um e-mail informativo. Não responda este e-mail. <br><br> Este link é válido durante 30 minutos</br><br></b>
                     </td>
                 </tr>
                 </tbody>

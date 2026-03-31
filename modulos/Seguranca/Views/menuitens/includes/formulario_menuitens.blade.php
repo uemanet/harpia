@@ -69,26 +69,5 @@
 </div>
 
 @section('scripts')
-    @parent
-    <script type="text/javascript">
-        $(function() {
-            $('#mit_mod_id').change(function() {
-
-                var modulo = $(this).val();
-
-                $('#mit_item_pai').empty();
-
-                $.harpia.httpget("{{url('/')}}/seguranca/async/menuitens/getitenbymodulo/"+modulo).done(function(data) {
-                    $('#mit_item_pai').append('<option value="">Selecione um item</option>');
-                    if (!$.isEmptyObject(data)) {
-                        $.each(data, function(key, value) {
-                            $('#mit_item_pai').append('<option value="'+key+'">'+value+'</option>');
-                        });
-                    } else {
-                        $('#mit_item_pai').append('<option value="">Não há itens cadastrados</option>');
-                    }
-                });
-            });
-        });
-    </script>
+    @vite('modulos/Seguranca/Resources/js/pages/menuitens/formulario_menuitens.js')
 @stop
