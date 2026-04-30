@@ -1,0 +1,143 @@
+{
+  "_jquery.module-BWjuZHtt.js": {
+    "file": "assets/jquery.module-BWjuZHtt.js",
+    "name": "jquery.module"
+  },
+  "_sweetalert2.esm.all-CvlpapFA.js": {
+    "file": "assets/sweetalert2.esm.all-CvlpapFA.js",
+    "name": "sweetalert2.esm.all"
+  },
+  "modulos/Academico/Resources/js/pages/alunos/matriculas.js": {
+    "file": "assets/matriculas-4hJqIR8X.js",
+    "name": "matriculas",
+    "src": "modulos/Academico/Resources/js/pages/alunos/matriculas.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js",
+      "_sweetalert2.esm.all-CvlpapFA.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/aproveitamentoestudos/show.js": {
+    "file": "assets/show-B7spEMF_.js",
+    "name": "show",
+    "src": "modulos/Academico/Resources/js/pages/aproveitamentoestudos/show.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/index/index.js": {
+    "file": "assets/index-DREwL8md.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/index/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/matricula-curso/formulario.js": {
+    "file": "assets/formulario-CHoT2evZ.js",
+    "name": "formulario",
+    "src": "modulos/Academico/Resources/js/pages/matricula-curso/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/relatoriosmatriculascurso/index.js": {
+    "file": "assets/index-ctcXH30R.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/relatoriosmatriculascurso/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/menuitens/formulario.js": {
+    "file": "assets/formulario-BWxX5iM4.js",
+    "name": "formulario",
+    "src": "modulos/Seguranca/Resources/js/pages/menuitens/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/menuitens/formulario_menuitens.js": {
+    "file": "assets/formulario_menuitens-BWxX5iM4.js",
+    "name": "formulario_menuitens",
+    "src": "modulos/Seguranca/Resources/js/pages/menuitens/formulario_menuitens.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/perfis/atribuirpermissoes.js": {
+    "file": "assets/atribuirpermissoes-BGaq5rCA.js",
+    "name": "atribuirpermissoes",
+    "src": "modulos/Seguranca/Resources/js/pages/perfis/atribuirpermissoes.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/usuarios/atribuirperfil.js": {
+    "file": "assets/atribuirperfil-DjEEojvt.js",
+    "name": "atribuirperfil",
+    "src": "modulos/Seguranca/Resources/js/pages/usuarios/atribuirperfil.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js"
+    ]
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-BP5tdqmh.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-nyy7hhHF.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-DRAAbZTg.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2": {
+    "file": "assets/fa-v4compatibility-DD84SGiu.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BeopsB42.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "node_modules/jstree/dist/themes/default/32px.png": {
+    "file": "assets/32px-CHwblES-.png",
+    "src": "node_modules/jstree/dist/themes/default/32px.png"
+  },
+  "node_modules/jstree/dist/themes/default/40px.png": {
+    "file": "assets/40px-fA5gcXpO.png",
+    "src": "node_modules/jstree/dist/themes/default/40px.png"
+  },
+  "node_modules/jstree/dist/themes/default/throbber.gif": {
+    "file": "assets/throbber-DhAvNIJO.gif",
+    "src": "node_modules/jstree/dist/themes/default/throbber.gif"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-gxrGuyYA.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery.module-BWjuZHtt.js",
+      "_sweetalert2.esm.all-CvlpapFA.js"
+    ]
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-BFXTPvZ7.css",
+    "src": "resources/sass/app.scss",
+    "isEntry": true
+  }
+}

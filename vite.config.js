@@ -17,14 +17,10 @@ export default defineConfig({
             input: [
                 'resources/sass/app.scss',
                 'resources/js/app.js',
-
-                // Espalha todos os arquivos encontrados automaticamente aqui
                 ...modulePages,
             ],
-            // Ativa o Hot Module Replacement (atualiza a página sozinho ao salvar no PHP/JS/CSS)
             refresh: true,
         }),
-        // Replica o comportamento do mix.copy para mover as fontes do font-awesome para a pasta public
         viteStaticCopy({
             targets: [
                 {

@@ -67,27 +67,31 @@ $.harpia.httpget = function(url) {
 $.harpia.httppost = function(url, data) {
     $.harpia.showloading();
 
-    var result = false;
-
     return $.ajax({
         url: url,
         type: "POST",
-        data: data,
-        success: function(resp) {
+        data: data
+    })
+        .done(function(resp, textStatus, xhr){
             $.harpia.hideloading();
-            result = resp;
-        },
-        error: function(e) {
+
+            return {
+                ok: true,
+                status: xhr.status,
+                data: resp
+            };
+        })
+        .fail(function(xhr){
             $.harpia.hideloading();
-            Swal.fire("Oops...", "Algo estranho aconteceu! Se o problema persistir, entre em contato com a administração do sistema.", "error");
-            result = false;
-        }
-    }).then(function() {
-        return $.Deferred(function(def) {
-            def.resolveWith({},[result]);
-        }).promise();
-    });
-};
+
+            return {
+                ok: false,
+                status: xhr.status,
+                data: xhr.responseText,
+                xhr: xhr
+            };
+        });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     // Verifica se há alguma mensagem enviada pela sessão do PHP

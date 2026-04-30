@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <meta name="base-url" content="{{ url('/') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Módulo Admin - @yield('title')</title>
     <link rel="shortcut icon" href="{{ asset('img/logo-mini.png') }}" type="image/x-icon">
