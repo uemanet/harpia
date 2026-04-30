@@ -8,9 +8,14 @@ $(function() {
         var modulo = $(this).val();
 
         $('#mit_item_pai').empty();
+        $('#mit_item_pai').append('<option value="">Selecione um item</option>');
+
+        // Se não há módulo selecionado, não faz a requisição
+        if (!modulo) {
+            return;
+        }
 
         $.harpia.httpget(baseUrl + "/seguranca/async/menuitens/getitenbymodulo/"+modulo).done(function(data) {
-            $('#mit_item_pai').append('<option value="">Selecione um item</option>');
             if (!$.isEmptyObject(data)) {
                 $.each(data, function(key, value) {
                     $('#mit_item_pai').append('<option value="'+key+'">'+value+'</option>');

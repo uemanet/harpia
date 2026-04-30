@@ -45,13 +45,17 @@ class Matricula extends BaseController
             event(new UpdateMatriculaCursoEvent($matricula, UpdateMatriculaCursoEvent::SITUACAO, $observacao));
 
             flash()->success('Status de matrícula alterada com sucesso!');
-            return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
+            return response()->json($matricula, 200);
+//            return JsonResponse::create($matricula, JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
 
-            return JsonResponse::create($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+//            return JsonResponse::create($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
