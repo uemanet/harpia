@@ -1,7 +1,7 @@
 <!-- Matriculas -->
 <div class="row">
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline p-0">
             <div class="card-header">
                 <h3 class="card-title">Cursos Matriculados</h3>
 

@@ -15,13 +15,3 @@
         </div>
     </div>
 </div>
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-    </script>
-@endsection

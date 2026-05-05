@@ -1,4 +1,8 @@
 {
+  "_auto-CFNrZGOd.js": {
+    "file": "assets/auto-CFNrZGOd.js",
+    "name": "auto"
+  },
   "_jquery.module-BWjuZHtt.js": {
     "file": "assets/jquery.module-BWjuZHtt.js",
     "name": "jquery.module"
@@ -8,7 +12,7 @@
     "name": "sweetalert2.esm.all"
   },
   "modulos/Academico/Resources/js/pages/alunos/matriculas.js": {
-    "file": "assets/matriculas-4hJqIR8X.js",
+    "file": "assets/matriculas-BVEaDcpk.js",
     "name": "matriculas",
     "src": "modulos/Academico/Resources/js/pages/alunos/matriculas.js",
     "isEntry": true,
@@ -27,12 +31,13 @@
     ]
   },
   "modulos/Academico/Resources/js/pages/index/index.js": {
-    "file": "assets/index-DREwL8md.js",
+    "file": "assets/index-BtMGsq_n.js",
     "name": "index",
     "src": "modulos/Academico/Resources/js/pages/index/index.js",
     "isEntry": true,
     "imports": [
-      "_jquery.module-BWjuZHtt.js"
+      "_jquery.module-BWjuZHtt.js",
+      "_auto-CFNrZGOd.js"
     ]
   },
   "modulos/Academico/Resources/js/pages/matricula-curso/formulario.js": {
@@ -54,7 +59,7 @@
     ]
   },
   "modulos/Seguranca/Resources/js/pages/menuitens/formulario.js": {
-    "file": "assets/formulario-BWxX5iM4.js",
+    "file": "assets/formulario-CA6E4Qfz.js",
     "name": "formulario",
     "src": "modulos/Seguranca/Resources/js/pages/menuitens/formulario.js",
     "isEntry": true,
@@ -126,13 +131,14 @@
     "src": "node_modules/jstree/dist/themes/default/throbber.gif"
   },
   "resources/js/app.js": {
-    "file": "assets/app-gxrGuyYA.js",
+    "file": "assets/app-Lm1MRva1.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
       "_jquery.module-BWjuZHtt.js",
-      "_sweetalert2.esm.all-CvlpapFA.js"
+      "_sweetalert2.esm.all-CvlpapFA.js",
+      "_auto-CFNrZGOd.js"
     ]
   },
   "resources/sass/app.scss": {

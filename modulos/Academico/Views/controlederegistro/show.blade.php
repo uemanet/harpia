@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-12">
             <!-- About Me Box -->
-            <div class="card card-primary card-outline">
+            <div class="card card-primary card-outline p-0">
                 <div class="card-header with-border">
                     <h3 class="card-title">{{ $registro->liv_tipo_livro }}</h3>
                     <div class="card-tools pull-right">

@@ -56,5 +56,5 @@
 </div>
 
 @section('scripts')
-    @vite('modulos/Academico/Resources/js/pages/matricula-curso/formulario.js')
+    @vite('modulos/Academico/Resources/js/pages/matricula-curso/includes/formulario.js')
 @stop

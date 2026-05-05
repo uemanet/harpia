@@ -8,7 +8,7 @@
     </section>
 
     <section class="py-2">
-        <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline p-0">
             <div class="card-header with-border">
                 <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 

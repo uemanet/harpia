@@ -10,7 +10,7 @@
 
 @section('content')
     @if(!is_null($movimentacoes))
-        <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline p-0">
             <div class="card-header">
                 <table class="table table-striped">
                     <thead>
@@ -59,7 +59,7 @@
             </div>
         </div>
     @else
-        <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline p-0">
             <div class="card-body">Sem registros para apresentar</div>
         </div>
     @endif

@@ -1,6 +1,6 @@
 <div class="py-2">
     <!-- Box Disciplinas Ofertadas -->
-    <div class="card card-primary card-outline">
+    <div class="card card-primary card-outline p-0">
         <div class="card-header with-border">
             <h3 class="card-title">Disciplinas Disponiveis para aproveitamento</h3>
 
@@ -71,7 +71,7 @@
 </div>
 <div class="py-2">
     <!-- Box Disciplinas já aproveitadas pelo aluno -->
-    <div class="card card-primary card-outline">
+    <div class="card card-primary card-outline p-0">
         <div class="card-header with-border">
             <h3 class="card-title">Disciplinas Aproveitadas</h3>
 

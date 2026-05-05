@@ -53,38 +53,11 @@
 </div>
 
 @section('scripts')
-    @parent
-
-    <script type="application/javascript">
-        $(document).ready(function(){
-            $('#ofc_crs_id').prop('selectedIndex',0);
-        });
+    <script>
+        window.PageRoutes = {
+            // Add Routes
+        };
     </script>
-    <script type="application/javascript">
 
-        $('#ofc_crs_id').change(function() {
-            var cursoId = $("#ofc_crs_id").val();
-
-            if (!cursoId) {
-                return;
-            }
-
-            $.harpia.httpget('{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/' + cursoId).done(function(result){
-
-                $("#ofc_mtc_id").empty();
-
-                if ($.isEmptyObject(result)) {
-                    $('#ofc_mtc_id').append('<option value=#>Sem matrizes curriculares cadastradas</option>');
-                } else {
-                    $("#ofc_mtc_id").append("<option value='' selected>Selecione uma matriz curricular</option>");
-                    $.each(result, function(key, value) {
-                        $('#ofc_mtc_id').append('<option value=' + value.mtc_id + ' >' + value.mtc_titulo + '</option>');
-                    });
-                }
-
-                $('#ofc_mtc_id').focus();
-            });
-        });
-
-    </script>
+    @vite('modulos/Academico/Resources/js/pages/ofertascursos/includes/formulario_create.js')
 @stop

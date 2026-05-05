@@ -1,7 +1,9 @@
 import $ from 'jquery';
-const baseUrl = $('meta[name="base-url"]').attr('content');
 
-$(function() {
+const baseUrl = $('meta[name="base-url"]').attr('content');
+const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+$(document).ready(function(){
     $('#crs_id').on('change', function (e) {
         var crsId = $(this).val();
 

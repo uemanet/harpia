@@ -7,7 +7,7 @@
             <?php $j = 1; ?>
             @foreach ($aluno->matriculas as $matricula)
                 <div class="py-2">
-                    <div class="card card-primary card-outline">
+                    <div class="card card-primary card-outline p-0">
                         <div class="card-header">
                             <h3 class="card-title">{{$matricula->turma->ofertacurso->curso->crs_nome}}</h3>
                             @if($matricula->mat_situacao == 'cursando')
