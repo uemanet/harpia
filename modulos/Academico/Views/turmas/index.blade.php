@@ -15,9 +15,9 @@
 @section('content')
 
     <div class="row">
-        <div class="card card-primary card-outline my-2">
+        <div class="card card-primary card-outline my-2 p-0">
             @if(!is_null($tabela))
-                <div class="card-body p-0 table-responsive">
+                <div class="card-body p-0">
                     {!! $tabela->render() !!}
                 </div>
                 <div class="card-footer clearfix">

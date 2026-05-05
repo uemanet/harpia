@@ -1,5 +1,9 @@
 // Importa dependências se necessário
 import $ from 'jquery';
+import Chart from 'chart.js/auto';
+
+const baseUrl = $('meta[name="base-url"]').attr('content');
+const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(document).ready(function (e) {
     window.chartColors = {

@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="row">
-        <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline p-0">
             <div class="card-header with-border">
                 <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
@@ -95,7 +95,7 @@
 
     <div class="row">
         @if(!is_null($tabela))
-            <div class="card card-primary card-outline my-2">
+            <div class="card card-primary card-outline my-2 p-0">
                 <div class="card-header">
                     <div class="row" style="align-items: right">
                         <div class="col-md-2" style="float: right; margin-right: 1%;">

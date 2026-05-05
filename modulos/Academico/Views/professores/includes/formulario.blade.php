@@ -1,7 +1,3 @@
-@section('stylesheets')
-    <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
-@stop
-
 <div class="row">
     @if(isset($pessoa->pes_id))
         <input type="hidden" name="pes_id" value="{{ $pessoa->pes_id }}" >
@@ -206,106 +202,46 @@
         <div class="form-group @if ($errors->has('pes_estado')) has-error @endif">
             <label for="pes_estado">Estado <small class="obrigatorio-dot">*</small></label>
             <select name="pes_estado" class="form-control">
-    <option value="">Selecione uma opção...</option>
-    <option value="AC" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AC' ? 'selected' : '' }}>Acre</option>
-    <option value="AL" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AL' ? 'selected' : '' }}>Alagoas</option>
-    <option value="AP" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AP' ? 'selected' : '' }}>Amapá</option>
-    <option value="AM" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AM' ? 'selected' : '' }}>Amazonas</option>
-    <option value="BA" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'BA' ? 'selected' : '' }}>Bahia</option>
-    <option value="CE" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'CE' ? 'selected' : '' }}>Ceará</option>
-    <option value="DF" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'DF' ? 'selected' : '' }}>Distrito Federal</option>
-    <option value="ES" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'ES' ? 'selected' : '' }}>Espirito Santo</option>
-    <option value="GO" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'GO' ? 'selected' : '' }}>Goiás</option>
-    <option value="MA" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MA' ? 'selected' : '' }}>Maranhão</option>
-    <option value="MT" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MT' ? 'selected' : '' }}>Mato Grosso</option>
-    <option value="MS" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MS' ? 'selected' : '' }}>Mato Grosso do Sul</option>
-    <option value="MG" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MG' ? 'selected' : '' }}>Minas Gerais</option>
-    <option value="PA" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PA' ? 'selected' : '' }}>Pará</option>
-    <option value="PB" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PB' ? 'selected' : '' }}>Paraiba</option>
-    <option value="PR" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PR' ? 'selected' : '' }}>Paraná</option>
-    <option value="PE" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PE' ? 'selected' : '' }}>Pernambuco</option>
-    <option value="PI" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PI' ? 'selected' : '' }}>Piauí</option>
-    <option value="RJ" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RJ' ? 'selected' : '' }}>Rio de Janeiro</option>
-    <option value="RN" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RN' ? 'selected' : '' }}>Rio Grande do Norte</option>
-    <option value="RS" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RS' ? 'selected' : '' }}>Rio Grande do Sul</option>
-    <option value="RO" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RO' ? 'selected' : '' }}>Rondônia</option>
-    <option value="RR" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RR' ? 'selected' : '' }}>Roraima</option>
-    <option value="SC" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'SC' ? 'selected' : '' }}>Santa Catarina</option>
-    <option value="SP" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'SP' ? 'selected' : '' }}>São Paulo</option>
-    <option value="SE" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'SE' ? 'selected' : '' }}>Sergipe</option>
-    <option value="TO" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'TO' ? 'selected' : '' }}>Tocantis</option>
-</select>
+                <option value="">Selecione uma opção...</option>
+                <option value="AC" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AC' ? 'selected' : '' }}>Acre</option>
+                <option value="AL" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AL' ? 'selected' : '' }}>Alagoas</option>
+                <option value="AP" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AP' ? 'selected' : '' }}>Amapá</option>
+                <option value="AM" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'AM' ? 'selected' : '' }}>Amazonas</option>
+                <option value="BA" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'BA' ? 'selected' : '' }}>Bahia</option>
+                <option value="CE" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'CE' ? 'selected' : '' }}>Ceará</option>
+                <option value="DF" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'DF' ? 'selected' : '' }}>Distrito Federal</option>
+                <option value="ES" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'ES' ? 'selected' : '' }}>Espirito Santo</option>
+                <option value="GO" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'GO' ? 'selected' : '' }}>Goiás</option>
+                <option value="MA" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MA' ? 'selected' : '' }}>Maranhão</option>
+                <option value="MT" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MT' ? 'selected' : '' }}>Mato Grosso</option>
+                <option value="MS" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MS' ? 'selected' : '' }}>Mato Grosso do Sul</option>
+                <option value="MG" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'MG' ? 'selected' : '' }}>Minas Gerais</option>
+                <option value="PA" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PA' ? 'selected' : '' }}>Pará</option>
+                <option value="PB" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PB' ? 'selected' : '' }}>Paraiba</option>
+                <option value="PR" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PR' ? 'selected' : '' }}>Paraná</option>
+                <option value="PE" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PE' ? 'selected' : '' }}>Pernambuco</option>
+                <option value="PI" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'PI' ? 'selected' : '' }}>Piauí</option>
+                <option value="RJ" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RJ' ? 'selected' : '' }}>Rio de Janeiro</option>
+                <option value="RN" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RN' ? 'selected' : '' }}>Rio Grande do Norte</option>
+                <option value="RS" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RS' ? 'selected' : '' }}>Rio Grande do Sul</option>
+                <option value="RO" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RO' ? 'selected' : '' }}>Rondônia</option>
+                <option value="RR" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'RR' ? 'selected' : '' }}>Roraima</option>
+                <option value="SC" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'SC' ? 'selected' : '' }}>Santa Catarina</option>
+                <option value="SP" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'SP' ? 'selected' : '' }}>São Paulo</option>
+                <option value="SE" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'SE' ? 'selected' : '' }}>Sergipe</option>
+                <option value="TO" {{ old('pes_estado', isset($pessoa->pes_estado) ? $pessoa->pes_estado : null) == 'TO' ? 'selected' : '' }}>Tocantis</option>
+            </select>
             @if ($errors->has('pes_estado')) <p class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
         </div>
     </div>
 </div>
 
 @section('scripts')
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.date.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
-    <script src="{{ asset('/js/plugins/cpfcnpj.min.js') }}"></script>
-
     <script>
-
-        $(function (){
-
-            $('.datepicker').datepicker({
-                format: "dd/mm/yyyy",
-                language: 'pt-BR',
-                autoclose: true
-            });
-
-            $('#doc_conteudo').inputmask({"mask": "999.999.999-99", "removeMaskOnSubmit": true});
-            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
-            $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
-
-            $("#pes_cep").focusout(function(e){
-
-                function limpaFormCep() {
-
-                    $("#pes_cidade").val("");
-                    $("#pes_estado").val("");
-                    $("#pes_bairro").val("");
-                    $("#pes_endereco").val("");
-                }
-
-                var str = e.target.value;
-
-                var cep = str.replace(/\D/g, '');
-
-                if (str != "") {
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
-
-                    if(validacep.test(cep)) {
-
-                        $("#pes_cidade").val("Buscando...");
-                        $("#pes_estado").val("Buscando...");
-                        $("#pes_bairro").val("Buscando...");
-                        $("#pes_endereco").val("Buscando...");
-
-                        $.harpia.httpget('https://viacep.com.br/ws/' + cep + '/json/').done(function (data) {
-                            if (!data.erro) {
-                                $("#pes_cidade").val(data.localidade);
-                                $("#pes_estado").val(data.uf).change();
-                                $("#pes_bairro").val(data.bairro);
-                                $("#pes_endereco").val(data.logradouro);
-                            } else {
-                                limpaFormCep();
-                                toastr.error("CEP não encontrado", null, {progressBar: true});
-                            }
-                        });
-                    } else {
-                        limpaFormCep();
-                        toastr.warning("Formato do CEP inválido", null, {progressBar: true});
-                    }
-                } else {
-                    limpaFormCep();
-                }
-            });
-        });
+        window.PageRoutes = {
+            // Add Routes
+        };
     </script>
-@endsection
+
+    @vite('modulos/Academico/Resources/js/pages/professores/includes/formulario.js')
+@stop

@@ -10,7 +10,7 @@
 
 @section('content')
     <div class="row">
-        <div class="card card-primary card-outline">
+        <div class="card card-primary card-outline p-0">
         <div class="card-header with-border">
             <h3 class="card-title">Formulário de cadastro de vínculos</h3>
         </div>
@@ -27,10 +27,11 @@
 @stop
 
 @section('scripts')
-    <script type="application/javascript">
-        $(document).ready(function(){
-            $('#cursos[]').prop('selectedIndex',0);
-        });
+    <script>
+        window.PageRoutes = {
+            // Add Routes
+        };
     </script>
 
-@endsection
+    @vite('modulos/Academico/Resources/js/pages/vinculos/create.js')
+@stop

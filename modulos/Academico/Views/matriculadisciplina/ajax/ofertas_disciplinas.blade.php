@@ -1,6 +1,6 @@
 <section class="py-2">
     <!-- Box Disciplinas Ofertadas -->
-    <div class="card card-primary card-outline">
+    <div class="card card-primary card-outline p-0">
         <div class="card-header with-border">
             <h3 class="card-title">Disciplinas Ofertadas</h3>
 
@@ -70,7 +70,7 @@
 
 <section class="py-2">
     <!-- Box Disciplinas Matriculadas -->
-    <div class="card card-primary card-outline">
+    <div class="card card-primary card-outline p-0">
         <div class="card-header with-border">
             <h3 class="card-title">Disciplinas Matriculadas</h3>
 
