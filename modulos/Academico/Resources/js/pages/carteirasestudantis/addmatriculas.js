@@ -11,7 +11,7 @@ $(function() {
     var btnBuscar = $('#btnBuscar');
 
     // token
-    var token = "{{csrf_token()}}";
+    var token = csrfToken;
 
     // evento change select de cursos
     cursoSelect.change(function () {
@@ -28,7 +28,7 @@ $(function() {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
                 $.each(response, function (key, obj) {
@@ -54,7 +54,7 @@ $(function() {
         }
 
         // buscar as turmas de acordo com a oferta de curso
-        $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 turmaSelect.append('<option value="">Selecione a turma</option>');
                 $.each(response, function (key, obj) {
@@ -66,7 +66,7 @@ $(function() {
         });
 
         // busca os polos de acordo com a oferta
-        $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId)
+        $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + ofertaCursoId)
             .done(function (response) {
                 if(!$.isEmptyObject(response)) {
                     poloSelect.append('<option value="">Selecione o polo</option>');
@@ -105,7 +105,7 @@ $(function() {
     var renderTable = function(parameters) {
         $('#listas').empty();
 
-        var url = "{{url('/')}}/academico/async/carteirasestudantis/gettableaddmatriculas?" + $.param(parameters);
+        var url = baseUrl + "/academico/async/carteirasestudantis/gettableaddmatriculas?" + $.param(parameters);
 
         $.harpia.httpget(url).done(function (response) {
             if(!$.isEmptyObject(response)) {

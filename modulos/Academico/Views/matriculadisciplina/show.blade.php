@@ -58,8 +58,8 @@
 
 @section('scripts')
     <script>
-        window.PageRoutes = {
-            // Add Routes
+        window.PageData = {
+            alu_id: {{ $aluno->alu_id }},
         };
     </script>
 

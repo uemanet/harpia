@@ -189,7 +189,7 @@
 @section('scripts')
     <script>
         window.PageRoutes = {
-            // Add Routes
+            relatoriosmatriculasdisciplinas: "{{ route('academico.relatoriosmatriculasdisciplinas.index') }}",
         };
     </script>
 

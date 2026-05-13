@@ -5,7 +5,7 @@ const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(function () {
     var matrizId = "{{$matrizCurricular->mtc_id}}"
-    var csrf_token = "{{csrf_token()}}";
+    var csrf_token = csrfToken;
 
     $(document).on('click', '.btn-delete', function (event) {
         event.preventDefault();

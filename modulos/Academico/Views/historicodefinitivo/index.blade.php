@@ -95,5 +95,5 @@
         };
     </script>
 
-    @vite('modulos/Academico/Resources/js/pages/carteirasestudantis/show.js')
+    @vite('modulos/Academico/Resources/js/pages/historicodefinitivo/index.js')
 @stop

@@ -4,15 +4,15 @@ const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(document).ready(function() {
-    var token = "{{csrf_token()}}";
-    var alunoId = "{{$aluno->alu_id}}";
+    var token = csrfToken;
+    var alunoId = window.PageData.alu_id;
 
     $('#crs_id').change(function () {
         var turmaId = $(this).find('option:selected').attr('data-trm-id');
         var selectPeriodos = $('#ofd_per_id');
 
         if(turmaId) {
-            $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+            $.harpia.httpget(baseUrl + "/academico/async/periodosletivos/findallbyturma/"+turmaId)
                 .done(function (response) {
                     selectPeriodos.empty();
                     if(!$.isEmptyObject(response))
@@ -124,7 +124,8 @@ $(document).ready(function() {
     });
 
     var renderTable = function(turmaId, periodoId, alunoId) {
-        $.harpia.httpget("{{ url('/')}}/academico/async/matriculasofertasdisciplinas/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId)
+        console.log(baseUrl + "/academico/async/matriculasofertasdisciplinas/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId);
+        $.harpia.httpget(baseUrl + "/academico/async/matriculasofertasdisciplinas/gettableofertasdisciplinas/"+alunoId+"/"+turmaId+"/"+periodoId)
             .done(function(response) {
                 $('.tabela-ofertas').empty();
                 $('.tabela-ofertas').append(response);
@@ -134,9 +135,9 @@ $(document).ready(function() {
     var sendDisciplinas = function (matriculaId, ofertasIds, desmatricular = false) {
 
         if (desmatricular) {
-            url = '/academico/async/matriculasofertasdisciplinas/desmatricular';
+            var url = '/academico/async/matriculasofertasdisciplinas/desmatricular';
         } else {
-            url = '/academico/async/matriculasofertasdisciplinas/matricular';
+            var url = '/academico/async/matriculasofertasdisciplinas/matricular';
         }
 
         var dados = {

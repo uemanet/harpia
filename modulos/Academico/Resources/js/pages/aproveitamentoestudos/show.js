@@ -4,7 +4,7 @@ const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(document).ready(function() {
-    var token = window.PageData.csrf_token;
+    var token = csrfToken;
     var alunoId = window.PageData.alu_id;
 
     $('#crs_id').change(function () {

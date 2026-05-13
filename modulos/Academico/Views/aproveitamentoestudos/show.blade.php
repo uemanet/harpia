@@ -60,7 +60,6 @@
     <script>
         window.PageData = {
             alu_id: {{ $aluno->alu_id }},
-            csrf_token: {{ csrf_token() }}
         };
     </script>
 

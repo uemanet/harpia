@@ -73,13 +73,13 @@ class Matricula extends BaseController
 
         try {
             $matriculas = $this->matriculaRepository->findAll($parameters, null, ['pes_nome' => 'asc']);
-            return JsonResponse::create($matriculas, 200);
+            return new JsonResponse($matriculas, 200);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
             }
 
-            return JsonResponse::create(['error' => $e->getMessage()], 500);
+            return new JsonResponse(['error' => $e->getMessage()], 500);
         }
     }
 }

@@ -4,7 +4,7 @@ const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(function () {
-    var token = "{{csrf_token()}}";
+    var token = csrfToken;
 
     var cursosSelect = $('#crs_id');
     var ofertasCursoSelect = $('#ofc_id');
@@ -25,7 +25,7 @@ $(function () {
         }
 
         // faz a consulta pra trazer todas as ofertas de curso
-        $.harpia.httpget('{{url("/")}}/academico/async/ofertascursos/findallbycurso/' + cursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + '/academico/async/ofertascursos/findallbycurso/' + cursoId).done(function (response) {
                 if(!$.isEmptyObject(response)) {
                     ofertasCursoSelect.append("<option value=''>Selecione uma oferta</option>");
 
@@ -52,7 +52,7 @@ $(function () {
         }
 
         // buscar turmas
-        $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 turmaSelect.append("<option value=''>Selecione uma turma</option>");
 
@@ -65,7 +65,7 @@ $(function () {
         });
 
         // buscar polos
-        $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 polosSelect.append("<option value=''>Selecione um polo</option>");
 
@@ -132,7 +132,7 @@ $(function () {
 
         var data = 'ofc_id=' + ofertaCursoId + '&trm_id=' + turmaId + '&pol_id=' + poloId;
 
-        $.harpia.httpget("{{url('/')}}/academico/async/conclusaocurso/findallalunosaptosounao?" + data).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/conclusaocurso/findallalunosaptosounao?" + data).done(function (response) {
 
             $('#cardAlunos').removeClass('hidden');
 

@@ -5,7 +5,7 @@ const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(document).ready(function() {
 
-    var token = "{{csrf_token()}}";
+    var token = csrfToken;
 
     var selectCursos = $('#crs_id');
     var selectOfertasCursos = $('#ofc_id');
@@ -28,7 +28,7 @@ $(document).ready(function() {
             selectPeriodosLetivos.empty();
 
             // Populando o select de ofertas de cursos
-            $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + crsId)
+            $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + crsId)
             .done(function (data) {
                 if(!$.isEmptyObject(data)) {
                     selectOfertasCursos.append("<option value=''>Selecione a oferta</option>");
@@ -54,7 +54,7 @@ $(document).ready(function() {
             selectPeriodosLetivos.empty();
 
             // populando o select de matriz curricular
-            $.harpia.httpget('{{url("/")}}/academico/async/matrizescurriculares/findbyofertacurso/' + ofertaId)
+            $.harpia.httpget(baseUrl + '/academico/async/matrizescurriculares/findbyofertacurso/' + ofertaId)
             .done(function (response) {
                 var mtc_id = '';
                 if (!$.isEmptyObject(response)) {
@@ -65,7 +65,7 @@ $(document).ready(function() {
                 }
 
                 // populando o select de modulos da matriz curricular
-                $.harpia.httpget('{{url("/")}}/academico/async/modulosmatriz/findallbymatriz/' + mtc_id)
+                $.harpia.httpget(baseUrl + '/academico/async/modulosmatriz/findallbymatriz/' + mtc_id)
                 .done(function (data) {
                     if(!$.isEmptyObject(data)) {
                         selectModulosMatriz.append('<option value="">Selecione o módulo</option>');
@@ -84,7 +84,7 @@ $(document).ready(function() {
             });
 
             // populando o select de turmas
-            $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacurso/' + ofertaId)
+            $.harpia.httpget(baseUrl + '/academico/async/turmas/findallbyofertacurso/' + ofertaId)
             .done(function (data) {
                 if (!$.isEmptyObject(data)){
                     selectTurmas.append('<option value="">Selecione a turma</option>');
@@ -106,7 +106,7 @@ $(document).ready(function() {
         if(turmaId) {
             // limpando selects
             selectPeriodosLetivos.empty();
-            $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/"+turmaId)
+            $.harpia.httpget(baseUrl + "/academico/async/periodosletivos/findallbyturma/"+turmaId)
             .done(function(response) {
                 if(!$.isEmptyObject(response))
                 {
@@ -126,6 +126,8 @@ $(document).ready(function() {
         var turma = selectTurmas.val();
         var periodo = selectPeriodosLetivos.val();
         var modulo = selectModulosMatriz.val();
+
+        console.log('teste')
 
         if(turma == '' || periodo == '' || modulo == '') {
             return false;
@@ -163,7 +165,7 @@ $(document).ready(function() {
         $.harpia.showloading();
 
         $.ajax({
-            url: "{{url('/')}}/academico/async/ofertasdisciplinas/oferecerdisciplina",
+            url: baseUrl + "/academico/async/ofertasdisciplinas/oferecerdisciplina",
             data: dados,
             method: 'POST',
             success: function(response) {
@@ -180,7 +182,7 @@ $(document).ready(function() {
     });
 
     var renderTableOfertasDisciplinas = function (turmaId, periodoId) {
-        var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?" +
+        var url = baseUrl + "/academico/async/ofertasdisciplinas/gettableofertasdisciplinas?" +
                 "ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId;
 
         $.harpia.showloading();
@@ -201,7 +203,7 @@ $(document).ready(function() {
     };
 
     var renderTableDisciplinasNaoOfertadas = function(turmaId, periodoId, moduloId) {
-        var url = "{{url('/')}}/academico/async/ofertasdisciplinas/gettabledisciplinasnaoofertadas?" +
+        var url = baseUrl + "/academico/async/ofertasdisciplinas/gettabledisciplinasnaoofertadas?" +
             "ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoId + "&mdo_id=" + moduloId;
 
         $.harpia.showloading();

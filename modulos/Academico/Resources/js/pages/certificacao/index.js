@@ -4,11 +4,11 @@ const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(function () {
-    selectCursos = $('#crs_id');
-    selectOfertas = $('#ofc_id');
-    selectTurmas = $('#trm_id');
-    selectModulos = $('#mdo_id');
-    selectPolos = $('#pol_id');
+    var selectCursos = $('#crs_id');
+    var selectOfertas = $('#ofc_id');
+    var selectTurmas = $('#trm_id');
+    var selectModulos = $('#mdo_id');
+    var selectPolos = $('#pol_id');
 
     // Busca ofertas de curso
     $('#crs_id').change(function () {
@@ -19,7 +19,7 @@ $(function () {
             selectTurmas.empty();
             selectModulos.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
+            $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + curso)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectOfertas.append('<option value="">Selecione uma oferta</option>');
@@ -40,7 +40,7 @@ $(function () {
             selectTurmas.empty();
             selectModulos.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + oferta)
+            $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + oferta)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectTurmas.append('<option value="">Selecione uma turma</option>');
@@ -53,7 +53,7 @@ $(function () {
                 });
 
 
-            $.harpia.httpget("{{url('/')}}/academico/async/cursos/findmodulosbyoferta/" + oferta)
+            $.harpia.httpget(baseUrl + "/academico/async/cursos/findmodulosbyoferta/" + oferta)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectModulos.append('<option value="">Selecione um módulo</option>');
@@ -69,7 +69,7 @@ $(function () {
         if (oferta) {
             selectPolos.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + oferta)
+            $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + oferta)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectPolos.append('<option value="0">Selecione um polo</option>');
@@ -83,7 +83,7 @@ $(function () {
 
         }
     });
-    certificação
+    // certificação
     $('#btnLocalizar').click(function () {
         var modulo = $('#mdo_id').val();
         var turma = $('#trm_id').val();
@@ -104,14 +104,14 @@ $(function () {
         }
 
         if (turma) {
-            $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo + "/" + polo)
+            $.harpia.httpget(baseUrl + "/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo + "/" + polo)
                 .done(function (data) {
                     renderTable(data.aptos, data.certificados, data.aptosq, data.certificadosq);
                 });
         }
     });
 
-    renderTable = function (aptos, certificados, aptosq, certificadosq) {
+    var renderTable = function (aptos, certificados, aptosq, certificadosq) {
         var html = '<div class="row"><div class="col-md-12">';
         // criando a estrutura das tabs
         var tabs = '<div class="card card-primary card-outline card-outline-tabs">' +
@@ -200,7 +200,7 @@ $(function () {
                 table2 += '<tr>';
                 table2 += '<td>' + obj.pes_nome + '</td>';
                 table2 += '<td><span class="label label-info text-center">Certificado</span></td>';
-                table2 += '<td><a target = "_blanck" type="button" href= "{{url('/')}}/academico/async/cursos/printCertificado/'+obj.mat_id+'/'+$('#mdo_id').val()+'" class="btn btn-primary"><i class="glyphicon glyphicon-print"></i></a></td>';
+                table2 += '<td><a target = "_blanck" type="button" href= baseUrl + "/academico/async/cursos/printCertificado/'+obj.mat_id+'/'+$('#mdo_id').val()+'" class="btn btn-primary"><i class="glyphicon glyphicon-print"></i></a></td>';
                 table2 += '</tr>';
             });
 
@@ -269,8 +269,8 @@ $(document).on('click', '.btnCertificar', function () {
 });
 
 var sendMatriculas = function (matriculasIds, ofertaId) {
-    var token = "{{csrf_token()}}";
-    modulo = selectModulos.val();
+    var token = csrfToken;
+    var modulo = selectModulos.val();
 
     var dados = {
         matriculas: matriculasIds,
@@ -292,7 +292,7 @@ var sendMatriculas = function (matriculasIds, ofertaId) {
 
             var turma = selectTurmas.val();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
+            $.harpia.httpget(baseUrl + "/academico/async/cursos/getalunosaptos/" + turma + "/" + modulo)
                 .done(function (data) {
 
                     renderTable(data.aptos, data.certificados);
