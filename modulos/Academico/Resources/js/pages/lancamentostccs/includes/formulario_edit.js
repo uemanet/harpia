@@ -6,7 +6,7 @@ const csrfToken = $('meta[name="csrf-token"]').attr('content');
 $(function () {
 
     var lancamentotccId = "{{$lancamentoTcc->ltc_id}}"
-    var csrf_token = "{{csrf_token()}}";
+    var csrf_token = csrfToken;
 
     $(document).on('click', '.btn-delete', function (event) {
         event.preventDefault();

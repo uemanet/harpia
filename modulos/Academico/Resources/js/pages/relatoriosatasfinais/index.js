@@ -28,7 +28,7 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
             if (!$.isEmptyObject(response)) {
                 ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
                 $.each(response, function (key, obj) {
@@ -54,7 +54,7 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if (!$.isEmptyObject(response)) {
                 turmaSelect.append('<option value="">Selecione a turma</option>');
                 $.each(response, function (key, obj) {
@@ -66,7 +66,7 @@ $(function () {
         });
 
         // buscar polos
-        $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 polosSelect.append("<option value=''>Selecione um polo</option>");
 

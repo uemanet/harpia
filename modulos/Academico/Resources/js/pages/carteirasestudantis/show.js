@@ -37,12 +37,11 @@ $(function () {
                 var lista = $('#lst_id').val();
                 var matricula = button.data('mat-id');
                 var turma = $('#trm_id').val();
-                var token = "{{csrf_token()}}";
 
                 var data = {
                     lst_id: lista,
                     mat_id: matricula,
-                    _token: token
+                    _token: csrfToken
                 };
 
                 $.harpia.showloading();

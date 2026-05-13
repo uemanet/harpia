@@ -4,10 +4,10 @@ const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(function () {
-    selectCursos = $('#crs_id');
-    selectOfertas = $('#ofc_id');
-    selectTurmas = $('#trm_id');
-    selectPolos = $('#pol_id');
+    var selectCursos = $('#crs_id');
+    var selectOfertas = $('#ofc_id');
+    var selectTurmas = $('#trm_id');
+    var selectPolos = $('#pol_id');
 
 
     // Busca ofertas de curso
@@ -18,7 +18,7 @@ $(function () {
             selectOfertas.empty();
             selectTurmas.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
+            $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + curso)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectOfertas.append('<option value="">Selecione uma oferta</option>');
@@ -38,7 +38,7 @@ $(function () {
         if (oferta) {
             selectTurmas.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + oferta)
+            $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + oferta)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectTurmas.append('<option value="">Selecione uma turma</option>');
@@ -55,7 +55,7 @@ $(function () {
         if (oferta) {
             selectPolos.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + oferta)
+            $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + oferta)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectPolos.append('<option value="0">Selecione um polo</option>');
@@ -79,7 +79,7 @@ $(function () {
         }
 
         if (turma) {
-            $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma + "/" + polo)
+            $.harpia.httpget(baseUrl + "/academico/async/diplomas/getalunosdiplomados/" + turma + "/" + polo)
                 .done(function (data) {
 
                     renderTable(data.aptos, data.diplomados);
@@ -87,7 +87,7 @@ $(function () {
         }
     });
 
-    renderTable = function (aptos, diplomados) {
+    var renderTable = function (aptos, diplomados) {
         var html = '<div class="row"><div class="col-md-12">';
         // criando a estrutura das tabs
         var tabs = '<div class="card card-primary card-outline card-outline-tabs">' +
@@ -167,7 +167,7 @@ $(function () {
                             table2 = '<div class="row">';
                             table2 += '<form action="' + imprimirdiplomas + '" method="POST">';
                             table2 += '<div class="col-md-12">';
-                            table2 += '{{csrf_field()}}';
+                            table2 += '<input type="hidden" name="_token" value="' + csrfToken + '" autocomplete="off">';
                             table2 += '<table class="table table-bordered table-hover">';
 
                             table2 += '<tr>';
@@ -263,7 +263,7 @@ $(document).on('click', '.btnDiplomar', function () {
 });
 
 var sendMatriculas = function (matriculasIds) {
-    var token = "{{csrf_token()}}";
+    var token = csrfToken;
 
     var dados = {
         matriculas: matriculasIds,
@@ -284,7 +284,7 @@ var sendMatriculas = function (matriculasIds) {
             var turma = selectTurmas.val();
             var polo = selectPolos.val();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/diplomas/getalunosdiplomados/" + turma + "/" + polo)
+            $.harpia.httpget(baseUrl + "/academico/async/diplomas/getalunosdiplomados/" + turma + "/" + polo)
                 .done(function (data) {
 
                     renderTable(data.aptos, data.diplomados);

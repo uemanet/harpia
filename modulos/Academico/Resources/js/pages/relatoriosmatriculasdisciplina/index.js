@@ -11,7 +11,7 @@ $(function () {
     var periodosLetivosSelect = $('#per_id');
     var disciplinasOfertadasSelect = $('#ofd_id');
     var btnBuscar = $('#btnBuscar');
-    var routeIndex = "{{{ route('academico.relatoriosmatriculasdisciplinas.index') }}}";
+    var routeIndex = window.PageRoutes.relatoriosmatriculasdisciplinas;
     var situacaoSelect = $('#mof_situacao_matricula');
 
     // evento change select de cursos
@@ -31,7 +31,7 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
             if (!$.isEmptyObject(response)) {
                 ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
                 $.each(response, function (key, obj) {
@@ -59,7 +59,7 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if (!$.isEmptyObject(response)) {
                 turmaSelect.append('<option value="">Selecione a turma</option>');
                 $.each(response, function (key, obj) {
@@ -71,7 +71,7 @@ $(function () {
         });
 
         // buscar polos
-        $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 polosSelect.append("<option value=''>Selecione um polo</option>");
 
@@ -98,7 +98,7 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/" + turmaId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/periodosletivos/findallbyturma/" + turmaId).done(function (response) {
             if (!$.isEmptyObject(response)) {
                 periodosLetivosSelect.append('<option value="">Selecione o periodo letivo</option>');
                 $.each(response, function (key, obj) {
@@ -124,7 +124,7 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoLetivoId).done(function (response) {
+        $.harpia.httpget(baseUrl + "/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoLetivoId).done(function (response) {
             if (!$.isEmptyObject(response)) {
                 disciplinasOfertadasSelect.append('<option value="">Selecione a disciplina ofertada</option>');
                 $.each(response, function (key, obj) {

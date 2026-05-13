@@ -146,6 +146,11 @@
         window.PageRoutes = {
             // Add Routes
         };
+
+        window.PageData = {
+            mtc_id: {{$matriz->mtc_id}},
+            mdo_id: {{$modulo->mdo_id}},
+        };
     </script>
 
     @vite('modulos/Academico/Resources/js/pages/modulosmatrizes/gerenciardisciplinas.js')

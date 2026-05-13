@@ -4,9 +4,9 @@ const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(function () {
-    var matriz = "{{$matriz->mtc_id}}";
-    var modulo = "{{$modulo->mdo_id}}";
-    var csrf_token = "{{csrf_token()}}";
+    var matriz = window.PageData.mtc_id;
+    var modulo = window.PageData.mdo_id;
+    var csrf_token = csrfToken;
 
     /* Pega o evento do botao de localizar disciplinas,e faz a busca via async */
     $('#btnLocalizar').click(function (event) {
@@ -101,7 +101,7 @@ $(function () {
 
         var cardBody = $('#cardDisciplinasLocalizadas .card-body');
 
-        $.harpia.httpget('{{url('/')}}/academico/async/disciplinas/findbynome/' + matrizId + '/' + disciplinaNome + '/' + moduloId).done(function (data) {
+        $.harpia.httpget(baseUrl + '/academico/async/disciplinas/findbynome/' + matrizId + '/' + disciplinaNome + '/' + moduloId).done(function (data) {
 
             cardBody.empty();
 
@@ -226,7 +226,7 @@ $(function () {
     var renderTableDisciplinasModulo = function (moduloId) {
         var cardBody = $('#cardDisciplinasCadastradas .card-body');
 
-        $.harpia.httpget('{{url("/")}}/academico/async/modulosdisciplinas/getalldisciplinasbymodulo/' + moduloId).done(function (response) {
+        $.harpia.httpget(baseUrl + '/academico/async/modulosdisciplinas/getalldisciplinasbymodulo/' + moduloId).done(function (response) {
             cardBody.empty();
 
             if (!$.isEmptyObject(response)) {

@@ -14,7 +14,7 @@ $('#ofc_crs_id').change(function () {
         return;
     }
 
-    $.harpia.httpget('{{url('/')}}/academico/async/matrizescurriculares/findallbycurso/' + cursoId).done(function (result) {
+    $.harpia.httpget(baseUrl + '/academico/async/matrizescurriculares/findallbycurso/' + cursoId).done(function (result) {
 
         $("#ofc_mtc_id").empty();
 

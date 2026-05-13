@@ -65,7 +65,8 @@
 @section('scripts')
     <script>
         window.PageRoutes = {
-            ofertasdisciplinas_findall: "{{route("academico.async.ofertasdisciplinas.findall")}}"
+            ofertasdisciplinas_findall: "{{ route("academico.async.ofertasdisciplinas.findall") }}",
+            lancamentonotas: "{{ route('academico.async.lancamentonotas.table') }}"
         };
     </script>
 

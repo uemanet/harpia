@@ -12,10 +12,6 @@
     {!!ActionButton::render($actionButton)!!}
 @stop
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
-@stop
-
 @section('content')
     <div class="row py-2">
         <div class="card card-primary card-outline p-0">

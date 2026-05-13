@@ -20,7 +20,7 @@ $(function () {
             selectTurmas.empty();
             selectPeriodos.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + curso)
+            $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + curso)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectOfertas.append('<option value="">Selecione uma oferta</option>');
@@ -43,7 +43,7 @@ $(function () {
             selectTurmas.empty();
             selectPeriodos.empty();
 
-            $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacursonaointegrada/" + oferta)
+            $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacursonaointegrada/" + oferta)
                 .done(function (data) {
                     if (!$.isEmptyObject(data)) {
                         selectTurmas.append('<option value="">Selecione uma turma</option>');
@@ -63,7 +63,7 @@ $(function () {
         if (turmaId) {
             // limpando selects
             selectPeriodos.empty();
-            $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/" + turmaId)
+            $.harpia.httpget(baseUrl + "/academico/async/periodosletivos/findallbyturma/" + turmaId)
                 .done(function (response) {
                     if (!$.isEmptyObject(response)) {
                         selectPeriodos.append("<option value=''>Selecione um periodo</option>");
@@ -110,7 +110,9 @@ $(function () {
             return false;
         }
 
-        $.harpia.httpget("{{{ route('academico.async.lancamentonotas.table') }}}?"+ "ofd_id=" + ofertaDisciplina)
+        var lancamentonotas = window.PageRoutes.lancamentonotas;
+
+        $.harpia.httpget(lancamentonotas + "?ofd_id=" + ofertaDisciplina)
             .done(function (response) {
                 if(!$.isEmptyObject(response)){
                     console.log(response);
