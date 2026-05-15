@@ -16,4 +16,9 @@ codecoverage
 .php_cs.cache
 .php-cs-fixer.cache
 .phpunit.result.cache
+.agents
+.claude
+.codex
+.github
+modulos/.mcp.json
 /docs/facial

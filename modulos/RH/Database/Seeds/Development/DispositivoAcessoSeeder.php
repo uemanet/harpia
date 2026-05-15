@@ -14,7 +14,7 @@ class DispositivoAcessoSeeder extends Seeder
                 'dis_nome' => 'iDFace Entrada',
                 'dis_identificador' => 'IDFACE-ENTRADA-01',
                 'dis_tipo' => 'entrada',
-                'dis_ip' => '192.168.1.101',
+                'dis_ip' => 'http://172.16.2.115',
                 'dis_modelo' => 'iDFace',
                 'dis_token_api' => hash('sha256', 'idface-entrada-dev'),
                 'dis_status' => 'ativo',
