@@ -5,10 +5,11 @@ namespace Modulos\RH\Database\Seeds\Development;
 use Illuminate\Database\Seeder;
 use Illuminate\Contracts\Foundation\Application;
 use Modulos\RH\Database\Seeds\Development\BancoTableSeeder;
+use Modulos\RH\Database\Seeds\Development\ConfiguracaoPontoSeeder;
+use Modulos\RH\Database\Seeds\Development\DispositivoAcessoSeeder;
 use Modulos\RH\Database\Seeds\Development\FontePagadoraTableSeeder;
 use Modulos\RH\Database\Seeds\Development\FuncaoTableSeeder;
 use Modulos\RH\Database\Seeds\Production\TipoJustificativaSeeder;
-use Modulos\RH\Models\Colaborador;
 
 class RHSeeder extends Seeder
 {
@@ -59,6 +60,12 @@ class RHSeeder extends Seeder
 
         $this->call(TipoJustificativaSeeder::class);
         $this->command->info('Tipos Justificativas Table seeded!');
+
+        $this->call(DispositivoAcessoSeeder::class);
+        $this->command->info('Dispositivos de Acesso Table seeded!');
+
+        $this->call(ConfiguracaoPontoSeeder::class);
+        $this->command->info('Configuracoes de Ponto Table seeded!');
 
     }
 }

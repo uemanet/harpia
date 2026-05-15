@@ -4,6 +4,16 @@ Route::group(['prefix' => 'api/rh'], function () {
     Route::group(['prefix' => 'colaboradores'], function () {
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getShow')->name('rh.colaboradores.show');
     });
+
+    // Monitor API — middleware auth.dispositivo
+    Route::group(['prefix' => 'monitor', 'middleware' => ['auth.dispositivo']], function () {
+        Route::post('/notifications/dao', '\Modulos\RH\Http\Controllers\MonitorController@receberLogAcesso')->name('rh.monitor.notifications.dao');
+        Route::post('/notifications/{action}', '\Modulos\RH\Http\Controllers\MonitorController@receberNotificacao')->name('rh.monitor.notifications.action');
+    });
+
+    // Ponto remoto API — Fase 11 (sem middleware auth para permitir autenticacao por email/data_nascimento)
+    Route::post('/ponto-remoto/entrada', '\Modulos\RH\Http\Controllers\PontoRemotoApiController@postEntrada')->name('rh.api.pontoremoto.entrada');
+    Route::post('/ponto-remoto/saida', '\Modulos\RH\Http\Controllers\PontoRemotoApiController@postSaida')->name('rh.api.pontoremoto.saida');
 });
 
 Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
@@ -180,6 +190,68 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
 
     Route::group(['prefix' => 'relatorios'], function () {
         Route::get('/', '\Modulos\RH\Http\Controllers\RelatoriosPeriodosAquisitivosController@getIndex')->name('rh.relatorios.periodosaquisitivos');
+    });
+
+    Route::group(['prefix' => 'dispositivos-acesso'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@getIndex')->name('rh.dispositivosacesso.index');
+        Route::get('/create', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@getCreate')->name('rh.dispositivosacesso.create');
+        Route::post('/create', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@postCreate')->name('rh.dispositivosacesso.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@getEdit')->name('rh.dispositivosacesso.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@putEdit')->name('rh.dispositivosacesso.edit');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@postDelete')->name('rh.dispositivosacesso.delete');
+        Route::post('/regenerar-token/{id}', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@postRegenerarToken')->name('rh.dispositivosacesso.regenerartoken');
+        Route::post('/ping/{id}', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@postPing')->name('rh.dispositivosacesso.ping');
+        Route::post('/sincronizar-mapeamento/{id}', '\Modulos\RH\Http\Controllers\DispositivoAcessoController@postSincronizarMapeamento')->name('rh.dispositivosacesso.sincronizarmapeamento');
+    });
+
+    Route::group(['prefix' => 'teste-dispositivo'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\TesteDispositivoController@getIndex')->name('rh.testedispositivo.index');
+        Route::post('/ping', '\Modulos\RH\Http\Controllers\TesteDispositivoController@postPing')->name('rh.testedispositivo.ping');
+        Route::post('/listar-usuarios', '\Modulos\RH\Http\Controllers\TesteDispositivoController@postListarUsuarios')->name('rh.testedispositivo.listarusuarios');
+        Route::post('/consultar-logs', '\Modulos\RH\Http\Controllers\TesteDispositivoController@postConsultarLogs')->name('rh.testedispositivo.consultarlogs');
+        Route::get('/system-info', '\Modulos\RH\Http\Controllers\TesteDispositivoController@getSystemInfo')->name('rh.testedispositivo.systeminfo');
+    });
+
+    // Vincular colaboradores — Fase 5
+    Route::group(['prefix' => 'vincular-colaboradores'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\VincularColaboradoresController@getIndex')->name('rh.vincularcolaboradores.index');
+        Route::post('/vincular', '\Modulos\RH\Http\Controllers\VincularColaboradoresController@postVincular')->name('rh.vincularcolaboradores.vincular');
+        Route::post('/desvincular', '\Modulos\RH\Http\Controllers\VincularColaboradoresController@postDesvincular')->name('rh.vincularcolaboradores.desvincular');
+        Route::post('/sincronizar', '\Modulos\RH\Http\Controllers\VincularColaboradoresController@postSincronizar')->name('rh.vincularcolaboradores.sincronizar');
+        Route::get('/exportar-csv/{id}', '\Modulos\RH\Http\Controllers\VincularColaboradoresController@getExportarCsv')->name('rh.vincularcolaboradores.exportarcsv');
+    });
+
+    // Registros de ponto — Fase 8
+    Route::group(['prefix' => 'registros-ponto'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\RegistrosPontoController@getIndex')->name('rh.registrosponto.index');
+        Route::get('/detalhes', '\Modulos\RH\Http\Controllers\RegistrosPontoController@getDetalhes')->name('rh.registrosponto.detalhes');
+    });
+
+    // Eventos de acesso — Fase 9
+    Route::group(['prefix' => 'eventos-acesso'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\EventoAcessoController@getIndex')->name('rh.eventosacesso.index');
+        Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\EventoAcessoController@getShow')->name('rh.eventosacesso.show');
+    });
+
+    // Ponto remoto — Fase 11
+    Route::group(['prefix' => 'ponto-remoto'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\PontoRemotoController@getIndex')->name('rh.pontoremoto.index');
+        Route::post('/entrada', '\Modulos\RH\Http\Controllers\PontoRemotoController@postEntrada')->name('rh.pontoremoto.entrada');
+        Route::post('/saida', '\Modulos\RH\Http\Controllers\PontoRemotoController@postSaida')->name('rh.pontoremoto.saida');
+    });
+
+    // Aprovacoes de ponto — Fase 12
+    Route::group(['prefix' => 'aprovacoes-ponto'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@getIndex')->name('rh.aprovacoesponto.index');
+        Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@getShow')->name('rh.aprovacoesponto.show');
+        Route::post('/aprovar', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@postAprovar')->name('rh.aprovacoesponto.aprovar');
+        Route::post('/reprovar', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@postReprovar')->name('rh.aprovacoesponto.reprovar');
+    });
+
+    // Configuracoes de ponto — Fase 13
+    Route::group(['prefix' => 'configuracoes-ponto'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\ConfiguracaoPontoController@getIndex')->name('rh.configuracoesponto.index');
+        Route::post('/update', '\Modulos\RH\Http\Controllers\ConfiguracaoPontoController@postUpdate')->name('rh.configuracoesponto.update');
     });
 
     //Rotas de funções assíncronas

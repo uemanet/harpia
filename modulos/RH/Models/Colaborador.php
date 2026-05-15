@@ -74,4 +74,29 @@ class Colaborador extends BaseModel
         return $this->hasMany('Modulos\RH\Models\ColaboradorFuncao', 'cfn_col_id', 'col_id')
             ->where('cfn_data_fim', '<>',null);
     }
+
+    public function gestor()
+    {
+        return $this->belongsTo('Modulos\RH\Models\Colaborador', 'col_gestor_id', 'col_id');
+    }
+
+    public function subordinados()
+    {
+        return $this->hasMany('Modulos\RH\Models\Colaborador', 'col_gestor_id', 'col_id');
+    }
+
+    public function eventos_acesso()
+    {
+        return $this->hasMany('Modulos\RH\Models\EventoAcesso', 'eva_col_id', 'col_id');
+    }
+
+    public function mapeamentos()
+    {
+        return $this->hasMany('Modulos\RH\Models\MapeamentoDispositivo', 'map_col_id', 'col_id');
+    }
+
+    public function setores_geridos()
+    {
+        return $this->hasMany('Modulos\RH\Models\GestorSetor', 'gst_col_id', 'col_id')->where('gst_ativo', true);
+    }
 }
