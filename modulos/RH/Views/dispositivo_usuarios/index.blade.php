@@ -190,31 +190,6 @@
                             </button>
                         </form>
 
-                        <hr>
-
-                        <form method="POST" action="{{ route('rh.dispositivousuarios.sincronizarentredispositivos') }}" style="margin-bottom: 10px;">
-                            {{ csrf_field() }}
-                            <input type="hidden" name="dis_id_origem" value="{{ $dispositivo->dis_id }}">
-
-                            <div class="form-group">
-                                <label>Replicar usuarios DESTE dispositivo nos aparelhos abaixo</label>
-                                <select name="dispositivos_destino[]" class="form-control" multiple>
-                                    @foreach($dispositivos as $dispositivoId => $dispositivoNome)
-                                        @if((string) $dispositivoId !== (string) $dispositivo->dis_id)
-                                            <option value="{{ $dispositivoId }}">
-                                                {{ $dispositivoNome }}
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                                <p class="help-block">Copia todos os usuarios lidos do dispositivo atual para os aparelhos de destino selecionados.</p>
-                            </div>
-
-                            <button type="submit" class="btn btn-info btn-block" onclick="return confirm('Tem certeza que deseja replicar TODOS os usuarios deste dispositivo para os aparelhos selecionados?')">
-                                <i class="fa fa-copy"></i> Replicar usuarios para outros aparelhos
-                            </button>
-                        </form>
-
                         <a href="{{ route('rh.vincularcolaboradores.index', ['dis_id' => $dispositivo->dis_id]) }}" class="btn btn-warning btn-block">
                             <i class="fa fa-link"></i> Abrir tela de vinculacao
                         </a>
@@ -270,7 +245,10 @@
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
                                                 <input type="hidden" name="user_id" value="{{ $usuario['user_id'] }}">
-                                                <button type="submit" class="btn btn-xs btn-danger" onclick="return confirm('Tem certeza que deseja remover o usuario do dispositivo?')">
+                                                <input type="hidden" name="todos_dispositivos" value="0">
+                                                <button type="submit" class="btn btn-xs btn-danger"
+                                                        data-registration="{{ $usuario['registration'] }}"
+                                                        onclick="return confirmarExclusao(this)">
                                                     <i class="fa fa-trash"></i> Excluir
                                                 </button>
                                             </form>
@@ -297,5 +275,22 @@
         $(document).ready(function () {
             $('select').select2();
         });
+
+        function confirmarExclusao(botao) {
+            var form = botao.closest('form');
+            var registration = botao.getAttribute('data-registration');
+
+            if (!confirm('Tem certeza que deseja remover este usuario do dispositivo?')) {
+                return false;
+            }
+
+            if (registration && registration !== '') {
+                if (confirm('Este usuario possui registration "' + registration + '".\n\nDeseja remove-lo de TODOS os dispositivos?\n\nOK = Excluir de todos\nCancelar = Excluir apenas deste')) {
+                    form.querySelector('input[name="todos_dispositivos"]').value = '1';
+                }
+            }
+
+            return true;
+        }
     </script>
 @endsection
