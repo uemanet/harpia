@@ -131,18 +131,30 @@ class ControlIdApiClient
     private function login(DispositivoAcesso $dispositivo): array
     {
         return $this->postSemSessao($dispositivo, '/login.fcgi', [
-            'login' => $this->resolverLogin(),
-            'password' => $this->resolverSenha(),
+            'login' => $this->resolverLogin($dispositivo),
+            'password' => $this->resolverSenha($dispositivo),
         ]);
     }
 
-    private function resolverLogin(): string
+    private function resolverLogin(DispositivoAcesso $dispositivo): string
     {
+        $login = $dispositivo->getAttribute('dis_login_api');
+
+        if (is_string($login) && $login !== '') {
+            return $login;
+        }
+
         return $this->resolverConfiguracao('services.controlid.login', 'CONTROLID_LOGIN', 'admin');
     }
 
-    private function resolverSenha(): string
+    private function resolverSenha(DispositivoAcesso $dispositivo): string
     {
+        $senha = $dispositivo->getAttribute('dis_senha_api');
+
+        if (is_string($senha) && $senha !== '') {
+            return $senha;
+        }
+
         return $this->resolverConfiguracao('services.controlid.password', 'CONTROLID_PASSWORD', 'admin');
     }
 
