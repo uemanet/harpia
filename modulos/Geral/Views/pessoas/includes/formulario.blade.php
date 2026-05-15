@@ -79,7 +79,11 @@
         <div class="controls">
             <select name="pes_estado_civil" class="form-control">
                 <option value="">Selecione o estado civil</option>
+                <option value="solteiro" {{ isset($pessoa->pes_estado_civil) && $pessoa->pes_estado_civil == 'solteiro' ? 'selected' : '' }}>Solteiro(a)</option>
+                <option value="casado" {{ isset($pessoa->pes_estado_civil) && $pessoa->pes_estado_civil == 'casado' ? 'selected' : '' }}>Casado(a)</option>
+                <option value="divorciado" {{ isset($pessoa->pes_estado_civil) && $pessoa->pes_estado_civil == 'divorciado' ? 'selected' : '' }}>Divorciado(a)</option>
                 <option value="uniao_estavel" {{ isset($pessoa->pes_estado_civil) && $pessoa->pes_estado_civil == 'uniao_estavel' ? 'selected' : '' }}>União estável</option>
+                <option value="viuvo(a)" {{ isset($pessoa->pes_estado_civil) && $pessoa->pes_estado_civil == 'viuvo(a)' ? 'selected' : '' }}>Viúvo(a)</option>
             </select>
             @if ($errors->has('pes_estado_civil')) <p class="help-block">{{ $errors->first('pes_estado_civil') }}</p> @endif
         </div>

@@ -63,6 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
         allowInput: true,
     });
 
+    flatpickr(".datepicker_us", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+    });
+
     flatpickr(".only-time", {
         locale: Portuguese,
         enableTime: true,

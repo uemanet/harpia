@@ -13,7 +13,7 @@
                 <!-- /.box-tools -->
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="card-body">
                 @if(!$fonte_pagadora->vinculos_fontes_pagadoras->isEmpty())
                     <table class="table table-bordered">
                         <tr>
@@ -58,7 +58,7 @@
                     <p>Salários Base para apresentar</p>
                 @endif
             </div>
-            <!-- /.box-body -->
+            <!-- /.card-body -->
             <div class="box-footer">
                 {!! ActionButton::grid([
                     'type' => 'LINE',

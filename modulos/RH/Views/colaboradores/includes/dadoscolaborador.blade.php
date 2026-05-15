@@ -1,6 +1,6 @@
 @section('stylesheets')
     <style>
-        .title-box {
+        .title-card {
             display: inline-block;
             font-size: 18px;
             margin: 0;
@@ -12,19 +12,19 @@
 <!--  Dados Pessoais  -->
 <div class="row">
     <div class="col-md-12">
-        <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Dados do Colaborador</h3>
+        <!-- About Me card -->
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">Dados do Colaborador</h3>
 
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
+            <!-- /.card-header -->
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
 {{--                        <p><strong>Setor: </strong> {{$colaborador->setor->set_descricao}}</p>--}}
@@ -56,8 +56,8 @@
                     </div>
                 </div>
             </div>
-            <!-- /.box-body -->
+            <!-- /.card-body -->
         </div>
-        <!-- /.box -->
+        <!-- /.card -->
     </div>
 </div>

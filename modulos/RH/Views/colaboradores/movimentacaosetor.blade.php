@@ -1,10 +1,5 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
-
 @section('title')
     Colaboradores
 @stop
@@ -15,11 +10,11 @@
 
 @section('content')
 
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Gerenciamento de funções de colaborador</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Gerenciamento de funções de colaborador</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <h4>Funções do Colaborador</h4>
             <div class="row">
                 <form action="{{ route('rh.colaboradores.movimentacaosetor.funcao.create', [$colaborador->col_id]) }}" method="POST" id="form">
@@ -143,14 +138,7 @@
 @stop
 
 @section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-
         $('form').submit(function (e) {
 
             if (!$(e.target).hasClass('delete')) {
@@ -179,15 +167,6 @@
 
 
     </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-
-
 @endsection
 
 

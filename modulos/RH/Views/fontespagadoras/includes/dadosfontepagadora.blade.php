@@ -26,7 +26,7 @@
 
 
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         <p><strong>Razão Social: </strong> {{$fonte_pagadora->fpg_razao_social}}</p>
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <!-- /.box-body -->
+            <!-- /.card-body -->
         </div>
         <!-- /.box -->
     </div>
@@ -74,7 +74,7 @@
 
 
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         <p><strong>CEP: </strong> {{$fonte_pagadora->fpg_cep}}</p>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <!-- /.box-body -->
+            <!-- /.card-body -->
         </div>
         <!-- /.box -->
     </div>

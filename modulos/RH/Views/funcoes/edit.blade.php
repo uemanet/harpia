@@ -9,18 +9,19 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de função</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de edição de função</h3>
         </div>
-        <div class="box-body">
-            <form action="{{ route('rh.funcoes.edit', [$funcao->fun_id]) }}" method="POST" id="form" role="form">
-    @csrf
-    @method('PUT')
-    {{-- Form model: $funcao - inputs devem usar old('campo', $funcao->campo) --}}
+        <form action="{{ route('rh.funcoes.edit', [$funcao->fun_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
                 @include('RH::funcoes.includes.formulario')
-            </form>
-
-        </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop
