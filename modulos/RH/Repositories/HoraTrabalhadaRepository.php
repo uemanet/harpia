@@ -169,7 +169,7 @@ class HoraTrabalhadaRepository extends BaseRepository
         $explodedTime2 = explode(':', $horasPrevistas);
         $seconds2 = $explodedTime2[0]*3600+$explodedTime2[1]*60+$explodedTime2[2];
 
-        $seconds3 = null;
+        $seconds3 = 0;
         if($horasJustificadas){
             $explodedTime3 = explode(':', $horasJustificadas);
             $seconds3 = $explodedTime3[0]*3600+$explodedTime3[1]*60+$explodedTime3[2];
@@ -177,10 +177,16 @@ class HoraTrabalhadaRepository extends BaseRepository
 
         $secondsDiff = $seconds1-$seconds2+$seconds3;
 
-        $hours = floor($secondsDiff/3600);
-        $minutes = abs(floor(($secondsDiff % 3600)/60));
-        $seconds = abs((($secondsDiff%3600)%60));
-        return
+        $negativo = $secondsDiff < 0;
+        $total = abs($secondsDiff);
+
+        $hours = floor($total / 3600);
+        $minutes = floor(($total % 3600) / 60);
+        $seconds = $total % 60;
+
+        $prefixo = $negativo ? '-' : '';
+
+        return $prefixo .
             str_pad($hours, 2, '0', STR_PAD_LEFT).':' .
             str_pad($minutes, 2, '0', STR_PAD_LEFT).':'.
             str_pad($seconds, 2, '0', STR_PAD_LEFT);
