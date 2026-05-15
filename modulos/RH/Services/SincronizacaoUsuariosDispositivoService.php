@@ -64,13 +64,22 @@ class SincronizacaoUsuariosDispositivoService
                 $mapeamentoExistente = $this->mapeamentoRepository->buscarPorDispositivoEUsuario($dispositivo->dis_id, $userId);
                 $colaborador = $this->resolverColaboradorParaSincronizacao($mapeamentoExistente, $usuario);
 
+                $novoColId = $colaborador?->col_id;
+
+                if ($novoColId !== null) {
+                    MapeamentoDispositivo::where('map_dis_id', $dispositivo->dis_id)
+                        ->where('map_user_id', '<>', $userId)
+                        ->where('map_col_id', $novoColId)
+                        ->update(['map_col_id' => null]);
+                }
+
                 MapeamentoDispositivo::updateOrCreate(
                     [
                         'map_dis_id' => $dispositivo->dis_id,
                         'map_user_id' => $userId,
                     ],
                     [
-                        'map_col_id' => $colaborador?->col_id,
+                        'map_col_id' => $novoColId,
                         'map_registration' => (string) ($usuario['registration'] ?? ''),
                         'map_nome_dispositivo' => (string) ($usuario['name'] ?? ''),
                         'map_ativo' => true,
@@ -96,7 +105,8 @@ class SincronizacaoUsuariosDispositivoService
         DispositivoAcesso $dispositivo,
         int $colaboradorId,
         array $dados = [],
-        ?UploadedFile $foto = null
+        ?UploadedFile $foto = null,
+        ?string $fotoBinaria = null
     ): array {
         $colaborador = $this->colaboradorRepository->buscarAtivoComPessoa($colaboradorId);
 
@@ -146,11 +156,13 @@ class SincronizacaoUsuariosDispositivoService
 
         $this->vincularUsuario($dispositivo, (string) $usuario['user_id'], $colaboradorId);
 
-        if ($foto) {
+        $binario = $fotoBinaria ?? ($foto ? $this->converterImagemParaBinario($foto) : null);
+
+        if ($binario !== null) {
             $respostaFoto = $this->apiClient->setUserImage(
                 $dispositivo,
                 (int) $usuario['user_id'],
-                $this->converterImagemParaBinario($foto)
+                $binario
             );
 
             $this->validarRespostaCadastroFacial($respostaFoto);
@@ -165,6 +177,8 @@ class SincronizacaoUsuariosDispositivoService
         array $dados = [],
         ?UploadedFile $foto = null
     ): array {
+        $fotoBinaria = $foto ? $this->converterImagemParaBinario($foto) : null;
+
         $resultado = [
             'total' => 0,
             'criados' => 0,
@@ -177,7 +191,7 @@ class SincronizacaoUsuariosDispositivoService
             $resultado['total']++;
 
             try {
-                $acao = $this->garantirUsuarioNoDispositivo($dispositivo, $colaboradorId, $dados, $foto);
+                $acao = $this->garantirUsuarioNoDispositivo($dispositivo, $colaboradorId, $dados, $fotoBinaria);
                 $resultado['dispositivos'][] = [
                     'dispositivo' => $dispositivo->dis_nome,
                     'acao' => $acao,
@@ -231,7 +245,8 @@ class SincronizacaoUsuariosDispositivoService
         DispositivoAcesso $dispositivo,
         string $userId,
         array $dados = [],
-        ?UploadedFile $foto = null
+        ?UploadedFile $foto = null,
+        ?string $fotoBinaria = null
     ): array {
         $nome = trim((string) ($dados['nome'] ?? ''));
         $registration = trim((string) ($dados['registration'] ?? ''));
@@ -252,11 +267,13 @@ class SincronizacaoUsuariosDispositivoService
 
         $this->garantirGrupoPadraoDoUsuario($dispositivo, $userId);
 
-        if ($foto) {
+        $binario = $fotoBinaria ?? ($foto ? $this->converterImagemParaBinario($foto) : null);
+
+        if ($binario !== null) {
             $respostaFoto = $this->apiClient->setUserImage(
                 $dispositivo,
                 (int) $userId,
-                $this->converterImagemParaBinario($foto)
+                $binario
             );
 
             $this->validarRespostaCadastroFacial($respostaFoto);
@@ -322,6 +339,11 @@ class SincronizacaoUsuariosDispositivoService
                 'map_ativo' => true,
             ]);
         }
+
+        MapeamentoDispositivo::where('map_dis_id', $dispositivo->dis_id)
+            ->where('map_user_id', '<>', $userId)
+            ->where('map_col_id', $colaboradorId)
+            ->update(['map_col_id' => null]);
 
         $mapeamento->fill([
             'map_col_id' => $colaboradorId,
@@ -523,7 +545,7 @@ class SincronizacaoUsuariosDispositivoService
         DispositivoAcesso $dispositivo,
         int $colaboradorId,
         array $dados = [],
-        ?UploadedFile $foto = null
+        ?string $fotoBinaria = null
     ): string {
         $consulta = $this->consultar($dispositivo);
         $usuarioExistente = $this->localizarUsuarioDoColaborador($consulta['usuarios'], $colaboradorId);
@@ -531,12 +553,12 @@ class SincronizacaoUsuariosDispositivoService
         if ($usuarioExistente) {
             $this->atualizarUsuario($dispositivo, (string) $usuarioExistente['user_id'], array_merge($dados, [
                 'col_id' => $colaboradorId,
-            ]), $foto);
+            ]), null, $fotoBinaria);
 
             return 'atualizado';
         }
 
-        $this->criarUsuario($dispositivo, $colaboradorId, $dados, $foto);
+        $this->criarUsuario($dispositivo, $colaboradorId, $dados, null, $fotoBinaria);
 
         return 'criado';
     }
@@ -697,5 +719,106 @@ class SincronizacaoUsuariosDispositivoService
         }
 
         return isset($grupos[0]['id']) ? (int) $grupos[0]['id'] : null;
+    }
+
+    public function sincronizarUsuariosEntreDispositivos(DispositivoAcesso $origem, DispositivoAcesso $destino): array
+    {
+        $usuariosOrigem = $this->consultar($origem)['usuarios'];
+
+        $usuariosDestino = [];
+        foreach ($this->consultar($destino)['usuarios'] as $usuario) {
+            $reg = (string) ($usuario['registration'] ?? '');
+            if ($reg !== '') {
+                $usuariosDestino[$reg] = $usuario;
+            }
+        }
+
+        $resultado = [
+            'origem' => $origem->dis_nome,
+            'destino' => $destino->dis_nome,
+            'criados' => 0,
+            'atualizados' => 0,
+            'inalterados' => 0,
+            'erros' => 0,
+        ];
+
+        foreach ($usuariosOrigem as $usuario) {
+            $registration = (string) ($usuario['registration'] ?? '');
+
+            if ($registration === '') {
+                continue;
+            }
+
+            $existeNoDestino = $usuariosDestino[$registration] ?? null;
+
+            try {
+                if (!$existeNoDestino) {
+                    $this->apiClient->createUser($destino, [
+                        'registration' => $registration,
+                        'name' => (string) ($usuario['nome'] ?? ''),
+                        'password' => '',
+                    ]);
+
+                    $resultado['criados']++;
+                } else {
+                    $origemNome = trim((string) ($usuario['nome'] ?? ''));
+                    $destinoNome = trim((string) ($existeNoDestino['nome'] ?? ''));
+
+                    if ($origemNome !== '' && $origemNome !== $destinoNome) {
+                        $this->apiClient->modifyUser($destino, (int) $existeNoDestino['user_id'], [
+                            'name' => $origemNome,
+                            'registration' => $registration,
+                        ]);
+
+                        $resultado['atualizados']++;
+                    } else {
+                        $resultado['inalterados']++;
+                    }
+                }
+            } catch (\Throwable $exception) {
+                $resultado['erros']++;
+            }
+        }
+
+        $this->sincronizar($destino);
+
+        return $resultado;
+    }
+
+    public function sincronizarUsuariosEntreDispositivosEmLote(DispositivoAcesso $origem, iterable $destinos): array
+    {
+        $resultado = [
+            'origem' => $origem->dis_nome,
+            'dispositivos' => [],
+            'erros' => [],
+            'resumo' => [
+                'dispositivos' => 0,
+                'criados' => 0,
+                'atualizados' => 0,
+                'inalterados' => 0,
+            ],
+        ];
+
+        foreach ($destinos as $destino) {
+            if ($destino->dis_id === $origem->dis_id) {
+                continue;
+            }
+
+            try {
+                $item = $this->sincronizarUsuariosEntreDispositivos($origem, $destino);
+                $resultado['dispositivos'][] = $item;
+                $resultado['resumo']['dispositivos']++;
+                $resultado['resumo']['criados'] += $item['criados'];
+                $resultado['resumo']['atualizados'] += $item['atualizados'];
+                $resultado['resumo']['inalterados'] += $item['inalterados'];
+            } catch (\Throwable $exception) {
+                $resultado['erros'][] = [
+                    'dispositivo' => $destino->dis_nome,
+                    'mensagem' => $exception->getMessage(),
+                ];
+            }
+        }
+
+        return $resultado;
     }
 }
