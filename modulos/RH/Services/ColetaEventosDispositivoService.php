@@ -10,7 +10,8 @@ class ColetaEventosDispositivoService
 {
     public function __construct(
         private ControlIdApiClient $apiClient,
-        private EventoAcessoService $eventoAcessoService
+        private EventoAcessoService $eventoAcessoService,
+        private HoraTrabalhadaDiariaService $horaTrabalhadaDiariaService
     ) {
     }
 
@@ -54,6 +55,14 @@ class ColetaEventosDispositivoService
             $resultadoTotal['ignorado'] += $resultadoLote['ignorado'] ?? 0;
             $ultimoIdAtual = max($ultimoIdAtual, $this->resolverMaiorLogId($logs));
             $resultadoTotal['ultimo_id_atual'] = $ultimoIdAtual;
+
+            // Atualizar horas diarias para colaboradores afetados neste lote
+            foreach (($resultadoLote['afetados'] ?? []) as $afetado) {
+                $this->horaTrabalhadaDiariaService->atualizarOuCriar(
+                    (int) $afetado['col_id'],
+                    $afetado['data']
+                );
+            }
         } while (count($logs) === $limit);
 
         $dispositivo->forceFill([
