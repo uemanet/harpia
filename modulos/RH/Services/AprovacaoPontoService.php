@@ -11,7 +11,8 @@ use Modulos\RH\Models\EventoAcesso;
 class AprovacaoPontoService
 {
     public function __construct(
-        private AprovadorPontoService $aprovadorPontoService
+        private AprovadorPontoService $aprovadorPontoService,
+        private HoraTrabalhadaDiariaService $horaTrabalhadaDiariaService
     ) {
     }
 
@@ -33,6 +34,13 @@ class AprovacaoPontoService
             'apr_motivo' => null,
             'apr_hora_ajustada' => null,
         ]);
+
+        if ($evento->eva_col_id && $evento->eva_data_hora) {
+            $this->horaTrabalhadaDiariaService->atualizarOuCriar(
+                $evento->eva_col_id,
+                date('Y-m-d', strtotime($evento->eva_data_hora))
+            );
+        }
 
         Log::info('Registro remoto aprovado.', [
             'evento_id' => $evento->eva_id,
