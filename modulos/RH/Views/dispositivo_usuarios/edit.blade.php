@@ -91,6 +91,15 @@
                             <p class="help-block">Se enviada, a foto sera atualizada no iDFace durante o salvamento.</p>
                             @if ($errors->has('foto')) <p class="help-block">{{ $errors->first('foto') }}</p> @endif
                         </div>
+
+                        @if($usuario['registration'])
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="aplicar_todos" value="1" {{ old('aplicar_todos') ? 'checked' : '' }}>
+                                Aplicar tambem nos outros dispositivos onde o usuario existe (registration: {{ $usuario['registration'] }})
+                            </label>
+                        </div>
+                        @endif
                     </div>
 
                     <div class="box-footer">

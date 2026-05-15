@@ -116,14 +116,46 @@ class DispositivoUsuariosController extends BaseController
         }
 
         try {
-            $this->sincronizacaoService->atualizarUsuario(
-                $dispositivo,
-                (string) $userId,
-                $request->only(['nome', 'registration', 'col_id']),
-                $request->file('foto')
-            );
+            $dados = $request->only(['nome', 'registration', 'col_id']);
+            $foto = $request->file('foto');
+            $aplicarTodos = $request->boolean('aplicar_todos');
 
-            flash()->success('Usuario do dispositivo atualizado com sucesso.');
+            if ($aplicarTodos) {
+                $fotoBinaria = $foto ? $this->sincronizacaoService->converterImagemParaBinario($foto) : null;
+
+                $resultado = $this->sincronizacaoService->atualizarUsuarioEmTodosDispositivos(
+                    $dispositivo,
+                    (string) $userId,
+                    $dados,
+                    $fotoBinaria
+                );
+
+                if ($resultado['atualizados'] > 0) {
+                    flash()->success(sprintf(
+                        'Usuario atualizado em %d dispositivo(s): %s.',
+                        $resultado['atualizados'],
+                        implode(', ', $resultado['dispositivos'])
+                    ));
+                }
+
+                if ($resultado['erros'] > 0) {
+                    $msg = sprintf('Falha ao atualizar em %d dispositivo(s).', $resultado['erros']);
+                    if (!empty($resultado['detalhes_erros'])) {
+                        $msg .= ' ' . implode('; ', $resultado['detalhes_erros']);
+                    }
+                    flash()->error($msg);
+                }
+            } else {
+                $this->sincronizacaoService->atualizarUsuario(
+                    $dispositivo,
+                    (string) $userId,
+                    $dados,
+                    $foto
+                );
+
+                flash()->success('Usuario do dispositivo atualizado com sucesso.');
+            }
+
             return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
         } catch (\Throwable $exception) {
             $this->tratarExcecao($exception, 'Nao foi possivel atualizar o usuario do dispositivo.');
@@ -190,6 +222,7 @@ class DispositivoUsuariosController extends BaseController
         $this->validate($request, [
             'dis_id' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
             'user_id' => 'required|string|max:20',
+            'todos_dispositivos' => 'nullable|in:1',
         ]);
 
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
@@ -200,8 +233,30 @@ class DispositivoUsuariosController extends BaseController
         }
 
         try {
-            $this->sincronizacaoService->removerUsuario($dispositivo, (string) $request->get('user_id'));
-            flash()->success('Usuario removido do dispositivo com sucesso.');
+            if ($request->get('todos_dispositivos') === '1') {
+                $resultado = $this->sincronizacaoService->removerUsuarioDeTodosDispositivos(
+                    $dispositivo,
+                    (string) $request->get('user_id')
+                );
+
+                if ($resultado['removidos'] > 0) {
+                    flash()->success(sprintf(
+                        'Usuario removido de %d dispositivo(s): %s.',
+                        $resultado['removidos'],
+                        implode(', ', $resultado['dispositivos'])
+                    ));
+                }
+
+                if ($resultado['erros'] > 0) {
+                    flash()->error(sprintf(
+                        'Falha ao remover de %d dispositivo(s).',
+                        $resultado['erros']
+                    ));
+                }
+            } else {
+                $this->sincronizacaoService->removerUsuario($dispositivo, (string) $request->get('user_id'));
+                flash()->success('Usuario removido do dispositivo com sucesso.');
+            }
         } catch (\Throwable $exception) {
             $this->tratarExcecao($exception, 'Nao foi possivel remover o usuario do dispositivo.');
         }
@@ -235,55 +290,6 @@ class DispositivoUsuariosController extends BaseController
         }
 
         return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
-    }
-
-    public function postSincronizarEntreDispositivos(Request $request)
-    {
-        $this->validate($request, [
-            'dis_id_origem' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
-            'dispositivos_destino' => 'required|array',
-            'dispositivos_destino.*' => 'integer|exists:reh_dispositivos_acesso,dis_id',
-        ]);
-
-        $origem = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id_origem'));
-
-        if (!$origem) {
-            flash()->error('Dispositivo de origem ativo nao encontrado.');
-            return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $request->get('dis_id_origem')]);
-        }
-
-        $destinos = $this->dispositivoRepository->listarAtivosPorIds(
-            array_filter((array) $request->get('dispositivos_destino'))
-        );
-
-        if ($destinos->isEmpty()) {
-            flash()->error('Selecione ao menos um dispositivo de destino.');
-            return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $origem->dis_id]);
-        }
-
-        try {
-            $resultado = $this->sincronizacaoService->sincronizarUsuariosEntreDispositivosEmLote($origem, $destinos);
-            $resumo = $resultado['resumo'];
-
-            if ($resumo['dispositivos'] > 0) {
-                flash()->success(sprintf(
-                    'Usuarios do dispositivo "%s" replicados para %d dispositivo(s): %d criados, %d atualizados, %d inalterados.',
-                    $resultado['origem'],
-                    $resumo['dispositivos'],
-                    $resumo['criados'],
-                    $resumo['atualizados'],
-                    $resumo['inalterados']
-                ));
-            }
-
-            if (!empty($resultado['erros'])) {
-                flash()->error($this->montarMensagemErrosLote($resultado['erros']));
-            }
-        } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel sincronizar os usuarios entre os dispositivos.');
-        }
-
-        return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $origem->dis_id]);
     }
 
     public function postSincronizarTodos(Request $request)

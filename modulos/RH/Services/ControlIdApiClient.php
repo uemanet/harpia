@@ -54,7 +54,7 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/create_objects.fcgi', [
             'object' => 'users',
-            'values' => [$userData],
+            'values' => $userData,
         ]);
     }
 
@@ -62,10 +62,10 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/create_objects.fcgi', [
             'object' => 'user_groups',
-            'values' => [[
+            'values' => [
                 'user_id' => $userId,
                 'group_id' => $groupId,
-            ]],
+            ],
         ]);
     }
 
@@ -73,7 +73,7 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/modify_objects.fcgi', [
             'object' => 'users',
-            'values' => [array_merge($userData, ['id' => $userId])],
+            'values' => array_merge($userData, ['id' => $userId]),
         ]);
     }
 
@@ -81,7 +81,11 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/destroy_objects.fcgi', [
             'object' => 'users',
-            'values' => [$userId],
+            'where' => [
+                'users' => [
+                    'id' => $userId,
+                ],
+            ],
         ]);
     }
 
