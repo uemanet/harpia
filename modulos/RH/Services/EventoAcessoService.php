@@ -84,6 +84,7 @@ class EventoAcessoService
             'erro' => 0,
             'duplicado' => 0,
             'ignorado' => 0,
+            'afetados' => [],
         ];
 
         foreach ($logs as $log) {
@@ -95,6 +96,22 @@ class EventoAcessoService
             }
 
             $resultado[$status]++;
+
+            if ($status === 'processado' && isset($processamento['registro'])) {
+                $registro = $processamento['registro'];
+
+                if ($registro->eva_col_id && $registro->eva_data_hora) {
+                    $data = date('Y-m-d', strtotime($registro->eva_data_hora));
+                    $chave = $registro->eva_col_id . '|' . $data;
+
+                    if (!isset($resultado['afetados'][$chave])) {
+                        $resultado['afetados'][$chave] = [
+                            'col_id' => $registro->eva_col_id,
+                            'data' => $data,
+                        ];
+                    }
+                }
+            }
         }
 
         return $resultado;

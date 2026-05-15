@@ -45,6 +45,41 @@ class HoraTrabalhadaRepository extends BaseRepository
         return true;
     }
 
+    public function sincronizarHorasTrabalhadasDoColaborador(PeriodoLaboral $periodoLaboral, int $colId): void
+    {
+        $colaborador = Colaborador::with('pessoa')->find($colId);
+
+        if (!$colaborador || $colaborador->col_status !== 'ativo') {
+            return;
+        }
+
+        $colaboradorHoraTrabalhada = $this->model
+            ->where([
+                'htr_col_id' => $colaborador->col_id,
+                'htr_pel_id' => $periodoLaboral->pel_id,
+            ])->first();
+
+        $dados = $this->calculaDadosDeHorasTrabalhadasDoColaborador($colaborador, $periodoLaboral);
+
+        if ($colaboradorHoraTrabalhada) {
+            $horasJustificadas = $this->buscaHorasJustificadasDoPeriodo($colaboradorHoraTrabalhada);
+            $dados['htr_horas_justificadas'] = str_pad($horasJustificadas, 2, '0', STR_PAD_LEFT) . ':00:00';
+            $dados['htr_saldo'] = $this->calculaSaldo(
+                $dados['htr_horas_trabalhadas'],
+                $dados['htr_horas_previstas'],
+                $dados['htr_horas_justificadas']
+            );
+            $colaboradorHoraTrabalhada->update($dados);
+        } else {
+            $dados['htr_horas_justificadas'] = '00:00:00';
+            $dados['htr_saldo'] = $this->calculaSaldo(
+                $dados['htr_horas_trabalhadas'],
+                $dados['htr_horas_previstas']
+            );
+            $this->create($dados);
+        }
+    }
+
     public function sincronizarJustificativa(HoraTrabalhada $horaTrabalhada){
 
         $horasJustificadas = $this->buscaHorasJustificadasDoPeriodo($horaTrabalhada);

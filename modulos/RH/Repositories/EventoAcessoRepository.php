@@ -29,6 +29,16 @@ class EventoAcessoRepository extends BaseRepository
             ->toArray();
     }
 
+    public function buscarPrimeiroEventoDoDia(int $colId, string $data): ?EventoAcesso
+    {
+        return $this->model
+            ->where('eva_col_id', $colId)
+            ->whereDate('eva_data_hora', $data)
+            ->whereIn('eva_status', ['processado', 'aprovado'])
+            ->orderBy('eva_data_hora')
+            ->first();
+    }
+
     public function buscarEventosComErro(int $limit = 100): array
     {
         return $this->model
