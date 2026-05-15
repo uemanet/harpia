@@ -97,20 +97,20 @@
                                 <td>{{ $usuario['nome'] }}</td>
                                 <td>{{ $usuario['colaborador_nome'] ?? '—' }}</td>
                                 <td>
-                                    <span class="label label-{{ $usuario['status'] === 'vinculado' ? 'success' : 'warning' }}">
-                                        {{ $usuario['status'] }}
+                                    <span class="label label-{{ $usuario['status_vinculo'] === 'vinculado' ? 'success' : 'warning' }}">
+                                        {{ $usuario['status_vinculo'] }}
                                     </span>
                                 </td>
                                 <td>
-                                    @if($usuario['status'] === 'pendente')
+                                    @if($usuario['status_vinculo'] === 'pendente')
                                         <form method="POST" action="{{ route('rh.vincularcolaboradores.vincular') }}" style="display: inline;">
                                             {{ csrf_field() }}
                                             <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
                                             <input type="hidden" name="user_id" value="{{ $usuario['user_id'] }}">
                                             <select name="col_id" class="form-control input-sm" style="width: 200px; display: inline;">
                                                 <option value="">Selecione um colaborador</option>
-                                                @foreach($colaboradores as $col)
-                                                    <option value="{{ $col->col_id }}">{{ $col->pessoa->pes_nome ?? '#' . $col->col_id }}</option>
+                                                @foreach($colaboradores as $colId => $colNome)
+                                                    <option value="{{ $colId }}">{{ $colNome }}</option>
                                                 @endforeach
                                             </select>
                                             <button type="submit" class="btn btn-xs btn-success">Vincular</button>

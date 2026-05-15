@@ -254,6 +254,20 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/update', '\Modulos\RH\Http\Controllers\ConfiguracaoPontoController@postUpdate')->name('rh.configuracoesponto.update');
     });
 
+    // Usuarios do dispositivo — Gestao Control iD
+    Route::group(['prefix' => 'dispositivo-usuarios'], function () {
+        Route::get('/', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@getIndex')->name('rh.dispositivousuarios.index');
+        Route::post('/create', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postCreate')->name('rh.dispositivousuarios.create');
+        Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@getEdit')->name('rh.dispositivousuarios.edit');
+        Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@putEdit')->name('rh.dispositivousuarios.edit');
+        Route::post('/atualizar-foto/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postAtualizarFoto')->name('rh.dispositivousuarios.atualizarfoto');
+        Route::post('/remover-foto/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postRemoverFoto')->name('rh.dispositivousuarios.removerfoto');
+        Route::post('/delete', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postDelete')->name('rh.dispositivousuarios.delete');
+        Route::post('/sincronizar', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizar')->name('rh.dispositivousuarios.sincronizar');
+        Route::post('/sincronizar-todos', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizarTodos')->name('rh.dispositivousuarios.sincronizartodos');
+        Route::get('/exportar-csv/{id?}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@getExportarCsv')->name('rh.dispositivousuarios.exportarcsv');
+    });
+
     //Rotas de funções assíncronas
     Route::group(['prefix' => 'async'], function () {
         Route::group(['prefix' => 'fontespagadoras'], function () {

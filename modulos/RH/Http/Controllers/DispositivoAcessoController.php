@@ -8,12 +8,14 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\DispositivoAcessoRequest;
 use Modulos\RH\Repositories\DispositivoAcessoRepository;
 use Modulos\RH\Services\ControlIdApiClient;
+use Modulos\RH\Services\SincronizacaoUsuariosDispositivoService;
 
 class DispositivoAcessoController extends BaseController
 {
     public function __construct(
         private DispositivoAcessoRepository $dispositivoRepository,
-        private ControlIdApiClient $apiClient
+        private ControlIdApiClient $apiClient,
+        private SincronizacaoUsuariosDispositivoService $sincronizacaoService
     ) {
     }
 
@@ -156,45 +158,12 @@ class DispositivoAcessoController extends BaseController
         }
 
         try {
-            $apiClient = $this->apiClient;
-            $usuarios = $apiClient->loadObjects($dispositivo, 'users');
-
-            $mapeamentoRepo = app(\Modulos\RH\Repositories\MapeamentoDispositivoRepository::class);
-
-            $vinculados = 0;
-            $total = count($usuarios['users'] ?? []);
-
-            foreach ($usuarios['users'] ?? [] as $user) {
-                $map = $mapeamentoRepo->buscarPorUserId($dispositivo->dis_id, (string) $user['user_id']);
-
-                if (!$map) {
-                    $mapeamentoRepo->create([
-                        'map_dis_id' => $dispositivo->dis_id,
-                        'map_user_id' => (string) $user['user_id'],
-                        'map_registration' => (string) ($user['registration'] ?? ''),
-                        'map_nome_dispositivo' => $user['name'] ?? null,
-                        'map_col_id' => null,
-                        'map_ativo' => true,
-                    ]);
-                } else {
-                    $mapeamentoRepo->update([
-                        'map_registration' => (string) ($user['registration'] ?? ''),
-                        'map_nome_dispositivo' => $user['name'] ?? null,
-                    ], $map->map_id);
-                }
-
-                if ($map && $map->map_col_id) {
-                    $vinculados++;
-                }
-            }
-
-            $pendentes = $total - $vinculados;
-
+            $resultado = $this->sincronizacaoService->sincronizar($dispositivo);
             flash()->success(sprintf(
                 'Mapeamento sincronizado: %d usuarios, %d vinculados, %d pendentes.',
-                $total,
-                $vinculados,
-                $pendentes
+                $resultado['resumo']['total'],
+                $resultado['resumo']['vinculados'],
+                $resultado['resumo']['pendentes']
             ));
         } catch (\Exception $e) {
             if (config('app.debug')) {
