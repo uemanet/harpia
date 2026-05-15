@@ -265,6 +265,7 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/delete', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postDelete')->name('rh.dispositivousuarios.delete');
         Route::post('/sincronizar', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizar')->name('rh.dispositivousuarios.sincronizar');
         Route::post('/sincronizar-todos', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizarTodos')->name('rh.dispositivousuarios.sincronizartodos');
+        Route::post('/sincronizar-entre-dispositivos', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizarEntreDispositivos')->name('rh.dispositivousuarios.sincronizarentredispositivos');
         Route::get('/exportar-csv/{id?}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@getExportarCsv')->name('rh.dispositivousuarios.exportarcsv');
     });
 

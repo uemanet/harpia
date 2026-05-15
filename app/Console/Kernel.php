@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\ModulosMigrate::class,
         Commands\ModulosSeed::class,
         Commands\ColetarEventosControlId::class,
+        Commands\SincronizarUsuariosEntreDispositivos::class,
     ];
 
     /**
@@ -27,7 +28,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // EVERY MINUTE PARA TESTES. DEPOIS ALTERAR PARA 5 MINUTOS OU MAIS, DEPENDENDO DO VOLUME DE EVENTOS.
+        $schedule->command('ponto:coletar-eventos')->everyMinute();
+
+        // Sincroniza usuarios entre dispositivos a cada 5 minutos.
+        // Exemplo: replica usuarios do dispositivo de entrada no dispositivo de saida.
+        $schedule->command('ponto:sincronizar-entre-dispositivos --todos')->everyFiveMinutes();
     }
 }

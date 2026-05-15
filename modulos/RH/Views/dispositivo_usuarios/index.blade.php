@@ -190,6 +190,31 @@
                             </button>
                         </form>
 
+                        <hr>
+
+                        <form method="POST" action="{{ route('rh.dispositivousuarios.sincronizarentredispositivos') }}" style="margin-bottom: 10px;">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="dis_id_origem" value="{{ $dispositivo->dis_id }}">
+
+                            <div class="form-group">
+                                <label>Replicar usuarios DESTE dispositivo nos aparelhos abaixo</label>
+                                <select name="dispositivos_destino[]" class="form-control" multiple>
+                                    @foreach($dispositivos as $dispositivoId => $dispositivoNome)
+                                        @if((string) $dispositivoId !== (string) $dispositivo->dis_id)
+                                            <option value="{{ $dispositivoId }}">
+                                                {{ $dispositivoNome }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                <p class="help-block">Copia todos os usuarios lidos do dispositivo atual para os aparelhos de destino selecionados.</p>
+                            </div>
+
+                            <button type="submit" class="btn btn-info btn-block" onclick="return confirm('Tem certeza que deseja replicar TODOS os usuarios deste dispositivo para os aparelhos selecionados?')">
+                                <i class="fa fa-copy"></i> Replicar usuarios para outros aparelhos
+                            </button>
+                        </form>
+
                         <a href="{{ route('rh.vincularcolaboradores.index', ['dis_id' => $dispositivo->dis_id]) }}" class="btn btn-warning btn-block">
                             <i class="fa fa-link"></i> Abrir tela de vinculacao
                         </a>

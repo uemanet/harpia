@@ -3,6 +3,7 @@
 namespace Modulos\RH\Services;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use InvalidArgumentException;
 use JsonException;
 use Modulos\RH\Models\DispositivoAcesso;
@@ -80,7 +81,7 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/destroy_objects.fcgi', [
             'object' => 'users',
-            'values' => [['id' => $userId]],
+            'values' => [$userId],
         ]);
     }
 
@@ -200,13 +201,21 @@ class ControlIdApiClient
         $session = $this->obterSessao($dispositivo);
         $query = array_merge($query, ['session' => $session]);
 
-        $response = $this->http->request('POST', $this->baseUrl($dispositivo) . $endpoint, [
-            'query' => $query,
-            'headers' => ['Content-Type' => 'application/octet-stream'],
-            'body' => $conteudo,
-        ]);
+        try {
+            $response = $this->http->request('POST', $this->baseUrl($dispositivo) . $endpoint, [
+                'query' => $query,
+                'headers' => ['Content-Type' => 'application/octet-stream'],
+                'body' => $conteudo,
+            ]);
 
-        return $this->decodificarResposta($response->getStatusCode(), (string) $response->getBody());
+            return $this->decodificarResposta($response->getStatusCode(), (string) $response->getBody());
+        } catch (ConnectException $e) {
+            throw new InvalidArgumentException(
+                sprintf('Dispositivo %s inacessivel: %s', $dispositivo->dis_ip, $e->getMessage()),
+                0,
+                $e
+            );
+        }
     }
 
     private function get(DispositivoAcesso $dispositivo, string $endpoint, array $query = []): string
@@ -214,20 +223,36 @@ class ControlIdApiClient
         $session = $this->obterSessao($dispositivo);
         $query = array_merge($query, ['session' => $session]);
 
-        $response = $this->http->request('GET', $this->baseUrl($dispositivo) . $endpoint, [
-            'query' => $query,
-        ]);
+        try {
+            $response = $this->http->request('GET', $this->baseUrl($dispositivo) . $endpoint, [
+                'query' => $query,
+            ]);
 
-        return (string) $response->getBody();
+            return (string) $response->getBody();
+        } catch (ConnectException $e) {
+            throw new InvalidArgumentException(
+                sprintf('Dispositivo %s inacessivel: %s', $dispositivo->dis_ip, $e->getMessage()),
+                0,
+                $e
+            );
+        }
     }
 
     private function postSemSessao(DispositivoAcesso $dispositivo, string $endpoint, array $payload): array
     {
-        $response = $this->http->request('POST', $this->baseUrl($dispositivo) . $endpoint, [
-            'json' => empty($payload) ? (object) [] : $payload,
-        ]);
+        try {
+            $response = $this->http->request('POST', $this->baseUrl($dispositivo) . $endpoint, [
+                'json' => empty($payload) ? (object) [] : $payload,
+            ]);
 
-        return $this->decodificarResposta($response->getStatusCode(), (string) $response->getBody());
+            return $this->decodificarResposta($response->getStatusCode(), (string) $response->getBody());
+        } catch (ConnectException $e) {
+            throw new InvalidArgumentException(
+                sprintf('Dispositivo %s inacessivel: %s', $dispositivo->dis_ip, $e->getMessage()),
+                0,
+                $e
+            );
+        }
     }
 
     private function decodificarResposta(int $statusCode, string $body): array

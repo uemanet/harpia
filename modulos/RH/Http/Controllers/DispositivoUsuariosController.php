@@ -237,6 +237,55 @@ class DispositivoUsuariosController extends BaseController
         return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
     }
 
+    public function postSincronizarEntreDispositivos(Request $request)
+    {
+        $this->validate($request, [
+            'dis_id_origem' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
+            'dispositivos_destino' => 'required|array',
+            'dispositivos_destino.*' => 'integer|exists:reh_dispositivos_acesso,dis_id',
+        ]);
+
+        $origem = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id_origem'));
+
+        if (!$origem) {
+            flash()->error('Dispositivo de origem ativo nao encontrado.');
+            return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $request->get('dis_id_origem')]);
+        }
+
+        $destinos = $this->dispositivoRepository->listarAtivosPorIds(
+            array_filter((array) $request->get('dispositivos_destino'))
+        );
+
+        if ($destinos->isEmpty()) {
+            flash()->error('Selecione ao menos um dispositivo de destino.');
+            return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $origem->dis_id]);
+        }
+
+        try {
+            $resultado = $this->sincronizacaoService->sincronizarUsuariosEntreDispositivosEmLote($origem, $destinos);
+            $resumo = $resultado['resumo'];
+
+            if ($resumo['dispositivos'] > 0) {
+                flash()->success(sprintf(
+                    'Usuarios do dispositivo "%s" replicados para %d dispositivo(s): %d criados, %d atualizados, %d inalterados.',
+                    $resultado['origem'],
+                    $resumo['dispositivos'],
+                    $resumo['criados'],
+                    $resumo['atualizados'],
+                    $resumo['inalterados']
+                ));
+            }
+
+            if (!empty($resultado['erros'])) {
+                flash()->error($this->montarMensagemErrosLote($resultado['erros']));
+            }
+        } catch (\Throwable $exception) {
+            $this->tratarExcecao($exception, 'Nao foi possivel sincronizar os usuarios entre os dispositivos.');
+        }
+
+        return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $origem->dis_id]);
+    }
+
     public function postSincronizarTodos(Request $request)
     {
         $this->validate($request, [
