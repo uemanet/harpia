@@ -14,8 +14,8 @@ class ControlIdApiClient
     public function __construct(?Client $http = null)
     {
         $this->http = $http ?? new Client([
-            'timeout' => 10,
-            'connect_timeout' => 5,
+            'timeout' => 30,
+            'connect_timeout' => 10,
         ]);
     }
 

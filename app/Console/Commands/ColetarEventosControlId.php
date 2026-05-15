@@ -38,18 +38,26 @@ class ColetarEventosControlId extends Command
         }
 
         foreach ($dispositivos as $dispositivo) {
-            $resultado = $this->coletaEventosDispositivoService->coletarNovosEventos($dispositivo, $limit);
+            try {
+                $resultado = $this->coletaEventosDispositivoService->coletarNovosEventos($dispositivo, $limit);
 
-            $this->info(sprintf(
-                '[%s] lidos=%d processado=%d erro=%d duplicado=%d ignorado=%d ultimo_id=%d',
-                $dispositivo->dis_nome,
-                $resultado['lidos'],
-                $resultado['processado'],
-                $resultado['erro'],
-                $resultado['duplicado'],
-                $resultado['ignorado'],
-                $resultado['ultimo_id_atual']
-            ));
+                $this->info(sprintf(
+                    '[%s] lidos=%d processado=%d erro=%d duplicado=%d ignorado=%d ultimo_id=%d',
+                    $dispositivo->dis_nome,
+                    $resultado['lidos'],
+                    $resultado['processado'],
+                    $resultado['erro'],
+                    $resultado['duplicado'],
+                    $resultado['ignorado'],
+                    $resultado['ultimo_id_atual']
+                ));
+            } catch (\Exception $e) {
+                $this->error(sprintf(
+                    '[%s] falha na coleta: %s',
+                    $dispositivo->dis_nome,
+                    $e->getMessage()
+                ));
+            }
         }
 
         return 0;
