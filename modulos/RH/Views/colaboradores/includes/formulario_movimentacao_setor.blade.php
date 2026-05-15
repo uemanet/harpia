@@ -1,6 +1,6 @@
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('col_set_id')) has-error @endif">
-        <label for="col_set_id" class="control-label">Setor*</label>
+        <label for="col_set_id" class="form-label">Setor*</label>
         <div class="controls">
             <select name="col_set_id" class="form-control">
     <option value="">Selecione o setor</option>

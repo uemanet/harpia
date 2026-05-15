@@ -1,10 +1,5 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
-
 @section('title')
     Colaboradores
 @stop
@@ -14,20 +9,22 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <form method="GET" action="{{{ route('rh.relatorios.periodosaquisitivos') }}}">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                <form method="GET" class="d-flex w-100" action="{{{ route('rh.relatorios.periodosaquisitivos') }}}">
                     <div class="col-md-2">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf"
                                value="{{Request::input('pes_cpf')}}" placeholder="CPF">
@@ -60,12 +57,12 @@
                     </div>
 
                     <div class="col-md-1">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
+                        <input type="submit" class="btn btn-primary w-100" value="Buscar">
                     </div>
                 </form>
             </div>
         </div>
-        <!-- /.box-body -->
+        <!-- /.card-body -->
     </div>
     @if(!is_null($tabela))
         <div class="box box-primary">
@@ -77,28 +74,7 @@
         <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
     @else
         <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
+            <div class="card-body">Sem registros para apresentar</div>
         </div>
     @endif
 @stop
-
-
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-@endsection
-

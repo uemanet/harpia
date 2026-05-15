@@ -1,21 +1,19 @@
 <!-- Períodos Aquisitivos -->
 <div class="row">
     <div class="col-md-12">
-        <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Períodos Aquisitivos</h3>
-                {{--                <span data-toggle="tooltip" class="badge bg-blue">{{$periodo['dias']}} dias Adquiridos</span>--}}
-                {{--                <span data-toggle="tooltip" class="badge bg-green">{{$periodo['inicio']}} a {{$periodo['fim']}} </span>--}}
-                {{--                <span data-toggle="tooltip" class="badge bg-green">{{$periodo['fim']}} </span>--}}
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        <!-- About Me card -->
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">Períodos Aquisitivos</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
+            <!-- /.card-header -->
+            <div class="card-body">
                 @foreach($periodos_matriculas as $periodos)
                     <p style="font-size: medium">
                         <b>Matricula Id</b> : {{$periodos['matricula']->mtc_id}} -
@@ -28,7 +26,7 @@
                         @foreach($periodos['data'] as $periodo)
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="box box">
+                                    <div class="card card">
                                         <span data-toggle="tooltip" class="badge bg-gray">Período adquirido: {{$periodo['inicio_adquirido']}} a {{$periodo['fim_adquirido']}}</span>
                                         <span data-toggle="tooltip" class="badge bg-gray"> Limite para gozo: {{$periodo['limite_gozo']}} </span>
                                         <span data-toggle="tooltip" class="badge bg-gray"> Saldo para gozo: {{$periodo['saldo_periodo']}} </span>
@@ -89,7 +87,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <!-- /.box-tools -->
+                                <!-- /.card-tools -->
                             </div>
                         @endforeach
                     @else
@@ -97,8 +95,8 @@
                     @endif
                 @endforeach
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
+            <!-- /.card-body -->
+            <div class="card-footer">
                 {!! ActionButton::grid([
                     'type' => 'LINE',
                     'buttons' => [
@@ -114,7 +112,7 @@
                 ]) !!}
             </div>
         </div>
-        <!-- /.box -->
+        <!-- /.card -->
     </div>
 </div>
 

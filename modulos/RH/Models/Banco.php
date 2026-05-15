@@ -17,7 +17,9 @@ class Banco extends BaseModel
     ];
 
     protected $searchable = [
-        'ban_nome' => 'like'
+        'ban_nome' => 'like',
+        'ban_codigo' => 'like',
+        'ban_sigla' => 'like'
     ];
 
 }

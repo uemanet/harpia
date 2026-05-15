@@ -1,36 +1,36 @@
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('scb_ccb_id')) has-error @endif">
-        <label for="scb_ccb_id" class="control-label">Conta Colaborador*</label>
+        <label for="scb_ccb_id" class="form-label">Conta Colaborador*</label>
         <div class="controls">
             <select name="scb_ccb_id" class="form-control">
-    <option value="">Selecione a conta do colaborador</option>
-    @foreach($contas_colaborador as $key => $value)
-        <option value="{{ $key }}" {{ old('scb_ccb_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
-    @endforeach
-</select>
+                <option value="">Selecione a conta do colaborador</option>
+                @foreach($contas_colaborador as $key => $value)
+                    <option value="{{ $key }}" {{ old('scb_ccb_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+            </select>
             @if ($errors->has('scb_ccb_id')) <p class="help-block">{{ $errors->first('scb_ccb_id') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-4 @if ($errors->has('fpg_id')) has-error @endif">
-        <label for="fpg_id" class="control-label">Fonte Pagadora*</label>
+        <label for="fpg_id" class="form-label">Fonte Pagadora*</label>
         <div class="controls">
             <select name="fpg_id" class="form-control">
-    <option value="">Selecione a fonte pagadora</option>
-    @foreach($fontes_pagadoras as $key => $value)
-        <option value="{{ $key }}" {{ old('fpg_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
-    @endforeach
-</select>
+                <option value="">Selecione a fonte pagadora</option>
+                @foreach($fontes_pagadoras as $key => $value)
+                    <option value="{{ $key }}" {{ old('fpg_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+            </select>
             @if ($errors->has('fpg_id')) <p class="help-block">{{ $errors->first('fpg_id') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-4 @if ($errors->has('scb_vfp_id')) has-error @endif">
-        <label for="scb_vfp_id" class="control-label">Forma de pagamento*</label>
+        <label for="scb_vfp_id" class="form-label">Forma de pagamento*</label>
         <div class="controls">
             <select name="scb_vfp_id" class="form-control">
-    <option value="">Selecione o tipo de vínculo</option>
-</select>
+                <option value="">Selecione o tipo de vínculo</option>
+            </select>
             @if ($errors->has('scb_vfp_id')) <p class="help-block">{{ $errors->first('scb_vfp_id') }}</p> @endif
         </div>
     </div>
@@ -39,14 +39,14 @@
 
 <div class="row">
     <div class=" form-group col-md-3 @if ($errors->has('scb_qtd_pagamento')) has-error @endif"  id= "unidade" >
-        <label for="scb_qtd_pagamento" class="control-label">Qtd. Pagamento</label>
+        <label for="scb_qtd_pagamento" class="form-label">Qtd. Pagamento</label>
         <div class="controls">
             <input type="number" name="scb_qtd_pagamento" value="{{ old('scb_qtd_pagamento') }}" class="form-control" >
             @if ($errors->has('scb_qtd_pagamento')) <p class="help-block">{{ $errors->first('scb_qtd_pagamento') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3  @if ($errors->has('scb_valor')) has-error @endif">
-        <label for="scb_valor" class="control-label">Valor Bruto (R$)*</label>
+        <label for="scb_valor" class="form-label">Valor Bruto (R$)*</label>
         <div class="controls">
             <input type="text" name="scb_valor" value="{{ old('scb_valor') }}" class="form-control" onkeyup="k(this);" >
             @if ($errors->has('scb_valor')) <p class="help-block">{{ $errors->first('scb_valor') }}</p> @endif
@@ -54,7 +54,7 @@
     </div>
 
     <div class="form-group col-md-3 @if ($errors->has('scb_data_inicio')) has-error @endif">
-        <label for="scb_data_inicio" class="control-label">Data Inicio Pag.*</label>
+        <label for="scb_data_inicio" class="form-label">Data Inicio Pag.*</label>
         <div class="controls">
             <input type="text" name="scb_data_inicio" value="{{ old('scb_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('scb_data_inicio')) <p
@@ -62,7 +62,7 @@
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('scb_data_fim')) has-error @endif">
-        <label for="scb_data_fim" class="control-label">Data Fim Pag.</label>
+        <label for="scb_data_fim" class="form-label">Data Fim Pag.</label>
         <div class="controls">
             <input type="text" name="scb_data_fim" value="{{ old('scb_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('scb_data_fim')) <p
@@ -70,100 +70,13 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="form-group col-md-12">
-        <label class="control-label" style="visibility: hidden">Botão</label>
-        <div class="controls">
-            <button type="submit" class="btn btn-primary pull-right">Salvar dados</button>
-        </div>
-    </div>
-</div>
-
 
 @section('scripts')
-    @parent
-
-
-    <script type="application/javascript">
-        $(document).ready(function(){
-            $('#fpg_id').prop('selectedIndex',0);
-
-            // $("#unidade").hide();
-
-            $('#fpg_id').change(function() {
-
-                var fpgId = $("#fpg_id").val();
-
-                if (!fpgId) {
-                    return;
-                }
-
-                $.harpia.httpget('{{url('/')}}/rh/async/fontespagadoras/' + fpgId +'/vinculosfontespagadoras').done(function(result){
-
-                    $("#scb_vfp_id").empty();
-
-                    if ($.isEmptyObject(result)) {
-                        $('#scb_vfp_id').append('<option value=#>Sem formas de pagamentos cadastradas</option>');
-                    } else {
-                        $("#scb_vfp_id").append("<option value='' selected>Selecione uma forma de pagamento</option>");
-                        $.each(result, function(key, value) {
-
-                            if(value.vin_descricao == "Bolsa"){
-
-                                if(value.vfp_unidade == 1){
-                                    unitario = 'Sim';
-                                } else{
-                                    unitario = 'Não';
-                                }
-
-                                $('#scb_vfp_id').append('<option value=' + value.vfp_id + ' data-valor=' + value.vfp_valor + ' data-uni=' + unitario + '>' + value.vin_descricao + " | Salário Base (R$"+ value.vfp_valor + ") Uni:"+ unitario +'</option>');
-                            } else{
-                                unitario = 'Não';
-
-                                $('#scb_vfp_id').append('<option value=' + value.vfp_id + ' data-uni=' + unitario + ' >' + value.vin_descricao + '</option>');
-                            }
-                        });
-                    }
-
-                    $('#scb_vfp_id').focus();
-                });
-            });
-
-
-            $('#scb_vfp_id').change(function (e){
-                e.preventDefault();
-
-                $("#scb_qtd_pagamento").val(0);
-                $("#scb_valor").val(0);
-
-                var unidade = $(e.currentTarget).find(":selected").data('uni');
-                valor = parseFloat($(e.currentTarget).find(":selected").data('valor'));
-                if(unidade == 'Não'){
-                    $("#unidade").hide();
-                    $('#scb_valor').focus();
-                    $('#scb_valor').removeAttr('readonly');
-                }else{
-
-                    $("#unidade").show();
-                    $('#scb_valor').attr('readonly','readonly');
-                    $('#scb_qtd_pagamento').focus();
-                }
-            });
-
-            $('#scb_qtd_pagamento').change(function (e){
-                var uni = parseInt($('#scb_qtd_pagamento').val());
-console.log(uni);
-                var valor = parseFloat($("#scb_vfp_id").find(":selected").data('valor'));
-
-                var valorFinal = uni * valor;
-                valorFinal = valorFinal.toFixed(2);
-                $("#scb_valor").val(valorFinal);
-            });
-
-        });
+    <script>
+        window.PageRoutes = {
+            {{--alterarsituacao: "{{ route('academico.async.matricula.alterarsituacao') }}"--}}
+        };
     </script>
-    <script type="application/javascript">
 
-
-    </script>
+    @vite('modulos/RH/Resources/js/pages/salarioscolaboradores/formulario.js')
 @stop

@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="form-group">
                                     <section>
-                                        <label class="control-label" for="ferData">Data*</label>
+                                        <label class="form-label" for="ferData">Data*</label>
                                         <div class="input">
                                             <input type="date" name="cld_data" id="cld_data"
                                                    class="form-control required"
@@ -80,11 +80,11 @@
 
         <div class="col-md-9">
             <div class="box box-primary">
-                <div class="box-body no-padding">
+                <div class="card-body no-padding">
                     <!-- THE CALENDAR -->
                     <div id="calendar"></div>
                 </div>
-                <!-- /.box-body -->
+                <!-- /.card-body -->
             </div>
             <!-- /. box -->
         </div>

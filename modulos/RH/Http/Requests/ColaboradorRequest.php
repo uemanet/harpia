@@ -55,8 +55,8 @@ class ColaboradorRequest extends BaseRequest
                 'col_ch_diaria' => 'required',
                 'col_codigo_catraca' => 'required',
                 'col_vinculo_universidade' => 'required',
-                'col_matricula_universidade' => 'required',
-                'col_observacao' => 'required',
+                'col_matricula_universidade' => 'nullable',
+                'col_observacao' => 'nullable',
             ];
         }
 
@@ -89,8 +89,8 @@ class ColaboradorRequest extends BaseRequest
             'col_ch_diaria' => 'required',
             'col_codigo_catraca' => 'required',
             'col_vinculo_universidade' => 'required',
-            'col_matricula_universidade' => 'required',
-            'col_observacao' => 'required',
+            'col_matricula_universidade' => 'nullable',
+            'col_observacao' => 'nullable',
 //            'col_status' => 'required',
 
         ];

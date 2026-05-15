@@ -9,18 +9,19 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de áreas de conhecimento</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de edição de áreas de conhecimento</h3>
         </div>
-        <div class="box-body">
-            <form action="{{ route('rh.areasconhecimentos.edit', [$areaConhecimento->arc_id]) }}" method="POST" id="form" role="form">
-    @csrf
-    @method('PUT')
-    {{-- Form model: $areaConhecimento - inputs devem usar old('campo', $areaConhecimento->campo) --}}
+        <form action="{{ route('rh.areasconhecimentos.edit', [$areaConhecimento->arc_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
                 @include('RH::areasconhecimentos.includes.formulario')
-            </form>
-
-        </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop
