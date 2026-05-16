@@ -30,7 +30,6 @@ class PontoRemotoService
 
         $this->validarAprovadores($colaborador);
         $this->validarJanelaHorario($agora);
-        $this->validarSequencia($colaborador, $tipo, $agora);
         $this->validarAntiDuplicidade($colaborador, $tipo, $agora);
 
         $evento = EventoAcesso::create([
@@ -81,8 +80,8 @@ class PontoRemotoService
         return [
             'tem_entrada_aberta' => $entradaAberta,
             'ultimo_evento' => $ultimoEvento,
-            'pode_entrada' => !$entradaAberta,
-            'pode_saida' => $entradaAberta,
+            'pode_entrada' => true,
+            'pode_saida' => true,
             'eventos' => $eventos,
         ];
     }
