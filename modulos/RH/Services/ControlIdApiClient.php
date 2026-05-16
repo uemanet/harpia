@@ -54,7 +54,7 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/create_objects.fcgi', [
             'object' => 'users',
-            'values' => $userData,
+            'values' => [$userData],
         ]);
     }
 
@@ -62,10 +62,10 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/create_objects.fcgi', [
             'object' => 'user_groups',
-            'values' => [
+            'values' => [[
                 'user_id' => $userId,
                 'group_id' => $groupId,
-            ],
+            ]],
         ]);
     }
 

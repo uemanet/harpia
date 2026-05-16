@@ -24,18 +24,20 @@
                     @endforeach
                 </select>
                 <button type="submit" class="btn btn-primary">Consultar</button>
-
-                @if($dispositivo)
-                    <form method="POST" action="{{ route('rh.vincularcolaboradores.sincronizar') }}" style="display:inline; margin-left: 10px;">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
-                        <button type="submit" class="btn btn-warning"><i class="fa fa-refresh"></i> Sincronizar</button>
-                    </form>
-                    <a href="{{ route('rh.vincularcolaboradores.exportarcsv', ['id' => $dispositivo->dis_id]) }}" class="btn btn-success" style="margin-left: 5px;">
-                        <i class="fa fa-download"></i> Exportar CSV
-                    </a>
-                @endif
             </form>
+
+            @if($dispositivo)
+            <div style="margin-top: 10px;">
+                <form method="POST" action="{{ route('rh.vincularcolaboradores.sincronizar') }}" style="display:inline;">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
+                    <button type="submit" class="btn btn-warning"><i class="fa fa-refresh"></i> Sincronizar</button>
+                </form>
+                <a href="{{ route('rh.vincularcolaboradores.exportarcsv', ['id' => $dispositivo->dis_id]) }}" class="btn btn-success" style="margin-left: 5px;">
+                    <i class="fa fa-download"></i> Exportar CSV
+                </a>
+            </div>
+            @endif
         </div>
     </div>
 
