@@ -15,7 +15,7 @@
         </div>
         <div class="box-body">
             <form method="GET" action="{{ route('rh.vincularcolaboradores.index') }}" class="form-inline">
-                <select name="dis_id" class="form-control" style="width: 300px;">
+                <select name="dis_id" class="form-control" style="width: 300px;" onchange="this.form.submit()">
                     <option value="">Selecione um dispositivo ativo</option>
                     @foreach($dispositivos as $d)
                         <option value="{{ $d->dis_id }}" {{ request('dis_id') == $d->dis_id ? 'selected' : '' }}>
