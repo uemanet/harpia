@@ -1,19 +1,37 @@
 import jQuery from 'jquery';
+
+// DEVE vir antes de qualquer plugin jQuery
+window.$ = jQuery;
+window.jQuery = jQuery;
+
 import toastr from 'toastr';
 import Swal from 'sweetalert2';
 
-window.$ = window.jQuery = jQuery;
 window.toastr = toastr;
 window.Swal = window.swal = Swal;
 
-// Importa o Bootstrap 5
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-
-// Importa o core do AdminLTE v4
 import 'admin-lte';
 
-// Importa o OverlayScrollbars
 import { OverlayScrollbars } from 'overlayscrollbars';
+
+import 'moment';
+import 'inputmask/dist/jquery.inputmask.js';
+import 'jquery-validation';
+
+import select2 from 'select2';
+select2(window.$);
+
+import 'jstree';
+
+import Chart from 'chart.js/auto';
+window.Chart = Chart;
+
+import flatpickr from "flatpickr";
+import { Portuguese } from "flatpickr/dist/l10n/pt.js";
+
+import 'fullcalendar';
+import './harpia.js';
 
 // Inicialização obrigatória do OverlayScrollbars no Sidebar (padrão v4)
 document.addEventListener('DOMContentLoaded', function () {
@@ -28,27 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
-import 'moment';
-import 'inputmask/dist/jquery.inputmask.js';
-import 'jquery-validation';
-
-import select2 from 'select2';
-select2(window.$);
-
-import 'jstree';
-
-import Chart from 'chart.js/auto';
-window.Chart = Chart;
-
-// Flatpickr
-import flatpickr from "flatpickr";
-import { Portuguese } from "flatpickr/dist/l10n/pt.js";
-
-// Importando arquivos locais
-// import './cpfcnpj.min.js';
-import 'fullcalendar';
-import './harpia.js';
 
 document.addEventListener('DOMContentLoaded', function () {
 // $(document).ready(function() {

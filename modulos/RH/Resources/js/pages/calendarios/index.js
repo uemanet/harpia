@@ -1,6 +1,4 @@
 import $ from 'jquery';
-// A importação moderna do FullCalendar geralmente usa módulos específicos,
-// mas se você instalou o pacote completo via npm, pode usar:
 import { Calendar } from 'fullcalendar';
 
 const baseUrl = $('meta[name="base-url"]').attr('content');
@@ -61,28 +59,6 @@ $(document).ready(function () {
     getEventsData();
 });
 
-// function getEventsData() {
-//     $.ajax({
-//         url: window.PageRoutes.calendarios_index,
-//         type: "GET",
-//         success: function (data) {
-//             // Usa .map para estruturar a array de forma mais limpa
-//             let eventos = data.map(function(objeto) {
-//                 return {
-//                     title: objeto.cld_nome,
-//                     start: objeto.cld_data,
-//                     id: objeto.cld_id
-//                 };
-//             });
-//
-//             renderCalendar(eventos);
-//         },
-//         error: function (error) {
-//             toastr.error("Erro ao carregar os eventos.", null, {progressBar: true});
-//         }
-//     });
-// }
-
 import moment from 'moment';
 
 function getEventsData() {
@@ -90,9 +66,6 @@ function getEventsData() {
         url: window.PageRoutes.calendarios_index,
         type: "GET",
         success: function (data) {
-
-            console.log("Dados puros do banco:", data); // <-- Deixei isso para você conferir no console F12
-
             let eventos = data.map(function(objeto) {
                 // Tenta converter a data que vem do banco para o padrão ISO que o FullCalendar exige
                 // Se o seu banco devolve 'Y-m-d H:i:s' (ex: 2026-05-18 15:30:00), o moment formata para o T separador.
@@ -111,9 +84,6 @@ function getEventsData() {
                     start: dataFormatada // Usa a data higienizada!
                 };
             });
-
-            console.log("Eventos formatados para o calendário:", eventos); // <-- Veja se 'start' ficou como "2026-05-18T..."
-
             renderCalendar(eventos);
         },
         error: function (error) {
@@ -149,24 +119,6 @@ function renderCalendar(data) {
         locale: 'pt-br', // Já deixa em português
         events: data,
 
-        // eventDidMount substitui o antigo eventRender
-        // eventDidMount: function (info) {
-        //     // Cria o botão de fechar/editar
-        //     let editWrapper = document.createElement('span');
-        //     editWrapper.className = 'closeon';
-        //     editWrapper.style.cssText = 'position: absolute; right: 2px; top: 2px; cursor: pointer; z-index: 9; color: white;';
-        //     editWrapper.innerHTML = "<i class='fa fa-edit'></i>";
-        //
-        //     // Adiciona o listener de clique
-        //     editWrapper.addEventListener('click', function (e) {
-        //         e.stopPropagation(); // Evita que clique conflite com as ações do calendário
-        //         editEvent(info.event.id);
-        //     });
-        //
-        //     // Anexa o ícone dentro do título principal do evento
-        //     info.el.querySelector('.fc-event-main').appendChild(editWrapper);
-        // }
-        // eventDidMount substitui o antigo eventRender
         eventDidMount: function (info) {
             // Cria o botão de fechar/editar
             let editWrapper = document.createElement('span');
