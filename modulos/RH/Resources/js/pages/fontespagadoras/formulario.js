@@ -5,11 +5,11 @@ const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $(function (){
     $("#fpg_cep").focusout(function(e){
-
+        console.log('teste')
         function limpaFormCep() {
 
             $("#fpg_cidade").val("");
-            $("#fpg_estado").val("");
+            $("#fpg_uf").val("");
             $("#fpg_bairro").val("");
             $("#fpg_endereco").val("");
         }
@@ -25,7 +25,7 @@ $(function (){
             if(validacep.test(cep)) {
 
                 $("#fpg_cidade").val("Buscando...");
-                $("#fpg_estado").val("Buscando...");
+                $("#fpg_uf").val("Buscando...");
                 $("#fpg_bairro").val("Buscando...");
                 $("#fpg_endereco").val("Buscando...");
 

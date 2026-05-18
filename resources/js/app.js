@@ -86,6 +86,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     $('.cpf-mask').inputmask({
-        mask: "999.999.999-99"
+        mask: "999.999.999-99",
+        removeMaskOnSubmit: true
+    });
+
+    $('.cnpj-mask').inputmask({
+        mask: "99.999.999/9999-99",
+        removeMaskOnSubmit: true
+    });
+
+    $('.cep-mask').inputmask({
+        mask: "99.999-999",
+        removeMaskOnSubmit: true
     });
 });

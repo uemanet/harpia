@@ -47,19 +47,21 @@
                             @endif
 
                             <td>
-                                {!! ActionButton::grid([
-                                            'type' => 'LINE',
-                                            'buttons' => [
-                                           [
-                                               'classButton' => 'btn-delete btn btn-danger btn-sm',
-                                               'icon' => 'fa fa-trash',
-                                               'route' => 'rh.colaboradores.matricula.delete-matricula',
-                                               'id' => $matricula->mtc_id,
-                                               'label' => '',
-                                               'method' => 'post'
+                                @if(!$matricula->mtc_data_fim)
+                                    {!! ActionButton::grid([
+                                                'type' => 'LINE',
+                                                'buttons' => [
+                                               [
+                                                   'classButton' => 'btn-delete btn btn-danger btn-sm',
+                                                   'icon' => 'fa fa-trash',
+                                                   'route' => 'rh.colaboradores.matricula.delete-matricula',
+                                                   'id' => $matricula->mtc_id,
+                                                   'label' => '',
+                                                   'method' => 'post'
+                                               ]
                                            ]
-                                       ]
-                               ]) !!}
+                                   ]) !!}
+                                @endif
                             </td>
                         </tr>
                     @endforeach
