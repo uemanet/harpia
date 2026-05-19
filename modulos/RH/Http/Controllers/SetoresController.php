@@ -5,6 +5,7 @@ namespace Modulos\RH\Http\Controllers;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\SetorRequest;
 use Modulos\RH\Models\Colaborador;
+use Modulos\RH\Models\Setor;
 use Modulos\RH\Repositories\GestorSetorRepository;
 use Modulos\RH\Repositories\SetorRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -83,8 +84,9 @@ class SetoresController extends BaseController
 
     public function getCreate()
     {
+        $setor = new Setor();
         $colaboradoresAtivos = Colaborador::where('col_status', 'ativo')->with('pessoa')->get();
-        return view('RH::setores.create', compact('colaboradoresAtivos'));
+        return view('RH::setores.create', compact('setor', 'colaboradoresAtivos'));
     }
 
     public function postCreate(SetorRequest $request)
