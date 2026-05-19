@@ -6,6 +6,7 @@ use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\AreaConhecimentoRequest;
+use Modulos\RH\Models\AreaConhecimento;
 use Illuminate\Http\Request;
 use Modulos\RH\Repositories\AreaConhecimentoRepository;
 
@@ -77,7 +78,8 @@ class AreasConhecimentosController extends BaseController
 
     public function getCreate()
     {
-        return view('RH::areasconhecimentos.create');
+        $areaConhecimento = new AreaConhecimento();
+        return view('RH::areasconhecimentos.create', compact('areaConhecimento'));
     }
 
     public function postCreate(AreaConhecimentoRequest $request)

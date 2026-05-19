@@ -4,6 +4,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\SalarioColaboradorRequest;
+use Modulos\RH\Models\SalarioColaborador;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\RH\Repositories\FontePagadoraRepository;
 use Modulos\RH\Repositories\SalarioColaboradorRepository;
@@ -32,8 +33,9 @@ class SalariosColaboradoresController extends BaseController
         $colaborador = $this->colaboradorRepository->find($idColaborador);
         $fontes_pagadoras = $this->fontePagadoraRepository->lists('fpg_id', 'fpg_razao_social');
         $contas_colaborador = $colaborador->contas_colaboradores->pluck('ccb_conta', 'ccb_id');
+        $salario = new SalarioColaborador();
 
-        return view('RH::salarioscolaboradores.create', compact('colaborador', 'fontes_pagadoras', 'contas_colaborador'));
+        return view('RH::salarioscolaboradores.create', compact('colaborador', 'fontes_pagadoras', 'contas_colaborador', 'salario'));
     }
 
 

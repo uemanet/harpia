@@ -6,6 +6,7 @@ use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\PeriodoAquisitivoRequest;
 use Modulos\RH\Http\Requests\PeriodoGozoRequest;
 use Modulos\RH\Models\MatriculaColaborador;
+use Modulos\RH\Models\PeriodoAquisitivo;
 use Modulos\RH\Repositories\MatriculaColaboradorRepository;
 use Modulos\RH\Repositories\PeriodoAquisitivoRepository;
 use Illuminate\Http\Request;
@@ -35,12 +36,13 @@ class PeriodosAquisitivosController extends BaseController
         $matriculas = MatriculaColaborador::where('mtc_col_id', $idColaborador)
             ->pluck('mtc_data_inicio', 'mtc_id');
         $colaborador = $this->colaboradorRepository->find($idColaborador);
+        $periodo_aquisitivo = new PeriodoAquisitivo();
 
         // Adicionar os períodos de gozo disponíveis
         $matricula_colaborador = $this->matriculaColaboradorRepository->find($matriculas->keys()->first());
         $periodosDisponiveis = $this->periodoAquisitivoRepository->periodData($matricula_colaborador);
 
-        return view('RH::periodosaquisitivos.create', compact('colaborador', 'matriculas', 'periodosDisponiveis'));
+        return view('RH::periodosaquisitivos.create', compact('colaborador', 'matriculas', 'periodosDisponiveis', 'periodo_aquisitivo'));
     }
 
     public function postCreate( $idColaborador, PeriodoGozoRequest $request)

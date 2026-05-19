@@ -6,7 +6,7 @@
             <select name="paq_mtc_id" class="form-control">
     <option value="">Selecione a matrícula</option>
     @foreach($matriculas as $key => $value)
-        <option value="{{ $key }}" {{ old('paq_mtc_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+        <option value="{{ $key }}" {{ old('paq_mtc_id', $periodo_aquisitivo->paq_mtc_id) == $key ? 'selected' : '' }}>{{ $value }}</option>
     @endforeach
 </select>
             @if ($errors->has('paq_mtc_id')) <p class="help-block">{{ $errors->first('paq_mtc_id') }}</p> @endif
@@ -34,7 +34,7 @@
     <div class="form-group col-md-4 @if ($errors->has('paq_data_inicio')) has-error @endif">
         <label for="paq_data_inicio" class="control-label">Data de Início</label>
         <div class="controls">
-            <input type="text" name="paq_data_inicio" value="{{ old('paq_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
+            <input type="text" name="paq_data_inicio" value="{{ old('paq_data_inicio', $periodo_aquisitivo->paq_data_inicio) }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('paq_data_inicio')) <p
                     class="help-block">{{ $errors->first('paq_data_inicio') }}</p> @endif
         </div>
@@ -42,7 +42,7 @@
     <div class="form-group col-md-4 @if ($errors->has('paq_data_fim')) has-error @endif">
         <label for="paq_data_fim" class="control-label">Data de Fim</label>
         <div class="controls">
-            <input type="text" name="paq_data_fim" value="{{ old('paq_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
+            <input type="text" name="paq_data_fim" value="{{ old('paq_data_fim', $periodo_aquisitivo->paq_data_fim) }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('paq_data_fim')) <p
                     class="help-block">{{ $errors->first('paq_data_fim') }}</p> @endif
         </div>
@@ -52,7 +52,7 @@
     <div class="form-group col-md-12 @if ($errors->has('paq_observacao')) has-error @endif">
         <label for="paq_observacao" class="control-label">Observação</label>
         <div class="controls">
-            <input type="text" name="paq_observacao" value="{{ old('paq_observacao') }}" class="form-control" >
+            <input type="text" name="paq_observacao" value="{{ old('paq_observacao', $periodo_aquisitivo->paq_observacao) }}" class="form-control" >
             @if ($errors->has('paq_observacao')) <p class="help-block">{{ $errors->first('paq_observacao') }}</p> @endif
         </div>
     </div>
