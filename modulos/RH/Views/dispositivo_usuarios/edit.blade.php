@@ -15,11 +15,11 @@
 @section('content')
     <div class="row">
         <div class="col-md-4">
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Resumo do usuário</h3>
+            <div class="card card-info card-outline">
+                <div class="card-header">
+                    <h3 class="card-title m-0">Resumo do usuário</h3>
                 </div>
-                <div class="box-body">
+                <div class="card-body">
                     <p><strong>Dispositivo:</strong> {{ $dispositivo->dis_nome }}</p>
                     <p><strong>ID iDFace:</strong> {{ $usuario['user_id'] }}</p>
                     <p><strong>Registration atual:</strong> {{ $usuario['registration'] ?: '-' }}</p>
@@ -41,8 +41,8 @@
                         @endif
                     </p>
                 </div>
-                <div class="box-footer">
-                    <a href="{{ route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]) }}" class="btn btn-default btn-block">
+                <div class="card-footer">
+                    <a href="{{ route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]) }}" class="btn btn-secondary w-100">
                         <i class="fa fa-arrow-left"></i> Voltar para a listagem
                     </a>
                 </div>
@@ -50,16 +50,16 @@
         </div>
 
         <div class="col-md-8">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Atualizar dados do usuário</h3>
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title m-0">Atualizar dados do usuário</h3>
                 </div>
                 <form method="POST" action="{{ route('rh.dispositivousuarios.edit', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
 
-                    <div class="box-body">
+                    <div class="card-body">
                         <div class="form-group @if($errors->has('col_id')) has-error @endif">
                             <label>Colaborador vinculado</label>
                             <select name="col_id" class="form-control">
@@ -93,16 +93,14 @@
                         </div>
 
                         @if($usuario['registration'])
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="aplicar_todos" value="1" {{ old('aplicar_todos') ? 'checked' : '' }}>
-                                Aplicar também nos outros dispositivos onde o usuário existe (registration: {{ $usuario['registration'] }})
-                            </label>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="aplicar_todos" value="1" {{ old('aplicar_todos') ? 'checked' : '' }}>
+                            <label class="form-check-label">Aplicar também nos outros dispositivos onde o usuário existe (registration: {{ $usuario['registration'] }})</label>
                         </div>
                         @endif
                     </div>
 
-                    <div class="box-footer">
+                    <div class="card-footer">
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save"></i> Salvar alterações
                         </button>
@@ -110,12 +108,12 @@
                 </form>
             </div>
 
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Ações de foto facial</h3>
+            <div class="card card-secondary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title m-0">Ações de foto facial</h3>
                 </div>
-                <div class="box-body">
-                    <form method="POST" action="{{ route('rh.dispositivousuarios.atualizarfoto', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data" style="margin-bottom: 10px;">
+                <div class="card-body">
+                    <form method="POST" action="{{ route('rh.dispositivousuarios.atualizarfoto', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data" class="mb-2">
                         {{ csrf_field() }}
                         <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
 
@@ -124,7 +122,7 @@
                                 <input type="file" name="foto" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-success btn-block">
+                                <button type="submit" class="btn btn-success w-100">
                                     <i class="fa fa-camera"></i> Enviar foto
                                 </button>
                             </div>

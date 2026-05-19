@@ -9,28 +9,28 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Editar dispositivo</h3>
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title m-0">Editar dispositivo</h3>
         </div>
         <form method="POST" action="{{ route('rh.dispositivosacesso.edit', ['id' => $dispositivo->dis_id]) }}">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
-            <div class="box-body">
+            <div class="card-body">
                 @include('RH::dispositivos_acesso.includes.formulario')
             </div>
-            <div class="box-footer">
+            <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Salvar alterações</button>
-                <a href="{{ route('rh.dispositivosacesso.index') }}" class="btn btn-default">Voltar</a>
+                <a href="{{ route('rh.dispositivosacesso.index') }}" class="btn btn-secondary">Voltar</a>
             </div>
         </form>
     </div>
 
-    <div class="box box-default">
-        <div class="box-header with-border">
-            <h3 class="box-title">Ações sensíveis</h3>
+    <div class="card card-secondary card-outline">
+        <div class="card-header">
+            <h3 class="card-title m-0">Ações sensíveis</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <form method="POST" action="{{ route('rh.dispositivosacesso.regenerartoken', ['id' => $dispositivo->dis_id]) }}" style="display: inline;">
                 {{ csrf_field() }}
                 <button type="submit" class="btn btn-warning" onclick="return confirm('Tem certeza que deseja regenerar o token deste dispositivo?')">
