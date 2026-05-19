@@ -89,11 +89,15 @@ class ColaboradoresController extends BaseController
                 'col_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'col_foto' => 'Foto',
                 'setores_index' => 'Setor',
                 'funcoes_index' => 'Função',
                 'col_status' => 'Status',
                 'col_action' => 'Ações'
             ))
+                ->modifyCell('col_foto', function () {
+                    return array('style' => 'width: 70px; text-align: center;');
+                })
                 ->modifyCell('col_action', function () {
                     return array('style' => 'width: 140px;');
                 })
@@ -735,6 +739,29 @@ class ColaboradoresController extends BaseController
         ];
 
         return view('RH::colaboradores.show', ['pessoa' => $colaborador->pessoa, 'colaborador' => $colaborador, 'situacao' => $situacao, 'periodos_matriculas' => $periodos_matriculas]);
+    }
+
+    public function getFotoFacial($colaboradorId)
+    {
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+        $avatarPadrao = public_path('/img/avatar.png');
+
+        if (!$colaborador || !$colaborador->col_foto_anx_id) {
+            return response()->file($avatarPadrao);
+        }
+
+        $caminho = $this->anexoRepository->obterCaminhoAnexo($colaborador->col_foto_anx_id);
+
+        if ($caminho === 'error_non_existent' || !file_exists($caminho)) {
+            return response()->file($avatarPadrao);
+        }
+
+        $mime = $colaborador->foto_facial->anx_mime ?? mime_content_type($caminho) ?? 'image/jpeg';
+
+        return response()->file($caminho, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="foto-colaborador-' . $colaborador->col_id . '"',
+        ]);
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)
