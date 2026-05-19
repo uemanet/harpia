@@ -2,8 +2,11 @@
 
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Modulos\Geral\Models\Anexo;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\DispositivoAcesso;
 use Modulos\RH\Models\MapeamentoDispositivo;
@@ -75,35 +78,51 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         ]);
     }
 
-    public function testAtualizarUsuarioPropagaFotoParaOutrosDispositivosAtivos(): void
+    public function testAtualizarUsuarioEmTodosDispositivosPropagaFotoDoColaborador(): void
     {
         $origem = $this->criarDispositivo('Entrada');
         $destino = $this->criarDispositivo('Saida', 'saida');
+        $colaborador = $this->criarColaboradorAtivo();
 
         $apiClient = new FakeControlIdApiClient([
             $origem->dis_id => [
-                ['id' => 11, 'registration' => 'ABC', 'name' => 'Alice'],
+                ['id' => 11, 'registration' => (string) $colaborador->col_id, 'name' => 'Alice'],
             ],
             $destino->dis_id => [
-                ['id' => 21, 'registration' => 'ABC', 'name' => 'Alice'],
+                ['id' => 21, 'registration' => (string) $colaborador->col_id, 'name' => 'Alice'],
             ],
         ]);
 
         $service = $this->criarService($apiClient);
-        $service->atualizarUsuario($origem, '11', ['registration' => 'ABC'], null, 'face-binaria');
+        $service->atualizarUsuarioEmTodosDispositivos($origem, '11', $colaborador->col_id);
 
         $this->assertCount(2, $apiClient->setUserImageCalls);
         $this->assertSame([
             'device_id' => $origem->dis_id,
             'user_id' => 11,
-            'image' => 'face-binaria',
+            'image' => $this->conteudoFotoDoColaborador($colaborador),
         ], $apiClient->setUserImageCalls[0]);
         $this->assertSame([
             'device_id' => $destino->dis_id,
             'user_id' => 21,
-            'image' => 'face-binaria',
+            'image' => $this->conteudoFotoDoColaborador($colaborador),
         ], $apiClient->setUserImageCalls[1]);
         $this->assertTrue($apiClient->usuario($destino->dis_id, 21)['has_image']);
+    }
+
+    public function testGarantirUsuarioEmDispositivosRetornaErroQuandoColaboradorNaoTemFoto(): void
+    {
+        $dispositivo = $this->criarDispositivo('Entrada');
+        $colaborador = $this->criarColaboradorAtivo(false);
+
+        $service = $this->criarService(new FakeControlIdApiClient());
+        $resultado = $service->garantirUsuarioEmDispositivos([$dispositivo], $colaborador->col_id);
+
+        $this->assertSame(1, $resultado['total']);
+        $this->assertSame(0, $resultado['criados']);
+        $this->assertSame(0, $resultado['atualizados']);
+        $this->assertCount(1, $resultado['erros']);
+        $this->assertSame('O colaborador selecionado nao possui foto facial cadastrada.', $resultado['erros'][0]['mensagem']);
     }
 
     public function testSincronizarEntreDispositivosUsaUserIdComoFallbackQuandoRegistrationNaoExiste(): void
@@ -161,7 +180,8 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         return new SincronizacaoUsuariosDispositivoService(
             $apiClient,
             new ColaboradorRepository(new Colaborador()),
-            new MapeamentoDispositivoRepository(new MapeamentoDispositivo())
+            new MapeamentoDispositivoRepository(new MapeamentoDispositivo()),
+            new AnexoRepository(new Anexo())
         );
     }
 
@@ -180,7 +200,7 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         ]);
     }
 
-    private function criarColaboradorAtivo(): Colaborador
+    private function criarColaboradorAtivo(bool $comFoto = true): Colaborador
     {
         $pessoaId = DB::table('gra_pessoas')->insertGetId([
             'pes_nome' => 'Pessoa ' . uniqid(),
@@ -190,12 +210,34 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
 
         $colaboradorId = DB::table('reh_colaboradores')->insertGetId([
             'col_pes_id' => $pessoaId,
+            'col_foto_anx_id' => $comFoto ? $this->criarFotoFacialAnexo() : null,
             'col_status' => 'ativo',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         return Colaborador::query()->findOrFail($colaboradorId);
+    }
+
+    private function criarFotoFacialAnexo(string $conteudo = null): int
+    {
+        $conteudo = $conteudo ?? ('face-' . uniqid('', true));
+        $caminhoTemporario = tempnam(sys_get_temp_dir(), 'face-');
+        file_put_contents($caminhoTemporario, $conteudo);
+
+        $arquivo = new UploadedFile($caminhoTemporario, uniqid('face-', true) . '.jpg', 'image/jpeg', null, true);
+        $anexo = app(AnexoRepository::class)->salvarAnexo($arquivo);
+
+        if (is_array($anexo) || !$anexo) {
+            throw new RuntimeException('Nao foi possivel preparar a foto facial para o teste.');
+        }
+
+        return (int) $anexo->anx_id;
+    }
+
+    private function conteudoFotoDoColaborador(Colaborador $colaborador): string
+    {
+        return app(AnexoRepository::class)->lerConteudoAnexo($colaborador->col_foto_anx_id);
     }
 
     private function criarSchemaMinimo(): void
@@ -208,13 +250,24 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
             $table->timestamps();
         });
 
+        Schema::create('gra_anexos', function (Blueprint $table) {
+            $table->increments('anx_id');
+            $table->string('anx_nome');
+            $table->string('anx_mime');
+            $table->string('anx_extensao');
+            $table->string('anx_localizacao');
+            $table->timestamps();
+        });
+
         Schema::create('reh_colaboradores', function (Blueprint $table) {
             $table->increments('col_id');
             $table->unsignedInteger('col_pes_id');
+            $table->unsignedInteger('col_foto_anx_id')->nullable();
             $table->string('col_status', 20);
             $table->timestamps();
 
             $table->foreign('col_pes_id')->references('pes_id')->on('gra_pessoas');
+            $table->foreign('col_foto_anx_id')->references('anx_id')->on('gra_anexos');
         });
 
         Schema::create('reh_dispositivos_acesso', function (Blueprint $table) {

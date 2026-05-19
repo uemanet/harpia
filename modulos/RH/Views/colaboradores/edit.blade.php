@@ -14,7 +14,7 @@
             <h3 class="card-title m-0">Formulário de Edição de Colaborador</h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('rh.colaboradores.edit', [$colaborador->col_id]) }}" method="POST" id="form" role="form">
+            <form action="{{ route('rh.colaboradores.edit', [$colaborador->col_id]) }}" method="POST" id="form" role="form" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     {{-- Form model: $pessoa - inputs devem usar old('campo', $pessoa->campo) --}}

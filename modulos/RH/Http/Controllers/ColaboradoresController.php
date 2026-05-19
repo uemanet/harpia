@@ -25,6 +25,7 @@ use Modulos\RH\Repositories\FuncaoRepository;
 use Modulos\RH\Repositories\MatriculaColaboradorRepository;
 use Modulos\RH\Repositories\PeriodoAquisitivoRepository;
 use Modulos\RH\Repositories\SetorRepository;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -40,6 +41,7 @@ class ColaboradoresController extends BaseController
     protected $colaboradorFuncaoRepository;
     protected $periodosAquisitivosRepository;
     protected $matriculaColaboradorRepository;
+    protected $anexoRepository;
 
     protected $excel;
 
@@ -52,6 +54,7 @@ class ColaboradoresController extends BaseController
         ColaboradorFuncaoRepository $colaborador_funcao,
         PeriodoAquisitivoRepository $periodo_aquisitivo,
         MatriculaColaboradorRepository $matricula_colaborador,
+        AnexoRepository $anexoRepository,
         Excel $excel
     )
     {
@@ -63,6 +66,7 @@ class ColaboradoresController extends BaseController
         $this->setorRepository = $setor;
         $this->periodosAquisitivosRepository = $periodo_aquisitivo;
         $this->matriculaColaboradorRepository = $matricula_colaborador;
+        $this->anexoRepository = $anexoRepository;
         $this->excel = $excel;
     }
 
@@ -224,6 +228,10 @@ class ColaboradoresController extends BaseController
                 $data['col_pes_id'] = $pessoa->pes_id;
             }
 
+            if ($request->hasFile('col_foto_facial')) {
+                $data['col_foto_anx_id'] = $this->salvarFotoFacial($request->file('col_foto_facial'));
+            }
+
             $colaborador = $this->colaboradorRepository->create($data);
             $matricula = $this->matriculaColaboradorRepository->create(['mtc_col_id' => $colaborador->col_id,'mtc_data_inicio' => $data['col_data_admissao']]);
 
@@ -244,7 +252,7 @@ class ColaboradoresController extends BaseController
                 throw $e;
             }
             DB::rollback();
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error($e instanceof \InvalidArgumentException ? $e->getMessage() : 'Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back()->with('validado', true);
         }
@@ -299,6 +307,13 @@ class ColaboradoresController extends BaseController
 
             $pessoa->fill($request->all())->save();
 
+            if ($request->hasFile('col_foto_facial')) {
+                $data['col_foto_anx_id'] = $this->salvarFotoFacial(
+                    $request->file('col_foto_facial'),
+                    $colaborador->col_foto_anx_id
+                );
+            }
+
             $this->colaboradorRepository->update($data, $colaboradorId);
 
             $dataDocumento = [
@@ -326,10 +341,39 @@ class ColaboradoresController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error($e instanceof \InvalidArgumentException ? $e->getMessage() : 'Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         }
+    }
+
+    private function salvarFotoFacial($arquivo, $anexoAtualId = null)
+    {
+        if ($anexoAtualId) {
+            $anexo = $this->anexoRepository->atualizarAnexo($anexoAtualId, $arquivo);
+
+            if (is_array($anexo)) {
+                throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+            }
+
+            if (!$anexo) {
+                throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+            }
+
+            return (int) $anexoAtualId;
+        }
+
+        $anexo = $this->anexoRepository->salvarAnexo($arquivo);
+
+        if (is_array($anexo)) {
+            throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+        }
+
+        if (!$anexo) {
+            throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+        }
+
+        return $anexo->anx_id;
     }
 
     public function getCreateMatricula($colaboradorId)

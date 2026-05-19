@@ -93,9 +93,7 @@ class DispositivoUsuariosController extends BaseController
             $dispositivosDestino = $this->resolverDispositivosAlvo($request, (int) $dispositivo->dis_id);
             $resultado = $this->sincronizacaoService->garantirUsuarioEmDispositivos(
                 $dispositivosDestino,
-                (int) $request->get('col_id'),
-                $request->only(['nome', 'registration']),
-                $request->file('foto')
+                (int) $request->get('col_id')
             );
 
             $this->flashResultadoCadastroLote($resultado);
@@ -116,18 +114,14 @@ class DispositivoUsuariosController extends BaseController
         }
 
         try {
-            $dados = $request->only(['nome', 'registration', 'col_id']);
-            $foto = $request->file('foto');
             $aplicarTodos = $request->boolean('aplicar_todos');
+            $colaboradorId = (int) $request->get('col_id');
 
             if ($aplicarTodos) {
-                $fotoBinaria = $foto ? $this->sincronizacaoService->converterImagemParaBinario($foto) : null;
-
                 $resultado = $this->sincronizacaoService->atualizarUsuarioEmTodosDispositivos(
                     $dispositivo,
                     (string) $userId,
-                    $dados,
-                    $fotoBinaria
+                    $colaboradorId
                 );
 
                 if ($resultado['atualizados'] > 0) {
@@ -149,8 +143,7 @@ class DispositivoUsuariosController extends BaseController
                 $this->sincronizacaoService->atualizarUsuario(
                     $dispositivo,
                     (string) $userId,
-                    $dados,
-                    $foto
+                    $colaboradorId
                 );
 
                 flash()->success('Usuario do dispositivo atualizado com sucesso.');
@@ -161,60 +154,6 @@ class DispositivoUsuariosController extends BaseController
             $this->tratarExcecao($exception, 'Nao foi possivel atualizar o usuario do dispositivo.');
             return redirect()->back()->withInput($request->all());
         }
-    }
-
-    public function postAtualizarFoto($userId, DispositivoUsuarioRequest $request)
-    {
-        $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
-
-        if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
-            return redirect()->back();
-        }
-
-        try {
-            $this->sincronizacaoService->atualizarUsuario(
-                $dispositivo,
-                (string) $userId,
-                [],
-                $request->file('foto')
-            );
-
-            flash()->success('Foto facial atualizada com sucesso.');
-        } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel atualizar a foto facial no dispositivo.');
-        }
-
-        return redirect()->route('rh.dispositivousuarios.edit', [
-            'id' => $userId,
-            'dis_id' => $dispositivo->dis_id,
-        ]);
-    }
-
-    public function postRemoverFoto($userId, Request $request)
-    {
-        $this->validate($request, [
-            'dis_id' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
-        ]);
-
-        $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
-
-        if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
-            return redirect()->back();
-        }
-
-        try {
-            $this->sincronizacaoService->removerFotoUsuario($dispositivo, (string) $userId);
-            flash()->success('Foto facial removida do dispositivo com sucesso.');
-        } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel remover a foto facial do dispositivo.');
-        }
-
-        return redirect()->route('rh.dispositivousuarios.edit', [
-            'id' => $userId,
-            'dis_id' => $dispositivo->dis_id,
-        ]);
     }
 
     public function postDelete(Request $request)
@@ -314,10 +253,12 @@ class DispositivoUsuariosController extends BaseController
 
             if ($resultado['resumo']['dispositivos'] > 0) {
                 flash()->success(sprintf(
-                    'Sincronizacao em lote concluida em %d dispositivo(s): %d criados, %d atualizados e %d ja compativeis.',
+                    'Sincronizacao em lote concluida em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto e %d ja compativeis.',
                     $resultado['resumo']['dispositivos'],
                     $resultado['resumo']['criados'],
                     $resultado['resumo']['atualizados'],
+                    $resultado['resumo']['fotos_sincronizadas'],
+                    $resultado['resumo']['pendentes_foto'],
                     $resultado['resumo']['inalterados']
                 ));
             }

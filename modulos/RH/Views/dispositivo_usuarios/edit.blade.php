@@ -52,9 +52,9 @@
         <div class="col-md-8">
             <div class="card card-primary card-outline">
                 <div class="card-header">
-                    <h3 class="card-title m-0">Atualizar dados do usuário</h3>
+                    <h3 class="card-title m-0">Atualizar vínculo do usuário</h3>
                 </div>
-                <form method="POST" action="{{ route('rh.dispositivousuarios.edit', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('rh.dispositivousuarios.edit', ['id' => $usuario['user_id']]) }}">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
@@ -63,7 +63,7 @@
                         <div class="form-group @if($errors->has('col_id')) has-error @endif">
                             <label>Colaborador vinculado</label>
                             <select name="col_id" class="form-control">
-                                <option value="">Manter sem vínculo</option>
+                                <option value="">Selecione</option>
                                 @foreach($colaboradores as $colaboradorId => $colaboradorNome)
                                     <option value="{{ $colaboradorId }}" {{ (string) old('col_id', $usuario['col_id']) === (string) $colaboradorId ? 'selected' : '' }}>
                                         {{ $colaboradorNome }}
@@ -73,24 +73,9 @@
                             @if ($errors->has('col_id')) <p class="help-block">{{ $errors->first('col_id') }}</p> @endif
                         </div>
 
-                        <div class="form-group @if($errors->has('nome')) has-error @endif">
-                            <label>Nome no dispositivo</label>
-                            <input type="text" name="nome" class="form-control" value="{{ old('nome', $usuario['nome']) }}">
-                            @if ($errors->has('nome')) <p class="help-block">{{ $errors->first('nome') }}</p> @endif
-                        </div>
-
-                        <div class="form-group @if($errors->has('registration')) has-error @endif">
-                            <label>Registration</label>
-                            <input type="text" name="registration" class="form-control" value="{{ old('registration', $usuario['registration']) }}">
-                            @if ($errors->has('registration')) <p class="help-block">{{ $errors->first('registration') }}</p> @endif
-                        </div>
-
-                        <div class="form-group @if($errors->has('foto')) has-error @endif">
-                            <label>Nova foto facial</label>
-                            <input type="file" name="foto" class="form-control">
-                            <p class="help-block">Se enviada, a foto será atualizada no iDFace durante o salvamento.</p>
-                            @if ($errors->has('foto')) <p class="help-block">{{ $errors->first('foto') }}</p> @endif
-                        </div>
+                        <p class="text-muted">
+                            Nome, registration e foto facial serao recalculados automaticamente com base no colaborador selecionado.
+                        </p>
 
                         @if($usuario['registration'])
                         <div class="form-check">
@@ -103,41 +88,10 @@
 
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save"></i> Salvar alterações
+                            <i class="fa fa-save"></i> Atualizar no dispositivo
                         </button>
                     </div>
                 </form>
-            </div>
-
-            <div class="card card-secondary card-outline">
-                <div class="card-header">
-                    <h3 class="card-title m-0">Ações de foto facial</h3>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ route('rh.dispositivousuarios.atualizarfoto', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data" class="mb-2">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
-
-                        <div class="row">
-                            <div class="col-md-9">
-                                <input type="file" name="foto" class="form-control" required>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="fa fa-camera"></i> Enviar foto
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <form method="POST" action="{{ route('rh.dispositivousuarios.removerfoto', ['id' => $usuario['user_id']]) }}">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja remover a foto facial deste usuário?')">
-                            <i class="fa fa-trash"></i> Remover foto facial
-                        </button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>

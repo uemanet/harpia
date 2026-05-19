@@ -56,6 +56,16 @@
     </div>
 </div>
 <div class="row">
+    <div class="form-group col-md-6 @if ($errors->has('col_foto_facial')) has-error @endif">
+        <label for="col_foto_facial" class="control-label">Foto facial</label>
+        <div class="controls">
+            <input type="file" name="col_foto_facial" class="form-control" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+            <p class="help-block">Esta foto sera usada automaticamente no cadastro do colaborador nos dispositivos faciais.</p>
+            @if ($errors->has('col_foto_facial')) <p class="help-block">{{ $errors->first('col_foto_facial') }}</p> @endif
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="form-group col-md-12 @if ($errors->has('col_observacao')) has-error @endif">
         <label for="col_observacao" class="control-label">Observação</label>
         <div class="controls">

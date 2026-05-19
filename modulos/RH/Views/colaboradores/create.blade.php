@@ -15,7 +15,7 @@
                 <span class="badge bg-success float-end">Colaborador</span>
         </div>
         <div class="card-body">
-            <form action="url(" method="POST" id="form" role="form">
+            <form action="{{ route('rh.colaboradores.create') }}" method="POST" id="form" role="form" enctype="multipart/form-data">
     @csrf
 
             <h4 class="card-title m-0">

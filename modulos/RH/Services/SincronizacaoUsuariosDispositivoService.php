@@ -7,18 +7,19 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\RH\Models\DispositivoAcesso;
 use Modulos\RH\Models\MapeamentoDispositivo;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\RH\Repositories\MapeamentoDispositivoRepository;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class SincronizacaoUsuariosDispositivoService
 {
     public function __construct(
         private ControlIdApiClient $apiClient,
         private ColaboradorRepository $colaboradorRepository,
-        private MapeamentoDispositivoRepository $mapeamentoRepository
+        private MapeamentoDispositivoRepository $mapeamentoRepository,
+        private AnexoRepository $anexoRepository
     ) {
     }
 
@@ -101,18 +102,11 @@ class SincronizacaoUsuariosDispositivoService
         return $this->consultar($dispositivo);
     }
 
-    public function criarUsuario(
-        DispositivoAcesso $dispositivo,
-        int $colaboradorId,
-        array $dados = [],
-        ?UploadedFile $foto = null,
-        ?string $fotoBinaria = null
-    ): array {
-        $colaborador = $this->colaboradorRepository->buscarAtivoComPessoa($colaboradorId);
-
-        if (!$colaborador || !$colaborador->pessoa) {
-            throw new InvalidArgumentException('Colaborador ativo nao encontrado para cadastro no dispositivo.');
-        }
+    public function criarUsuario(DispositivoAcesso $dispositivo, int $colaboradorId): array
+    {
+        $colaborador = $this->buscarColaboradorParaDispositivo($colaboradorId);
+        $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
+        $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
 
         $mapeamentoExistente = $this->mapeamentoRepository->buscarPorDispositivoEColaborador($dispositivo->dis_id, $colaboradorId);
 
@@ -129,15 +123,9 @@ class SincronizacaoUsuariosDispositivoService
             ])->save();
         }
 
-        $nome = trim((string) ($dados['nome'] ?? ''));
-        $registration = trim((string) ($dados['registration'] ?? ''));
-
-        $nome = $nome !== '' ? $nome : (string) $colaborador->pessoa->pes_nome;
-        $registration = $registration !== '' ? $registration : (string) $colaborador->col_id;
-
         $resposta = $this->apiClient->createUser($dispositivo, [
-            'registration' => $registration,
-            'name' => $nome,
+            'registration' => $dadosDesejados['registration'],
+            'name' => $dadosDesejados['nome'],
             'password' => '',
         ]);
 
@@ -148,37 +136,26 @@ class SincronizacaoUsuariosDispositivoService
         }
 
         $sincronizacao = $this->sincronizar($dispositivo);
-        $usuario = $this->buscarUsuarioSincronizado($sincronizacao['usuarios'], $userId, $registration);
+        $usuario = $this->buscarUsuarioSincronizado($sincronizacao['usuarios'], $userId, $dadosDesejados['registration']);
 
         if (!$usuario) {
             throw new InvalidArgumentException('Usuario criado no dispositivo, mas nao foi possivel localiza-lo para concluir a sincronizacao.');
         }
 
         $this->vincularUsuario($dispositivo, (string) $usuario['user_id'], $colaboradorId);
+        $respostaFoto = $this->apiClient->setUserImage(
+            $dispositivo,
+            (int) $usuario['user_id'],
+            $fotoBinaria
+        );
 
-        $binario = $fotoBinaria ?? ($foto ? $this->converterImagemParaBinario($foto) : null);
-
-        if ($binario !== null) {
-            $respostaFoto = $this->apiClient->setUserImage(
-                $dispositivo,
-                (int) $usuario['user_id'],
-                $binario
-            );
-
-            $this->validarRespostaCadastroFacial($respostaFoto);
-        }
+        $this->validarRespostaCadastroFacial($respostaFoto);
 
         return $this->buscarUsuario($dispositivo, (string) $usuario['user_id']) ?? $usuario;
     }
 
-    public function garantirUsuarioEmDispositivos(
-        iterable $dispositivos,
-        int $colaboradorId,
-        array $dados = [],
-        ?UploadedFile $foto = null
-    ): array {
-        $fotoBinaria = $foto ? $this->converterImagemParaBinario($foto) : null;
-
+    public function garantirUsuarioEmDispositivos(iterable $dispositivos, int $colaboradorId): array
+    {
         $resultado = [
             'total' => 0,
             'criados' => 0,
@@ -191,7 +168,7 @@ class SincronizacaoUsuariosDispositivoService
             $resultado['total']++;
 
             try {
-                $acao = $this->garantirUsuarioNoDispositivo($dispositivo, $colaboradorId, $dados, $fotoBinaria);
+                $acao = $this->garantirUsuarioNoDispositivo($dispositivo, $colaboradorId);
                 $resultado['dispositivos'][] = [
                     'dispositivo' => $dispositivo->dis_nome,
                     'acao' => $acao,
@@ -218,6 +195,8 @@ class SincronizacaoUsuariosDispositivoService
                 'dispositivos' => 0,
                 'criados' => 0,
                 'atualizados' => 0,
+                'fotos_sincronizadas' => 0,
+                'pendentes_foto' => 0,
                 'inalterados' => 0,
             ],
         ];
@@ -229,6 +208,8 @@ class SincronizacaoUsuariosDispositivoService
                 $resultado['resumo']['dispositivos']++;
                 $resultado['resumo']['criados'] += $resultadoDispositivo['criados'];
                 $resultado['resumo']['atualizados'] += $resultadoDispositivo['atualizados'];
+                $resultado['resumo']['fotos_sincronizadas'] += $resultadoDispositivo['fotos_sincronizadas'];
+                $resultado['resumo']['pendentes_foto'] += $resultadoDispositivo['pendentes_foto'];
                 $resultado['resumo']['inalterados'] += $resultadoDispositivo['inalterados'];
             } catch (\Throwable $exception) {
                 $resultado['erros'][] = [
@@ -241,95 +222,39 @@ class SincronizacaoUsuariosDispositivoService
         return $resultado;
     }
 
-    public function atualizarUsuario(
-        DispositivoAcesso $dispositivo,
-        string $userId,
-        array $dados = [],
-        ?UploadedFile $foto = null,
-        ?string $fotoBinaria = null
-    ): array {
-        $nome = trim((string) ($dados['nome'] ?? ''));
-        $registration = trim((string) ($dados['registration'] ?? ''));
+    public function atualizarUsuario(DispositivoAcesso $dispositivo, string $userId, int $colaboradorId): array
+    {
+        $colaborador = $this->buscarColaboradorParaDispositivo($colaboradorId);
+        $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
+        $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
 
-        $payload = [];
-
-        if ($nome !== '') {
-            $payload['name'] = $nome;
-        }
-
-        if ($registration !== '') {
-            $payload['registration'] = $registration;
-        }
-
-        if (!empty($payload)) {
-            $this->apiClient->modifyUser($dispositivo, (int) $userId, $payload);
-        }
+        $this->apiClient->modifyUser($dispositivo, (int) $userId, [
+            'name' => $dadosDesejados['nome'],
+            'registration' => $dadosDesejados['registration'],
+        ]);
 
         $this->garantirGrupoPadraoDoUsuario($dispositivo, $userId);
 
-        $binario = $fotoBinaria ?? ($foto ? $this->converterImagemParaBinario($foto) : null);
+        $respostaFoto = $this->apiClient->setUserImage(
+            $dispositivo,
+            (int) $userId,
+            $fotoBinaria
+        );
 
-        if ($binario !== null) {
-            $respostaFoto = $this->apiClient->setUserImage(
-                $dispositivo,
-                (int) $userId,
-                $binario
-            );
+        $this->validarRespostaCadastroFacial($respostaFoto);
 
-            $this->validarRespostaCadastroFacial($respostaFoto);
-
-            // Propagar foto para outros dispositivos onde o usuario existe
-            $this->propagarFotoParaOutrosDispositivos($dispositivo, $registration, $binario);
-        }
-
-        if (!empty($dados['col_id'])) {
-            $this->vincularUsuario($dispositivo, $userId, (int) $dados['col_id']);
-        }
+        $this->vincularUsuario($dispositivo, $userId, $colaboradorId);
 
         $sincronizacao = $this->sincronizar($dispositivo);
 
-        return $this->buscarUsuarioSincronizado($sincronizacao['usuarios'], $userId, $registration)
+        return $this->buscarUsuarioSincronizado($sincronizacao['usuarios'], $userId, $dadosDesejados['registration'])
             ?? throw new InvalidArgumentException('Nao foi possivel localizar o usuario atualizado no dispositivo.');
-    }
-
-    private function propagarFotoParaOutrosDispositivos(DispositivoAcesso $dispositivoAtual, string $registration, string $fotoBinaria): void
-    {
-        if ($registration === '') {
-            return;
-        }
-
-        $outrosDispositivos = DispositivoAcesso::where('dis_status', 'ativo')
-            ->where('dis_id', '<>', $dispositivoAtual->dis_id)
-            ->get();
-
-        foreach ($outrosDispositivos as $outroDispositivo) {
-            try {
-                $usuarios = $this->extrairUsuarios(
-                    $this->apiClient->loadObjects($outroDispositivo, 'users')
-                );
-
-                foreach ($usuarios as $usuario) {
-                    if ((string) ($usuario['registration'] ?? '') === $registration) {
-                        $this->apiClient->setUserImage(
-                            $outroDispositivo,
-                            (int) $usuario['id'],
-                            $fotoBinaria
-                        );
-
-                        break;
-                    }
-                }
-            } catch (\Throwable $e) {
-                // Falha ao propagar foto nao bloqueia a operacao principal
-            }
-        }
     }
 
     public function atualizarUsuarioEmTodosDispositivos(
         DispositivoAcesso $dispositivoAtual,
         string $userId,
-        array $dados = [],
-        ?string $fotoBinaria = null
+        int $colaboradorId
     ): array {
         $resultado = [
             'atualizados' => 0,
@@ -338,9 +263,14 @@ class SincronizacaoUsuariosDispositivoService
             'detalhes_erros' => [],
         ];
 
-        // Atualiza no dispositivo atual
+        $usuarioAtual = $this->buscarUsuario($dispositivoAtual, $userId);
+        $registrationAnterior = (string) ($usuarioAtual['registration'] ?? '');
+        $colaborador = $this->buscarColaboradorParaDispositivo($colaboradorId);
+        $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
+        $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
+
         try {
-            $this->atualizarUsuario($dispositivoAtual, $userId, $dados, null, $fotoBinaria);
+            $this->atualizarUsuario($dispositivoAtual, $userId, $colaboradorId);
             $resultado['atualizados']++;
             $resultado['dispositivos'][] = $dispositivoAtual->dis_nome;
         } catch (\Throwable $e) {
@@ -348,14 +278,12 @@ class SincronizacaoUsuariosDispositivoService
             $resultado['detalhes_erros'][] = $dispositivoAtual->dis_nome . ': ' . $e->getMessage();
         }
 
-        // Propaga para outros dispositivos pelo registration
-        $registration = trim((string) ($dados['registration'] ?? ''));
-        if ($registration === '') {
-            $usuario = $this->buscarUsuario($dispositivoAtual, $userId);
-            $registration = (string) ($usuario['registration'] ?? '');
-        }
+        $registrationsRelacionados = array_values(array_unique(array_filter([
+            $registrationAnterior,
+            $dadosDesejados['registration'],
+        ])));
 
-        if ($registration !== '') {
+        if (!empty($registrationsRelacionados)) {
             $outrosDispositivos = DispositivoAcesso::where('dis_status', 'ativo')
                 ->where('dis_id', '<>', $dispositivoAtual->dis_id)
                 ->get();
@@ -366,43 +294,40 @@ class SincronizacaoUsuariosDispositivoService
                         $this->apiClient->loadObjects($outro, 'users')
                     );
 
-                    $encontrado = false;
+                    $usuarioRelacionado = $this->localizarUsuarioPorRegistrations($usuarios, $registrationsRelacionados);
 
-                    foreach ($usuarios as $user) {
-                        if ((string) ($user['registration'] ?? '') === $registration) {
-                            $encontrado = true;
-                            $payload = [];
-                            $nome = trim((string) ($dados['nome'] ?? ''));
-                            if ($nome !== '') {
-                                $payload['name'] = $nome;
-                            }
-                            if ($registration !== '') {
-                                $payload['registration'] = $registration;
-                            }
-
-                            if (!empty($payload)) {
-                                $this->apiClient->modifyUser($outro, (int) $user['id'], $payload);
-                            }
-
-                            if ($fotoBinaria !== null) {
-                                $this->apiClient->setUserImage($outro, (int) $user['id'], $fotoBinaria);
-                            }
-
-                            if (!empty($dados['col_id'])) {
-                                $this->vincularUsuario($outro, (string) $user['id'], (int) $dados['col_id']);
-                            }
-
-                            $this->sincronizar($outro);
-
-                            $resultado['atualizados']++;
-                            $resultado['dispositivos'][] = $outro->dis_nome;
-                            break;
-                        }
+                    if (!$usuarioRelacionado) {
+                        $resultado['erros']++;
+                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuario relacionado nao encontrado';
+                        continue;
                     }
 
-                    if (!$encontrado) {
-                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuario com registration ' . $registration . ' nao encontrado';
+                    $usuarioRelacionadoId = (string) ($usuarioRelacionado['user_id'] ?? $usuarioRelacionado['id'] ?? '');
+
+                    if ($usuarioRelacionadoId === '') {
+                        $resultado['erros']++;
+                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuario relacionado sem identificador valido';
+                        continue;
                     }
+
+                    $this->apiClient->modifyUser($outro, (int) $usuarioRelacionadoId, [
+                        'name' => $dadosDesejados['nome'],
+                        'registration' => $dadosDesejados['registration'],
+                    ]);
+
+                    $respostaFoto = $this->apiClient->setUserImage(
+                        $outro,
+                        (int) $usuarioRelacionadoId,
+                        $fotoBinaria
+                    );
+
+                    $this->validarRespostaCadastroFacial($respostaFoto);
+                    $this->vincularUsuario($outro, $usuarioRelacionadoId, $colaboradorId);
+                    $this->garantirGrupoPadraoDoUsuario($outro, $usuarioRelacionadoId);
+                    $this->sincronizar($outro);
+
+                    $resultado['atualizados']++;
+                    $resultado['dispositivos'][] = $outro->dis_nome;
                 } catch (\Throwable $e) {
                     $resultado['erros']++;
                     $resultado['detalhes_erros'][] = $outro->dis_nome . ': ' . $e->getMessage();
@@ -483,11 +408,6 @@ class SincronizacaoUsuariosDispositivoService
         }
 
         return $resultado;
-    }
-
-    public function removerFotoUsuario(DispositivoAcesso $dispositivo, string $userId): void
-    {
-        $this->apiClient->destroyUserImage($dispositivo, (int) $userId);
     }
 
     public function vincularUsuario(DispositivoAcesso $dispositivo, string $userId, int $colaboradorId): MapeamentoDispositivo
@@ -694,17 +614,6 @@ class SincronizacaoUsuariosDispositivoService
         return null;
     }
 
-    public function converterImagemParaBinario(UploadedFile $foto): string
-    {
-        $conteudo = file_get_contents($foto->getRealPath());
-
-        if ($conteudo === false) {
-            throw new InvalidArgumentException('Nao foi possivel ler a imagem enviada para o dispositivo.');
-        }
-
-        return $conteudo;
-    }
-
     private function validarRespostaCadastroFacial(array $resposta): void
     {
         if (($resposta['success'] ?? null) !== false) {
@@ -721,24 +630,18 @@ class SincronizacaoUsuariosDispositivoService
         throw new InvalidArgumentException('O dispositivo rejeitou a foto facial enviada.');
     }
 
-    private function garantirUsuarioNoDispositivo(
-        DispositivoAcesso $dispositivo,
-        int $colaboradorId,
-        array $dados = [],
-        ?string $fotoBinaria = null
-    ): string {
+    private function garantirUsuarioNoDispositivo(DispositivoAcesso $dispositivo, int $colaboradorId): string
+    {
         $consulta = $this->consultar($dispositivo);
         $usuarioExistente = $this->localizarUsuarioDoColaborador($consulta['usuarios'], $colaboradorId);
 
         if ($usuarioExistente) {
-            $this->atualizarUsuario($dispositivo, (string) $usuarioExistente['user_id'], array_merge($dados, [
-                'col_id' => $colaboradorId,
-            ]), null, $fotoBinaria);
+            $this->atualizarUsuario($dispositivo, (string) $usuarioExistente['user_id'], $colaboradorId);
 
             return 'atualizado';
         }
 
-        $this->criarUsuario($dispositivo, $colaboradorId, $dados, null, $fotoBinaria);
+        $this->criarUsuario($dispositivo, $colaboradorId);
 
         return 'criado';
     }
@@ -751,15 +654,19 @@ class SincronizacaoUsuariosDispositivoService
             'dispositivo' => $dispositivo->dis_nome,
             'criados' => 0,
             'atualizados' => 0,
+            'fotos_sincronizadas' => 0,
+            'pendentes_foto' => 0,
             'inalterados' => 0,
         ];
 
         foreach ($colaboradores as $colaborador) {
-            $dadosDesejados = [
-                'nome' => (string) $colaborador->pes_nome,
-                'registration' => (string) $colaborador->col_id,
-                'col_id' => (int) $colaborador->col_id,
-            ];
+            if (empty($colaborador->col_foto_anx_id)) {
+                $resultado['pendentes_foto']++;
+                continue;
+            }
+
+            $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
+            $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
 
             $usuarioExistente = $this->localizarUsuarioDoColaborador($usuarios, (int) $colaborador->col_id);
 
@@ -774,23 +681,34 @@ class SincronizacaoUsuariosDispositivoService
 
                 if ($userId !== null) {
                     $this->garantirGrupoPadraoDoUsuario($dispositivo, $userId);
+                    $respostaFoto = $this->apiClient->setUserImage($dispositivo, (int) $userId, $fotoBinaria);
+                    $this->validarRespostaCadastroFacial($respostaFoto);
                 }
 
                 $resultado['criados']++;
+                $resultado['fotos_sincronizadas']++;
                 continue;
             }
 
             $precisaAtualizar = (string) ($usuarioExistente['registration'] ?? '') !== $dadosDesejados['registration']
                 || (string) ($usuarioExistente['nome'] ?? '') !== $dadosDesejados['nome']
-                || (int) ($usuarioExistente['col_id'] ?? 0) !== $dadosDesejados['col_id'];
+                || (int) ($usuarioExistente['col_id'] ?? 0) !== $dadosDesejados['col_id']
+                || empty($usuarioExistente['foto_ok']);
 
-            if (!$precisaAtualizar) {
+            $this->atualizarUsuarioExistenteNoDispositivo(
+                $dispositivo,
+                (string) $usuarioExistente['user_id'],
+                $dadosDesejados,
+                $fotoBinaria
+            );
+
+            if ($precisaAtualizar) {
+                $resultado['atualizados']++;
+            } else {
                 $resultado['inalterados']++;
-                continue;
             }
 
-            $this->atualizarUsuarioExistenteNoDispositivo($dispositivo, (string) $usuarioExistente['user_id'], $dadosDesejados);
-            $resultado['atualizados']++;
+            $resultado['fotos_sincronizadas']++;
         }
 
         $this->sincronizar($dispositivo);
@@ -818,27 +736,70 @@ class SincronizacaoUsuariosDispositivoService
     private function atualizarUsuarioExistenteNoDispositivo(
         DispositivoAcesso $dispositivo,
         string $userId,
-        array $dados
+        array $dados,
+        string $fotoBinaria
     ): void {
-        $payload = [];
+        $this->apiClient->modifyUser($dispositivo, (int) $userId, [
+            'name' => (string) $dados['nome'],
+            'registration' => (string) $dados['registration'],
+        ]);
 
-        if (!empty($dados['nome'])) {
-            $payload['name'] = (string) $dados['nome'];
-        }
-
-        if (!empty($dados['registration'])) {
-            $payload['registration'] = (string) $dados['registration'];
-        }
-
-        if (!empty($payload)) {
-            $this->apiClient->modifyUser($dispositivo, (int) $userId, $payload);
-        }
+        $respostaFoto = $this->apiClient->setUserImage($dispositivo, (int) $userId, $fotoBinaria);
+        $this->validarRespostaCadastroFacial($respostaFoto);
 
         $this->garantirGrupoPadraoDoUsuario($dispositivo, $userId);
 
-        if (!empty($dados['col_id'])) {
-            $this->vincularUsuario($dispositivo, $userId, (int) $dados['col_id']);
+        $this->vincularUsuario($dispositivo, $userId, (int) $dados['col_id']);
+    }
+
+    private function buscarColaboradorParaDispositivo(int $colaboradorId)
+    {
+        $colaborador = $this->colaboradorRepository->buscarAtivoComPessoa($colaboradorId);
+
+        if (!$colaborador || !$colaborador->pessoa) {
+            throw new InvalidArgumentException('Colaborador ativo nao encontrado para sincronizacao com o dispositivo.');
         }
+
+        return $colaborador;
+    }
+
+    private function montarDadosDispositivoDoColaborador($colaborador): array
+    {
+        return [
+            'nome' => (string) $colaborador->pes_nome ?: (string) $colaborador->pessoa->pes_nome,
+            'registration' => (string) $colaborador->col_id,
+            'col_id' => (int) $colaborador->col_id,
+        ];
+    }
+
+    private function obterFotoBinariaDoColaborador($colaborador): string
+    {
+        $anexoId = (int) ($colaborador->col_foto_anx_id ?? 0);
+
+        if ($anexoId === 0) {
+            throw new InvalidArgumentException('O colaborador selecionado nao possui foto facial cadastrada.');
+        }
+
+        $conteudo = $this->anexoRepository->lerConteudoAnexo($anexoId);
+
+        if ($conteudo === 'error_non_existent') {
+            throw new InvalidArgumentException('A foto facial vinculada ao colaborador nao foi encontrada.');
+        }
+
+        return $conteudo;
+    }
+
+    private function localizarUsuarioPorRegistrations(array $usuarios, array $registrations): ?array
+    {
+        foreach ($usuarios as $usuario) {
+            $registration = (string) ($usuario['registration'] ?? '');
+
+            if ($registration !== '' && in_array($registration, $registrations, true)) {
+                return $usuario;
+            }
+        }
+
+        return null;
     }
 
     private function garantirGrupoPadraoDoUsuario(DispositivoAcesso $dispositivo, string $userId): void
