@@ -1,7 +1,7 @@
 @extends('layouts.modulos.default')
 
-@section('title') Registros de Ponto @stop
-@section('subtitle') Visao Unificada @stop
+@section('title') Registro de Horas @stop
+@section('subtitle') Visão Unificada @stop
 
 @section('content')
     <div class="box box-primary">
@@ -22,7 +22,7 @@
                     <option value="idface" {{ request('origem') === 'idface' ? 'selected' : '' }}>iDFace</option>
                     <option value="home_office" {{ request('origem') === 'home_office' ? 'selected' : '' }}>Home Office</option>
                 </select>
-                <input type="date" name="data_inicio" class="form-control" value="{{ request('data_inicio') }}" placeholder="Data inicio">
+                <input type="date" name="data_inicio" class="form-control" value="{{ request('data_inicio') }}" placeholder="Data início">
                 <input type="date" name="data_fim" class="form-control" value="{{ request('data_fim') }}" placeholder="Data fim">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
@@ -39,10 +39,10 @@
                         <th>Setor</th>
                         <th>Data</th>
                         <th>Primeira Entrada</th>
-                        <th>Ultima Saida</th>
+                        <th>Última Saída</th>
                         <th>Total Eventos</th>
                         <th>Origem</th>
-                        <th>Acoes</th>
+                        <th>Ações</th>
                     </tr>
                     </thead>
                     <tbody>

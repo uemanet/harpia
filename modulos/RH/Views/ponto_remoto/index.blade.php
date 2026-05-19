@@ -1,7 +1,7 @@
 @extends('layouts.modulos.default')
 
-@section('title') Ponto Remoto @stop
-@section('subtitle') Registro de Entrada/Saida @stop
+@section('title') Registro de Horas Remoto @stop
+@section('subtitle') Registro de Entrada/Saída @stop
 
 @section('content')
     <div class="row">
@@ -28,7 +28,7 @@
                             <form method="POST" action="{{ route('rh.pontoremoto.saida') }}">
                                 {{ csrf_field() }}
                                 <button type="submit" class="btn btn-danger btn-lg btn-block" {{ !$estado['pode_saida'] ? 'disabled' : '' }}>
-                                    <i class="fa fa-sign-out"></i> Saida
+                                    <i class="fa fa-sign-out"></i> Saída
                                 </button>
                             </form>
                         </div>

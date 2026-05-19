@@ -5,11 +5,11 @@
 @endsection
 
 @section('title')
-    Usuarios do Dispositivo
+    Usuários do Dispositivo
 @stop
 
 @section('subtitle')
-    Gestao Control iD
+    Gestão Control iD
 @stop
 
 @section('content')
@@ -44,7 +44,7 @@
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h3>{{ $resumo['total'] ?? 0 }}</h3>
-                        <p>Usuarios encontrados</p>
+                        <p>Usuários encontrados</p>
                     </div>
                     <div class="icon"><i class="fa fa-users"></i></div>
                 </div>
@@ -108,12 +108,12 @@
                             <div class="form-group @if($errors->has('foto')) has-error @endif">
                                 <label>Foto facial</label>
                                 <input type="file" name="foto" class="form-control">
-                                <p class="help-block">Opcional. Se enviada, a foto sera cadastrada diretamente no iDFace.</p>
+                                <p class="help-block">Opcional. Se enviada, a foto será cadastrada diretamente no iDFace.</p>
                                 @if ($errors->has('foto')) <p class="help-block">{{ $errors->first('foto') }}</p> @endif
                             </div>
 
                             <div class="form-group @if($errors->has('dispositivos_destino')) has-error @endif">
-                                <label>Cadastrar tambem em outros aparelhos</label>
+                                <label>Cadastrar também em outros aparelhos</label>
                                 <select name="dispositivos_destino[]" class="form-control" multiple>
                                     @php($dispositivosDestino = old('dispositivos_destino', [$dispositivo->dis_id]))
                                     @foreach($dispositivos as $dispositivoId => $dispositivoNome)
@@ -136,7 +136,7 @@
 
                         <div class="box-footer">
                             <button type="submit" class="btn btn-success btn-block">
-                                <i class="fa fa-plus"></i> Cadastrar usuario
+                                <i class="fa fa-plus"></i> Cadastrar usuário
                             </button>
                         </div>
                     </form>
@@ -144,7 +144,7 @@
 
                 <div class="box box-default">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Acoes</h3>
+                        <h3 class="box-title">Ações</h3>
                     </div>
                     <div class="box-body">
                         <form method="POST" action="{{ route('rh.dispositivousuarios.sincronizar') }}" style="margin-bottom: 10px;">
@@ -175,7 +175,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <p class="help-block">A acao replica os colaboradores ativos do Harpia nos aparelhos selecionados.</p>
+                                <p class="help-block">A ação replica os colaboradores ativos do Harpia nos aparelhos selecionados.</p>
                             </div>
 
                             <div class="checkbox">
@@ -185,13 +185,13 @@
                                 </label>
                             </div>
 
-                            <button type="submit" class="btn btn-success btn-block" onclick="return confirm('Tem certeza que deseja sincronizar os usuarios ativos do Harpia para os aparelhos selecionados?')">
-                                <i class="fa fa-exchange"></i> Sincronizar usuarios entre aparelhos
+                            <button type="submit" class="btn btn-success btn-block" onclick="return confirm('Tem certeza que deseja sincronizar os usuários ativos do Harpia para os aparelhos selecionados?')">
+                                <i class="fa fa-exchange"></i> Sincronizar usuários entre aparelhos
                             </button>
                         </form>
 
                         <a href="{{ route('rh.vincularcolaboradores.index', ['dis_id' => $dispositivo->dis_id]) }}" class="btn btn-warning btn-block">
-                            <i class="fa fa-link"></i> Abrir tela de vinculacao
+                            <i class="fa fa-link"></i> Abrir tela de vinculação
                         </a>
                     </div>
                 </div>
@@ -200,7 +200,7 @@
             <div class="col-md-8">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Usuarios lidos do dispositivo</h3>
+                        <h3 class="box-title">Usuários lidos do dispositivo</h3>
                     </div>
                     <div class="box-body table-responsive">
                         @if(count($usuarios))
@@ -212,7 +212,7 @@
                                     <th>Nome</th>
                                     <th>Foto</th>
                                     <th>Vinculacao</th>
-                                    <th style="width: 210px;">Acoes</th>
+                                    <th style="width: 210px;">Ações</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -259,7 +259,7 @@
                             </table>
                         @else
                             <div class="alert alert-info" style="margin-bottom: 0;">
-                                Nenhum usuario retornado pelo dispositivo selecionado.
+                                Nenhum usuário retornado pelo dispositivo selecionado.
                             </div>
                         @endif
                     </div>
@@ -280,12 +280,12 @@
             var form = botao.closest('form');
             var registration = botao.getAttribute('data-registration');
 
-            if (!confirm('Tem certeza que deseja remover este usuario do dispositivo?')) {
+            if (!confirm('Tem certeza que deseja remover este usuário do dispositivo?')) {
                 return false;
             }
 
             if (registration && registration !== '') {
-                if (confirm('Este usuario possui registration "' + registration + '".\n\nDeseja remove-lo de TODOS os dispositivos?\n\nOK = Excluir de todos\nCancelar = Excluir apenas deste')) {
+                if (confirm('Este usuário possui registration "' + registration + '".\n\nDeseja removê-lo de TODOS os dispositivos?\n\nOK = Excluir de todos\nCancelar = Excluir apenas deste')) {
                     form.querySelector('input[name="todos_dispositivos"]').value = '1';
                 }
             }

@@ -1,12 +1,12 @@
 @extends('layouts.modulos.default')
 
-@section('title') Configuracoes de Ponto @stop
-@section('subtitle') Parametros Operacionais @stop
+@section('title') Configuração de Registro @stop
+@section('subtitle') Parâmetros Operacionais @stop
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <h3 class="box-title">Parametros do modulo de ponto</h3>
+            <h3 class="box-title">Parâmetros do módulo de ponto</h3>
         </div>
         <form method="POST" action="{{ route('rh.configuracoesponto.update') }}">
             {{ csrf_field() }}
@@ -26,7 +26,7 @@
                 @endforeach
             </div>
             <div class="box-footer">
-                <button type="submit" class="btn btn-success">Salvar Configuracoes</button>
+                <button type="submit" class="btn btn-success">Salvar Configurações</button>
             </div>
         </form>
     </div>

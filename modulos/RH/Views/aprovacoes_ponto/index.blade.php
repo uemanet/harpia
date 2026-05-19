@@ -1,7 +1,7 @@
 @extends('layouts.modulos.default')
 
-@section('title') Aprovacoes de Ponto @stop
-@section('subtitle') Gestao de Registros Remotos @stop
+@section('title') Aprovação de Horas @stop
+@section('subtitle') Gestão de Registros Remotos @stop
 
 @section('content')
     <div class="box box-primary">
@@ -15,7 +15,7 @@
                         <th>Tipo</th>
                         <th>Data/Hora</th>
                         <th>Status</th>
-                        <th>Acoes</th>
+                        <th>Ações</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -48,7 +48,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="form-group">
-                                                        <label>Motivo da reprovacao*</label>
+                                                        <label>Motivo da reprovação*</label>
                                                         <textarea name="motivo" class="form-control" rows="3" required></textarea>
                                                     </div>
                                                 </div>
@@ -67,7 +67,7 @@
                 </table>
                 <div class="text-center">{{ $pendentes->links('pagination::bootstrap-4') }}</div>
             @else
-                <div class="alert alert-info">Nenhuma pendencia para aprovar.</div>
+                <div class="alert alert-info">Nenhuma pendência para aprovar.</div>
             @endif
         </div>
     </div>

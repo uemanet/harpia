@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Administracao do Controle de Acesso
+    Administração do Controle de Acesso
 @stop
 
 @section('content')
@@ -20,7 +20,7 @@
                 @include('RH::dispositivos_acesso.includes.formulario')
             </div>
             <div class="box-footer">
-                <button type="submit" class="btn btn-primary">Salvar alteracoes</button>
+                <button type="submit" class="btn btn-primary">Salvar alterações</button>
                 <a href="{{ route('rh.dispositivosacesso.index') }}" class="btn btn-default">Voltar</a>
             </div>
         </form>
@@ -28,7 +28,7 @@
 
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Acoes sensiveis</h3>
+            <h3 class="box-title">Ações sensíveis</h3>
         </div>
         <div class="box-body">
             <form method="POST" action="{{ route('rh.dispositivosacesso.regenerartoken', ['id' => $dispositivo->dis_id]) }}" style="display: inline;">

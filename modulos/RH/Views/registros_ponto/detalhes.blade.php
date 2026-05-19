@@ -1,6 +1,6 @@
 @extends('layouts.modulos.default')
 
-@section('title') Detalhes do Ponto @stop
+@section('title') Detalhes do Registro de Horas @stop
 @section('subtitle') Eventos do dia {{ $data }} @stop
 
 @section('content')
