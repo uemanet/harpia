@@ -4,17 +4,36 @@
 @section('subtitle') Detalhes do Registro @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-body">
-            <dl class="dl-horizontal">
-                <dt>ID</dt><dd>{{ $evento->eva_id }}</dd>
-                <dt>Colaborador</dt><dd>{{ $evento->colaborador->pessoa->pes_nome ?? '—' }}</dd>
-                <dt>Tipo</dt><dd>{{ ucfirst($evento->eva_tipo) }}</dd>
-                <dt>Data/Hora</dt><dd>{{ $evento->eva_data_hora }}</dd>
-                <dt>Origem</dt><dd>{{ $evento->eva_origem === 'home_office' ? 'Home Office' : 'iDFace' }}</dd>
-                <dt>Status</dt><dd>{{ $evento->eva_status }}</dd>
-                <dt>Mensagem</dt><dd>{{ $evento->eva_status_mensagem ?? '—' }}</dd>
-            </dl>
+    <div class="card card-primary card-outline">
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">ID</div>
+                <div class="col-sm-9">{{ $evento->eva_id }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Colaborador</div>
+                <div class="col-sm-9">{{ $evento->colaborador->pessoa->pes_nome ?? '—' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Tipo</div>
+                <div class="col-sm-9">{{ ucfirst($evento->eva_tipo) }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Data/Hora</div>
+                <div class="col-sm-9">{{ $evento->eva_data_hora }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Origem</div>
+                <div class="col-sm-9">{{ $evento->eva_origem === 'home_office' ? 'Home Office' : 'iDFace' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Status</div>
+                <div class="col-sm-9">{{ $evento->eva_status }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3 fw-bold">Mensagem</div>
+                <div class="col-sm-9">{{ $evento->eva_status_mensagem ?? '—' }}</div>
+            </div>
 
             @if($evento->aprovacoes->count())
                 <h4>Histórico de Aprovações</h4>
@@ -32,8 +51,8 @@
                 </table>
             @endif
         </div>
-        <div class="box-footer">
-            <a href="{{ route('rh.aprovacoesponto.index') }}" class="btn btn-default">Voltar</a>
+        <div class="card-footer">
+            <a href="{{ route('rh.aprovacoesponto.index') }}" class="btn btn-secondary">Voltar</a>
         </div>
     </div>
 @stop

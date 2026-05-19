@@ -4,15 +4,15 @@
 @section('subtitle') Parâmetros Operacionais @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Parâmetros do módulo de ponto</h3>
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title m-0">Parâmetros do módulo de ponto</h3>
         </div>
         <form method="POST" action="{{ route('rh.configuracoesponto.update') }}">
             {{ csrf_field() }}
-            <div class="box-body">
+            <div class="card-body">
                 @foreach($configuracoes as $config)
-                    <div class="row" style="margin-bottom: 15px;">
+                    <div class="row mb-3">
                         <div class="col-md-4">
                             <label>{{ $config->cop_chave }}</label>
                         </div>
@@ -25,7 +25,7 @@
                     </div>
                 @endforeach
             </div>
-            <div class="box-footer">
+            <div class="card-footer">
                 <button type="submit" class="btn btn-success">Salvar Configurações</button>
             </div>
         </form>

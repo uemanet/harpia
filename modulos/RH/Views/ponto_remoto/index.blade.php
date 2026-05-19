@@ -6,39 +6,39 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-clock-o"></i> Registrar Ponto</h3>
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title m-0"><i class="fa fa-clock-o"></i> Registrar Ponto</h3>
                 </div>
-                <div class="box-body text-center">
-                    <p style="font-size: 24px; margin-bottom: 20px;">
+                <div class="card-body text-center">
+                    <p class="fs-4 mb-4">
                         <strong>{{ now()->format('d/m/Y H:i') }}</strong>
                     </p>
 
-                    <div class="row" style="margin-top: 20px;">
-                        <div class="col-xs-6">
+                    <div class="row mt-3">
+                        <div class="col-6">
                             <form method="POST" action="{{ route('rh.pontoremoto.entrada') }}">
                                 {{ csrf_field() }}
-                                <button type="submit" class="btn btn-success btn-lg btn-block" {{ !$estado['pode_entrada'] ? 'disabled' : '' }}>
+                                <button type="submit" class="btn btn-success btn-lg w-100" {{ !$estado['pode_entrada'] ? 'disabled' : '' }}>
                                     <i class="fa fa-sign-in"></i> Entrada
                                 </button>
                             </form>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-6">
                             <form method="POST" action="{{ route('rh.pontoremoto.saida') }}">
                                 {{ csrf_field() }}
-                                <button type="submit" class="btn btn-danger btn-lg btn-block" {{ !$estado['pode_saida'] ? 'disabled' : '' }}>
+                                <button type="submit" class="btn btn-danger btn-lg w-100" {{ !$estado['pode_saida'] ? 'disabled' : '' }}>
                                     <i class="fa fa-sign-out"></i> Saída
                                 </button>
                             </form>
                         </div>
                     </div>
 
-                    <div style="margin-top: 15px;">
+                    <div class="mt-3">
                         @if($estado['tem_entrada_aberta'])
-                            <span class="label label-success">Entrada em aberto</span>
+                            <span class="badge bg-success">Entrada em aberto</span>
                         @else
-                            <span class="label label-default">Sem entrada em aberto</span>
+                            <span class="badge bg-secondary">Sem entrada em aberto</span>
                         @endif
                     </div>
                 </div>
@@ -46,11 +46,11 @@
         </div>
 
         <div class="col-md-6">
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-history"></i> Meus registros pendentes</h3>
+            <div class="card card-info card-outline">
+                <div class="card-header">
+                    <h3 class="card-title m-0"><i class="fa fa-history"></i> Meus registros pendentes</h3>
                 </div>
-                <div class="box-body table-responsive">
+                <div class="card-body p-0 table-responsive">
                     @if($meusRegistros->count())
                         <table class="table table-striped">
                             <thead><tr><th>Tipo</th><th>Data/Hora</th><th>Status</th></tr></thead>
@@ -60,11 +60,11 @@
                                     <td>{{ ucfirst($r->eva_tipo) }}</td>
                                     <td>{{ $r->eva_data_hora }}</td>
                                     <td>
-                                        <span class="label label-{{ match($r->eva_status) {
+                                        <span class="badge bg-{{ match($r->eva_status) {
                                             'aprovado', 'processado' => 'success',
                                             'pendente' => 'warning',
                                             'reprovado' => 'danger',
-                                            default => 'default'
+                                            default => 'secondary'
                                         } }}">{{ $r->eva_status }}</span>
                                     </td>
                                 </tr>
@@ -72,7 +72,7 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-muted">Nenhum registro recente.</p>
+                        <p class="text-muted m-3">Nenhum registro recente.</p>
                     @endif
                 </div>
             </div>

@@ -4,8 +4,8 @@
 @section('subtitle') Eventos do dia {{ $data }} @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-body table-responsive">
+    <div class="card card-primary card-outline">
+        <div class="card-body p-0 table-responsive">
             @if($eventos->count())
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -26,13 +26,11 @@
                             <td>{{ $evento->eva_data_hora }}</td>
                             <td>{{ $evento->eva_origem === 'idface' ? 'iDFace' : 'Home Office' }}</td>
                             <td>
-                                <span class="label label-{{ match($evento->eva_status) {
+                                <span class="badge bg-{{ match($evento->eva_status) {
                                     'processado', 'aprovado' => 'success',
                                     'pendente' => 'warning',
-                                    default => 'default'
-                                } }}">
-                                    {{ $evento->eva_status }}
-                                </span>
+                                    default => 'secondary'
+                                } }}">{{ $evento->eva_status }}</span>
                             </td>
                             <td>{{ $evento->eva_status_mensagem ?? '—' }}</td>
                         </tr>
@@ -40,11 +38,11 @@
                     </tbody>
                 </table>
             @else
-                <div class="alert alert-info">Nenhum evento encontrado para este dia.</div>
+                <div class="alert alert-info m-3">Nenhum evento encontrado para este dia.</div>
             @endif
         </div>
-        <div class="box-footer">
-            <a href="{{ route('rh.registrosponto.index') }}" class="btn btn-default">Voltar</a>
+        <div class="card-footer">
+            <a href="{{ route('rh.registrosponto.index') }}" class="btn btn-secondary">Voltar</a>
         </div>
     </div>
 @stop
