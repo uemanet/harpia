@@ -22,7 +22,7 @@ class AprovacaoPontoController extends BaseController
         $user = auth()->user();
 
         if (!$user || !$user->pessoa) {
-            flash()->error('Usuario nao autenticado.');
+            flash()->error('Usuário não autenticado.');
             return redirect()->route('rh.index.index');
         }
 
@@ -31,20 +31,39 @@ class AprovacaoPontoController extends BaseController
             ->first();
 
         if (!$aprovador) {
-            flash()->error('Colaborador nao encontrado.');
+            flash()->error('Colaborador não encontrado.');
             return redirect()->route('rh.index.index');
         }
 
         $colIds = $this->aprovadorService->listarColaboradorIdsAprovaveis($aprovador);
 
-        $pendentes = EventoAcesso::with(['colaborador.pessoa'])
+        $query = EventoAcesso::with(['colaborador.pessoa', 'aprovacoes.aprovador.pessoa'])
             ->whereIn('eva_col_id', $colIds)
-            ->where('eva_origem', 'home_office')
-            ->where('eva_status', 'pendente')
-            ->orderBy('eva_data_hora', 'desc')
-            ->paginate(15);
+            ->where('eva_origem', 'home_office');
 
-        return view('RH::aprovacoes_ponto.index', compact('pendentes'));
+        if ($request->filled('status') && $request->status !== 'todos') {
+            $query->where('eva_status', $request->status);
+        } elseif (!$request->filled('status')) {
+            $query->where('eva_status', 'pendente');
+        }
+
+        if ($request->filled('pes_nome')) {
+            $query->whereHas('colaborador.pessoa', function ($q) use ($request) {
+                $q->where('pes_nome', 'like', '%' . $request->pes_nome . '%');
+            });
+        }
+
+        if ($request->filled('data_inicio')) {
+            $query->whereDate('eva_data_hora', '>=', $request->data_inicio);
+        }
+
+        if ($request->filled('data_fim')) {
+            $query->whereDate('eva_data_hora', '<=', $request->data_fim);
+        }
+
+        $eventos = $query->orderBy('eva_data_hora', 'desc')->paginate(15);
+
+        return view('RH::aprovacoes_ponto.index', compact('eventos'));
     }
 
     public function getShow($id)
