@@ -127,7 +127,8 @@
                             </div>
 
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="cadastrar_em_todos_dispositivos" value="1" {{ old('cadastrar_em_todos_dispositivos') ? 'checked' : '' }}>
+                                <input type="hidden" name="cadastrar_em_todos_dispositivos" value="0">
+                                <input type="checkbox" class="form-check-input" name="cadastrar_em_todos_dispositivos" value="1" {{ old('cadastrar_em_todos_dispositivos', '1') === '1' ? 'checked' : '' }}>
                                 <label class="form-check-label">Cadastrar em todos os aparelhos ativos</label>
                             </div>
                         </div>

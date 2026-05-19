@@ -73,7 +73,12 @@ class ControlIdApiClient
     {
         return $this->post($dispositivo, '/modify_objects.fcgi', [
             'object' => 'users',
-            'values' => array_merge($userData, ['id' => $userId]),
+            'values' => $userData,
+            'where' => [
+                'users' => [
+                    'id' => $userId,
+                ],
+            ],
         ]);
     }
 

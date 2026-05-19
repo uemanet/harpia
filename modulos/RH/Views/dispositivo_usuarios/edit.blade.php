@@ -94,7 +94,8 @@
 
                         @if($usuario['registration'])
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="aplicar_todos" value="1" {{ old('aplicar_todos') ? 'checked' : '' }}>
+                            <input type="hidden" name="aplicar_todos" value="0">
+                            <input type="checkbox" class="form-check-input" name="aplicar_todos" value="1" {{ old('aplicar_todos', '1') === '1' ? 'checked' : '' }}>
                             <label class="form-check-label">Aplicar também nos outros dispositivos onde o usuário existe (registration: {{ $usuario['registration'] }})</label>
                         </div>
                         @endif
