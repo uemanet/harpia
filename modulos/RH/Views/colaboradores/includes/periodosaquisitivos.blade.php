@@ -2,20 +2,18 @@
 <div class="row">
     <div class="col-md-12">
         <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Períodos Aquisitivos</h3>
-                {{--                <span data-toggle="tooltip" class="badge bg-blue">{{$periodo['dias']}} dias Adquiridos</span>--}}
-                {{--                <span data-toggle="tooltip" class="badge bg-green">{{$periodo['inicio']}} a {{$periodo['fim']}} </span>--}}
-                {{--                <span data-toggle="tooltip" class="badge bg-green">{{$periodo['fim']}} </span>--}}
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Períodos Aquisitivos</h3>
+                {{--                <span data-bs-toggle="tooltip" class="badge bg-blue">{{$periodo['dias']}} dias Adquiridos</span>--}}
+                {{--                <span data-bs-toggle="tooltip" class="badge bg-green">{{$periodo['inicio']}} a {{$periodo['fim']}} </span>--}}
+                {{--                <span data-bs-toggle="tooltip" class="badge bg-green">{{$periodo['fim']}} </span>--}}
+                <div class="card-tools float-end">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"><i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
+            <div class="card-body">
                 @foreach($periodos_matriculas as $periodos)
                     <p style="font-size: medium">
                         <b>Matricula Id</b> : {{$periodos['matricula']->mtc_id}} -
@@ -28,10 +26,10 @@
                         @foreach($periodos['data'] as $periodo)
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="box box">
-                                        <span data-toggle="tooltip" class="badge bg-gray">Período adquirido: {{$periodo['inicio_adquirido']}} a {{$periodo['fim_adquirido']}}</span>
-                                        <span data-toggle="tooltip" class="badge bg-gray"> Limite para gozo: {{$periodo['limite_gozo']}} </span>
-                                        <span data-toggle="tooltip" class="badge bg-gray"> Saldo para gozo: {{$periodo['saldo_periodo']}} </span>
+                                    <div class="card">
+                                        <span data-bs-toggle="tooltip" class="badge bg-gray">Período adquirido: {{$periodo['inicio_adquirido']}} a {{$periodo['fim_adquirido']}}</span>
+                                        <span data-bs-toggle="tooltip" class="badge bg-gray"> Limite para gozo: {{$periodo['limite_gozo']}} </span>
+                                        <span data-bs-toggle="tooltip" class="badge bg-gray"> Saldo para gozo: {{$periodo['saldo_periodo']}} </span>
                                         <p><b> </b></p>
                                         <table class="table table-bordered">
                                             <tr>
@@ -89,7 +87,6 @@
                                         </table>
                                     </div>
                                 </div>
-                                <!-- /.box-tools -->
                             </div>
                         @endforeach
                     @else
@@ -97,8 +94,7 @@
                     @endif
                 @endforeach
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
+            <div class="card-footer">
                 {!! ActionButton::grid([
                     'type' => 'LINE',
                     'buttons' => [
@@ -114,7 +110,6 @@
                 ]) !!}
             </div>
         </div>
-        <!-- /.box -->
     </div>
 </div>
 

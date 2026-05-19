@@ -18,9 +18,9 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Afastamento/Desligamento de colaborador</h3>
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title m-0">Afastamento/Desligamento de colaborador</h3>
         </div>
         <div class="row">
             <div class="col-md-12">
