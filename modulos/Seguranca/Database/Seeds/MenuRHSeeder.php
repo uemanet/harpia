@@ -34,15 +34,15 @@ class MenuRHSeeder extends Seeder
         );
 
         $itensCadastros = [
-            ['mit_nome' => 'Areas de Conhecimento', 'mit_rota' => 'rh.areasconhecimentos.index', 'mit_icone' => 'fa fa-tachometer', 'mit_ordem' => 1],
+            ['mit_nome' => 'Áreas de Conhecimento', 'mit_rota' => 'rh.areasconhecimentos.index', 'mit_icone' => 'fa fa-tachometer', 'mit_ordem' => 1],
             ['mit_nome' => 'Bancos', 'mit_rota' => 'rh.bancos.index', 'mit_icone' => 'fa fa-bank', 'mit_ordem' => 2],
-            ['mit_nome' => 'Vinculos', 'mit_rota' => 'rh.vinculos.index', 'mit_icone' => 'fa fa-link', 'mit_ordem' => 3],
-            ['mit_nome' => 'Funcoes', 'mit_rota' => 'rh.funcoes.index', 'mit_icone' => 'fa fa-user', 'mit_ordem' => 4],
+            ['mit_nome' => 'Vínculos', 'mit_rota' => 'rh.vinculos.index', 'mit_icone' => 'fa fa-link', 'mit_ordem' => 3],
+            ['mit_nome' => 'Funções', 'mit_rota' => 'rh.funcoes.index', 'mit_icone' => 'fa fa-user', 'mit_ordem' => 4],
             ['mit_nome' => 'Setores', 'mit_rota' => 'rh.setores.index', 'mit_icone' => 'fa fa-users', 'mit_ordem' => 5],
-            ['mit_nome' => 'Periodos Laborais', 'mit_rota' => 'rh.periodoslaborais.index', 'mit_icone' => 'fa fa-calendar', 'mit_ordem' => 6],
+            ['mit_nome' => 'Períodos Laborais', 'mit_rota' => 'rh.periodoslaborais.index', 'mit_icone' => 'fa fa-calendar', 'mit_ordem' => 6],
             ['mit_nome' => 'Colaboradores', 'mit_rota' => 'rh.colaboradores.index', 'mit_icone' => 'fa fa-user', 'mit_ordem' => 7],
             ['mit_nome' => 'Fontes Pagadoras', 'mit_rota' => 'rh.fontespagadoras.index', 'mit_icone' => 'fa fa-money', 'mit_ordem' => 8],
-            ['mit_nome' => 'Calendarios', 'mit_rota' => 'rh.calendarios.index', 'mit_icone' => 'fa fa-calendar', 'mit_ordem' => 9],
+            ['mit_nome' => 'Calendários', 'mit_rota' => 'rh.calendarios.index', 'mit_icone' => 'fa fa-calendar', 'mit_ordem' => 9],
             ['mit_nome' => 'Horas Trabalhadas', 'mit_rota' => 'rh.horastrabalhadas.index', 'mit_icone' => 'fa fa-clock-o', 'mit_ordem' => 10],
         ];
 
@@ -80,7 +80,7 @@ class MenuRHSeeder extends Seeder
             ['mit_nome' => 'Vincular Colaboradores', 'mit_rota' => 'rh.vincularcolaboradores.index', 'mit_icone' => 'fa fa-link', 'mit_ordem' => 3],
             ['mit_nome' => 'Registro de Horas', 'mit_rota' => 'rh.registrosponto.index', 'mit_icone' => 'fa fa-list-alt', 'mit_ordem' => 4],
             ['mit_nome' => 'Eventos de Acesso', 'mit_rota' => 'rh.eventosacesso.index', 'mit_icone' => 'fa fa-history', 'mit_ordem' => 5],
-            ['mit_nome' => 'Registro de Horas Remoto ', 'mit_rota' => 'rh.pontoremoto.index', 'mit_icone' => 'fa fa-home', 'mit_ordem' => 6],
+            ['mit_nome' => 'Registro de Horas Remoto', 'mit_rota' => 'rh.pontoremoto.index', 'mit_icone' => 'fa fa-home', 'mit_ordem' => 6],
             ['mit_nome' => 'Aprovação de Horas', 'mit_rota' => 'rh.aprovacoesponto.index', 'mit_icone' => 'fa fa-check-circle', 'mit_ordem' => 7],
             ['mit_nome' => 'Configuração de Registro', 'mit_rota' => 'rh.configuracoesponto.index', 'mit_icone' => 'fa fa-cog', 'mit_ordem' => 8],
             ['mit_nome' => 'Teste de Dispositivo', 'mit_rota' => 'rh.testedispositivo.index', 'mit_icone' => 'fa fa-flask', 'mit_ordem' => 9],
