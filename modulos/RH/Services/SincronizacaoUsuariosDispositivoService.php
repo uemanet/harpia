@@ -222,11 +222,16 @@ class SincronizacaoUsuariosDispositivoService
         return $resultado;
     }
 
-    public function atualizarUsuario(DispositivoAcesso $dispositivo, string $userId, int $colaboradorId): array
+    public function atualizarUsuario(
+        DispositivoAcesso $dispositivo,
+        string $userId,
+        int $colaboradorId,
+        ?string $fotoBinariaManual = null
+    ): array
     {
         $colaborador = $this->buscarColaboradorParaDispositivo($colaboradorId);
         $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
-        $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
+        $fotoBinaria = $fotoBinariaManual ?? $this->obterFotoBinariaDoColaborador($colaborador);
 
         $this->apiClient->modifyUser($dispositivo, (int) $userId, [
             'name' => $dadosDesejados['nome'],
@@ -254,7 +259,8 @@ class SincronizacaoUsuariosDispositivoService
     public function atualizarUsuarioEmTodosDispositivos(
         DispositivoAcesso $dispositivoAtual,
         string $userId,
-        int $colaboradorId
+        int $colaboradorId,
+        ?string $fotoBinariaManual = null
     ): array {
         $resultado = [
             'atualizados' => 0,
@@ -267,10 +273,10 @@ class SincronizacaoUsuariosDispositivoService
         $registrationAnterior = (string) ($usuarioAtual['registration'] ?? '');
         $colaborador = $this->buscarColaboradorParaDispositivo($colaboradorId);
         $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
-        $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
+        $fotoBinaria = $fotoBinariaManual ?? $this->obterFotoBinariaDoColaborador($colaborador);
 
         try {
-            $this->atualizarUsuario($dispositivoAtual, $userId, $colaboradorId);
+            $this->atualizarUsuario($dispositivoAtual, $userId, $colaboradorId, $fotoBinariaManual);
             $resultado['atualizados']++;
             $resultado['dispositivos'][] = $dispositivoAtual->dis_nome;
         } catch (\Throwable $e) {
@@ -612,6 +618,17 @@ class SincronizacaoUsuariosDispositivoService
         }
 
         return null;
+    }
+
+    public function converterImagemParaBinario($foto): string
+    {
+        $conteudo = file_get_contents($foto->getRealPath());
+
+        if ($conteudo === false) {
+            throw new InvalidArgumentException('Nao foi possivel ler a imagem enviada para o dispositivo.');
+        }
+
+        return $conteudo;
     }
 
     private function validarRespostaCadastroFacial(array $resposta): void
