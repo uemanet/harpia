@@ -125,6 +125,29 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         $this->assertSame('O colaborador selecionado nao possui foto facial cadastrada.', $resultado['erros'][0]['mensagem']);
     }
 
+    public function testAtualizarUsuarioEmTodosDispositivosUsaFotoManualQuandoInformada(): void
+    {
+        $origem = $this->criarDispositivo('Entrada');
+        $destino = $this->criarDispositivo('Saida', 'saida');
+        $colaborador = $this->criarColaboradorAtivo();
+
+        $apiClient = new FakeControlIdApiClient([
+            $origem->dis_id => [
+                ['id' => 11, 'registration' => (string) $colaborador->col_id, 'name' => 'Alice'],
+            ],
+            $destino->dis_id => [
+                ['id' => 21, 'registration' => (string) $colaborador->col_id, 'name' => 'Alice'],
+            ],
+        ]);
+
+        $service = $this->criarService($apiClient);
+        $service->atualizarUsuarioEmTodosDispositivos($origem, '11', $colaborador->col_id, 'foto-manual-binaria');
+
+        $this->assertCount(2, $apiClient->setUserImageCalls);
+        $this->assertSame('foto-manual-binaria', $apiClient->setUserImageCalls[0]['image']);
+        $this->assertSame('foto-manual-binaria', $apiClient->setUserImageCalls[1]['image']);
+    }
+
     public function testSincronizarEntreDispositivosUsaUserIdComoFallbackQuandoRegistrationNaoExiste(): void
     {
         $origem = $this->criarDispositivo('Entrada');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Modulos\Core\Http\Controller\BaseController;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\RH\Http\Requests\DispositivoUsuarioRequest;
 use Modulos\RH\Repositories\ColaboradorRepository;
 use Modulos\RH\Repositories\DispositivoAcessoRepository;
@@ -17,6 +18,7 @@ class DispositivoUsuariosController extends BaseController
     public function __construct(
         private DispositivoAcessoRepository $dispositivoRepository,
         private ColaboradorRepository $colaboradorRepository,
+        private AnexoRepository $anexoRepository,
         private SincronizacaoUsuariosDispositivoService $sincronizacaoService,
         private ExportacaoUsuariosDispositivoService $exportacaoService
     ) {
@@ -116,6 +118,11 @@ class DispositivoUsuariosController extends BaseController
         try {
             $aplicarTodos = $request->boolean('aplicar_todos');
             $colaboradorId = (int) $request->get('col_id');
+            $foto = $request->file('foto');
+
+            if ($foto) {
+                $this->atualizarFotoColaborador($colaboradorId, $foto);
+            }
 
             if ($aplicarTodos) {
                 $resultado = $this->sincronizacaoService->atualizarUsuarioEmTodosDispositivos(
@@ -356,5 +363,46 @@ class DispositivoUsuariosController extends BaseController
         return 'Falhas em: ' . implode('; ', array_map(function (array $erro) {
             return $erro['dispositivo'] . ' (' . $erro['mensagem'] . ')';
         }, $erros));
+    }
+
+    private function atualizarFotoColaborador(int $colaboradorId, $arquivo): void
+    {
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+
+        if (!$colaborador) {
+            throw new \InvalidArgumentException('Colaborador selecionado nao encontrado.');
+        }
+
+        $colaborador->col_foto_anx_id = $this->salvarFotoFacial($arquivo, $colaborador->col_foto_anx_id);
+        $colaborador->save();
+    }
+
+    private function salvarFotoFacial($arquivo, $anexoAtualId = null): int
+    {
+        if ($anexoAtualId) {
+            $anexo = $this->anexoRepository->atualizarAnexo($anexoAtualId, $arquivo);
+
+            if (is_array($anexo)) {
+                throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+            }
+
+            if (!$anexo) {
+                throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+            }
+
+            return (int) $anexoAtualId;
+        }
+
+        $anexo = $this->anexoRepository->salvarAnexo($arquivo);
+
+        if (is_array($anexo)) {
+            throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+        }
+
+        if (!$anexo) {
+            throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+        }
+
+        return (int) $anexo->anx_id;
     }
 }

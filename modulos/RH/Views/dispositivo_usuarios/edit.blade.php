@@ -54,7 +54,7 @@
                 <div class="card-header">
                     <h3 class="card-title m-0">Atualizar vínculo do usuário</h3>
                 </div>
-                <form method="POST" action="{{ route('rh.dispositivousuarios.edit', ['id' => $usuario['user_id']]) }}">
+                <form method="POST" action="{{ route('rh.dispositivousuarios.edit', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
@@ -76,6 +76,13 @@
                         <p class="text-muted">
                             Nome, registration e foto facial serao recalculados automaticamente com base no colaborador selecionado.
                         </p>
+
+                        <div class="form-group @if($errors->has('foto')) has-error @endif">
+                            <label>Nova foto facial no dispositivo</label>
+                            <input type="file" name="foto" class="form-control" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+                            <p class="help-block">Opcional. Se enviada, atualiza a foto facial do colaborador e reaplica essa foto neste dispositivo.</p>
+                            @if ($errors->has('foto')) <p class="help-block">{{ $errors->first('foto') }}</p> @endif
+                        </div>
 
                         @if($usuario['registration'])
                         <div class="form-check">
