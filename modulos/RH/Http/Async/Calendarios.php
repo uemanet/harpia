@@ -33,26 +33,31 @@ class Calendarios extends BaseController
 
     public function postCreate(CalendarioRequest $request)
     {
-        $data = $request->all();
+        $cldId = $request->input('cld_id');
+        $requestData = $request->only($this->calendarioRepository->getFillableModelFields());
 
-        if ($data['cld_id']) {
+        if ($cldId) {
 
-            $calendario = $this->calendarioRepository->find($data['cld_id']);
-            $requestData = $request->only($this->calendarioRepository->getFillableModelFields());
+            $calendario = $this->calendarioRepository->find($cldId);
+
+            if (!$calendario) {
+                return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+            }
+
+            $dataAntiga = $calendario->cld_data;
             $this->calendarioRepository->update($requestData, $calendario->cld_id, 'cld_id');
+
+            $calendario->refresh();
+
+            $this->sincronizarPeriodosAfetados([$dataAntiga, $calendario->cld_data]);
 
             return new JsonResponse($calendario, JsonResponse::HTTP_CREATED);
 
         }
 
-        $calendario = $this->calendarioRepository->create($request->all());
+        $calendario = $this->calendarioRepository->create($requestData);
 
-        $periodosQueDevemSerSincronizados = $this->periodoLaboralRepository
-            ->buscaPeriodosLaboraisEntreDatas($calendario->cld_data, $calendario->cld_data);
-
-        foreach ($periodosQueDevemSerSincronizados as $periodo){
-            $this->horaTrabalhadaRepository->sincronizarHorasTrabalhadas($periodo);
-        }
+        $this->sincronizarPeriodosAfetados([$calendario->cld_data]);
 
         return new JsonResponse($calendario, JsonResponse::HTTP_CREATED);
 
@@ -63,6 +68,10 @@ class Calendarios extends BaseController
 
         $calendario = $this->calendarioRepository->find($id);
 
+        if (!$calendario) {
+            return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
         return new JsonResponse($calendario, JsonResponse::HTTP_OK);
 
     }
@@ -72,9 +81,17 @@ class Calendarios extends BaseController
 
         $calendario = $this->calendarioRepository->find($id);
 
+        if (!$calendario) {
+            return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $dataAntiga = $calendario->cld_data;
         $requestData = $request->only($this->calendarioRepository->getFillableModelFields());
 
         $this->calendarioRepository->update($requestData, $calendario->cld_id, 'cld_id');
+        $calendario->refresh();
+
+        $this->sincronizarPeriodosAfetados([$dataAntiga, $calendario->cld_data]);
 
         return new JsonResponse($calendario, JsonResponse::HTTP_OK);
 
@@ -84,10 +101,35 @@ class Calendarios extends BaseController
     {
         $calendarioId = $request->get('id');
 
+        $calendario = $this->calendarioRepository->find($calendarioId);
+
+        if (!$calendario) {
+            return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $dataEvento = $calendario->cld_data;
+
         $this->calendarioRepository->delete($calendarioId);
+
+        $this->sincronizarPeriodosAfetados([$dataEvento]);
 
         return new JsonResponse([], JsonResponse::HTTP_OK);
 
+    }
+
+    private function sincronizarPeriodosAfetados(array $datas): void
+    {
+        $periodosQueDevemSerSincronizados = collect($datas)
+            ->filter()
+            ->unique()
+            ->flatMap(function ($data) {
+                return $this->periodoLaboralRepository->buscaPeriodosLaboraisEntreDatas($data, $data);
+            })
+            ->unique('pel_id');
+
+        foreach ($periodosQueDevemSerSincronizados as $periodo) {
+            $this->horaTrabalhadaRepository->sincronizarHorasTrabalhadas($periodo);
+        }
     }
 
 }

@@ -47,7 +47,6 @@ import { Portuguese } from "flatpickr/dist/l10n/pt.js";
 
 // Importando arquivos locais
 // import './cpfcnpj.min.js';
-import 'fullcalendar';
 import './harpia.js';
 
 document.addEventListener('DOMContentLoaded', function () {
