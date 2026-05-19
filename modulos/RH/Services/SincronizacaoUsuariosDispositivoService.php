@@ -419,6 +419,7 @@ class SincronizacaoUsuariosDispositivoService
     public function vincularUsuario(DispositivoAcesso $dispositivo, string $userId, int $colaboradorId): MapeamentoDispositivo
     {
         $colaborador = $this->colaboradorRepository->buscarAtivoComPessoa($colaboradorId);
+        $dadosDesejados = $colaborador ? $this->montarDadosDispositivoDoColaborador($colaborador) : null;
 
         if (!$colaborador) {
             throw new InvalidArgumentException('Colaborador ativo nao encontrado para vinculacao.');
@@ -446,6 +447,11 @@ class SincronizacaoUsuariosDispositivoService
             ]);
         }
 
+        $this->apiClient->modifyUser($dispositivo, (int) $userId, [
+            'name' => $dadosDesejados['nome'],
+            'registration' => $dadosDesejados['registration'],
+        ]);
+
         MapeamentoDispositivo::where('map_dis_id', $dispositivo->dis_id)
             ->where('map_user_id', '<>', $userId)
             ->where('map_col_id', $colaboradorId)
@@ -453,6 +459,8 @@ class SincronizacaoUsuariosDispositivoService
 
         $mapeamento->fill([
             'map_col_id' => $colaboradorId,
+            'map_registration' => $dadosDesejados['registration'],
+            'map_nome_dispositivo' => $dadosDesejados['nome'],
             'map_ativo' => true,
         ])->save();
 
