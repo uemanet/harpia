@@ -198,6 +198,44 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         $this->assertCount(1, $apiClient->usuariosDoDispositivo($destino->dis_id));
     }
 
+    public function testVincularUsuarioAtualizaRegistrationENomeNoDispositivo(): void
+    {
+        $dispositivo = $this->criarDispositivo('Entrada');
+        $colaborador = $this->criarColaboradorAtivo();
+
+        $apiClient = new FakeControlIdApiClient([
+            $dispositivo->dis_id => [
+                ['id' => 55, 'registration' => '', 'name' => 'Usuario Manual'],
+            ],
+        ]);
+
+        $service = $this->criarService($apiClient);
+        $service->vincularUsuario($dispositivo, '55', $colaborador->col_id);
+
+        $this->assertCount(1, $apiClient->modifyUserCalls);
+        $this->assertSame([
+            'device_id' => $dispositivo->dis_id,
+            'user_id' => 55,
+            'payload' => [
+                'name' => $colaborador->pessoa->pes_nome,
+                'registration' => (string) $colaborador->col_id,
+            ],
+        ], $apiClient->modifyUserCalls[0]);
+
+        $usuarioAtualizado = $apiClient->usuario($dispositivo->dis_id, 55);
+
+        $this->assertSame((string) $colaborador->col_id, (string) $usuarioAtualizado['registration']);
+        $this->assertSame($colaborador->pessoa->pes_nome, $usuarioAtualizado['name']);
+
+        $this->assertDatabaseHas('reh_mapeamento_dispositivo', [
+            'map_dis_id' => $dispositivo->dis_id,
+            'map_user_id' => '55',
+            'map_col_id' => $colaborador->col_id,
+            'map_registration' => (string) $colaborador->col_id,
+            'map_nome_dispositivo' => $colaborador->pessoa->pes_nome,
+        ]);
+    }
+
     private function criarService(FakeControlIdApiClient $apiClient): SincronizacaoUsuariosDispositivoService
     {
         return new SincronizacaoUsuariosDispositivoService(
