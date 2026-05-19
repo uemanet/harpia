@@ -59,7 +59,7 @@
 
                 </form>
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".modalImportacaoHoras">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target=".modalImportacaoHoras">
                         <i class="fa fa-upload"></i> Importar Horas
                     </button>
                 </div>
@@ -69,7 +69,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">x</span>
                                 </button>
                                 <h4 class="modal-title">
