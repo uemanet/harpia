@@ -222,7 +222,7 @@ class DispositivoUsuariosController extends BaseController
         $this->validate($request, [
             'dis_id' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
             'user_id' => 'required|string|max:20',
-            'todos_dispositivos' => 'nullable|in:1',
+            'todos_dispositivos' => 'nullable|in:0,1',
         ]);
 
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
@@ -233,7 +233,7 @@ class DispositivoUsuariosController extends BaseController
         }
 
         try {
-            if ($request->get('todos_dispositivos') === '1') {
+            if ($request->boolean('todos_dispositivos')) {
                 $resultado = $this->sincronizacaoService->removerUsuarioDeTodosDispositivos(
                     $dispositivo,
                     (string) $request->get('user_id')
