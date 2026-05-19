@@ -31,6 +31,23 @@ class AnexoRepository extends BaseRepository
         return array(substr($hash, 0, 2), substr($hash, 2, 2));
     }
 
+    private function montarCaminhoArquivo(Anexo $anexo)
+    {
+        list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
+
+        return $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao;
+    }
+
+    private function montarDadosAnexo(UploadedFile $uploadedFile, string $hash)
+    {
+        return [
+            'anx_nome' => $uploadedFile->getClientOriginalName(),
+            'anx_mime' => $uploadedFile->getClientMimeType(),
+            'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
+            'anx_localizacao' => $hash
+        ];
+    }
+
     /**
      * Trata uploads guardando o arquivo no servidor e registrando na
      * base de dados
@@ -47,10 +64,6 @@ class AnexoRepository extends BaseRepository
         $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir;
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
-            if (config('app.debug')) {
-                throw new \RuntimeException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
-            }
-
             return array(
                 'type' => 'error_exists',
                 'message' => 'Arquivo enviado já existe'
@@ -58,12 +71,7 @@ class AnexoRepository extends BaseRepository
         }
 
         try {
-            $anexo = [
-                'anx_nome' => $uploadedFile->getClientOriginalName(),
-                'anx_mime' => $uploadedFile->getClientMimeType(),
-                'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
-                'anx_localizacao' => $hash
-            ];
+            $anexo = $this->montarDadosAnexo($uploadedFile, $hash);
 
             $uploadedFile->move($caminhoArquivo, $hash);
             return $this->create($anexo);
@@ -87,12 +95,28 @@ class AnexoRepository extends BaseRepository
             return $anexo;
         }
 
-        list($firstDir, $secondDir) = $this->hashDirectories($anexo->anx_localizacao);
-
-        $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao;
+        $caminhoArquivo = $this->montarCaminhoArquivo($anexo);
 
         $headers = array('Content-Type: ' . $anexo->anx_mime);
         return Response::download($caminhoArquivo, $anexo->anx_nome, $headers);
+    }
+
+    public function lerConteudoAnexo($anexoId)
+    {
+        $anexo = $this->find($anexoId);
+
+        if (!$anexo) {
+            return 'error_non_existent';
+        }
+
+        $caminhoArquivo = $this->montarCaminhoArquivo($anexo);
+        $conteudo = @file_get_contents($caminhoArquivo);
+
+        if ($conteudo === false) {
+            throw new \RuntimeException('Nao foi possivel ler o arquivo do anexo informado.');
+        }
+
+        return $conteudo;
     }
 
     /**
@@ -137,10 +161,11 @@ class AnexoRepository extends BaseRepository
         list($firstDir, $secondDir) = $this->hashDirectories($hash);
 
         $caminhoArquivo = $this->basePath . $firstDir . DIRECTORY_SEPARATOR . $secondDir;
+        $dados = $this->montarDadosAnexo($uploadedFile, $hash);
 
         if (file_exists($caminhoArquivo . DIRECTORY_SEPARATOR . $hash)) {
-            if (config('app.debug')) {
-                throw new \RuntimeException($caminhoArquivo . DIRECTORY_SEPARATOR . $hash);
+            if ($anexo->anx_localizacao === $hash) {
+                return $this->update($dados, $anexoId, 'anx_id');
             }
 
             return array(
@@ -154,16 +179,8 @@ class AnexoRepository extends BaseRepository
             // Exclui antigo arquivo
             array_map('unlink', glob($this->basePath . $firstOldDir . DIRECTORY_SEPARATOR . $secondOldDir . DIRECTORY_SEPARATOR . $anexo->anx_localizacao));
 
-            // Atualiza registro com o novo arquivo
-            $data = [
-                'anx_nome' => $uploadedFile->getClientOriginalName(),
-                'anx_mime' => $uploadedFile->getClientMimeType(),
-                'anx_extensao' => $uploadedFile->getClientOriginalExtension(),
-                'anx_localizacao' => $hash
-            ];
-
             $uploadedFile->move($caminhoArquivo, $hash);
-            return $this->update($data, $anexoId, 'anx_id');
+            return $this->update($dados, $anexoId, 'anx_id');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

@@ -260,8 +260,6 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/create', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postCreate')->name('rh.dispositivousuarios.create');
         Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@getEdit')->name('rh.dispositivousuarios.edit');
         Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@putEdit')->name('rh.dispositivousuarios.edit');
-        Route::post('/atualizar-foto/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postAtualizarFoto')->name('rh.dispositivousuarios.atualizarfoto');
-        Route::post('/remover-foto/{id}', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postRemoverFoto')->name('rh.dispositivousuarios.removerfoto');
         Route::post('/delete', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postDelete')->name('rh.dispositivousuarios.delete');
         Route::post('/sincronizar', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizar')->name('rh.dispositivousuarios.sincronizar');
         Route::post('/sincronizar-todos', '\Modulos\RH\Http\Controllers\DispositivoUsuariosController@postSincronizarTodos')->name('rh.dispositivousuarios.sincronizartodos');

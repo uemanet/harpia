@@ -18,6 +18,7 @@ class Colaborador extends BaseModel
         'col_codigo_catraca',
         'col_vinculo_universidade',
         'col_matricula_universidade',
+        'col_foto_anx_id',
         'col_observacao',
         'col_status',
     ];
@@ -50,6 +51,11 @@ class Colaborador extends BaseModel
     public function pessoa()
     {
         return $this->belongsTo('Modulos\Geral\Models\Pessoa', 'col_pes_id');
+    }
+
+    public function foto_facial()
+    {
+        return $this->belongsTo('Modulos\Geral\Models\Anexo', 'col_foto_anx_id', 'anx_id');
     }
 
     public function funcoes()

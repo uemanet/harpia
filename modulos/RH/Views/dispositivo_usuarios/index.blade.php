@@ -75,7 +75,7 @@
                     <div class="card-header">
                         <h3 class="card-title m-0">Cadastrar no dispositivo</h3>
                     </div>
-                    <form method="POST" action="{{ route('rh.dispositivousuarios.create') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('rh.dispositivousuarios.create') }}">
                         {{ csrf_field() }}
                         <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
 
@@ -93,38 +93,9 @@
                                 @if ($errors->has('col_id')) <p class="help-block">{{ $errors->first('col_id') }}</p> @endif
                             </div>
 
-                            <div class="form-group @if($errors->has('nome')) has-error @endif">
-                                <label>Nome no dispositivo</label>
-                                <input type="text" name="nome" class="form-control" value="{{ old('nome') }}" placeholder="Se vazio, usa o nome do colaborador">
-                                @if ($errors->has('nome')) <p class="help-block">{{ $errors->first('nome') }}</p> @endif
-                            </div>
-
-                            <div class="form-group @if($errors->has('registration')) has-error @endif">
-                                <label>Registration</label>
-                                <input type="text" name="registration" class="form-control" value="{{ old('registration') }}" placeholder="Se vazio, usa o col_id">
-                                @if ($errors->has('registration')) <p class="help-block">{{ $errors->first('registration') }}</p> @endif
-                            </div>
-
-                            <div class="form-group @if($errors->has('foto')) has-error @endif">
-                                <label>Foto facial</label>
-                                <input type="file" name="foto" class="form-control">
-                                <p class="help-block">Opcional. Se enviada, a foto será cadastrada diretamente no iDFace.</p>
-                                @if ($errors->has('foto')) <p class="help-block">{{ $errors->first('foto') }}</p> @endif
-                            </div>
-
-                            <div class="form-group @if($errors->has('dispositivos_destino')) has-error @endif">
-                                <label>Cadastrar também em outros aparelhos</label>
-                                <select name="dispositivos_destino[]" class="form-control" multiple>
-                                    @php($dispositivosDestino = old('dispositivos_destino', [$dispositivo->dis_id]))
-                                    @foreach($dispositivos as $dispositivoId => $dispositivoNome)
-                                        <option value="{{ $dispositivoId }}" {{ in_array((string) $dispositivoId, array_map('strval', (array) $dispositivosDestino), true) ? 'selected' : '' }}>
-                                            {{ $dispositivoNome }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <p class="help-block">Se nada for alterado, o cadastro ocorre no aparelho atualmente carregado.</p>
-                                @if ($errors->has('dispositivos_destino')) <p class="help-block">{{ $errors->first('dispositivos_destino') }}</p> @endif
-                            </div>
+                            <p class="text-muted">
+                                Nome, registration e foto facial serao obtidos automaticamente do cadastro do colaborador.
+                            </p>
 
                             <div class="form-check">
                                 <input type="hidden" name="cadastrar_em_todos_dispositivos" value="0">
@@ -135,7 +106,7 @@
 
                         <div class="card-footer">
                             <button type="submit" class="btn btn-success w-100">
-                                <i class="fa fa-plus"></i> Cadastrar usuário
+                                <i class="fa fa-plus"></i> Cadastrar no dispositivo
                             </button>
                         </div>
                     </form>
@@ -154,41 +125,26 @@
                             </button>
                         </form>
 
-                        <a href="{{ route('rh.dispositivousuarios.exportarcsv', ['id' => $dispositivo->dis_id]) }}" class="btn btn-secondary w-100">
-                            <i class="fa fa-download"></i> Exportar CSV Control iD
-                        </a>
-
-                        <hr>
-
                         <form method="POST" action="{{ route('rh.dispositivousuarios.sincronizartodos') }}" class="mb-2">
                             {{ csrf_field() }}
                             <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
 
-                            <div class="form-group">
-                                <label>Sincronizar usuários ativos do Harpia em</label>
-                                <select name="dispositivos_destino[]" class="form-control" multiple>
-                                    @php($destinosSincronizacao = old('dispositivos_destino', [$dispositivo->dis_id]))
-                                    @foreach($dispositivos as $dispositivoId => $dispositivoNome)
-                                        <option value="{{ $dispositivoId }}" {{ in_array((string) $dispositivoId, array_map('strval', (array) $destinosSincronizacao), true) ? 'selected' : '' }}>
-                                            {{ $dispositivoNome }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <p class="help-block">A ação replica os colaboradores ativos do Harpia nos aparelhos selecionados.</p>
-                            </div>
-
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="sincronizar_todos_dispositivos" value="1" {{ old('sincronizar_todos_dispositivos') ? 'checked' : '' }}>
-                                <label class="form-check-label">Usar todos os aparelhos ativos</label>
+                                <label class="form-check-label">Sincronizar em todos os aparelhos ativos</label>
                             </div>
 
-                            <button type="submit" class="btn btn-success w-100" onclick="return confirm('Tem certeza que deseja sincronizar os usuários ativos do Harpia para os aparelhos selecionados?')">
-                                <i class="fa fa-exchange"></i> Sincronizar usuários entre aparelhos
+                            <button type="submit" class="btn btn-success w-100" onclick="return confirm('Tem certeza que deseja sincronizar os colaboradores ativos do Harpia para o dispositivo atual ou para todos os aparelhos ativos?')">
+                                <i class="fa fa-exchange"></i> Sincronizar colaboradores ativos
                             </button>
                         </form>
 
                         <a href="{{ route('rh.vincularcolaboradores.index', ['dis_id' => $dispositivo->dis_id]) }}" class="btn btn-warning w-100">
                             <i class="fa fa-link"></i> Abrir tela de vinculação
+                        </a>
+
+                        <a href="{{ route('rh.dispositivousuarios.exportarcsv', ['id' => $dispositivo->dis_id]) }}" class="btn btn-secondary w-100 mt-2">
+                            <i class="fa fa-download"></i> Exportar CSV Control iD
                         </a>
                     </div>
                 </div>

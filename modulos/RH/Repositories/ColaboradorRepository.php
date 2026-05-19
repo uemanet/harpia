@@ -171,7 +171,7 @@ class ColaboradorRepository extends BaseRepository
     public function buscarAtivoComPessoa(int $colaboradorId): ?Colaborador
     {
         return $this->model
-            ->with('pessoa')
+            ->with(['pessoa', 'foto_facial'])
             ->where('col_status', 'ativo')
             ->where('col_id', $colaboradorId)
             ->first();
@@ -191,10 +191,12 @@ class ColaboradorRepository extends BaseRepository
     public function listarAtivosParaExportacao(?int $dispositivoId = null)
     {
         $query = $this->model
+            ->with('foto_facial')
             ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
             ->where('reh_colaboradores.col_status', 'ativo')
             ->select([
                 'reh_colaboradores.col_id',
+                'reh_colaboradores.col_foto_anx_id',
                 'gra_pessoas.pes_nome',
             ])
             ->orderBy('gra_pessoas.pes_nome');

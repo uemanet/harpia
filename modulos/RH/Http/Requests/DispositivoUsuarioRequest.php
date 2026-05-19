@@ -15,14 +15,9 @@ class DispositivoUsuarioRequest extends BaseRequest
     {
         return [
             'dis_id' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
-            'col_id' => 'sometimes|nullable|integer|exists:reh_colaboradores,col_id',
-            'nome' => 'nullable|string|max:255',
-            'registration' => 'nullable|string|max:50',
-            'foto' => 'nullable|image|max:10240',
-            'dispositivos_destino' => 'nullable|array',
-            'dispositivos_destino.*' => 'integer|exists:reh_dispositivos_acesso,dis_id',
+            'col_id' => 'required|integer|exists:reh_colaboradores,col_id',
             'cadastrar_em_todos_dispositivos' => 'nullable|boolean',
-            'sincronizar_todos_dispositivos' => 'nullable|boolean',
+            'aplicar_todos' => 'nullable|boolean',
         ];
     }
 }
