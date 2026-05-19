@@ -4,6 +4,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\BancoRequest;
+use Modulos\RH\Models\Banco;
 use Modulos\RH\Repositories\BancoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -80,7 +81,8 @@ class BancosController extends BaseController
 
     public function getCreate()
     {
-        return view('RH::bancos.create');
+        $banco = new Banco();
+        return view('RH::bancos.create', compact('banco'));
     }
 
     public function postCreate(BancoRequest $request)
