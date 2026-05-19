@@ -12,8 +12,7 @@
     <div class="form-group col-md-12">
         <label class="control-label" style="visibility: hidden">Botão</label>
         <div class="controls">
-            <button type="submit" class="btn btn-primary pull-left">Salvar dados</button>
+            <button type="submit" class="btn btn-primary float-start">Salvar dados</button>
         </div>
     </div>
 </div>
-

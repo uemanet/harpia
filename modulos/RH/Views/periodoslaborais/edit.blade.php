@@ -14,11 +14,11 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de períodos laborais</h3>
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title m-0">Formulário de edição de períodos laborais</h3>
         </div>
-        <div class="box-body">
+        <div class="card-body">
             <form action="{{ route('rh.periodoslaborais.edit', [$periodolaboral->pel_id]) }}" method="POST" id="form" role="form">
     @csrf
     @method('PUT')

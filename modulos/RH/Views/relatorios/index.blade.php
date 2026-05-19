@@ -14,34 +14,32 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title m-0"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            <div class="card-tools float-end">
+                <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"><i class="fa fa-minus"></i>
                 </button>
             </div>
-            <!-- /.box-tools -->
         </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <form method="GET" action="{{{ route('rh.relatorios.periodosaquisitivos') }}}">
-                    <div class="col-md-2">
+        <div class="card-body">
+            <form method="GET" action="{{{ route('rh.relatorios.periodosaquisitivos') }}}">
+                <div class="row">
+                    <div class="col-md-2 px-1">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf"
                                value="{{Request::input('pes_cpf')}}" placeholder="CPF">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 px-1">
                         <input type="text" class="form-control" name="pes_nome" id="pes_nome"
                                value="{{Request::input('pes_nome')}}" placeholder="Nome">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 px-1">
                         <input type="email" class="form-control" name="pes_email" id="pes_email"
                                value="{{Request::input('pes_email')}}" placeholder="Email">
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="col-md-2 px-1">
                         <select name="cfn_set_id" class="form-control">
     <option value="">Selecione o setor</option>
     @foreach($setores as $key => $value)
@@ -50,7 +48,7 @@
 </select>
                     </div>
 
-                    <div class="form-group col-md-2">
+                    <div class="col-md-2 px-1">
                         <select name="funcoes[]" class="form-control" multiple="multiple">
     @foreach($funcoes as $key => $value)
         <option value="{{ $key }}" {{ old('funcoes[]') == $key ? 'selected' : '' }}>{{ $value }}</option>
@@ -59,25 +57,24 @@
                         @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
                     </div>
 
-                    <div class="col-md-1">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
+                    <div class="col-md-2 px-1">
+                        <button type="submit" class="btn btn-primary w-100">Buscar</button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
-        <!-- /.box-body -->
     </div>
     @if(!is_null($tabela))
-        <div class="box box-primary">
-            <div class="box-header">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
                 {!! $tabela->render() !!}
             </div>
         </div>
 
         <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
     @else
-        <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
+        <div class="card card-primary card-outline">
+            <div class="card-body">Sem registros para apresentar</div>
         </div>
     @endif
 @stop
@@ -101,4 +98,3 @@
         });
     </script>
 @endsection
-

@@ -17,7 +17,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-3">
-            <div class=" box box-primary jarviswidget jarviswidget-color-blueDark">
+            <div class=" card card-primary card-outline jarviswidget jarviswidget-color-blueDark">
                 <header>
                     <h2 style="padding-left: 10px">Adicionar Eventos</h2>
                 </header>
@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="form-actions">
                                     <div class="col-md-12" id="footerForm" style="margin-bottom: 10px">
-                                        <button class="btn btn-default btn-sm" type="button" id="btnNovo">
+                                        <button class="btn btn-secondary btn-sm" type="button" id="btnNovo">
                                             Novo
                                         </button>
                                         <button class="btn btn-success btn-sm" type="submit" id="btnSalvar">Salvar
@@ -79,14 +79,12 @@
         </div>
 
         <div class="col-md-9">
-            <div class="box box-primary">
-                <div class="box-body no-padding">
+            <div class="card card-primary card-outline">
+                <div class="card-body no-padding">
                     <!-- THE CALENDAR -->
                     <div id="calendar"></div>
                 </div>
-                <!-- /.box-body -->
             </div>
-            <!-- /. box -->
         </div>
         @stop
 
