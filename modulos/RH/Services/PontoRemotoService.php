@@ -89,6 +89,7 @@ class PontoRemotoService
     public function listarMeusRegistros(int $colaboradorId, int $limite = 30): Collection
     {
         return EventoAcesso::where('eva_col_id', $colaboradorId)
+            ->where('eva_status', 'pendente')
             ->orderByDesc('eva_data_hora')
             ->limit($limite)
             ->get();
