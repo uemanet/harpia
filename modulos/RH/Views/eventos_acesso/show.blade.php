@@ -25,7 +25,7 @@
                 <dt>Hash</dt><dd><code>{{ $evento->eva_hash }}</code></dd>
                 <dt>IP Origem</dt><dd>{{ $evento->eva_ip_origem ?? '—' }}</dd>
                 <dt>User Agent</dt><dd>{{ $evento->eva_user_agent ?? '—' }}</dd>
-                <dt>Observacao</dt><dd><pre>{{ $evento->eva_observacao ? json_encode(json_decode($evento->eva_observacao), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '—' }}</pre></dd>
+                <dt>Observação</dt><dd><pre>{{ $evento->eva_observacao ? json_encode(json_decode($evento->eva_observacao), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : '—' }}</pre></dd>
                 <dt>Criado em</dt><dd>{{ $evento->created_at }}</dd>
             </dl>
         </div>

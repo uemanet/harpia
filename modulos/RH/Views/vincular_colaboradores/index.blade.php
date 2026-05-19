@@ -88,7 +88,7 @@
                             <th>Nome no iDFace</th>
                             <th>Colaborador Harpia</th>
                             <th>Status</th>
-                            <th>Acoes</th>
+                            <th>Ações</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -131,7 +131,7 @@
                         </tbody>
                     </table>
                 @else
-                    <div class="alert alert-info">Selecione um dispositivo para visualizar os usuarios.</div>
+                    <div class="alert alert-info">Selecione um dispositivo para visualizar os usuários.</div>
                 @endif
             </div>
         </div>

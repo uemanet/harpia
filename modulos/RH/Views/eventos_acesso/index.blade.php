@@ -19,7 +19,7 @@
                 <select name="eva_tipo" class="form-control">
                     <option value="">Todos os tipos</option>
                     <option value="entrada" {{ request('eva_tipo') === 'entrada' ? 'selected' : '' }}>Entrada</option>
-                    <option value="saida" {{ request('eva_tipo') === 'saida' ? 'selected' : '' }}>Saida</option>
+                    <option value="saida" {{ request('eva_tipo') === 'saida' ? 'selected' : '' }}>Saída</option>
                 </select>
                 <select name="eva_origem" class="form-control">
                     <option value="">Todas as origens</option>
@@ -53,7 +53,7 @@
                         <th>Data/Hora</th>
                         <th>Origem</th>
                         <th>Status</th>
-                        <th>Acoes</th>
+                        <th>Ações</th>
                     </tr>
                     </thead>
                     <tbody>

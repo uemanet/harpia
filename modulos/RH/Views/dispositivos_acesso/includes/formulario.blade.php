@@ -17,7 +17,7 @@
         <label for="dis_tipo" class="control-label">Tipo*</label>
         <select name="dis_tipo" class="form-control">
             <option value="">Selecione</option>
-            @foreach(['entrada' => 'Entrada', 'saida' => 'Saida'] as $key => $value)
+            @foreach(['entrada' => 'Entrada', 'saida' => 'Saída'] as $key => $value)
                 <option value="{{ $key }}" {{ old('dis_tipo', isset($dispositivo) ? $dispositivo->dis_tipo : null) === $key ? 'selected' : '' }}>{{ $value }}</option>
             @endforeach
         </select>
@@ -49,7 +49,7 @@
 
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('dis_observacao')) has-error @endif">
-        <label for="dis_observacao" class="control-label">Observacao</label>
+        <label for="dis_observacao" class="control-label">Observação</label>
         <textarea name="dis_observacao" class="form-control" rows="4">{{ old('dis_observacao', isset($dispositivo) ? $dispositivo->dis_observacao : null) }}</textarea>
         @if ($errors->has('dis_observacao')) <p class="help-block">{{ $errors->first('dis_observacao') }}</p> @endif
     </div>

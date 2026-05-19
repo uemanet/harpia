@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Administracao do Controle de Acesso
+    Administração do Controle de Acesso
 @stop
 
 @section('content')

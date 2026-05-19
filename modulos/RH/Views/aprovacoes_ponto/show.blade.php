@@ -1,6 +1,6 @@
 @extends('layouts.modulos.default')
 
-@section('title') Aprovacao #{{ $evento->eva_id }} @stop
+@section('title') Aprovação #{{ $evento->eva_id }} @stop
 @section('subtitle') Detalhes do Registro @stop
 
 @section('content')
@@ -17,7 +17,7 @@
             </dl>
 
             @if($evento->aprovacoes->count())
-                <h4>Historico de Aprovacoes</h4>
+                <h4>Histórico de Aprovações</h4>
                 <table class="table">
                     <thead><tr><th>Data</th><th>Status</th><th>Motivo</th></tr></thead>
                     <tbody>

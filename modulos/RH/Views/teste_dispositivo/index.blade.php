@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Modulo RH — Diagnostico iDFace
+    Módulo RH — Diagnóstico iDFace
 @stop
 
 @section('content')
@@ -22,7 +22,7 @@
                             <a href="{{ route('rh.dispositivosacesso.create') }}">Dispositivos de Acesso</a>.
                         </div>
                     @else
-                        <p>Selecione um dispositivo e uma acao para testar a comunicacao com o iDFace.</p>
+                        <p>Selecione um dispositivo e uma ação para testar a comunicação com o iDFace.</p>
                     @endif
                 </div>
             </div>
@@ -69,7 +69,7 @@
                         <form method="POST" action="{{ route('rh.testedispositivo.listarusuarios') }}" style="display:inline;">
                             @csrf
                             <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
-                            <button type="submit" class="btn btn-sm btn-info"><i class="fa fa-users"></i> Listar Usuarios</button>
+                            <button type="submit" class="btn btn-sm btn-info"><i class="fa fa-users"></i> Listar Usuários</button>
                         </form>
 
                         <form method="POST" action="{{ route('rh.testedispositivo.consultarlogs') }}" style="display:inline;">

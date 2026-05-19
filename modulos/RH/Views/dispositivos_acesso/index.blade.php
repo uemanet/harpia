@@ -5,7 +5,7 @@
 @stop
 
 @section('subtitle')
-    Administracao do Controle de Acesso
+    Administração do Controle de Acesso
 @stop
 
 @section('content')
@@ -23,7 +23,7 @@
                         <select name="dis_tipo" class="form-control">
                             <option value="">Todos os tipos</option>
                             <option value="entrada" {{ request('dis_tipo') === 'entrada' ? 'selected' : '' }}>Entrada</option>
-                            <option value="saida" {{ request('dis_tipo') === 'saida' ? 'selected' : '' }}>Saida</option>
+                            <option value="saida" {{ request('dis_tipo') === 'saida' ? 'selected' : '' }}>Saída</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -58,7 +58,7 @@
                         <th>IP</th>
                         <th>Modelo</th>
                         <th>Status</th>
-                        <th style="width: 320px;">Acoes</th>
+                        <th style="width: 320px;">Ações</th>
                     </tr>
                     </thead>
                     <tbody>

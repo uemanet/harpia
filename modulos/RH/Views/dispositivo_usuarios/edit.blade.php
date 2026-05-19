@@ -5,11 +5,11 @@
 @endsection
 
 @section('title')
-    Editar Usuario do Dispositivo
+    Editar Usuário do Dispositivo
 @stop
 
 @section('subtitle')
-    Gestao Control iD
+    Gestão Control iD
 @stop
 
 @section('content')
@@ -17,7 +17,7 @@
         <div class="col-md-4">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Resumo do usuario</h3>
+                    <h3 class="box-title">Resumo do usuário</h3>
                 </div>
                 <div class="box-body">
                     <p><strong>Dispositivo:</strong> {{ $dispositivo->dis_nome }}</p>
@@ -25,7 +25,7 @@
                     <p><strong>Registration atual:</strong> {{ $usuario['registration'] ?: '-' }}</p>
                     <p><strong>Nome atual:</strong> {{ $usuario['nome'] ?: '-' }}</p>
                     <p>
-                        <strong>Vinculacao:</strong>
+                        <strong>Vinculação:</strong>
                         @if($usuario['col_id'])
                             {{ $usuario['colaborador_nome'] }}
                         @else
@@ -52,7 +52,7 @@
         <div class="col-md-8">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Atualizar dados do usuario</h3>
+                    <h3 class="box-title">Atualizar dados do usuário</h3>
                 </div>
                 <form method="POST" action="{{ route('rh.dispositivousuarios.edit', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
@@ -63,7 +63,7 @@
                         <div class="form-group @if($errors->has('col_id')) has-error @endif">
                             <label>Colaborador vinculado</label>
                             <select name="col_id" class="form-control">
-                                <option value="">Manter sem vinculo</option>
+                                <option value="">Manter sem vínculo</option>
                                 @foreach($colaboradores as $colaboradorId => $colaboradorNome)
                                     <option value="{{ $colaboradorId }}" {{ (string) old('col_id', $usuario['col_id']) === (string) $colaboradorId ? 'selected' : '' }}>
                                         {{ $colaboradorNome }}
@@ -88,7 +88,7 @@
                         <div class="form-group @if($errors->has('foto')) has-error @endif">
                             <label>Nova foto facial</label>
                             <input type="file" name="foto" class="form-control">
-                            <p class="help-block">Se enviada, a foto sera atualizada no iDFace durante o salvamento.</p>
+                            <p class="help-block">Se enviada, a foto será atualizada no iDFace durante o salvamento.</p>
                             @if ($errors->has('foto')) <p class="help-block">{{ $errors->first('foto') }}</p> @endif
                         </div>
 
@@ -96,7 +96,7 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="aplicar_todos" value="1" {{ old('aplicar_todos') ? 'checked' : '' }}>
-                                Aplicar tambem nos outros dispositivos onde o usuario existe (registration: {{ $usuario['registration'] }})
+                                Aplicar também nos outros dispositivos onde o usuário existe (registration: {{ $usuario['registration'] }})
                             </label>
                         </div>
                         @endif
@@ -104,7 +104,7 @@
 
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save"></i> Salvar alteracoes
+                            <i class="fa fa-save"></i> Salvar alterações
                         </button>
                     </div>
                 </form>
@@ -112,7 +112,7 @@
 
             <div class="box box-default">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Acoes de foto facial</h3>
+                    <h3 class="box-title">Ações de foto facial</h3>
                 </div>
                 <div class="box-body">
                     <form method="POST" action="{{ route('rh.dispositivousuarios.atualizarfoto', ['id' => $usuario['user_id']]) }}" enctype="multipart/form-data" style="margin-bottom: 10px;">
@@ -134,7 +134,7 @@
                     <form method="POST" action="{{ route('rh.dispositivousuarios.removerfoto', ['id' => $usuario['user_id']]) }}">
                         {{ csrf_field() }}
                         <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja remover a foto facial deste usuario?')">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja remover a foto facial deste usuário?')">
                             <i class="fa fa-trash"></i> Remover foto facial
                         </button>
                     </form>
