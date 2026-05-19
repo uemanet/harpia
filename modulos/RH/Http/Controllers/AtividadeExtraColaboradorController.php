@@ -4,6 +4,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\AtividadeExtraColaboradorRequest;
+use Modulos\RH\Models\AtividadeExtraColaborador;
 use Modulos\RH\Repositories\AtividadeExtraColaboradorRepository;
 use Illuminate\Http\Request;
 use Modulos\RH\Repositories\ColaboradorRepository;
@@ -24,8 +25,9 @@ class AtividadeExtraColaboradorController extends BaseController
     {
 
         $colaborador = $this->colaboradorRepository->find($idColaborador);
+        $atividade_extra = new AtividadeExtraColaborador();
 
-        return view('RH::atividadesextrascolaboradores.create', compact('colaborador'));
+        return view('RH::atividadesextrascolaboradores.create', compact('colaborador', 'atividade_extra'));
     }
 
     public function postCreate( $idColaborador, AtividadeExtraColaboradorRequest $request)
