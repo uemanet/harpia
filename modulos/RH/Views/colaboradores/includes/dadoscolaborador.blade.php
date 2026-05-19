@@ -24,6 +24,14 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div class="col-md-4 text-center">
+                        <p><strong>Foto facial</strong></p>
+                        <img
+                            src="{{ route('rh.api.colaboradores.foto', ['id' => $colaborador->col_id]) }}"
+                            alt="Foto facial do colaborador"
+                            style="max-width: 180px; max-height: 180px; width: 100%; object-fit: cover; border: 1px solid #d2d6de; border-radius: 8px; padding: 4px;"
+                        >
+                    </div>
                     <div class="col-md-4">
 {{--                        <p><strong>Setor: </strong> {{$colaborador->setor->set_descricao}}</p>--}}
                         <p><strong>Carga Horária: </strong> {{$colaborador->col_ch_diaria}}</p>

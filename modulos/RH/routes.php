@@ -2,6 +2,7 @@
 
 Route::group(['prefix' => 'api/rh'], function () {
     Route::group(['prefix' => 'colaboradores'], function () {
+        Route::get('/foto/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getFotoFacial')->name('rh.api.colaboradores.foto');
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getShow')->name('rh.colaboradores.show');
     });
 
@@ -62,6 +63,7 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::post('/create', '\Modulos\RH\Http\Controllers\ColaboradoresController@postCreate')->name('rh.colaboradores.create');
         Route::get('/edit/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getEdit')->name('rh.colaboradores.edit');
         Route::put('/edit/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putEdit')->name('rh.colaboradores.edit');
+        Route::get('/foto/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getFotoFacial')->name('rh.colaboradores.foto');
 
         Route::get('/status/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@getStatus')->name('rh.colaboradores.status');
         Route::post('/matricula/{id}', '\Modulos\RH\Http\Controllers\ColaboradoresController@putMatricula')->name('rh.colaboradores.matricula');

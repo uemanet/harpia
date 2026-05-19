@@ -119,6 +119,17 @@ class AnexoRepository extends BaseRepository
         return $conteudo;
     }
 
+    public function obterCaminhoAnexo($anexoId)
+    {
+        $anexo = $this->find($anexoId);
+
+        if (!$anexo) {
+            return 'error_non_existent';
+        }
+
+        return $this->montarCaminhoArquivo($anexo);
+    }
+
     /**
      * @param $anexoId
      * @return null

@@ -134,6 +134,9 @@ class ColaboradorRepository extends BaseRepository
                 ->toArray();
 
             $result->funcoes_index = implode(',', $funcoes);
+            $result->col_foto = !empty($result->col_foto_anx_id)
+                ? '<span class="text-success"><i class="fa fa-check"></i></span>'
+                : '<span class="text-danger"><i class="fa fa-times"></i></span>';
         }
 
         return $results;
