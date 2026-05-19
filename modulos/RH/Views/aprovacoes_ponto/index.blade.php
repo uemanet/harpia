@@ -32,34 +32,9 @@
                                     <input type="hidden" name="id" value="{{ $evento->eva_id }}">
                                     <button type="submit" class="btn btn-xs btn-success"><i class="fa fa-check"></i> Aprovar</button>
                                 </form>
-                                <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#modal-{{ $evento->eva_id }}">
+                                <button type="button" class="btn btn-xs btn-danger" data-bs-toggle="modal" data-bs-target="#modal-{{ $evento->eva_id }}">
                                     <i class="fa fa-times"></i> Reprovar
                                 </button>
-
-                                <div class="modal fade" id="modal-{{ $evento->eva_id }}">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form method="POST" action="{{ route('rh.aprovacoesponto.reprovar') }}">
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="id" value="{{ $evento->eva_id }}">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Reprovar registro</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <label>Motivo da reprovação*</label>
-                                                        <textarea name="motivo" class="form-control" rows="3" required></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                                    <button type="submit" class="btn btn-danger">Reprovar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -71,4 +46,31 @@
             @endif
         </div>
     </div>
+
+    @foreach($pendentes as $evento)
+        <div class="modal fade" id="modal-{{ $evento->eva_id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{{ route('rh.aprovacoesponto.reprovar') }}">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="id" value="{{ $evento->eva_id }}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Reprovar registro</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Motivo da reprovação*</label>
+                                <textarea name="motivo" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger">Reprovar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @stop

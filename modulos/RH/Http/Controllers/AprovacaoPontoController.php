@@ -78,14 +78,24 @@ class AprovacaoPontoController extends BaseController
         $evento = EventoAcesso::findOrFail($request->id);
         $user = auth()->user();
 
+        if (!$user || !$user->pessoa) {
+            flash()->error('Usuário não autenticado.');
+            return redirect()->route('rh.aprovacoesponto.index');
+        }
+
         $aprovador = Colaborador::where('col_pes_id', $user->pessoa->pes_id)
             ->where('col_status', 'ativo')
             ->first();
 
+        if (!$aprovador) {
+            flash()->error('Aprovador não encontrado.');
+            return redirect()->route('rh.aprovacoesponto.index');
+        }
+
         try {
-            $this->aprovacaoService->reprovar($evento, $aprovador, $request->motivo);
+            $this->aprovacaoService->reprovar($evento, $aprovador, (string) $request->motivo);
             flash()->success('Registro reprovado.');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
 
