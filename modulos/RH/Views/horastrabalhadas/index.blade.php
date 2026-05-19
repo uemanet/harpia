@@ -14,7 +14,7 @@
 @stop
 
 @section('content')
-    <div class="card card-primary card-outline">
+    <div class="card card-primary card-outline mb-3">
         <div class="card-header">
             <h3 class="card-title m-0"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
@@ -36,17 +36,29 @@
                     </div>
 
                     <div class="col-md-3 px-1">
-                        <select name="cfn_set_id[]" id="cfn_set_id" class="form-control" multiple="true">
+                        <select
+                            name="cfn_set_id[]"
+                            id="cfn_set_id"
+                            class="form-control"
+                            multiple="true"
+                            data-placeholder="Selecione os setores"
+                        >
     @foreach($setores as $key => $value)
-        <option value="{{ $key }}" {{ Request::input('cfn_set_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+        <option value="{{ $key }}" {{ in_array((string) $key, array_map('strval', (array) Request::input('cfn_set_id', [])), true) ? 'selected' : '' }}>{{ $value }}</option>
     @endforeach
 </select>
                     </div>
 
                     <div class="col-md-3 px-1">
-                        <select name="col_pes_id[]" id="col_pes_id" class="form-control" multiple="true">
+                        <select
+                            name="col_pes_id[]"
+                            id="col_pes_id"
+                            class="form-control"
+                            multiple="true"
+                            data-placeholder="Selecione os colaboradores"
+                        >
     @foreach($colaboradores as $key => $value)
-        <option value="{{ $key }}" {{ Request::input('col_pes_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+        <option value="{{ $key }}" {{ in_array((string) $key, array_map('strval', (array) Request::input('col_pes_id', [])), true) ? 'selected' : '' }}>{{ $value }}</option>
     @endforeach
 </select>
                     </div>
@@ -99,34 +111,30 @@
                         </div>
                     </div>
                 </div>
-
-            </div>
         </div>
     </div>
     @if(!is_null($tabela))
         <div class="card card-primary card-outline">
             <div class="card-header">
-                <div class="row" style="align-items: right">
-                    <div class="col-md-2" style="float: right;">
-                        <form id="exportPdf" target="_blank" method="post" action="{{{ route('rh.horastrabalhadasdiarias.pdf') }}}">
-                            {!! ActionButton::grid([
-                                    'type' => 'LINE',
-                                    'buttons' => [
-                                        [
-                                        'classButton' => 'btn btn-danger',
-                                        'icon' => 'fa fa-file-pdf-o',
-                                        'route' => 'rh.horastrabalhadasdiarias.pdf',
-                                        'label' => 'Exportar para PDF',
-                                        'method' => 'post',
-                                        'id' => '',
-                                        'attributes' => ['id' => 'formPdf']
-                                        ]
+                <div class="d-flex justify-content-end">
+                    <form id="exportPdf" target="_blank" method="post" action="{{{ route('rh.horastrabalhadasdiarias.pdf') }}}">
+                        {!! ActionButton::grid([
+                                'type' => 'LINE',
+                                'buttons' => [
+                                    [
+                                    'classButton' => 'btn btn-danger',
+                                    'icon' => 'fa fa-file-pdf-o',
+                                    'route' => 'rh.horastrabalhadasdiarias.pdf',
+                                    'label' => 'Exportar para PDF',
+                                    'method' => 'post',
+                                    'id' => '',
+                                    'attributes' => ['id' => 'formPdf']
                                     ]
-                            ]) !!}
-                            <input type="hidden" name="pel_id" id="periodoLaboralId" value="{{ Request::input('htr_pel_id')}}">
-                            <input type="hidden" name="set_id" id="setorId" value="{{ implode(',', (array) Request::input('cfn_set_id')) }}">
-                        </form>
-                    </div>
+                                ]
+                        ]) !!}
+                        <input type="hidden" name="pel_id" id="periodoLaboralId" value="{{ Request::input('htr_pel_id')}}">
+                        <input type="hidden" name="set_id" id="setorId" value="{{ implode(',', (array) Request::input('cfn_set_id')) }}">
+                    </form>
                 </div>
             </div>
 
@@ -144,7 +152,21 @@
 
     <style>
         .select2-container .select2-selection--single {
-            height: 32px !important;
+            height: 34px;
+        }
+
+        .select2-container .select2-selection--multiple {
+            min-height: 34px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            min-height: 34px;
+            padding: 0 5px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+            margin-top: 0;
+            height: 32px;
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -168,8 +190,8 @@
 
             $('#cfn_set_id').select2({
                 closeOnSelect: false,
-                allowClear: true,
-                placeholder: 'Selecione os Setores',
+                placeholder: $('#cfn_set_id').data('placeholder'),
+                width: '100%',
             }).on('select2:select', function () {
                 $('.select2-search__field').val('');
             });
@@ -177,8 +199,8 @@
 
             $('#col_pes_id').select2({
                 closeOnSelect: false,
-                allowClear: true,
-                placeholder: 'Selecione os colaboradores',
+                placeholder: $('#col_pes_id').data('placeholder'),
+                width: '100%',
             }).on('select2:select', function () {
                 $('.select2-search__field').val('');
             });
