@@ -76,13 +76,13 @@ class MenuRHSeeder extends Seeder
 
         $itensControleAcesso = [
             ['mit_nome' => 'Dispositivos de Acesso', 'mit_rota' => 'rh.dispositivosacesso.index', 'mit_icone' => 'fa fa-server', 'mit_ordem' => 1],
-            ['mit_nome' => 'Usuarios do Dispositivo', 'mit_rota' => 'rh.dispositivousuarios.index', 'mit_icone' => 'fa fa-user-circle', 'mit_ordem' => 2],
+            ['mit_nome' => 'Usuários do Dispositivo', 'mit_rota' => 'rh.dispositivousuarios.index', 'mit_icone' => 'fa fa-user-circle', 'mit_ordem' => 2],
             ['mit_nome' => 'Vincular Colaboradores', 'mit_rota' => 'rh.vincularcolaboradores.index', 'mit_icone' => 'fa fa-link', 'mit_ordem' => 3],
-            ['mit_nome' => 'Registros de Ponto', 'mit_rota' => 'rh.registrosponto.index', 'mit_icone' => 'fa fa-list-alt', 'mit_ordem' => 4],
+            ['mit_nome' => 'Registro de Horas', 'mit_rota' => 'rh.registrosponto.index', 'mit_icone' => 'fa fa-list-alt', 'mit_ordem' => 4],
             ['mit_nome' => 'Eventos de Acesso', 'mit_rota' => 'rh.eventosacesso.index', 'mit_icone' => 'fa fa-history', 'mit_ordem' => 5],
-            ['mit_nome' => 'Ponto Remoto', 'mit_rota' => 'rh.pontoremoto.index', 'mit_icone' => 'fa fa-home', 'mit_ordem' => 6],
-            ['mit_nome' => 'Aprovacoes de Ponto', 'mit_rota' => 'rh.aprovacoesponto.index', 'mit_icone' => 'fa fa-check-circle', 'mit_ordem' => 7],
-            ['mit_nome' => 'Configuracoes de Ponto', 'mit_rota' => 'rh.configuracoesponto.index', 'mit_icone' => 'fa fa-cog', 'mit_ordem' => 8],
+            ['mit_nome' => 'Registro de Horas Remoto ', 'mit_rota' => 'rh.pontoremoto.index', 'mit_icone' => 'fa fa-home', 'mit_ordem' => 6],
+            ['mit_nome' => 'Aprovação de Horas', 'mit_rota' => 'rh.aprovacoesponto.index', 'mit_icone' => 'fa fa-check-circle', 'mit_ordem' => 7],
+            ['mit_nome' => 'Configuração de Registro', 'mit_rota' => 'rh.configuracoesponto.index', 'mit_icone' => 'fa fa-cog', 'mit_ordem' => 8],
             ['mit_nome' => 'Teste de Dispositivo', 'mit_rota' => 'rh.testedispositivo.index', 'mit_icone' => 'fa fa-flask', 'mit_ordem' => 9],
         ];
 

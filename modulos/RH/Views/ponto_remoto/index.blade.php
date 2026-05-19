@@ -48,7 +48,7 @@
         <div class="col-md-6">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-history"></i> Meus registros recentes</h3>
+                    <h3 class="box-title"><i class="fa fa-history"></i> Meus registros pendentes</h3>
                 </div>
                 <div class="box-body table-responsive">
                     @if($meusRegistros->count())
