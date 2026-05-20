@@ -207,6 +207,19 @@ class Seguranca implements SegurancaContract
     {
         $permissoes = Cache::get('PERMISSOES_' . $usr_id);
 
-        return in_array($rota, $permissoes);
+        if (is_null($permissoes)) {
+            $this->makeCachePermissoes();
+            $permissoes = Cache::get('PERMISSOES_' . $usr_id, []);
+        }
+
+        if ($permissoes instanceof \Illuminate\Support\Collection) {
+            $permissoes = $permissoes->toArray();
+        }
+
+        if (!is_array($permissoes)) {
+            $permissoes = [];
+        }
+
+        return in_array($rota, $permissoes, true);
     }
 }
