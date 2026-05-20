@@ -276,6 +276,54 @@ class SegurancaTest extends ModulosTestCase
         $this->assertFalse($this->app[Seguranca::class]->haspermission($denied->prm_rota));
     }
 
+    public function testHasPermissionWithoutWarmCache()
+    {
+        $usuario = factory(Usuario::class)->create();
+        $userId = $usuario->usr_id;
+
+        factory(Modulo::class, 2)->create();
+        $nomeModulo = Str::random(7);
+        $modulo = factory(Modulo::class)->create([
+            'mod_nome' => $nomeModulo,
+            'mod_slug' => strtolower($nomeModulo),
+        ]);
+
+        factory(Perfil::class, 2)->create([
+            'prf_mod_id' => random_int(1, 2)
+        ]);
+
+        $perfil = factory(Perfil::class)->create([
+            'prf_mod_id' => $modulo->mod_id
+        ]);
+
+        $permissoes = [];
+
+        $permissoes[] = factory(Permissao::class)->create([
+            'prm_rota' => strtolower($nomeModulo) . '.index.index'
+        ])->prm_id;
+
+        for ($i = 0; $i < 10; $i++) {
+            $permissoes[] = factory(Permissao::class)->create([
+                'prm_rota' => strtolower($nomeModulo) . '.' . Str::random(5)
+            ])->prm_id;
+        }
+
+        $deniedId = array_pop($permissoes);
+
+        $denied = Permissao::find($deniedId);
+        $granted = Permissao::find(random_int(2, 9));
+
+        $perfil->permissoes()->sync($permissoes);
+        $usuario->perfis()->sync($perfil->prf_id);
+
+        $this->actingAs($usuario);
+
+        $this->assertNull(Cache::get('PERMISSOES_' . $userId));
+        $this->assertTrue($this->app[Seguranca::class]->haspermission($granted->prm_rota));
+        $this->assertFalse($this->app[Seguranca::class]->haspermission($denied->prm_rota));
+        $this->assertIsArray(Cache::get('PERMISSOES_' . $userId));
+    }
+
     public function testHasPermissionPreLoginOpenRoutes()
     {
         /*
