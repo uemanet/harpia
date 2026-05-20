@@ -102,6 +102,33 @@ function renderCalendar(data) {
         return;
     }
 
+    const fields = {
+        id: document.getElementById('cld_id'),
+        name: document.getElementById('cld_nome'),
+        type: document.getElementById('cld_tipo_evento'),
+        date: document.getElementById('cld_data'),
+        notes: document.getElementById('cld_observacao'),
+    };
+
+    const urls = {
+        events: form.dataset.eventsUrl,
+        save: form.dataset.saveUrl,
+        editTemplate: form.dataset.editUrlTemplate,
+        delete: form.dataset.deleteUrl,
+    };
+
+    const harpia = window.$?.harpia;
+    const toastr = window.toastr;
+
+    const showLoading = () => harpia?.showloading?.();
+    const hideLoading = () => harpia?.hideloading?.();
+
+    const notifyError = (message) => {
+        if (toastr?.error) {
+            toastr.error(message, null, { progressBar: true });
+            return;
+        }
+
     // Inicializa o calendário com a API Moderna (v5/v6)
     calendarInstance = new Calendar(calendarEl, {
         initialView: 'dayGridMonth', // antigo defaultView

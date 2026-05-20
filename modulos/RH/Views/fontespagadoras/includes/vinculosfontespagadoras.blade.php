@@ -2,17 +2,15 @@
 <div class="row">
     <div class="col-md-12">
         <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Salários Base</h3>
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Salários Base</h3>
 
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                <div class="card-tools float-end">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"><i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
             <div class="card-body">
                 @if(!$fonte_pagadora->vinculos_fontes_pagadoras->isEmpty())
                     <table class="table table-bordered">
@@ -59,7 +57,7 @@
                 @endif
             </div>
             <!-- /.card-body -->
-            <div class="box-footer">
+            <div class="card-footer">
                 {!! ActionButton::grid([
                     'type' => 'LINE',
                     'buttons' => [
@@ -75,6 +73,5 @@
                 ]) !!}
             </div>
         </div>
-        <!-- /.box -->
     </div>
 </div>

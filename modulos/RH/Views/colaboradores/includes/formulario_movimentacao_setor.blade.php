@@ -14,7 +14,7 @@
 
     <div class="form-group col-md-3">
         <div class="controls">
-            <button type="submit" class="btn btn-primary pull-left">Atualizar setor</button>
+            <button type="submit" class="btn btn-primary float-start">Atualizar setor</button>
         </div>
     </div>
 </div>

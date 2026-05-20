@@ -21,4 +21,9 @@ class Setor extends BaseModel
         'set_descricao' => 'like',
         'set_sigla' => 'like'
     ];
+
+    public function gestores()
+    {
+        return $this->hasMany('Modulos\RH\Models\GestorSetor', 'gst_set_id', 'set_id')->where('gst_ativo', true);
+    }
 }

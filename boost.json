@@ -1,10 +1,15 @@
 {
     "agents": [
-        "copilot"
+        "copilot",
+        "claude_code",
+        "codex"
     ],
+    "cloud": false,
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
-    "nightwatch_mcp": false,
-    "sail": false
+    "nightwatch": false,
+    "sail": false,
+    "skills": [
+        "laravel-best-practices"
+    ]
 }

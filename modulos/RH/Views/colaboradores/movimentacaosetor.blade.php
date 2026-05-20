@@ -150,4 +150,3 @@
 
     @vite('modulos/RH/Resources/js/pages/colaboradores/movimentacaosetor.js')
 @stop
-

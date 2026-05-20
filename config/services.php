@@ -35,4 +35,9 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'controlid' => [
+        'login' => env('CONTROLID_LOGIN', 'admin'),
+        'password' => env('CONTROLID_PASSWORD', 'admin'),
+    ],
+
 ];
