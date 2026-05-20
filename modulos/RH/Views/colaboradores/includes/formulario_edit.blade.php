@@ -58,10 +58,11 @@
                 <p class="help-block">Nenhuma foto facial cadastrada.</p>
             @endif
             @if ($errors->has('col_foto_facial')) <p class="help-block">{{ $errors->first('col_foto_facial') }}</p> @endif
+            @php($fotoFacialVersion = optional($colaborador->foto_facial)->anx_localizacao ?? 'avatar')
             <div id="preview-foto-facial-wrapper" style="margin-top: 12px; {{ empty($colaborador->col_foto_anx_id) ? 'display: none;' : '' }}">
                 <img
                     id="preview-foto-facial"
-                    src="{{ route('rh.api.colaboradores.foto', ['id' => $colaborador->col_id]) }}"
+                    src="{{ route('rh.colaboradores.foto', ['id' => $colaborador->col_id, 'v' => $fotoFacialVersion], false) }}"
                     alt="Pré-visualização da foto facial"
                     style="max-width: 220px; max-height: 220px; width: 100%; object-fit: cover; border: 1px solid #d2d6de; border-radius: 8px; padding: 4px;"
                 >

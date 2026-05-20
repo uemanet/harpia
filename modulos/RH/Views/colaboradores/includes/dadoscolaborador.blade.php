@@ -26,8 +26,9 @@
                 <div class="row">
                     <div class="col-md-4 text-center">
                         <p><strong>Foto facial</strong></p>
+                        @php($fotoFacialVersion = optional($colaborador->foto_facial)->anx_localizacao ?? 'avatar')
                         <img
-                            src="{{ route('rh.api.colaboradores.foto', ['id' => $colaborador->col_id]) }}"
+                            src="{{ route('rh.colaboradores.foto', ['id' => $colaborador->col_id, 'v' => $fotoFacialVersion], false) }}"
                             alt="Foto facial do colaborador"
                             style="max-width: 180px; max-height: 180px; width: 100%; object-fit: cover; border: 1px solid #d2d6de; border-radius: 8px; padding: 4px;"
                         >

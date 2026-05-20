@@ -745,23 +745,28 @@ class ColaboradoresController extends BaseController
     {
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
         $avatarPadrao = public_path('/img/avatar.png');
+        $cacheHeaders = [
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ];
 
         if (!$colaborador || !$colaborador->col_foto_anx_id) {
-            return response()->file($avatarPadrao);
+            return response()->file($avatarPadrao, $cacheHeaders);
         }
 
         $caminho = $this->anexoRepository->obterCaminhoAnexo($colaborador->col_foto_anx_id);
 
         if ($caminho === 'error_non_existent' || !file_exists($caminho)) {
-            return response()->file($avatarPadrao);
+            return response()->file($avatarPadrao, $cacheHeaders);
         }
 
         $mime = $colaborador->foto_facial->anx_mime ?? mime_content_type($caminho) ?? 'image/jpeg';
 
-        return response()->file($caminho, [
+        return response()->file($caminho, array_merge($cacheHeaders, [
             'Content-Type' => $mime,
             'Content-Disposition' => 'inline; filename="foto-colaborador-' . $colaborador->col_id . '"',
-        ]);
+        ]));
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)
