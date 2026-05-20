@@ -27,10 +27,16 @@ class PontoRemotoApiController extends BaseController
 
     private function registrar(Request $request, string $tipo)
     {
-        $request->validate([
+        $rules = [
             'email' => 'required|email',
             'data_nascimento' => 'required|date_format:Y-m-d',
-        ]);
+        ];
+
+        if ($tipo === 'saida') {
+            $rules['atividades'] = 'required|string|min:5|max:5000';
+        }
+
+        $request->validate($rules);
 
         $pessoa = Pessoa::where('pes_email', $request->email)->first();
 
@@ -51,6 +57,7 @@ class PontoRemotoApiController extends BaseController
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'canal' => 'api',
+                'atividades' => $request->input('atividades'),
             ]);
 
             return response()->json([

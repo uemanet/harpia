@@ -73,6 +73,10 @@ class PontoRemotoController extends BaseController
 
     public function postSaida(Request $request)
     {
+        $request->validate([
+            'atividades' => 'required|string|min:5|max:5000',
+        ]);
+
         $user = auth()->user();
 
         if (!$user || !$user->pessoa) {
@@ -94,6 +98,7 @@ class PontoRemotoController extends BaseController
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'canal' => 'web',
+                'atividades' => (string) $request->atividades,
             ]);
 
             flash()->success('Saida registrada com sucesso. Aguardando aprovacao do gestor.');

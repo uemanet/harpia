@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\ColetarEventosControlId::class,
         Commands\SincronizarHorasTrabalhadas::class,
         Commands\ReconstruirHorasDiarias::class,
+        Commands\ReconstruirJornadasRemotas::class,
     ];
 
     /**

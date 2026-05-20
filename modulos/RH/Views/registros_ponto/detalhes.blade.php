@@ -15,11 +15,14 @@
                         <th>Data/Hora</th>
                         <th>Origem</th>
                         <th>Status</th>
+                        <th>Jornada</th>
+                        <th>Atividades</th>
                         <th>Mensagem</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($eventos as $evento)
+                        @php($jornada = $evento->jornada_saida ?: $evento->jornada_entrada)
                         <tr>
                             <td>{{ $evento->eva_id }}</td>
                             <td>{{ ucfirst($evento->eva_tipo) }}</td>
@@ -32,6 +35,8 @@
                                     default => 'secondary'
                                 } }}">{{ $evento->eva_status }}</span>
                             </td>
+                            <td>{{ $jornada ? '#' . $jornada->jor_id . ' (' . $jornada->jor_status . ')' : '—' }}</td>
+                            <td style="white-space: normal;">{{ $jornada->jor_atividades ?? '—' }}</td>
                             <td>{{ $evento->eva_status_mensagem ?? '—' }}</td>
                         </tr>
                     @endforeach

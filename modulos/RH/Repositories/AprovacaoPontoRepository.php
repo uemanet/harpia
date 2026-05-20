@@ -16,4 +16,9 @@ class AprovacaoPontoRepository extends BaseRepository
     {
         return $this->model->where('apr_eva_id', $evaId)->orderBy('apr_data_aprovacao', 'desc')->first();
     }
+
+    public function buscarPorJornada(int $jorId): ?AprovacaoPonto
+    {
+        return $this->model->where('apr_jor_id', $jorId)->orderBy('apr_data_aprovacao', 'desc')->first();
+    }
 }
