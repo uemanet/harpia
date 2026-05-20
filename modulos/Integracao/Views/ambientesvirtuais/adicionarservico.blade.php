@@ -22,11 +22,11 @@
                   <label for="asr_ser_id" class="control-label">Serviço*</label>
                   <div class="controls">
                       <select name="asr_ser_id" class="form-control" id="asr_ser_id">
-    <option value="">Selecione o serviço</option>
-    @foreach($servicos as $key => $value)
-        <option value="{{ $key }}" {{ old('asr_ser_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
-    @endforeach
-</select>
+                        <option value="">Selecione o serviço</option>
+                        @foreach($servicos as $key => $value)
+                            <option value="{{ $key }}" {{ old('asr_ser_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
                       @if ($errors->has('asr_ser_id')) <p class="help-block">{{ $errors->first('asr_ser_id') }}</p> @endif
                   </div>
               </div>
