@@ -29,8 +29,9 @@ class VinculosFontesPagadorasController extends BaseController
 
         $fonte_pagadora = $this->fontePagadoraRepository->find($idFontePagadora);
         $vinculos = $this->vinculoRepository->lists('vin_id', 'vin_descricao');
+        $vinculo_fpg = new VinculoFontePagadora();
 
-        return view('RH::vinculosfontespagadoras.create', compact('fonte_pagadora', 'vinculos'));
+        return view('RH::vinculosfontespagadoras.create', compact('fonte_pagadora', 'vinculos', 'vinculo_fpg'));
     }
 
     public function postCreate($idFontePagadora, VinculoFontePagadoraRequest $request)

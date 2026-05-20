@@ -48,6 +48,29 @@
     </div>
 </div>
 <div class="row">
+    <div class="form-group col-md-6 @if ($errors->has('col_foto_facial')) has-error @endif">
+        <label for="col_foto_facial" class="control-label">Foto facial</label>
+        <div class="controls">
+            <input type="file" name="col_foto_facial" id="col_foto_facial" class="form-control" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+            @if(!empty($colaborador->foto_facial))
+                <p class="help-block">Foto atual: {{ $colaborador->foto_facial->anx_nome }}</p>
+            @else
+                <p class="help-block">Nenhuma foto facial cadastrada.</p>
+            @endif
+            @if ($errors->has('col_foto_facial')) <p class="help-block">{{ $errors->first('col_foto_facial') }}</p> @endif
+            @php($fotoFacialVersion = optional($colaborador->foto_facial)->anx_localizacao ?? 'avatar')
+            <div id="preview-foto-facial-wrapper" style="margin-top: 12px; {{ empty($colaborador->col_foto_anx_id) ? 'display: none;' : '' }}">
+                <img
+                    id="preview-foto-facial"
+                    src="{{ route('rh.colaboradores.foto', ['id' => $colaborador->col_id, 'v' => $fotoFacialVersion], false) }}"
+                    alt="Pré-visualização da foto facial"
+                    style="max-width: 220px; max-height: 220px; width: 100%; object-fit: cover; border: 1px solid #d2d6de; border-radius: 8px; padding: 4px;"
+                >
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="form-group col-md-12 @if ($errors->has('col_observacao')) has-error @endif">
         <label for="col_observacao" class="form-label">Observação</label>
         <div class="controls">

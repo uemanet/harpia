@@ -6,6 +6,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\FuncaoRequest;
+use Modulos\RH\Models\Funcao;
 use Modulos\RH\Repositories\FuncaoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -79,7 +80,8 @@ class FuncoesController extends BaseController
 
     public function getCreate()
     {
-        return view('RH::funcoes.create');
+        $funcao = new Funcao();
+        return view('RH::funcoes.create', compact('funcao'));
     }
 
     public function postCreate(FuncaoRequest $request)

@@ -41,14 +41,14 @@
     <div class=" form-group col-md-3 @if ($errors->has('scb_qtd_pagamento')) has-error @endif"  id= "unidade" >
         <label for="scb_qtd_pagamento" class="form-label">Qtd. Pagamento</label>
         <div class="controls">
-            <input type="number" name="scb_qtd_pagamento" value="{{ old('scb_qtd_pagamento') }}" class="form-control" >
+            <input type="number" name="scb_qtd_pagamento" value="{{ old('scb_qtd_pagamento', $salario->scb_qtd_pagamento) }}" class="form-control" >
             @if ($errors->has('scb_qtd_pagamento')) <p class="help-block">{{ $errors->first('scb_qtd_pagamento') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3  @if ($errors->has('scb_valor')) has-error @endif">
         <label for="scb_valor" class="form-label">Valor Bruto (R$)*</label>
         <div class="controls">
-            <input type="text" name="scb_valor" value="{{ old('scb_valor') }}" class="form-control" onkeyup="k(this);" >
+            <input type="text" name="scb_valor" value="{{ old('scb_valor', $salario->scb_valor) }}" class="form-control" onkeyup="k(this);" >
             @if ($errors->has('scb_valor')) <p class="help-block">{{ $errors->first('scb_valor') }}</p> @endif
         </div>
     </div>
@@ -56,7 +56,7 @@
     <div class="form-group col-md-3 @if ($errors->has('scb_data_inicio')) has-error @endif">
         <label for="scb_data_inicio" class="form-label">Data Inicio Pag.*</label>
         <div class="controls">
-            <input type="text" name="scb_data_inicio" value="{{ old('scb_data_inicio') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
+            <input type="text" name="scb_data_inicio" value="{{ old('scb_data_inicio', $salario->scb_data_inicio) }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('scb_data_inicio')) <p
                     class="help-block">{{ $errors->first('scb_data_inicio') }}</p> @endif
         </div>
@@ -64,7 +64,7 @@
     <div class="form-group col-md-3 @if ($errors->has('scb_data_fim')) has-error @endif">
         <label for="scb_data_fim" class="form-label">Data Fim Pag.</label>
         <div class="controls">
-            <input type="text" name="scb_data_fim" value="{{ old('scb_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
+            <input type="text" name="scb_data_fim" value="{{ old('scb_data_fim', $salario->scb_data_fim) }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('scb_data_fim')) <p
                     class="help-block">{{ $errors->first('scb_data_fim') }}</p> @endif
         </div>

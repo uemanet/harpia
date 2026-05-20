@@ -1,10 +1,5 @@
 @extends('layouts.modulos.default')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/fullcalendar.min.css')}}">
-@endsection
-
-
 @section('title')
     Módulo de RH
 @stop
@@ -15,14 +10,21 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-12 col-md-12 col-lg-3">
-            <div class=" box box-primary jarviswidget jarviswidget-color-blueDark">
-                <header>
-                    <h2 style="padding-left: 10px">Adicionar Eventos</h2>
-                </header>
-                <div>
-                    <div class="widget-body" style="padding: 10px">
-                        <form id="formEvent" action="javascript:func()" method="post">
+        <div class="col-lg-3 col-md-12 mb-3">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title m-0">Adicionar Eventos</h3>
+                </div>
+                <div class="card-body">
+                        <form
+                            id="formEvent"
+                            method="post"
+                            onsubmit="return false"
+                            data-events-url="{{ route('rh.async.calendarios.index') }}"
+                            data-save-url="{{ route('rh.async.calendarios.create') }}"
+                            data-edit-url-template="{{ route('rh.async.calendarios.edit', ['id' => '__ID__']) }}"
+                            data-delete-url="{{ route('rh.async.calendarios.delete') }}"
+                        >
                             <input type="hidden" id="cld_id" name="cld_id" value="">
                             <fieldset>
                                 <div class="form-group">
