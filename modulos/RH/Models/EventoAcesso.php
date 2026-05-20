@@ -44,4 +44,14 @@ class EventoAcesso extends BaseModel
     {
         return $this->hasMany('Modulos\RH\Models\AprovacaoPonto', 'apr_eva_id', 'eva_id');
     }
+
+    public function jornada_entrada()
+    {
+        return $this->hasOne('Modulos\RH\Models\JornadaRemota', 'jor_eva_entrada_id', 'eva_id');
+    }
+
+    public function jornada_saida()
+    {
+        return $this->hasOne('Modulos\RH\Models\JornadaRemota', 'jor_eva_saida_id', 'eva_id');
+    }
 }

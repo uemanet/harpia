@@ -4,11 +4,13 @@ namespace Modulos\RH\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modulos\RH\Models\Colaborador;
 use Modulos\RH\Models\EventoAcesso;
 use Modulos\RH\Repositories\ConfiguracaoPontoRepository;
 use Modulos\RH\Repositories\EventoAcessoRepository;
+use Modulos\RH\Repositories\JornadaRemotaRepository;
 
 class PontoRemotoService
 {
@@ -16,7 +18,8 @@ class PontoRemotoService
         private AntiDuplicidadeService $antiDuplicidadeService,
         private AprovadorPontoService $aprovadorPontoService,
         private EventoAcessoRepository $eventoRepository,
-        private ConfiguracaoPontoRepository $configuracaoRepository
+        private ConfiguracaoPontoRepository $configuracaoRepository,
+        private JornadaRemotaRepository $jornadaRemotaRepository
     ) {
     }
 
@@ -31,24 +34,31 @@ class PontoRemotoService
         $this->validarAprovadores($colaborador);
         $this->validarJanelaHorario($agora);
         $this->validarAntiDuplicidade($colaborador, $tipo, $agora);
+        $this->validarAtividadesDaSaida($tipo, $contexto);
 
-        $evento = EventoAcesso::create([
-            'eva_col_id' => $colaborador->col_id,
-            'eva_dis_id' => null,
-            'eva_tipo' => $tipo,
-            'eva_data_hora' => $agora->toDateTimeString(),
-            'eva_origem' => 'home_office',
-            'eva_status' => 'pendente',
-            'eva_status_mensagem' => 'Registro remoto aguardando aprovacao do gestor.',
-            'eva_hash' => $this->antiDuplicidadeService->gerarHash(
-                (string) $colaborador->col_id,
-                'home_office:' . $tipo,
-                $agora->toDateTimeString()
-            ),
-            'eva_ip_origem' => $contexto['ip'] ?? null,
-            'eva_user_agent' => $contexto['user_agent'] ?? null,
-            'eva_observacao' => $this->montarObservacao($colaborador, $tipo, $contexto),
-        ]);
+        $evento = DB::transaction(function () use ($colaborador, $tipo, $agora, $contexto) {
+            $evento = EventoAcesso::create([
+                'eva_col_id' => $colaborador->col_id,
+                'eva_dis_id' => null,
+                'eva_tipo' => $tipo,
+                'eva_data_hora' => $agora->toDateTimeString(),
+                'eva_origem' => 'home_office',
+                'eva_status' => 'pendente',
+                'eva_status_mensagem' => 'Registro remoto aguardando aprovacao do gestor.',
+                'eva_hash' => $this->antiDuplicidadeService->gerarHash(
+                    (string) $colaborador->col_id,
+                    'home_office:' . $tipo,
+                    $agora->toDateTimeString()
+                ),
+                'eva_ip_origem' => $contexto['ip'] ?? null,
+                'eva_user_agent' => $contexto['user_agent'] ?? null,
+                'eva_observacao' => $this->montarObservacao($colaborador, $tipo, $contexto),
+            ]);
+
+            $this->registrarNaJornadaRemota($colaborador, $evento, $tipo, $contexto);
+
+            return $evento;
+        });
 
         Log::info('Registro remoto criado e enviado para aprovacao.', [
             'evento_id' => $evento->eva_id,
@@ -62,24 +72,17 @@ class PontoRemotoService
     public function obterEstadoAtualDoDia(Colaborador $colaborador, ?Carbon $data = null): array
     {
         $data = $data ?: Carbon::now();
-        $eventos = $this->eventoRepository->buscarEventosDoDia($colaborador->col_id, $data->format('Y-m-d'));
-
-        $entradaAberta = false;
-        $ultimoEvento = null;
-
-        foreach ($eventos as $evento) {
-            $ultimoEvento = $evento;
-
-            if ($evento['eva_tipo'] === 'entrada') {
-                $entradaAberta = true;
-            } elseif ($evento['eva_tipo'] === 'saida') {
-                $entradaAberta = false;
-            }
-        }
+        $eventos = EventoAcesso::where('eva_col_id', $colaborador->col_id)
+            ->where('eva_origem', 'home_office')
+            ->whereDate('eva_data_hora', $data->format('Y-m-d'))
+            ->orderBy('eva_data_hora')
+            ->get();
+        $jornadaAberta = $this->jornadaRemotaRepository->buscarAbertaDoColaborador($colaborador->col_id);
 
         return [
-            'tem_entrada_aberta' => $entradaAberta,
-            'ultimo_evento' => $ultimoEvento,
+            'tem_entrada_aberta' => $jornadaAberta !== null,
+            'ultimo_evento' => $eventos->last(),
+            'jornada_aberta' => $jornadaAberta,
             'pode_entrada' => true,
             'pode_saida' => true,
             'eventos' => $eventos,
@@ -88,9 +91,9 @@ class PontoRemotoService
 
     public function listarMeusRegistros(int $colaboradorId, int $limite = 30): Collection
     {
-        return EventoAcesso::where('eva_col_id', $colaboradorId)
-            ->where('eva_status', 'pendente')
-            ->orderByDesc('eva_data_hora')
+        return \Modulos\RH\Models\JornadaRemota::with(['eventoEntrada', 'eventoSaida', 'aprovador.pessoa'])
+            ->where('jor_col_id', $colaboradorId)
+            ->orderByRaw('COALESCE(jor_saida_em, jor_entrada_em) desc')
             ->limit($limite)
             ->get();
     }
@@ -157,11 +160,54 @@ class PontoRemotoService
         }
     }
 
+    private function validarAtividadesDaSaida(string $tipo, array $contexto): void
+    {
+        if ($tipo !== 'saida') {
+            return;
+        }
+
+        $atividades = trim((string) ($contexto['atividades'] ?? ''));
+
+        if ($atividades === '') {
+            throw new \InvalidArgumentException('Informe as atividades executadas para registrar a saida remota.');
+        }
+    }
+
+    private function registrarNaJornadaRemota(Colaborador $colaborador, EventoAcesso $evento, string $tipo, array $contexto): void
+    {
+        if ($tipo === 'entrada') {
+            $this->jornadaRemotaRepository->marcarAbertasComoInconsistentes(
+                $colaborador->col_id,
+                'Nova entrada remota registrada antes do fechamento da jornada anterior.'
+            );
+
+            $this->jornadaRemotaRepository->abrirJornada($colaborador->col_id, $evento);
+
+            return;
+        }
+
+        $atividades = trim((string) ($contexto['atividades'] ?? ''));
+        $jornadaAberta = $this->jornadaRemotaRepository->buscarAbertaDoColaborador($colaborador->col_id);
+
+        if (!$jornadaAberta) {
+            $this->jornadaRemotaRepository->criarJornadaInconsistenteDeSaida(
+                $colaborador->col_id,
+                $evento,
+                $atividades
+            );
+
+            return;
+        }
+
+        $this->jornadaRemotaRepository->fecharJornadaComSaida($jornadaAberta, $evento, $atividades);
+    }
+
     private function montarObservacao(Colaborador $colaborador, string $tipo, array $contexto): string
     {
         return json_encode([
             'tipo_registro' => $tipo,
             'origem_fluxo' => $contexto['canal'] ?? 'web',
+            'atividades' => trim((string) ($contexto['atividades'] ?? '')) ?: null,
             'observacao_usuario' => trim((string) ($contexto['observacao'] ?? '')) ?: null,
             'aprovadores_sugeridos' => $this->aprovadorPontoService->resolverAprovadores($colaborador)
                 ->pluck('col_id')

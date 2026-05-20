@@ -18,25 +18,52 @@ class EventoAcessoRepository extends BaseRepository
         return $this->model->where('eva_hash', $hash)->first();
     }
 
-    public function buscarEventosDoDia(int $colId, string $data): array
+    public function buscarEventosDoDia(
+        int $colId,
+        string $data,
+        ?string $origem = null,
+        ?array $statuses = null,
+        array $ignorarEvaIds = []
+    ): array
     {
-        return $this->model
+        $query = $this->model
             ->where('eva_col_id', $colId)
             ->whereDate('eva_data_hora', $data)
-            ->whereIn('eva_status', ['processado', 'aprovado'])
-            ->orderBy('eva_data_hora')
-            ->get()
-            ->toArray();
+            ->whereIn('eva_status', $statuses ?: ['processado', 'aprovado']);
+
+        if ($origem !== null) {
+            $query->where('eva_origem', $origem);
+        }
+
+        if (!empty($ignorarEvaIds)) {
+            $query->whereNotIn('eva_id', $ignorarEvaIds);
+        }
+
+        return $query->orderBy('eva_data_hora')->get()->toArray();
     }
 
-    public function buscarPrimeiroEventoDoDia(int $colId, string $data): ?EventoAcesso
+    public function buscarPrimeiroEventoDoDia(
+        int $colId,
+        string $data,
+        ?string $origem = null,
+        ?array $statuses = null,
+        array $ignorarEvaIds = []
+    ): ?EventoAcesso
     {
-        return $this->model
+        $query = $this->model
             ->where('eva_col_id', $colId)
             ->whereDate('eva_data_hora', $data)
-            ->whereIn('eva_status', ['processado', 'aprovado'])
-            ->orderBy('eva_data_hora')
-            ->first();
+            ->whereIn('eva_status', $statuses ?: ['processado', 'aprovado']);
+
+        if ($origem !== null) {
+            $query->where('eva_origem', $origem);
+        }
+
+        if (!empty($ignorarEvaIds)) {
+            $query->whereNotIn('eva_id', $ignorarEvaIds);
+        }
+
+        return $query->orderBy('eva_data_hora')->first();
     }
 
     public function buscarEventosComErro(int $limit = 100): array

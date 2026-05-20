@@ -96,6 +96,11 @@ class Colaborador extends BaseModel
         return $this->hasMany('Modulos\RH\Models\EventoAcesso', 'eva_col_id', 'col_id');
     }
 
+    public function jornadas_remotas()
+    {
+        return $this->hasMany('Modulos\RH\Models\JornadaRemota', 'jor_col_id', 'col_id');
+    }
+
     public function mapeamentos()
     {
         return $this->hasMany('Modulos\RH\Models\MapeamentoDispositivo', 'map_col_id', 'col_id');

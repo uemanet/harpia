@@ -32,6 +32,10 @@ class RegistrosPontoController extends BaseController
             )
             ->groupBy('eva_col_id', 'data', 'pes_nome', 'set_descricao', 'eva_origem');
 
+        if ($request->filled('pes_nome')) {
+            $query->where('gra_pessoas.pes_nome', 'like', '%' . $request->pes_nome . '%');
+        }
+
         if ($request->filled('setor')) {
             $query->where('cfn_set_id', $request->setor);
         }
@@ -42,6 +46,10 @@ class RegistrosPontoController extends BaseController
 
         if ($request->filled('status')) {
             $query->havingRaw("GROUP_CONCAT(DISTINCT eva_status) LIKE ?", ["%{$request->status}%"]);
+        }
+
+        if ($request->filled('origem')) {
+            $query->where('eva_origem', $request->origem);
         }
 
         if ($request->filled('data_inicio')) {
@@ -62,7 +70,13 @@ class RegistrosPontoController extends BaseController
         $colId = $request->get('col_id');
         $data = $request->get('data');
 
-        $eventos = EventoAcesso::with(['colaborador.pessoa'])
+        $eventos = EventoAcesso::with([
+            'colaborador.pessoa',
+            'jornada_entrada.aprovador.pessoa',
+            'jornada_entrada.aprovacoes.aprovador.pessoa',
+            'jornada_saida.aprovador.pessoa',
+            'jornada_saida.aprovacoes.aprovador.pessoa',
+        ])
             ->where('eva_col_id', $colId)
             ->whereDate('eva_data_hora', $data)
             ->orderBy('eva_data_hora')

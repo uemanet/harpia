@@ -247,6 +247,7 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::get('/', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@getIndex')->name('rh.aprovacoesponto.index');
         Route::get('/show/{id}', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@getShow')->name('rh.aprovacoesponto.show');
         Route::post('/aprovar', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@postAprovar')->name('rh.aprovacoesponto.aprovar');
+        Route::post('/parcial', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@postParcial')->name('rh.aprovacoesponto.parcial');
         Route::post('/reprovar', '\Modulos\RH\Http\Controllers\AprovacaoPontoController@postReprovar')->name('rh.aprovacoesponto.reprovar');
     });
 

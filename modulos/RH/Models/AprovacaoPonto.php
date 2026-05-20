@@ -12,11 +12,13 @@ class AprovacaoPonto extends BaseModel
 
     protected $fillable = [
         'apr_eva_id',
+        'apr_jor_id',
         'apr_aprovador_col_id',
         'apr_data_aprovacao',
         'apr_status',
         'apr_motivo',
         'apr_hora_ajustada',
+        'apr_horas_aceitas',
     ];
 
     protected $searchable = [
@@ -31,5 +33,10 @@ class AprovacaoPonto extends BaseModel
     public function aprovador()
     {
         return $this->belongsTo('Modulos\RH\Models\Colaborador', 'apr_aprovador_col_id', 'col_id');
+    }
+
+    public function jornada()
+    {
+        return $this->belongsTo('Modulos\RH\Models\JornadaRemota', 'apr_jor_id', 'jor_id');
     }
 }
