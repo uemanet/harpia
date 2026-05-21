@@ -1,7 +1,7 @@
 @extends('layouts.modulos.default')
 
 @section('title')
-    Colaboradors
+    Colaboradores
 @stop
 
 @section('scripts')

@@ -2,6 +2,7 @@
 /node_modules
 /public/storage
 /public/build
+/public/hot
 /storage/uploads
 Homestead.yaml
 Homestead.json
