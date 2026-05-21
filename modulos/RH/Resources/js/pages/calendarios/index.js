@@ -125,9 +125,10 @@ function renderCalendar(data) {
 
     const notifyError = (message) => {
         if (toastr?.error) {
-            toastr.error(message, null, { progressBar: true });
+            toastr.error(message, null, {progressBar: true});
             return;
         }
+    }
 
     // Inicializa o calendário com a API Moderna (v5/v6)
     calendarInstance = new Calendar(calendarEl, {
