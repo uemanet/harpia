@@ -1,13 +1,10 @@
 import $ from 'jquery';
 import Swal from "sweetalert2";
 
-const baseUrl = $('meta[name="base-url"]').attr('content');
-const csrfToken = $('meta[name="csrf-token"]').attr('content');
-
 $(document).on('click', '.btn-desvincular', function (event) {
     event.preventDefault();
 
-    var button = $(this);
+    const button = $(this);
 
     Swal.fire({
         title: "Tem certeza que deseja desvincular a função?",
@@ -20,8 +17,7 @@ $(document).on('click', '.btn-desvincular', function (event) {
         cancelButtonText: "Não, quero cancelar!"
     }).then((result) => {
         if (result.isConfirmed) {
-            console.log('teste')
-            button.closest("form").submit();
+            button.closest("form").trigger('submit');
         }
     });
 });
