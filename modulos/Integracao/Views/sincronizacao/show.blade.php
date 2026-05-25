@@ -12,27 +12,28 @@
     <!--  Dados Pessoais  -->
     <div class="row">
         <div class="col-md-12">
-            <!-- About Me Box -->
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><strong>Ação:</strong> {{ ucfirst(strtolower($sincronizacao->sym_action)) }}
+            <!-- About Me card -->
+            <div class="card card-primary card-outline">
+                <div class="card-header with-border">
+                    <h3 class="card-title"><strong>Ação:</strong> {{ ucfirst(strtolower($sincronizacao->sym_action)) }}
                     </h3>
-                    <div class="box-tools pull-right">
+
+                    <div class="card-tools">
                         @if($sincronizacao->sym_status == 1)
-                            <span class="label label-info">Pendente</span>
+                            <span class="badge bg-info">Pendente</span>
                         @elseif($sincronizacao->sym_status == 2)
-                            <span class="label label-success">Sucesso</span>
+                            <span class="badge bg-success">Sucesso</span>
                         @elseif($sincronizacao->sym_status == 3)
-                            <span class="label label-danger">Falha</span>
+                            <span class="badge bg-danger">Falha</span>
                         @endif
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                    class="fa fa-minus"></i>
+                        <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                            <i class="fa fa-minus"></i>
                         </button>
                     </div>
-                    <!-- /.box-tools -->
+                    <!-- /.card-tools -->
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
+                <!-- /.card-header -->
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             @if($sincronizacao->sym_data_envio)
@@ -57,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            <!-- /.box -->
+            <!-- /.card -->
         </div>
     </div>
 
@@ -70,10 +71,10 @@
         <!--  Dados Pessoais  -->
         <div class="row">
             <div class="col-md-12">
-                <!-- About Me Box -->
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">
+                <!-- About Me card -->
+                <div class="card card-primary">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">
                             <strong>Dados de migração</strong>
                         </h3>
                         @if($user->mapped)
@@ -81,15 +82,15 @@
                         @else
                             <span class="label label-danger">Usuário não mapeado</span>
                         @endif
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                        <div class="card-tools pull-right">
+                            <button type="button" class="btn btn-card-tool" data-widget="collapse"><i
                                         class="fa fa-minus"></i>
                             </button>
                         </div>
-                        <!-- /.box-tools -->
+                        <!-- /.card-tools -->
                     </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
+                    <!-- /.card-header -->
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <p style="font-size: large"><strong>Dados no Harpia: </strong></p>
@@ -124,7 +125,7 @@
                         </td>
                     </div>
                 </div>
-                <!-- /.box -->
+                <!-- /.card -->
             </div>
         </div>
     @endif

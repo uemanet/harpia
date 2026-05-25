@@ -8,10 +8,6 @@
     Gerenciamento de notas em matrículas de disciplinas
 @stop
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{url('/')}}/css/plugins/select2.css">
-@stop
-
 @section('content')
     <div class="row">
         <div class="card card-primary card-outline p-0">

@@ -9,18 +9,19 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de ambientes virtuais</h3>
+    <div class="card card-primary card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de edição de ambientes virtuais</h3>
         </div>
-        <div class="box-body">
-            <form action="{{ route('integracao.ambientesvirtuais.edit', [$ambientevirtual->amb_id]) }}" method="POST" id="form" role="form">
-    @csrf
-    @method('PUT')
-    {{-- Form model: $ambientevirtual - inputs devem usar old('campo', $ambientevirtual->campo) --}}
+        <form action="{{ route('integracao.ambientesvirtuais.edit', [$ambientevirtual->amb_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
                 @include('Integracao::ambientesvirtuais.includes.formulario')
-            </form>
-
-        </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop
