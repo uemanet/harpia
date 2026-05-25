@@ -60,39 +60,39 @@
             @if(count($ambiente->turmas))
                 <div class="card-body p-0">
                     <table class="table table-bordered table-striped table-hover">
-                    <thead>
-                    <th style="width: 10px">#</th>
-                    <th style="width: 10px">Curso</th>
-                    <th style="width: 20px">Oferta de Curso</th>
-                    <th style="width: 20px">Turma</th>
-                    <th style="width: 20px"></th>
-                    </thead>
-                    <tbody>
-                    @foreach($ambiente->ambienteturma as $ambienteturma)
-                        <tr>
-                            <td>{{$ambienteturma->turma->trm_id}}</td>
-                            <td>{{$ambienteturma->turma->ofertacurso->curso->crs_nome}}</td>
-                            <td>{{$ambienteturma->turma->ofertacurso->ofc_ano}}</td>
-                            <td>{{$ambienteturma->turma->trm_nome}}</td>
-                            <td>
-                                {!! ActionButton::grid([
-                                    'type' => 'LINE',
-                                    'buttons' => [
-                                        [
-                                            'classButton' => 'btn btn-danger btn-delete',
-                                            'icon' => 'fa fa-trash',
-                                            'route' => 'integracao.ambientesvirtuais.deletarturma',
-                                            'id' => $ambienteturma->atr_id,
-                                            'label' => '',
-                                            'method' => 'post'
+                        <thead>
+                            <th class="text-center">#</th>
+                            <th class="col-sm-7 text-center">Curso</th>
+                            <th class="col-sm-2 text-center">Oferta de Curso</th>
+                            <th class="col-sm-2 text-center">Turma</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                        @foreach($ambiente->ambienteturma as $ambienteturma)
+                            <tr>
+                                <td class="text-center">{{$ambienteturma->turma->trm_id}}</td>
+                                <td>{{$ambienteturma->turma->ofertacurso->curso->crs_nome}}</td>
+                                <td>{{$ambienteturma->turma->ofertacurso->ofc_ano}}</td>
+                                <td>{{$ambienteturma->turma->trm_nome}}</td>
+                                <td class="text-center">
+                                    {!! ActionButton::grid([
+                                        'type' => 'LINE',
+                                        'buttons' => [
+                                            [
+                                                'classButton' => 'btn btn-danger btn-delete',
+                                                'icon' => 'fa fa-trash',
+                                                'route' => 'integracao.ambientesvirtuais.deletarturma',
+                                                'id' => $ambienteturma->atr_id,
+                                                'label' => '',
+                                                'method' => 'post'
+                                            ]
                                         ]
-                                    ]
-                                ]) !!}
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                                    ]) !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             @else
                 <div class="card-body">
@@ -103,7 +103,6 @@
     </div>
 @stop
 
-
 @section('scripts')
     <script>
         window.PageRoutes = {
@@ -111,5 +110,5 @@
         };
     </script>
 
-    @vite('modulos/Integracao/Resouces/js/pages/ambientesvirtuais/adicionarturma.js')
+    @vite('modulos/Integracao/Resources/js/pages/ambientesvirtuais/adicionarturma.js')
 @stop

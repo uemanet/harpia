@@ -424,8 +424,6 @@ class AmbientesVirtuaisController extends BaseController
     public function postDeletarTurma(Request $request)
     {
         try {
-            DB::beginTransaction();
-
             $ambienteTurmaId = $request->get('id');
             $ambienteTurma = $this->ambienteTurmaRepository->find($ambienteTurmaId);
             $turma = $this->turmaRepository->find($ambienteTurma->atr_trm_id);
@@ -437,6 +435,7 @@ class AmbientesVirtuaisController extends BaseController
                 flash()->error('Erro ao tentar deletar. A turma contém dependências no sistema.');
                 return redirect()->back();
             }
+            DB::beginTransaction();
 
             $this->ambienteTurmaRepository->delete($ambienteTurmaId);
 
