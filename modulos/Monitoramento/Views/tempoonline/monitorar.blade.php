@@ -19,7 +19,3 @@
         <div class="text-center margin" id="grafico"></div>
     </div>
 @stop
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/Chart.min.js')}}" type="text/javascript"></script>
-@endsection
