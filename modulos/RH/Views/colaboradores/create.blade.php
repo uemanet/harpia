@@ -14,7 +14,7 @@
             <h3 class="card-title">Formulário de Cadastro de Colaboradores</h3>
             <span class="label label-success pull-right">Colaborador</span>
         </div>
-        <form action="{{ url('/') . "/rh/colaboradores/create" }}" method="POST" id="form" role="form">
+        <form action="{{ url('/') . "/rh/colaboradores/create" }}" method="POST" id="form" role="form" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 @include('Geral::pessoas.includes.formulario', ['pessoa' => $pessoa])

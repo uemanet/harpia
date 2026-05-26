@@ -1,142 +1,94 @@
 import $ from 'jquery';
+import moment from 'moment';
 import { Calendar } from 'fullcalendar';
 
-const baseUrl = $('meta[name="base-url"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-let calendarInstance = null; // Variável global para reaproveitar o calendário
+let calendarInstance = null;
 
-$(document).ready(function () {
-    $("#formEvent").validate({
-        // Rules for form validation
+$(function () {
+    const form = document.getElementById('formEvent');
+
+    if (!form) {
+        return;
+    }
+
+    $('#btnNovo').on('click', function () {
+        clearForm();
+    });
+
+    $('#formEvent').validate({
         rules: {
-            cld_nome: { required: true, maxlength: 100 },
+            cld_nome: { required: true, maxlength: 80 },
             cld_tipo_evento: { required: true },
             cld_data: { required: true },
-            cld_observacao: { required: false }
+            cld_observacao: { maxlength: 255 }
         },
-        // Messages for form validation
         messages: {
             cld_nome: { required: 'Campo obrigatório' },
             cld_tipo_evento: { required: 'Campo obrigatório' },
-            cld_data: { required: 'Campo obrigatório' },
-            cld_observacao: { required: 'Campo obrigatório' }
+            cld_data: { required: 'Campo obrigatório' }
         },
-        submitHandler: function(form, e) {
-            e.preventDefault();
+        submitHandler: function (_form, event) {
+            if (event) {
+                event.preventDefault();
+            }
 
-            let data = {
-                cld_id: $('#cld_id').val(),
-                cld_data: $('#cld_data').val(),
-                cld_nome: $('#cld_nome').val(),
-                cld_tipo_evento: $('#cld_tipo_evento').val(),
-                cld_observacao: $('#cld_observacao').val(),
-                _token: csrfToken,
-            };
-
-            $('#btnSalvar').prop('disabled', true); // Bloqueia o botão
-
-            // Ajax request
-            $.harpia.showloading();
-            $.ajax({
-                type: "POST",
-                url: window.PageRoutes.calendarios_create,
-                data: data,
-                success: function (response) {
-                    $.harpia.hideloading();
-                    clearForm(); // Limpa form após salvar
-                    getEventsData();
-                },
-                error: function (err) {
-                    $.harpia.hideloading();
-                    toastr.error(err.responseJSON.message, null, {progressBar: true});
-                    $('#btnSalvar').prop('disabled', false); // Reabilita o botão
-                }
-            });
+            saveEvent();
         }
     });
 
     getEventsData();
 });
 
-import moment from 'moment';
-
 function getEventsData() {
     $.ajax({
         url: window.PageRoutes.calendarios_index,
         type: "GET",
         success: function (data) {
-            let eventos = data.map(function(objeto) {
-                // Tenta converter a data que vem do banco para o padrão ISO que o FullCalendar exige
-                // Se o seu banco devolve 'Y-m-d H:i:s' (ex: 2026-05-18 15:30:00), o moment formata para o T separador.
-                // Se devolver d/m/Y, precisaremos avisar o moment do formato de entrada.
-
-                let dataFormatada = moment(objeto.cld_data, [
+            const eventos = data.map(function (objeto) {
+                const dataFormatada = moment(objeto.cld_data, [
                     "YYYY-MM-DD HH:mm:ss",
                     "DD/MM/YYYY HH:mm",
                     "DD/MM/YYYY",
                     "YYYY-MM-DD"
-                ]).format("YYYY-MM-DDTHH:mm:ss");
+                ], true);
 
                 return {
                     id: objeto.cld_id,
                     title: objeto.cld_nome,
-                    start: dataFormatada // Usa a data higienizada!
+                    start: dataFormatada.isValid() ? dataFormatada.format("YYYY-MM-DD") : objeto.cld_data,
+                    allDay: true
                 };
             });
+
             renderCalendar(eventos);
         },
-        error: function (error) {
-            toastr.error("Erro ao carregar os eventos.", null, {progressBar: true});
+        error: function () {
+            notifyError("Erro ao carregar os eventos.");
         }
     });
 }
 
 function renderCalendar(data) {
-    let calendarEl = document.getElementById('calendar');
+    const calendarEl = document.getElementById('calendar');
 
-    // Se a instância já existir, apenas atualize a fonte de dados (melhora performance)
+    if (!calendarEl) {
+        return;
+    }
+
     if (calendarInstance) {
         calendarInstance.removeAllEvents();
         calendarInstance.addEventSource(data);
         return;
     }
 
-    const fields = {
-        id: document.getElementById('cld_id'),
-        name: document.getElementById('cld_nome'),
-        type: document.getElementById('cld_tipo_evento'),
-        date: document.getElementById('cld_data'),
-        notes: document.getElementById('cld_observacao'),
-    };
-
-    const urls = {
-        events: form.dataset.eventsUrl,
-        save: form.dataset.saveUrl,
-        editTemplate: form.dataset.editUrlTemplate,
-        delete: form.dataset.deleteUrl,
-    };
-
-    const harpia = window.$?.harpia;
-    const toastr = window.toastr;
-
-    const showLoading = () => harpia?.showloading?.();
-    const hideLoading = () => harpia?.hideloading?.();
-
-    const notifyError = (message) => {
-        if (toastr?.error) {
-            toastr.error(message, null, {progressBar: true});
-            return;
-        }
-    }
-
-    // Inicializa o calendário com a API Moderna (v5/v6)
     calendarInstance = new Calendar(calendarEl, {
-        initialView: 'dayGridMonth', // antigo defaultView
-        headerToolbar: { // antigo header
+        initialView: 'dayGridMonth',
+        headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay' // Os nomes das views mudaram
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         buttonText: {
             today: 'Hoje',
@@ -144,30 +96,25 @@ function renderCalendar(data) {
             week: 'Semana',
             day: 'Dia'
         },
-        locale: 'pt-br', // Já deixa em português
+        locale: 'pt-br',
         events: data,
-
         eventDidMount: function (info) {
-            // Cria o botão de fechar/editar
-            let editWrapper = document.createElement('span');
+            const editWrapper = document.createElement('span');
             editWrapper.className = 'closeon';
             editWrapper.style.cssText = 'position: absolute; right: 2px; top: 2px; cursor: pointer; z-index: 99; color: inherit;';
             editWrapper.innerHTML = "<i class='fa fa-edit'></i>";
 
-            // Adiciona o listener de clique
             editWrapper.addEventListener('click', function (e) {
                 e.preventDefault();
-                e.stopPropagation(); // Evita que clique conflite com as ações do calendário
+                e.stopPropagation();
                 editEvent(info.event.id);
             });
 
-            // Busca o melhor lugar para anexar o ícone dependendo da versão do FullCalendar
-            let targetNode = info.el.querySelector('.fc-event-main') ||
+            const targetNode = info.el.querySelector('.fc-event-main') ||
                 info.el.querySelector('.fc-content') ||
                 info.el.querySelector('.fc-event-title-container') ||
                 info.el;
 
-            // Anexa o ícone
             targetNode.appendChild(editWrapper);
         }
     });
@@ -175,21 +122,45 @@ function renderCalendar(data) {
     calendarInstance.render();
 }
 
-function editEvent(id) {
-    $.harpia.showloading();
+function saveEvent() {
+    const data = {
+        cld_id: $('#cld_id').val(),
+        cld_data: $('#cld_data').val(),
+        cld_nome: $('#cld_nome').val(),
+        cld_tipo_evento: $('#cld_tipo_evento').val(),
+        cld_observacao: $('#cld_observacao').val(),
+        _token: csrfToken,
+    };
+
+    $('#btnSalvar').prop('disabled', true);
+    showLoading();
+
     $.ajax({
-        url: "async/calendarios/edit/" + id,
+        type: 'POST',
+        url: window.PageRoutes.calendarios_create,
+        data: data,
+        success: function () {
+            hideLoading();
+            clearForm();
+            getEventsData();
+        },
+        error: function (err) {
+            hideLoading();
+            notifyError(err?.responseJSON?.message || 'Erro ao salvar o evento.');
+            $('#btnSalvar').prop('disabled', false);
+        }
+    });
+}
+
+function editEvent(id) {
+    showLoading();
+
+    $.ajax({
+        url: buildEditUrl(id),
         type: "GET",
         success: function (data) {
-            $.harpia.hideloading();
-
-            $('#btnExcluir').remove();
-            $('#footerForm').append('<button class="btn btn-danger" type="button" id="btnExcluir" data-id="' + data.cld_id + '" >Excluir</button>');
-
-            $('#btnExcluir').click(function (e) {
-                var itemSelecionado = $(e.currentTarget).data('id');
-                removeEvent(itemSelecionado);
-            });
+            hideLoading();
+            renderDeleteButton(data.cld_id);
 
             $('#cld_id').val(data.cld_id);
             $('#cld_nome').val(data.cld_nome);
@@ -198,9 +169,9 @@ function editEvent(id) {
             $('#cld_data').val(data.cld_data);
             $('#btnSalvar').html('Alterar');
         },
-        error: function (error) {
-            $.harpia.hideloading();
-            toastr.error("Erro ao buscar dados do evento.", null, {progressBar: true});
+        error: function () {
+            hideLoading();
+            notifyError("Erro ao buscar dados do evento.");
         }
     });
 }
@@ -211,19 +182,20 @@ function removeEvent(id) {
         _token: csrfToken,
     };
 
-    $.harpia.showloading();
+    showLoading();
+
     $.ajax({
         type: "POST",
         url: window.PageRoutes.calendarios_delete,
         data: data,
-        success: function (response) {
-            $.harpia.hideloading();
+        success: function () {
+            hideLoading();
             getEventsData();
             clearForm();
         },
         error: function (err) {
-            $.harpia.hideloading();
-            toastr.error(err.responseJSON.message, null, {progressBar: true});
+            hideLoading();
+            notifyError(err?.responseJSON?.message || 'Erro ao excluir o evento.');
         }
     });
 }
@@ -239,6 +211,30 @@ function clearForm() {
     $('#btnSalvar').html('Salvar');
 }
 
-$('#btnNovo').click(function (e) {
-    clearForm();
-});
+function renderDeleteButton(id) {
+    $('#btnExcluir').remove();
+    $('#footerForm').append('<button class="btn btn-danger" type="button" id="btnExcluir" data-id="' + id + '">Excluir</button>');
+
+    $('#btnExcluir').on('click', function (event) {
+        const itemSelecionado = $(event.currentTarget).data('id');
+        removeEvent(itemSelecionado);
+    });
+}
+
+function buildEditUrl(id) {
+    return window.PageRoutes.calendarios_edit.replace('__ID__', id);
+}
+
+function showLoading() {
+    $.harpia?.showloading?.();
+}
+
+function hideLoading() {
+    $.harpia?.hideloading?.();
+}
+
+function notifyError(message) {
+    if (window.toastr?.error) {
+        window.toastr.error(message, null, {progressBar: true});
+    }
+}
