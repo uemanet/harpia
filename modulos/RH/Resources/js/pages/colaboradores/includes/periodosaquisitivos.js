@@ -1,23 +1,23 @@
 import $ from 'jquery';
 import Swal from "sweetalert2";
 
-$(document).on('click', '.btn-success', function (event) {
+$(document).on('click', '.btn-confirmar-ferias', function (event) {
     event.preventDefault();
 
-    var button = $(this);
+    const button = $(this);
 
     Swal.fire({
         title: "Tem certeza que deseja confirmar as férias do colaborador?",
         text: "Essa alteração é irreversível!",
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
+        confirmButtonColor: "#198754",
+        cancelButtonColor: "#6c757d",
         confirmButtonText: "Sim",
-        cancelButtonText: "Não",
-        closeOnConfirm: true
-    }, function(isConfirm){
-        if (isConfirm) {
-            button.closest("form").submit();
+        cancelButtonText: "Não"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest("form").trigger('submit');
         }
     });
 });

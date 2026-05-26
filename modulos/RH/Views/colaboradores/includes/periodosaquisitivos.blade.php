@@ -72,7 +72,7 @@
                                                                        'method' => 'post'
                                                                    ],
                                                                    [
-                                                                       'classButton' => 'btn btn-success btn-sm',
+                                                                       'classButton' => 'btn btn-success btn-sm btn-confirmar-ferias',
                                                                        'icon' => 'fa fa-check',
                                                                        'route' => 'rh.colaboradores.periodosgozo.confirm',
                                                                        'parameters' => ['id' => $periodoGozo->pgz_id],
