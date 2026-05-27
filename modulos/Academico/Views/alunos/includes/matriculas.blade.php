@@ -309,49 +309,51 @@
                 event.preventDefault();
 
                 window.buttonGroup = $(this);
-                var modal = $(this).attr("data-content");
+                window.modalSituacao = $(this).attr("data-content");
 
-                $('#matricula-modal' + modal).modal();
+                $('#matricula-modal' + window.modalSituacao).modal();
+            });
 
-                $('.modalSave').on("click", function (event) {
-                    event.preventDefault();
+            $('.modalSave').on("click", function (event) {
+                event.preventDefault();
 
-                    var situacao = $('#situacao-select' + modal).val();
+                var modal = window.modalSituacao;
+                var situacao = $('#situacao-select' + modal).val();
 
-                    if (situacao.length === 0) {
-                        sweetAlert("Oops...", "Selecione uma opção", "error");
-                        return;
-                    }
+                if (situacao.length === 0) {
+                    sweetAlert("Oops...", "Selecione uma opção", "error");
+                    return;
+                }
 
-                    var confirmCallback = function (isConfirm) {
-                        if (isConfirm) {
-                            var matricula = window.buttonGroup.attr("value");
-                            var token = "{{ csrf_token() }}";
-                            var observacao = $('#observacao_situacao' + modal).val();
+                var confirmCallback = function (isConfirm) {
+                    if (isConfirm) {
+                        var matricula = window.buttonGroup.attr("value");
+                        var token = "{{ csrf_token() }}";
+                        var observacao = $('#observacao_situacao' + modal).val();
 
-                            data = {
-                                id: matricula,
-                                situacao: situacao,
-                                observacao: observacao,
-                                _token: token
-                            };
+                        var data = {
+                            id: matricula,
+                            situacao: situacao,
+                            observacao: observacao,
+                            _token: token
+                        };
 
-                            result = $.harpia.httppost('/academico/async/matricula/alterarsituacao', data);
+                        $.harpia.httppost('/academico/async/matricula/alterarsituacao', data).done(function () {
                             location.reload(true);
-                        }
-                    };
+                        });
+                    }
+                };
 
-                    swal({
-                        title: "Tem certeza que deseja alterar o status do aluno ?",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Sim, alterar status!",
-                        cancelButtonText: "Não, quero cancelar!",
-                        closeOnConfirm: true
-                    }, confirmCallback);
-                })
-            })
+                swal({
+                    title: "Tem certeza que deseja alterar o status do aluno ?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, alterar status!",
+                    cancelButtonText: "Não, quero cancelar!",
+                    closeOnConfirm: true
+                }, confirmCallback);
+            });
         });
 
         // Alteracao de polo e grupo
