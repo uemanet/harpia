@@ -18,7 +18,8 @@ class Sincronizacao extends BaseModel
         'sym_mensagem',
         'sym_data_envio',
         'sym_extra',
-        'sym_version'
+        'sym_version',
+        'sym_tentativas'
     ];
 
     protected $searchable = [

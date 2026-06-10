@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\ModulosMigrate::class,
         Commands\ModulosSeed::class,
+        Commands\RetrySincronizacaoMoodleCommand::class,
     ];
 
     /**
@@ -28,5 +29,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('integracao:retry-sincronizacao')
+                 ->everyThirtyMinutes()
+                 ->withoutOverlapping();
     }
 }
