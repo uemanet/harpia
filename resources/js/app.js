@@ -82,6 +82,14 @@ document.addEventListener('DOMContentLoaded', function () {
         allowInput: true,
     });
 
+    flatpickr(".datetime-full", {
+        locale: Portuguese,
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d/m/Y H:i:S",
+        allowInput: true,
+    });
+
     $('.cpf-mask').inputmask({
         mask: "999.999.999-99",
         removeMaskOnSubmit: true
