@@ -5,6 +5,8 @@ volumes:
     driver: local
   harpia-redis-data:
     driver: local
+  caddy_network:
+    external: true
 
 networks:
   harpia-internal:
@@ -94,6 +96,7 @@ services:
     networks:
       - harpia-db
       - harpia-internal
+      - caddy_network
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
@@ -115,6 +118,7 @@ services:
     networks:
       - harpia-internal   # acesso externo (webservices, APIs)
       - harpia-db         # acesso interno aos bancos e Redis
+      - caddy_network
     environment:
       WEB_DOCUMENT_ROOT: /var/www/app/public
       PHP_MEMORY_LIMIT: 256M

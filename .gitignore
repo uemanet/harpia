@@ -24,3 +24,9 @@ codecoverage
 .github
 modulos/.mcp.json
 /docs/facial
+
+# Remover tracking do Módulo Matriculas
+modulos/Matriculas
+
+# Remover doc de atualização da nova feature
+planejamento_fluxo_atesto_pagamento_v2.md
