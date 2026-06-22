@@ -1,4 +1,4 @@
-@extends('layouts.modulos.rh')
+@extends('layouts.modulos.default')
 
 @section('breadcrumbs')
     {{ Breadcrumbs::render('rh.horastrabalhadas.justificativas.show', $justificativa->jus_htr_id) }}
@@ -35,7 +35,7 @@
                 <!-- /.box-tools -->
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         <p><strong>Id: </strong> {{$justificativa->jus_id}}</p>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </div>
-            <!-- /.box-body -->
+            <!-- /.card-body -->
         </div>
         <!-- /.box -->
     </div>

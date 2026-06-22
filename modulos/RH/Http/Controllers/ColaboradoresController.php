@@ -25,6 +25,7 @@ use Modulos\RH\Repositories\FuncaoRepository;
 use Modulos\RH\Repositories\MatriculaColaboradorRepository;
 use Modulos\RH\Repositories\PeriodoAquisitivoRepository;
 use Modulos\RH\Repositories\SetorRepository;
+use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\Geral\Repositories\DocumentoRepository;
 use Modulos\Geral\Repositories\PessoaRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -40,6 +41,7 @@ class ColaboradoresController extends BaseController
     protected $colaboradorFuncaoRepository;
     protected $periodosAquisitivosRepository;
     protected $matriculaColaboradorRepository;
+    protected $anexoRepository;
 
     protected $excel;
 
@@ -52,6 +54,7 @@ class ColaboradoresController extends BaseController
         ColaboradorFuncaoRepository $colaborador_funcao,
         PeriodoAquisitivoRepository $periodo_aquisitivo,
         MatriculaColaboradorRepository $matricula_colaborador,
+        AnexoRepository $anexoRepository,
         Excel $excel
     )
     {
@@ -63,13 +66,14 @@ class ColaboradoresController extends BaseController
         $this->setorRepository = $setor;
         $this->periodosAquisitivosRepository = $periodo_aquisitivo;
         $this->matriculaColaboradorRepository = $matricula_colaborador;
+        $this->anexoRepository = $anexoRepository;
         $this->excel = $excel;
     }
 
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.colaboradores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.colaboradores.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -85,11 +89,15 @@ class ColaboradoresController extends BaseController
                 'col_id' => '#',
                 'pes_nome' => 'Nome',
                 'pes_email' => 'Email',
+                'col_foto' => 'Foto',
                 'setores_index' => 'Setor',
                 'funcoes_index' => 'Função',
                 'col_status' => 'Status',
                 'col_action' => 'Ações'
             ))
+                ->modifyCell('col_foto', function () {
+                    return array('style' => 'width: 70px; text-align: center;');
+                })
                 ->modifyCell('col_action', function () {
                     return array('style' => 'width: 140px;');
                 })
@@ -224,6 +232,10 @@ class ColaboradoresController extends BaseController
                 $data['col_pes_id'] = $pessoa->pes_id;
             }
 
+            if ($request->hasFile('col_foto_facial')) {
+                $data['col_foto_anx_id'] = $this->salvarFotoFacial($request->file('col_foto_facial'));
+            }
+
             $colaborador = $this->colaboradorRepository->create($data);
             $matricula = $this->matriculaColaboradorRepository->create(['mtc_col_id' => $colaborador->col_id,'mtc_data_inicio' => $data['col_data_admissao']]);
 
@@ -244,7 +256,7 @@ class ColaboradoresController extends BaseController
                 throw $e;
             }
             DB::rollback();
-            flash()->error('Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error($e instanceof \InvalidArgumentException ? $e->getMessage() : 'Erro ao tentar salvar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back()->with('validado', true);
         }
@@ -299,6 +311,13 @@ class ColaboradoresController extends BaseController
 
             $pessoa->fill($request->all())->save();
 
+            if ($request->hasFile('col_foto_facial')) {
+                $data['col_foto_anx_id'] = $this->salvarFotoFacial(
+                    $request->file('col_foto_facial'),
+                    $colaborador->col_foto_anx_id
+                );
+            }
+
             $this->colaboradorRepository->update($data, $colaboradorId);
 
             $dataDocumento = [
@@ -326,10 +345,39 @@ class ColaboradoresController extends BaseController
                 throw $e;
             }
 
-            flash()->error('Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
+            flash()->error($e instanceof \InvalidArgumentException ? $e->getMessage() : 'Erro ao tentar editar. Caso o problema persista, entre em contato com o suporte.');
 
             return redirect()->back();
         }
+    }
+
+    private function salvarFotoFacial($arquivo, $anexoAtualId = null)
+    {
+        if ($anexoAtualId) {
+            $anexo = $this->anexoRepository->atualizarAnexo($anexoAtualId, $arquivo);
+
+            if (is_array($anexo)) {
+                throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+            }
+
+            if (!$anexo) {
+                throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+            }
+
+            return (int) $anexoAtualId;
+        }
+
+        $anexo = $this->anexoRepository->salvarAnexo($arquivo);
+
+        if (is_array($anexo)) {
+            throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+        }
+
+        if (!$anexo) {
+            throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+        }
+
+        return $anexo->anx_id;
     }
 
     public function getCreateMatricula($colaboradorId)
@@ -352,7 +400,7 @@ class ColaboradoresController extends BaseController
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
         if($colaborador->col_status === 'desligado'){
             $btnNovo = new TButton();
-            $btnNovo->setName('Nova Matrícula')->setRoute('rh.colaboradores.matricula.create')->setParameters(['id' => $colaboradorId])->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+            $btnNovo->setName('Nova Matrícula')->setRoute('rh.colaboradores.matricula.create')->setParameters(['id' => $colaboradorId])->setIcon('fa fa-plus')->setStyle('btn btn-success');
             $actionButtons[] = $btnNovo;
         }
 
@@ -691,6 +739,34 @@ class ColaboradoresController extends BaseController
         ];
 
         return view('RH::colaboradores.show', ['pessoa' => $colaborador->pessoa, 'colaborador' => $colaborador, 'situacao' => $situacao, 'periodos_matriculas' => $periodos_matriculas]);
+    }
+
+    public function getFotoFacial($colaboradorId)
+    {
+        $colaborador = $this->colaboradorRepository->find($colaboradorId);
+        $avatarPadrao = public_path('/img/avatar.png');
+        $cacheHeaders = [
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ];
+
+        if (!$colaborador || !$colaborador->col_foto_anx_id) {
+            return response()->file($avatarPadrao, $cacheHeaders);
+        }
+
+        $caminho = $this->anexoRepository->obterCaminhoAnexo($colaborador->col_foto_anx_id);
+
+        if ($caminho === 'error_non_existent' || !file_exists($caminho)) {
+            return response()->file($avatarPadrao, $cacheHeaders);
+        }
+
+        $mime = $colaborador->foto_facial->anx_mime ?? mime_content_type($caminho) ?? 'image/jpeg';
+
+        return response()->file($caminho, array_merge($cacheHeaders, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="foto-colaborador-' . $colaborador->col_id . '"',
+        ]));
     }
 
     private function checkUpdateMigracao($oldPessoa, $pessoa)

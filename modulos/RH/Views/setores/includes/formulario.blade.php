@@ -1,21 +1,37 @@
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('set_descricao')) has-error @endif">
-        {!! Form::label('set_descricao', 'Descrição*', ['class' => 'control-label']) !!}
+        <label for="set_descricao" class="form-label">Descrição*</label>
         <div class="controls">
-            {!! Form::text('set_descricao', old('set_descricao'), ['class' => 'form-control']) !!}
+            <input type="text" name="set_descricao" value="{{ old('set_descricao', $setor->set_descricao ?? '') }}" class="form-control" >
             @if ($errors->has('set_descricao')) <p class="help-block">{{ $errors->first('set_descricao') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('set_sigla')) has-error @endif">
-        {!! Form::label('set_sigla', 'Sigla*', ['class' => 'control-label']) !!}
+        <label for="set_sigla" class="form-label">Sigla*</label>
         <div class="controls">
-            {!! Form::text('set_sigla', old('set_sigla'), ['class' => 'form-control']) !!}
+            <input type="text" name="set_sigla" value="{{ old('set_sigla', $setor->set_sigla ?? '') }}" class="form-control" >
             @if ($errors->has('set_sigla')) <p class="help-block">{{ $errors->first('set_sigla') }}</p> @endif
         </div>
     </div>
 </div>
+
 <div class="row">
-    <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+    <div class="form-group col-md-12 @if ($errors->has('gestores')) has-error @endif">
+        <label for="gestores" class="control-label">Gestores do Setor</label>
+        <div class="controls">
+            <select name="gestores[]" class="form-control select2" multiple="multiple" style="width: 100%;"
+                    data-placeholder="Selecione os gestores do setor">
+                @if(isset($colaboradoresAtivos))
+                    @foreach($colaboradoresAtivos as $colaborador)
+                        <option value="{{ $colaborador->col_id }}"
+                            {{ in_array($colaborador->col_id, old('gestores', isset($gestoresSelecionados) ? $gestoresSelecionados : [])) ? 'selected' : '' }}>
+                            {{ $colaborador->pessoa->pes_nome ?? '#' . $colaborador->col_id }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+            <span class="help-block">Selecione um ou mais colaboradores que serao gestores deste setor.</span>
+            @if ($errors->has('gestores')) <p class="help-block">{{ $errors->first('gestores') }}</p> @endif
+        </div>
     </div>
 </div>

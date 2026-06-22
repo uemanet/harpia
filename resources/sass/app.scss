@@ -1,0 +1,28 @@
+// Variáveis
+@import 'variables';
+
+// Bootstrap
+//@import '../../node_modules/bootstrap/scss/bootstrap';
+
+// Tema Admin-LTE
+//@import '../../node_modules/admin-lte/src/scss/adminlte';
+@import 'theme/admin-lte';
+
+// Personalização do tema
+@import 'theme/custom-theme';
+
+// Bibliotecas de plugins
+@import '../../node_modules/select2/dist/css/select2.min.css';
+@import '../../node_modules/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
+@import '../../node_modules/toastr/build/toastr.min.css';
+@import '../../node_modules/sweetalert2/dist/sweetalert2.min.css';
+@import "../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+@import "../../node_modules/icheck-bootstrap/icheck-bootstrap.min.css";
+@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
+@import "../../node_modules/jstree/dist/themes/default/style.min.css";
+@import "../../node_modules/flatpickr/dist/flatpickr.min.css";
+
+// Aqui você pode adicionar outros imports conforme necessário
+@import "custom/main";
+@import "custom/sidebar";
+@import "custom/navbar";

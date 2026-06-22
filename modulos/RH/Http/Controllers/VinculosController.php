@@ -6,6 +6,7 @@ namespace Modulos\RH\Http\Controllers;
 use App\Http\Requests\Request;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\VinculoRequest;
+use Modulos\RH\Models\Vinculo;
 use Modulos\RH\Repositories\VinculoRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -23,7 +24,7 @@ class VinculosController extends BaseController
     {
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.vinculos.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.vinculos.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -79,7 +80,8 @@ class VinculosController extends BaseController
 
     public function getCreate()
     {
-        return view('RH::vinculos.create');
+        $vinculo = new Vinculo();
+        return view('RH::vinculos.create', compact('vinculo'));
     }
 
     public function postCreate(VinculoRequest $request)

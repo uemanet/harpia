@@ -1,0 +1,110 @@
+.btn-primary {
+  color: white;
+}
+
+.btn-primary:hover {
+  color: white
+}
+
+.btn-success {
+  color: white;
+}
+
+// Box para Verificação Pessoa por CPF
+.vp-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.help-block {
+  color: red;
+}
+
+.obrigatorio-dot {
+  color: red;
+  opacity: 0.7;
+}
+
+// Text Color - AdminLTE V3
+
+.text-lightblue {
+  color: #3c8dbc !important;
+}
+
+.text-navy {
+  color: #001f3f !important;
+}
+
+.text-olive {
+  color: #3d9970 !important;
+}
+
+.text-lime {
+  color: #01ff70 !important;
+}
+
+.text-fuchsia {
+  color: #f012be !important;
+}
+
+.text-maroon {
+  color: #d81b60 !important;
+}
+
+.text-blue {
+  color: #007bff !important;
+}
+
+.text-indigo {
+  color: #6610f2 !important;
+}
+
+.text-purple {
+  color: #6f42c1 !important;
+}
+
+.text-pink {
+  color: #e83e8c !important;
+}
+
+.text-red {
+  color: #dc3545 !important;
+}
+
+.text-orange {
+  color: #fd7e14 !important;
+}
+
+.text-yellow {
+  color: #ffc107 !important;
+}
+
+.text-green {
+  color: #28a745 !important;
+}
+
+.text-teal {
+  color: #20c997 !important;
+}
+
+.text-cyan {
+  color: #17a2b8 !important;
+}
+
+.text-white {
+  color: #fff !important;
+}
+
+.text-gray {
+  color: #6c757d !important;
+}
+
+.text-gray-dark {
+  color: #343a40 !important;
+}

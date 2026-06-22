@@ -3,33 +3,33 @@
 @endsection
 <div class="row">
     <div class="form-group col-md-2 @if ($errors->has('jus_horas')) has-error @endif">
-        {!! Form::label('jus_horas', 'Quantidade de Horas*', ['class' => 'control-label']) !!}
+        <label for="jus_horas" class="form-label">Quantidade de Horas*</label>
         <div class="controls">
-            {!! Form::number('jus_horas', old('jus_horas'), ['class' => 'form-control']) !!}
+            <input type="number" name="jus_horas" value="{{ old('jus_horas') }}" class="form-control" >
             @if ($errors->has('jus_horas')) <p class="help-block">{{ $errors->first('jus_horas') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-2 @if ($errors->has('jus_data')) has-error @endif">
-        {!! Form::label('jus_data', 'Data Inicial*', ['class' => 'control-label']) !!}
+        <label for="jus_data" class="form-label">Data Inicial*</label>
         <div class="controls">
-            {!! Form::text('jus_data', old('jus_data'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="jus_data" value="{{ old('jus_data') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('jus_data')) <p class="help-block">{{ $errors->first('jus_data') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-2 @if ($errors->has('jus_data_fim')) has-error @endif">
-        {!! Form::label('jus_data_fim', 'Data Final*', ['class' => 'control-label']) !!}
+        <label for="jus_data_fim" class="form-label">Data Final*</label>
         <div class="controls">
-            {!! Form::text('jus_data_fim', old('jus_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="jus_data_fim" value="{{ old('jus_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('jus_data_fim')) <p class="help-block">{{ $errors->first('jus_data_fim') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-4 @if ($errors->has('jus_file')) has-error @endif">
-        {!! Form::label('jus_file', 'Anexo', ['class' => 'control-label']) !!}
+        <label for="jus_file" class="form-label">Anexo</label>
         <div class="controls">
-            {!! Form::file('jus_file', ['class' => 'form-control file']) !!}
+            <input type="file" name="jus_file" class="form-control file" >
             @if ($errors->has('jus_file')) <p class="help-block">{{ $errors->first('jus_file') }}</p> @endif
         </div>
     </div>
@@ -39,17 +39,21 @@
 <div class="row">
 
     <div class="form-group col-md-8 @if ($errors->has('jus_descricao')) has-error @endif">
-        {!! Form::label('jus_descricao', 'Descrição', ['class' => 'control-label']) !!}
+        <label for="jus_descricao" class="form-label">Descrição</label>
         <div class="controls">
-            {!! Form::textarea('jus_descricao', old('jus_descricao'), ['class' => 'form-control', 'rows' => '4']) !!}
+            <textarea name="jus_descricao" class="form-control" rows="4">{{ old('jus_descricao') }}</textarea>
             @if ($errors->has('jus_descricao')) <p class="help-block">{{ $errors->first('jus_descricao') }}</p> @endif
         </div>
     </div>
 
     <div class="form-group col-md-2 @if ($errors->has('jus_tipo_id')) has-error @endif">
-        {!! Form::label('jus_tipo_id', 'Tipo de Justificativa*', ['class' => 'control-label']) !!}
+        <label for="jus_tipo_id" class="form-label">Tipo de Justificativa*</label>
         <div class="controls">
-            {!! Form::select('jus_tipo_id', $tipos, null, ['class' => 'form-control select2']) !!}
+            <select name="jus_tipo_id" class="form-control select2">
+    @foreach($tipos as $key => $value)
+        <option value="{{ $key }}">{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('jus_tipo_id')) <p class="help-block">{{ $errors->first('jus_tipo_id') }}</p> @endif
         </div>
     </div>
@@ -58,10 +62,10 @@
 
 
 </div>
-{!! Form::input('hidden' , 'jus_htr_id', $horaTrabalhada->htr_id ,  ['class' => 'form-control']) !!}
+<input type="hidden" name="jus_htr_id" value="{{ $horaTrabalhada->htr_id }}" class="form-control" >
 <div class="row">
     <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+        <button type="submit" class="btn btn-primary float-end">Salvar dados</button>
     </div>
 </div>
 @section('scripts')

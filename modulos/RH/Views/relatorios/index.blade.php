@@ -1,9 +1,4 @@
-@extends('layouts.modulos.rh')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Colaboradores
@@ -14,82 +9,72 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <form method="GET" action="{{ route('rh.relatorios.periodosaquisitivos') }}">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                <form method="GET" class="d-flex w-100" action="{{{ route('rh.relatorios.periodosaquisitivos') }}}">
                     <div class="col-md-2">
                         <input type="text" class="form-control" name="pes_cpf" id="pes_cpf"
                                value="{{Request::input('pes_cpf')}}" placeholder="CPF">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 px-1">
                         <input type="text" class="form-control" name="pes_nome" id="pes_nome"
                                value="{{Request::input('pes_nome')}}" placeholder="Nome">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 px-1">
                         <input type="email" class="form-control" name="pes_email" id="pes_email"
                                value="{{Request::input('pes_email')}}" placeholder="Email">
                     </div>
 
-                    <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
+                    <div class="col-md-2 px-1">
+                        <select name="cfn_set_id" class="form-control">
+                            <option value="">Selecione o setor</option>
+                            @foreach($setores as $key => $value)
+                                <option value="{{ $key }}" {{ [] == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="form-group col-md-2">
-                        {!! Form::select('funcoes[]', $funcoes, old('funcoes[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
+                    <div class="col-md-2 px-1">
+                        <select name="funcoes[]" class="form-control" multiple="multiple">
+                            @foreach($funcoes as $key => $value)
+                                <option value="{{ $key }}" {{ old('funcoes[]') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                            @endforeach
+                        </select>
                         @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
                     </div>
 
                     <div class="col-md-1">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
+                        <input type="submit" class="btn btn-primary w-100" value="Buscar">
                     </div>
                 </form>
             </div>
         </div>
-        <!-- /.box-body -->
+        <!-- /.card-body -->
     </div>
     @if(!is_null($tabela))
-        <div class="box box-primary">
-            <div class="box-header">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
                 {!! $tabela->render() !!}
             </div>
         </div>
 
         <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
     @else
-        <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
+        <div class="card card-primary card-outline">
+            <div class="card-body">Sem registros para apresentar</div>
         </div>
     @endif
 @stop
-
-
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-@endsection
-

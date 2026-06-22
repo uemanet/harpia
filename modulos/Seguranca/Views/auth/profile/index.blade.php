@@ -1,10 +1,5 @@
 @extends('layouts.clean')
 
-@section('stylesheets')
-    <link rel="stylesheet" href="{{ asset('/css/plugins/datepicker3.css') }}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@stop
-
 @section('title')
     Módulo de Segurança
 @stop
@@ -14,6 +9,21 @@
 @stop
 
 @section('content')
+
+    <div class="content-wrapper p-5">
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- Profile Image -->
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="profile-user-img img-circle"
+                                         style="border-radius: 50%;"
+                                         src="{{ route('seguranca.profile.profile-picture', \Illuminate\Support\Facades\Auth::user()->usr_profile_picture_id ?? 0) }}"
+                                         alt="User profile picture">
+                                </div>
     <div class="container" style="padding-top: 20px;">
         <div class="row">
             <div class="col-md-3">
@@ -21,7 +31,7 @@
                 <!-- Profile Image -->
                 <div class="box box-primary">
                     <div class="box-body box-profile">
-                        <img class="profile-user-img img-responsive img-circle" src="{{ route('seguranca.profile.profile-picture', \Illuminate\Support\Facades\Auth::user()->usr_profile_picture_id ?? 0) }}"
+                        <img class="profile-user-img img-responsive img-circle" src="{{{ route('seguranca.profile.profile-picture', \Illuminate\Support\Facades\Auth::user()->usr_profile_picture_id ?? 0) }}}"
                              alt="User profile picture">
 
                         <h3 class="profile-username text-center">{{$usuario->pessoa->pes_nome}}</h3>
@@ -44,189 +54,192 @@
                     <div class="tab-content">
 
                         <div class="tab-pane @if (!$errors->has('usr_senha') and !$errors->has('usr_senha_nova') and !$errors->has('usr_senha_nova_confirmation')) active @endif" id="dados">
-                            {!! Form::model($usuario->pessoa,["route" => ['seguranca.profile.edit'], "method" => "PUT", "id" => "form", "role" => "form", "class" => "form-horizontal"]) !!}
+                            <form action="{{ route('seguranca.profile.edit') }}" method="POST" id="form" role="form">
+    @csrf
+    @method('PUT')
+    {{-- Form model: $usuario->pessoa - inputs devem usar old('campo', $usuario->pessoa->campo) --}}
                             <div class="form-group @if ($errors->has('pes_nome')) has-error @endif">
-                                {!! Form::label('pes_nome', 'Nome completo*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_nome" class="col-sm-3 control-label">Nome completo*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_nome', old('pes_nome'), ['class' => 'form-control']) !!}
+                                        <input type="text" name="pes_nome" value="{{ old('pes_nome') }}" class="form-control" >
                                     @else
-                                        {!! Form::text('pes_nome', old('pes_nome'), ['disabled','class' => 'form-control']) !!}
+                                        <input type="text" name="pes_nome" value="{{ old('pes_nome') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_nome')) <p
                                             class="help-block">{{ $errors->first('pes_nome') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_email')) has-error @endif">
-                                {!! Form::label('pes_email', 'Email*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_email" class="col-sm-3 control-label">Email*</label>
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::email('pes_email', old('pes_email'), ['class' => 'form-control']) !!}
+                                        <input type="email" name="pes_email" value="{{ old('pes_email') }}" class="form-control" >
                                     @else
-                                        {!! Form::email('pes_email', old('pes_email'), ['disabled' ,'class' => 'form-control']) !!}
+                                        <input type="email" name="pes_email" value="{{ old('pes_email') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_email')) <p
                                             class="help-block">{{ $errors->first('pes_email') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_telefone')) has-error @endif">
-                                {!! Form::label('pes_telefone', 'Telefone*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_telefone" class="col-sm-3 control-label">Telefone*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_telefone', old('pes_telefone'), ['class' => 'form-control']) !!}
+                                        <input type="text" name="pes_telefone" value="{{ old('pes_telefone') }}" class="form-control" >
                                     @else
-                                        {!! Form::text('pes_telefone', old('pes_telefone'), ['disabled','class' => 'form-control']) !!}
+                                        <input type="text" name="pes_telefone" value="{{ old('pes_telefone') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_telefone')) <p
                                             class="help-block">{{ $errors->first('pes_telefone') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_sexo')) has-error @endif">
-                                {!! Form::label('pes_sexo', 'Sexo*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_sexo" class="col-sm-3 control-label">Sexo*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::select('pes_sexo', ['M' => 'Masculino', 'F' => 'Feminino'], old('pes_sexo'), ['class' => 'form-control']) !!}
+                                        <select name="pes_sexo" class="form-control">
+    <option value="M" {{ old('pes_sexo') == 'M' ? 'selected' : '' }}>Masculino</option>
+    <option value="F" {{ old('pes_sexo') == 'F' ? 'selected' : '' }}>Feminino</option>
+</select>
                                     @else
-                                        {!! Form::select('pes_sexo', ['M' => 'Masculino', 'F' => 'Feminino'], old('pes_sexo'), ['disabled','class' => 'form-control']) !!}
+                                        <select name="pes_sexo" class="form-control">
+    <option value="M" {{ old('pes_sexo') == 'M' ? 'selected' : '' }}>Masculino</option>
+    <option value="F" {{ old('pes_sexo') == 'F' ? 'selected' : '' }}>Feminino</option>
+</select>
                                     @endif
                                     @if ($errors->has('pes_sexo')) <p
                                             class="help-block">{{ $errors->first('pes_sexo') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_nascimento')) has-error @endif">
-                                {!! Form::label('pes_nascimento', 'Nascimento*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_nascimento" class="col-sm-3 control-label">Nascimento*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_nascimento', old('pes_nascimento'), ['class' => 'form-control datepicker']) !!}
+                                        <input type="text" name="pes_nascimento" value="{{ old('pes_nascimento') }}" class="form-control datepicker" >
                                     @else
-                                        {!! Form::text('pes_nascimento', old('pes_nascimento'), ['disabled','class' => 'form-control datepicker']) !!}
+                                        <input type="text" name="pes_nascimento" value="{{ old('pes_nascimento') }}" class="form-control datepicker" >
                                     @endif
                                     @if ($errors->has('pes_nascimento')) <p
                                             class="help-block">{{ $errors->first('pes_nascimento') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_estado_civil')) has-error @endif">
-                                {!! Form::label('pes_estado_civil', 'Estado Civil*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_estado_civil" class="col-sm-3 control-label">Estado Civil*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::select('pes_estado_civil',
-                                                                                        ["solteiro" => "Solteiro(a)",
-                                                                                          "casado" => "Casado(a)",
-                                                                                          "divorciado" => "Divorciado(a)",
-                                                                                          "uniao_estavel" => "União estável",
-                                                                                          "viuvo" => "Viúvo(a)",
-                                                                                          "outro" => "Outro"],
-                                                                                         old('pes_estado_civil'),
-                                                                                         ['class' => 'form-control']) !!}
+                                        <select name="pes_estado_civil" class="form-control">
+    <option value="uniao_estavel" {{ old('pes_estado_civil') == 'uniao_estavel' ? 'selected' : '' }}>União estável</option>
+    <option value="outro" {{ old('pes_estado_civil') == 'outro' ? 'selected' : '' }}>Outro</option>
+</select>
                                     @else
-                                        {!! Form::select('pes_estado_civil',
-                                                                                            ["solteiro" => "Solteiro(a)",
-                                                                                              "casado" => "Casado(a)",
-                                                                                              "divorciado" => "Divorciado(a)",
-                                                                                              "uniao_estavel" => "União estável",
-                                                                                              "viuvo" => "Viúvo(a)",
-                                                                                              "outro" => "Outro"],
-                                                                                             old('pes_estado_civil'),
-                                                                                             ['disabled','class' => 'form-control']) !!}
+                                        <select name="pes_estado_civil" class="form-control">
+    <option value="uniao_estavel" {{ old('pes_estado_civil') == 'uniao_estavel' ? 'selected' : '' }}>União estável</option>
+    <option value="outro" {{ old('pes_estado_civil') == 'outro' ? 'selected' : '' }}>Outro</option>
+</select>
                                     @endif
                                     @if ($errors->has('pes_estado_civil')) <p
                                             class="help-block">{{ $errors->first('pes_estado_civil') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_mae')) has-error @endif">
-                                {!! Form::label('pes_mae', 'Nome da mãe*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_mae" class="col-sm-3 control-label">Nome da mãe*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_mae', old('pes_mae'), ['class' => 'form-control']) !!}
+                                        <input type="text" name="pes_mae" value="{{ old('pes_mae') }}" class="form-control" >
                                     @else
-                                        {!! Form::text('pes_mae', old('pes_mae'), ['disabled','class' => 'form-control']) !!}
+                                        <input type="text" name="pes_mae" value="{{ old('pes_mae') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_mae')) <p
                                             class="help-block">{{ $errors->first('pes_mae') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_pai')) has-error @endif">
-                                {!! Form::label('pes_pai', 'Nome do pai', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_pai" class="col-sm-3 control-label">Nome do pai</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_pai', old('pes_pai'), ['class' => 'form-control']) !!}
+                                        <input type="text" name="pes_pai" value="{{ old('pes_pai') }}" class="form-control" >
                                     @else
-                                        {!! Form::text('pes_pai', old('pes_pai'), ['disabled','class' => 'form-control']) !!}
+                                        <input type="text" name="pes_pai" value="{{ old('pes_pai') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_pai')) <p
                                             class="help-block">{{ $errors->first('pes_pai') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_naturalidade')) has-error @endif">
-                                {!! Form::label('pes_naturalidade', 'Naturalidade*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_naturalidade" class="col-sm-3 control-label">Naturalidade*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_naturalidade', old('pes_naturalidade'), ['class' => 'form-control']) !!}
+                                        <input type="text" name="pes_naturalidade" value="{{ old('pes_naturalidade') }}" class="form-control" >
                                     @else
-                                        {!! Form::text('pes_naturalidade', old('pes_naturalidade'), ['disabled','class' => 'form-control']) !!}
+                                        <input type="text" name="pes_naturalidade" value="{{ old('pes_naturalidade') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_naturalidade')) <p
                                             class="help-block">{{ $errors->first('pes_naturalidade') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_nacionalidade')) has-error @endif">
-                                {!! Form::label('pes_nacionalidade', 'Nacionalidade*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_nacionalidade" class="col-sm-3 control-label">Nacionalidade*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::text('pes_nacionalidade', old('pes_nacionalidade'), ['class' => 'form-control']) !!}
+                                        <input type="text" name="pes_nacionalidade" value="{{ old('pes_nacionalidade') }}" class="form-control" >
                                     @else
-                                        {!! Form::text('pes_nacionalidade', old('pes_nacionalidade'), ['disabled','class' => 'form-control']) !!}
+                                        <input type="text" name="pes_nacionalidade" value="{{ old('pes_nacionalidade') }}" class="form-control" >
                                     @endif
                                     @if ($errors->has('pes_nacionalidade')) <p
                                             class="help-block">{{ $errors->first('pes_nacionalidade') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_raca')) has-error @endif">
-                                {!! Form::label('pes_raca', 'Cor/Raça*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_raca" class="col-sm-3 control-label">Cor/Raça*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::select('pes_raca',
-                                                    ["branca" => "Branca",
-                                                      "preta" => "Preta",
-                                                      "parda" => "Parda",
-                                                      "amarela" => "Amarela",
-                                                      "indigena" => "Indígena",
-                                                      "outra" => "Outra"],
-                                                     old('pes_raca'),
-                                                     ['class' => 'form-control']) !!}
+                                        <select name="pes_raca" class="form-control">
+    <option value="branca" {{ old('pes_raca') == 'branca' ? 'selected' : '' }}>Branca</option>
+    <option value="preta" {{ old('pes_raca') == 'preta' ? 'selected' : '' }}>Preta</option>
+    <option value="parda" {{ old('pes_raca') == 'parda' ? 'selected' : '' }}>Parda</option>
+    <option value="amarela" {{ old('pes_raca') == 'amarela' ? 'selected' : '' }}>Amarela</option>
+    <option value="indigena" {{ old('pes_raca') == 'indigena' ? 'selected' : '' }}>Indígena</option>
+    <option value="outra" {{ old('pes_raca') == 'outra' ? 'selected' : '' }}>Outra</option>
+</select>
                                     @else
-                                        {!! Form::select('pes_raca',
-                                                        ["branca" => "Branca",
-                                                          "preta" => "Preta",
-                                                          "parda" => "Parda",
-                                                          "amarela" => "Amarela",
-                                                          "indigena" => "Indígena",
-                                                          "outra" => "Outra"],
-                                                         old('pes_raca'),
-                                                         ['disabled','class' => 'form-control']) !!}
+                                        <select name="pes_raca" class="form-control">
+    <option value="branca" {{ old('pes_raca') == 'branca' ? 'selected' : '' }}>Branca</option>
+    <option value="preta" {{ old('pes_raca') == 'preta' ? 'selected' : '' }}>Preta</option>
+    <option value="parda" {{ old('pes_raca') == 'parda' ? 'selected' : '' }}>Parda</option>
+    <option value="amarela" {{ old('pes_raca') == 'amarela' ? 'selected' : '' }}>Amarela</option>
+    <option value="indigena" {{ old('pes_raca') == 'indigena' ? 'selected' : '' }}>Indígena</option>
+    <option value="outra" {{ old('pes_raca') == 'outra' ? 'selected' : '' }}>Outra</option>
+</select>
                                     @endif
                                     @if ($errors->has('pes_raca')) <p
                                             class="help-block">{{ $errors->first('pes_raca') }}</p> @endif
                                 </div>
                             </div>
                             <div class="form-group @if ($errors->has('pes_necessidade_especial')) has-error @endif">
-                                {!! Form::label('pes_necessidade_especial', 'Necessidade especial?*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_necessidade_especial" class="col-sm-3 control-label">Necessidade especial?*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::select('pes_necessidade_especial', ['S' => 'Sim', 'N' => 'Não'], old('pes_necessidade_especial'), ['class' => 'form-control']) !!}
+                                        <select name="pes_necessidade_especial" class="form-control">
+    <option value="S" {{ old('pes_necessidade_especial') == 'S' ? 'selected' : '' }}>Sim</option>
+    <option value="N" {{ old('pes_necessidade_especial') == 'N' ? 'selected' : '' }}>Não</option>
+</select>
                                     @else
-                                        {!! Form::select('pes_necessidade_especial', ['S' => 'Sim', 'N' => 'Não'], old('pes_necessidade_especial'), ['disabled','class' => 'form-control']) !!}
+                                        <select name="pes_necessidade_especial" class="form-control">
+    <option value="S" {{ old('pes_necessidade_especial') == 'S' ? 'selected' : '' }}>Sim</option>
+    <option value="N" {{ old('pes_necessidade_especial') == 'N' ? 'selected' : '' }}>Não</option>
+</select>
                                     @endif
                                     @if ($errors->has('pes_necessidade_especial')) <p
                                             class="help-block">{{ $errors->first('pes_necessidade_especial') }}</p> @endif
@@ -234,13 +247,19 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('pes_estrangeiro')) has-error @endif">
-                                {!! Form::label('pes_estrangeiro', 'Estrangeiro?*', ['class' => 'col-sm-3 control-label']) !!}
+                                <label for="pes_estrangeiro" class="col-sm-3 control-label">Estrangeiro?*</label>
 
                                 <div class="col-sm-9">
                                     @haspermission('seguranca.profile.edit')
-                                        {!! Form::select('pes_estrangeiro', ['0' => 'Não', '1' => 'Sim'], old('pes_estrangeiro'), ['class' => 'form-control']) !!}
+                                        <select name="pes_estrangeiro" class="form-control">
+    <option value="0" {{ old('pes_estrangeiro') == '0' ? 'selected' : '' }}>Não</option>
+    <option value="1" {{ old('pes_estrangeiro') == '1' ? 'selected' : '' }}>Sim</option>
+</select>
                                     @else
-                                        {!! Form::select('pes_estrangeiro', ['0' => 'Não', '1' => 'Sim'], old('pes_estrangeiro'), ['disabled','class' => 'form-control']) !!}
+                                        <select name="pes_estrangeiro" class="form-control">
+    <option value="0" {{ old('pes_estrangeiro') == '0' ? 'selected' : '' }}>Não</option>
+    <option value="1" {{ old('pes_estrangeiro') == '1' ? 'selected' : '' }}>Sim</option>
+</select>
                                     @endif
 
                                     @if ($errors->has('pes_estrangeiro')) <p
@@ -402,25 +421,25 @@
                                         ], old('pes_estado'), ['disabled','placeholder' => 'Selecione um estado', 'class' => 'form-control', 'style' => 'width: 100%;']) !!}
                                     @endif
 
-                                    @if ($errors->has('pes_estado')) <p
-                                            class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
-                                </div>
-                            </div>
+                                                @if ($errors->has('pes_estado')) <p
+                                                        class="help-block">{{ $errors->first('pes_estado') }}</p> @endif
+                                            </div>
+                                        </div>
 
-                            @haspermission('seguranca.profile.edit')
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="submit" class="btn btn-primary">Atualizar Endereço</button>
-                                </div>
-                            </div>
-                            @endhaspermission
+                                        @haspermission('seguranca.profile.edit')
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="submit" class="btn btn-primary">Atualizar Endereço</button>
+                                            </div>
+                                        </div>
+                                        @endhaspermission
 
 
-                            @haspermission('seguranca.profile.edit')
+                                        @haspermission('seguranca.profile.edit')
 
-                            @else
+                                        @else
 
-                            @endif
+                                        @endif
 
 
                             {!! Form::close() !!}
@@ -493,78 +512,4 @@
         </div>
         <!-- /.row -->
     </div>
-    <!-- /.container -->
-@stop
-
-@section('scripts')
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/inputmask.date.extensions.js') }}"></script>
-    <script src="{{ asset('/js/plugins/input-mask/jquery.inputmask.js') }}"></script>
-    <script src="{{ asset('/js/plugins/bootstrap-datepicker.js') }}"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}"></script>
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
-    <script type="text/javascript">
-
-        $(function () {
-            $("select").select2();
-
-            $('.datepicker').datepicker({
-                format: "dd/mm/yyyy",
-                language: 'pt-BR',
-                autoclose: true
-            });
-
-            $(document).find('span .select2').css('width', '100%');
-
-            $('#pes_telefone').inputmask({"mask": "(99) 99999-9999", "removeMaskOnSubmit": true});
-            $('#pes_cep').inputmask({"mask": "99999-999", "removeMaskOnSubmit": true});
-
-            $("#pes_cep").focusout(function (e) {
-
-                function limpaFormCep() {
-
-                    $("#pes_cidade").val("");
-                    $("#pes_estado").val("");
-                    $("#pes_bairro").val("");
-                    $("#pes_endereco").val("");
-                }
-
-                var str = e.target.value;
-
-                var cep = str.replace(/\D/g, '');
-
-                if (str != "") {
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
-
-                    if (validacep.test(cep)) {
-
-                        $("#pes_cidade").val("Buscando...");
-                        $("#pes_estado").val("Buscando...");
-                        $("#pes_bairro").val("Buscando...");
-                        $("#pes_endereco").val("Buscando...");
-
-                        $.harpia.httpget('https://viacep.com.br/ws/' + cep + '/json/').done(function (data) {
-                            if (!data.erro) {
-                                $("#pes_cidade").val(data.localidade);
-                                $("#pes_estado").val(data.uf).change();
-                                $("#pes_bairro").val(data.bairro);
-                                $("#pes_endereco").val(data.logradouro);
-                            } else {
-                                limpaFormCep();
-                                toastr.error("CEP não encontrado", null, {progressBar: true});
-                            }
-                        });
-                    } else {
-                        limpaFormCep();
-                        toastr.warning("Formato do CEP inválido", null, {progressBar: true});
-                    }
-                } else {
-                    limpaFormCep();
-                }
-            });
-        });
-
-    </script>
 @stop

@@ -28,6 +28,8 @@ class SetorRequest extends BaseRequest
         $rules = [
             'set_descricao' => 'required|min:3|max:60',
             'set_sigla' => 'required|min:2|max:15',
+            'gestores' => 'nullable|array',
+            'gestores.*' => 'integer|exists:reh_colaboradores,col_id',
         ];
 
         return $rules;

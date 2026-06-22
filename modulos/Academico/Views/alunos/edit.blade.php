@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('title')
     Alunos
@@ -9,24 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Edição de Aluno</h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de Edição de Aluno</h3>
         </div>
-        <div class="box-body">
-            {!! Form::model($pessoa,['route' => ['academico.alunos.edit', $pessoa->pes_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-
-            <h4 class="box-title">
-                Dados de Pessoa
-            </h4>
-            @include('Geral::pessoas.includes.formulario', ['pessoa' => $pessoa])
-
-            <div class="row">
-                <div class="form-group col-md-12">
-                    {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
-                </div>
+        <form action="{{ route('academico.alunos.edit', [$pessoa->pes_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
+                @include('Geral::pessoas.includes.formulario', ['pessoa' => $pessoa])
             </div>
-            {!! Form::close() !!}
-        </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop

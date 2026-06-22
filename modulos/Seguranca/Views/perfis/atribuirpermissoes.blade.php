@@ -1,8 +1,4 @@
-@extends('layouts.modulos.seguranca')
-
-@section('stylesheets')
-    <link href="{{ asset('/css/plugins/jstree/style.min.css') }}" rel="stylesheet"/>
-@stop
+@extends('layouts.modulos.default')
 
 @section('title')
     Atribuir permissões
@@ -13,84 +9,73 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header">
-            <div id="jstree">
-                <ul>
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title mb-3">Selecione as permissões</h3>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('seguranca.perfis.atribuirpermissoes', [$perfil->prf_id]) }}" method="POST" id="formPermissoes">
+                @csrf
+                <!-- Input hidden que o Controller espera receber com os IDs separados por vírgula -->
+                <input type="hidden" name="permissao" id="permissao">
+                <input type="hidden" name="prf_id" value="{{ $perfil->prf_id }}">
+
+                <div class="row">
                     @if(count($permissoes))
                         @foreach($permissoes as $permissao)
-                            <li>{{ ucfirst($permissao['rcs_nome']) }}
-                                @if(count($permissao['permissoes']))
-                                    <ul>
-                                        @foreach($permissao['permissoes'] as $perm)
-                                            <li
-                                                @if($perm['habilitado'])
-                                                    data-jstree='{"selected":"true", "type":"sub"}'
-                                                @else
-                                                    data-jstree='{"type":"sub"}'
-                                                @endif
-                                                id="prm_{{$perm['prm_id']}}">
-                                                    {{ $perm['prm_nome'] }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </li>
+                            <div class="col-md-12 mb-3">
+                                <div class="card bg-light shadow-none border">
+                                    <div class="card-header py-2">
+                                        <div class="form-check">
+                                            <!-- Checkbox pai para marcar/desmarcar todo o grupo -->
+                                            <input class="form-check-input check-all-grupo" type="checkbox" id="grupo_{{ $loop->index }}">
+                                            <label class="form-check-label fw-bold" for="grupo_{{ $loop->index }}" style="cursor: pointer;">
+                                                <i class="fa fa-folder text-warning me-2"></i> {{ ucfirst($permissao['rcs_nome']) }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="card-body py-2">
+                                        <div class="row">
+                                            @if(count($permissao['permissoes']))
+                                                @foreach($permissao['permissoes'] as $perm)
+                                                    <div class="col-md-3 col-sm-4 col-6 mb-2">
+                                                        <div class="form-check">
+                                                            <!-- Checkbox filho (a permissão em si) -->
+                                                            <input class="form-check-input perm-checkbox" type="checkbox"
+                                                                   value="{{ $perm['prm_id'] }}"
+                                                                   id="prm_{{ $perm['prm_id'] }}"
+                                                                   @if($perm['habilitado']) checked @endif>
+                                                            <label class="form-check-label" for="prm_{{ $perm['prm_id'] }}" style="cursor: pointer;">
+                                                                <i class="fa fa-cog text-success me-1"></i> {{ $perm['prm_nome'] }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
+                    @else
+                        <div class="col-12">
+                            <div class="alert alert-info">Nenhuma permissão encontrada para este módulo.</div>
+                        </div>
                     @endif
-                </ul>
-            </div>
+                </div>
 
-            {!! Form::open(["url" => "/seguranca/perfis/atribuirpermissoes/". $perfil->prf_id, "method" => "POST", "role" => "form"]) !!}
-                {!! Form::hidden('permissao','' , ['id'=>'permissao']) !!}
-                {!! Form::hidden('prf_id', $perfil->prf_id) !!}
-                <div class="row">
-                    <div class="form-group col-md-12">
-                        {!! Form::submit('Atribuir permissões ao perfil', ['class' => 'btn btn-primary pull-right', 'id' => 'btn-enviar']) !!}
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary float-end" id="btn-enviar">
+                            <i class="fa fa-save me-1"></i> Atribuir permissões ao perfil
+                        </button>
                     </div>
                 </div>
-            {!! Form::close() !!}
+            </form>
         </div>
     </div>
 @stop
 
 @section('scripts')
-    <script src="{{ asset('/js/plugins/jstree/jstree.min.js') }}"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#jstree').jstree({
-                'core' : {
-                    'check_callback' : true
-                },
-                'plugins' : [ 'types', 'checkbox' ],
-                'types' : {
-                    'default' : {
-                        'icon' : 'fa fa-folder'
-                    },
-                    'sub' : {
-                        'icon' : 'fa fa-cog'
-                    }
-                }
-            });
-        });
-
-        $('#btn-enviar').on('click', function(e){
-            e.preventDefault();
-
-            $this = $(this);
-            var checked_ids = [];
-
-            var selectedItems = $("#jstree").jstree('get_selected');
-            $(selectedItems).each(function(id, element){
-                if(element.search(/prm_/) != -1) {
-                    checked_ids.push(element.replace(/prm_/, ''));
-                }
-            });
-
-            var ids = checked_ids.toString();
-
-            $("#permissao").val(ids);
-            $this.closest('form').submit();
-        });
-    </script>
+    @vite('modulos/Seguranca/Resources/js/pages/perfis/atribuirpermissoes.js')
 @stop

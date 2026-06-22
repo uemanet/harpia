@@ -16,6 +16,10 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\ModulosMigrate::class,
         Commands\ModulosSeed::class,
+        Commands\ColetarEventosControlId::class,
+        Commands\SincronizarHorasTrabalhadas::class,
+        Commands\ReconstruirHorasDiarias::class,
+        Commands\ReconstruirJornadasRemotas::class,
     ];
 
     /**
@@ -26,7 +30,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // EVERY MINUTE PARA TESTES. DEPOIS ALTERAR PARA 5 MINUTOS OU MAIS, DEPENDENDO DO VOLUME DE EVENTOS.
+        $schedule->command('ponto:coletar-eventos')->everyMinute();
+
+        // Sincroniza a tabela agregada de horas trabalhadas a cada hora.
+        // Cobre alteracoes de carga horaria, calendario e correcoes manuais.
+        // $schedule->command('ponto:sincronizar-horas-trabalhadas')->hourly();
+        $schedule->command('ponto:sincronizar-horas-trabalhadas')->everyMinute();
     }
 }

@@ -134,6 +134,9 @@ class ColaboradorRepository extends BaseRepository
                 ->toArray();
 
             $result->funcoes_index = implode(',', $funcoes);
+            $result->col_foto = !empty($result->col_foto_anx_id)
+                ? '<span class="text-success"><i class="fa fa-check"></i></span>'
+                : '<span class="text-danger"><i class="fa fa-times"></i></span>';
         }
 
         return $results;
@@ -154,6 +157,61 @@ class ColaboradorRepository extends BaseRepository
 
         if (!is_null($select)) {
             $query = $query->select($select);
+        }
+
+        return $query->get();
+    }
+
+    public function listarAtivosParaSelecao()
+    {
+        return $this->model
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+            ->where('col_status', 'ativo')
+            ->orderBy('pes_nome')
+            ->pluck('pes_nome', 'col_id');
+    }
+
+    public function buscarAtivoComPessoa(int $colaboradorId): ?Colaborador
+    {
+        return $this->model
+            ->with(['pessoa', 'foto_facial'])
+            ->where('col_status', 'ativo')
+            ->where('col_id', $colaboradorId)
+            ->first();
+    }
+
+    public function buscarAtivoPorRegistration(?string $registration): ?Colaborador
+    {
+        $registration = trim((string) $registration);
+
+        if ($registration === '' || !ctype_digit($registration)) {
+            return null;
+        }
+
+        return $this->buscarAtivoComPessoa((int) $registration);
+    }
+
+    public function listarAtivosParaExportacao(?int $dispositivoId = null)
+    {
+        $query = $this->model
+            ->with('foto_facial')
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+            ->where('reh_colaboradores.col_status', 'ativo')
+            ->select([
+                'reh_colaboradores.col_id',
+                'reh_colaboradores.col_foto_anx_id',
+                'gra_pessoas.pes_nome',
+            ])
+            ->orderBy('gra_pessoas.pes_nome');
+
+        if ($dispositivoId) {
+            $query->whereNotExists(function ($subquery) use ($dispositivoId) {
+                $subquery->select(DB::raw(1))
+                    ->from('reh_mapeamento_dispositivo')
+                    ->where('map_dis_id', $dispositivoId)
+                    ->where('map_ativo', true)
+                    ->whereColumn('map_col_id', 'reh_colaboradores.col_id');
+            });
         }
 
         return $query->get();

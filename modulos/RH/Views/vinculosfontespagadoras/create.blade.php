@@ -1,9 +1,4 @@
-@extends('layouts.modulos.rh')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Salário Base
@@ -14,43 +9,26 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de Salário Base</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de cadastro de Salário Base</h3>
         </div>
-        <div class="box-body">
-            {!! Form::open(['route' => ['rh.fontespagadoras.vinculosfontespagadoras.create',  $fonte_pagadora->fpg_id], "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('vfp_fpg_id', $fonte_pagadora->fpg_id) }}
-            @include('RH::vinculosfontespagadoras.includes.formulario')
-            {!! Form::close() !!}
-        </div>
+        <form action="{{ route('rh.fontespagadoras.vinculosfontespagadoras.create', [$fonte_pagadora->fpg_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            <div class="card-body">
+                <input type="hidden" name="vfp_fpg_id" value="{{ $fonte_pagadora->fpg_id }}" >
+                @include('RH::vinculosfontespagadoras.includes.formulario')
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop
 
 @section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("select").select2();
-        });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-
-
     <script>
         $(document).ready(function() {
-
-
-            $("select").select2();
-
             $('#vfp_vin_id').change(function() {
                 var value = $(this).val();
 
@@ -64,7 +42,6 @@
             });
         });
 
-
         function k(i) {
             var v = i.value.replace(/\D/g,'');
             v = (v/100).toFixed(2) + '';
@@ -73,14 +50,5 @@
             v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
             i.value = v;
         }
-
-
-
     </script>
-
-
-
-
 @endsection
-
-

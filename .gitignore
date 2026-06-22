@@ -1,6 +1,8 @@
 /vendor
 /node_modules
 /public/storage
+/public/build
+/public/hot
 /storage/uploads
 Homestead.yaml
 Homestead.json
@@ -14,3 +16,17 @@ composer.lock
 codecoverage
 /build
 .php_cs.cache
+.php-cs-fixer.cache
+.phpunit.result.cache
+.agents
+.claude
+.codex
+.github
+modulos/.mcp.json
+/docs/facial
+
+# Remover tracking do Módulo Matriculas
+modulos/Matriculas
+
+# Remover doc de atualização da nova feature
+planejamento_fluxo_atesto_pagamento_v2.md

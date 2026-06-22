@@ -2,18 +2,18 @@
 <div class="row">
     <div class="col-md-12">
         <!-- About Me Box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Documentos</h3>
+        <div class="card card-primary card-outline">
+            <div class="card-header with-border">
+                <h3 class="card-title">Documentos</h3>
 
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
                     </button>
                 </div>
-                <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
+            <!-- /.card-header -->
+            <div class="card-body">
                 @if(!$pessoa->documentos->isEmpty())
                     <table class="table table-bordered">
                         <tr>
@@ -78,22 +78,24 @@
                 @else
                     <p>Sem documentos para apresentar</p>
                 @endif
-            <!-- /.box-body -->
-            {!! ActionButton::grid([
-                'type' => 'LINE',
-                'buttons' => [
-                  [
-                    'classButton' => 'btn btn-primary',
-                    'icon' => 'fa fa-plus-square',
-                    'route' => 'geral.pessoas.documentos.create',
-                    'parameters' => ['id' => $pessoa->pes_id],
-                    'label' => ' Novo Documento',
-                    'method' => 'get'
-                  ],
-                ]
-            ]) !!}
+            <!-- /.card-body -->
           </div>
+            <div class="card-footer">
+                {!! ActionButton::grid([
+                    'type' => 'LINE',
+                    'buttons' => [
+                      [
+                        'classButton' => 'btn btn-primary',
+                        'icon' => 'fa fa-plus-square',
+                        'route' => 'geral.pessoas.documentos.create',
+                        'parameters' => ['id' => $pessoa->pes_id],
+                        'label' => ' Novo Documento',
+                        'method' => 'get'
+                      ],
+                    ]
+                ]) !!}
+            </div>
         </div>
-        <!-- /.box -->
+        <!-- /.card -->
     </div>
 </div>

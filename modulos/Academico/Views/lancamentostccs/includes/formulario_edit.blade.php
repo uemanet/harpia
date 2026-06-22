@@ -1,45 +1,55 @@
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('ltc_titulo')) has-error @endif">
-        {!! Form::label('ltc_titulo', 'Título do TCC*', ['class' => 'control-label']) !!}
+        <label for="ltc_titulo" class="form-label">Título do TCC <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
-            {!! Form::text('ltc_titulo', old('ltc_titulo'), ['class' => 'form-control']) !!}
+            <input type="text" name="ltc_titulo" value="{{ old('ltc_titulo', $lancamentoTcc->ltc_titulo ?? '') }}" class="form-control" >
             @if ($errors->has('ltc_titulo')) <p class="help-block">{{ $errors->first('ltc_titulo') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('ltc_prf_id')) has-error @endif">
-        {!! Form::label('ltc_prf_id', 'Professor*', ['class' => 'control-label']) !!}
+        <label for="ltc_prf_id" class="form-label">Professor <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
-            {!! Form::select('ltc_prf_id', $professores, old('ltc_prf_id'), ['placeholder' => 'Selecione um professor','class' => 'form-control']) !!}
+            <select name="ltc_prf_id" class="form-control">
+                <option value="">Selecione um professor</option>
+                @foreach($professores as $key => $value)
+                    <option value="{{ $key }}" {{ old('ltc_prf_id', $lancamentoTcc->ltc_prf_id ?? '') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+            </select>
             @if ($errors->has('ltc_prf_id')) <p class="help-block">{{ $errors->first('ltc_prf_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ltc_tipo')) has-error @endif">
-        {!! Form::label('ltc_tipo', 'Tipo de TCC*', ['class' => 'control-label']) !!}
+        <label for="ltc_tipo" class="form-label">Tipo de TCC <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
-            {!! Form::select('ltc_tipo', $tiposdetcc, old('ltc_tipo'), ['placeholder' => 'Selecione um tipo','class' => 'form-control']) !!}
+            <select name="ltc_tipo" class="form-control">
+                <option value="">Selecione um tipo</option>
+                @foreach($tiposdetcc as $key => $value)
+                    <option value="{{ $key }}" {{ old('ltc_tipo', $lancamentoTcc->ltc_tipo ?? '') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+            </select>
             @if ($errors->has('ltc_tipo')) <p class="help-block">{{ $errors->first('ltc_tipo') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('ltc_data_apresentacao')) has-error @endif">
-        {!! Form::label('ltc_data_apresentacao', 'Data de apresentação*', ['class' => 'control-label']) !!}
+        <label for="ltc_data_apresentacao" class="form-label">Data de apresentação <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
-            {!! Form::text('ltc_data_apresentacao', old('ltc_data_apresentacao'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+            <input type="text" name="ltc_data_apresentacao" value="{{ old('ltc_data_apresentacao', $lancamentoTcc->ltc_data_apresentacao ?? '') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" >
             @if ($errors->has('ltc_data_apresentacao')) <p class="help-block">{{ $errors->first('ltc_data_apresentacao') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('ltc_file')) has-error @endif">
-        {!! Form::label('ltc_file', 'Documento', ['class' => 'control-label']) !!}
+        <label for="ltc_file" class="form-label">Documento</label>
         <div class="controls">
-            {!! Form::file('ltc_file', ['class' => 'form-control file']) !!}
+            <input type="file" name="ltc_file" class="form-control file" >
             @if ($errors->has('ltc_file')) <p class="help-block">{{ $errors->first('ltc_file') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('ltc_anx_nome')) has-error @endif">
-        {!! Form::label('ltc_anx_nome', 'Anexo', ['class' => 'control-label']) !!}
+        <label for="ltc_anx_nome" class="form-label">Anexo</label>
         <div class="input-group">
             @if($anexo != null)
                 <input type="text" class="form-control first" placeholder="{{$anexo->anx_nome}}" disabled="">
@@ -57,97 +67,23 @@
 </div>
 <div class="row">
     <div class="form-group col-md-12 @if ($errors->has('ltc_observacao')) has-error @endif">
-        {!! Form::label('ltc_observacao', 'Observação', ['class' => 'control-label']) !!}
+        <label for="ltc_observacao" class="form-label">Observação</label>
         <div class="controls">
-            {!! Form::textarea('ltc_observacao', old('ltc_observacao'), ['class' => 'form-control', 'rows' => '4']) !!}
+            <textarea name="ltc_observacao" class="form-control" rows="4">{{ old('ltc_observacao') }}</textarea>
             @if ($errors->has('ltc_observacao')) <p class="help-block">{{ $errors->first('ltc_observacao') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
-    {!! Form::input('hidden' , 'ltc_mof_id', $lancamentoTcc->ltc_mof_id ,  ['class' => 'form-control']) !!}
-    <div class="form-group col-md-offset-8 col-md-4">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
-    </div>
+    <input type="hidden" name="ltc_mof_id" value="{{ $lancamentoTcc->ltc_mof_id }}" class="form-control" >
 </div>
 
 @section('scripts')
+    <script>
+        window.PageRoutes = {
+            // Add Routes
+        };
+    </script>
 
-      <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-      <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-      <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-          <script type="text/javascript">
-              $(document).ready(function() {
-                  $("select").select2();
-              });
-      </script>
-
-      <script type="text/javascript">
-              $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                language: 'pt-BR'
-              });
-      </script>
-
-     <script type="text/javascript">
-         $(function () {
-
-             var lancamentotccId = "{{$lancamentoTcc->ltc_id}}"
-             var csrf_token = "{{csrf_token()}}";
-
-             $(document).on('click', '.btn-delete', function (event) {
-                 event.preventDefault();
-
-                 swal({
-                     title: "Tem certeza que deseja excluir?",
-                     text: "Você não poderá recuperar essa informação!",
-                     type: "warning",
-                     showCancelButton: true,
-                     confirmButtonColor: "#DD6B55",
-                     confirmButtonText: "Sim, pode excluir!",
-                     cancelButtonText: "Não, quero cancelar!",
-                     closeOnConfirm: true
-                 }, function(isConfirm){
-                     if (isConfirm) {
-
-                         var data = {ltc_id: lancamentotccId, _token : csrf_token};
-
-                         $.harpia.showloading();
-
-                         var result = false;
-
-                         $.ajax({
-                             type: 'POST',
-                             url: '/academico/async/anexos/deletaranexolancamentotcc',
-                             data: data,
-                             success: function (data) {
-                                 $.harpia.hideloading();
-
-                                 toastr.success('Anexo excluído com sucesso!', null, {progressBar: true});
-                                 $(".first").attr("placeholder", "Sem anexo").val("").focus().blur();
-                                 $(".botaoDelete").remove();
-                             },
-                             error: function (xhr, textStatus, error) {
-                                 $.harpia.hideloading();
-
-                                 switch (xhr.status) {
-                                     case 400:
-                                         toastr.error('Sem anexos para serem excluídos!', null, {progressBar: true});
-                                         break;
-                                     default:
-                                         toastr.error(xhr.responseText, null, {progressBar: true});
-
-                                         result = false;
-                                 }
-                             }
-                         });
-                     }
-                 });
-
-             });
-
-         });
-     </script>
-
-
- @endsection
+    @vite('modulos/Academico/Resources/js/pages/lancamentostccs/includes/formulario_edit.js')
+@stop

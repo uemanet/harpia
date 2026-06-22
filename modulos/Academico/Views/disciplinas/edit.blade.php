@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('title')
     Disciplinas
@@ -9,14 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de disciplinas</h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de edição de disciplinas</h3>
         </div>
-        <div class="box-body">
-            {!! Form::model($disciplina,["route" => ['academico.disciplinas.edit',$disciplina->dis_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            @include('Academico::disciplinas.includes.formulario')
-            {!! Form::close() !!}
-        </div>
+        <form action="{{ route('academico.disciplinas.edit', [$disciplina->dis_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
+                @include('Academico::disciplinas.includes.formulario')
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop

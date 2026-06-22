@@ -39,7 +39,7 @@ class UsuariosController extends BaseController
     public function getIndex(Request $request)
     {
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('seguranca.usuarios.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('seguranca.usuarios.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -70,7 +70,7 @@ class UsuariosController extends BaseController
                     'buttons' => [
                         [
                             'classButton' => 'text-blue',
-                            'icon' => 'fa fa-check-square-o',
+                            'icon' => 'fa-regular fa-square-check',
                             'route' => 'seguranca.usuarios.atribuirperfil',
                             'parameters' => ['id' => $id],
                             'label' => 'Atribuir Perfil',

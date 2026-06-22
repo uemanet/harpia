@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Atividades Extras
@@ -9,15 +9,20 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Edição de Atividade Extra</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de Edição de Atividade Extra</h3>
         </div>
-        <div class="box-body">
-            {!! Form::model($atividade_extra,["route" => ['rh.colaboradores.atividadesextrascolaboradores.edit',$atividade_extra->atc_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            {{ Form::hidden('atc_col_id', $atividade_extra->colaborador->col_id) }}
-            @include('RH::atividadesextrascolaboradores.includes.formulario')
-            {!! Form::close() !!}
-        </div>
+        <form action="{{ route('rh.colaboradores.atividadesextrascolaboradores.edit', [$atividade_extra->atc_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
+                <input type="hidden" name="atc_col_id" value="{{ $atividade_extra->colaborador->col_id }}" >
+                @include('RH::atividadesextrascolaboradores.includes.formulario')
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop

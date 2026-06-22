@@ -1,4 +1,4 @@
-@extends('layouts.modulos.integracao')
+@extends('layouts.modulos.default')
 
 @section('title')
     Lista de Alunos
@@ -24,7 +24,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <form method="GET" action="{{ route('integracao.mapeamentonotas.showalunos', $ofertaDisciplina->ofd_id) }}">
+                        <form method="GET" action="{{{ route('integracao.mapeamentonotas.showalunos', $ofertaDisciplina->ofd_id) }}}">
                             <div class="col-md-3">
                                 <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}" placeholder="CPF">
                             </div>
