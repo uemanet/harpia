@@ -27,6 +27,8 @@ modulos/.mcp.json
 
 # Remover tracking do Módulo Matriculas
 modulos/Matriculas
+modulos/Financeiro
+modulos/ProducaoDocente
 
 # Remover doc de atualização da nova feature
 planejamento_fluxo_atesto_pagamento_v2.md
