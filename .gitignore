@@ -32,3 +32,7 @@ modulos/ProducaoDocente
 
 # Remover doc de atualização da nova feature
 planejamento_fluxo_atesto_pagamento_v2.md
+
+*.bkp
+.env*
+!.env.example
