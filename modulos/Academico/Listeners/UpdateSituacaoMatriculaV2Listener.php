@@ -48,7 +48,7 @@ class UpdateSituacaoMatriculaV2Listener
 
                 $param['data']['student']['trm_id'] = (int)$matriculaTurma->mat_trm_id;
                 $param['data']['student']['pes_id'] = (int)$matriculaTurma->aluno->alu_pes_id;
-                $param['data']['student']['mat_id'] = (int)$matriculaTurma->id;
+                $param['data']['student']['mat_id'] = (int)$matriculaTurma->mat_id;
                 $param['data']['student']['new_status'] = $matriculaTurma->mat_situacao;
 
                 $response = Moodle::send($param);
