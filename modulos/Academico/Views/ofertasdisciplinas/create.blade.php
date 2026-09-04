@@ -103,7 +103,7 @@
                         if(!$.isEmptyObject(data)) {
                             selectOfertasCursos.append("<option value=''>Selecione a oferta</option>");
                             $.each(data, function (key, value) {
-                                selectOfertasCursos.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+' ('+value.mdl_nome+')</option>');
+                                selectOfertasCursos.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+' ('+value.mdl_nome+')'+(value.itt_sigla ? ' '+value.itt_sigla : '')+'</option>');
                             });
                         } else {
                             selectOfertasCursos.append("<option value=''>Sem ofertas cadastradas</option>");

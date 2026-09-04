@@ -115,7 +115,7 @@ class RelatoriosAtasFinaisController extends BaseController
             $sqlOfertas = $this->ofertaCursoRepository->findAllByCurso($crs_id);
             $turmas = $this->turmaRepository->findAllByOfertaCurso($ofc_id)->pluck('trm_nome', 'trm_id');
             foreach ($sqlOfertas as $oferta) {
-                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
+                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . ' (' . $oferta->mdl_nome . ')' . ($oferta->itt_sigla ? ' ' . $oferta->itt_sigla : '');
             }
             $oferta = $this->ofertaCursoRepository->find($ofc_id);
             $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
