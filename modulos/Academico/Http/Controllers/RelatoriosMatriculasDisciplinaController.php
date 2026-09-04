@@ -70,7 +70,7 @@ class RelatoriosMatriculasDisciplinaController extends BaseController
             $periodos = $this->periodoLetivoRepository->getAllByTurma($trm_id)->pluck('per_nome', 'per_id');
             $disciplinas = $this->ofertaDisciplinaRepository->findAll($dis)->pluck('dis_nome', 'ofd_id');
             foreach ($sqlOfertas as $oferta) {
-                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . '(' . $oferta->mdl_nome . ')';
+                $ofertasCurso[$oferta->ofc_id] = $oferta->ofc_ano . ' (' . $oferta->mdl_nome . ')' . ($oferta->itt_sigla ? ' ' . $oferta->itt_sigla : '');
             }
             $oferta = $this->ofertaCursoRepository->find($ofc_id);
             $polos = $oferta->polos->pluck('pol_nome', 'pol_id');
