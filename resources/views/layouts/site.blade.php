@@ -20,6 +20,8 @@
     @include('layouts.includes.footer.clean')
 
 {{--    <script src="{{ asset('js/app.js') }}"></script>--}}
+
+    {!! Flash::render() !!}
     @yield('scripts')
 </body>
 </html>

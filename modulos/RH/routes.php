@@ -1,5 +1,18 @@
 <?php
 
+use Modulos\RH\Http\Controllers\FotoFacialController;
+
+Route::prefix('portal-colaborador')->group(function () {
+    Route::get('/', [FotoFacialController::class, 'create'])->name('portal.foto.create');
+    Route::get('/validar-acesso', [FotoFacialController::class, 'create'])->name('portal.foto.create');
+    Route::post('/validar-acesso', [FotoFacialController::class, 'authenticate'])->name('portal.foto.authenticate');
+
+    Route::get('/upload-foto', [FotoFacialController::class, 'edit'])->name('portal.foto.edit');
+    Route::post('/upload-foto', [FotoFacialController::class, 'store'])->name('portal.foto.store');
+
+    Route::get('/portal-colaborador/foto-atual', [FotoFacialController::class, 'getFotoAtual'])->name('portal.foto.atual');
+});
+
 //Route::group(['prefix' => 'api/rh'], function () {
 Route::group(['prefix' => 'api/rh', 'middleware' => ['throttle:30,1']], function () {
     Route::group(['prefix' => 'colaboradores'], function () {

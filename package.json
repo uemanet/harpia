@@ -16,6 +16,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
     "@popperjs/core": "^2.11.8",
+    "@vladmandic/face-api": "^1.7.15",
     "admin-lte": "^4.0.0-rc6",
     "bootstrap": "^5.3.8",
     "bootstrap-datepicker": "^1.10.1",

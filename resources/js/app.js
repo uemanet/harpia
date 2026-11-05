@@ -1,4 +1,5 @@
 import jQuery from 'jquery';
+import * as faceapi from '@vladmandic/face-api';
 
 // DEVE vir antes de qualquer plugin jQuery
 window.$ = jQuery;
@@ -32,6 +33,9 @@ import { Portuguese } from "flatpickr/dist/l10n/pt.js";
 
 import 'fullcalendar';
 import './harpia.js';
+
+// Expõe a biblioteca para o objeto window para que a sua view blade possa acessá-la
+window.faceapi = faceapi;
 
 // Inicialização obrigatória do OverlayScrollbars no Sidebar (padrão v4)
 document.addEventListener('DOMContentLoaded', function () {
