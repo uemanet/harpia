@@ -74,4 +74,7 @@ Route::group(['prefix' => 'seguranca', 'middleware' => ['auth']], function () {
             Route::get('/getitenbymodulo/{id}', '\Modulos\Seguranca\Http\Controllers\Async\MenuItem@getItensByModulo')->name('seguranca.async.menuitens.getitensbymodulo');
         });
     });
+
+    Route::get('auditoria','\Modulos\Seguranca\Http\Controllers\AuditoriaController@index')->name('seguranca.auditoria.index');
+//    Route::get('auditoria', ['as' => 'seguranca.auditoria.index', 'uses' => 'AuditoriaController@index']);
 });
