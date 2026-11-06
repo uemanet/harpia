@@ -64,6 +64,16 @@ class ColaboradorRepository extends BaseRepository
                 ];
             }
         }
+
+        // Injeção manual do filtro de foto
+        if (isset($requestParameters['com_foto']) && $requestParameters['com_foto'] !== '') {
+            $search[] = [
+                'field' => 'com_foto',
+                'type' => 'custom',
+                'term' => $requestParameters['com_foto']
+            ];
+        }
+
         return $this->paginate($sort, $search);
     }
 
@@ -80,6 +90,16 @@ class ColaboradorRepository extends BaseRepository
 
         if (!empty($search)) {
             foreach ($search as $value) {
+
+                // Processamento do filtro de foto
+                if ($value['field'] == 'com_foto') {
+                    if ($value['term'] === '1') {
+                        $result = $result->whereNotNull('col_foto_anx_id');
+                    } elseif ($value['term'] === '0') {
+                        $result = $result->whereNull('col_foto_anx_id');
+                    }
+                    continue; // Pula para a próxima iteração
+                }
 
                 if ($value['field'] == 'funcoes') {
                     $result = $result->whereIn('cfn_fun_id', $value['term'])->where('cfn_data_fim', null);
@@ -228,5 +248,78 @@ class ColaboradorRepository extends BaseRepository
 
         }
 
+    }
+
+    public function getFilteredForExport(array $requestParameters = [])
+    {
+        // 1. Reaproveitamos a lógica de extração dos filtros
+        $searchable = $this->model->searchable();
+        $search = [];
+        foreach ($requestParameters as $key => $value) {
+            if (array_key_exists($key, $searchable) and !empty($value)) {
+                $search[] = [
+                    'field' => $key,
+                    'type' => $searchable[$key],
+                    'term' => $value
+                ];
+            }
+        }
+
+        if (isset($requestParameters['com_foto']) && $requestParameters['com_foto'] !== '') {
+            $search[] = [
+                'field' => 'com_foto',
+                'type' => 'custom',
+                'term' => $requestParameters['com_foto']
+            ];
+        }
+
+        // 2. Construímos a base da query igual ao método paginate()
+        $result = $this->model->join('gra_pessoas', function ($join) {
+            $join->on('col_pes_id', '=', 'pes_id');
+        })->leftJoin('gra_documentos', function ($join) {
+            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+        })->leftJoin('reh_colaboradores_funcoes', function ($join) {
+            $join->on('col_id', '=', 'cfn_col_id');
+        })->groupBy('col_id');
+
+        // 3. Aplicamos os wheres
+        if (!empty($search)) {
+            foreach ($search as $value) {
+                if ($value['field'] == 'com_foto') {
+                    if ($value['term'] === '1') {
+                        $result = $result->whereNotNull('col_foto_anx_id');
+                    } elseif ($value['term'] === '0') {
+                        $result = $result->whereNull('col_foto_anx_id');
+                    }
+                    continue;
+                }
+
+                if ($value['field'] == 'funcoes') {
+                    $result = $result->whereIn('cfn_fun_id', $value['term'])->where('cfn_data_fim', null);
+                    continue;
+                }
+
+                if ($value['field'] == 'cfn_set_id') {
+                    $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    continue;
+                }
+
+                if ($value['field'] == 'pes_cpf') {
+                    $result = $result->where('doc_conteudo', '=', $value['term']);
+                    continue;
+                }
+
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        // Em vez de ->paginate(15), usamos ->get() para extrair todos os resultados do filtro
+        return $result->get();
     }
 }

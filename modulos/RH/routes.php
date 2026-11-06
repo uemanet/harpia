@@ -102,7 +102,7 @@ Route::group(['prefix' => 'rh', 'middleware' => ['auth']], function () {
         Route::get('{id}/horastrabalhadasdiarias/{id_periodo_laboral}/periodo-laboral', '\Modulos\RH\Http\Controllers\HorasTrabalhadasDiariasController@getColaboradorHorasTrabalhadasDiariasPorPeriodoLaboral')->name('rh.horastrabalhadas.horastrabalhadasdiariasporperiodolaboral');
 
         Route::get('ferias/export', '\Modulos\RH\Http\Controllers\ColaboradoresController@exportFerias')->name('rh.ferias.export');
-
+        Route::get('export', '\Modulos\RH\Http\Controllers\ColaboradoresController@exportColaboradores')->name('rh.colaboradores.export');
     });
 
     Route::group(['prefix' => 'funcoes'], function () {

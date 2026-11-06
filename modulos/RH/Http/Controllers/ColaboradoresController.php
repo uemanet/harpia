@@ -838,4 +838,47 @@ class ColaboradoresController extends BaseController
         );
     }
 
+    public function exportColaboradores(Request $request)
+    {
+        $parametros = $request->all();
+        $colaboradores = $this->colaboradorRepository->getFilteredForExport($parametros);
+
+        // 1. Definir o cabeçalho da planilha
+        $reportData = [
+            [
+                'Nome',
+                'Email',
+                'CPF',
+                'Setor',
+                'Função',
+                'Status',
+                'Possui Foto?'
+            ]
+        ];
+
+        // 2. Preencher os dados iterando sobre a collection
+        foreach ($colaboradores as $col) {
+            // Busca a função e setor ativos (semelhante ao que já faz no index e no export de férias)
+            $funcaoAtual = $col->funcoes->first();
+            $funcaoNome = $funcaoAtual ? $funcaoAtual->funcao->fun_descricao : '-';
+            $setorNome = $funcaoAtual ? $funcaoAtual->setor->set_descricao : '-';
+            $temFoto = !empty($col->col_foto_anx_id) ? 'Sim' : 'Não';
+
+            $reportData[] = [
+                $col->pes_nome ?? '-',
+                $col->pes_email ?? '-',
+                $col->doc_conteudo ?? '-', // CPF que vem do join com gra_documentos
+                $setorNome,
+                $funcaoNome,
+                ucfirst($col->col_status),
+                $temFoto
+            ];
+        }
+
+        // 3. Fazer o download
+        return $this->excel->download(
+            new \App\Exports\ColaboradoresExport($reportData),
+            'lista_colaboradores_' . date('Y-m-d_H-i') . '.xlsx'
+        );
+    }
 }
