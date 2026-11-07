@@ -4,19 +4,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | PDO Fetch Style
-    |--------------------------------------------------------------------------
-    |
-    | By default, database results will be returned as instances of the PHP
-    | stdClass object; however, you may desire to retrieve records in an
-    | array format for simplicity. Here you can tweak the fetch style.
-    |
-    */
-
-    'fetch' => PDO::FETCH_CLASS,
-
-    /*
-    |--------------------------------------------------------------------------
     | Default Database Connection Name
     |--------------------------------------------------------------------------
     |
@@ -54,7 +41,7 @@ return [
 
         'sqlite_testing' => [
             'driver'   => 'sqlite',
-            'database' => ':memory:',
+            'database' => env('DB_TEST_DATABASE', database_path('database_testing.sqlite')),
             'prefix'   => '',
         ],
 
@@ -111,6 +98,8 @@ return [
     */
 
     'redis' => [
+
+        'client' => env('REDIS_CLIENT', 'phpredis'),
 
         'cluster' => false,
 

@@ -38,7 +38,7 @@ class ModulosSeed extends Command
      */
     public function handle()
     {
-        $modulos = config('modulos.modulos');
+        $modulos = config('modulos.modulos') ?? [];
 
         if ($this->option('dev')) {
             foreach ($modulos as $modulo) {

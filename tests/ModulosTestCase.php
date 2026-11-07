@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -19,8 +20,11 @@ class ModulosTestCase extends \TestCase
     public function createApplication()
     {
         putenv('DB_CONNECTION=sqlite_testing');
+        $_ENV['DB_CONNECTION'] = 'sqlite_testing';
+        $_SERVER['DB_CONNECTION'] = 'sqlite_testing';
         $app = require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap/app.php';
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+        $app['config']->set('database.default', 'sqlite_testing');
         return $app;
     }
 
@@ -31,7 +35,7 @@ class ModulosTestCase extends \TestCase
      * @param null $connection
      * @return \TestCase
      */
-    protected function assertDatabaseHas($table, array $data, $connection = null)
+    protected function assertDatabaseHas($table, array $data = [], $connection = null)
     {
         /*
          * Previne erros causados pela diferenca de tempo
@@ -42,43 +46,32 @@ class ModulosTestCase extends \TestCase
             unset($data['updated_at']);
         }
 
-        return parent::assertDatabaseHas($table, $data);
+        return parent::assertDatabaseHas($table, $data, $connection);
     }
 
-    /**
-     * @see TestCase::assertEquals()
-     * @param $expected
-     * @param $actual
-     * @param string $message
-     * @param float $delta
-     * @param int $maxDepth
-     * @param bool $canonicalize
-     * @param bool $ignoreCase
-     */
-    public static function assertEquals($expected, $actual, string $message = '', float $delta = 0.0, int $maxDepth = 10, bool $canonicalize = false, bool $ignoreCase = false): void
-    {
-        /*
-         * Previne erros causados pela diferenca de tempo
-         * entre a criacao do registro, sua edicao
-         * e atualizacao no banco durante os testes
-         */
-        if (is_array($expected) && is_array($actual)) {
-            unset($actual['updated_at']);
-            unset($expected['updated_at']);
-        }
-
-        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
-    }
+    protected static bool $migrated = false;
 
     public function setUp(): void
     {
         parent::setUp();
-        Artisan::call('modulos:migrate');
+
+        if (!static::$migrated) {
+            $this->app['db']->rollBack();
+            $dbPath = config('database.connections.sqlite_testing.database');
+            if ($dbPath && file_exists($dbPath) && $dbPath !== ':memory:') {
+                unlink($dbPath);
+                touch($dbPath);
+                $this->app['db']->purge('sqlite_testing');
+                $this->app['db']->reconnect('sqlite_testing');
+            }
+            Artisan::call('modulos:migrate');
+            static::$migrated = true;
+            $this->app['db']->beginTransaction();
+        }
     }
 
     public function tearDown(): void
     {
-        Artisan::call('migrate:reset');
         parent::tearDown();
     }
 }

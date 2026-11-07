@@ -1,4 +1,4 @@
-@extends('layouts.modulos.rh')
+@extends('layouts.modulos.default')
 
 @section('title')
     Bancos
@@ -9,15 +9,19 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de banco</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de edição de banco</h3>
         </div>
-        <div class="box-body">
-            {!! Form::model($banco, ["route" => ['rh.bancos.edit',$banco->ban_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+        <form action="{{ route('rh.bancos.edit', [$banco->ban_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
                 @include('RH::bancos.includes.formulario')
-            {!! Form::close() !!}
-
-        </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop

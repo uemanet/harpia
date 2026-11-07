@@ -18,6 +18,13 @@ class Auditoria extends BaseModel
         'log_object'
     ];
 
+    protected $searchable = [
+        'log_action' => '=',
+        'log_table' => 'like',
+        'log_table_id' => '=',
+        'log_usr_id' => '='
+    ];
+
     public function usuario()
     {
         return $this->belongsTo('Modulos\Seguranca\Models\Usuario', 'log_usr_id', 'usr_id');

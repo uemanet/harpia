@@ -4,6 +4,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\ContaColaboradorRequest;
+use Modulos\RH\Models\ContaColaborador;
 use Modulos\RH\Repositories\BancoRepository;
 use Modulos\RH\Repositories\ContaColaboradorRepository;
 use Illuminate\Http\Request;
@@ -28,8 +29,9 @@ class ContasColaboradoresController extends BaseController
 
         $colaborador = $this->colaboradorRepository->find($idColaborador);
         $bancos = $this->bancoRepository->lists('ban_id', 'ban_nome');
+        $conta_colaborador = new ContaColaborador();
 
-        return view('RH::contascolaboradores.create', compact('colaborador', 'bancos'));
+        return view('RH::contascolaboradores.create', compact('colaborador', 'bancos', 'conta_colaborador'));
     }
 
     public function postCreate( $idColaborador, ContaColaboradorRequest $request)

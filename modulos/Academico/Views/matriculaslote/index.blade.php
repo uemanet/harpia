@@ -1,410 +1,92 @@
-@extends('layouts.modulos.academico')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Matriculas em Lote
 @endsection
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row py-2">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
+            <!-- /.card-header -->
+            <div class="card-body">
+                <form method="GET" action="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="crs_id">Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="crs_id" id="crs_id" class="form-control">
+                                    <option value="">Escolha o Curso</option>
+                                    @foreach($cursos as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="ofc_id">Oferta de Curso <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="ofc_id" id="ofc_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="trm_id">Turma <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="trm_id" id="trm_id" class="form-control"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-md-3">
+                            <label for="per_id">Período Letivo <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="per_id" id="per_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ofd_id">Disciplinas Ofertadas <small class="obrigatorio-dot">*</small></label>
+                            <div class="form-group">
+                                <select name="ofd_id" id="ofd_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pol_id">Polo</label>
+                            <div class="form-group">
+                                <select name="pol_id" id="pol_id" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">&nbsp</label>
+                            <div class="form-group">
+                                <input type="submit" id="btnBuscar" class="btn btn-primary w-100" value="Buscar">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <form method="GET" action="">
-                <div class="row">
-                    <div class="col-md-3">
-                        {!! Form::label('crs_id', 'Curso*') !!}
-                        <div class="form-group">
-                            {!! Form::select('crs_id', $cursos, null, ['class' => 'form-control', 'placeholder' => 'Escolha o Curso']) !!}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('ofc_id', 'Oferta de Curso*') !!}
-                        <div class="form-group">
-                            {!! Form::select('ofc_id', [], null, ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('trm_id', 'Turma*') !!}
-                        <div class="form-group">
-                            {!! Form::select('trm_id', [], null, ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('per_id', 'Período Letivo*') !!}
-                        <div class="form-group">
-                            {!! Form::select('per_id', [], null, ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        {!! Form::label('ofd_id', 'Disciplinas Ofertadas*') !!}
-                        <div class="form-group">
-                            {!! Form::select('ofd_id', [], null, ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('pol_id', 'Polo') !!}
-                        <div class="form-group">
-                            {!! Form::select('pol_id', [], null, ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="">&nbsp;</label>
-                        <div class="form-group">
-                            <input type="submit" id="btnBuscar" class="form-control btn btn-primary" value="Buscar">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!-- /.box-body -->
     </div>
 
-    <div class="alunos"></div>
+    <div class="row py-2" id="alunos">
+    </div>
 @endsection
 
 @section('scripts')
-    <script src="{{url('/')}}/js/plugins/select2.js"></script>
-
-    <script type="text/javascript">
-        $(function() {
-            // select2
-            $('select').select2();
-
-            var cursoSelect = $('#crs_id');
-            var ofertasCursoSelect = $('#ofc_id');
-            var turmaSelect = $('#trm_id');
-            var periodosLetivosSelect = $('#per_id');
-            var disciplinasOfertadasSelect = $('#ofd_id');
-            var poloSelect = $('#pol_id');
-            var btnBuscar = $('#btnBuscar');
-
-            // token
-            var token = "{{csrf_token()}}";
-
-            // evento change select de cursos
-            cursoSelect.change(function () {
-
-                // limpando selects
-                ofertasCursoSelect.empty();
-                turmaSelect.empty();
-                periodosLetivosSelect.empty();
-                disciplinasOfertadasSelect.empty();
-                poloSelect.empty();
-
-                // buscar as ofertas de curso de acordo com o curso escolhido
-                var cursoId = $(this).val();
-
-                if(!cursoId || cursoId == '') {
-                    return false;
-                }
-
-                $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycurso/" + cursoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
-                        ofertasCursoSelect.append("<option value=''>Selecione a oferta</option>");
-                        $.each(response, function (key, obj) {
-                            ofertasCursoSelect.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+' ('+obj.mdl_nome+')</option>');
-                        });
-                    } else {
-                        ofertasCursoSelect.append("<option>Sem ofertas disponiveis</option>");
-                    }
-                });
-            });
-
-            // evento change select de ofertas de curso
-            ofertasCursoSelect.change(function () {
-
-                //limpando selects
-                turmaSelect.empty();
-                periodosLetivosSelect.empty();
-                disciplinasOfertadasSelect.empty();
-                poloSelect.empty();
-
-                var ofertaCursoId = $(this).val();
-
-                if(!ofertaCursoId || ofertaCursoId == '') {
-                    return false;
-                }
-
-                // buscar as turmas de acordo com a oferta de curso
-                $.harpia.httpget("{{url('/')}}/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
-                        turmaSelect.append('<option value="">Selecione a turma</option>');
-                        $.each(response, function (key, obj) {
-                            turmaSelect.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
-                        });
-                    } else {
-                        turmaSelect.append('<option>Sem turmas disponíveis</option>');
-                    }
-                });
-
-                // busca os polos de acordo com a oferta
-                $.harpia.httpget("{{url('/')}}/academico/async/polos/findallbyofertacurso/" + ofertaCursoId)
-                    .done(function (response) {
-                        if(!$.isEmptyObject(response)) {
-                            poloSelect.append('<option value="">Selecione o polo</option>');
-                            $.each(response, function (key, obj) {
-                                poloSelect.append('<option value="'+obj.pol_id+'">'+obj.pol_nome+'</option>');
-                            });
-                        } else {
-                            poloSelect.append('<option>Sem polos disponíveis</option>');
-                        }
-                    });
-            });
-
-            // evento change select de turmas
-            turmaSelect.change(function () {
-
-                // limpando selects
-                periodosLetivosSelect.empty();
-                disciplinasOfertadasSelect.empty();
-
-                // buscar os periodos letivos de acordo com a turma escolhida
-                var turmaId = $(this).val();
-
-                if(!turmaId || turmaId == '') {
-                    return false;
-                }
-
-                $.harpia.httpget("{{url('/')}}/academico/async/periodosletivos/findallbyturma/" + turmaId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
-                        periodosLetivosSelect.append('<option value="">Selecione o periodo letivo</option>');
-                        $.each(response, function (key, obj) {
-                            periodosLetivosSelect.append('<option value="'+obj.per_id+'">'+obj.per_nome+'</option>');
-                        });
-                    } else {
-                        periodosLetivosSelect.append('<option>Sem periodos letivos disponiveis</option>');
-                    }
-                });
-            });
-
-            //evento change select de periodos letivos
-            periodosLetivosSelect.change(function () {
-
-                // limpando select
-                disciplinasOfertadasSelect.empty();
-
-                // buscar todas as disciplinas ofertadas de acordo com o periodo e a turma
-                var turmaId = turmaSelect.val();
-                var periodoLetivoId = $(this).val();
-
-                if((!turmaId || turmaId == '') || (!periodoLetivoId || periodoLetivoId == '')) {
-                    return false;
-                }
-
-                $.harpia.httpget("{{url('/')}}/academico/async/ofertasdisciplinas/findall?ofd_trm_id=" + turmaId + "&ofd_per_id=" + periodoLetivoId).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
-                        disciplinasOfertadasSelect.append('<option value="">Selecione a disciplina ofertada</option>');
-                        $.each(response, function (key, obj) {
-                            disciplinasOfertadasSelect.append('<option value="'+obj.ofd_id+'">'+obj.dis_nome+'</option>');
-                        });
-                    } else {
-                        disciplinasOfertadasSelect.append('<option>Sem disciplinas ofertadas disponíveis</option>');
-                    }
-                })
-            });
-
-            // evento do botao Buscar
-            btnBuscar.click(function (event) {
-
-                // parar o evento de submissao do formaulario
-                event.preventDefault();
-
-                var turmaId = turmaSelect.val();
-                var ofertaDisciplinaId = disciplinasOfertadasSelect.val();
-                var poloId = poloSelect.val();
-
-                if((!turmaId || turmaId == '') || (!ofertaDisciplinaId || ofertaDisciplinaId == '')) {
-                    return false;
-                }
-
-                var parameters = {
-                    trm_id: turmaId,
-                    ofd_id: ofertaDisciplinaId
-                };
-
-                if (poloId && poloId != '') {
-                    parameters['pol_id'] = poloId;
-                }
-
-                renderTable(parameters);
-
-            });
-
-            var renderTable = function(parameters) {
-                $('.alunos').empty();
-
-                var url = "{{url('/')}}/academico/async/matriculasofertasdisciplinas/getalunosmatriculaslote?" + $.param(parameters);
-
-                $.harpia.httpget(url).done(function (response) {
-                    if(!$.isEmptyObject(response)) {
-                        $('.alunos').append(response);
-                    } else {
-                        $('.alunos').append("<p>Não há alunos matriculados na turma/polo</p>");
-                    }
-                });
-            };
-
-            // evento para selecionar todos os checkboxes
-            $('.alunos').on('click', '#select_all',function(event) {
-                if(this.checked) {
-                    $('.matriculas').each(function() {
-                        this.checked = true;
-                    });
-                }
-                else {
-                    $('.matriculas').each(function() {
-                        this.checked = false;
-                    });
-                }
-            });
-
-            // evento para selecionar todos os checkboxes
-            $('.alunos').on('click', '#select_all_matriculados',function(event) {
-                if(this.checked) {
-                    $('.matriculados').each(function() {
-                        this.checked = true;
-                    });
-                }
-                else {
-                    $('.matriculados').each(function() {
-                        this.checked = false;
-                    });
-                }
-            });
-
-            var hiddenButtonDesmatricular = function () {
-                var checkboxes = $('.alunos table td input[type="checkbox"]');
-
-                if(checkboxes.is(':checked')){
-                    $(document).find('.btnDesmatricular').removeClass('hidden');
-                }else{
-                    $(document).find('.btnDesmatricular').addClass('hidden');
-                }
-            };
-
-            var hiddenButton = function () {
-                var checkboxes = $('.alunos table td input[type="checkbox"]');
-
-                if(checkboxes.is(':checked')){
-                    $(document).find('.btnMatricular').removeClass('hidden');
-                }else{
-                    $(document).find('.btnMatricular').addClass('hidden');
-                }
-            };
-
-
-            $(document).on('click', '.table-matricular input[type="checkbox"]', hiddenButton);
-            $(document).on('click', '.table-desmatricular input[type="checkbox"]', hiddenButtonDesmatricular);
-
-
-            $('.alunos').on('click', '.btnMatricular', function () {
-                var quant = $('.matriculas:checked').length;
-
-                var ofertaId = $('#ofd_id').val();
-
-                if((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
-                    return false;
-                }
-
-                var matriculasIds = new Array();
-
-                $('.matriculas:checked').each(function () {
-                    matriculasIds.push($(this).val());
-                });
-
-                sendMatriculas(matriculasIds, ofertaId);
-            });
-
-            $('.alunos').on('click', '.btnDesmatricular', function () {
-                var quant = $('.matriculados:checked').length;
-
-                var ofertaId = $('#ofd_id').val();
-
-                if((!(quant > 0)) || (!ofertaId || ofertaId == '')) {
-                    return false;
-                }
-
-                var matriculasIds = new Array();
-
-                $('.matriculados:checked').each(function () {
-                    matriculasIds.push($(this).val());
-                });
-
-                sendMatriculas(matriculasIds, ofertaId, true);
-            });
-
-            var sendMatriculas = function(matriculasIds, ofertaId, desmatricular = false) {
-
-                var dados = {
-                    matriculas: matriculasIds,
-                    ofd_id: ofertaId,
-                    _token: token
-                };
-
-                $.harpia.showloading();
-
-                if (desmatricular) {
-                  url = '/academico/async/matriculasofertasdisciplinas/desmatricularlote';
-                } else {
-                  url = '/academico/async/matriculasofertasdisciplinas/matriculaslote';
-                }
-
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: dados,
-                    success: function (data) {
-                        $.harpia.hideloading();
-
-                        if (desmatricular) {
-                          toastr.success('Alunos desmatriculados com sucesso!', null, {progressBar: true});
-                        } else {
-                          toastr.success('Alunos matriculados com sucesso!', null, {progressBar: true});
-                        }
-
-                        var turma = turmaSelect.val();
-                        var ofertaDisciplina = disciplinasOfertadasSelect.val();
-                        var polo = poloSelect.val();
-
-                        var parameters = {
-                            trm_id: turma,
-                            ofd_id: ofertaDisciplina
-                        };
-                        if (polo && polo != '') {
-
-                            parameters['pol_id'] = polo;
-                        }
-
-                        renderTable(parameters);
-                    },
-                    error: function (xhr, textStatus, error) {
-                        $.harpia.hideloading();
-
-                        switch (xhr.status) {
-                            case 400:
-                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
-                                break;
-                            default:
-                                toastr.error(xhr.responseText.replace(/\"/g, ''), null, {progressBar: true});
-                        }
-                    }
-                });
-            };
-
-        });
+    <script>
+        window.PageRoutes = {
+            // Add Routes
+        };
     </script>
+
+    @vite('modulos/Academico/Resources/js/pages/matriculaslote/index.js')
 @stop

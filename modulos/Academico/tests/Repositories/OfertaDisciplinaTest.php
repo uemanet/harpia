@@ -6,7 +6,7 @@ use Uemanet\EloquentTable\TableCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Modulos\Academico\Repositories\OfertaDisciplinaRepository;
 
-class OfertaDisciplinaRepositoryTest extends ModulosTestCase
+class OfertaDisciplinaTest extends ModulosTestCase
 {
     public function setUp(): void
     {

@@ -1,57 +1,90 @@
-version: '3'
+# v2 sintax
+version: '2'
 
+# Named volumes
 volumes:
   harpia-mysql-data:
     driver: local
   harpia-postgres-data:
     driver: local
+  # Redis Data
+  #harpia-redis-data:
+  #  driver: local
+
+networks:
+  harpia-db:
+    driver: bridge
 
 services:
+  # MySQL (5.7)
   mysql:
-    image: mysql:5.7
+    image: ambientum/mysql:5.7
     container_name: harpia-mysql
-    platform: 'linux/x86_64'
     volumes:
       - harpia-mysql-data:/var/lib/mysql
-    ports:
-      - "3307:3306"
+    networks:
+      - harpia-db
     environment:
-      - MYSQL_ROOT_PASSWORD=toor
-      - MYSQL_DATABASE=harpia
-      - MYSQL_USER=harpia
-      - MYSQL_PASSWORD=harpia
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-toor}
+      MYSQL_DATABASE: ${DB_DATABASE:-harpia}
+      MYSQL_USER: ${DB_USERNAME:-harpia}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-harpia}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-toor}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Porta NÃO exposta ao host por padrão (acesse via phpMyAdmin ou ferramenta interna)
+    # Descomente abaixo apenas em desenvolvimento local se precisar de acesso direto:
+    # ports:
+    #   - "3307:3306"
 
+  # ─── Banco de dados PostgreSQL 15 ────────────────────────────────────────
   pgsql:
-    image: postgres:11-alpine
+    image: postgres:15-alpine
     container_name: harpia-postgres
+    restart: unless-stopped
     volumes:
       - harpia-postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5436:5432"
+    networks:
+      - harpia-db
     environment:
-      - POSTGRES_DB=harpia
-      - POSTGRES_USER=harpia
-      - POSTGRES_PASSWORD=harpia
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-harpia}
+      POSTGRES_DB: ${DB_DATABASE:-harpia}
+      POSTGRES_USER: ${DB_USERNAME:-harpia}
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:4.6
-    container_name: harpia-phpmyadmin
-    ports:
-      - "8080:80"
-    environment:
-      - PMA_HOST=mysql
-      - PMA_PORT=3306
-    links:
-      - mysql
+  # Redis
+  #cache:
+  #  image: ambientum/redis:3.2
+  #  container_name: harpia-redis
+  #  command: --appendonly yes
+  #  volumes:
+  #    - harpia-redis-data:/data
+  #  ports:
+  #    - "6379:6379"
 
+  # PHP (with Apache)
   web:
-    image: ambientum/php:7.1-apache
+    image: ambientum/php:8.3-apache
     container_name: harpia-web
+    restart: unless-stopped
+    working_dir: /var/www/app
     volumes:
       - .:/var/www/app
     ports:
       - "80:8080"
+    networks:
+      - harpia-db
     links:
       - mysql
-      - pgsql
-      - phpmyadmin
+
+  # Laravel Queues
+  #queue:
+  #  image: ambientum/php:8.3
+  #  container_name: harpia-queue
+  #  command: php artisan queue:listen
+  #  volumes:
+  #    - .:/var/www/app
+  #  links:
+  #    - mysql
+  #    - cache

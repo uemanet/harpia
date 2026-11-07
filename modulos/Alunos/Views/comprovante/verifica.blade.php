@@ -15,7 +15,7 @@
                                     <span class="glyphicon glyphicon-credit-card form-control-feedback"></span>
                                     @if ($errors->has('aln_codigo')) <p class="help-block">{{ $errors->first('aln_codigo') }}</p> @endif
                                 </div>
-                                <input type="hidden" value="{{isset($rota) ? $rota : old('rota')}}" name="rota">
+                                <input type="hidden" value="{{ old('rota', isset($rota) ? $rota : null) }}" name="rota">
                             </div>
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary btn-block btn-flat pull-right btn-localizar">Localizar</button>

@@ -30,11 +30,7 @@ class ModulosEventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (!chdir($this->path)) {
-            return;
-        }
-
-        $directories = array_filter(glob('*'), 'is_dir');
+        $directories = array_filter(glob($this->path . '/*'), 'is_dir');
 
         foreach ($directories as $directory) {
             if ($this->hasListenFile($directory)) {

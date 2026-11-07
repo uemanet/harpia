@@ -1,4 +1,4 @@
-@extends('layouts.modulos.integracao')
+@extends('layouts.modulos.default')
 
 @section('title')
     Lançamento de TCC
@@ -9,12 +9,12 @@
 @stop
 
 @section('content')
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Disciplina: {{$disciplina->dis_nome}}</h3>
+<div class="card card-primary card-outline p-0">
+    <div class="card-header with-border">
+        <h3 class="card-title">Disciplina: {{$disciplina->dis_nome}}</h3>
     </div>
 
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
             <div class="col-md-12">
             @if(count($dados))

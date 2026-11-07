@@ -1,9 +1,4 @@
-@extends('layouts.modulos.rh')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Período Laboral
@@ -14,33 +9,19 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de períodos laborais</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de edição de períodos laborais</h3>
         </div>
-        <div class="box-body">
-            {!! Form::model($periodolaboral, ["route" => ['rh.periodoslaborais.edit',$periodolaboral->pel_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
+        <form action="{{ route('rh.periodoslaborais.edit', [$periodolaboral->pel_id]) }}" method="POST" id="form" role="form">
+            @csrf
+            @method('PUT')
+            <div class="card-body">
                 @include('RH::periodoslaborais.includes.formulario')
-            {!! Form::close() !!}
-        </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+            </div>
+        </form>
     </div>
 @stop
-
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("select").select2();
-        });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-@endsection

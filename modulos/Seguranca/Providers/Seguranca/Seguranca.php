@@ -34,6 +34,23 @@ class Seguranca implements SegurancaContract
     }
 
     /**
+     * Verifica se o controle de seguranca esta habilitado.
+     * Suporta IS_SECURITY_ENNABLED / IS_SECURITY_ENABLED no ambiente de desenvolvimento/testes
+     * e config('seguranca.security_enabled') em producao.
+     *
+     * @return bool
+     */
+    public static function isSecurityEnabled(): bool
+    {
+        $env = env('IS_SECURITY_ENABLED', env('IS_SECURITY_ENNABLED'));
+        if ($env !== null) {
+            return (bool) $env;
+        }
+
+        return (bool) config('seguranca.security_enabled', true);
+    }
+
+    /**
      * Retorna o usuário logado na aplicação
      */
     public function getUser()
@@ -119,7 +136,7 @@ class Seguranca implements SegurancaContract
             ->where('pru_usr_id', '=', $user->usr_id)
             ->get();
 
-        if (!env('IS_SECURITY_ENNABLED')) {
+        if (!static::isSecurityEnabled()) {
             $permissions = DB::table('seg_permissoes')->get();
         }
 
@@ -137,7 +154,7 @@ class Seguranca implements SegurancaContract
      */
     public function haspermission($rota)
     {
-        if (!env('IS_SECURITY_ENNABLED')) {
+        if (!static::isSecurityEnabled()) {
             return true;
         }
 
@@ -207,6 +224,19 @@ class Seguranca implements SegurancaContract
     {
         $permissoes = Cache::get('PERMISSOES_' . $usr_id);
 
-        return in_array($rota, $permissoes);
+        if (is_null($permissoes)) {
+            $this->makeCachePermissoes();
+            $permissoes = Cache::get('PERMISSOES_' . $usr_id, []);
+        }
+
+        if ($permissoes instanceof \Illuminate\Support\Collection) {
+            $permissoes = $permissoes->toArray();
+        }
+
+        if (!is_array($permissoes)) {
+            $permissoes = [];
+        }
+
+        return in_array($rota, $permissoes, true);
     }
 }

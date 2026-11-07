@@ -6,6 +6,7 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\FontePagadoraRequest;
+use Modulos\RH\Models\FontePagadora;
 use Modulos\RH\Repositories\FontePagadoraRepository;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
@@ -24,7 +25,7 @@ class FontesPagadorasController extends BaseController
     {
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.fontespagadoras.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.fontespagadoras.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -100,7 +101,8 @@ class FontesPagadorasController extends BaseController
 
     public function getCreate()
     {
-        return view('RH::fontespagadoras.create');
+        $fontepagadora = new FontePagadora();
+        return view('RH::fontespagadoras.create', compact('fontepagadora'));
     }
 
     public function postCreate(FontePagadoraRequest $request)

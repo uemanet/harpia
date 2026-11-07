@@ -38,7 +38,7 @@ class ModulosMigrate extends Command
      */
     public function handle()
     {
-        $modulos = config('modulos.modulos');
+        $modulos = config('modulos.modulos') ?? [];
 
         foreach ($modulos as $modulo) {
 
@@ -53,7 +53,7 @@ class ModulosMigrate extends Command
         }
 
         if ($this->option('seed') == 'prod') {
-            $modulos = config('modulos.modulos');
+            $modulos = config('modulos.modulos') ?? [];
 
             foreach ($modulos as $modulo) {
 
@@ -73,7 +73,7 @@ class ModulosMigrate extends Command
         }
 
         if ($this->option('seed') == 'dev') {
-            $modulos = config('modulos.modulos');
+            $modulos = config('modulos.modulos') ?? [];
 
             foreach ($modulos as $modulo) {
 

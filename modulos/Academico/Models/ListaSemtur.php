@@ -33,7 +33,7 @@ class ListaSemtur extends BaseModel
     public function getLstDataBloqueioAttribute($value)
     {
         if ($value) {
-            return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->formatLocalized('%d/%m/%Y');
+            return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');
         }
 
         return null;

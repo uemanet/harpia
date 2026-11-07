@@ -1,7 +1,9 @@
 /vendor
 /node_modules
 /public/storage
+/public/hot
 /storage/uploads
+/tests/storage
 Homestead.yaml
 Homestead.json
 .env
@@ -14,3 +16,30 @@ composer.lock
 codecoverage
 /build
 .php_cs.cache
+.php-cs-fixer.cache
+.phpunit.result.cache
+.agents
+.claude
+.codex
+.github
+.junie
+.mcp.json
+*.mcp.json
+mcp.json
+mcp_config.json
+/docs/facial
+opencode.json
+
+# Remover tracking do Módulo Matriculas
+modulos/Matriculas
+modulos/Financeiro
+modulos/ProducaoDocente
+
+# Remover doc de atualização da nova feature
+planejamento_fluxo_atesto_pagamento_v2.md
+
+*.bkp
+*.sqlite
+database/*.sqlite
+.env*
+!.env.example

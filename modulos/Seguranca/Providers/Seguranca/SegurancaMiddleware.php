@@ -18,7 +18,7 @@ class SegurancaMiddleware extends AbstractSegurancaMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!env('IS_SECURITY_ENNABLED')) {
+        if (!Seguranca::isSecurityEnabled()) {
             return $next($request);
         }
 

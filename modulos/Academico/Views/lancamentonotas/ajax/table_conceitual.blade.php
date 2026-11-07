@@ -20,7 +20,11 @@
     @foreach($matriculas as $matricula)
         <tr id="{{ $loop->index }}">
             <td>{{ $matricula->getAluno->pessoa->pes_nome }}</td>
-            <td>{!! Form::select('conceito', $opcoes , $matricula->mof_conceito, ['class' => 'form-control select-control', 'id' => 'select_'.$loop->index]) !!}</td>
+            <td><select name="conceito" class="form-control select-control" id="select_">
+    @foreach($opcoes as $key => $value)
+        <option value="{{ $key }}" {{ $matricula->mof_conceito == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select></td>
             <td class="situacao_{{$loop->index}}">
                 @if(str_contains($matricula->situacao_matricula, 'Cursando'))
                     <span class="label bg-blue">{{$matricula->situacao_matricula}}</span>
@@ -100,7 +104,7 @@
             $.ajax({
                 method: 'POST',
                 data: data,
-                url: "{{ route('academico.async.lancamentonotas.create') }}",
+                url: "{{{ route('academico.async.lancamentonotas.create') }}}",
                 success: function (response) {
                     toastr.success('Notas atualizadas com sucesso.', null, {progressBar: true});
                 },

@@ -24,11 +24,10 @@ class CalendarioRequest extends BaseRequest
     public function rules()
     {
         $rules = [
-
-            'cld_nome' => 'nullable',
-            'cld_data' => 'nullable',
-            'cld_observacao' => 'nullable',
-            'cld_tipo_evento' => 'nullable',
+            'cld_nome' => 'required|max:80',
+            'cld_data' => 'required|date',
+            'cld_observacao' => 'nullable|max:255',
+            'cld_tipo_evento' => 'required|in:FN,FE,FM,PF',
         ];
 
         return $rules;

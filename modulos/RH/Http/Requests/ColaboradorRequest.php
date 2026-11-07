@@ -56,6 +56,7 @@ class ColaboradorRequest extends BaseRequest
                 'col_codigo_catraca' => 'required',
                 'col_vinculo_universidade' => 'required',
                 'col_matricula_universidade' => 'required',
+                'col_foto_facial' => 'nullable|image|max:10240|mimes:jpg,jpeg,png',
                 'col_observacao' => 'required',
             ];
         }
@@ -90,6 +91,7 @@ class ColaboradorRequest extends BaseRequest
             'col_codigo_catraca' => 'required',
             'col_vinculo_universidade' => 'required',
             'col_matricula_universidade' => 'required',
+            'col_foto_facial' => 'nullable|image|max:10240|mimes:jpg,jpeg,png',
             'col_observacao' => 'required',
 //            'col_status' => 'required',
 

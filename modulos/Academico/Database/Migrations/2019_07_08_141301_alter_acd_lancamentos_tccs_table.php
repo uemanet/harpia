@@ -6,10 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 class AlterAcdLancamentosTccsTable extends Migration
 {
 
-    public function __construct()
-    {
-        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-    }
+
     /**
      * Run the migrations.
      *

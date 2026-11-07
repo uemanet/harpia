@@ -64,6 +64,16 @@ class ColaboradorRepository extends BaseRepository
                 ];
             }
         }
+
+        // Injeção manual do filtro de foto
+        if (isset($requestParameters['com_foto']) && $requestParameters['com_foto'] !== '') {
+            $search[] = [
+                'field' => 'com_foto',
+                'type' => 'custom',
+                'term' => $requestParameters['com_foto']
+            ];
+        }
+
         return $this->paginate($sort, $search);
     }
 
@@ -80,6 +90,16 @@ class ColaboradorRepository extends BaseRepository
 
         if (!empty($search)) {
             foreach ($search as $value) {
+
+                // Processamento do filtro de foto
+                if ($value['field'] == 'com_foto') {
+                    if ($value['term'] === '1') {
+                        $result = $result->whereNotNull('col_foto_anx_id');
+                    } elseif ($value['term'] === '0') {
+                        $result = $result->whereNull('col_foto_anx_id');
+                    }
+                    continue; // Pula para a próxima iteração
+                }
 
                 if ($value['field'] == 'funcoes') {
                     $result = $result->whereIn('cfn_fun_id', $value['term'])->where('cfn_data_fim', null);
@@ -134,6 +154,9 @@ class ColaboradorRepository extends BaseRepository
                 ->toArray();
 
             $result->funcoes_index = implode(',', $funcoes);
+            $result->col_foto = !empty($result->col_foto_anx_id)
+                ? '<span class="text-success"><i class="fa fa-check"></i></span>'
+                : '<span class="text-danger"><i class="fa fa-times"></i></span>';
         }
 
         return $results;
@@ -159,6 +182,61 @@ class ColaboradorRepository extends BaseRepository
         return $query->get();
     }
 
+    public function listarAtivosParaSelecao()
+    {
+        return $this->model
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+            ->where('col_status', 'ativo')
+            ->orderBy('pes_nome')
+            ->pluck('pes_nome', 'col_id');
+    }
+
+    public function buscarAtivoComPessoa(int $colaboradorId): ?Colaborador
+    {
+        return $this->model
+            ->with(['pessoa', 'foto_facial'])
+            ->where('col_status', 'ativo')
+            ->where('col_id', $colaboradorId)
+            ->first();
+    }
+
+    public function buscarAtivoPorRegistration(?string $registration): ?Colaborador
+    {
+        $registration = trim((string) $registration);
+
+        if ($registration === '' || !ctype_digit($registration)) {
+            return null;
+        }
+
+        return $this->buscarAtivoComPessoa((int) $registration);
+    }
+
+    public function listarAtivosParaExportacao(?int $dispositivoId = null)
+    {
+        $query = $this->model
+            ->with('foto_facial')
+            ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
+            ->where('reh_colaboradores.col_status', 'ativo')
+            ->select([
+                'reh_colaboradores.col_id',
+                'reh_colaboradores.col_foto_anx_id',
+                'gra_pessoas.pes_nome',
+            ])
+            ->orderBy('gra_pessoas.pes_nome');
+
+        if ($dispositivoId) {
+            $query->whereNotExists(function ($subquery) use ($dispositivoId) {
+                $subquery->select(DB::raw(1))
+                    ->from('reh_mapeamento_dispositivo')
+                    ->where('map_dis_id', $dispositivoId)
+                    ->where('map_ativo', true)
+                    ->whereColumn('map_col_id', 'reh_colaboradores.col_id');
+            });
+        }
+
+        return $query->get();
+    }
+
     public function getHistory($col_id)
     {
 
@@ -170,5 +248,78 @@ class ColaboradorRepository extends BaseRepository
 
         }
 
+    }
+
+    public function getFilteredForExport(array $requestParameters = [])
+    {
+        // 1. Reaproveitamos a lógica de extração dos filtros
+        $searchable = $this->model->searchable();
+        $search = [];
+        foreach ($requestParameters as $key => $value) {
+            if (array_key_exists($key, $searchable) and !empty($value)) {
+                $search[] = [
+                    'field' => $key,
+                    'type' => $searchable[$key],
+                    'term' => $value
+                ];
+            }
+        }
+
+        if (isset($requestParameters['com_foto']) && $requestParameters['com_foto'] !== '') {
+            $search[] = [
+                'field' => 'com_foto',
+                'type' => 'custom',
+                'term' => $requestParameters['com_foto']
+            ];
+        }
+
+        // 2. Construímos a base da query igual ao método paginate()
+        $result = $this->model->join('gra_pessoas', function ($join) {
+            $join->on('col_pes_id', '=', 'pes_id');
+        })->leftJoin('gra_documentos', function ($join) {
+            $join->on('pes_id', '=', 'doc_pes_id')->where('doc_tpd_id', '=', 2, 'and', true);
+        })->leftJoin('reh_colaboradores_funcoes', function ($join) {
+            $join->on('col_id', '=', 'cfn_col_id');
+        })->groupBy('col_id');
+
+        // 3. Aplicamos os wheres
+        if (!empty($search)) {
+            foreach ($search as $value) {
+                if ($value['field'] == 'com_foto') {
+                    if ($value['term'] === '1') {
+                        $result = $result->whereNotNull('col_foto_anx_id');
+                    } elseif ($value['term'] === '0') {
+                        $result = $result->whereNull('col_foto_anx_id');
+                    }
+                    continue;
+                }
+
+                if ($value['field'] == 'funcoes') {
+                    $result = $result->whereIn('cfn_fun_id', $value['term'])->where('cfn_data_fim', null);
+                    continue;
+                }
+
+                if ($value['field'] == 'cfn_set_id') {
+                    $result = $result->where('cfn_set_id', $value['term'])->where('cfn_data_fim', null);
+                    continue;
+                }
+
+                if ($value['field'] == 'pes_cpf') {
+                    $result = $result->where('doc_conteudo', '=', $value['term']);
+                    continue;
+                }
+
+                switch ($value['type']) {
+                    case 'like':
+                        $result = $result->where($value['field'], $value['type'], "%{$value['term']}%");
+                        break;
+                    default:
+                        $result = $result->where($value['field'], $value['type'], $value['term']);
+                }
+            }
+        }
+
+        // Em vez de ->paginate(15), usamos ->get() para extrair todos os resultados do filtro
+        return $result->get();
     }
 }

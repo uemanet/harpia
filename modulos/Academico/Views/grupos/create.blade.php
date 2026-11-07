@@ -1,8 +1,4 @@
-@extends('layouts.modulos.academico')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Grupos
@@ -13,14 +9,16 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de cadastro de grupos</h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de cadastro de grupos</h3>
         </div>
-        <div class="box-body">
-            {!! Form::open(["url" => url('/') . "/academico/grupos/create", "method" => "POST", "id" => "form", "role" => "form"]) !!}
-            @include('Academico::grupos.includes.formulario_create')
-            {!! Form::close() !!}
+        <div class="card-body">
+            <form action="{{ url('/'). "/academico/grupos/create" }}" method="POST" id="form" role="form">
+                @csrf
+                @include('Academico::grupos.includes.formulario_create')
+            </form>
         </div>
     </div>
 @stop

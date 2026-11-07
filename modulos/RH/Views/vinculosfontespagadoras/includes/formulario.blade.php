@@ -1,22 +1,32 @@
 <div class="row">
     <div class="form-group col-md-4 @if ($errors->has('vfp_vin_id')) has-error @endif">
-        {!! Form::label('vfp_vin_id', 'Vínculo*', ['class' => 'control-label']) !!}
+        <label for="vfp_vin_id" class="form-label">Vínculo*</label>
         <div class="controls">
-            {!! Form::select('vfp_vin_id', $vinculos, old('vfp_vin_id'), ['class' => 'form-control', 'placeholder' => 'Selecione o tipo de vínculo']) !!}
+            <select name="vfp_vin_id" class="form-control">
+    <option value="">Selecione o tipo de vínculo</option>
+    @foreach($vinculos as $key => $value)
+        <option value="{{ $key }}" {{ old('vfp_vin_id', $vinculo_fpg->vfp_vin_id) == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('vfp_vin_id')) <p class="help-block">{{ $errors->first('vfp_vin_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('vfp_unidade')) has-error @endif">
-        {!! Form::label('vfp_unidade', 'Pagamento por unidade*', ['class' => 'control-label']) !!}
+        <label for="vfp_unidade" class="form-label">Pagamento por unidade*</label>
         <div class="controls">
-            {!! Form::select('vfp_unidade', array(0 => 'Não', 1 => 'Sim'), old('vfp_unidade'), ['class' => 'form-control', 'placeholder' => 'Selecione']) !!}
+            <select name="vfp_unidade" class="form-control">
+    <option value="">Selecione</option>
+    @foreach(array(0 => 'Não', 1 => 'Sim') as $key => $value)
+        <option value="{{ $key }}" {{ old('vfp_unidade', $vinculo_fpg->vfp_unidade) == $key ? 'selected' : '' }}>{{ $value }}</option>
+    @endforeach
+</select>
             @if ($errors->has('vfp_unidade')) <p class="help-block">{{ $errors->first('vfp_unidade') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-4 @if ($errors->has('vfp_valor')) has-error @endif">
-        {!! Form::label('vfp_valor', 'Valor (R$)*', ['class' => 'control-label']) !!}
+        <label for="vfp_valor" class="form-label">Valor (R$)*</label>
         <div class="controls">
-            {!! Form::text('vfp_valor', old('vfp_valor'), ['class' => 'form-control', "onkeyup" =>"k(this);"]) !!}
+            <input type="text" name="vfp_valor" value="{{ old('vfp_valor', $vinculo_fpg->vfp_valor) }}" class="form-control" onkeyup="k(this);" >
             @if ($errors->has('vfp_valor')) <p class="help-block">{{ $errors->first('vfp_valor') }}</p> @endif
         </div>
     </div>
@@ -24,9 +34,9 @@
 
 <div class="row">
     <div class="form-group col-md-12">
-        <label class="control-label" style="visibility: hidden">Botão</label>
+        <label class="form-label" style="visibility: hidden">Botão</label>
         <div class="controls">
-            {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
+            <button type="submit" class="btn btn-primary float-end">Salvar dados</button>
         </div>
     </div>
 </div>

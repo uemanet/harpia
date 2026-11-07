@@ -69,7 +69,7 @@ class PasswordController extends Controller
         ]);
 
         Mail::send('Seguranca::email.forget-password', ['token' => $token], function($message) use($request){
-            $message->from('noreply@admin.com');
+            $message->from(config('mail.from.address'), config('mail.from.name'));
             $message->to($request->email);
             $message->subject('Reset Password');
         });

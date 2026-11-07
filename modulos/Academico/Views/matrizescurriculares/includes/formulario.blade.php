@@ -1,67 +1,66 @@
 <div class="row">
     <div class="form-group col-md-6 @if ($errors->has('mtc_crs_id')) has-error @endif">
-        {!! Form::label('mtc_crs_id', 'Curso*', ['class' => 'control-label']) !!}
+        <label for="mtc_crs_id" class="form-label">Curso <small class="obrigatorio-dot">*</small></label></label>
         <div class="controls">
-            {!! Form::select('mtc_crs_id', $curso, $cursoId, ['class' => 'form-control']) !!}
+            <select name="mtc_crs_id" class="form-control">
+                @foreach($curso as $key => $value)
+                    <option value="{{ $key }}" {{ $cursoId == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+            </select>
             @if ($errors->has('mtc_crs_id')) <p class="help-block">{{ $errors->first('mtc_crs_id') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-6 @if ($errors->has('mtc_file')) has-error @endif">
-        {!! Form::label('mtc_file', 'Projeto Pedagógico', ['class' => 'control-label']) !!}
+        <label for="mtc_file" class="form-label">Projeto Pedagógico</label>
         <div class="controls">
-            {!! Form::file('mtc_file', ['class' => 'form-control file']) !!}
+            <input type="file" name="mtc_file" class="form-control file" >
             @if ($errors->has('mtc_file')) <p class="help-block">{{ $errors->first('mtc_file') }}</p> @endif
         </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('mtc_titulo')) has-error @endif">
-        {!! Form::label('mtc_titulo', 'Título*', ['class' => 'control-label']) !!}
+        <label for="mtc_titulo" class="form-label">Título <small class="obrigatorio-dot">*</small></label>
         <div class="controls">
-            {!! Form::text('mtc_titulo', old('mtc_titulo'), ['class' => 'form-control select-control']) !!}
+            <input type="text" name="mtc_titulo" value="{{ old('mtc_titulo') }}" class="form-control select-control" >
             @if ($errors->has('mtc_titulo')) <p class="help-block">{{ $errors->first('mtc_titulo') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('mtc_data')) has-error @endif">
-      {!! Form::label('mtc_data', 'Data*', ['class' => 'control-label']) !!}
+      <label for="mtc_data" class="form-label">Data <small class="obrigatorio-dot">*</small></label>
       <div class="controls">
-        {!! Form::text('mtc_data', old('mtc_data'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy']) !!}
+        <input type="text" name="mtc_data" value="{{ old('mtc_data') }}" class="form-control datepicker">
         @if ($errors->has('mtc_data')) <p class="help-block">{{ $errors->first('mtc_data') }}</p> @endif
       </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('mtc_horas')) has-error @endif">
-      {!! Form::label('mtc_horas', 'Horas*', ['class' => 'control-label']) !!}
+      <label for="mtc_horas" class="form-label">Carga Horária <small class="obrigatorio-dot">*</small></label>
       <div class="controls">
-        {!! Form::number('mtc_horas', old('mtc_horas'), ['class' => 'form-control select-control']) !!}
+        <input type="number" name="mtc_horas" value="{{ old('mtc_horas') }}" class="form-control" >
         @if ($errors->has('mtc_horas')) <p class="help-block">{{ $errors->first('mtc_horas') }}</p> @endif
       </div>
     </div>
     <div class="form-group col-md-3 @if ($errors->has('mtc_creditos')) has-error @endif">
-      {!! Form::label('mtc_creditos', 'Créditos', ['class' => 'control-label']) !!}
+      <label for="mtc_creditos" class="form-label">Créditos</label>
       <div class="controls">
-        {!! Form::number('mtc_creditos', old('mtc_creditos'), ['class' => 'form-control select-control']) !!}
+        <input type="number" name="mtc_creditos" value="{{ old('mtc_creditos') }}" class="form-control select-control" >
         @if ($errors->has('mtc_creditos')) <p class="help-block">{{ $errors->first('mtc_creditos') }}</p> @endif
       </div>
     </div>
 </div>
 <div class="row">
     <div class="form-group col-md-3 @if ($errors->has('mtc_horas_praticas')) has-error @endif">
-        {!! Form::label('mtc_horas_praticas', 'Horas Práticas', ['class' => 'control-label']) !!}
+        <label for="mtc_horas_praticas" class="form-label">Horas Práticas</label>
         <div class="controls">
-            {!! Form::number('mtc_horas_praticas', old('mtc_horas_praticas'), ['class' => 'form-control select-control']) !!}
+            <input type="number" name="mtc_horas_praticas" value="{{ old('mtc_horas_praticas') }}" class="form-control" >
             @if ($errors->has('mtc_horas_praticas')) <p class="help-block">{{ $errors->first('mtc_horas_praticas') }}</p> @endif
         </div>
     </div>
     <div class="form-group col-md-9 @if ($errors->has('mtc_descricao')) has-error @endif">
-      {!! Form::label('mtc_descricao', 'Descrição', ['class' => 'control-label']) !!}
+      <label for="mtc_descricao" class="form-label">Descrição</label>
       <div class="controls">
-        {!! Form::text('mtc_descricao', old('mtc_descricao'), ['class' => 'form-control select-control']) !!}
+        <input type="text" name="mtc_descricao" value="{{ old('mtc_descricao') }}" class="form-control select-control" >
         @if ($errors->has('mtc_descricao')) <p class="help-block">{{ $errors->first('mtc_descricao') }}</p> @endif
       </div>
-    </div>
-</div>
-<div class="row">
-    <div class="form-group col-md-12">
-        {!! Form::submit('Salvar dados', ['class' => 'btn btn-primary pull-right']) !!}
     </div>
 </div>

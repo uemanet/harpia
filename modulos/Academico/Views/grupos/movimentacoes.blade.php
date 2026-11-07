@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('title')
     Histórico de Movimentação
@@ -10,8 +10,8 @@
 
 @section('content')
     @if(!is_null($movimentacoes))
-        <div class="box box-primary">
-            <div class="box-header">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -59,8 +59,8 @@
             </div>
         </div>
     @else
-        <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
+        <div class="card card-primary card-outline p-0">
+            <div class="card-body">Sem registros para apresentar</div>
         </div>
     @endif
 @stop

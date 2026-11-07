@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Itens de Menu
@@ -9,14 +9,22 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de Cadastro de Itens de Menu</h3>
-        </div>
-        <div class="box-body">
-            {!! Form::open(["route" => 'seguranca.menuitens.create', "method" => "POST", "id" => "form", "role" => "form"]) !!}
-                @include('Seguranca::menuitens.includes.formulario')
-            {!! Form::close() !!}
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Formulário de Cadastro de Itens de Menu</h3>
+            </div>
+            <form action="{{ route('seguranca.menuitens.create') }}" method="POST" id="form" role="form">
+                @csrf
+                <div class="card-body">
+                    <div class="row">
+                        @include('Seguranca::menuitens.includes.formulario')
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary" style="float: right">Salvar Item</button>
+                </div>
+            </form>
         </div>
     </div>
 @stop

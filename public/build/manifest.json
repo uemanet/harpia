@@ -1,0 +1,487 @@
+{
+  "_auto-CFNrZGOd.js": {
+    "file": "assets/auto-CFNrZGOd.js",
+    "name": "auto"
+  },
+  "_bootstrap.esm-D7Q7Nh7Y.js": {
+    "file": "assets/bootstrap.esm-D7Q7Nh7Y.js",
+    "name": "bootstrap.esm"
+  },
+  "_index-uKz2lNNC.js": {
+    "file": "assets/index-uKz2lNNC.js",
+    "name": "index"
+  },
+  "_jquery-CbeXLPaY.js": {
+    "file": "assets/jquery-CbeXLPaY.js",
+    "name": "jquery"
+  },
+  "_sweetalert2.esm.all-CvlpapFA.js": {
+    "file": "assets/sweetalert2.esm.all-CvlpapFA.js",
+    "name": "sweetalert2.esm.all"
+  },
+  "modulos/Academico/Resources/js/pages/alunos/matriculas.js": {
+    "file": "assets/matriculas-CDifTGz7.js",
+    "name": "matriculas",
+    "src": "modulos/Academico/Resources/js/pages/alunos/matriculas.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_sweetalert2.esm.all-CvlpapFA.js",
+      "_bootstrap.esm-D7Q7Nh7Y.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/aproveitamentoestudos/show.js": {
+    "file": "assets/show-DYk1dG7i.js",
+    "name": "show",
+    "src": "modulos/Academico/Resources/js/pages/aproveitamentoestudos/show.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/carteirasestudantis/addmatriculas.js": {
+    "file": "assets/addmatriculas-DYCm5YiJ.js",
+    "name": "addmatriculas",
+    "src": "modulos/Academico/Resources/js/pages/carteirasestudantis/addmatriculas.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/carteirasestudantis/show.js": {
+    "file": "assets/show-Cm4FJf_A.js",
+    "name": "show",
+    "src": "modulos/Academico/Resources/js/pages/carteirasestudantis/show.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/certificacao/index.js": {
+    "file": "assets/index-DJsOOhGN.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/certificacao/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/conclusaocurso/index.js": {
+    "file": "assets/index-DY0ZSeaM.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/conclusaocurso/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/diplomas/index.js": {
+    "file": "assets/index-dI9gjuQ9.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/diplomas/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/historicodefinitivo/index.js": {
+    "file": "assets/index-DFwjH53X.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/historicodefinitivo/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/index/index.js": {
+    "file": "assets/index-BQhfhnvH.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/index/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_auto-CFNrZGOd.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/lancamentonotas/index.js": {
+    "file": "assets/index-mgHX_QlA.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/lancamentonotas/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/lancamentostccs/includes/formulario_edit.js": {
+    "file": "assets/formulario_edit-xNObjt-M.js",
+    "name": "formulario_edit",
+    "src": "modulos/Academico/Resources/js/pages/lancamentostccs/includes/formulario_edit.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/matricula-curso/includes/formulario.js": {
+    "file": "assets/formulario-dpNkoN-O.js",
+    "name": "formulario",
+    "src": "modulos/Academico/Resources/js/pages/matricula-curso/includes/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/matriculadisciplina/show.js": {
+    "file": "assets/show-BOsKkdmx.js",
+    "name": "show",
+    "src": "modulos/Academico/Resources/js/pages/matriculadisciplina/show.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/matriculaslote/index.js": {
+    "file": "assets/index-B1Z60iAz.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/matriculaslote/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/matrizescurriculares/includes/formulario_edit.js": {
+    "file": "assets/formulario_edit-B_GopuQj.js",
+    "name": "formulario_edit",
+    "src": "modulos/Academico/Resources/js/pages/matrizescurriculares/includes/formulario_edit.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/modulosmatrizes/editardisciplina.js": {
+    "file": "assets/editardisciplina-aX_cXYHY.js",
+    "name": "editardisciplina",
+    "src": "modulos/Academico/Resources/js/pages/modulosmatrizes/editardisciplina.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/modulosmatrizes/gerenciardisciplinas.js": {
+    "file": "assets/gerenciardisciplinas-BNU9K0Qd.js",
+    "name": "gerenciardisciplinas",
+    "src": "modulos/Academico/Resources/js/pages/modulosmatrizes/gerenciardisciplinas.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/ofertascursos/includes/formulario_create.js": {
+    "file": "assets/formulario_create-C-iBhr2a.js",
+    "name": "formulario_create",
+    "src": "modulos/Academico/Resources/js/pages/ofertascursos/includes/formulario_create.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/ofertascursos/includes/formulario_edit.js": {
+    "file": "assets/formulario_edit-C-iBhr2a.js",
+    "name": "formulario_edit",
+    "src": "modulos/Academico/Resources/js/pages/ofertascursos/includes/formulario_edit.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/ofertasdisciplinas/create.js": {
+    "file": "assets/create-D5SKeNIi.js",
+    "name": "create",
+    "src": "modulos/Academico/Resources/js/pages/ofertasdisciplinas/create.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/ofertasdisciplinas/index.js": {
+    "file": "assets/index-1m_gCF_3.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/ofertasdisciplinas/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/professores/includes/formulario.js": {
+    "file": "assets/formulario-BmMOwnaE.js",
+    "name": "formulario",
+    "src": "modulos/Academico/Resources/js/pages/professores/includes/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/relatoriosatasfinais/index.js": {
+    "file": "assets/index-e7KkBLl1.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/relatoriosatasfinais/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/relatoriosmatriculascurso/index.js": {
+    "file": "assets/index-BoNu9b4F.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/relatoriosmatriculascurso/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/relatoriosmatriculasdisciplina/index.js": {
+    "file": "assets/index-V6UFaSHW.js",
+    "name": "index",
+    "src": "modulos/Academico/Resources/js/pages/relatoriosmatriculasdisciplina/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Academico/Resources/js/pages/vinculos/create.js": {
+    "file": "assets/create-B_ebaJwZ.js",
+    "name": "create",
+    "src": "modulos/Academico/Resources/js/pages/vinculos/create.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Integracao/Resources/js/pages/ambientesvirtuais/adicionarturma.js": {
+    "file": "assets/adicionarturma-OTj3z11T.js",
+    "name": "adicionarturma",
+    "src": "modulos/Integracao/Resources/js/pages/ambientesvirtuais/adicionarturma.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Integracao/Resources/js/pages/ambientesvirtuais/controleversao.js": {
+    "file": "assets/controleversao-CszLKtxJ.js",
+    "name": "controleversao",
+    "src": "modulos/Integracao/Resources/js/pages/ambientesvirtuais/controleversao.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Integracao/Resources/js/pages/mapeamentonotas/index.js": {
+    "file": "assets/index-Dxy0hRQ6.js",
+    "name": "index",
+    "src": "modulos/Integracao/Resources/js/pages/mapeamentonotas/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Matriculas/Resources/js/pages/chamadas/candidatos/index.js": {
+    "file": "assets/index-DAxqqhIA.js",
+    "name": "index",
+    "src": "modulos/Matriculas/Resources/js/pages/chamadas/candidatos/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_sweetalert2.esm.all-CvlpapFA.js",
+      "_bootstrap.esm-D7Q7Nh7Y.js"
+    ]
+  },
+  "modulos/Matriculas/Resources/js/pages/inscricoes/index.js": {
+    "file": "assets/index-CklJ1fO7.js",
+    "name": "index",
+    "src": "modulos/Matriculas/Resources/js/pages/inscricoes/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_sweetalert2.esm.all-CvlpapFA.js",
+      "_bootstrap.esm-D7Q7Nh7Y.js"
+    ]
+  },
+  "modulos/Monitoramento/Resources/js/pages/forumresponse/includes/formulario.js": {
+    "file": "assets/formulario-Cu85BPki.js",
+    "name": "formulario",
+    "src": "modulos/Monitoramento/Resources/js/pages/forumresponse/includes/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_auto-CFNrZGOd.js"
+    ]
+  },
+  "modulos/Monitoramento/Resources/js/pages/tempoonline/includes/formulario.js": {
+    "file": "assets/formulario-DiXgvWsI.js",
+    "name": "formulario",
+    "src": "modulos/Monitoramento/Resources/js/pages/tempoonline/includes/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_auto-CFNrZGOd.js"
+    ]
+  },
+  "modulos/RH/Resources/js/pages/calendarios/index.js": {
+    "file": "assets/index-DhbEFw8O.js",
+    "name": "index",
+    "src": "modulos/RH/Resources/js/pages/calendarios/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_index-uKz2lNNC.js"
+    ]
+  },
+  "modulos/RH/Resources/js/pages/colaboradores/edit.js": {
+    "file": "assets/edit-DG9gpPMl.js",
+    "name": "edit",
+    "src": "modulos/RH/Resources/js/pages/colaboradores/edit.js",
+    "isEntry": true
+  },
+  "modulos/RH/Resources/js/pages/colaboradores/includes/periodosaquisitivos.js": {
+    "file": "assets/periodosaquisitivos-JMzGlH27.js",
+    "name": "periodosaquisitivos",
+    "src": "modulos/RH/Resources/js/pages/colaboradores/includes/periodosaquisitivos.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_sweetalert2.esm.all-CvlpapFA.js"
+    ]
+  },
+  "modulos/RH/Resources/js/pages/colaboradores/movimentacaosetor.js": {
+    "file": "assets/movimentacaosetor-m6qIj3oP.js",
+    "name": "movimentacaosetor",
+    "src": "modulos/RH/Resources/js/pages/colaboradores/movimentacaosetor.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_sweetalert2.esm.all-CvlpapFA.js"
+    ]
+  },
+  "modulos/RH/Resources/js/pages/fontespagadoras/formulario.js": {
+    "file": "assets/formulario-CkSUIhIj.js",
+    "name": "formulario",
+    "src": "modulos/RH/Resources/js/pages/fontespagadoras/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/RH/Resources/js/pages/portal-foto/upload.js": {
+    "file": "assets/upload-Be3ynsJw.js",
+    "name": "upload",
+    "src": "modulos/RH/Resources/js/pages/portal-foto/upload.js",
+    "isEntry": true
+  },
+  "modulos/RH/Resources/js/pages/salarioscolaboradores/formulario.js": {
+    "file": "assets/formulario-BmuICBmn.js",
+    "name": "formulario",
+    "src": "modulos/RH/Resources/js/pages/salarioscolaboradores/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/auditoria/index.js": {
+    "file": "assets/index-CIsJWDL7.js",
+    "name": "index",
+    "src": "modulos/Seguranca/Resources/js/pages/auditoria/index.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_bootstrap.esm-D7Q7Nh7Y.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/menuitens/formulario.js": {
+    "file": "assets/formulario-CQICFAcn.js",
+    "name": "formulario",
+    "src": "modulos/Seguranca/Resources/js/pages/menuitens/formulario.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/menuitens/formulario_menuitens.js": {
+    "file": "assets/formulario_menuitens-COOCweZN.js",
+    "name": "formulario_menuitens",
+    "src": "modulos/Seguranca/Resources/js/pages/menuitens/formulario_menuitens.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/perfis/atribuirpermissoes.js": {
+    "file": "assets/atribuirpermissoes-VfKEesXj.js",
+    "name": "atribuirpermissoes",
+    "src": "modulos/Seguranca/Resources/js/pages/perfis/atribuirpermissoes.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "modulos/Seguranca/Resources/js/pages/usuarios/atribuirperfil.js": {
+    "file": "assets/atribuirperfil-DeWIHrzM.js",
+    "name": "atribuirperfil",
+    "src": "modulos/Seguranca/Resources/js/pages/usuarios/atribuirperfil.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js"
+    ]
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-BP5tdqmh.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-nyy7hhHF.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-DRAAbZTg.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2": {
+    "file": "assets/fa-v4compatibility-DD84SGiu.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BeopsB42.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "node_modules/jstree/dist/themes/default/32px.png": {
+    "file": "assets/32px-CHwblES-.png",
+    "src": "node_modules/jstree/dist/themes/default/32px.png"
+  },
+  "node_modules/jstree/dist/themes/default/40px.png": {
+    "file": "assets/40px-fA5gcXpO.png",
+    "src": "node_modules/jstree/dist/themes/default/40px.png"
+  },
+  "node_modules/jstree/dist/themes/default/throbber.gif": {
+    "file": "assets/throbber-DhAvNIJO.gif",
+    "src": "node_modules/jstree/dist/themes/default/throbber.gif"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DEBZmzxj.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_jquery-CbeXLPaY.js",
+      "_sweetalert2.esm.all-CvlpapFA.js",
+      "_index-uKz2lNNC.js",
+      "_auto-CFNrZGOd.js"
+    ]
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-D-y4cH3w.css",
+    "src": "resources/sass/app.scss",
+    "isEntry": true
+  }
+}

@@ -92,6 +92,11 @@ class Usuario extends BaseModel implements
         return $this->usr_senha;
     }
 
+    public function getAuthPasswordName()
+    {
+        return 'usr_senha';
+    }
+
     /**
      * Get the token value for the "remember me" session.
      *

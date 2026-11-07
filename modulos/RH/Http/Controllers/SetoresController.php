@@ -4,6 +4,9 @@ namespace Modulos\RH\Http\Controllers;
 
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\RH\Http\Requests\SetorRequest;
+use Modulos\RH\Models\Colaborador;
+use Modulos\RH\Models\Setor;
+use Modulos\RH\Repositories\GestorSetorRepository;
 use Modulos\RH\Repositories\SetorRepository;
 use Modulos\Seguranca\Providers\ActionButton\Facades\ActionButton;
 use Modulos\Seguranca\Providers\ActionButton\TButton;
@@ -12,17 +15,19 @@ use Illuminate\Http\Request;
 class SetoresController extends BaseController
 {
     protected $setorRepository;
+    protected $gestorSetorRepository;
 
-    public function __construct(SetorRepository $setorRepository)
+    public function __construct(SetorRepository $setorRepository, GestorSetorRepository $gestorSetorRepository)
     {
         $this->setorRepository = $setorRepository;
+        $this->gestorSetorRepository = $gestorSetorRepository;
     }
 
     public function getIndex(Request $request)
     {
 
         $btnNovo = new TButton();
-        $btnNovo->setName('Novo')->setRoute('rh.setores.create')->setIcon('fa fa-plus')->setStyle('btn bg-olive');
+        $btnNovo->setName('Novo')->setRoute('rh.setores.create')->setIcon('fa fa-plus')->setStyle('btn btn-success');
 
         $actionButtons[] = $btnNovo;
 
@@ -79,18 +84,23 @@ class SetoresController extends BaseController
 
     public function getCreate()
     {
-        return view('RH::setores.create');
+        $setor = new Setor();
+        $colaboradoresAtivos = Colaborador::where('col_status', 'ativo')->with('pessoa')->get();
+        return view('RH::setores.create', compact('setor', 'colaboradoresAtivos'));
     }
 
     public function postCreate(SetorRequest $request)
     {
         try {
-            $setor = $this->setorRepository->create($request->all());
+            $setor = $this->setorRepository->create($request->only(['set_descricao', 'set_sigla']));
 
             if (!$setor) {
                 flash()->error('Erro ao tentar salvar.');
-
                 return redirect()->back()->withInput($request->all());
+            }
+
+            if ($request->has('gestores')) {
+                $this->gestorSetorRepository->syncGestores($setor->set_id, $request->gestores);
             }
 
             flash()->success('Setor criado com sucesso.');
@@ -110,11 +120,14 @@ class SetoresController extends BaseController
         $setor = $this->setorRepository->find($setorId);
 
         if (!$setor) {
-            flash()->error('Setor não existe.');
+            flash()->error('Setor nao existe.');
             return redirect()->back();
         }
 
-        return view('RH::setores.edit', compact('setor'));
+        $colaboradoresAtivos = Colaborador::where('col_status', 'ativo')->with('pessoa')->get();
+        $gestoresSelecionados = $this->gestorSetorRepository->buscarGestoresDoSetor($setorId);
+
+        return view('RH::setores.edit', compact('setor', 'colaboradoresAtivos', 'gestoresSelecionados'));
     }
 
     public function putEdit($setorId, SetorRequest $request)
@@ -123,7 +136,7 @@ class SetoresController extends BaseController
             $setor = $this->setorRepository->find($setorId);
 
             if (!$setor) {
-                flash()->error('Setor não existe.');
+                flash()->error('Setor nao existe.');
                 return redirect()->route('rh.setores.index');
             }
 
@@ -133,6 +146,10 @@ class SetoresController extends BaseController
                 flash()->error('Erro ao tentar salvar.');
                 return redirect()->back()->withInput($request->all());
             }
+
+            // Sync gestores
+            $gestores = $request->has('gestores') ? $request->gestores : [];
+            $this->gestorSetorRepository->syncGestores($setorId, $gestores);
 
             flash()->success('Setor atualizado com sucesso.');
             return redirect()->route('rh.setores.index');

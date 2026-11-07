@@ -1,4 +1,4 @@
-@extends('layouts.modulos.geral')
+@extends('layouts.modulos.default')
 
 @section('title')
     Módulo Geral

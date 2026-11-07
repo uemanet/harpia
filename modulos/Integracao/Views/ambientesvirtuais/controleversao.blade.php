@@ -1,24 +1,20 @@
-@extends('layouts.modulos.integracao')
+@extends('layouts.modulos.default')
 
 @section('title')
     Versão das turmas
 @stop
-
-@section('stylesheets')
-  <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-@endsection
 
 @section('subtitle')
     {{$ambiente->amb_nome}}
 @stop
 
 @section('content')
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Alteração de versão das turmas</h3>
+<div class="card card-primary card-outline">
+    <div class="card-header with-border">
+        <h3 class="card-title">Alteração de versão das turmas</h3>
     </div>
 
-<div class="box-body">
+<div class="card-body">
 
     <div class="row">
         <div class="col-md-12">
@@ -76,93 +72,11 @@
 @stop
 
 @section('scripts')
-    @parent
-
-    <script type="application/javascript">
-        $(document).ready(function(){
-            $('#crs_id').prop('selectedIndex',0);
-        });
-    </script>
-    <script type="application/javascript">
-
-        $('#crs_id').change(function (e) {
-            var crsId = $(this).val();
-
-            var selectOfertas = $('#ofc_id');
-            var selectTurmas = $('#atr_trm_id');
-            if(crsId) {
-
-                // Populando o select de ofertas de cursos
-                selectOfertas.empty();
-                selectTurmas.empty();
-
-                $.harpia.httpget("{{url('/')}}/academico/async/ofertascursos/findallbycursowithoutpresencial/" + crsId)
-                        .done(function (data) {
-                            if(!$.isEmptyObject(data)) {
-                                selectOfertas.append("<option>Selecione a oferta</option>");
-                                $.each(data, function (key, value) {
-                                    selectOfertas.append('<option value="'+value.ofc_id+'">'+value.ofc_ano+' ('+value.mdl_nome+')</option>');
-                                });
-                            } else {
-                                selectOfertas.append("<option>Sem ofertas cadastradas</option>");
-
-                            }
-                        });
-            }
-        });
-
-
-        $('#ofc_id').change(function (e) {
-            var ofertaId = $(this).val();
-
-            var selectTurmas = $('#atr_trm_id');
-
-            if (ofertaId) {
-                selectTurmas.empty();
-
-                $.harpia.httpget('{{url("/")}}/academico/async/turmas/findallbyofertacursowithoutambiente/' + ofertaId)
-                        .done(function (data) {
-                            if (!$.isEmptyObject(data)){
-                                selectTurmas.append('<option>Selecione a turma</option>');
-                                $.each(data, function (key, obj) {
-                                    selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>')
-                                });
-                            }else {
-                                selectTurmas.append('<option>Sem turmas cadastradas</option>')
-                            }
-                        });
-            }
-
-        })
-
-        $(document).on('click', '.btn-success', function (event) {
-            event.preventDefault();
-
-            var button = $(this);
-
-            swal({
-                title: "Tem certeza que deseja alterar a versão dessa turma?",
-                text: "Essa alteração é irreversível!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Sim!",
-                cancelButtonText: "Não!",
-                closeOnConfirm: true
-            }, function(isConfirm){
-                if (isConfirm) {
-                    button.closest("form").submit();
-                }
-            });
-        });
-
+    <script>
+        window.PageRoutes = {
+            //
+        };
     </script>
 
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("select").select2();
-            });
-    </script>
+    @vite('modulos/Integracao/Resources/js/pages/ambientesvirtuais/controleversao.js')
 @stop

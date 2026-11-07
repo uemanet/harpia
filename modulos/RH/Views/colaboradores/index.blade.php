@@ -1,9 +1,4 @@
-@extends('layouts.modulos.rh')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Colaboradores
@@ -18,103 +13,119 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <form method="GET" action="{{ route('rh.colaboradores.index') }}">
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" name="pes_cpf" id="pes_cpf"
-                               value="{{Request::input('pes_cpf')}}" placeholder="CPF">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" name="pes_nome" id="pes_nome"
-                               value="{{Request::input('pes_nome')}}" placeholder="Nome">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="email" class="form-control" name="pes_email" id="pes_email"
-                               value="{{Request::input('pes_email')}}" placeholder="Email">
-                    </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <form method="GET" class="d-flex w-100 flex-column" action="{{{ route('rh.colaboradores.index') }}}">
+                        <div class="row">
+                            <div class="col-md-4 px-1">
+                                <label for="pes_nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Request::input('pes_nome')}}">
+                            </div>
+                            <div class="col-md-3 px-1">
+                                <label for="pes_email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Request::input('pes_email')}}">
+                            </div>
+                            <div class="col-md-2 px-1">
+                                <label for="pes_cpf" class="form-label">CPF</label>
+                                <input type="text" class="form-control cpf-mask" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="cfn_set_id" class="form-label">Setor</label>
+                                <select name="cfn_set_id" class="form-control">
+                                    <option value="">Selecione o setor</option>
+                                    @foreach($setores as $key => $value)
+                                        <option value="{{ $key }}" {{ [] == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-md-2 px-1">
+                                <label for="funcoes" class="form-label">Função</label>
+                                <select name="funcoes[]" class="form-control" multiple="multiple">
+                                    <option value="">Selecione a função</option>
+                                    @foreach($funcoes as $key => $value)
+                                        <option value="{{ $key }}" {{ old('funcoes[]') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
+                            </div>
 
-                    <div class="form-group col-md-2">
-                        {!! Form::select('cfn_set_id', $setores, [], ['class' => 'form-control', 'placeholder' => 'Selecione o setor']) !!}
-                    </div>
+                            <!-- Filtro de Status -->
+                            <div class="col-md-2 px-1">
+                                <label for="col_status" class="form-label">Status</label>
+                                <select name="col_status" id="col_status" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option value="ativo" {{ Request::input('col_status') == 'ativo' ? 'selected' : '' }}>Ativo</option>
+                                    <option value="desligado" {{ Request::input('col_status') == 'desligado' ? 'selected' : '' }}>Desligado</option>
+                                </select>
+                            </div>
 
-                    <div class="form-group col-md-2">
-                        {!! Form::select('funcoes[]', $funcoes, old('funcoes[]'), ['class' => 'form-control', 'multiple' => 'multiple']) !!}
-                        @if ($errors->has('funcoes')) <p class="help-block">{{ $errors->first('funcoes') }}</p> @endif
-                    </div>
+                            <!-- Filtro de Foto -->
+                            <div class="col-md-2 px-1">
+                                <label for="com_foto" class="form-label">Foto</label>
+                                <select name="com_foto" id="com_foto" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option value="1" {{ Request::input('com_foto') === '1' ? 'selected' : '' }}>Com Foto</option>
+                                    <option value="0" {{ Request::input('com_foto') === '0' ? 'selected' : '' }}>Sem Foto</option>
+                                </select>
+                            </div>
 
-                    <div class="col-md-1">
-                        <input type="submit" class="form-control btn-primary" value="Buscar">
-                    </div>
-                </form>
+                            <div class="col-md-1 px-1">
+                                <label for="" class="form-label">&nbsp;</label>
+                                <input type="submit" class="btn btn-primary w-100" value="Buscar">
+                            </div>
+
+                            <div class="col-md-2 px-1 d-flex flex-column justify-content-end">
+                                <label for="" class="form-label">&nbsp;</label>
+                                <!-- request()->query() repassa todos os GET params da URL atual -->
+                                <a href="{{ route('rh.colaboradores.export', request()->query()) }}" class="btn btn-info w-100 text-center">
+                                    <i class="fa-regular fa-file-excel"></i> Exportar Tabela
+                                </a>
+                            </div>
+
+                            <div class="col-md-3 px-1 d-flex flex-column justify-content-end">
+                                <label for="" class="form-label">&nbsp;</label>
+                                <a href="{{{ route('rh.ferias.export') }}}" class="btn btn-success">
+                                    <i class="fa-regular fa-file-excel"></i> Planilha de Controle de Férias
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <!-- /.box-body -->
+        <!-- /.card-body -->
     </div>
 
-    <div class="text-right mb-3">
-        <a href="{{ route('rh.ferias.export') }}" class="btn btn-success">
-            Gerar Planilha de Controle de Férias
-        </a>
+    <div class="row">
+        <div class="card card-primary card-outline my-2 p-0">
+            @if(!is_null($tabela))
+                <div class="card-body p-0">
+                    {!! $tabela->render() !!}
+                </div>
+                <div class="card-footer clearfix">
+                    {!! $paginacao->links('pagination::bootstrap-4') !!}
+                </div>
+            @else
+                <div class="card-body">
+                    Sem registros para apresentar
+                </div>
+            @endif
+        </div>
     </div>
-
-    @if(!is_null($tabela))
-        <div class="box box-primary">
-            <div class="box-header">
-                {!! $tabela->render() !!}
-            </div>
-        </div>
-
-        <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
-    @else
-        <div class="box box-primary">
-            <div class="box-body">Sem registros para apresentar</div>
-        </div>
-    @endif
-
-    <style>
-        .select2-container .select2-selection--single {
-            height: 34px;
-        }
-
-        .select2-container .select2-selection--multiple {
-            min-height: 34px;
-        }
-
-        .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #3c8dbc;
-        }
-    </style>
 @stop
-
-
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("select").select2();
-        });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-@endsection
 

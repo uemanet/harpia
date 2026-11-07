@@ -1,47 +1,25 @@
-@extends('layouts.modulos.seguranca')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Alterar tutor
 @stop
 
 @section('subtitle')
-Tutor atual: {{$tutor->pessoa->pes_nome}}
+    Tutor atual: {{$tutor->pessoa->pes_nome}}
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de alteração de tutor do grupo. </h3>
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+        <div class="card-header with-border">
+            <h3 class="card-title">Formulário de alteração de tutor do grupo. </h3>
         </div>
-        <div class="box-body">
-            {!! Form::model($tutorgrupo,["route" => ['academico.ofertascursos.turmas.grupos.tutoresgrupos.alterartutor',$tutorgrupo->ttg_id], "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-                  @include('Academico::tutoresgrupos.includes.formulario_alterar')
-            {!! Form::close() !!}
+        <div class="card-body">
+            <form action="{{ route('academico.ofertascursos.turmas.grupos.tutoresgrupos.alterartutor', [$tutorgrupo->ttg_id]) }}" method="POST" id="form" role="form">
+                @csrf
+                @method('PUT')
+                @include('Academico::tutoresgrupos.includes.formulario_alterar')
+            </form>
         </div>
     </div>
 @stop
-
-
-@section('scripts')
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-
-    <script type="text/javascript">
-            $(document).ready(function() {
-                $("select").select2();
-            });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-           format: 'dd/mm/yyyy',
-           language: 'pt-BR'
-        });
-    </script>
-@endsection

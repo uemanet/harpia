@@ -1,4 +1,4 @@
-@extends('layouts.modulos.seguranca')
+@extends('layouts.modulos.default')
 
 @section('title')
     Atribuir Perfis
@@ -9,29 +9,39 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header">
-            <h3 class="box-title">Atribuir Novo Perfil</h3>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                {!! Form::open(array('route' => ['seguranca.usuarios.atribuirperfil', $usuario->usr_id], 'method' => 'POST', 'id' => 'formAtribuirPerfil')) !!}
-                    <div class="form-group col-md-3">
+    <div class="row">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title m-0">Atribuir Novo Perfil</h3>
+            </div>
+            <div class="card-body">
+                <div class="row py-2">
+                    <form action="{{ route('seguranca.usuarios.atribuirperfil', [$usuario->usr_id]) }}" method="POST" id="formAtribuirPerfil" class="w-100 d-flex">
+                        @csrf
+                        <div class="form-group col-md-6 px-1">
                         @if(!empty($modulos))
-                            {!! Form::select('mod_id', $modulos, old('mod_id'), ['class' => 'form-control', 'id' => 'mod_id', 'placeholder' => 'Selecione o módulo']) !!}
+                            <select name="mod_id" class="form-control" id="mod_id">
+                                <option value="">Selecione o módulo</option>
+                                @foreach($modulos as $key => $value)
+                                    <option value="{{ $key }}" {{ old('mod_id') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
                         @else
-                            {!! Form::select('mod_id', [], null, ['class' => 'form-control', 'id' => 'mod_id', 'placeholder' => 'Sem módulos']) !!}
+                            <select name="mod_id" class="form-control" id="mod_id">
+                                <option value="">Sem módulos</option>
+                            </select>
                         @endif
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-3 px-1">
                         <div class="controls">
-                            {!! Form::select('prf_id', [], null, ['class' => 'form-control','id' => 'prf_id']) !!}
+                            <select name="prf_id" class="form-control" id="prf_id">
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        {!! Form::submit('Atribuir', ['class' => 'btn btn-primary', 'id' => 'btnAtribuir']) !!}
+                    <div class="form-group col-md-3 px-1">
+                        <button type="submit" class="btn btn-primary w-100" id="btnAtribuir">Atribuir</button>
                     </div>
-                {!! Form::close() !!}
+                </form>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -74,51 +84,13 @@
                 @else
                     <p>Sem perfis associados ao usuario</p>
                 @endif
-                </div>    
+                </div>
             </div>
         </div>
     </div>
 @stop
 
+
 @section('scripts')
-    <script type="application/javascript">
-        $(function() {
-
-           $('#mod_id').change(function (e) {
-               var moduloId = $(this).val();
-
-               if(!moduloId)
-               {
-                   return false;
-               }
-
-               $.harpia.httpget('{{url('/')}}/seguranca/async/perfis/findallbymodulo/' + moduloId).done(function (data) {
-                   $('#prf_id').empty();
-                   if($.isEmptyObject(data)) {
-                       $('#prf_id').append("<option value='' selected>Sem perfis associados</option>");
-                   } else {
-                       $('#prf_id').append("<option value='' selected>Selecione um perfil</option>");
-                       $.each(data, function (key, value) {
-
-                           $('#prf_id').append("<option value=" + value.prf_id + " >" + value.prf_nome + "</option>");
-                       });
-
-                   }
-               });
-           });
-
-            $('#btnAtribuir').click(function (e) {
-                e.preventDefault();
-
-                var modulo = $('#mod_id').val();
-                var perfil = $('#prf_id').val();
-
-                if(modulo == '' || perfil == '') {
-                    return false;
-                }
-
-                $('#formAtribuirPerfil').submit();
-            })
-        });
-    </script>
+    @vite('modulos/Seguranca/Resources/js/pages/usuarios/atribuirperfil.js')
 @stop

@@ -1,4 +1,4 @@
-@extends('layouts.modulos.monitoramento')
+@extends('layouts.modulos.default')
 
 @section('title')
     Módulo de Monitoramento

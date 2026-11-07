@@ -2,8 +2,8 @@
 
 namespace Modulos\Seguranca\Repositories;
 
-use DB;
-use Cache;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Modulos\Seguranca\Models\Modulo;
 use Modulos\Core\Repository\BaseRepository;
 
@@ -27,14 +27,62 @@ class ModuloRepository extends BaseRepository
             return $modulos;
         }
 
-        $permissoes = Cache::get('PERMISSOES_' . $userId);
+        $cacheKey = 'PERMISSOES_' . $userId;
 
-        for ($i = 0; $i < $modulos->count(); $i++) {
-            if (!in_array($modulos[$i]->mod_slug . '.index.index', $permissoes)) {
-                unset($modulos[$i]);
+        $permissoesCache = $this->normalizePermissions(Cache::get($cacheKey, []));
+        $modulosPorCache = $this->filterModulesByPermissions($modulos, $permissoesCache);
+
+        // Self-heal stale cache by reconciling against current DB permissions.
+        $permissoesDb = $this->loadPermissionsFromDatabase($userId);
+        $modulosPorDb = $this->filterModulesByPermissions($modulos, $permissoesDb);
+
+        if ($modulosPorDb->count() > $modulosPorCache->count()) {
+            Cache::forever($cacheKey, $permissoesDb);
+
+            return $modulosPorDb;
+        }
+
+        return $modulosPorCache;
+    }
+
+    private function normalizePermissions($permissoes)
+    {
+        if (is_array($permissoes)) {
+            return $permissoes;
+        }
+
+        if ($permissoes instanceof \Illuminate\Support\Collection) {
+            return $permissoes->toArray();
+        }
+
+        if (is_string($permissoes)) {
+            $decoded = json_decode($permissoes, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
             }
         }
 
-        return $modulos;
+        return [];
+    }
+
+    private function loadPermissionsFromDatabase($userId)
+    {
+        $permissions = DB::table('seg_permissoes')
+            ->join('seg_permissoes_perfis', 'prm_id', '=', 'prp_prm_id')
+            ->join('seg_perfis', 'prp_prf_id', '=', 'prf_id')
+            ->join('seg_perfis_usuarios', 'pru_prf_id', '=', 'prf_id')
+            ->where('pru_usr_id', '=', $userId)
+            ->pluck('prm_rota')
+            ->toArray();
+
+        return $this->normalizePermissions($permissions);
+    }
+
+    private function filterModulesByPermissions($modulos, array $permissoes)
+    {
+        return $modulos->filter(function ($modulo) use ($permissoes) {
+            return in_array($modulo->mod_slug . '.index.index', $permissoes, true);
+        })->values();
     }
 }

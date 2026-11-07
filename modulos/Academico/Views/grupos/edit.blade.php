@@ -1,4 +1,4 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
@@ -13,14 +13,18 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de grupo</h3>
-        </div>
-        <div class="box-body">
-            {!! Form::model($grupo,["url" => url('/') . "/academico/grupos/edit/$grupo->grp_id", "method" => "PUT", "id" => "form", "role" => "form"]) !!}
-            @include('Academico::grupos.includes.formulario_edit')
-            {!! Form::close() !!}
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title">Formulário de edição de grupo</h3>
+            </div>
+            <div class="card-body">
+                <form action="{{  url('/') . "/academico/grupos/edit/" . $grupo->grp_id }}" method="POST" id="form" role="form">
+                    @csrf
+                    @method('PUT')
+                    @include('Academico::grupos.includes.formulario_edit')
+                </form>
+            </div>
         </div>
     </div>
 @stop

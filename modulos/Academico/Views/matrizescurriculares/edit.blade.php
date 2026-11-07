@@ -1,8 +1,8 @@
-@extends('layouts.modulos.academico')
+@extends('layouts.modulos.default')
 
 @section('stylesheets')
     <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
+
 @endsection
 
 @section('title')
@@ -14,14 +14,21 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Formulário de edição de departamento</h3>
-        </div>
-        <div class="box-body">
-            {!! Form::model($matrizCurricular,["url" => url('/') . "/academico/matrizescurriculares/edit/$matrizCurricular->mtc_id", "method" => "PUT", "id" => "form", "role" => "form", "enctype" => "multipart/form-data"]) !!}
-                @include('Academico::matrizescurriculares.includes.formulario_edit')
-            {!! Form::close() !!}
+    <div class="row">
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title">Formulário de edição de departamento</h3>
+            </div>
+            <form action="{{ url('/') . "/academico/matrizescurriculares/edit/" . $matrizCurricular->mtc_id }}" method="POST" id="form" role="form" enctype="multipart/form-data">
+                <div class="card-body">
+                    @csrf
+                    @method('PUT')
+                    @include('Academico::matrizescurriculares.includes.formulario_edit')
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary" style="float: right">Salvar Dados</button>
+                </div>
+            </form>
         </div>
     </div>
 @stop

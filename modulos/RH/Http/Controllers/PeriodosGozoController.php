@@ -48,7 +48,9 @@ class PeriodosGozoController extends BaseController
             $periodos[$item->paq_id] = $item->paq_data_inicio . ' - ' . $item->paq_data_fim;
         }
 
-        return view('RH::periodosgozo.create', compact('colaborador', 'matriculas', 'periodos','periodosDisponiveis'));
+        $periodoGozo = new PeriodoGozo();
+
+        return view('RH::periodosgozo.create', compact('colaborador', 'matriculas', 'periodos','periodosDisponiveis', 'periodoGozo'));
     }
 
 

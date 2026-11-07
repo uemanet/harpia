@@ -1,9 +1,4 @@
-@extends('layouts.modulos.rh')
-
-@section('stylesheets')
-    <link rel="stylesheet" href="{{asset('/css/plugins/select2.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/plugins/datepicker3.css')}}">
-@endsection
+@extends('layouts.modulos.default')
 
 @section('title')
     Colaboradores
@@ -18,9 +13,9 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Afastamento/Desligamento de colaborador</h3>
+    <div class="card card-success card-outline">
+        <div class="card-header with-border">
+            <h3 class="card-title">Afastamento/Desligamento de colaborador</h3>
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -40,9 +35,9 @@
                             @else
                                 <div class="row">
                                     <form method="POST" class="delete"
-                                          action="{{ route('rh.colaboradores.matricula', $matricula->mtc_id ) }}">
+                                          action="{{{ route('rh.colaboradores.matricula', $matricula->mtc_id ) }}}">
                                         <?php echo e(csrf_field()); ?>
-                                        <td>{!! Form::text('mtc_data_fim', old('mtc_data_fim'), ['class' => 'form-control datepicker', 'data-provide' => 'datepicker', 'date-date-format' => 'dd/mm/yyyy', 'placeholder' => 'Data de Fim']) !!}</td>
+                                        <td><input type="text" name="mtc_data_fim" value="{{ old('mtc_data_fim') }}" class="form-control datepicker" data-provide="datepicker" date-date-format="dd/mm/yyyy" placeholder="Data de Fim" ></td>
                                         <td>
                                             <button class="btn btn-danger"><i class="fa fa-trash"></i> Desvincular Colaborador
                                             </button>
@@ -52,19 +47,21 @@
                             @endif
 
                             <td>
-                                {!! ActionButton::grid([
-                                            'type' => 'LINE',
-                                            'buttons' => [
-                                           [
-                                               'classButton' => 'btn-delete btn btn-danger btn-sm',
-                                               'icon' => 'fa fa-trash',
-                                               'route' => 'rh.colaboradores.matricula.delete-matricula',
-                                               'id' => $matricula->mtc_id,
-                                               'label' => '',
-                                               'method' => 'post'
+                                @if(!$matricula->mtc_data_fim)
+                                    {!! ActionButton::grid([
+                                                'type' => 'LINE',
+                                                'buttons' => [
+                                               [
+                                                   'classButton' => 'btn-delete btn btn-danger btn-sm',
+                                                   'icon' => 'fa fa-trash',
+                                                   'route' => 'rh.colaboradores.matricula.delete-matricula',
+                                                   'id' => $matricula->mtc_id,
+                                                   'label' => '',
+                                                   'method' => 'post'
+                                               ]
                                            ]
-                                       ]
-                               ]) !!}
+                                   ]) !!}
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -74,24 +71,4 @@
         </div>
     </div>
 @stop
-
-@section('scripts')
-
-    <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('/js/plugins/bootstrap-datepicker.pt-BR.js')}}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("select").select2();
-        });
-    </script>
-
-    <script type="text/javascript">
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-            language: 'pt-BR'
-        });
-    </script>
-
-@endsection
 

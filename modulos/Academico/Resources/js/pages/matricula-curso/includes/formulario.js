@@ -1,0 +1,99 @@
+import $ from 'jquery';
+
+const baseUrl = $('meta[name="base-url"]').attr('content');
+const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+$(document).ready(function(){
+    $('#crs_id').on('change', function (e) {
+        var crsId = $(this).val();
+
+        var selectOfertas = $('#ofc_id');
+
+        if(crsId) {
+            selectOfertas.empty();
+
+            $.harpia.httpget(baseUrl + "/academico/async/ofertascursos/findallbycurso/" + crsId)
+                .done(function (data) {
+                    if(!$.isEmptyObject(data)) {
+                        selectOfertas.append("<option value=''>Selecione a oferta</option>");
+
+                        $.each(data, function (key, obj) {
+                            selectOfertas.append('<option value="'+obj.ofc_id+'">'+obj.ofc_ano+' ('+obj.mdl_nome+')</option>');
+                        });
+                    }else {
+                        selectOfertas.append("<option>Sem ofertas cadastradas</option>");
+                    }
+                });
+        }
+    });
+
+    $('#ofc_id').on('change', function (e) {
+        var ofertaId = $(this).val();
+        var selectTurmas = $('#mat_trm_id');
+        var selectPolos = $('#mat_pol_id');
+        var selectGrupos = $('#mat_grp_id');
+
+        if(ofertaId) {
+            selectTurmas.empty();
+            selectPolos.empty();
+            selectGrupos.empty();
+
+            // Popula select de turmas
+            $.harpia.httpget(baseUrl + "/academico/async/turmas/findallwithvagasdisponiveis/" + ofertaId)
+                .done(function (data) {
+                    if(!$.isEmptyObject(data)) {
+                        selectTurmas.append("<option value=''>Selecione a turma</option>");
+
+                        $.each(data, function (key, obj) {
+                            if (obj.trm_qtd_vagas == obj.qtd_matriculas){
+                                selectTurmas.append('<option disabled="disabled" value="'+obj.trm_id+'">'+obj.trm_nome+' (Vagas Esgotadas)</option>');
+                            }else {
+                                selectTurmas.append('<option value="'+obj.trm_id+'">'+obj.trm_nome+'</option>');
+                            }
+                        });
+                    }else {
+                        selectTurmas.append("<option value=''>Sem turmas cadastradas</option>");
+                    }
+                });
+
+            // Popula select de polos
+            $.harpia.httpget(baseUrl + "/academico/async/polos/findallbyofertacurso/" + ofertaId)
+                .done(function (data) {
+                    if(!$.isEmptyObject(data)) {
+                        selectPolos.append("<option value=''>Selecione o polo</option>");
+
+                        $.each(data, function (key, obj) {
+                            selectPolos.append('<option value="'+obj.pol_id+'">'+obj.pol_nome+'</option>');
+                        });
+                    }else {
+                        selectPolos.append("<option value=''>Sem polos cadastrados</option>");
+                    }
+                });
+        }
+    });
+
+    $('.grp').on('change', function () {
+
+        var polo = $('#mat_pol_id').val();
+        var turma = $('#mat_trm_id').val();
+
+        var selectGrupos = $('#mat_grp_id');
+
+        if(!(turma == '') && !(polo == '')) {
+            selectGrupos.empty();
+
+            $.harpia.httpget(baseUrl + "/academico/async/grupos/findallbyturmapolo/" + turma + "/" + polo)
+                .done(function (data) {
+                    if(!$.isEmptyObject(data)) {
+                        selectGrupos.append("<option value=''>Selecione o grupo</option>");
+
+                        $.each(data, function (key, obj) {
+                            selectGrupos.append('<option value="'+obj.grp_id+'">'+obj.grp_nome+'</option>');
+                        });
+                    }else {
+                        selectGrupos.append("<option value=''>Sem grupos cadastrados</option>");
+                    }
+                });
+        }
+    });
+});
