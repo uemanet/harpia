@@ -44,11 +44,11 @@ class TesteDispositivoController extends BaseController
 
         try {
             $resultado = $this->apiClient->loadObjects($dispositivo, 'users');
-            flash()->success('Usuarios listados com sucesso.');
+            flash()->success('Usuários listados com sucesso.');
 
             return redirect()->back()->with('resultado', $resultado);
         } catch (\Exception $e) {
-            flash()->error('Erro ao listar usuarios: ' . $e->getMessage());
+            flash()->error('Erro ao listar usuários: ' . $e->getMessage());
             return redirect()->back();
         }
     }
@@ -74,11 +74,11 @@ class TesteDispositivoController extends BaseController
 
         try {
             $resultado = $this->apiClient->getSystemInfo($dispositivo);
-            flash()->success('Informacoes do sistema obtidas.');
+            flash()->success('Informações do sistema obtidas.');
 
             return redirect()->back()->with('resultado', $resultado);
         } catch (\Exception $e) {
-            flash()->error('Erro ao obter informacoes: ' . $e->getMessage());
+            flash()->error('Erro ao obter informações: ' . $e->getMessage());
             return redirect()->back();
         }
     }

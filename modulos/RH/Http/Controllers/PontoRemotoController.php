@@ -19,7 +19,7 @@ class PontoRemotoController extends BaseController
         $user = auth()->user();
 
         if (!$user || !$user->pessoa) {
-            flash()->error('Usuario nao autenticado.');
+            flash()->error('Usuário não autenticado.');
             return redirect()->route('login');
         }
 
@@ -28,7 +28,7 @@ class PontoRemotoController extends BaseController
             ->first();
 
         if (!$colaborador) {
-            flash()->error('Colaborador nao encontrado.');
+            flash()->error('Colaborador não encontrado.');
             return redirect()->route('rh.index.index');
         }
 
@@ -43,7 +43,7 @@ class PontoRemotoController extends BaseController
         $user = auth()->user();
 
         if (!$user || !$user->pessoa) {
-            flash()->error('Usuario nao autenticado.');
+            flash()->error('Usuário não autenticado.');
             return redirect()->back();
         }
 
@@ -52,7 +52,7 @@ class PontoRemotoController extends BaseController
             ->first();
 
         if (!$colaborador) {
-            flash()->error('Colaborador nao encontrado.');
+            flash()->error('Colaborador não encontrado.');
             return redirect()->back();
         }
 
@@ -63,7 +63,7 @@ class PontoRemotoController extends BaseController
                 'canal' => 'web',
             ]);
 
-            flash()->success('Entrada registrada com sucesso. Aguardando aprovacao do gestor.');
+            flash()->success('Entrada registrada com sucesso. Aguardando aprovação do gestor.');
         } catch (\Exception $e) {
             flash()->error($e->getMessage());
         }
@@ -80,7 +80,7 @@ class PontoRemotoController extends BaseController
         $user = auth()->user();
 
         if (!$user || !$user->pessoa) {
-            flash()->error('Usuario nao autenticado.');
+            flash()->error('Usuário não autenticado.');
             return redirect()->back();
         }
 
@@ -89,7 +89,7 @@ class PontoRemotoController extends BaseController
             ->first();
 
         if (!$colaborador) {
-            flash()->error('Colaborador nao encontrado.');
+            flash()->error('Colaborador não encontrado.');
             return redirect()->back();
         }
 
@@ -101,7 +101,7 @@ class PontoRemotoController extends BaseController
                 'atividades' => (string) $request->atividades,
             ]);
 
-            flash()->success('Saida registrada com sucesso. Aguardando aprovacao do gestor.');
+            flash()->success('Saída registrada com sucesso. Aguardando aprovação do gestor.');
         } catch (\Exception $e) {
             flash()->error($e->getMessage());
         }

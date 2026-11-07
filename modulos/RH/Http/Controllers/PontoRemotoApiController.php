@@ -38,7 +38,7 @@ class PontoRemotoApiController extends BaseController
             ->first();
 
         if (!$colaborador) {
-            return response()->json(['error' => 'Colaborador nao encontrado.'], 404);
+            return response()->json(['error' => 'Colaborador não encontrado.'], 404);
         }
 
         try {
@@ -53,7 +53,7 @@ class PontoRemotoApiController extends BaseController
                 'success' => true,
                 'evento_id' => $evento->eva_id,
                 'status' => $evento->eva_status,
-                'message' => 'Registro enviado para aprovacao.',
+                'message' => 'Registro enviado para aprovação.',
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);

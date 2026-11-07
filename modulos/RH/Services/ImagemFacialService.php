@@ -27,7 +27,7 @@ class ImagemFacialService
         $info = @getimagesizefromstring($conteudo);
 
         if ($info === false) {
-            throw new InvalidArgumentException('O arquivo informado nao e uma imagem valida.');
+            throw new InvalidArgumentException('O arquivo informado não é uma imagem válida.');
         }
 
         [$largura, $altura] = $info;
@@ -48,7 +48,7 @@ class ImagemFacialService
         $origem = @imagecreatefromstring($conteudo);
 
         if ($origem === false) {
-            throw new InvalidArgumentException('Nao foi possivel processar a imagem enviada.');
+            throw new InvalidArgumentException('Não foi possível processar a imagem enviada.');
         }
 
         $origem = $this->aplicarOrientacao($origem, $orientacao);
@@ -61,7 +61,7 @@ class ImagemFacialService
         $novaAltura = max(1, (int) floor($alturaOrigem * $escala));
 
         $destino = imagecreatetruecolor($novaLargura, $novaAltura);
-        // Fundo branco para imagens com transparencia (PNG), ja que JPEG nao suporta alpha.
+        // Fundo branco para imagens com transparência (PNG), já que JPEG não suporta alpha.
         imagefill($destino, 0, 0, imagecolorallocate($destino, 255, 255, 255));
         imagecopyresampled($destino, $origem, 0, 0, 0, 0, $novaLargura, $novaAltura, $larguraOrigem, $alturaOrigem);
 
@@ -72,7 +72,7 @@ class ImagemFacialService
         unset($origem, $destino);
 
         if ($resultado === '') {
-            throw new InvalidArgumentException('Nao foi possivel redimensionar a imagem enviada.');
+            throw new InvalidArgumentException('Não foi possível redimensionar a imagem enviada.');
         }
 
         return $resultado;
@@ -80,7 +80,7 @@ class ImagemFacialService
 
     /**
      * Redimensiona o arquivo enviado (upload) e devolve um novo UploadedFile pronto
-     * para ser persistido, ou o proprio arquivo quando nao ha necessidade de alteracao.
+     * para ser persistido, ou o próprio arquivo quando não há necessidade de alteração.
      */
     public function redimensionarUpload(UploadedFile $arquivo): UploadedFile
     {
@@ -88,7 +88,7 @@ class ImagemFacialService
         $conteudo = $caminho ? @file_get_contents($caminho) : false;
 
         if ($conteudo === false) {
-            throw new InvalidArgumentException('Nao foi possivel ler a imagem enviada.');
+            throw new InvalidArgumentException('Não foi possível ler a imagem enviada.');
         }
 
         $redimensionado = $this->redimensionarBinario($conteudo);

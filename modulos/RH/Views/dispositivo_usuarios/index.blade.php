@@ -93,7 +93,7 @@
                                 </div>
 
                                 <p class="text-muted">
-                                    Nome, registration e foto facial serao obtidos automaticamente do cadastro do colaborador.
+                                    Nome, registration e foto facial serão obtidos automaticamente do cadastro do colaborador.
                                 </p>
 
                                 <div class="form-check">

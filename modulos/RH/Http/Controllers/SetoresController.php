@@ -120,7 +120,7 @@ class SetoresController extends BaseController
         $setor = $this->setorRepository->find($setorId);
 
         if (!$setor) {
-            flash()->error('Setor nao existe.');
+            flash()->error('Setor não existe.');
             return redirect()->back();
         }
 
@@ -136,7 +136,7 @@ class SetoresController extends BaseController
             $setor = $this->setorRepository->find($setorId);
 
             if (!$setor) {
-                flash()->error('Setor nao existe.');
+                flash()->error('Setor não existe.');
                 return redirect()->route('rh.setores.index');
             }
 

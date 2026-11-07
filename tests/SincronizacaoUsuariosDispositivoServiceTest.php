@@ -122,7 +122,7 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         $this->assertSame(0, $resultado['criados']);
         $this->assertSame(0, $resultado['atualizados']);
         $this->assertCount(1, $resultado['erros']);
-        $this->assertSame('O colaborador selecionado nao possui foto facial cadastrada.', $resultado['erros'][0]['mensagem']);
+        $this->assertSame('O colaborador selecionado não possui foto facial cadastrada.', $resultado['erros'][0]['mensagem']);
     }
 
     public function testAtualizarUsuarioEmTodosDispositivosUsaFotoManualQuandoInformada(): void

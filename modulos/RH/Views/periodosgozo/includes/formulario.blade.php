@@ -1,7 +1,7 @@
 <div class="row">
 
     <div class="form-group col-md-4 @if ($errors->has('paq_mtc_id')) has-error @endif">
-        <label for="pgz_paq_id" class="form-label">Periodo Aquisitivo*</label>
+        <label for="pgz_paq_id" class="form-label">Período Aquisitivo*</label>
         <div class="controls">
             <select name="pgz_paq_id" class="form-control">
     <option value="">Selecione o período aquisitivo</option>

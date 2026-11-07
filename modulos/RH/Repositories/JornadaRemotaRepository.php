@@ -78,7 +78,7 @@ class JornadaRemotaRepository extends BaseRepository
             'jor_horas_calculadas' => '00:00:00',
             'jor_horas_aprovadas' => '00:00:00',
             'jor_status' => 'inconsistente',
-            'jor_motivo_aprovacao' => 'Saida remota sem entrada pareavel.',
+            'jor_motivo_aprovacao' => 'Saída remota sem entrada pareável.',
         ]);
     }
 

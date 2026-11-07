@@ -179,7 +179,7 @@ class PeriodosGozoController extends BaseController
             $periodo_gozo = $this->periodoGozoRepository->find($periodo_gozoId);
 
             if (!$periodo_gozo) {
-                flash()->error('Periodo Gozo não existe.');
+                flash()->error('Período Gozo não existe.');
                 return redirect()->route('rh.colaboradores.index');
             }
 
@@ -188,7 +188,7 @@ class PeriodosGozoController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Periodo de Gozo atualizado com sucesso.');
+            flash()->success('Período de Gozo atualizado com sucesso.');
             return redirect()->route('rh.colaboradores.show', $periodo_gozo->periodoAquisitivo->colaborador->col_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -207,7 +207,7 @@ class PeriodosGozoController extends BaseController
 
             $this->periodoGozoRepository->delete($periodo_gozoId);
 
-            flash()->success('Periodo Aquisitivo excluída com sucesso.');
+            flash()->success('Período Aquisitivo excluída com sucesso.');
 
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {

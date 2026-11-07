@@ -144,7 +144,7 @@ class ControlIdApiClient
     private function baseUrl(DispositivoAcesso $dispositivo): string
     {
         if (!$dispositivo->dis_ip) {
-            throw new InvalidArgumentException('O dispositivo informado nao possui IP configurado.');
+            throw new InvalidArgumentException('O dispositivo informado não possui IP configurado.');
         }
 
         return 'http://' . trim((string) $dispositivo->dis_ip, '/');
@@ -161,7 +161,7 @@ class ControlIdApiClient
         $response = $this->login($dispositivo);
 
         if (empty($response['session']) || !is_string($response['session'])) {
-            throw new InvalidArgumentException('Nao foi possivel obter uma sessao valida no iDFace.');
+            throw new InvalidArgumentException('Não foi possível obter uma sessão válida no iDFace.');
         }
 
         $this->cacheSessoes[$chave] = $response['session'];

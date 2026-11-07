@@ -36,7 +36,7 @@ class DispositivoUsuariosController extends BaseController
             $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
             if (!$dispositivo) {
-                flash()->error('Dispositivo ativo nao encontrado.');
+                flash()->error('Dispositivo ativo não encontrado.');
                 return view('RH::dispositivo_usuarios.index', compact('dispositivos', 'colaboradores', 'dispositivo', 'usuarios', 'resumo'));
             }
 
@@ -45,7 +45,7 @@ class DispositivoUsuariosController extends BaseController
                 $usuarios = $consulta['usuarios'];
                 $resumo = $consulta['resumo'];
             } catch (\Throwable $exception) {
-                $this->tratarExcecao($exception, 'Nao foi possivel consultar os usuarios do dispositivo informado.');
+                $this->tratarExcecao($exception, 'Não foi possível consultar os usuários do dispositivo informado.');
             }
         }
 
@@ -61,7 +61,7 @@ class DispositivoUsuariosController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->route('rh.dispositivousuarios.index');
         }
 
@@ -69,11 +69,11 @@ class DispositivoUsuariosController extends BaseController
             $usuario = $this->sincronizacaoService->buscarUsuario($dispositivo, (string) $userId);
 
             if (!$usuario) {
-                flash()->error('Usuario do dispositivo nao encontrado.');
+                flash()->error('Usuário do dispositivo não encontrado.');
                 return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
             }
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel consultar o usuario informado no dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível consultar o usuário informado no dispositivo.');
             return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
         }
 
@@ -87,7 +87,7 @@ class DispositivoUsuariosController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back()->withInput($request->all());
         }
 
@@ -101,7 +101,7 @@ class DispositivoUsuariosController extends BaseController
             $this->flashResultadoCadastroLote($resultado);
             return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel cadastrar o usuario no dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível cadastrar o usuário no dispositivo.');
             return redirect()->back()->withInput($request->all());
         }
     }
@@ -111,7 +111,7 @@ class DispositivoUsuariosController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back()->withInput($request->all());
         }
 
@@ -133,7 +133,7 @@ class DispositivoUsuariosController extends BaseController
 
                 if ($resultado['atualizados'] > 0) {
                     flash()->success(sprintf(
-                        'Usuario atualizado em %d dispositivo(s): %s.',
+                        'Usuário atualizado em %d dispositivo(s): %s.',
                         $resultado['atualizados'],
                         implode(', ', $resultado['dispositivos'])
                     ));
@@ -153,12 +153,12 @@ class DispositivoUsuariosController extends BaseController
                     $colaboradorId
                 );
 
-                flash()->success('Usuario do dispositivo atualizado com sucesso.');
+                flash()->success('Usuário do dispositivo atualizado com sucesso.');
             }
 
             return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel atualizar o usuario do dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível atualizar o usuário do dispositivo.');
             return redirect()->back()->withInput($request->all());
         }
     }
@@ -174,7 +174,7 @@ class DispositivoUsuariosController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back();
         }
 
@@ -187,7 +187,7 @@ class DispositivoUsuariosController extends BaseController
 
                 if ($resultado['removidos'] > 0) {
                     flash()->success(sprintf(
-                        'Usuario removido de %d dispositivo(s): %s.',
+                        'Usuário removido de %d dispositivo(s): %s.',
                         $resultado['removidos'],
                         implode(', ', $resultado['dispositivos'])
                     ));
@@ -201,10 +201,10 @@ class DispositivoUsuariosController extends BaseController
                 }
             } else {
                 $this->sincronizacaoService->removerUsuario($dispositivo, (string) $request->get('user_id'));
-                flash()->success('Usuario removido do dispositivo com sucesso.');
+                flash()->success('Usuário removido do dispositivo com sucesso.');
             }
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel remover o usuario do dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível remover o usuário do dispositivo.');
         }
 
         return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
@@ -219,20 +219,20 @@ class DispositivoUsuariosController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back();
         }
 
         try {
             $resultado = $this->sincronizacaoService->sincronizar($dispositivo);
             flash()->success(sprintf(
-                'Sincronizacao concluida: %d usuarios, %d vinculados, %d pendentes.',
+                'Sincronização concluída: %d usuários, %d vinculados, %d pendentes.',
                 $resultado['resumo']['total'],
                 $resultado['resumo']['vinculados'],
                 $resultado['resumo']['pendentes']
             ));
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel sincronizar os usuarios do dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível sincronizar os usuários do dispositivo.');
         }
 
         return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
@@ -250,7 +250,7 @@ class DispositivoUsuariosController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back();
         }
 
@@ -260,7 +260,7 @@ class DispositivoUsuariosController extends BaseController
 
             if ($resultado['resumo']['dispositivos'] > 0) {
                 flash()->success(sprintf(
-                    'Sincronizacao em lote concluida em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto e %d ja compativeis.',
+                    'Sincronização em lote concluída em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto e %d já compatíveis.',
                     $resultado['resumo']['dispositivos'],
                     $resultado['resumo']['criados'],
                     $resultado['resumo']['atualizados'],
@@ -274,7 +274,7 @@ class DispositivoUsuariosController extends BaseController
                 flash()->error($this->montarMensagemErrosLote($resultado['erros']));
             }
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel sincronizar os usuarios nos dispositivos selecionados.');
+            $this->tratarExcecao($exception, 'Não foi possível sincronizar os usuários nos dispositivos selecionados.');
         }
 
         return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
@@ -288,7 +288,7 @@ class DispositivoUsuariosController extends BaseController
             $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $dispositivoId);
 
             if (!$dispositivo) {
-                flash()->error('Dispositivo ativo nao encontrado.');
+                flash()->error('Dispositivo ativo não encontrado.');
                 return redirect()->back();
             }
         }
@@ -302,7 +302,7 @@ class DispositivoUsuariosController extends BaseController
                 'Content-Disposition' => 'attachment; filename="' . $nomeArquivo . '"',
             ]);
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel gerar o CSV para o dispositivo informado.');
+            $this->tratarExcecao($exception, 'Não foi possível gerar o CSV para o dispositivo informado.');
             return redirect()->back();
         }
     }
@@ -370,7 +370,7 @@ class DispositivoUsuariosController extends BaseController
         $colaborador = $this->colaboradorRepository->find($colaboradorId);
 
         if (!$colaborador) {
-            throw new \InvalidArgumentException('Colaborador selecionado nao encontrado.');
+            throw new \InvalidArgumentException('Colaborador selecionado não encontrado.');
         }
 
         $colaborador->col_foto_anx_id = $this->salvarFotoFacial($arquivo, $colaborador->col_foto_anx_id);
@@ -385,11 +385,11 @@ class DispositivoUsuariosController extends BaseController
             $anexo = $this->anexoRepository->atualizarAnexo($anexoAtualId, $arquivo);
 
             if (is_array($anexo)) {
-                throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+                throw new \InvalidArgumentException($anexo['message'] ?? 'Não foi possível salvar a foto facial.');
             }
 
             if (!$anexo) {
-                throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+                throw new \InvalidArgumentException('Não foi possível salvar a foto facial.');
             }
 
             return (int) $anexoAtualId;
@@ -398,11 +398,11 @@ class DispositivoUsuariosController extends BaseController
         $anexo = $this->anexoRepository->salvarAnexo($arquivo);
 
         if (is_array($anexo)) {
-            throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+            throw new \InvalidArgumentException($anexo['message'] ?? 'Não foi possível salvar a foto facial.');
         }
 
         if (!$anexo) {
-            throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+            throw new \InvalidArgumentException('Não foi possível salvar a foto facial.');
         }
 
         return (int) $anexo->anx_id;

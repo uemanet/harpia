@@ -63,11 +63,6 @@
 
 </div>
 <input type="hidden" name="jus_htr_id" value="{{ $horaTrabalhada->htr_id }}" class="form-control" >
-<div class="row">
-    <div class="form-group col-md-12">
-        <button type="submit" class="btn btn-primary float-end">Salvar dados</button>
-    </div>
-</div>
 @section('scripts')
     @parent
     <script src="{{asset('/js/plugins/select2.js')}}" type="text/javascript"></script>

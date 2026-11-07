@@ -114,7 +114,7 @@ class SincronizacaoUsuariosDispositivoService
             $usuarioExistente = $this->buscarUsuario($dispositivo, (string) $mapeamentoExistente->map_user_id);
 
             if ($usuarioExistente) {
-                throw new InvalidArgumentException('Este colaborador ja esta vinculado a um usuario neste dispositivo.');
+                throw new InvalidArgumentException('Este colaborador já está vinculado a um usuário neste dispositivo.');
             }
 
             $mapeamentoExistente->fill([
@@ -139,7 +139,7 @@ class SincronizacaoUsuariosDispositivoService
         $usuario = $this->buscarUsuarioSincronizado($sincronizacao['usuarios'], $userId, $dadosDesejados['registration']);
 
         if (!$usuario) {
-            throw new InvalidArgumentException('Usuario criado no dispositivo, mas nao foi possivel localiza-lo para concluir a sincronizacao.');
+            throw new InvalidArgumentException('Usuário criado no dispositivo, mas não foi possível localizá-lo para concluir a sincronização.');
         }
 
         $this->vincularUsuario($dispositivo, (string) $usuario['user_id'], $colaboradorId);
@@ -253,7 +253,7 @@ class SincronizacaoUsuariosDispositivoService
         $sincronizacao = $this->sincronizar($dispositivo);
 
         return $this->buscarUsuarioSincronizado($sincronizacao['usuarios'], $userId, $dadosDesejados['registration'])
-            ?? throw new InvalidArgumentException('Nao foi possivel localizar o usuario atualizado no dispositivo.');
+            ?? throw new InvalidArgumentException('Não foi possível localizar o usuário atualizado no dispositivo.');
     }
 
     public function atualizarUsuarioEmTodosDispositivos(
@@ -304,7 +304,7 @@ class SincronizacaoUsuariosDispositivoService
 
                     if (!$usuarioRelacionado) {
                         $resultado['erros']++;
-                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuario relacionado nao encontrado';
+                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuário relacionado não encontrado';
                         continue;
                     }
 
@@ -312,7 +312,7 @@ class SincronizacaoUsuariosDispositivoService
 
                     if ($usuarioRelacionadoId === '') {
                         $resultado['erros']++;
-                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuario relacionado sem identificador valido';
+                        $resultado['detalhes_erros'][] = $outro->dis_nome . ': usuário relacionado sem identificador válido';
                         continue;
                     }
 
@@ -422,11 +422,11 @@ class SincronizacaoUsuariosDispositivoService
         $dadosDesejados = $colaborador ? $this->montarDadosDispositivoDoColaborador($colaborador) : null;
 
         if (!$colaborador) {
-            throw new InvalidArgumentException('Colaborador ativo nao encontrado para vinculacao.');
+            throw new InvalidArgumentException('Colaborador ativo não encontrado para vinculação.');
         }
 
         if ($this->mapeamentoRepository->buscarPorDispositivoEColaborador($dispositivo->dis_id, $colaboradorId, $userId)) {
-            throw new InvalidArgumentException('Este colaborador ja esta vinculado a outro usuario neste dispositivo.');
+            throw new InvalidArgumentException('Este colaborador já está vinculado a outro usuário neste dispositivo.');
         }
 
         $mapeamento = $this->mapeamentoRepository->buscarPorDispositivoEUsuario($dispositivo->dis_id, $userId);
@@ -435,7 +435,7 @@ class SincronizacaoUsuariosDispositivoService
             $usuario = $this->buscarUsuario($dispositivo, $userId);
 
             if (!$usuario) {
-                throw new InvalidArgumentException('Usuario do dispositivo nao encontrado para vinculacao.');
+                throw new InvalidArgumentException('Usuário do dispositivo não encontrado para vinculação.');
             }
 
             $mapeamento = new MapeamentoDispositivo([
@@ -474,7 +474,7 @@ class SincronizacaoUsuariosDispositivoService
         $mapeamento = $this->mapeamentoRepository->buscarPorDispositivoEUsuario($dispositivo->dis_id, $userId);
 
         if (!$mapeamento) {
-            throw new InvalidArgumentException('Mapeamento nao encontrado para desvinculacao.');
+            throw new InvalidArgumentException('Mapeamento não encontrado para desvinculação.');
         }
 
         $mapeamento->fill([
@@ -633,7 +633,7 @@ class SincronizacaoUsuariosDispositivoService
         $conteudo = file_get_contents($foto->getRealPath());
 
         if ($conteudo === false) {
-            throw new InvalidArgumentException('Nao foi possivel ler a imagem enviada para o dispositivo.');
+            throw new InvalidArgumentException('Não foi possível ler a imagem enviada para o dispositivo.');
         }
 
         return $conteudo;
@@ -782,7 +782,7 @@ class SincronizacaoUsuariosDispositivoService
         $colaborador = $this->colaboradorRepository->buscarAtivoComPessoa($colaboradorId);
 
         if (!$colaborador || !$colaborador->pessoa) {
-            throw new InvalidArgumentException('Colaborador ativo nao encontrado para sincronizacao com o dispositivo.');
+            throw new InvalidArgumentException('Colaborador ativo não encontrado para sincronização com o dispositivo.');
         }
 
         return $colaborador;
@@ -802,13 +802,13 @@ class SincronizacaoUsuariosDispositivoService
         $anexoId = (int) ($colaborador->col_foto_anx_id ?? 0);
 
         if ($anexoId === 0) {
-            throw new InvalidArgumentException('O colaborador selecionado nao possui foto facial cadastrada.');
+            throw new InvalidArgumentException('O colaborador selecionado não possui foto facial cadastrada.');
         }
 
         $conteudo = $this->anexoRepository->lerConteudoAnexo($anexoId);
 
         if ($conteudo === 'error_non_existent') {
-            throw new InvalidArgumentException('A foto facial vinculada ao colaborador nao foi encontrada.');
+            throw new InvalidArgumentException('A foto facial vinculada ao colaborador não foi encontrada.');
         }
 
         return $conteudo;
@@ -832,7 +832,7 @@ class SincronizacaoUsuariosDispositivoService
         $groupId = $this->resolverGrupoPadraoId($dispositivo);
 
         if ($groupId === null) {
-            Log::channel('ponto')->warning('Nenhum grupo padrao foi encontrado no dispositivo para vincular o usuario criado.', [
+            Log::channel('ponto')->warning('Nenhum grupo padrão foi encontrado no dispositivo para vincular o usuário criado.', [
                 'dispositivo_id' => $dispositivo->dis_id,
                 'user_id' => $userId,
             ]);

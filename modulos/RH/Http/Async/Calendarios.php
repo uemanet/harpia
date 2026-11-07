@@ -41,7 +41,7 @@ class Calendarios extends BaseController
             $calendario = $this->calendarioRepository->find($cldId);
 
             if (!$calendario) {
-                return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+                return new JsonResponse(['message' => 'Evento não encontrado.'], JsonResponse::HTTP_NOT_FOUND);
             }
 
             $dataAntiga = $calendario->cld_data;
@@ -69,7 +69,7 @@ class Calendarios extends BaseController
         $calendario = $this->calendarioRepository->find($id);
 
         if (!$calendario) {
-            return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'Evento não encontrado.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         return new JsonResponse($calendario, JsonResponse::HTTP_OK);
@@ -82,7 +82,7 @@ class Calendarios extends BaseController
         $calendario = $this->calendarioRepository->find($id);
 
         if (!$calendario) {
-            return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'Evento não encontrado.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $dataAntiga = $calendario->cld_data;
@@ -104,7 +104,7 @@ class Calendarios extends BaseController
         $calendario = $this->calendarioRepository->find($calendarioId);
 
         if (!$calendario) {
-            return new JsonResponse(['message' => 'Evento nao encontrado.'], JsonResponse::HTTP_NOT_FOUND);
+            return new JsonResponse(['message' => 'Evento não encontrado.'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $dataEvento = $calendario->cld_data;

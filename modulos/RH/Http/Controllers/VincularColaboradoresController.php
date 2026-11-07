@@ -32,7 +32,7 @@ class VincularColaboradoresController extends BaseController
             $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
             if (!$dispositivo) {
-                flash()->error('Dispositivo ativo nao encontrado.');
+                flash()->error('Dispositivo ativo não encontrado.');
                 return view('RH::vincular_colaboradores.index', compact('dispositivos', 'colaboradores', 'dispositivo', 'usuarios', 'resumo'));
             }
 
@@ -41,7 +41,7 @@ class VincularColaboradoresController extends BaseController
                 $usuarios = $this->filtrarUsuarios($consulta['usuarios'], $request);
                 $resumo = $consulta['resumo'];
             } catch (\Throwable $exception) {
-                $this->tratarExcecao($exception, 'Nao foi possivel consultar os usuarios do dispositivo para vinculacao.');
+                $this->tratarExcecao($exception, 'Não foi possível consultar os usuários do dispositivo para vinculação.');
             }
         }
 
@@ -53,7 +53,7 @@ class VincularColaboradoresController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back();
         }
 
@@ -64,9 +64,9 @@ class VincularColaboradoresController extends BaseController
                 (int) $request->get('col_id')
             );
 
-            flash()->success('Colaborador vinculado ao usuario do dispositivo com sucesso.');
+            flash()->success('Colaborador vinculado ao usuário do dispositivo com sucesso.');
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel vincular o colaborador ao usuario do dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível vincular o colaborador ao usuário do dispositivo.');
         }
 
         return redirect()->route('rh.vincularcolaboradores.index', [
@@ -86,15 +86,15 @@ class VincularColaboradoresController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back();
         }
 
         try {
             $this->sincronizacaoService->desvincularUsuario($dispositivo, (string) $request->get('user_id'));
-            flash()->success('Usuario do dispositivo desvinculado com sucesso.');
+            flash()->success('Usuário do dispositivo desvinculado com sucesso.');
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel desvincular o usuario do dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível desvincular o usuário do dispositivo.');
         }
 
         return redirect()->route('rh.vincularcolaboradores.index', [
@@ -113,20 +113,20 @@ class VincularColaboradoresController extends BaseController
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo ativo nao encontrado.');
+            flash()->error('Dispositivo ativo não encontrado.');
             return redirect()->back();
         }
 
         try {
             $resultado = $this->sincronizacaoService->sincronizar($dispositivo);
             flash()->success(sprintf(
-                'Sincronizacao concluida: %d usuarios, %d vinculados, %d pendentes.',
+                'Sincronização concluída: %d usuários, %d vinculados, %d pendentes.',
                 $resultado['resumo']['total'],
                 $resultado['resumo']['vinculados'],
                 $resultado['resumo']['pendentes']
             ));
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel sincronizar o mapeamento do dispositivo.');
+            $this->tratarExcecao($exception, 'Não foi possível sincronizar o mapeamento do dispositivo.');
         }
 
         return redirect()->route('rh.vincularcolaboradores.index', ['dis_id' => $dispositivo->dis_id]);
@@ -140,7 +140,7 @@ class VincularColaboradoresController extends BaseController
             $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $dispositivoId);
 
             if (!$dispositivo) {
-                flash()->error('Dispositivo ativo nao encontrado.');
+                flash()->error('Dispositivo ativo não encontrado.');
                 return redirect()->back();
             }
         }
@@ -154,7 +154,7 @@ class VincularColaboradoresController extends BaseController
                 'Content-Disposition' => 'attachment; filename="' . $nomeArquivo . '"',
             ]);
         } catch (\Throwable $exception) {
-            $this->tratarExcecao($exception, 'Nao foi possivel gerar o CSV para vinculacao.');
+            $this->tratarExcecao($exception, 'Não foi possível gerar o CSV para vinculação.');
             return redirect()->back();
         }
     }

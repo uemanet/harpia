@@ -359,11 +359,11 @@ class ColaboradoresController extends BaseController
             $anexo = $this->anexoRepository->atualizarAnexo($anexoAtualId, $arquivo);
 
             if (is_array($anexo)) {
-                throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+                throw new \InvalidArgumentException($anexo['message'] ?? 'Não foi possível salvar a foto facial.');
             }
 
             if (!$anexo) {
-                throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+                throw new \InvalidArgumentException('Não foi possível salvar a foto facial.');
             }
 
             return (int) $anexoAtualId;
@@ -372,11 +372,11 @@ class ColaboradoresController extends BaseController
         $anexo = $this->anexoRepository->salvarAnexo($arquivo);
 
         if (is_array($anexo)) {
-            throw new \InvalidArgumentException($anexo['message'] ?? 'Nao foi possivel salvar a foto facial.');
+            throw new \InvalidArgumentException($anexo['message'] ?? 'Não foi possível salvar a foto facial.');
         }
 
         if (!$anexo) {
-            throw new \InvalidArgumentException('Nao foi possivel salvar a foto facial.');
+            throw new \InvalidArgumentException('Não foi possível salvar a foto facial.');
         }
 
         return $anexo->anx_id;

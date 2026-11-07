@@ -70,7 +70,7 @@
                         </div>
 
                         <p class="text-muted">
-                            Nome, registration e foto facial serao recalculados automaticamente com base no colaborador selecionado.
+                            Nome, registration e foto facial serão recalculados automaticamente com base no colaborador selecionado.
                         </p>
 
                         <div class="form-group @if($errors->has('foto')) has-error @endif">

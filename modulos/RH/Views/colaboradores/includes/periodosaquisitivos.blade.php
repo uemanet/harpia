@@ -16,7 +16,7 @@
                 @foreach($periodos_matriculas as $periodos)
 
                     <p style="font-size: medium">
-                        <i class="fa-solid fa-caret-right"></i> <b>Matricula Id</b> : {{$periodos['matricula']->mtc_id}} -
+                        <i class="fa-solid fa-caret-right"></i> <b>Matrícula Id</b> : {{$periodos['matricula']->mtc_id}} -
                         <b>Início</b> : {{$periodos['matricula']->mtc_data_inicio}}
                         @if($periodos['matricula']->mtc_data_fim)
                             <b>Fim</b> :  {{$periodos['matricula']->mtc_data_fim}}

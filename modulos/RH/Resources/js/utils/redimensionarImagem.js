@@ -61,7 +61,7 @@ export async function redimensionarInputArquivo(input) {
 
         return input.files[0];
     } catch (e) {
-        console.warn('Nao foi possivel redimensionar a imagem no navegador.', e);
+        console.warn('Não foi possível redimensionar a imagem no navegador.', e);
         return arquivo;
     }
 }

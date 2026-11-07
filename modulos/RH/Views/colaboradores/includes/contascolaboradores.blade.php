@@ -18,9 +18,9 @@
                     <table class="table table-bordered">
                         <tr>
                             <th>Banco</th>
-                            <th>Agencia</th>
+                            <th>Agência</th>
                             <th>Conta</th>
-                            <th>Variacao</th>
+                            <th>Variação</th>
                         </tr>
                         @foreach($colaborador->contas_colaboradores as $conta_colaborador)
                             <tr>
