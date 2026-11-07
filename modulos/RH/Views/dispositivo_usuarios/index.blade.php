@@ -9,6 +9,41 @@
 @stop
 
 @section('content')
+    <div id="card-progresso-sincronizacao" class="row mb-3 d-none">
+        <div class="card card-info card-outline">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title m-0">
+                    <i id="sync-icone-status" class="fa fa-refresh fa-spin me-1"></i>
+                    <span id="sync-titulo-status">Sincronizando colaboradores ativos...</span>
+                </h3>
+                <span id="sync-badge-percentual" class="badge bg-info">0%</span>
+            </div>
+            <div class="card-body">
+                <p id="sync-detalhe-dispositivo" class="mb-2 text-muted">
+                    Preparando lotes de sincronização...
+                </p>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div id="sync-barra-progresso"
+                         class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                         role="progressbar"
+                         style="width: 0%;"
+                         aria-valuenow="0"
+                         aria-valuemin="0"
+                         aria-valuemax="100">0%</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-success">Criados: <strong id="sync-cnt-criados">0</strong></span>
+                    <span class="badge bg-primary">Atualizados/Vinculados: <strong id="sync-cnt-atualizados">0</strong></span>
+                    <span class="badge bg-secondary">Já compatíveis: <strong id="sync-cnt-inalterados">0</strong></span>
+                    <span class="badge bg-warning text-dark">Sem foto: <strong id="sync-cnt-pendentes-foto">0</strong></span>
+                    <span id="sync-badge-duplicados" class="badge bg-info text-dark d-none">Duplicados removidos: <strong id="sync-cnt-duplicados">0</strong></span>
+                    <span class="badge bg-danger">Falhas: <strong id="sync-cnt-falhas">0</strong></span>
+                </div>
+                <div id="sync-alerta-erro" class="alert alert-danger mt-3 mb-0 d-none"></div>
+            </div>
+        </div>
+    </div>
+
     @if(session('falhas_sincronizacao'))
         @php($falhasSincronizacao = session('falhas_sincronizacao'))
         <div class="row mb-3">
@@ -169,12 +204,12 @@
                             <form method="POST" action="{{ route('rh.dispositivousuarios.sincronizar') }}" class="mb-2">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
-                                <button type="submit" class="btn btn-primary w-100">
+                                <button type="submit" id="btn-sincronizar-dispositivo" class="btn btn-primary w-100">
                                     <i class="fa fa-refresh"></i> Sincronizar do dispositivo
                                 </button>
                             </form>
 
-                            <form method="POST" action="{{ route('rh.dispositivousuarios.sincronizartodos') }}" class="mb-2">
+                            <form id="form-sincronizar-todos" method="POST" action="{{ route('rh.dispositivousuarios.sincronizartodos') }}" class="mb-2">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
 
@@ -183,7 +218,7 @@
                                     <label class="form-check-label">Sincronizar em todos os aparelhos ativos</label>
                                 </div>
 
-                                <button type="submit" class="btn btn-success w-100" onclick="return confirm('Tem certeza que deseja sincronizar os colaboradores ativos do Harpia para o dispositivo atual ou para todos os aparelhos ativos?')">
+                                <button type="submit" id="btn-sincronizar-todos" class="btn btn-success w-100" onclick="return confirm('Tem certeza que deseja sincronizar os colaboradores ativos do Harpia para o dispositivo atual ou para todos os aparelhos ativos?')">
                                     <i class="fa fa-exchange"></i> Sincronizar colaboradores ativos
                                 </button>
                             </form>
@@ -290,5 +325,207 @@
 
             return true;
         }
+
+        (function () {
+            var form = document.getElementById('form-sincronizar-todos');
+            if (!form || typeof window.fetch !== 'function' || typeof window.URLSearchParams !== 'function') {
+                return;
+            }
+
+            var cardProgresso = document.getElementById('card-progresso-sincronizacao');
+            var iconeStatus = document.getElementById('sync-icone-status');
+            var tituloStatus = document.getElementById('sync-titulo-status');
+            var badgePercentual = document.getElementById('sync-badge-percentual');
+            var detalheDispositivo = document.getElementById('sync-detalhe-dispositivo');
+            var barraProgresso = document.getElementById('sync-barra-progresso');
+            var cntCriados = document.getElementById('sync-cnt-criados');
+            var cntAtualizados = document.getElementById('sync-cnt-atualizados');
+            var cntInalterados = document.getElementById('sync-cnt-inalterados');
+            var cntPendentesFoto = document.getElementById('sync-cnt-pendentes-foto');
+            var badgeDuplicados = document.getElementById('sync-badge-duplicados');
+            var cntDuplicados = document.getElementById('sync-cnt-duplicados');
+            var cntFalhas = document.getElementById('sync-cnt-falhas');
+            var alertaErro = document.getElementById('sync-alerta-erro');
+            var btnSincronizarTodos = document.getElementById('btn-sincronizar-todos');
+            var btnSincronizarDispositivo = document.getElementById('btn-sincronizar-dispositivo');
+
+            function atualizarInterface(dados) {
+                var percentual = Math.max(0, Math.min(100, parseInt(dados.progresso_percentual || 0, 10)));
+                barraProgresso.style.width = percentual + '%';
+                barraProgresso.setAttribute('aria-valuenow', String(percentual));
+                barraProgresso.textContent = percentual + '%';
+                badgePercentual.textContent = percentual + '%';
+
+                if (dados.resumo) {
+                    cntCriados.textContent = String(dados.resumo.criados || 0);
+                    cntAtualizados.textContent = String(dados.resumo.atualizados || 0);
+                    cntInalterados.textContent = String(dados.resumo.inalterados || 0);
+                    cntPendentesFoto.textContent = String(dados.resumo.pendentes_foto || 0);
+                    cntFalhas.textContent = String(dados.resumo.falhas || 0);
+                }
+
+                var dupRemovidos = parseInt(dados.duplicados_removidos || 0, 10);
+                if (badgeDuplicados && cntDuplicados) {
+                    cntDuplicados.textContent = String(dupRemovidos);
+                    if (dupRemovidos > 0) {
+                        badgeDuplicados.classList.remove('d-none');
+                    }
+                }
+
+                if (dados.concluido) {
+                    tituloStatus.textContent = 'Sincronização concluída! Atualizando listagem...';
+                    detalheDispositivo.textContent = 'Redirecionando para exibir o resultado consolidado...';
+                    return;
+                }
+
+                var totalDispositivos = parseInt(dados.total_dispositivos || 1, 10);
+                var indiceAtual = Math.min(totalDispositivos, parseInt(dados.indice_dispositivo_atual || 0, 10) + 1);
+                var nomeDispositivo = dados.dispositivo_atual || 'Dispositivo';
+                var offsetAtual = parseInt(dados.offset_atual || 0, 10);
+                var totalCol = parseInt(dados.total_colaboradores || 0, 10);
+
+                if (dados.aguardando_lock) {
+                    detalheDispositivo.textContent = 'Aguardando conclusão de operação concorrente em ' + nomeDispositivo + '...';
+                    return;
+                }
+
+                detalheDispositivo.textContent = 'Dispositivo ' + indiceAtual + ' de ' + totalDispositivos + ': '
+                    + nomeDispositivo + ' (' + offsetAtual + ' de ' + totalCol + ' colaboradores verificados)';
+            }
+
+            function aguardar(ms) {
+                return new Promise(function (resolve) {
+                    window.setTimeout(resolve, ms);
+                });
+            }
+
+            async function enviarEtapa(camposBase, camposExtras, tentativa) {
+                var params = new URLSearchParams();
+                Object.keys(camposBase).forEach(function (chave) {
+                    if (camposBase[chave] !== null && camposBase[chave] !== undefined) {
+                        params.append(chave, camposBase[chave]);
+                    }
+                });
+                Object.keys(camposExtras).forEach(function (chave) {
+                    params.append(chave, camposExtras[chave]);
+                });
+
+                var resposta;
+                try {
+                    resposta = await window.fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': camposBase._token || ''
+                        },
+                        credentials: 'same-origin',
+                        body: params.toString()
+                    });
+                } catch (erroRede) {
+                    if (tentativa < 1) {
+                        await aguardar(1000);
+                        return enviarEtapa(camposBase, camposExtras, tentativa + 1);
+                    }
+                    throw new Error('Falha de comunicação com o servidor durante a sincronização.');
+                }
+
+                if ((resposta.status === 502 || resposta.status === 503 || resposta.status === 504) && tentativa < 1) {
+                    await aguardar(1000);
+                    return enviarEtapa(camposBase, camposExtras, tentativa + 1);
+                }
+
+                var texto = await resposta.text();
+                var json = null;
+
+                try {
+                    json = texto ? JSON.parse(texto) : null;
+                } catch (e) {
+                    json = null;
+                }
+
+                if (!resposta.ok || !json) {
+                    var msgErro = (json && (json.erro || json.message))
+                        ? (json.erro || json.message)
+                        : ('O servidor retornou um erro inesperado (HTTP ' + resposta.status + ').');
+                    throw new Error(msgErro);
+                }
+
+                return json;
+            }
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                if (form.dataset.sincronizando === '1') {
+                    return;
+                }
+
+                form.dataset.sincronizando = '1';
+
+                if (btnSincronizarTodos) {
+                    btnSincronizarTodos.disabled = true;
+                }
+                if (btnSincronizarDispositivo) {
+                    btnSincronizarDispositivo.disabled = true;
+                }
+
+                alertaErro.classList.add('d-none');
+                alertaErro.textContent = '';
+                iconeStatus.className = 'fa fa-refresh fa-spin me-1';
+                barraProgresso.classList.add('progress-bar-animated');
+                tituloStatus.textContent = 'Sincronizando colaboradores ativos...';
+                cardProgresso.classList.remove('d-none');
+                cardProgresso.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                var formData = new FormData(form);
+                var camposBase = {
+                    _token: formData.get('_token') || '',
+                    dis_id: formData.get('dis_id') || ''
+                };
+
+                if (formData.get('sincronizar_todos_dispositivos')) {
+                    camposBase.sincronizar_todos_dispositivos = formData.get('sincronizar_todos_dispositivos');
+                }
+
+                try {
+                    var dados = await enviarEtapa(camposBase, { acao_lote: 'iniciar' }, 0);
+                    atualizarInterface(dados);
+
+                    while (!dados.concluido) {
+                        if (dados.aguardando_lock) {
+                            await aguardar(1500);
+                        }
+                        dados = await enviarEtapa(camposBase, {
+                            acao_lote: 'processar',
+                            token: dados.token
+                        }, 0);
+                        atualizarInterface(dados);
+                    }
+
+                    if (dados.redirect_url) {
+                        window.location.href = dados.redirect_url;
+                        return;
+                    }
+
+                    window.location.reload();
+                } catch (erro) {
+                    form.dataset.sincronizando = '0';
+                    iconeStatus.className = 'fa fa-exclamation-triangle text-danger me-1';
+                    barraProgresso.classList.remove('progress-bar-animated');
+                    tituloStatus.textContent = 'A sincronização foi interrompida.';
+                    alertaErro.textContent = erro && erro.message ? erro.message : 'Não foi possível concluir a sincronização.';
+                    alertaErro.classList.remove('d-none');
+
+                    if (btnSincronizarTodos) {
+                        btnSincronizarTodos.disabled = false;
+                    }
+                    if (btnSincronizarDispositivo) {
+                        btnSincronizarDispositivo.disabled = false;
+                    }
+                }
+            });
+        })();
     </script>
 @endsection

@@ -2,8 +2,13 @@
 
 namespace Modulos\RH\Http\Controllers;
 
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Repositories\AnexoRepository;
@@ -240,12 +245,29 @@ class DispositivoUsuariosController extends BaseController
 
     public function postSincronizarTodos(Request $request)
     {
+        $acaoLote = $request->get('acao_lote');
+
+        if ($acaoLote === 'processar') {
+            $this->validate($request, [
+                'dis_id' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
+                'acao_lote' => 'required|in:processar',
+                'token' => 'required|string|max:100',
+            ]);
+
+            return $this->processarLoteSincronizacaoTodos((string) $request->get('token'));
+        }
+
         $this->validate($request, [
             'dis_id' => 'required|integer|exists:reh_dispositivos_acesso,dis_id',
             'dispositivos_destino' => 'nullable|array',
             'dispositivos_destino.*' => 'integer|exists:reh_dispositivos_acesso,dis_id',
             'sincronizar_todos_dispositivos' => 'nullable|boolean',
+            'acao_lote' => 'nullable|in:iniciar,processar',
         ]);
+
+        if ($acaoLote === 'iniciar') {
+            return $this->iniciarLoteSincronizacaoTodos($request);
+        }
 
         $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
 
@@ -254,6 +276,8 @@ class DispositivoUsuariosController extends BaseController
             return redirect()->back();
         }
 
+        @set_time_limit(0);
+
         $falhasColaboradores = [];
 
         try {
@@ -261,36 +285,7 @@ class DispositivoUsuariosController extends BaseController
             $resultado = $this->sincronizacaoService->sincronizarColaboradoresEmDispositivos($dispositivosDestino);
             $falhasColaboradores = $resultado['falhas_colaboradores'] ?? [];
 
-            if ($resultado['resumo']['dispositivos'] > 0) {
-                $mensagemResumo = sprintf(
-                    'Sincronização em lote concluída em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto, %d já compatíveis e %d falha(s) individual(is).',
-                    $resultado['resumo']['dispositivos'],
-                    $resultado['resumo']['criados'],
-                    $resultado['resumo']['atualizados'],
-                    $resultado['resumo']['fotos_sincronizadas'],
-                    $resultado['resumo']['pendentes_foto'],
-                    $resultado['resumo']['inalterados'],
-                    $resultado['resumo']['falhas']
-                );
-
-                if ($resultado['resumo']['falhas'] > 0) {
-                    flash()->warning($mensagemResumo);
-                } else {
-                    flash()->success($mensagemResumo);
-                }
-            }
-
-            if (!empty($falhasColaboradores)) {
-                flash()->error(
-                    $this->montarMensagemFalhasColaboradores($falhasColaboradores),
-                    'Colaboradores com falha na sincronização',
-                    ['timeOut' => 15000, 'extendedTimeOut' => 5000]
-                );
-            }
-
-            if (!empty($resultado['erros'])) {
-                flash()->error($this->montarMensagemErrosLote($resultado['erros']));
-            }
+            $this->registrarFlashResultadoSincronizacaoTodos($resultado);
         } catch (\Throwable $exception) {
             $this->tratarExcecao($exception, 'Não foi possível sincronizar os usuários nos dispositivos selecionados.');
         }
@@ -380,6 +375,275 @@ class DispositivoUsuariosController extends BaseController
         if (!empty($resultado['erros'])) {
             flash()->error($this->montarMensagemErrosLote($resultado['erros']));
         }
+    }
+
+    private function iniciarLoteSincronizacaoTodos(Request $request): JsonResponse
+    {
+        $dispositivo = $this->dispositivoRepository->buscarAtivo((int) $request->get('dis_id'));
+
+        if (!$dispositivo) {
+            return response()->json([
+                'erro' => 'Dispositivo ativo não encontrado.',
+            ], 404);
+        }
+
+        try {
+            $dispositivosDestino = $this->resolverDispositivosAlvo(
+                $request,
+                (int) $dispositivo->dis_id,
+                'sincronizar_todos_dispositivos'
+            );
+        } catch (\InvalidArgumentException $exception) {
+            return response()->json([
+                'erro' => $exception->getMessage(),
+            ], 422);
+        }
+
+        $totalColaboradores = $this->colaboradorRepository->listarAtivosParaExportacao()->count();
+        $dispositivosLista = $dispositivosDestino->values()->map(function ($item) {
+            return [
+                'dis_id' => (int) $item->dis_id,
+                'dis_nome' => (string) $item->dis_nome,
+                'offset' => 0,
+            ];
+        })->all();
+
+        $token = (string) Str::uuid();
+        $estado = [
+            'token' => $token,
+            'user_id' => Auth::id(),
+            'dis_id_origem' => (int) $dispositivo->dis_id,
+            'dispositivos' => $dispositivosLista,
+            'indice_dispositivo_atual' => 0,
+            'total_colaboradores' => $totalColaboradores,
+            'resumo' => [
+                'dispositivos' => 0,
+                'criados' => 0,
+                'atualizados' => 0,
+                'fotos_sincronizadas' => 0,
+                'pendentes_foto' => 0,
+                'inalterados' => 0,
+                'falhas' => 0,
+            ],
+            'duplicados_removidos' => 0,
+            'erros' => [],
+            'todas_falhas' => [],
+        ];
+
+        Cache::put($this->chaveCacheSincronizacaoLote($token), $estado, now()->addMinutes(30));
+
+        return response()->json([
+            'concluido' => false,
+            'token' => $token,
+            'total_dispositivos' => count($dispositivosLista),
+            'indice_dispositivo_atual' => 0,
+            'dispositivo_atual' => $dispositivosLista[0]['dis_nome'] ?? $dispositivo->dis_nome,
+            'offset_atual' => 0,
+            'total_colaboradores' => $totalColaboradores,
+            'progresso_percentual' => 0,
+            'duplicados_removidos' => 0,
+            'resumo' => $estado['resumo'],
+            'erros' => [],
+        ]);
+    }
+
+    private function processarLoteSincronizacaoTodos(string $token): JsonResponse
+    {
+        $chaveCache = $this->chaveCacheSincronizacaoLote($token);
+        $estado = Cache::get($chaveCache);
+
+        if (!is_array($estado)) {
+            return response()->json([
+                'erro' => 'A sessão de sincronização em lote expirou. Inicie a sincronização novamente.',
+            ], 404);
+        }
+
+        if (($estado['user_id'] ?? null) !== Auth::id()) {
+            return response()->json([
+                'erro' => 'Operação não autorizada para esta sessão de sincronização.',
+            ], 403);
+        }
+
+        $lockToken = Cache::lock('sync_dispositivo_token:' . $token, 60);
+        if (!$lockToken->get()) {
+            return $this->montarRespostaProgressoLote($token, $estado, true);
+        }
+
+        try {
+            $estado = Cache::get($chaveCache);
+            if (!is_array($estado)) {
+                return response()->json([
+                    'erro' => 'A sessão de sincronização em lote expirou. Inicie a sincronização novamente.',
+                ], 404);
+            }
+
+            $dispositivos = $estado['dispositivos'] ?? [];
+            $totalDispositivos = count($dispositivos);
+            $indice = (int) ($estado['indice_dispositivo_atual'] ?? 0);
+
+            if ($indice < $totalDispositivos) {
+                $itemAtual = $dispositivos[$indice];
+                $dispositivoAlvo = $this->dispositivoRepository->buscarAtivo((int) $itemAtual['dis_id']);
+
+                if (!$dispositivoAlvo) {
+                    $estado['erros'][] = [
+                        'dispositivo' => $itemAtual['dis_nome'],
+                        'mensagem' => 'Dispositivo ativo não encontrado.',
+                    ];
+                    $estado['indice_dispositivo_atual'] = $indice + 1;
+                } else {
+                    try {
+                        $lote = $this->sincronizacaoService->sincronizarLoteColaboradoresNoDispositivo(
+                            $dispositivoAlvo,
+                            (int) ($itemAtual['offset'] ?? 0),
+                            5,
+                            60,
+                            8.0,
+                            null,
+                            (int) config('rh.sync_lock_wait_seconds', 3)
+                        );
+
+                        $estado['total_colaboradores'] = (int) $lote['total_colaboradores'];
+                        $estado['resumo']['criados'] += $lote['criados'];
+                        $estado['resumo']['atualizados'] += $lote['atualizados'];
+                        $estado['resumo']['fotos_sincronizadas'] += $lote['fotos_sincronizadas'];
+                        $estado['resumo']['pendentes_foto'] += $lote['pendentes_foto'];
+                        $estado['resumo']['inalterados'] += $lote['inalterados'];
+                        $estado['resumo']['falhas'] += count($lote['falhas']);
+                        $estado['duplicados_removidos'] = (int) ($estado['duplicados_removidos'] ?? 0)
+                            + (int) ($lote['duplicados_removidos'] ?? 0);
+
+                        foreach ($lote['falhas'] as $falha) {
+                            $estado['todas_falhas'][] = $falha;
+                        }
+
+                        $estado['dispositivos'][$indice]['offset'] = (int) $lote['proximo_offset'];
+
+                        if ($lote['concluido']) {
+                            $estado['resumo']['dispositivos']++;
+                            $estado['indice_dispositivo_atual'] = $indice + 1;
+                        }
+                    } catch (LockTimeoutException $exception) {
+                        Cache::put($chaveCache, $estado, now()->addMinutes(30));
+
+                        return $this->montarRespostaProgressoLote($token, $estado, true);
+                    } catch (\Throwable $exception) {
+                        $estado['erros'][] = [
+                            'dispositivo' => $dispositivoAlvo->dis_nome,
+                            'mensagem' => $this->sincronizacaoService->extrairMensagemErroColaborador($exception),
+                        ];
+                        $estado['indice_dispositivo_atual'] = $indice + 1;
+                    }
+                }
+            }
+
+            if ((int) $estado['indice_dispositivo_atual'] >= $totalDispositivos) {
+                Cache::forget($chaveCache);
+
+                $falhasColaboradores = $this->sincronizacaoService->agruparFalhasColaboradores($estado['todas_falhas']);
+
+                $this->registrarFlashResultadoSincronizacaoTodos([
+                    'resumo' => $estado['resumo'],
+                    'duplicados_removidos' => (int) ($estado['duplicados_removidos'] ?? 0),
+                    'erros' => $estado['erros'],
+                    'falhas_colaboradores' => $falhasColaboradores,
+                ]);
+
+                if (!empty($falhasColaboradores)) {
+                    session()->flash('falhas_sincronizacao', $falhasColaboradores);
+                }
+
+                return response()->json([
+                    'concluido' => true,
+                    'progresso_percentual' => 100,
+                    'duplicados_removidos' => (int) ($estado['duplicados_removidos'] ?? 0),
+                    'resumo' => $estado['resumo'],
+                    'erros' => $estado['erros'],
+                    'redirect_url' => route('rh.dispositivousuarios.index', ['dis_id' => $estado['dis_id_origem']]),
+                ]);
+            }
+
+            Cache::put($chaveCache, $estado, now()->addMinutes(30));
+
+            return $this->montarRespostaProgressoLote($token, $estado, false);
+        } finally {
+            optional($lockToken)->release();
+        }
+    }
+
+    private function montarRespostaProgressoLote(string $token, array $estado, bool $aguardandoLock): JsonResponse
+    {
+        $dispositivos = $estado['dispositivos'] ?? [];
+        $totalDispositivos = count($dispositivos);
+        $novoIndice = (int) ($estado['indice_dispositivo_atual'] ?? 0);
+        $proximoItem = $dispositivos[$novoIndice] ?? null;
+        $offsetAtual = (int) ($proximoItem['offset'] ?? 0);
+        $totalCol = max(1, (int) ($estado['total_colaboradores'] ?? 0));
+        $unidadesTotais = max(1, $totalDispositivos * $totalCol);
+        $unidadesConcluidas = ($novoIndice * $totalCol) + min($offsetAtual, $totalCol);
+        $percentual = min(99, (int) floor(($unidadesConcluidas / $unidadesTotais) * 100));
+
+        return response()->json([
+            'concluido' => false,
+            'aguardando_lock' => $aguardandoLock,
+            'token' => $token,
+            'total_dispositivos' => $totalDispositivos,
+            'indice_dispositivo_atual' => $novoIndice,
+            'dispositivo_atual' => $proximoItem['dis_nome'] ?? '',
+            'offset_atual' => $offsetAtual,
+            'total_colaboradores' => (int) ($estado['total_colaboradores'] ?? 0),
+            'progresso_percentual' => $percentual,
+            'duplicados_removidos' => (int) ($estado['duplicados_removidos'] ?? 0),
+            'resumo' => $estado['resumo'],
+            'erros' => $estado['erros'] ?? [],
+        ]);
+    }
+
+    private function registrarFlashResultadoSincronizacaoTodos(array $resultado): void
+    {
+        $falhasColaboradores = $resultado['falhas_colaboradores'] ?? [];
+        $duplicadosRemovidos = (int) ($resultado['duplicados_removidos'] ?? 0);
+
+        if (($resultado['resumo']['dispositivos'] ?? 0) > 0) {
+            $sufixoDuplicados = $duplicadosRemovidos > 0
+                ? sprintf(', %d duplicado(s) removido(s)', $duplicadosRemovidos)
+                : '';
+
+            $mensagemResumo = sprintf(
+                'Sincronização em lote concluída em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto, %d já compatíveis%s e %d falha(s) individual(is).',
+                $resultado['resumo']['dispositivos'],
+                $resultado['resumo']['criados'],
+                $resultado['resumo']['atualizados'],
+                $resultado['resumo']['fotos_sincronizadas'],
+                $resultado['resumo']['pendentes_foto'],
+                $resultado['resumo']['inalterados'],
+                $sufixoDuplicados,
+                $resultado['resumo']['falhas']
+            );
+
+            if (($resultado['resumo']['falhas'] ?? 0) > 0) {
+                flash()->warning($mensagemResumo);
+            } else {
+                flash()->success($mensagemResumo);
+            }
+        }
+
+        if (!empty($falhasColaboradores)) {
+            flash()->error(
+                $this->montarMensagemFalhasColaboradores($falhasColaboradores),
+                'Colaboradores com falha na sincronização',
+                ['timeOut' => 15000, 'extendedTimeOut' => 5000]
+            );
+        }
+
+        if (!empty($resultado['erros'])) {
+            flash()->error($this->montarMensagemErrosLote($resultado['erros']));
+        }
+    }
+
+    private function chaveCacheSincronizacaoLote(string $token): string
+    {
+        return 'sync_dispositivo_lote:' . $token;
     }
 
     private function montarMensagemErrosLote(array $erros): string

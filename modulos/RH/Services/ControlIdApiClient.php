@@ -3,6 +3,7 @@
 namespace Modulos\RH\Services;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
@@ -15,14 +16,16 @@ class ControlIdApiClient
 
     private array $cacheSessoes = [];
 
+    private array $cacheImagensRedimensionadas = [];
+
     private ImagemFacialService $imagemFacial;
 
     public function __construct(?Client $http = null, ?ImagemFacialService $imagemFacial = null)
     {
         $this->imagemFacial = $imagemFacial ?? new ImagemFacialService();
         $this->http = $http ?? new Client([
-            'timeout' => 30,
-            'connect_timeout' => 10,
+            'timeout' => (int) $this->resolverConfiguracao('services.controlid.timeout', 'CONTROLID_TIMEOUT', '15'),
+            'connect_timeout' => (int) $this->resolverConfiguracao('services.controlid.connect_timeout', 'CONTROLID_CONNECT_TIMEOUT', '5'),
         ]);
     }
 
@@ -109,7 +112,7 @@ class ControlIdApiClient
     ): array {
         // O iDFace rejeita imagens maiores que 1920x1080 (HTTP 400), entao garantimos o limite aqui,
         // independentemente da origem da foto (anexo, upload manual ou copia entre dispositivos).
-        $imageBinary = $this->imagemFacial->redimensionarBinario($imageBinary);
+        $imageBinary = $this->redimensionarComCache($imageBinary);
 
         return $this->postBinario($dispositivo, '/user_set_image.fcgi', $imageBinary, [
             'user_id' => $userId,
@@ -141,13 +144,37 @@ class ControlIdApiClient
 
     // ─── Métodos internos ────────────────────────────────────────────
 
+    private function redimensionarComCache(string $imageBinary): string
+    {
+        $hash = sha1($imageBinary);
+
+        if (isset($this->cacheImagensRedimensionadas[$hash])) {
+            return $this->cacheImagensRedimensionadas[$hash];
+        }
+
+        if (count($this->cacheImagensRedimensionadas) >= 8) {
+            array_shift($this->cacheImagensRedimensionadas);
+        }
+
+        $redimensionada = $this->imagemFacial->redimensionarBinario($imageBinary);
+        $this->cacheImagensRedimensionadas[$hash] = $redimensionada;
+
+        return $redimensionada;
+    }
+
     private function baseUrl(DispositivoAcesso $dispositivo): string
     {
-        if (!$dispositivo->dis_ip) {
+        $endereco = rtrim(trim((string) $dispositivo->dis_ip), '/');
+
+        if ($endereco === '') {
             throw new InvalidArgumentException('O dispositivo informado não possui IP configurado.');
         }
 
-        return 'http://' . trim((string) $dispositivo->dis_ip, '/');
+        if (preg_match('#^https?://#i', $endereco) === 1) {
+            return $endereco;
+        }
+
+        return 'http://' . $endereco;
     }
 
     private function obterSessao(DispositivoAcesso $dispositivo): string
@@ -158,6 +185,16 @@ class ControlIdApiClient
             return $this->cacheSessoes[$chave];
         }
 
+        $usarCacheExterno = !empty($dispositivo->dis_id) && Cache::getFacadeRoot() !== null;
+
+        if ($usarCacheExterno) {
+            $sessaoEmCache = Cache::get($chave);
+            if (is_string($sessaoEmCache) && $sessaoEmCache !== '') {
+                $this->cacheSessoes[$chave] = $sessaoEmCache;
+                return $sessaoEmCache;
+            }
+        }
+
         $response = $this->login($dispositivo);
 
         if (empty($response['session']) || !is_string($response['session'])) {
@@ -166,6 +203,10 @@ class ControlIdApiClient
 
         $this->cacheSessoes[$chave] = $response['session'];
 
+        if ($usarCacheExterno) {
+            Cache::put($chave, $response['session'], 600);
+        }
+
         return $response['session'];
     }
 
@@ -173,7 +214,10 @@ class ControlIdApiClient
     {
         $chave = 'controlid_session_' . $dispositivo->dis_id;
         unset($this->cacheSessoes[$chave]);
-        Cache::forget($chave);
+
+        if (!empty($dispositivo->dis_id) && Cache::getFacadeRoot() !== null) {
+            Cache::forget($chave);
+        }
     }
 
     private function login(DispositivoAcesso $dispositivo): array
@@ -224,27 +268,45 @@ class ControlIdApiClient
 
     private function post(DispositivoAcesso $dispositivo, string $endpoint, array $payload): array
     {
-        $session = $this->obterSessao($dispositivo);
-        return $this->postSemSessao($dispositivo, $endpoint . '?session=' . urlencode($session), $payload);
+        try {
+            $session = $this->obterSessao($dispositivo);
+            return $this->postSemSessao($dispositivo, $endpoint . '?session=' . urlencode($session), $payload);
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 401) {
+                $this->invalidarSessao($dispositivo);
+                $session = $this->obterSessao($dispositivo);
+                return $this->postSemSessao($dispositivo, $endpoint . '?session=' . urlencode($session), $payload);
+            }
+
+            throw $e;
+        }
     }
 
     private function postBinario(
         DispositivoAcesso $dispositivo,
         string $endpoint,
         string $conteudo,
-        array $query = []
+        array $query = [],
+        bool $retentativaSessao = false
     ): array {
         $session = $this->obterSessao($dispositivo);
-        $query = array_merge($query, ['session' => $session]);
+        $queryComSessao = array_merge($query, ['session' => $session]);
 
         try {
             $response = $this->http->request('POST', $this->baseUrl($dispositivo) . $endpoint, [
-                'query' => $query,
+                'query' => $queryComSessao,
                 'headers' => ['Content-Type' => 'application/octet-stream'],
                 'body' => $conteudo,
             ]);
 
             return $this->decodificarResposta($response->getStatusCode(), (string) $response->getBody());
+        } catch (ClientException $e) {
+            if (!$retentativaSessao && $e->getResponse()->getStatusCode() === 401) {
+                $this->invalidarSessao($dispositivo);
+                return $this->postBinario($dispositivo, $endpoint, $conteudo, $query, true);
+            }
+
+            throw $e;
         } catch (ConnectException $e) {
             throw new InvalidArgumentException(
                 sprintf('Dispositivo %s inacessivel: %s', $dispositivo->dis_ip, $e->getMessage()),
@@ -254,17 +316,24 @@ class ControlIdApiClient
         }
     }
 
-    private function get(DispositivoAcesso $dispositivo, string $endpoint, array $query = []): string
+    private function get(DispositivoAcesso $dispositivo, string $endpoint, array $query = [], bool $retentativaSessao = false): string
     {
         $session = $this->obterSessao($dispositivo);
-        $query = array_merge($query, ['session' => $session]);
+        $queryComSessao = array_merge($query, ['session' => $session]);
 
         try {
             $response = $this->http->request('GET', $this->baseUrl($dispositivo) . $endpoint, [
-                'query' => $query,
+                'query' => $queryComSessao,
             ]);
 
             return (string) $response->getBody();
+        } catch (ClientException $e) {
+            if (!$retentativaSessao && $e->getResponse()->getStatusCode() === 401) {
+                $this->invalidarSessao($dispositivo);
+                return $this->get($dispositivo, $endpoint, $query, true);
+            }
+
+            throw $e;
         } catch (ConnectException $e) {
             throw new InvalidArgumentException(
                 sprintf('Dispositivo %s inacessivel: %s', $dispositivo->dis_ip, $e->getMessage()),
