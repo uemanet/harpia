@@ -236,6 +236,114 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         ]);
     }
 
+    public function testSincronizarColaboradoresEmDispositivosContinuaAposFalhaFacialEListaMotivosAgrupados(): void
+    {
+        $entrada = $this->criarDispositivo('iDFace Entrada', 'entrada');
+        $saida = $this->criarDispositivo('iDFace Saida', 'saida');
+
+        $ana = $this->criarColaboradorAtivo(true, 'Ana Silva');
+        $bruno = $this->criarColaboradorAtivo(true, 'Bruno Costa');
+        $carla = $this->criarColaboradorAtivo(true, 'Carla Mendes');
+        $this->criarColaboradorAtivo(false, 'Diego Sem Foto');
+
+        $fotoRejeitada = $this->conteudoFotoDoColaborador($bruno);
+
+        $apiClient = new FakeControlIdApiClient();
+        $apiClient->rejeitarImagem($fotoRejeitada, 'Face too close to image borders');
+
+        $service = $this->criarService($apiClient);
+        $resultado = $service->sincronizarColaboradoresEmDispositivos([$entrada, $saida]);
+
+        $this->assertSame([], $resultado['erros']);
+        $this->assertSame([
+            'dispositivos' => 2,
+            'criados' => 4,
+            'atualizados' => 0,
+            'fotos_sincronizadas' => 4,
+            'pendentes_foto' => 2,
+            'inalterados' => 0,
+            'falhas' => 2,
+        ], $resultado['resumo']);
+
+        $this->assertSame([[
+            'col_id' => $bruno->col_id,
+            'nome' => 'Bruno Costa',
+            'registration' => (string) $bruno->col_id,
+            'colaborador' => sprintf('Bruno Costa (matrícula %d)', $bruno->col_id),
+            'dispositivos' => ['iDFace Entrada', 'iDFace Saida'],
+            'mensagem' => 'O dispositivo rejeitou a foto facial: Rosto muito próximo das bordas da imagem',
+        ]], $resultado['falhas_colaboradores']);
+
+        foreach ([$entrada, $saida] as $dispositivo) {
+            $usuariosPorReg = collect($apiClient->usuariosDoDispositivo($dispositivo->dis_id))->keyBy('registration');
+
+            $this->assertTrue($usuariosPorReg[(string) $ana->col_id]['has_image']);
+            $this->assertTrue($usuariosPorReg[(string) $carla->col_id]['has_image']);
+            $this->assertFalse($usuariosPorReg[(string) $bruno->col_id]['has_image']);
+
+            $this->assertDatabaseHas('reh_mapeamento_dispositivo', [
+                'map_dis_id' => $dispositivo->dis_id,
+                'map_col_id' => $ana->col_id,
+            ]);
+            $this->assertDatabaseHas('reh_mapeamento_dispositivo', [
+                'map_dis_id' => $dispositivo->dis_id,
+                'map_col_id' => $carla->col_id,
+            ]);
+        }
+    }
+
+    public function testSincronizarColaboradoresEmDispositivosContinuaQuandoArquivoDeFotoEstaAusente(): void
+    {
+        $dispositivo = $this->criarDispositivo('iDFace Entrada');
+        $ausente = $this->criarColaboradorAtivo(true, 'Marcos Arquivo Ausente');
+        $valido = $this->criarColaboradorAtivo(true, 'Paula Foto Valida');
+
+        $caminhoAusente = app(AnexoRepository::class)->obterCaminhoAnexo($ausente->col_foto_anx_id);
+        @unlink($caminhoAusente);
+
+        $apiClient = new FakeControlIdApiClient();
+        $service = $this->criarService($apiClient);
+
+        $resultado = $service->sincronizarColaboradoresEmDispositivos([$dispositivo]);
+
+        $this->assertSame(1, $resultado['resumo']['criados']);
+        $this->assertSame(1, $resultado['resumo']['fotos_sincronizadas']);
+        $this->assertSame(1, $resultado['resumo']['falhas']);
+        $this->assertCount(1, $resultado['falhas_colaboradores']);
+        $this->assertSame($ausente->col_id, $resultado['falhas_colaboradores'][0]['col_id']);
+        $this->assertSame('Marcos Arquivo Ausente', $resultado['falhas_colaboradores'][0]['nome']);
+        $this->assertSame('Nao foi possivel ler o arquivo do anexo informado.', $resultado['falhas_colaboradores'][0]['mensagem']);
+
+        $this->assertDatabaseHas('reh_mapeamento_dispositivo', [
+            'map_dis_id' => $dispositivo->dis_id,
+            'map_col_id' => $valido->col_id,
+        ]);
+    }
+
+    public function testSincronizarColaboradoresEmDispositivosIsolaDispositivoInacessivel(): void
+    {
+        $offline = $this->criarDispositivo('iDFace Offline');
+        $online = $this->criarDispositivo('iDFace Online', 'saida');
+        $colaborador = $this->criarColaboradorAtivo(true, 'Renata Online');
+
+        $apiClient = new FakeControlIdApiClient();
+        $apiClient->marcarDispositivoInacessivel($offline->dis_id);
+
+        $service = $this->criarService($apiClient);
+        $resultado = $service->sincronizarColaboradoresEmDispositivos([$offline, $online]);
+
+        $this->assertSame(1, $resultado['resumo']['dispositivos']);
+        $this->assertSame(1, $resultado['resumo']['criados']);
+        $this->assertSame(0, $resultado['resumo']['falhas']);
+        $this->assertCount(1, $resultado['erros']);
+        $this->assertSame('iDFace Offline', $resultado['erros'][0]['dispositivo']);
+
+        $this->assertDatabaseHas('reh_mapeamento_dispositivo', [
+            'map_dis_id' => $online->dis_id,
+            'map_col_id' => $colaborador->col_id,
+        ]);
+    }
+
     private function criarService(FakeControlIdApiClient $apiClient): SincronizacaoUsuariosDispositivoService
     {
         return new SincronizacaoUsuariosDispositivoService(
@@ -261,10 +369,10 @@ class SincronizacaoUsuariosDispositivoServiceTest extends TestCase
         ]);
     }
 
-    private function criarColaboradorAtivo(bool $comFoto = true): Colaborador
+    private function criarColaboradorAtivo(bool $comFoto = true, ?string $nome = null): Colaborador
     {
         $pessoaId = DB::table('gra_pessoas')->insertGetId([
-            'pes_nome' => 'Pessoa ' . uniqid(),
+            'pes_nome' => $nome ?? ('Pessoa ' . uniqid()),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -371,6 +479,8 @@ class FakeControlIdApiClient extends ControlIdApiClient
     private array $imagensPorDispositivoUsuario;
     private array $gruposPorDispositivo = [];
     private array $gruposUsuarioPorDispositivo = [];
+    private array $imagensRejeitadas = [];
+    private array $dispositivosInacessiveis = [];
     private int $proximoUserId = 1000;
 
     public function __construct(array $usuariosPorDispositivo = [], array $imagensPorDispositivoUsuario = [])
@@ -396,6 +506,17 @@ class FakeControlIdApiClient extends ControlIdApiClient
 
     public function loadObjects(DispositivoAcesso $dispositivo, string $object, array $filters = [], ?int $loadAfterId = null): array
     {
+        if (isset($this->dispositivosInacessiveis[$dispositivo->dis_id])) {
+            throw new \InvalidArgumentException(
+                'Dispositivo inacessível',
+                0,
+                new \GuzzleHttp\Exception\ConnectException(
+                    'Connection refused',
+                    new \GuzzleHttp\Psr7\Request('POST', 'http://127.0.0.1/load_objects.fcgi')
+                )
+            );
+        }
+
         if ($object === 'users') {
             return [
                 'users' => array_values($this->usuariosPorDispositivo[$dispositivo->dis_id] ?? []),
@@ -491,6 +612,16 @@ class FakeControlIdApiClient extends ControlIdApiClient
             'image' => $imageBinary,
         ];
 
+        if (isset($this->imagensRejeitadas[$imageBinary])) {
+            return [
+                'success' => false,
+                'errors' => [[
+                    'code' => 2,
+                    'message' => $this->imagensRejeitadas[$imageBinary],
+                ]],
+            ];
+        }
+
         $this->imagensPorDispositivoUsuario[$dispositivo->dis_id][$userId] = $imageBinary;
 
         if (isset($this->usuariosPorDispositivo[$dispositivo->dis_id][$userId])) {
@@ -514,5 +645,15 @@ class FakeControlIdApiClient extends ControlIdApiClient
     public function usuariosDoDispositivo(int $dispositivoId): array
     {
         return array_values($this->usuariosPorDispositivo[$dispositivoId] ?? []);
+    }
+
+    public function rejeitarImagem(string $imageBinary, string $mensagem): void
+    {
+        $this->imagensRejeitadas[$imageBinary] = $mensagem;
+    }
+
+    public function marcarDispositivoInacessivel(int $dispositivoId): void
+    {
+        $this->dispositivosInacessiveis[$dispositivoId] = true;
     }
 }

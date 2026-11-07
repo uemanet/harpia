@@ -254,20 +254,38 @@ class DispositivoUsuariosController extends BaseController
             return redirect()->back();
         }
 
+        $falhasColaboradores = [];
+
         try {
             $dispositivosDestino = $this->resolverDispositivosAlvo($request, (int) $dispositivo->dis_id, 'sincronizar_todos_dispositivos');
             $resultado = $this->sincronizacaoService->sincronizarColaboradoresEmDispositivos($dispositivosDestino);
+            $falhasColaboradores = $resultado['falhas_colaboradores'] ?? [];
 
             if ($resultado['resumo']['dispositivos'] > 0) {
-                flash()->success(sprintf(
-                    'Sincronização em lote concluída em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto e %d já compatíveis.',
+                $mensagemResumo = sprintf(
+                    'Sincronização em lote concluída em %d dispositivo(s): %d criados, %d atualizados, %d fotos sincronizadas, %d pendentes por falta de foto, %d já compatíveis e %d falha(s) individual(is).',
                     $resultado['resumo']['dispositivos'],
                     $resultado['resumo']['criados'],
                     $resultado['resumo']['atualizados'],
                     $resultado['resumo']['fotos_sincronizadas'],
                     $resultado['resumo']['pendentes_foto'],
-                    $resultado['resumo']['inalterados']
-                ));
+                    $resultado['resumo']['inalterados'],
+                    $resultado['resumo']['falhas']
+                );
+
+                if ($resultado['resumo']['falhas'] > 0) {
+                    flash()->warning($mensagemResumo);
+                } else {
+                    flash()->success($mensagemResumo);
+                }
+            }
+
+            if (!empty($falhasColaboradores)) {
+                flash()->error(
+                    $this->montarMensagemFalhasColaboradores($falhasColaboradores),
+                    'Colaboradores com falha na sincronização',
+                    ['timeOut' => 15000, 'extendedTimeOut' => 5000]
+                );
             }
 
             if (!empty($resultado['erros'])) {
@@ -277,7 +295,13 @@ class DispositivoUsuariosController extends BaseController
             $this->tratarExcecao($exception, 'Não foi possível sincronizar os usuários nos dispositivos selecionados.');
         }
 
-        return redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
+        $redirect = redirect()->route('rh.dispositivousuarios.index', ['dis_id' => $dispositivo->dis_id]);
+
+        if (!empty($falhasColaboradores)) {
+            $redirect->with('falhas_sincronizacao', $falhasColaboradores);
+        }
+
+        return $redirect;
     }
 
     public function getExportarCsv($dispositivoId = null)
@@ -334,7 +358,7 @@ class DispositivoUsuariosController extends BaseController
         }
 
         if ($dispositivos->isEmpty()) {
-            throw new \InvalidArgumentException('Selecione ao menos um dispositivo ativo para executar a operacao.');
+            throw new \InvalidArgumentException('Selecione ao menos um dispositivo ativo para executar a operação.');
         }
 
         return $dispositivos;
@@ -346,7 +370,7 @@ class DispositivoUsuariosController extends BaseController
 
         if ($sucessos > 0) {
             flash()->success(sprintf(
-                'Cadastro concluido em %d dispositivo(s): %d criado(s) e %d atualizado(s).',
+                'Cadastro concluído em %d dispositivo(s): %d criado(s) e %d atualizado(s).',
                 $resultado['total'],
                 $resultado['criados'],
                 $resultado['atualizados']
@@ -363,6 +387,31 @@ class DispositivoUsuariosController extends BaseController
         return 'Falhas em: ' . implode('; ', array_map(function (array $erro) {
             return $erro['dispositivo'] . ' (' . $erro['mensagem'] . ')';
         }, $erros));
+    }
+
+    private function montarMensagemFalhasColaboradores(array $falhasColaboradores): string
+    {
+        $limiteToast = 5;
+        $itens = array_slice($falhasColaboradores, 0, $limiteToast);
+
+        $partes = array_map(function (array $falha) {
+            $dispositivos = implode(', ', $falha['dispositivos'] ?? []);
+
+            return sprintf(
+                '%s [%s]: %s',
+                $falha['colaborador'],
+                $dispositivos,
+                $falha['mensagem']
+            );
+        }, $itens);
+
+        $restantes = count($falhasColaboradores) - count($itens);
+
+        if ($restantes > 0) {
+            $partes[] = sprintf('e mais %d item(ns) — confira a lista completa na página', $restantes);
+        }
+
+        return implode('; ', $partes);
     }
 
     private function atualizarFotoColaborador(int $colaboradorId, $arquivo): void

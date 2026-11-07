@@ -2,6 +2,8 @@
 
 namespace Modulos\RH\Services;
 
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -188,9 +190,11 @@ class SincronizacaoUsuariosDispositivoService
     public function sincronizarColaboradoresEmDispositivos(iterable $dispositivos): array
     {
         $colaboradores = $this->colaboradorRepository->listarAtivosParaExportacao();
+        $todasFalhas = [];
         $resultado = [
             'dispositivos' => [],
             'erros' => [],
+            'falhas_colaboradores' => [],
             'resumo' => [
                 'dispositivos' => 0,
                 'criados' => 0,
@@ -198,6 +202,7 @@ class SincronizacaoUsuariosDispositivoService
                 'fotos_sincronizadas' => 0,
                 'pendentes_foto' => 0,
                 'inalterados' => 0,
+                'falhas' => 0,
             ],
         ];
 
@@ -211,13 +216,20 @@ class SincronizacaoUsuariosDispositivoService
                 $resultado['resumo']['fotos_sincronizadas'] += $resultadoDispositivo['fotos_sincronizadas'];
                 $resultado['resumo']['pendentes_foto'] += $resultadoDispositivo['pendentes_foto'];
                 $resultado['resumo']['inalterados'] += $resultadoDispositivo['inalterados'];
+                $resultado['resumo']['falhas'] += count($resultadoDispositivo['falhas']);
+
+                foreach ($resultadoDispositivo['falhas'] as $falha) {
+                    $todasFalhas[] = $falha;
+                }
             } catch (\Throwable $exception) {
                 $resultado['erros'][] = [
                     'dispositivo' => $dispositivo->dis_nome,
-                    'mensagem' => $exception->getMessage(),
+                    'mensagem' => $this->extrairMensagemErroColaborador($exception),
                 ];
             }
         }
+
+        $resultado['falhas_colaboradores'] = $this->agruparFalhasColaboradores($todasFalhas);
 
         return $resultado;
     }
@@ -639,6 +651,36 @@ class SincronizacaoUsuariosDispositivoService
         return $conteudo;
     }
 
+    private function traduzirMensagemDispositivo(string $mensagem): string
+    {
+        $chave = strtolower(rtrim(trim($mensagem), '.'));
+
+        $traducoes = [
+            'face too close to image borders' => 'Rosto muito próximo das bordas da imagem',
+            'face not detected' => 'Nenhum rosto detectado na imagem',
+            'no face detected' => 'Nenhum rosto detectado na imagem',
+            'multiple faces detected' => 'Mais de um rosto detectado na imagem',
+            'more than one face detected' => 'Mais de um rosto detectado na imagem',
+            'face too small' => 'Rosto muito pequeno ou distante na imagem',
+            'face is too small' => 'Rosto muito pequeno ou distante na imagem',
+            'face too large' => 'Rosto muito grande ou próximo na imagem',
+            'low quality face' => 'Qualidade da imagem insuficiente para reconhecimento',
+            'poor image quality' => 'Qualidade da imagem insuficiente para reconhecimento',
+            'low image quality' => 'Qualidade da imagem insuficiente para reconhecimento',
+            'face not centered' => 'Rosto fora do centro da imagem',
+            'invalid face pose' => 'Rosto inclinado ou virado (envie uma foto frontal)',
+            'face pose too large' => 'Rosto inclinado ou virado (envie uma foto frontal)',
+            'pose angle too large' => 'Rosto inclinado ou virado (envie uma foto frontal)',
+            'face already exists' => 'Este rosto já está cadastrado para outro usuário no dispositivo',
+            'user already exists' => 'Este usuário já está cadastrado no dispositivo',
+            'invalid image' => 'Formato de imagem inválido para o dispositivo',
+            'invalid image format' => 'Formato de imagem inválido para o dispositivo',
+            'image too long. maximum size expected is 1920x1080' => 'Imagem acima da resolução máxima permitida (1920x1080)',
+        ];
+
+        return $traducoes[$chave] ?? $mensagem;
+    }
+
     private function validarRespostaCadastroFacial(array $resposta): void
     {
         if (($resposta['success'] ?? null) !== false) {
@@ -649,7 +691,7 @@ class SincronizacaoUsuariosDispositivoService
         $primeiroErro = is_array($erros) ? reset($erros) : null;
 
         if (is_array($primeiroErro) && !empty($primeiroErro['message'])) {
-            throw new InvalidArgumentException('O dispositivo rejeitou a foto facial: ' . $primeiroErro['message']);
+            throw new InvalidArgumentException('O dispositivo rejeitou a foto facial: ' . $this->traduzirMensagemDispositivo((string) $primeiroErro['message']));
         }
 
         throw new InvalidArgumentException('O dispositivo rejeitou a foto facial enviada.');
@@ -682,6 +724,7 @@ class SincronizacaoUsuariosDispositivoService
             'fotos_sincronizadas' => 0,
             'pendentes_foto' => 0,
             'inalterados' => 0,
+            'falhas' => [],
         ];
 
         foreach ($colaboradores as $colaborador) {
@@ -690,55 +733,160 @@ class SincronizacaoUsuariosDispositivoService
                 continue;
             }
 
-            $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
-            $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
+            // Uma falha individual (ex.: foto rejeitada pelo dispositivo ou arquivo ausente)
+            // não deve interromper a sincronização dos demais colaboradores.
+            try {
+                $acao = $this->sincronizarColaboradorNoDispositivo($dispositivo, $colaborador, $usuarios);
 
-            $usuarioExistente = $this->localizarUsuarioDoColaborador($usuarios, (int) $colaborador->col_id);
-
-            if (!$usuarioExistente) {
-                $resposta = $this->apiClient->createUser($dispositivo, [
-                    'registration' => $dadosDesejados['registration'],
-                    'name' => $dadosDesejados['nome'],
-                    'password' => '',
-                ]);
-
-                $userId = $this->resolverUserIdNaResposta($resposta);
-
-                if ($userId !== null) {
-                    $this->garantirGrupoPadraoDoUsuario($dispositivo, $userId);
-                    $respostaFoto = $this->apiClient->setUserImage($dispositivo, (int) $userId, $fotoBinaria);
-                    $this->validarRespostaCadastroFacial($respostaFoto);
+                $resultado[$acao]++;
+                $resultado['fotos_sincronizadas']++;
+            } catch (\Throwable $exception) {
+                if ($exception instanceof ConnectException || $exception->getPrevious() instanceof ConnectException) {
+                    throw $exception;
                 }
 
-                $resultado['criados']++;
-                $resultado['fotos_sincronizadas']++;
-                continue;
+                $identificacao = $this->identificarColaboradorParaRelatorio($colaborador);
+                $mensagem = $this->extrairMensagemErroColaborador($exception);
+
+                $resultado['falhas'][] = [
+                    'dispositivo' => $dispositivo->dis_nome,
+                    'col_id' => $identificacao['col_id'],
+                    'nome' => $identificacao['nome'],
+                    'registration' => $identificacao['registration'],
+                    'colaborador' => $identificacao['descricao'],
+                    'mensagem' => $mensagem,
+                ];
+
+                Log::warning('Falha ao sincronizar colaborador no dispositivo.', [
+                    'dis_id' => $dispositivo->dis_id,
+                    'dispositivo' => $dispositivo->dis_nome,
+                    'col_id' => $identificacao['col_id'],
+                    'colaborador' => $identificacao['descricao'],
+                    'erro' => $mensagem,
+                ]);
             }
-
-            $precisaAtualizar = (string) ($usuarioExistente['registration'] ?? '') !== $dadosDesejados['registration']
-                || (string) ($usuarioExistente['nome'] ?? '') !== $dadosDesejados['nome']
-                || (int) ($usuarioExistente['col_id'] ?? 0) !== $dadosDesejados['col_id']
-                || empty($usuarioExistente['foto_ok']);
-
-            $this->atualizarUsuarioExistenteNoDispositivo(
-                $dispositivo,
-                (string) $usuarioExistente['user_id'],
-                $dadosDesejados,
-                $fotoBinaria
-            );
-
-            if ($precisaAtualizar) {
-                $resultado['atualizados']++;
-            } else {
-                $resultado['inalterados']++;
-            }
-
-            $resultado['fotos_sincronizadas']++;
         }
 
         $this->sincronizar($dispositivo);
 
         return $resultado;
+    }
+
+    /**
+     * Sincroniza um colaborador no dispositivo e retorna a chave do contador
+     * correspondente ('criados', 'atualizados' ou 'inalterados').
+     */
+    private function sincronizarColaboradorNoDispositivo(DispositivoAcesso $dispositivo, $colaborador, array $usuarios): string
+    {
+        $dadosDesejados = $this->montarDadosDispositivoDoColaborador($colaborador);
+        $fotoBinaria = $this->obterFotoBinariaDoColaborador($colaborador);
+
+        $usuarioExistente = $this->localizarUsuarioDoColaborador($usuarios, (int) $colaborador->col_id);
+
+        if (!$usuarioExistente) {
+            $resposta = $this->apiClient->createUser($dispositivo, [
+                'registration' => $dadosDesejados['registration'],
+                'name' => $dadosDesejados['nome'],
+                'password' => '',
+            ]);
+
+            $userId = $this->resolverUserIdNaResposta($resposta);
+
+            if ($userId !== null) {
+                $this->garantirGrupoPadraoDoUsuario($dispositivo, $userId);
+                $respostaFoto = $this->apiClient->setUserImage($dispositivo, (int) $userId, $fotoBinaria);
+                $this->validarRespostaCadastroFacial($respostaFoto);
+            }
+
+            return 'criados';
+        }
+
+        $precisaAtualizar = (string) ($usuarioExistente['registration'] ?? '') !== $dadosDesejados['registration']
+            || (string) ($usuarioExistente['nome'] ?? '') !== $dadosDesejados['nome']
+            || (int) ($usuarioExistente['col_id'] ?? 0) !== $dadosDesejados['col_id']
+            || empty($usuarioExistente['foto_ok']);
+
+        $this->atualizarUsuarioExistenteNoDispositivo(
+            $dispositivo,
+            (string) $usuarioExistente['user_id'],
+            $dadosDesejados,
+            $fotoBinaria
+        );
+
+        return $precisaAtualizar ? 'atualizados' : 'inalterados';
+    }
+
+    private function identificarColaboradorParaRelatorio($colaborador): array
+    {
+        $colId = (int) $colaborador->col_id;
+        $registration = (string) $colId;
+        $nome = trim((string) ($colaborador->pes_nome ?? ''));
+
+        if ($nome === '' && $colaborador->relationLoaded('pessoa') && $colaborador->pessoa) {
+            $nome = trim((string) $colaborador->pessoa->pes_nome);
+        } elseif ($nome === '' && !empty($colaborador->col_pes_id)) {
+            $nome = trim((string) optional($colaborador->pessoa)->pes_nome);
+        }
+
+        $descricao = $nome !== ''
+            ? sprintf('%s (matrícula %s)', $nome, $registration)
+            : sprintf('Colaborador #%d', $colId);
+
+        return [
+            'col_id' => $colId,
+            'nome' => $nome !== '' ? $nome : sprintf('Colaborador #%d', $colId),
+            'registration' => $registration,
+            'descricao' => $descricao,
+        ];
+    }
+
+    private function extrairMensagemErroColaborador(\Throwable $exception): string
+    {
+        if ($exception instanceof BadResponseException) {
+            $body = (string) $exception->getResponse()->getBody();
+            $decoded = json_decode($body, true);
+
+            if (is_array($decoded)) {
+                $erros = $decoded['errors'] ?? [];
+                $primeiro = is_array($erros) ? reset($erros) : null;
+
+                if (is_array($primeiro) && !empty($primeiro['message'])) {
+                    return 'O dispositivo rejeitou a operação: ' . $this->traduzirMensagemDispositivo((string) $primeiro['message']);
+                }
+
+                if (!empty($decoded['error']) && is_string($decoded['error'])) {
+                    return 'Erro retornado pelo dispositivo: ' . $this->traduzirMensagemDispositivo($decoded['error']);
+                }
+            }
+        }
+
+        return (string) preg_replace('/([?&]session=)[^&\s]+/i', '$1***', $exception->getMessage());
+    }
+
+    private function agruparFalhasColaboradores(array $falhas): array
+    {
+        $agrupadas = [];
+
+        foreach ($falhas as $falha) {
+            $chave = $falha['col_id'] . '|' . $falha['mensagem'];
+
+            if (!isset($agrupadas[$chave])) {
+                $agrupadas[$chave] = [
+                    'col_id' => $falha['col_id'],
+                    'nome' => $falha['nome'],
+                    'registration' => $falha['registration'],
+                    'colaborador' => $falha['colaborador'],
+                    'dispositivos' => [],
+                    'mensagem' => $falha['mensagem'],
+                ];
+            }
+
+            if (!in_array($falha['dispositivo'], $agrupadas[$chave]['dispositivos'], true)) {
+                $agrupadas[$chave]['dispositivos'][] = $falha['dispositivo'];
+            }
+        }
+
+        return array_values($agrupadas);
     }
 
     private function localizarUsuarioDoColaborador(array $usuarios, int $colaboradorId): ?array

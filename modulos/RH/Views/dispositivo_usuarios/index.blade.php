@@ -9,6 +9,54 @@
 @stop
 
 @section('content')
+    @if(session('falhas_sincronizacao'))
+        @php($falhasSincronizacao = session('falhas_sincronizacao'))
+        <div class="row mb-3">
+            <div class="card card-danger card-outline">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title m-0 text-danger">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        Colaboradores com falha na sincronização ({{ count($falhasSincronizacao) }})
+                    </h3>
+                    <button type="button" class="btn-close" onclick="this.closest('.row').remove()" aria-label="Fechar"></button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="px-3 py-2 text-muted border-bottom">
+                        Os demais colaboradores ativos foram processados normalmente. Corrija os itens abaixo e execute a sincronização novamente:
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped mb-0">
+                            <thead>
+                            <tr>
+                                <th>Colaborador</th>
+                                <th style="width: 140px;">Matrícula</th>
+                                <th>Dispositivo(s)</th>
+                                <th>Motivo</th>
+                                <th style="width: 140px;">Ação</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($falhasSincronizacao as $falha)
+                                <tr>
+                                    <td>{{ $falha['nome'] }}</td>
+                                    <td>{{ $falha['registration'] }}</td>
+                                    <td>{{ implode(', ', $falha['dispositivos'] ?? []) }}</td>
+                                    <td class="text-danger">{{ $falha['mensagem'] }}</td>
+                                    <td>
+                                        <a href="{{ route('rh.colaboradores.edit', ['id' => $falha['col_id']]) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-pencil"></i> Editar foto
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="row">
         <div class="card card-primary card-outline">
             <div class="card-header">
