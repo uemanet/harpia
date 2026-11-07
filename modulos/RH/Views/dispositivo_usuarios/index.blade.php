@@ -131,7 +131,7 @@
                                 <input type="hidden" name="dis_id" value="{{ $dispositivo->dis_id }}">
 
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="sincronizar_todos_dispositivos" value="1" {{ old('sincronizar_todos_dispositivos') ? 'checked' : '' }}>
+                                    <input type="checkbox" class="form-check-input" name="sincronizar_todos_dispositivos" value="1" {{ old('sincronizar_todos_dispositivos', session()->hasOldInput() ? 0 : 1) ? 'checked' : '' }}>
                                     <label class="form-check-label">Sincronizar em todos os aparelhos ativos</label>
                                 </div>
 
