@@ -1,3 +1,5 @@
+import { redimensionarInputArquivo } from '../../utils/redimensionarImagem';
+
 document.addEventListener('DOMContentLoaded', function () {
     const inputFoto = document.getElementById('col_foto_facial');
     const previewWrapper = document.getElementById('preview-foto-facial-wrapper');
@@ -7,8 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    inputFoto.addEventListener('change', function (event) {
-        const arquivo = event.target.files && event.target.files[0] ? event.target.files[0] : null;
+    inputFoto.addEventListener('change', async function (event) {
+        // Redimensiona para no maximo 1920x1080 antes do envio (limite do controlador facial).
+        const arquivo = await redimensionarInputArquivo(event.target);
 
         if (!arquivo || !arquivo.type.match(/^image\//)) {
             return;

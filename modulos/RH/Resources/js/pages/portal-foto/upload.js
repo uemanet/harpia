@@ -1,4 +1,5 @@
 // import * as faceapi from '@vladmandic/face-api';
+import { redimensionarInputArquivo } from '../../utils/redimensionarImagem';
 document.addEventListener('DOMContentLoaded', () => {
     // Carrega os modelos ao iniciar a página
     Promise.all([
@@ -17,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const status = document.getElementById('statusValidador');
 
             if (this.files && this.files[0]) {
+                // Redimensiona para no maximo 1920x1080 antes de analisar/enviar (limite do controlador facial).
+                const arquivo = await redimensionarInputArquivo(this);
+
                 btnSubmit.disabled = true;
                 status.style.display = 'block';
                 status.className = 'alert alert-info py-2';
@@ -55,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 }
-                reader.readAsDataURL(this.files[0]);
+                reader.readAsDataURL(arquivo);
             }
         });
     }

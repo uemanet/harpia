@@ -15,8 +15,11 @@ class ControlIdApiClient
 
     private array $cacheSessoes = [];
 
-    public function __construct(?Client $http = null)
+    private ImagemFacialService $imagemFacial;
+
+    public function __construct(?Client $http = null, ?ImagemFacialService $imagemFacial = null)
     {
+        $this->imagemFacial = $imagemFacial ?? new ImagemFacialService();
         $this->http = $http ?? new Client([
             'timeout' => 30,
             'connect_timeout' => 10,
@@ -104,6 +107,10 @@ class ControlIdApiClient
         ?int $timestamp = null,
         bool $match = false
     ): array {
+        // O iDFace rejeita imagens maiores que 1920x1080 (HTTP 400), entao garantimos o limite aqui,
+        // independentemente da origem da foto (anexo, upload manual ou copia entre dispositivos).
+        $imageBinary = $this->imagemFacial->redimensionarBinario($imageBinary);
+
         return $this->postBinario($dispositivo, '/user_set_image.fcgi', $imageBinary, [
             'user_id' => $userId,
             'timestamp' => $timestamp ?? time(),
@@ -127,6 +134,8 @@ class ControlIdApiClient
 
     public function testUserImage(DispositivoAcesso $dispositivo, string $imageBinary): array
     {
+        $imageBinary = $this->imagemFacial->redimensionarBinario($imageBinary);
+
         return $this->postBinario($dispositivo, '/user_test_image.fcgi', $imageBinary);
     }
 

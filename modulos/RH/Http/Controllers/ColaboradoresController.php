@@ -353,6 +353,8 @@ class ColaboradoresController extends BaseController
 
     private function salvarFotoFacial($arquivo, $anexoAtualId = null)
     {
+        $arquivo = (new \Modulos\RH\Services\ImagemFacialService())->redimensionarUpload($arquivo);
+
         if ($anexoAtualId) {
             $anexo = $this->anexoRepository->atualizarAnexo($anexoAtualId, $arquivo);
 

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Modulos\Core\Http\Controller\BaseController;
 use Modulos\Geral\Repositories\AnexoRepository;
 use Modulos\RH\Models\Colaborador;
+use Modulos\RH\Services\ImagemFacialService;
 
 class FotoFacialController extends BaseController
 {
@@ -96,13 +97,15 @@ class FotoFacialController extends BaseController
 
             $colaborador = Colaborador::find(session('portal_col_id'));
 
+            $fotoFacial = (new ImagemFacialService())->redimensionarUpload($request->file('col_foto_facial'));
+
             DB::beginTransaction();
 
             if ($colaborador->col_foto_anx_id) {
-                $anexo = $this->anexoRepository->atualizarAnexo($colaborador->col_foto_anx_id, $request->file('col_foto_facial'));
+                $anexo = $this->anexoRepository->atualizarAnexo($colaborador->col_foto_anx_id, $fotoFacial);
                 $anexoId = (int) $colaborador->col_foto_anx_id;
             } else {
-                $anexo = $this->anexoRepository->salvarAnexo($request->file('col_foto_facial'));
+                $anexo = $this->anexoRepository->salvarAnexo($fotoFacial);
                 $anexoId = $anexo->anx_id;
             }
 

@@ -58,4 +58,37 @@ class ControlIdApiClientTest extends TestCase
         ], $payload);
         $this->assertArrayNotHasKey('id', $payload['values']);
     }
+
+    public function testSetUserImageReducesOversizedImageBeforeSending(): void
+    {
+        $history = [];
+        $handler = HandlerStack::create(new MockHandler([
+            new Response(200, [], json_encode(['session' => 'abc123'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['success' => true], JSON_THROW_ON_ERROR)),
+        ]));
+        $handler->push(Middleware::history($history));
+
+        $client = new ControlIdApiClient(new Client(['handler' => $handler]));
+
+        $dispositivo = new DispositivoAcesso([
+            'dis_ip' => '172.16.2.115',
+            'dis_login_api' => 'admin',
+            'dis_senha_api' => 'admin',
+        ]);
+
+        $img = imagecreatetruecolor(4000, 4000);
+        ob_start();
+        imagejpeg($img);
+        $original = (string) ob_get_clean();
+
+        $client->setUserImage($dispositivo, 357, $original);
+
+        $enviado = (string) $history[1]['request']->getBody();
+        [$largura, $altura] = getimagesizefromstring($enviado);
+
+        $this->assertStringContainsString('user_set_image.fcgi', (string) $history[1]['request']->getUri());
+        $this->assertLessThanOrEqual(1920, $largura);
+        $this->assertLessThanOrEqual(1080, $altura);
+        $this->assertLessThan(strlen($original), strlen($enviado));
+    }
 }
