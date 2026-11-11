@@ -45,7 +45,7 @@ class PeriodosAquisitivosController extends BaseController
         return view('RH::periodosaquisitivos.create', compact('colaborador', 'matriculas', 'periodosDisponiveis', 'periodo_aquisitivo'));
     }
 
-    public function postCreate( $idColaborador, PeriodoGozoRequest $request)
+    public function postCreate( $idColaborador, PeriodoAquisitivoRequest $request)
     {
         $data = $request->all();
         $colaborador = $this->colaboradorRepository->find($idColaborador);
