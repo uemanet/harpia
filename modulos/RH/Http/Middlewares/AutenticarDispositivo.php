@@ -13,7 +13,7 @@ class AutenticarDispositivo
             ?? $request->input('token');
 
         if (!$token) {
-            return response()->json(['error' => 'Token nao informado.'], 401);
+            return response()->json(['error' => 'Token não informado.'], 401);
         }
 
         $dispositivo = DispositivoAcesso::where('dis_token_api', $token)
@@ -21,7 +21,7 @@ class AutenticarDispositivo
             ->first();
 
         if (!$dispositivo) {
-            return response()->json(['error' => 'Token invalido ou dispositivo inativo.'], 403);
+            return response()->json(['error' => 'Token inválido ou dispositivo inativo.'], 403);
         }
 
         $request->merge(['dispositivo' => $dispositivo]);

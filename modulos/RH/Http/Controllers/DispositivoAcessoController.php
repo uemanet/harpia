@@ -56,7 +56,7 @@ class DispositivoAcessoController extends BaseController
         $dispositivo = $this->dispositivoRepository->find($dispositivoId);
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo nao encontrado.');
+            flash()->error('Dispositivo não encontrado.');
             return redirect()->route('rh.dispositivosacesso.index');
         }
 
@@ -69,7 +69,7 @@ class DispositivoAcessoController extends BaseController
             $dispositivo = $this->dispositivoRepository->find($dispositivoId);
 
             if (!$dispositivo) {
-                flash()->error('Dispositivo nao encontrado.');
+                flash()->error('Dispositivo não encontrado.');
                 return redirect()->route('rh.dispositivosacesso.index');
             }
 
@@ -96,7 +96,7 @@ class DispositivoAcessoController extends BaseController
             $this->dispositivoRepository->delete($request->get('id'));
             flash()->success('Dispositivo excluido com sucesso.');
         } catch (\Illuminate\Database\QueryException $e) {
-            flash()->error('Nao foi possivel excluir o dispositivo porque ha dependencias vinculadas.');
+            flash()->error('Não foi possível excluir o dispositivo porque há dependências vinculadas.');
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;
@@ -113,7 +113,7 @@ class DispositivoAcessoController extends BaseController
         $dispositivo = $this->dispositivoRepository->find($dispositivoId);
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo nao encontrado.');
+            flash()->error('Dispositivo não encontrado.');
             return redirect()->back();
         }
 
@@ -130,7 +130,7 @@ class DispositivoAcessoController extends BaseController
         $dispositivo = $this->dispositivoRepository->find($dispositivoId);
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo nao encontrado.');
+            flash()->error('Dispositivo não encontrado.');
             return redirect()->back();
         }
 
@@ -153,14 +153,14 @@ class DispositivoAcessoController extends BaseController
         $dispositivo = $this->dispositivoRepository->find($dispositivoId);
 
         if (!$dispositivo) {
-            flash()->error('Dispositivo nao encontrado.');
+            flash()->error('Dispositivo não encontrado.');
             return redirect()->back();
         }
 
         try {
             $resultado = $this->sincronizacaoService->sincronizar($dispositivo);
             flash()->success(sprintf(
-                'Mapeamento sincronizado: %d usuarios, %d vinculados, %d pendentes.',
+                'Mapeamento sincronizado: %d usuários, %d vinculados, %d pendentes.',
                 $resultado['resumo']['total'],
                 $resultado['resumo']['vinculados'],
                 $resultado['resumo']['pendentes']

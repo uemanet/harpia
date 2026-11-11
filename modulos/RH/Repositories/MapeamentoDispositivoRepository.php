@@ -64,20 +64,20 @@ class MapeamentoDispositivoRepository extends BaseRepository
 
     public function listarPorDispositivoEUsuarios(int $dispositivoId, array $userIds): Collection
     {
-        $query = $this->model
+        if (empty($userIds)) {
+            return collect();
+        }
+
+        return $this->model
             ->leftJoin('reh_colaboradores', 'reh_mapeamento_dispositivo.map_col_id', '=', 'reh_colaboradores.col_id')
             ->leftJoin('gra_pessoas', 'reh_colaboradores.col_pes_id', '=', 'gra_pessoas.pes_id')
             ->select([
                 'reh_mapeamento_dispositivo.*',
                 'gra_pessoas.pes_nome as colaborador_nome',
             ])
-            ->where('reh_mapeamento_dispositivo.map_dis_id', $dispositivoId);
-
-        if (!empty($userIds)) {
-            $query->whereIn('reh_mapeamento_dispositivo.map_user_id', $userIds);
-        }
-
-        return $query->get();
+            ->where('reh_mapeamento_dispositivo.map_dis_id', $dispositivoId)
+            ->whereIn('reh_mapeamento_dispositivo.map_user_id', $userIds)
+            ->get();
     }
 
     public function paginate($sort = null, $search = null)

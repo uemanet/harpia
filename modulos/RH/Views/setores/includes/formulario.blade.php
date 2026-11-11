@@ -30,7 +30,7 @@
                     @endforeach
                 @endif
             </select>
-            <span class="help-block">Selecione um ou mais colaboradores que serao gestores deste setor.</span>
+            <span class="help-block">Selecione um ou mais colaboradores que serão gestores deste setor.</span>
             @if ($errors->has('gestores')) <p class="help-block">{{ $errors->first('gestores') }}</p> @endif
         </div>
     </div>

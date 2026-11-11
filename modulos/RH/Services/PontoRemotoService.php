@@ -26,7 +26,7 @@ class PontoRemotoService
     public function registrar(Colaborador $colaborador, string $tipo, array $contexto = []): EventoAcesso
     {
         if (!in_array($tipo, ['entrada', 'saida'], true)) {
-            throw new \InvalidArgumentException('Tipo de registro remoto invalido.');
+            throw new \InvalidArgumentException('Tipo de registro remoto inválido.');
         }
 
         $agora = Carbon::now();
@@ -44,7 +44,7 @@ class PontoRemotoService
                 'eva_data_hora' => $agora->toDateTimeString(),
                 'eva_origem' => 'home_office',
                 'eva_status' => 'pendente',
-                'eva_status_mensagem' => 'Registro remoto aguardando aprovacao do gestor.',
+                'eva_status_mensagem' => 'Registro remoto aguardando aprovação do gestor.',
                 'eva_hash' => $this->antiDuplicidadeService->gerarHash(
                     (string) $colaborador->col_id,
                     'home_office:' . $tipo,
@@ -60,7 +60,7 @@ class PontoRemotoService
             return $evento;
         });
 
-        Log::info('Registro remoto criado e enviado para aprovacao.', [
+        Log::info('Registro remoto criado e enviado para aprovação.', [
             'evento_id' => $evento->eva_id,
             'colaborador_id' => $colaborador->col_id,
             'tipo' => $tipo,
@@ -101,7 +101,7 @@ class PontoRemotoService
     private function validarAprovadores(Colaborador $colaborador): void
     {
         if ($this->aprovadorPontoService->resolverAprovadores($colaborador)->isEmpty()) {
-            throw new \InvalidArgumentException('Nao foi encontrado gestor responsavel para aprovar este registro remoto.');
+            throw new \InvalidArgumentException('Não foi encontrado gestor responsável para aprovar este registro remoto.');
         }
     }
 
@@ -113,7 +113,7 @@ class PontoRemotoService
 
         if ($horaAtual < $janelaInicio || $horaAtual > $janelaFim) {
             throw new \InvalidArgumentException(sprintf(
-                'O registro remoto esta fora da janela permitida. Horario valido: %s as %s.',
+                'O registro remoto está fora da janela permitida. Horário válido: %s às %s.',
                 $janelaInicio,
                 $janelaFim
             ));
@@ -125,11 +125,11 @@ class PontoRemotoService
         $estado = $this->obterEstadoAtualDoDia($colaborador, $dataHora);
 
         if ($tipo === 'entrada' && $estado['tem_entrada_aberta']) {
-            throw new \InvalidArgumentException('Ja existe uma entrada em aberto para o dia atual.');
+            throw new \InvalidArgumentException('Já existe uma entrada em aberto para o dia atual.');
         }
 
         if ($tipo === 'saida' && !$estado['tem_entrada_aberta']) {
-            throw new \InvalidArgumentException('Nao existe entrada em aberto para registrar a saida.');
+            throw new \InvalidArgumentException('Não existe entrada em aberto para registrar a saída.');
         }
     }
 
@@ -146,7 +146,7 @@ class PontoRemotoService
             ->exists();
 
         if ($duplicadoRecente) {
-            throw new \InvalidArgumentException('Ja existe um registro remoto recente deste tipo.');
+            throw new \InvalidArgumentException('Já existe um registro remoto recente deste tipo.');
         }
 
         $hash = $this->antiDuplicidadeService->gerarHash(
@@ -156,7 +156,7 @@ class PontoRemotoService
         );
 
         if ($this->antiDuplicidadeService->existeHash($hash)) {
-            throw new \InvalidArgumentException('Ja existe um registro remoto equivalente para este minuto.');
+            throw new \InvalidArgumentException('Já existe um registro remoto equivalente para este minuto.');
         }
     }
 
@@ -169,7 +169,7 @@ class PontoRemotoService
         $atividades = trim((string) ($contexto['atividades'] ?? ''));
 
         if ($atividades === '') {
-            throw new \InvalidArgumentException('Informe as atividades executadas para registrar a saida remota.');
+            throw new \InvalidArgumentException('Informe as atividades executadas para registrar a saída remota.');
         }
     }
 

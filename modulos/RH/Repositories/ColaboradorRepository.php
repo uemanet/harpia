@@ -218,11 +218,11 @@ class ColaboradorRepository extends BaseRepository
             ->join('gra_pessoas', 'col_pes_id', '=', 'pes_id')
             ->where('reh_colaboradores.col_status', 'ativo')
             ->select([
-                'reh_colaboradores.col_id',
-                'reh_colaboradores.col_foto_anx_id',
+                'reh_colaboradores.*',
                 'gra_pessoas.pes_nome',
             ])
-            ->orderBy('gra_pessoas.pes_nome');
+            ->orderBy('gra_pessoas.pes_nome')
+            ->orderBy('reh_colaboradores.col_id');
 
         if ($dispositivoId) {
             $query->whereNotExists(function ($subquery) use ($dispositivoId) {

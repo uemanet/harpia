@@ -4,6 +4,10 @@
     Colaboradores
 @stop
 
+@section('scripts')
+    @vite('modulos/RH/Resources/js/pages/colaboradores/create.js')
+@endsection
+
 @section('subtitle')
     Cadastro de colaboradores
 @stop

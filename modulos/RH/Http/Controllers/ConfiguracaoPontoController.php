@@ -26,7 +26,7 @@ class ConfiguracaoPontoController extends BaseController
             $this->configuracaoRepository->setValor($chave, (string) $valor);
         }
 
-        flash()->success('Configuracoes atualizadas com sucesso.');
+        flash()->success('Configurações atualizadas com sucesso.');
         return redirect()->route('rh.configuracoesponto.index');
     }
 }

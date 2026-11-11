@@ -25,7 +25,10 @@ class PeriodoGozoRequest extends BaseRequest
     public function rules()
     {
         return [
-
+            'pgz_paq_id' => 'required',
+            'pgz_data_inicio' => 'required|date_format:d/m/Y',
+            'pgz_data_fim' => 'required|date_format:d/m/Y',
+            'pgz_observacao' => 'required|min:3|max:255',
         ];
     }
 }

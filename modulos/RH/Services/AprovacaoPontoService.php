@@ -73,7 +73,7 @@ class AprovacaoPontoService
         $motivo = trim($motivo);
 
         if ($motivo === '') {
-            throw new \InvalidArgumentException('Informe o motivo da aprovacao parcial.');
+            throw new \InvalidArgumentException('Informe o motivo da aprovação parcial.');
         }
 
         $totalAceitoSegundos = $this->converterHorasParaSegundos($horasAceitas);
@@ -84,7 +84,7 @@ class AprovacaoPontoService
         }
 
         if ($totalAceitoSegundos > $totalCalculadoSegundos) {
-            throw new \InvalidArgumentException('As horas aceitas nao podem ser maiores que as horas calculadas da jornada.');
+            throw new \InvalidArgumentException('As horas aceitas não podem ser maiores que as horas calculadas da jornada.');
         }
 
         $aprovacao = DB::transaction(function () use ($jornada, $aprovador, $horasAceitas, $motivo) {
@@ -184,22 +184,22 @@ class AprovacaoPontoService
     private function validarJornadaPendente(JornadaRemota $jornada): void
     {
         if (!$jornada->jor_eva_entrada_id || !$jornada->jor_eva_saida_id) {
-            throw new \InvalidArgumentException('A jornada remota informada nao possui entrada e saida validas para aprovacao.');
+            throw new \InvalidArgumentException('A jornada remota informada não possui entrada e saída válidas para aprovação.');
         }
 
         if ($jornada->jor_status !== 'pendente') {
-            throw new \InvalidArgumentException('A jornada informada nao esta mais pendente de aprovacao.');
+            throw new \InvalidArgumentException('A jornada informada não está mais pendente de aprovação.');
         }
 
         if (!$jornada->colaborador) {
-            throw new \InvalidArgumentException('A jornada remota nao possui colaborador vinculado.');
+            throw new \InvalidArgumentException('A jornada remota não possui colaborador vinculado.');
         }
     }
 
     private function validarPermissao(JornadaRemota $jornada, Colaborador $aprovador): void
     {
         if (!$this->aprovadorPontoService->podeAprovar($aprovador, $jornada->colaborador)) {
-            throw new \InvalidArgumentException('Voce nao possui permissao para aprovar este colaborador.');
+            throw new \InvalidArgumentException('Você não possui permissão para aprovar este colaborador.');
         }
     }
 

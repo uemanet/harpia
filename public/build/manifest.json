@@ -15,6 +15,10 @@
     "file": "assets/jquery-CbeXLPaY.js",
     "name": "jquery"
   },
+  "_redimensionarImagem-Cp9sLCbT.js": {
+    "file": "assets/redimensionarImagem-Cp9sLCbT.js",
+    "name": "redimensionarImagem"
+  },
   "_sweetalert2.esm.all-CvlpapFA.js": {
     "file": "assets/sweetalert2.esm.all-CvlpapFA.js",
     "name": "sweetalert2.esm.all"
@@ -283,28 +287,6 @@
       "_jquery-CbeXLPaY.js"
     ]
   },
-  "modulos/Matriculas/Resources/js/pages/chamadas/candidatos/index.js": {
-    "file": "assets/index-DAxqqhIA.js",
-    "name": "index",
-    "src": "modulos/Matriculas/Resources/js/pages/chamadas/candidatos/index.js",
-    "isEntry": true,
-    "imports": [
-      "_jquery-CbeXLPaY.js",
-      "_sweetalert2.esm.all-CvlpapFA.js",
-      "_bootstrap.esm-D7Q7Nh7Y.js"
-    ]
-  },
-  "modulos/Matriculas/Resources/js/pages/inscricoes/index.js": {
-    "file": "assets/index-CklJ1fO7.js",
-    "name": "index",
-    "src": "modulos/Matriculas/Resources/js/pages/inscricoes/index.js",
-    "isEntry": true,
-    "imports": [
-      "_jquery-CbeXLPaY.js",
-      "_sweetalert2.esm.all-CvlpapFA.js",
-      "_bootstrap.esm-D7Q7Nh7Y.js"
-    ]
-  },
   "modulos/Monitoramento/Resources/js/pages/forumresponse/includes/formulario.js": {
     "file": "assets/formulario-Cu85BPki.js",
     "name": "formulario",
@@ -335,11 +317,23 @@
       "_index-uKz2lNNC.js"
     ]
   },
+  "modulos/RH/Resources/js/pages/colaboradores/create.js": {
+    "file": "assets/create-DDqOu5Xd.js",
+    "name": "create",
+    "src": "modulos/RH/Resources/js/pages/colaboradores/create.js",
+    "isEntry": true,
+    "imports": [
+      "_redimensionarImagem-Cp9sLCbT.js"
+    ]
+  },
   "modulos/RH/Resources/js/pages/colaboradores/edit.js": {
-    "file": "assets/edit-DG9gpPMl.js",
+    "file": "assets/edit-CBzox5LS.js",
     "name": "edit",
     "src": "modulos/RH/Resources/js/pages/colaboradores/edit.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_redimensionarImagem-Cp9sLCbT.js"
+    ]
   },
   "modulos/RH/Resources/js/pages/colaboradores/includes/periodosaquisitivos.js": {
     "file": "assets/periodosaquisitivos-JMzGlH27.js",
@@ -371,10 +365,13 @@
     ]
   },
   "modulos/RH/Resources/js/pages/portal-foto/upload.js": {
-    "file": "assets/upload-Be3ynsJw.js",
+    "file": "assets/upload-CQMimgCp.js",
     "name": "upload",
     "src": "modulos/RH/Resources/js/pages/portal-foto/upload.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_redimensionarImagem-Cp9sLCbT.js"
+    ]
   },
   "modulos/RH/Resources/js/pages/salarioscolaboradores/formulario.js": {
     "file": "assets/formulario-BmuICBmn.js",

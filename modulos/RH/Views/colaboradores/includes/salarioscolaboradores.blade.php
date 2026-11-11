@@ -21,8 +21,8 @@
                             <th>Fonte Pagadora</th>
                             <th>Tipo de Vínculo</th>
                             <th>Valor</th>
-                            <th>Valor Liquido</th>
-                            <th>Data de Inicio</th>
+                            <th>Valor Líquido</th>
+                            <th>Data de Início</th>
                             <th>Data de Fim</th>
                             <th>Data de Cadastro</th>
                         </tr>

@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\ModulosMigrate::class,
         Commands\ModulosSeed::class,
         Commands\ColetarEventosControlId::class,
+        Commands\SincronizarMapeamentoDispositivo::class,
         Commands\SincronizarHorasTrabalhadas::class,
         Commands\ReconstruirHorasDiarias::class,
         Commands\ReconstruirJornadasRemotas::class,

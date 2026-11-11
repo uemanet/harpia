@@ -27,7 +27,7 @@ class EventoAcessoService
         if (!in_array($eventCode, self::EVENTOS_SUPORTADOS, true)) {
             return [
                 'status' => 'ignorado',
-                'motivo' => 'Codigo de evento nao suportado para registro de acesso.',
+                'motivo' => 'Código de evento não suportado para registro de acesso.',
             ];
         }
 
@@ -50,10 +50,10 @@ class EventoAcessoService
 
         if (!$colaborador) {
             $status = 'erro';
-            $mensagem = 'Usuario nao vinculado no Harpia.';
+            $mensagem = 'Usuário não vinculado no Harpia.';
         } elseif ($eventCode === 12) {
             $status = 'erro';
-            $mensagem = 'Acesso nao autorizado pelo dispositivo.';
+            $mensagem = 'Acesso não autorizado pelo dispositivo.';
         }
 
         $registro = EventoAcesso::create([
@@ -145,7 +145,7 @@ class EventoAcessoService
 
         if (!$colaborador) {
             $evento->fill([
-                'eva_status_mensagem' => 'Usuario ainda nao vinculado no Harpia.',
+                'eva_status_mensagem' => 'Usuário ainda não vinculado no Harpia.',
             ])->save();
 
             return false;

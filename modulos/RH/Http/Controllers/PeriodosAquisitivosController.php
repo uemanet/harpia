@@ -45,7 +45,7 @@ class PeriodosAquisitivosController extends BaseController
         return view('RH::periodosaquisitivos.create', compact('colaborador', 'matriculas', 'periodosDisponiveis', 'periodo_aquisitivo'));
     }
 
-    public function postCreate( $idColaborador, PeriodoGozoRequest $request)
+    public function postCreate( $idColaborador, PeriodoAquisitivoRequest $request)
     {
         $data = $request->all();
         $colaborador = $this->colaboradorRepository->find($idColaborador);
@@ -86,7 +86,7 @@ class PeriodosAquisitivosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Periodo Aquisitivo criado com sucesso.');
+            flash()->success('Período Aquisitivo criado com sucesso.');
             return redirect()->route('rh.colaboradores.show', $idColaborador);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -106,7 +106,7 @@ class PeriodosAquisitivosController extends BaseController
             ->pluck('mtc_data_inicio', 'mtc_id');
 
         if (!$periodo_aquisitivo) {
-            flash()->error('Periodo Aquisitivo não existe.');
+            flash()->error('Período Aquisitivo não existe.');
             return redirect()->back();
         }
 
@@ -122,7 +122,7 @@ class PeriodosAquisitivosController extends BaseController
             $periodo_aquisitivo = $this->periodoAquisitivoRepository->find($periodo_aquisitivoId);
 
             if (!$periodo_aquisitivo) {
-                flash()->error('Periodo Aquisitivo não existe.');
+                flash()->error('Período Aquisitivo não existe.');
                 return redirect()->route('rh.colaboradores.index');
             }
 
@@ -165,7 +165,7 @@ class PeriodosAquisitivosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Periodo Aquisitivo atualizado com sucesso.');
+            flash()->success('Período Aquisitivo atualizado com sucesso.');
             return redirect()->route('rh.colaboradores.show', $periodo_aquisitivo->paq_col_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -183,7 +183,7 @@ class PeriodosAquisitivosController extends BaseController
             $periodo_aquisitivo = $this->periodoAquisitivoRepository->find($periodo_aquisitivoId);
 
             if (!$periodo_aquisitivo) {
-                flash()->error('Periodo Aquisitivo não existe.');
+                flash()->error('Período Aquisitivo não existe.');
                 return redirect()->route('rh.colaboradores.index');
             }
 
@@ -192,7 +192,7 @@ class PeriodosAquisitivosController extends BaseController
                 return redirect()->back()->withInput($request->all());
             }
 
-            flash()->success('Periodo Aquisitivo atualizado com sucesso.');
+            flash()->success('Período Aquisitivo atualizado com sucesso.');
             return redirect()->route('rh.colaboradores.show', $periodo_aquisitivo->paq_col_id);
         } catch (\Exception $e) {
             if (config('app.debug')) {
@@ -211,7 +211,7 @@ class PeriodosAquisitivosController extends BaseController
 
             $this->periodoAquisitivoRepository->delete($periodo_aquisitivoId);
 
-            flash()->success('Periodo Aquisitivo excluída com sucesso.');
+            flash()->success('Período Aquisitivo excluída com sucesso.');
 
             return redirect()->back();
         } catch (\Illuminate\Database\QueryException $e) {

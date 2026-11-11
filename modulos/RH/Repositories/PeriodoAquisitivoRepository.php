@@ -193,8 +193,6 @@ class PeriodoAquisitivoRepository extends BaseRepository
 
     public function contarDias($pgz_data_inicio, $pgz_data_fim)
     {
-        print_r($pgz_data_inicio, $pgz_data_fim);
-
         try {
             $dataInicio = Carbon::createFromFormat('d/m/Y', $pgz_data_inicio);
             $dataFim = Carbon::createFromFormat('d/m/Y', $pgz_data_fim);

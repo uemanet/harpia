@@ -26,7 +26,7 @@ class EventoAcessoController extends BaseController
         $evento = $this->eventoRepository->find($id);
 
         if (!$evento) {
-            flash()->error('Evento nao encontrado.');
+            flash()->error('Evento não encontrado.');
             return redirect()->route('rh.eventosacesso.index');
         }
 

@@ -29,7 +29,7 @@ class DispositivoAcessoRequest extends BaseRequest
     public function messages()
     {
         return [
-            'dis_ip.ip' => 'O campo IP deve conter um endereco IP valido.',
+            'dis_ip.ip' => 'O campo IP deve conter um endereço IP válido.',
         ];
     }
 }
