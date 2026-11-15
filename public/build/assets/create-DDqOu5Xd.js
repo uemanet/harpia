@@ -1,1 +1,0 @@
-import{r as t}from"./redimensionarImagem-Cp9sLCbT.js";document.addEventListener("DOMContentLoaded",function(){const n=document.getElementById("col_foto_facial");n&&n.addEventListener("change",function(){t(n)})});

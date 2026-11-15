@@ -8,68 +8,76 @@
     Disciplina: {{ $ofertaDisciplina->moduloDisciplina->disciplina->dis_nome }}
 @stop
 
+@section('actionButton')
+    @php
+        $turma = $ofertaDisciplina->turma;
+    @endphp
+    <a href="{{ route('integracao.mapeamentonotas.index', [
+        'crs_id' => $turma->ofertacurso->ofc_crs_id,
+        'ofc_id' => $turma->trm_ofc_id,
+        'trm_id' => $turma->trm_id,
+    ]) }}" class="btn btn-secondary">
+        <i class="fa fa-arrow-left"></i> Voltar para disciplinas
+    </a>
+@stop
+
 @section('content')
     <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
+        <div class="card card-primary card-outline p-0">
+            <div class="card-header with-border">
+                <h3 class="card-title"><i class="fa fa-filter"></i> Filtrar dados</h3>
 
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                    <!-- /.box-tools -->
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="row">
-                        <form method="GET" action="{{{ route('integracao.mapeamentonotas.showalunos', $ofertaDisciplina->ofd_id) }}}">
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}" placeholder="CPF">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Request::input('pes_nome')}}" placeholder="Nome">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Request::input('pes_email')}}" placeholder="Email">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="submit" class="form-control btn-primary" value="Buscar">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- /.box-body -->
+                <!-- /.card-tools -->
             </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <form method="GET" action="{{{ route('integracao.mapeamentonotas.showalunos', $ofertaDisciplina->ofd_id) }}}" class="d-flex w-100">
+                        <div class="col-md-3 px-1">
+                            <input type="text" class="form-control" name="pes_cpf" id="pes_cpf" value="{{Request::input('pes_cpf')}}" placeholder="CPF">
+                        </div>
+                        <div class="col-md-3 px-1">
+                            <input type="text" class="form-control" name="pes_nome" id="pes_nome" value="{{Request::input('pes_nome')}}" placeholder="Nome">
+                        </div>
+                        <div class="col-md-3 px-1">
+                            <input type="email" class="form-control" name="pes_email" id="pes_email" value="{{Request::input('pes_email')}}" placeholder="Email">
+                        </div>
+                        <div class="col-md-3 px-1">
+                            <input type="submit" class="btn btn-primary w-100" value="Buscar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.card-body -->
         </div>
     </div>
+
     <div class="row">
-        <div class="col-md-12">
+        <div class="card card-primary card-outline my-2 p-0">
             @if(!is_null($tabela))
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <div class="row">
-                            <div class="col-md-3 pull-right">
-                                <div class="form-group">
-                                    <button class="btn btn-success form-control btn-mapear" data-id="{{ $ofertaDisciplina->ofd_id }}">
-                                        <i class="fa fa-exchange"></i> Migrar Todas as Notas
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                {!! $tabela->render() !!}
-                            </div>
+                <div class="card-header">
+                    <div class="row justify-content-end">
+                        <div class="col-md-3">
+                            <button class="btn btn-success w-100 btn-mapear" data-id="{{ $ofertaDisciplina->ofd_id }}">
+                                <i class="fa fa-exchange"></i> Migrar Todas as Notas
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                <div class="text-center">{!! $paginacao->links('pagination::bootstrap-4') !!}</div>
+                <div class="card-body p-0">
+                    {!! $tabela->render() !!}
+                </div>
+                <div class="card-footer clearfix">
+                    {!! $paginacao->links('pagination::bootstrap-4') !!}
+                </div>
             @else
-                <div class="box box-primary">
-                    <div class="box-body">Sem registros para apresentar</div>
+                <div class="card-body">
+                    Sem registros para apresentar
                 </div>
             @endif
         </div>
