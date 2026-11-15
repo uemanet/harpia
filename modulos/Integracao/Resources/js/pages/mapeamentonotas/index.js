@@ -10,20 +10,18 @@ $(function () {
     var ofertasCursoSelect = $('#ofc_id');
     var turmaSelect = $('#trm_id');
 
-    // evento change do select de cursos
-    cursosSelect.change(function () {
+    // carrega as ofertas de curso do curso escolhido
+    function carregarOfertasCurso(cursoId) {
         // limpando selects
         ofertasCursoSelect.empty();
         turmaSelect.empty();
 
-        var cursoId = $(this).val();
-
         if(!cursoId) {
-            return false;
+            return $.Deferred().resolve().promise();
         }
 
         // faz a consulta pra trazer todas as ofertas de curso
-        $.harpia.httpget(baseUrl + '/academico/async/ofertascursos/findallbycurso/' + cursoId).done(function (response) {
+        return $.harpia.httpget(baseUrl + '/academico/async/ofertascursos/findallbycurso/' + cursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 ofertasCursoSelect.append("<option value=''>Selecione uma oferta</option>");
 
@@ -34,22 +32,19 @@ $(function () {
                 ofertasCursoSelect.append("<option value=''>Sem ofertas cadastradas</option>");
             }
         });
-    });
+    }
 
-    // evento change do select de ofertas de curso
-    ofertasCursoSelect.change(function () {
+    // carrega as turmas da oferta de curso escolhida
+    function carregarTurmas(ofertaCursoId) {
         // limpando selects
         turmaSelect.empty();
 
-        // faz a consulta pra trazer todas as turmas da oferta de curso escolhida
-        var ofertaCursoId = $(this).val();
-
         if(!ofertaCursoId) {
-            return false;
+            return $.Deferred().resolve().promise();
         }
 
         // buscar turmas
-        $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
+        return $.harpia.httpget(baseUrl + "/academico/async/turmas/findallbyofertacurso/" + ofertaCursoId).done(function (response) {
             if(!$.isEmptyObject(response)) {
                 turmaSelect.append("<option value=''>Selecione uma turma</option>");
 
@@ -60,17 +55,15 @@ $(function () {
                 turmaSelect.append("<option value=''>Sem turmas cadastradas</option>");
             }
         });
+    }
 
-    });
-
-    $('#btnBuscar').click(function (e) {
-        e.preventDefault();
-
+    // busca as disciplinas da turma selecionada
+    function buscarDisciplinas() {
         var curso = $('#crs_id').val();
         var ofertaCurso = $('#ofc_id').val();
         var turma = $('#trm_id').val();
 
-        if (curso == '' || ofertaCurso == '' || turma == '') {
+        if (!curso || !ofertaCurso || !turma) {
             return false;
         }
 
@@ -92,7 +85,40 @@ $(function () {
                 $('#disciplinas').append(response.html);
             }
         });
+    }
+
+    // evento change do select de cursos
+    cursosSelect.change(function () {
+        carregarOfertasCurso($(this).val());
     });
+
+    // evento change do select de ofertas de curso
+    ofertasCursoSelect.change(function () {
+        carregarTurmas($(this).val());
+    });
+
+    $('#btnBuscar').click(function (e) {
+        e.preventDefault();
+
+        buscarDisciplinas();
+    });
+
+    // ao voltar da tela de alunos, restaura o filtro e já traz as disciplinas
+    var params = new URLSearchParams(window.location.search);
+
+    if (params.get('crs_id') && params.get('ofc_id') && params.get('trm_id')) {
+        cursosSelect.val(params.get('crs_id')).trigger('change.select2');
+
+        carregarOfertasCurso(params.get('crs_id')).then(function () {
+            ofertasCursoSelect.val(params.get('ofc_id')).trigger('change.select2');
+
+            return carregarTurmas(params.get('ofc_id'));
+        }).then(function () {
+            turmaSelect.val(params.get('trm_id')).trigger('change.select2');
+
+            buscarDisciplinas();
+        });
+    }
 
     $('#disciplinas').on('click', '.btnSalvar', function(event) {
         var ofd_id = $(event.currentTarget).data('id');
